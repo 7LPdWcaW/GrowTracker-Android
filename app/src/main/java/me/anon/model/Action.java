@@ -1,5 +1,8 @@
 package me.anon.model;
 
+import lombok.Data;
+import lombok.experimental.Accessors;
+
 /**
  * // TODO: Add class description
  *
@@ -7,6 +10,8 @@ package me.anon.model;
  * @documentation // TODO Reference flow doc
  * @project GrowTracker
  */
+@Data
+@Accessors(prefix = {"m", ""}, chain = true)
 public abstract class Action
 {
 	private long date;
