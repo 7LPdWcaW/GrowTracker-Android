@@ -10,8 +10,11 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
 
+import com.google.gson.Gson;
+
 import me.anon.grow.R;
 import me.anon.lib.Views;
+import me.anon.model.Plant;
 
 /**
  * // TODO: Add class description
@@ -21,11 +24,30 @@ import me.anon.lib.Views;
  * @project GrowTracker
  */
 @Views.Injectable
-public class AddPlantFragment extends Fragment
+public class PlantDetailsFragment extends Fragment
 {
 	@Views.InjectView(R.id.plant_name) private TextView name;
 	@Views.InjectView(R.id.plant_strain) private TextView strain;
 	@Views.InjectView(R.id.plant_stage) private TextView stage;
+
+	/**
+	 * @param plant If null, asume new plant
+	 * @return Instantiated details fragment
+	 */
+	public static PlantDetailsFragment newInstance(@Nullable Plant plant)
+	{
+		Bundle args = new Bundle();
+
+		if (plant != null)
+		{
+			args.putString("plant", new Gson().toJson(plant));
+		}
+
+		PlantDetailsFragment fragment = new PlantDetailsFragment();
+		fragment.setArguments(args);
+
+		return fragment;
+	}
 
 	@Nullable @Override public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState)
 	{
@@ -58,6 +80,6 @@ public class AddPlantFragment extends Fragment
 
 	@Views.OnClick public void onCompleteClick(final View view)
 	{
-		
+
 	}
 }
