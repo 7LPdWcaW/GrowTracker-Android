@@ -11,7 +11,7 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import me.anon.controller.adapter.PlantAdapter;
-import me.anon.grow.PlantDetailsActivity;
+import me.anon.grow.AddPlantActivity;
 import me.anon.grow.R;
 import me.anon.lib.Views;
 
@@ -48,7 +48,7 @@ public class PlantListFragment extends Fragment
 
 	@Views.OnClick public void onFabAddClick(View view)
 	{
-		Intent addPlant = new Intent(getActivity(), PlantDetailsActivity.class);
+		Intent addPlant = new Intent(getActivity(), AddPlantActivity.class);
 		startActivity(addPlant);
 	}
 }
