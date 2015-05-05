@@ -1,0 +1,51 @@
+package me.anon.grow.fragment;
+
+import android.app.Fragment;
+import android.os.Bundle;
+import android.support.annotation.Nullable;
+import android.support.v7.widget.LinearLayoutManager;
+import android.support.v7.widget.RecyclerView;
+import android.view.LayoutInflater;
+import android.view.View;
+import android.view.ViewGroup;
+
+import me.anon.controller.adapter.PlantAdapter;
+import me.anon.grow.R;
+import me.anon.lib.Views;
+
+/**
+ * // TODO: Add class description
+ *
+ * @author 
+ * @documentation // TODO Reference flow doc
+ * @project GrowTracker
+ */
+@Views.Injectable
+public class PlantListFragment extends Fragment
+{
+	private PlantAdapter adapter;
+
+	@Views.InjectView(R.id.recycler_view) private RecyclerView recycler;
+
+	@Nullable @Override public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState)
+	{
+		View view = inflater.inflate(R.layout.plant_list_view, container, false);
+		Views.inject(this, view);
+
+		return view;
+	}
+
+	@Override public void onActivityCreated(Bundle savedInstanceState)
+	{
+		super.onActivityCreated(savedInstanceState);
+
+		adapter = new PlantAdapter();
+		recycler.setLayoutManager(new LinearLayoutManager(getActivity()));
+		recycler.setAdapter(adapter);
+	}
+
+	@Views.OnClick public void onFabAddClick(View view)
+	{
+
+	}
+}
