@@ -78,7 +78,7 @@ public class PlantDetailsFragment extends Fragment
 			.show();
 	}
 
-	@Views.OnClick public void onCompleteClick(final View view)
+	@Views.OnClick public void onFabCompleteClick(final View view)
 	{
 
 	}
