@@ -1,6 +1,7 @@
 package me.anon.grow.fragment;
 
 import android.app.Fragment;
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v7.widget.LinearLayoutManager;
@@ -10,6 +11,7 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import me.anon.controller.adapter.PlantAdapter;
+import me.anon.grow.PlantDetailsActivity;
 import me.anon.grow.R;
 import me.anon.lib.Views;
 
@@ -46,6 +48,7 @@ public class PlantListFragment extends Fragment
 
 	@Views.OnClick public void onFabAddClick(View view)
 	{
-
+		Intent addPlant = new Intent(getActivity(), PlantDetailsActivity.class);
+		startActivity(addPlant);
 	}
 }
