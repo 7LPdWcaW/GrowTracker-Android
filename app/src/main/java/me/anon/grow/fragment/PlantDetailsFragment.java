@@ -9,6 +9,7 @@ import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.WindowManager;
 import android.widget.TextView;
 
 import com.google.gson.Gson;
@@ -31,24 +32,23 @@ import me.anon.model.PlantStage;
 @Views.Injectable
 public class PlantDetailsFragment extends Fragment
 {
+	private final String[] stages = {"Germination", "Vegetation", "Flower", "Curing"};
+
 	@Views.InjectView(R.id.plant_name) private TextView name;
 	@Views.InjectView(R.id.plant_strain) private TextView strain;
 	@Views.InjectView(R.id.plant_stage) private TextView stage;
 
+	private int plantIndex = -1;
 	private Plant plant;
 
 	/**
-	 * @param plant If null, asume new plant
+	 * @param plantIndex If -1, assume new plant
 	 * @return Instantiated details fragment
 	 */
-	public static PlantDetailsFragment newInstance(@Nullable Plant plant)
+	public static PlantDetailsFragment newInstance(int plantIndex)
 	{
 		Bundle args = new Bundle();
-
-		if (plant != null)
-		{
-			args.putString("plant", new Gson().toJson(plant));
-		}
+		args.putInt("plant_index", plantIndex);
 
 		PlantDetailsFragment fragment = new PlantDetailsFragment();
 		fragment.setArguments(args);
@@ -70,18 +70,33 @@ public class PlantDetailsFragment extends Fragment
 
 		if (getArguments() != null)
 		{
-			plant = new Gson().fromJson(getArguments().getString("plant", "{}"), Plant.class);
+			plantIndex = getArguments().getInt("plant_index");
+
+			if (plantIndex > -1)
+			{
+				plant = PlantManager.getInstance().getPlants().get(plantIndex);
+				getActivity().getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_ALWAYS_HIDDEN);
+			}
+		}
+
+		if (plant == null)
+		{
+			plant = new Plant();
 		}
 		else
 		{
-			plant = new Plant();
+			name.setText(plant.getName());
+			strain.setText(plant.getStrain());
+
+			if (plant.getStage() != null)
+			{
+				stage.setText(stages[plant.getStage().ordinal()]);
+			}
 		}
 	}
 
 	@Views.OnClick public void onPlantStageClick(final View view)
 	{
-		final String[] stages = {"Germination", "Vegetation", "Flower", "Curing"};
-
 		new AlertDialog.Builder(view.getContext())
 			.setTitle("Strain")
 			.setItems(stages, new DialogInterface.OnClickListener()
@@ -106,6 +121,7 @@ public class PlantDetailsFragment extends Fragment
 		else
 		{
 			name.setError("Name can not be empty");
+			return;
 		}
 
 		if (!TextUtils.isEmpty(strain.getText()))
@@ -115,11 +131,12 @@ public class PlantDetailsFragment extends Fragment
 		else
 		{
 			name.setError("Name can not be empty");
+			return;
 		}
 
 		plant.setStage(PlantStage.valueOf(stage.getText().toString().toUpperCase(Locale.ENGLISH)));
 
-		PlantManager.getInstance().addPlant(plant);
+		PlantManager.getInstance().upsert(plantIndex, plant);
 		getActivity().finish();
 	}
 }
