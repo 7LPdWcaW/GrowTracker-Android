@@ -1,6 +1,7 @@
 package me.anon.lib.manager;
 
 import android.content.Context;
+import android.text.TextUtils;
 
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
@@ -40,9 +41,28 @@ public class PlantManager
 		load();
 	}
 
+	public void addPlant(Plant plant)
+	{
+		mPlants.add(plant);
+		save();
+	}
+
 	public void load()
 	{
 		String plantData = FileManager.getInstance().readFileAsString(FILES_DIR + "/plants.json");
-		mPlants = (ArrayList<Plant>)new Gson().fromJson(plantData, new TypeToken<ArrayList<Plant>>(){}.getRawType());
+
+		if (!TextUtils.isEmpty(plantData))
+		{
+			mPlants = (ArrayList<Plant>)new Gson().fromJson(plantData, new TypeToken<ArrayList<Plant>>(){}.getRawType());
+		}
+		else
+		{
+			mPlants = new ArrayList<>();
+		}
+	}
+
+	public void save()
+	{
+		FileManager.getInstance().writeFile(FILES_DIR + "/plants.json", new Gson().toJson(mPlants));
 	}
 }
