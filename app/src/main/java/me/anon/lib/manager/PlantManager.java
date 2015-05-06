@@ -57,6 +57,7 @@ public class PlantManager
 		else
 		{
 			mPlants.set(index, plant);
+			save();
 		}
 	}
 

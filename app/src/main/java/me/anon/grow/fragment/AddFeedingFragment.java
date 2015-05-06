@@ -3,14 +3,20 @@ package me.anon.grow.fragment;
 import android.app.Fragment;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
+import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.WindowManager;
+import android.widget.TextView;
+
+import java.util.ArrayList;
 
 import me.anon.grow.R;
 import me.anon.lib.Views;
 import me.anon.lib.manager.PlantManager;
+import me.anon.model.Action;
+import me.anon.model.Feed;
 import me.anon.model.Plant;
 
 /**
@@ -23,8 +29,16 @@ import me.anon.model.Plant;
 @Views.Injectable
 public class AddFeedingFragment extends Fragment
 {
+	@Views.InjectView(R.id.water_ph) private TextView waterPh;
+	@Views.InjectView(R.id.water_ppm) private TextView waterPpm;
+	@Views.InjectView(R.id.runoff_ph) private TextView runoffPh;
+	@Views.InjectView(R.id.amount) private TextView amount;
+	@Views.InjectView(R.id.nutrient) private TextView nutrient;
+	@Views.InjectView(R.id.nutrient_amount) private TextView nutrientAmount;
+
 	private int plantIndex = -1;
 	private Plant plant;
+	private Feed feed;
 
 	/**
 	 * @param plantIndex If -1, assume new plant
@@ -64,6 +78,8 @@ public class AddFeedingFragment extends Fragment
 			}
 		}
 
+		feed = new Feed();
+
 		if (plant == null)
 		{
 			getActivity().finish();
@@ -73,6 +89,25 @@ public class AddFeedingFragment extends Fragment
 
 	@Views.OnClick public void onFabCompleteClick(final View view)
 	{
+		double waterPh = Double.valueOf(TextUtils.isEmpty(this.waterPh.getText()) ? "0.0" : this.waterPh.getText().toString());
+		int ppm = Integer.valueOf(TextUtils.isEmpty(this.waterPpm.getText()) ? "0" : this.waterPh.getText().toString());
+		double runoffPh = Double.valueOf(TextUtils.isEmpty(this.runoffPh.getText()) ? "0.0" : this.runoffPh.getText().toString());
+		int amount = Integer.valueOf(TextUtils.isEmpty(this.amount.getText()) ? "0" : this.amount.getText().toString());
+		int nutrientAmount = Integer.valueOf(TextUtils.isEmpty(this.nutrientAmount.getText()) ? "0" : this.nutrientAmount.getText().toString());
 
+		feed.setPh(waterPh);
+		feed.setPpm(ppm);
+		feed.setRunoff(runoffPh);
+		feed.setAmount(amount);
+		feed.setMlpl(nutrientAmount);
+
+		if (plant.getActions() == null)
+		{
+			plant.setActions(new ArrayList<Action>());
+		}
+
+		plant.getActions().add(feed);
+		PlantManager.getInstance().upsert(plantIndex, plant);
+		getActivity().finish();
 	}
 }
