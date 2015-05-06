@@ -20,5 +20,5 @@ dependencies {
 	compile 'com.google.code.gson:gson:2.3.1'
 
 	provided 'org.glassfish:javax.annotation:10.0-b28'
-	compile "org.projectlombok:lombok:1.12.6"
+	provided "org.projectlombok:lombok:1.12.6"
 }
