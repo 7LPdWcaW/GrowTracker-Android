@@ -19,7 +19,7 @@ public class Plant
 	private String name;
 	private String strain;
 	private long plantDate;
-	private PlantStage stage;
+	private PlantStage stage = PlantStage.GERMINATION;
 	private ArrayList<String> images;
 	private ArrayList<Action> actions;
 }

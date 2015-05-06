@@ -18,5 +18,6 @@
 
 		<activity android:name=".MainActivity" />
 		<activity android:name=".AddPlantActivity" />
+		<activity android:name=".PlantDetailsActivity" android:windowSoftInputMode="stateAlwaysHidden" />
 	</application>
 </manifest>

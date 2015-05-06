@@ -48,6 +48,18 @@ public class PlantManager
 		save();
 	}
 
+	public void upsert(int index, Plant plant)
+	{
+		if (index < 0)
+		{
+			addPlant(plant);
+		}
+		else
+		{
+			mPlants.set(index, plant);
+		}
+	}
+
 	public void load()
 	{
 		if (FileManager.getInstance().fileExists(FILES_DIR + "/plants.json"))
@@ -58,7 +70,7 @@ public class PlantManager
 			{
 				if (!TextUtils.isEmpty(plantData))
 				{
-					mPlants = (ArrayList<Plant>)new Gson().fromJson(plantData, new TypeToken<ArrayList<Plant>>(){}.getRawType());
+					mPlants = (ArrayList<Plant>)new Gson().fromJson(plantData, new TypeToken<ArrayList<Plant>>(){}.getType());
 				}
 			}
 			catch (JsonSyntaxException e)
