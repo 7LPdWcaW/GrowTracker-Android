@@ -3,7 +3,7 @@
 <FrameLayout
 	xmlns:android="http://schemas.android.com/apk/res/android"
 	android:layout_width="match_parent"
-	android:layout_height="match_parent"
+	android:layout_height="wrap_content"
 >
 	<ScrollView
 		android:layout_width="match_parent"
@@ -13,7 +13,54 @@
 			android:layout_width="match_parent"
 			android:layout_height="wrap_content"
 			android:orientation="vertical"
+			android:paddingBottom="88dp"
 		>
+			<LinearLayout
+				android:layout_width="match_parent"
+				android:layout_height="wrap_content"
+				android:id="@+id/action_container"
+				android:orientation="horizontal"
+				android:background="#ffffff"
+				android:elevation="4dp"
+				android:layout_marginBottom="8dp"
+				android:divider="@drawable/vertical_full_divider"
+				android:showDividers="middle"
+				style="@style/PaperCard"
+			>
+				<TextView
+					android:layout_width="0dp"
+					android:layout_height="match_parent"
+					android:layout_weight="1"
+					android:layout_gravity="center_vertical"
+					android:gravity="center"
+					android:paddingTop="8dp"
+					android:paddingBottom="8dp"
+					android:text="Add feeding"
+				/>
+
+				<TextView
+					android:layout_width="0dp"
+					android:layout_height="match_parent"
+					android:layout_weight="1"
+					android:layout_gravity="center_vertical"
+					android:gravity="center"
+					android:paddingTop="8dp"
+					android:paddingBottom="8dp"
+					android:text="Add action"
+				/>
+
+				<TextView
+					android:layout_width="0dp"
+					android:layout_height="match_parent"
+					android:layout_weight="1"
+					android:layout_gravity="center_vertical"
+					android:gravity="center"
+					android:paddingTop="8dp"
+					android:paddingBottom="8dp"
+					android:text="Add photo"
+				/>
+			</LinearLayout>
+
 			<LinearLayout
 				android:layout_width="match_parent"
 				android:layout_height="wrap_content"
@@ -137,6 +184,50 @@
 							style="@style/SubsectionSubTitle"
 						/>
 					</LinearLayout>
+				</LinearLayout>
+			</LinearLayout>
+
+			<LinearLayout
+				android:layout_width="match_parent"
+				android:layout_height="wrap_content"
+				android:orientation="vertical"
+				android:background="#ffffff"
+				android:elevation="4dp"
+				android:layout_marginTop="8dp"
+				android:divider="@drawable/full_divider"
+				android:showDividers="middle"
+				style="@style/PaperCard"
+			>
+				<LinearLayout
+					android:layout_width="match_parent"
+					android:layout_height="wrap_content"
+					android:id="@+id/view_photos"
+					android:orientation="horizontal"
+					android:padding="16dp"
+				>
+					<TextView
+						android:layout_width="match_parent"
+						android:layout_height="wrap_content"
+						android:layout_gravity="center_vertical"
+						android:text="View photos"
+						style="@style/SubsectionTitle"
+					/>
+				</LinearLayout>
+
+				<LinearLayout
+					android:layout_width="match_parent"
+					android:layout_height="wrap_content"
+					android:id="@+id/view_history"
+					android:orientation="horizontal"
+					android:padding="16dp"
+				>
+					<TextView
+						android:layout_width="match_parent"
+						android:layout_height="wrap_content"
+						android:layout_gravity="center_vertical"
+						android:text="View feeding history"
+						style="@style/SubsectionTitle"
+					/>
 				</LinearLayout>
 			</LinearLayout>
 		</LinearLayout>
