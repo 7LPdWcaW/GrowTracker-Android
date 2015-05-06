@@ -20,18 +20,20 @@ import me.anon.view.PlantHolder;
  * @documentation // TODO Reference flow doc
  * @project GrowTracker
  */
-public class PlantAdapter extends RecyclerView.Adapter
+public class PlantAdapter extends RecyclerView.Adapter<PlantHolder>
 {
 	@Getter @Setter private List<Plant> plants = new ArrayList<>();
 
-	@Override public RecyclerView.ViewHolder onCreateViewHolder(ViewGroup viewGroup, int i)
+	@Override public PlantHolder onCreateViewHolder(ViewGroup viewGroup, int i)
 	{
 		return new PlantHolder(LayoutInflater.from(viewGroup.getContext()).inflate(R.layout.plant_item, viewGroup, false));
 	}
 
-	@Override public void onBindViewHolder(RecyclerView.ViewHolder viewHolder, int i)
+	@Override public void onBindViewHolder(PlantHolder viewHolder, int i)
 	{
-
+		Plant plant = plants.get(i);
+		viewHolder.getName().setText(plant.getName());
+		viewHolder.getSummary().setText(plant.getStrain() + " - " + plant.getStage());
 	}
 
 	@Override public int getItemCount()

@@ -14,6 +14,7 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.ObjectOutputStream;
+import java.io.OutputStreamWriter;
 import java.io.Serializable;
 import java.security.DigestInputStream;
 import java.security.MessageDigest;
@@ -257,10 +258,20 @@ public class FileManager
 		try
 		{
 			File file = new File(fileName);
-			ObjectOutputStream fos = new ObjectOutputStream(new FileOutputStream(file));
-			fos.writeObject(contents);
-			fos.flush();
-			fos.close();
+
+			if (contents instanceof String)
+			{
+				OutputStreamWriter fos = new OutputStreamWriter(new FileOutputStream(file));
+				fos.write((String)contents);
+				fos.close();
+			}
+			else
+			{
+				ObjectOutputStream fos = new ObjectOutputStream(new FileOutputStream(file));
+				fos.writeObject(contents);
+				fos.flush();
+				fos.close();
+			}
 		}
 		catch (IOException e)
 		{
