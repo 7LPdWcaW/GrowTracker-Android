@@ -1,0 +1,178 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<FrameLayout
+	xmlns:android="http://schemas.android.com/apk/res/android"
+	android:layout_width="match_parent"
+	android:layout_height="match_parent"
+>
+	<ScrollView
+		android:layout_width="match_parent"
+		android:layout_height="match_parent"
+	>
+		<LinearLayout
+			android:layout_width="match_parent"
+			android:layout_height="wrap_content"
+			android:orientation="vertical"
+		>
+			<LinearLayout
+				android:layout_width="match_parent"
+				android:layout_height="wrap_content"
+				android:orientation="vertical"
+				android:background="#ffffff"
+				android:elevation="4dp"
+				style="@style/PaperCard"
+			>
+				<TextView
+					android:layout_width="wrap_content"
+					android:layout_height="wrap_content"
+					android:text="Plant details"
+					style="@style/SectionTitle"
+				/>
+
+				<LinearLayout
+					android:layout_width="match_parent"
+					android:layout_height="wrap_content"
+					android:orientation="vertical"
+					android:divider="@drawable/full_divider"
+					android:showDividers="middle"
+					android:layout_marginTop="16dp"
+				>
+					<LinearLayout
+						android:layout_width="match_parent"
+						android:layout_height="wrap_content"
+						android:orientation="vertical"
+						android:paddingLeft="16dp"
+						android:paddingRight="16dp"
+						android:paddingTop="8dp"
+						android:paddingBottom="16dp"
+					>
+						<TextView
+							android:layout_width="match_parent"
+							android:layout_height="wrap_content"
+							android:text="Plant name"
+							style="@style/SubsectionTitle"
+						/>
+
+						<EditText
+							android:layout_width="match_parent"
+							android:layout_height="wrap_content"
+							android:text="New plant"
+							android:id="@+id/plant_name"
+							style="@style/SubsectionSubTitle"
+						/>
+					</LinearLayout>
+
+					<LinearLayout
+						android:layout_width="match_parent"
+						android:layout_height="wrap_content"
+						android:orientation="vertical"
+						android:paddingLeft="16dp"
+						android:paddingRight="16dp"
+						android:paddingTop="16dp"
+						android:paddingBottom="16dp"
+					>
+						<TextView
+							android:layout_width="match_parent"
+							android:layout_height="wrap_content"
+							android:text="Plant strain"
+							style="@style/SubsectionTitle"
+						/>
+
+						<EditText
+							android:layout_width="match_parent"
+							android:layout_height="wrap_content"
+							android:text="Lemon haze"
+							android:id="@+id/plant_strain"
+							style="@style/SubsectionSubTitle"
+						/>
+					</LinearLayout>
+				</LinearLayout>
+			</LinearLayout>
+
+			<LinearLayout
+				android:layout_width="match_parent"
+				android:layout_height="wrap_content"
+				android:orientation="vertical"
+				android:background="#ffffff"
+				android:elevation="4dp"
+				android:layout_marginTop="8dp"
+				style="@style/PaperCard"
+			>
+				<TextView
+					android:layout_width="wrap_content"
+					android:layout_height="wrap_content"
+					android:text="Stage details"
+					style="@style/SectionTitle"
+				/>
+
+				<LinearLayout
+					android:layout_width="match_parent"
+					android:layout_height="wrap_content"
+					android:orientation="vertical"
+					android:divider="@drawable/full_divider"
+					android:showDividers="middle"
+					android:layout_marginTop="16dp"
+				>
+					<LinearLayout
+						android:layout_width="match_parent"
+						android:layout_height="wrap_content"
+						android:orientation="vertical"
+						android:paddingLeft="16dp"
+						android:paddingRight="16dp"
+						android:paddingTop="8dp"
+						android:paddingBottom="16dp"
+					>
+						<TextView
+							android:layout_width="match_parent"
+							android:layout_height="wrap_content"
+							android:text="Plant stage"
+							style="@style/SubsectionTitle"
+						/>
+
+						<TextView
+							android:layout_width="match_parent"
+							android:layout_height="wrap_content"
+							android:text="Germination"
+							android:id="@+id/plant_stage"
+							style="@style/SubsectionSubTitle"
+						/>
+					</LinearLayout>
+				</LinearLayout>
+			</LinearLayout>
+		</LinearLayout>
+	</ScrollView>
+
+	<FrameLayout
+		android:layout_width="wrap_content"
+		android:layout_height="wrap_content"
+		android:id="@+id/fab_complete"
+		android:layout_gravity="bottom|right"
+		android:layout_margin="16dp"
+	>
+		<ImageView
+			android:layout_width="57dp"
+			android:layout_height="56dp"
+			android:layout_marginTop="3dp"
+			android:src="@drawable/complete_button_shadow"
+			android:layout_gravity="center_horizontal"
+		/>
+
+		<FrameLayout
+			android:layout_width="wrap_content"
+			android:layout_height="wrap_content"
+		>
+			<ImageView
+				android:layout_width="56dp"
+				android:layout_height="56dp"
+				android:background="@drawable/complete_button_bg"
+			/>
+
+			<ImageView
+				android:layout_width="24dp"
+				android:layout_height="24dp"
+				android:layout_gravity="center"
+				android:src="@drawable/ic_floting_done"
+			/>
+		</FrameLayout>
+	</FrameLayout>
+</FrameLayout>
