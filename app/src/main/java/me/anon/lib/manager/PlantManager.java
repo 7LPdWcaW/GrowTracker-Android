@@ -4,6 +4,7 @@ import android.content.Context;
 import android.text.TextUtils;
 
 import com.google.gson.Gson;
+import com.google.gson.JsonSyntaxException;
 import com.google.gson.reflect.TypeToken;
 
 import java.util.ArrayList;
@@ -49,13 +50,24 @@ public class PlantManager
 
 	public void load()
 	{
-		String plantData = FileManager.getInstance().readFileAsString(FILES_DIR + "/plants.json");
-
-		if (!TextUtils.isEmpty(plantData))
+		if (FileManager.getInstance().fileExists(FILES_DIR + "/plants.json"))
 		{
-			mPlants = (ArrayList<Plant>)new Gson().fromJson(plantData, new TypeToken<ArrayList<Plant>>(){}.getRawType());
+			String plantData = FileManager.getInstance().readFileAsString(FILES_DIR + "/plants.json");
+
+			try
+			{
+				if (!TextUtils.isEmpty(plantData))
+				{
+					mPlants = (ArrayList<Plant>)new Gson().fromJson(plantData, new TypeToken<ArrayList<Plant>>(){}.getRawType());
+				}
+			}
+			catch (JsonSyntaxException e)
+			{
+				e.printStackTrace();
+			}
 		}
-		else
+
+		if (mPlants == null)
 		{
 			mPlants = new ArrayList<>();
 		}

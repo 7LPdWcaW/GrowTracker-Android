@@ -14,6 +14,7 @@ import me.anon.controller.adapter.PlantAdapter;
 import me.anon.grow.AddPlantActivity;
 import me.anon.grow.R;
 import me.anon.lib.Views;
+import me.anon.lib.manager.PlantManager;
 
 /**
  * // TODO: Add class description
@@ -42,6 +43,7 @@ public class PlantListFragment extends Fragment
 		super.onActivityCreated(savedInstanceState);
 
 		adapter = new PlantAdapter();
+		adapter.setPlants(PlantManager.getInstance().getPlants());
 		recycler.setLayoutManager(new LinearLayoutManager(getActivity()));
 		recycler.setAdapter(adapter);
 	}
