@@ -5,6 +5,7 @@ import android.app.Fragment;
 import android.content.DialogInterface;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
+import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -12,9 +13,13 @@ import android.widget.TextView;
 
 import com.google.gson.Gson;
 
+import java.util.Locale;
+
 import me.anon.grow.R;
 import me.anon.lib.Views;
+import me.anon.lib.manager.PlantManager;
 import me.anon.model.Plant;
+import me.anon.model.PlantStage;
 
 /**
  * // TODO: Add class description
@@ -29,6 +34,8 @@ public class PlantDetailsFragment extends Fragment
 	@Views.InjectView(R.id.plant_name) private TextView name;
 	@Views.InjectView(R.id.plant_strain) private TextView strain;
 	@Views.InjectView(R.id.plant_stage) private TextView stage;
+
+	private Plant plant;
 
 	/**
 	 * @param plant If null, asume new plant
@@ -60,6 +67,15 @@ public class PlantDetailsFragment extends Fragment
 	@Override public void onActivityCreated(Bundle savedInstanceState)
 	{
 		super.onActivityCreated(savedInstanceState);
+
+		if (getArguments() != null)
+		{
+			plant = new Gson().fromJson(getArguments().getString("plant", "{}"), Plant.class);
+		}
+		else
+		{
+			plant = new Plant();
+		}
 	}
 
 	@Views.OnClick public void onPlantStageClick(final View view)
@@ -80,6 +96,30 @@ public class PlantDetailsFragment extends Fragment
 
 	@Views.OnClick public void onFabCompleteClick(final View view)
 	{
+		name.setError(null);
+		strain.setError(null);
 
+		if (!TextUtils.isEmpty(name.getText()))
+		{
+			plant.setName(name.getText().toString().trim());
+		}
+		else
+		{
+			name.setError("Name can not be empty");
+		}
+
+		if (!TextUtils.isEmpty(strain.getText()))
+		{
+			plant.setStrain(strain.getText().toString().trim());
+		}
+		else
+		{
+			name.setError("Name can not be empty");
+		}
+
+		plant.setStage(PlantStage.valueOf(stage.getText().toString().toUpperCase(Locale.ENGLISH)));
+
+		PlantManager.getInstance().addPlant(plant);
+		getActivity().finish();
 	}
 }
