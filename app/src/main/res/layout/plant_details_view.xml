@@ -35,7 +35,6 @@
 					android:layout_weight="1"
 					android:layout_gravity="center_vertical"
 					android:gravity="center"
-					android:paddingTop="8dp"
 					android:paddingBottom="8dp"
 					android:text="Add feeding"
 				/>
@@ -46,7 +45,6 @@
 					android:layout_weight="1"
 					android:layout_gravity="center_vertical"
 					android:gravity="center"
-					android:paddingTop="8dp"
 					android:paddingBottom="8dp"
 					android:text="Add action"
 				/>
@@ -57,7 +55,6 @@
 					android:layout_weight="1"
 					android:layout_gravity="center_vertical"
 					android:gravity="center"
-					android:paddingTop="8dp"
 					android:paddingBottom="8dp"
 					android:text="Add photo"
 				/>
