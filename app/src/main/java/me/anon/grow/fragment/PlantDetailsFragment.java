@@ -115,7 +115,7 @@ public class PlantDetailsFragment extends Fragment
 	{
 		Intent feeding = new Intent(view.getContext(), AddFeedingActivity.class);
 		feeding.putExtra("plant_index", plantIndex);
-		startActivity(feeding);
+		startActivityForResult(feeding, 2);
 	}
 
 	@Views.OnClick public void onPhotoClick(final View view)
@@ -140,6 +140,22 @@ public class PlantDetailsFragment extends Fragment
 			{
 				plant.getImages().remove(plant.getImages().size() - 1);
 			}
+			else
+			{
+				if (getActivity() != null)
+				{
+					SnackBar.show(getActivity(), "Image added");
+				}
+			}
+
+			PlantManager.getInstance().upsert(plantIndex, plant);
+		}
+		else if (requestCode == 2)
+		{
+			if (resultCode != Activity.RESULT_CANCELED)
+			{
+				PlantManager.getInstance().upsert(plantIndex, plant);
+			}
 		}
 
 		super.onActivityResult(requestCode, resultCode, data);
@@ -158,12 +174,14 @@ public class PlantDetailsFragment extends Fragment
 						Intent feeding = new Intent(getActivity(), AddFeedingActivity.class);
 						feeding.putExtra("plant_index", plantIndex);
 						feeding.putExtra("water", which == 1);
-						startActivity(feeding);
+						startActivityForResult(feeding, 2);
 					}
 					else
 					{
 						final EmptyAction action = new EmptyAction(Action.ActionName.values()[which]);
 						plant.getActions().add(action);
+						PlantManager.getInstance().upsert(plantIndex, plant);
+
 						SnackBar.show(getActivity(), action.getAction().getPrintString() + " added", "undo", new SnackBarListener()
 						{
 							@Override public void onSnackBarStarted(Object o){}
@@ -172,6 +190,7 @@ public class PlantDetailsFragment extends Fragment
 							@Override public void onSnackBarAction(Object o)
 							{
 								plant.getActions().remove(action);
+								PlantManager.getInstance().upsert(plantIndex, plant);
 							}
 						});
 					}
