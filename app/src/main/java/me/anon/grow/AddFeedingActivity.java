@@ -27,10 +27,12 @@ public class AddFeedingActivity extends AppCompatActivity
 		setContentView(R.layout.fragment_holder);
 		Views.inject(this);
 
+		boolean feeding = true;
 		int plantIndex = -1;
 		if (getIntent().getExtras() != null)
 		{
 			plantIndex = getIntent().getExtras().getInt("plant_index", -1);
+			feeding = !getIntent().getExtras().getBoolean("water", false);
 		}
 
 		if (plantIndex < 0)
@@ -41,7 +43,7 @@ public class AddFeedingActivity extends AppCompatActivity
 
 		if (getFragmentManager().findFragmentByTag(TAG_FRAGMENT) == null)
 		{
-			getFragmentManager().beginTransaction().replace(R.id.fragment_holder, AddFeedingFragment.newInstance(plantIndex), TAG_FRAGMENT).commit();
+			getFragmentManager().beginTransaction().replace(R.id.fragment_holder, AddFeedingFragment.newInstance(plantIndex, feeding), TAG_FRAGMENT).commit();
 		}
 	}
 }
