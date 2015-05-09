@@ -1,10 +1,14 @@
 package me.anon.grow.fragment;
 
+import android.app.Activity;
 import android.app.AlertDialog;
 import android.app.Fragment;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.net.Uri;
 import android.os.Bundle;
+import android.os.Environment;
+import android.provider.MediaStore;
 import android.support.annotation.Nullable;
 import android.text.TextUtils;
 import android.view.LayoutInflater;
@@ -16,6 +20,7 @@ import android.widget.TextView;
 import com.kenny.snackbar.SnackBar;
 import com.kenny.snackbar.SnackBarListener;
 
+import java.io.File;
 import java.util.Locale;
 
 import me.anon.grow.AddFeedingActivity;
@@ -111,6 +116,33 @@ public class PlantDetailsFragment extends Fragment
 		Intent feeding = new Intent(view.getContext(), AddFeedingActivity.class);
 		feeding.putExtra("plant_index", plantIndex);
 		startActivity(feeding);
+	}
+
+	@Views.OnClick public void onPhotoClick(final View view)
+	{
+		Intent intent = new Intent(android.provider.MediaStore.ACTION_IMAGE_CAPTURE);
+
+		File path = new File(Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DCIM).getPath() + "/GrowTracker/" + plant.getName() + "/");
+		path.mkdirs();
+		File out = new File(path, System.currentTimeMillis() + ".jpg");
+
+		plant.getImages().add(out.getAbsolutePath());
+
+		intent.putExtra(MediaStore.EXTRA_OUTPUT, Uri.fromFile(out));
+		startActivityForResult(intent, 1);
+	}
+
+	@Override public void onActivityResult(int requestCode, int resultCode, Intent data)
+	{
+		if (requestCode == 1)
+		{
+			if (resultCode == Activity.RESULT_CANCELED)
+			{
+				plant.getImages().remove(plant.getImages().size() - 1);
+			}
+		}
+
+		super.onActivityResult(requestCode, resultCode, data);
 	}
 
 	@Views.OnClick public void onActionClick(final View view)
