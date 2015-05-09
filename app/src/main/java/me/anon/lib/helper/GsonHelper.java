@@ -13,6 +13,7 @@ import com.google.gson.JsonSerializer;
 import java.lang.reflect.Type;
 
 import me.anon.model.Action;
+import me.anon.model.EmptyAction;
 import me.anon.model.Feed;
 import me.anon.model.Water;
 
@@ -61,6 +62,10 @@ public class GsonHelper
 					{
 						action = g.fromJson(jsonObj, Water.class);
 					}
+					else if (json.getAsJsonObject().get("type").getAsString().equals("Action"))
+					{
+						action = g.fromJson(jsonObj, EmptyAction.class);
+					}
 				}
 
 				return action;
@@ -71,7 +76,15 @@ public class GsonHelper
 		{
 			@Override public JsonElement serialize(Action src, Type typeOfSrc, JsonSerializationContext context)
 			{
-				if (src instanceof Water)
+				if (src instanceof Feed)
+				{
+					Gson g = new Gson();
+					JsonObject jsonObj = (JsonObject)g.toJsonTree(src);
+					jsonObj.addProperty("type", "Feed");
+
+					return jsonObj;
+				}
+				else if (src instanceof Water)
 				{
 					Gson g = new Gson();
 					JsonObject jsonObj = (JsonObject)g.toJsonTree(src);
@@ -79,11 +92,11 @@ public class GsonHelper
 
 					return jsonObj;
 				}
-				else if (src instanceof Feed)
+				else if (src instanceof EmptyAction)
 				{
 					Gson g = new Gson();
 					JsonObject jsonObj = (JsonObject)g.toJsonTree(src);
-					jsonObj.addProperty("type", "Feed");
+					jsonObj.addProperty("type", "Action");
 
 					return jsonObj;
 				}

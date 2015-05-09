@@ -13,12 +13,17 @@ import android.view.ViewGroup;
 import android.view.WindowManager;
 import android.widget.TextView;
 
+import com.kenny.snackbar.SnackBar;
+import com.kenny.snackbar.SnackBarListener;
+
 import java.util.Locale;
 
 import me.anon.grow.AddFeedingActivity;
 import me.anon.grow.R;
 import me.anon.lib.Views;
 import me.anon.lib.manager.PlantManager;
+import me.anon.model.Action;
+import me.anon.model.EmptyAction;
 import me.anon.model.Plant;
 import me.anon.model.PlantStage;
 
@@ -106,6 +111,43 @@ public class PlantDetailsFragment extends Fragment
 		Intent feeding = new Intent(view.getContext(), AddFeedingActivity.class);
 		feeding.putExtra("plant_index", plantIndex);
 		startActivity(feeding);
+	}
+
+	@Views.OnClick public void onActionClick(final View view)
+	{
+		new AlertDialog.Builder(getActivity())
+			.setTitle("Select an option")
+			.setItems(Action.ActionName.names(), new DialogInterface.OnClickListener()
+			{
+				@Override public void onClick(DialogInterface dialog, int which)
+				{
+					if (which == 0 || which == 1)
+					{
+						Intent feeding = new Intent(getActivity(), AddFeedingActivity.class);
+						feeding.putExtra("plant_index", plantIndex);
+						feeding.putExtra("water", which == 1);
+						startActivity(feeding);
+					}
+					else
+					{
+						final EmptyAction action = new EmptyAction(Action.ActionName.values()[which]);
+						plant.getActions().add(action);
+						SnackBar.show(getActivity(), action.getAction().getPrintString() + " added", "undo", new SnackBarListener()
+						{
+							@Override public void onSnackBarStarted(Object o){}
+							@Override public void onSnackBarFinished(Object o){}
+
+							@Override public void onSnackBarAction(Object o)
+							{
+								plant.getActions().remove(action);
+							}
+						});
+					}
+
+					dialog.dismiss();
+				}
+			})
+			.show();
 	}
 
 	@Views.OnClick public void onPlantStageClick(final View view)

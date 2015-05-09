@@ -42,6 +42,7 @@
 				<TextView
 					android:layout_width="0dp"
 					android:layout_height="match_parent"
+					android:id="@+id/action"
 					android:layout_weight="1"
 					android:layout_gravity="center_vertical"
 					android:gravity="center"

@@ -35,6 +35,7 @@ public class AddFeedingFragment extends Fragment
 	@Views.InjectView(R.id.water_ppm) private TextView waterPpm;
 	@Views.InjectView(R.id.runoff_ph) private TextView runoffPh;
 	@Views.InjectView(R.id.amount) private TextView amount;
+	@Views.InjectView(R.id.nutrient_container) private View nutrientContainer;
 	@Views.InjectView(R.id.nutrient) private TextView nutrient;
 	@Views.InjectView(R.id.nutrient_amount) private TextView nutrientAmount;
 
@@ -46,10 +47,11 @@ public class AddFeedingFragment extends Fragment
 	 * @param plantIndex If -1, assume new plant
 	 * @return Instantiated details fragment
 	 */
-	public static AddFeedingFragment newInstance(int plantIndex)
+	public static AddFeedingFragment newInstance(int plantIndex, boolean feeding)
 	{
 		Bundle args = new Bundle();
 		args.putInt("plant_index", plantIndex);
+		args.putBoolean("feeding", feeding);
 
 		AddFeedingFragment fragment = new AddFeedingFragment();
 		fragment.setArguments(args);
@@ -77,6 +79,13 @@ public class AddFeedingFragment extends Fragment
 			{
 				plant = PlantManager.getInstance().getPlants().get(plantIndex);
 				getActivity().getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_ALWAYS_HIDDEN);
+			}
+
+			boolean feeding = getArguments().getBoolean("feeding", true);
+
+			if (!feeding)
+			{
+				nutrientContainer.setVisibility(View.GONE);
 			}
 		}
 
