@@ -3,6 +3,7 @@ package me.anon.grow.fragment;
 import android.app.AlertDialog;
 import android.app.Fragment;
 import android.content.DialogInterface;
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.text.TextUtils;
@@ -12,13 +13,17 @@ import android.view.ViewGroup;
 import android.view.WindowManager;
 import android.widget.TextView;
 
-import com.google.gson.Gson;
+import com.kenny.snackbar.SnackBar;
+import com.kenny.snackbar.SnackBarListener;
 
 import java.util.Locale;
 
+import me.anon.grow.AddFeedingActivity;
 import me.anon.grow.R;
 import me.anon.lib.Views;
 import me.anon.lib.manager.PlantManager;
+import me.anon.model.Action;
+import me.anon.model.EmptyAction;
 import me.anon.model.Plant;
 import me.anon.model.PlantStage;
 
@@ -33,6 +38,9 @@ import me.anon.model.PlantStage;
 public class PlantDetailsFragment extends Fragment
 {
 	private final String[] stages = {"Germination", "Vegetation", "Flower", "Curing"};
+
+	@Views.InjectView(R.id.action_container) private View actionContainer;
+	@Views.InjectView(R.id.link_container) private View linkContainer;
 
 	@Views.InjectView(R.id.plant_name) private TextView name;
 	@Views.InjectView(R.id.plant_strain) private TextView strain;
@@ -85,6 +93,9 @@ public class PlantDetailsFragment extends Fragment
 		}
 		else
 		{
+			actionContainer.setVisibility(View.VISIBLE);
+			linkContainer.setVisibility(View.VISIBLE);
+
 			name.setText(plant.getName());
 			strain.setText(plant.getStrain());
 
@@ -93,6 +104,50 @@ public class PlantDetailsFragment extends Fragment
 				stage.setText(stages[plant.getStage().ordinal()]);
 			}
 		}
+	}
+
+	@Views.OnClick public void onFeedingClick(final View view)
+	{
+		Intent feeding = new Intent(view.getContext(), AddFeedingActivity.class);
+		feeding.putExtra("plant_index", plantIndex);
+		startActivity(feeding);
+	}
+
+	@Views.OnClick public void onActionClick(final View view)
+	{
+		new AlertDialog.Builder(getActivity())
+			.setTitle("Select an option")
+			.setItems(Action.ActionName.names(), new DialogInterface.OnClickListener()
+			{
+				@Override public void onClick(DialogInterface dialog, int which)
+				{
+					if (which == 0 || which == 1)
+					{
+						Intent feeding = new Intent(getActivity(), AddFeedingActivity.class);
+						feeding.putExtra("plant_index", plantIndex);
+						feeding.putExtra("water", which == 1);
+						startActivity(feeding);
+					}
+					else
+					{
+						final EmptyAction action = new EmptyAction(Action.ActionName.values()[which]);
+						plant.getActions().add(action);
+						SnackBar.show(getActivity(), action.getAction().getPrintString() + " added", "undo", new SnackBarListener()
+						{
+							@Override public void onSnackBarStarted(Object o){}
+							@Override public void onSnackBarFinished(Object o){}
+
+							@Override public void onSnackBarAction(Object o)
+							{
+								plant.getActions().remove(action);
+							}
+						});
+					}
+
+					dialog.dismiss();
+				}
+			})
+			.show();
 	}
 
 	@Views.OnClick public void onPlantStageClick(final View view)
