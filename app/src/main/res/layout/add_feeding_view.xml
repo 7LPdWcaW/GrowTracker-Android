@@ -206,6 +206,7 @@
 							android:layout_height="wrap_content"
 							android:id="@+id/nutrient"
 							android:editable="false"
+							android:inputType="none"
 							android:text="N/A"
 							style="@style/SubsectionSubTitle"
 						/>
