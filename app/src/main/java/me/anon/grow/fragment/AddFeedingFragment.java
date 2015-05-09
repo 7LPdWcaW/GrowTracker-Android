@@ -1,6 +1,7 @@
 package me.anon.grow.fragment;
 
 import android.app.Fragment;
+import android.app.FragmentManager;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.text.TextUtils;
@@ -17,6 +18,7 @@ import me.anon.lib.Views;
 import me.anon.lib.manager.PlantManager;
 import me.anon.model.Action;
 import me.anon.model.Feed;
+import me.anon.model.Nutrient;
 import me.anon.model.Plant;
 
 /**
@@ -85,6 +87,45 @@ public class AddFeedingFragment extends Fragment
 			getActivity().finish();
 			return;
 		}
+
+		nutrient.setOnFocusChangeListener(new View.OnFocusChangeListener()
+		{
+			@Override public void onFocusChange(View v, boolean hasFocus)
+			{
+				if (hasFocus)
+				{
+					Nutrient nutrient = feed.getNutrient();
+					if (feed.getNutrient() == null)
+					{
+						if (plant.getActions() != null)
+						{
+							ArrayList<Action> actions = plant.getActions();
+							for (int i = actions.size() - 1; i >= 0; i--)
+							{
+								Action action = actions.get(i);
+								if (action instanceof Feed)
+								{
+									nutrient = ((Feed)action).getNutrient();
+									break;
+								}
+							}
+						}
+					}
+
+					FragmentManager fm = getFragmentManager();
+					AddNutrientDialogFragment addNutrientDialogFragment = new AddNutrientDialogFragment(nutrient);
+					addNutrientDialogFragment.setOnAddNutrientListener(new AddNutrientDialogFragment.OnAddNutrientListener()
+					{
+						@Override public void onNutrientSelected(Nutrient nutrient)
+						{
+							feed.setNutrient(nutrient);
+							AddFeedingFragment.this.nutrient.setText(nutrient.getNpc() + ":" + nutrient.getPpc() + ":" + nutrient.getKpc());
+						}
+					});
+					addNutrientDialogFragment.show(fm, "fragment_add_nutrient");
+				}
+			}
+		});
 	}
 
 	@Views.OnClick public void onFabCompleteClick(final View view)
