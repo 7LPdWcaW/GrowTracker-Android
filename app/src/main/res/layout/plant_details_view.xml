@@ -25,6 +25,8 @@
 				android:layout_marginBottom="8dp"
 				android:divider="@drawable/vertical_full_divider"
 				android:showDividers="middle"
+				android:dividerPadding="8dp"
+				android:padding="0dp"
 				android:visibility="gone"
 				style="@style/PaperCard"
 			>
@@ -35,7 +37,8 @@
 					android:layout_weight="1"
 					android:layout_gravity="center_vertical"
 					android:gravity="center"
-					android:paddingBottom="8dp"
+					android:paddingBottom="16dp"
+					android:paddingTop="16dp"
 					android:text="Add feeding"
 				/>
 
@@ -46,7 +49,8 @@
 					android:layout_weight="1"
 					android:layout_gravity="center_vertical"
 					android:gravity="center"
-					android:paddingBottom="8dp"
+					android:paddingBottom="16dp"
+					android:paddingTop="16dp"
 					android:text="Add action"
 				/>
 
@@ -57,7 +61,8 @@
 					android:layout_weight="1"
 					android:layout_gravity="center_vertical"
 					android:gravity="center"
-					android:paddingBottom="8dp"
+					android:paddingBottom="16dp"
+					android:paddingTop="16dp"
 					android:text="Add photo"
 				/>
 			</LinearLayout>

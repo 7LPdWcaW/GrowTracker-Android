@@ -25,6 +25,7 @@ import java.util.Locale;
 
 import me.anon.grow.AddFeedingActivity;
 import me.anon.grow.R;
+import me.anon.grow.ViewPhotosActivity;
 import me.anon.lib.Views;
 import me.anon.lib.manager.PlantManager;
 import me.anon.model.Action;
@@ -199,6 +200,13 @@ public class PlantDetailsFragment extends Fragment
 				}
 			})
 			.show();
+	}
+
+	@Views.OnClick public void onViewPhotosClick(View view)
+	{
+		Intent photos = new Intent(getActivity(), ViewPhotosActivity.class);
+		photos.putExtra("plant_index", plantIndex);
+		startActivity(photos);
 	}
 
 	@Views.OnClick public void onPlantStageClick(final View view)
