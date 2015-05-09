@@ -25,15 +25,16 @@
 				android:layout_marginBottom="8dp"
 				android:divider="@drawable/vertical_full_divider"
 				android:showDividers="middle"
+				android:visibility="gone"
 				style="@style/PaperCard"
 			>
 				<TextView
 					android:layout_width="0dp"
 					android:layout_height="match_parent"
+					android:id="@+id/feeding"
 					android:layout_weight="1"
 					android:layout_gravity="center_vertical"
 					android:gravity="center"
-					android:paddingTop="8dp"
 					android:paddingBottom="8dp"
 					android:text="Add feeding"
 				/>
@@ -44,7 +45,6 @@
 					android:layout_weight="1"
 					android:layout_gravity="center_vertical"
 					android:gravity="center"
-					android:paddingTop="8dp"
 					android:paddingBottom="8dp"
 					android:text="Add action"
 				/>
@@ -55,7 +55,6 @@
 					android:layout_weight="1"
 					android:layout_gravity="center_vertical"
 					android:gravity="center"
-					android:paddingTop="8dp"
 					android:paddingBottom="8dp"
 					android:text="Add photo"
 				/>
@@ -190,12 +189,14 @@
 			<LinearLayout
 				android:layout_width="match_parent"
 				android:layout_height="wrap_content"
+				android:id="@+id/link_container"
 				android:orientation="vertical"
 				android:background="#ffffff"
 				android:elevation="4dp"
 				android:layout_marginTop="8dp"
 				android:divider="@drawable/full_divider"
 				android:showDividers="middle"
+				android:visibility="gone"
 				style="@style/PaperCard"
 			>
 				<LinearLayout

@@ -3,6 +3,7 @@ package me.anon.grow.fragment;
 import android.app.AlertDialog;
 import android.app.Fragment;
 import android.content.DialogInterface;
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.text.TextUtils;
@@ -12,10 +13,9 @@ import android.view.ViewGroup;
 import android.view.WindowManager;
 import android.widget.TextView;
 
-import com.google.gson.Gson;
-
 import java.util.Locale;
 
+import me.anon.grow.AddFeedingActivity;
 import me.anon.grow.R;
 import me.anon.lib.Views;
 import me.anon.lib.manager.PlantManager;
@@ -33,6 +33,9 @@ import me.anon.model.PlantStage;
 public class PlantDetailsFragment extends Fragment
 {
 	private final String[] stages = {"Germination", "Vegetation", "Flower", "Curing"};
+
+	@Views.InjectView(R.id.action_container) private View actionContainer;
+	@Views.InjectView(R.id.link_container) private View linkContainer;
 
 	@Views.InjectView(R.id.plant_name) private TextView name;
 	@Views.InjectView(R.id.plant_strain) private TextView strain;
@@ -85,6 +88,9 @@ public class PlantDetailsFragment extends Fragment
 		}
 		else
 		{
+			actionContainer.setVisibility(View.VISIBLE);
+			linkContainer.setVisibility(View.VISIBLE);
+
 			name.setText(plant.getName());
 			strain.setText(plant.getStrain());
 
@@ -93,6 +99,13 @@ public class PlantDetailsFragment extends Fragment
 				stage.setText(stages[plant.getStage().ordinal()]);
 			}
 		}
+	}
+
+	@Views.OnClick public void onFeedingClick(final View view)
+	{
+		Intent feeding = new Intent(view.getContext(), AddFeedingActivity.class);
+		feeding.putExtra("plant_index", plantIndex);
+		startActivity(feeding);
 	}
 
 	@Views.OnClick public void onPlantStageClick(final View view)

@@ -20,6 +20,6 @@ public class Plant
 	private String strain;
 	private long plantDate;
 	private PlantStage stage = PlantStage.GERMINATION;
-	private ArrayList<String> images;
-	private ArrayList<Action> actions;
+	private ArrayList<String> images = new ArrayList<>();
+	private ArrayList<Action> actions = new ArrayList<>();
 }
