@@ -26,7 +26,8 @@ public abstract class Action
 		FIM("Fuck I Missed"),
 		LST("Low Stress Training"),
 		LOLLIPOP("Lollipop"),
-		FLUSH("Flush");
+		FLUSH("Flush"),
+		FLIPPED("Flipped to flower");
 
 		@Getter private String printString;
 
