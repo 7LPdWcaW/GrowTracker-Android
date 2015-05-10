@@ -1,7 +1,15 @@
 package me.anon.grow;
 
+import android.app.AlertDialog;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
+import android.text.Html;
+import android.view.Menu;
+import android.view.MenuItem;
+
+import java.io.BufferedInputStream;
+import java.io.IOException;
+import java.io.InputStream;
 
 import lombok.experimental.Accessors;
 import me.anon.grow.fragment.PlantListFragment;
@@ -31,5 +39,44 @@ public class MainActivity extends AppCompatActivity
 		{
 			getFragmentManager().beginTransaction().replace(R.id.fragment_holder, new PlantListFragment(), TAG_FRAGMENT).commit();
 		}
+	}
+
+	@Override public boolean onCreateOptionsMenu(Menu menu)
+	{
+		menu.add(1, 1, 1, "Readme");
+		menu.add(2, 2, 2, "Version 0.1");
+		return super.onCreateOptionsMenu(menu);
+	}
+
+	@Override public boolean onOptionsItemSelected(MenuItem item)
+	{
+		if (item.getItemId() == 1)
+		{
+			String readme = "";
+
+			try
+			{
+				InputStream stream = new BufferedInputStream(getAssets().open("readme.html"), 8192);
+				int len = 0;
+				byte[] buffer = new byte[8192];
+
+				while ((len = stream.read(buffer)) != -1)
+				{
+					readme += new String(buffer, 0, len);
+				}
+			}
+			catch (IOException e)
+			{
+				e.printStackTrace();
+			}
+
+			new AlertDialog.Builder(this)
+				.setMessage(Html.fromHtml(readme))
+				.show();
+
+			return true;
+		}
+
+		return super.onOptionsItemSelected(item);
 	}
 }
