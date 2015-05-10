@@ -16,6 +16,7 @@ import lombok.Setter;
 import me.anon.grow.MainApplication;
 import me.anon.grow.PlantDetailsActivity;
 import me.anon.grow.R;
+import me.anon.grow.fragment.ImageLightboxDialog;
 import me.anon.model.Plant;
 import me.anon.view.ImageHolder;
 
@@ -46,8 +47,9 @@ public class ImageAdapter extends RecyclerView.Adapter<ImageHolder>
 		{
 			@Override public void onClick(View v)
 			{
-				Intent details = new Intent(v.getContext(), PlantDetailsActivity.class);
-				details.putExtra("plant_index", i);
+				Intent details = new Intent(v.getContext(), ImageLightboxDialog.class);
+				details.putExtra("images", (String[])images.toArray(new String[getItemCount()]));
+				details.putExtra("image_position", i);
 				v.getContext().startActivity(details);
 			}
 		});
