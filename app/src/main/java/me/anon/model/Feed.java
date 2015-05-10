@@ -15,5 +15,5 @@ import lombok.experimental.Accessors;
 public class Feed extends Water
 {
 	private Nutrient nutrient;
-	private double mlpl; // ml per litre
+	private int mlpl; // ml per litre
 }
