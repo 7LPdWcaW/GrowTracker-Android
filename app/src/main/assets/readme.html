@@ -1,0 +1,149 @@
+<html>
+    <title>Readme</title>
+    <body>
+        <h1>Read me</h1>
+        <div>
+            Welcome to grow tracker. This app was created to help record data about growing plants in order to monitor the growing conditions to help make the plants grow better, and identify potential issues during the grow process.
+        </div>
+        <div>
+            This app was created by 7LPdWcaW of /r/microgrowery for the aid of growing Cannabis, but there is absolutely no reason why you can not use this app for other plants.
+        </div>
+
+        <h1>About the app</h1>
+        <div>
+            The app uses a simple JSON structure to store all the data about the plants that can be found in '/data/data/me.anon.grow/files/plants.json'. All photos taken in the app are stored in <> in the corresponding plant name folder.
+            <br />
+            The structure is very simple. Note: date timestamps are all unix timestamps from 1/1/1970 in milliseconds. All objects in arrays are in date order, where index 0 is the oldest and index (size - 1) is the newest.
+            <br />
+            <p>Plant object</p>
+            <pre>
+{
+    "actions": [],
+    "images": [],
+    "name": "test",
+    "stage": "GERMINATION",
+    "strain": "test",
+    "plantDate": 1234567890
+}
+            </pre>
+
+            <p>Action object (feed)</p>
+            <pre>
+{
+    "nutrient": {
+        "capc": 0,
+        "kpc": 3,
+        "mgpc": 0,
+        "npc": 1,
+        "ppc": 2,
+        "spc": 0
+    },
+    "mlpl": 500,
+    "ph": 6.5,
+    "ppm": 250,
+    "runoff": 6.6,
+    "amount": 0,
+    "date": 1431268453111,
+    "type": "Feed"
+}
+            </pre>
+            <p>Action object (water)</p>
+            <pre>
+{
+    "ph": 6.5,
+    "ppm": 250,
+    "runoff": 6.6,
+    "amount": 0,
+    "date": 1431268453111,
+    "type": "Water"
+}
+            </pre>
+            <p>Action object (other)</p>
+            <p>Action can be one of: TRIM, TOP, FIM, LST, LOLLIPOP, FLUSH, FLIPPED</p>
+            <pre>
+{
+    "action": "FIM",
+    "date": 1431258118968,
+    "type": "Action"
+}
+            </pre>
+
+              <p>Image object is a simple string path to an image. Each image is named by the timestamp when it was taken, in milliseconds.</p>
+        </div>
+
+        <h1>Open source libraries</h1>
+        <div>
+            <b>Google GSON</b>
+            <br />
+            <pre>
+Copyright (c) 2008-2009 Google Inc.
+
+Licensed under the Apache License, Version 2.0 (the "License");
+you may not use this file except in compliance with the License.
+You may obtain a copy of the License at
+
+  http://www.apache.org/licenses/LICENSE-2.0
+
+Unless required by applicable law or agreed to in writing, software
+distributed under the License is distributed on an "AS IS" BASIS,
+WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+See the License for the specific language governing permissions and
+limitations under the License.
+            </pre>
+        </div>
+
+        <div>
+            <b>SnackBar</b>
+            <br />
+            <pre>
+Licensed under the Apache License, Version 2.0 (the "License");
+you may not use this file except in compliance with the License.
+You may obtain a copy of the License at
+
+  http://www.apache.org/licenses/LICENSE-2.0
+
+Unless required by applicable law or agreed to in writing, software
+distributed under the License is distributed on an "AS IS" BASIS,
+WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+See the License for the specific language governing permissions and
+limitations under the License.
+            </pre>
+        </div>
+
+        <div>
+            <b>Universal image loader</b>
+            <br />
+            <pre>
+Licensed under the Apache License, Version 2.0 (the "License");
+you may not use this file except in compliance with the License.
+You may obtain a copy of the License at
+
+  http://www.apache.org/licenses/LICENSE-2.0
+
+Unless required by applicable law or agreed to in writing, software
+distributed under the License is distributed on an "AS IS" BASIS,
+WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+See the License for the specific language governing permissions and
+limitations under the License.
+            </pre>
+        </div>
+
+        <div>
+            <b>subsampling-scale-image-view</b>
+            <br />
+            <pre>
+Licensed under the Apache License, Version 2.0 (the "License");
+you may not use this file except in compliance with the License.
+You may obtain a copy of the License at
+
+  http://www.apache.org/licenses/LICENSE-2.0
+
+Unless required by applicable law or agreed to in writing, software
+distributed under the License is distributed on an "AS IS" BASIS,
+WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+See the License for the specific language governing permissions and
+limitations under the License.
+            </pre>
+        </div>
+    </body>
+</html>
