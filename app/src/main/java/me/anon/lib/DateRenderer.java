@@ -14,7 +14,7 @@ public class DateRenderer
 
 	public DateRenderer()
 	{
-		now = "now";
+		now = "1s";
 		sec = "s";
 		min = "m";
 		hour = "h";

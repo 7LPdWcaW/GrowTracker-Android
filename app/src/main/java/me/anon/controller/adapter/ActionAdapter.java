@@ -51,11 +51,15 @@ public class ActionAdapter extends RecyclerView.Adapter<ActionHolder>
 		{
 			viewHolder.getName().setText("Feed with nutrients");
 
-			summary += ((Feed)action).getNutrient().getNpc() + ":" + ((Feed)action).getNutrient().getPpc() + ":" + ((Feed)action).getNutrient().getKpc();
-			summary += "/";
-			summary += ((Feed)action).getNutrient().getCapc() + ":" + ((Feed)action).getNutrient().getSpc() + ":" + ((Feed)action).getNutrient().getMgpc();
-			summary += " (" + ((Feed)action).getMlpl() + "ml/l)";
-			summary += "\n";
+			if (((Feed)action).getNutrient() != null)
+			{
+				summary += ((Feed)action).getNutrient().getNpc() + ":" + ((Feed)action).getNutrient().getPpc() + ":" + ((Feed)action).getNutrient().getKpc();
+				summary += "/";
+				summary += ((Feed)action).getNutrient().getCapc() + ":" + ((Feed)action).getNutrient().getSpc() + ":" + ((Feed)action).getNutrient().getMgpc();
+				summary += " (" + ((Feed)action).getMlpl() + "ml/l)";
+				summary += "\n";
+			}
+
 			summary += "PH: " + ((Feed)action).getPh() + ", Runoff: " + ((Feed)action).getRunoff();
 			summary += "\n";
 			summary += "PPM: " + ((Feed)action).getPpm() + ", Amount: " + ((Feed)action).getAmount() + "ml";

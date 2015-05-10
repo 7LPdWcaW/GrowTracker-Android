@@ -7,21 +7,30 @@
 	android:orientation="vertical"
 	android:padding="8dp"
 >
-	<TextView
+	<RelativeLayout
 		android:layout_width="match_parent"
 		android:layout_height="wrap_content"
-		android:id="@+id/date"
-		android:textSize="14sp"
-		android:textColor="#666666"
-		android:fontFamily="sans-serif-light"
-	/>
+	>
+		<TextView
+			android:layout_width="wrap_content"
+			android:layout_height="wrap_content"
+			android:id="@+id/date"
+			android:layout_alignParentRight="true"
+			android:textSize="14sp"
+			android:layout_centerVertical="true"
+			android:textColor="#666666"
+			android:fontFamily="sans-serif-light"
+		/>
 
-	<TextView
-		android:layout_width="match_parent"
-		android:layout_height="wrap_content"
-		android:id="@+id/name"
-		style="@style/SubsectionTitle"
-	/>
+		<TextView
+			android:layout_width="match_parent"
+			android:layout_height="wrap_content"
+			android:id="@+id/name"
+			android:layout_centerVertical="true"
+			android:layout_toLeftOf="@id/date"
+			style="@style/SubsectionTitle"
+		/>
+	</RelativeLayout>
 
 	<TextView
 		android:layout_width="match_parent"
