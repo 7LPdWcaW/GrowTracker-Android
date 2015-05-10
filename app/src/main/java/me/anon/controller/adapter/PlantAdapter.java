@@ -16,7 +16,13 @@ import lombok.Setter;
 import me.anon.grow.MainApplication;
 import me.anon.grow.PlantDetailsActivity;
 import me.anon.grow.R;
+import me.anon.lib.DateRenderer;
+import me.anon.model.Action;
+import me.anon.model.EmptyAction;
+import me.anon.model.Feed;
 import me.anon.model.Plant;
+import me.anon.model.PlantStage;
+import me.anon.model.Water;
 import me.anon.view.PlantHolder;
 
 /**
@@ -39,12 +45,72 @@ public class PlantAdapter extends RecyclerView.Adapter<PlantHolder>
 	{
 		final Plant plant = plants.get(i);
 		viewHolder.getName().setText(plant.getName());
-		viewHolder.getSummary().setText(plant.getStrain() + " - " + plant.getStage());
+
+		String summary = "";
+
+		summary += plant.getStrain() + " - " + plant.getStage();
+
+		if (plant.getStage() == PlantStage.VEGETATION || plant.getStage() == PlantStage.GERMINATION)
+		{
+			summary += " (" + new DateRenderer().timeAgo(plant.getPlantDate()).formattedDate + ")";
+		}
+
+		if (plant.getActions() != null && plant.getActions().size() > 0)
+		{
+			Feed lastFeed = null;
+			Water lastWater = null;
+
+			ArrayList<Action> actions = plant.getActions();
+			for (int index = actions.size() - 1; index >= 0; index--)
+			{
+				Action action = actions.get(index);
+
+				if (action instanceof EmptyAction && ((EmptyAction)action).getAction() == Action.ActionName.FLIPPED)
+				{
+					long flipDate = action.getDate();
+					summary += " (" + new DateRenderer().timeAgo(flipDate).formattedDate + ")";
+
+					continue;
+				}
+
+				if (action instanceof Feed)
+				{
+					lastFeed = (Feed)action;
+					break;
+				}
+				else if (action instanceof Water)
+				{
+					lastWater = (Water)action;
+					break;
+				}
+			}
+
+			if (lastFeed != null && lastFeed.getNutrient() != null)
+			{
+				summary += "\n";
+				summary += "Last fed: " + new DateRenderer().timeAgo(lastFeed.getDate()).formattedDate + " ago with ";
+				summary += lastFeed.getMlpl() + "ml/l of ";
+				summary += lastFeed.getNutrient().getNpc() + " : " + lastFeed.getNutrient().getPpc() + " : " + lastFeed.getNutrient().getKpc();
+			}
+			else if (lastWater != null)
+			{
+				summary += "\n";
+				summary += "Last watered: " + new DateRenderer().timeAgo(lastWater.getDate()).formattedDate + " ago";
+				summary += "\n";
+				summary += lastWater.getPh() + " PH -> " + lastWater.getRunoff() + " PH (" + lastWater.getAmount() + "ml)";
+			}
+		}
+
+		viewHolder.getSummary().setText(summary);
 
 		ImageLoader.getInstance().cancelDisplayTask(viewHolder.getImage());
 		if (plant.getImages() != null && plant.getImages().size() > 0)
 		{
 			ImageLoader.getInstance().displayImage("file://" + plant.getImages().get(plant.getImages().size() - 1), viewHolder.getImage(), MainApplication.getDisplayImageOptions());
+		}
+		else
+		{
+			viewHolder.getImage().setImageResource(R.drawable.default_plant);
 		}
 
 		viewHolder.itemView.setOnClickListener(new View.OnClickListener()
