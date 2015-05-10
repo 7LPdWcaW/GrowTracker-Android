@@ -112,6 +112,7 @@
 							android:id="@+id/plant_name"
 							android:hint="New plant"
 							android:nextFocusDown="@+id/plant_strain"
+							android:singleLine="true"
 							style="@style/SubsectionSubTitle"
 						/>
 					</LinearLayout>
@@ -138,6 +139,7 @@
 							android:hint="Lemon haze"
 							android:id="@+id/plant_strain"
 							android:nextFocusDown="@+id/plant_stage"
+							android:singleLine="true"
 							style="@style/SubsectionSubTitle"
 						/>
 					</LinearLayout>
