@@ -1,10 +1,14 @@
 package me.anon.grow.fragment;
 
+import android.app.Activity;
 import android.app.AlertDialog;
 import android.app.Fragment;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.net.Uri;
 import android.os.Bundle;
+import android.os.Environment;
+import android.provider.MediaStore;
 import android.support.annotation.Nullable;
 import android.text.TextUtils;
 import android.view.LayoutInflater;
@@ -16,10 +20,12 @@ import android.widget.TextView;
 import com.kenny.snackbar.SnackBar;
 import com.kenny.snackbar.SnackBarListener;
 
+import java.io.File;
 import java.util.Locale;
 
 import me.anon.grow.AddFeedingActivity;
 import me.anon.grow.R;
+import me.anon.grow.ViewPhotosActivity;
 import me.anon.lib.Views;
 import me.anon.lib.manager.PlantManager;
 import me.anon.model.Action;
@@ -110,7 +116,50 @@ public class PlantDetailsFragment extends Fragment
 	{
 		Intent feeding = new Intent(view.getContext(), AddFeedingActivity.class);
 		feeding.putExtra("plant_index", plantIndex);
-		startActivity(feeding);
+		startActivityForResult(feeding, 2);
+	}
+
+	@Views.OnClick public void onPhotoClick(final View view)
+	{
+		Intent intent = new Intent(android.provider.MediaStore.ACTION_IMAGE_CAPTURE);
+
+		File path = new File(Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DCIM).getPath() + "/GrowTracker/" + plant.getName() + "/");
+		path.mkdirs();
+		File out = new File(path, System.currentTimeMillis() + ".jpg");
+
+		plant.getImages().add(out.getAbsolutePath());
+
+		intent.putExtra(MediaStore.EXTRA_OUTPUT, Uri.fromFile(out));
+		startActivityForResult(intent, 1);
+	}
+
+	@Override public void onActivityResult(int requestCode, int resultCode, Intent data)
+	{
+		if (requestCode == 1)
+		{
+			if (resultCode == Activity.RESULT_CANCELED)
+			{
+				plant.getImages().remove(plant.getImages().size() - 1);
+			}
+			else
+			{
+				if (getActivity() != null)
+				{
+					SnackBar.show(getActivity(), "Image added");
+				}
+			}
+
+			PlantManager.getInstance().upsert(plantIndex, plant);
+		}
+		else if (requestCode == 2)
+		{
+			if (resultCode != Activity.RESULT_CANCELED)
+			{
+				PlantManager.getInstance().upsert(plantIndex, plant);
+			}
+		}
+
+		super.onActivityResult(requestCode, resultCode, data);
 	}
 
 	@Views.OnClick public void onActionClick(final View view)
@@ -126,12 +175,14 @@ public class PlantDetailsFragment extends Fragment
 						Intent feeding = new Intent(getActivity(), AddFeedingActivity.class);
 						feeding.putExtra("plant_index", plantIndex);
 						feeding.putExtra("water", which == 1);
-						startActivity(feeding);
+						startActivityForResult(feeding, 2);
 					}
 					else
 					{
 						final EmptyAction action = new EmptyAction(Action.ActionName.values()[which]);
 						plant.getActions().add(action);
+						PlantManager.getInstance().upsert(plantIndex, plant);
+
 						SnackBar.show(getActivity(), action.getAction().getPrintString() + " added", "undo", new SnackBarListener()
 						{
 							@Override public void onSnackBarStarted(Object o){}
@@ -140,6 +191,7 @@ public class PlantDetailsFragment extends Fragment
 							@Override public void onSnackBarAction(Object o)
 							{
 								plant.getActions().remove(action);
+								PlantManager.getInstance().upsert(plantIndex, plant);
 							}
 						});
 					}
@@ -148,6 +200,13 @@ public class PlantDetailsFragment extends Fragment
 				}
 			})
 			.show();
+	}
+
+	@Views.OnClick public void onViewPhotosClick(View view)
+	{
+		Intent photos = new Intent(getActivity(), ViewPhotosActivity.class);
+		photos.putExtra("plant_index", plantIndex);
+		startActivity(photos);
 	}
 
 	@Views.OnClick public void onPlantStageClick(final View view)
