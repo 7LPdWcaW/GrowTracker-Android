@@ -225,6 +225,11 @@ public class PlantDetailsFragment extends Fragment
 			{
 				@Override public void onClick(DialogInterface dialog, int which)
 				{
+					if (which == 3)
+					{
+						plant.getActions().add(new EmptyAction(Action.ActionName.FLIPPED));
+					}
+
 					((TextView)view).setText(stages[which]);
 				}
 			})
