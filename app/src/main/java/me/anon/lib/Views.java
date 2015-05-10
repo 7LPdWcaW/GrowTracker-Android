@@ -76,7 +76,7 @@ import me.anon.grow.R;
  *
  * <h1>License</h1>
  * <pre>
- * Copyright 2013 
+ * Copyright 2013 7LPdWcaW
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.

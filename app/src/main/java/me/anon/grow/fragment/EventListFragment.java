@@ -32,7 +32,7 @@ import me.anon.model.Plant;
 /**
  * // TODO: Add class description
  *
- * @author 
+ * @author 7LPdWcaW
  * @documentation // TODO Reference flow doc
  * @project GrowTracker
  */
@@ -72,6 +72,8 @@ public class EventListFragment extends Fragment implements ActionAdapter.OnActio
 	@Override public void onActivityCreated(Bundle savedInstanceState)
 	{
 		super.onActivityCreated(savedInstanceState);
+
+		getActivity().setTitle("Past actions");
 
 		if (getArguments() != null)
 		{

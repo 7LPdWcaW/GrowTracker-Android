@@ -28,7 +28,7 @@ import me.anon.model.Plant;
 /**
  * // TODO: Add class description
  *
- * @author 
+ * @author 7LPdWcaW
  * @documentation // TODO Reference flow doc
  * @project GrowTracker
  */
@@ -68,6 +68,8 @@ public class ViewPhotosFragment extends Fragment
 	@Override public void onActivityCreated(Bundle savedInstanceState)
 	{
 		super.onActivityCreated(savedInstanceState);
+
+		getActivity().setTitle("Plant photos");
 
 		if (getArguments() != null)
 		{
