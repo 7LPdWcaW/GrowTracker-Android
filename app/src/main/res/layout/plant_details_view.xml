@@ -1,0 +1,277 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<FrameLayout
+	xmlns:android="http://schemas.android.com/apk/res/android"
+	android:layout_width="match_parent"
+	android:layout_height="wrap_content"
+>
+	<ScrollView
+		android:layout_width="match_parent"
+		android:layout_height="match_parent"
+	>
+		<LinearLayout
+			android:layout_width="match_parent"
+			android:layout_height="wrap_content"
+			android:orientation="vertical"
+			android:paddingBottom="88dp"
+		>
+			<LinearLayout
+				android:layout_width="match_parent"
+				android:layout_height="wrap_content"
+				android:id="@+id/action_container"
+				android:orientation="horizontal"
+				android:background="#ffffff"
+				android:elevation="4dp"
+				android:layout_marginBottom="8dp"
+				android:divider="@drawable/vertical_full_divider"
+				android:showDividers="middle"
+				android:dividerPadding="8dp"
+				android:padding="0dp"
+				android:visibility="gone"
+				style="@style/PaperCard"
+			>
+				<TextView
+					android:layout_width="0dp"
+					android:layout_height="match_parent"
+					android:id="@+id/feeding"
+					android:layout_weight="1"
+					android:layout_gravity="center_vertical"
+					android:gravity="center"
+					android:paddingBottom="16dp"
+					android:paddingTop="16dp"
+					android:text="Add feeding"
+				/>
+
+				<TextView
+					android:layout_width="0dp"
+					android:layout_height="match_parent"
+					android:id="@+id/action"
+					android:layout_weight="1"
+					android:layout_gravity="center_vertical"
+					android:gravity="center"
+					android:paddingBottom="16dp"
+					android:paddingTop="16dp"
+					android:text="Add action"
+				/>
+
+				<TextView
+					android:layout_width="0dp"
+					android:layout_height="match_parent"
+					android:id="@+id/photo"
+					android:layout_weight="1"
+					android:layout_gravity="center_vertical"
+					android:gravity="center"
+					android:paddingBottom="16dp"
+					android:paddingTop="16dp"
+					android:text="Add photo"
+				/>
+			</LinearLayout>
+
+			<LinearLayout
+				android:layout_width="match_parent"
+				android:layout_height="wrap_content"
+				android:orientation="vertical"
+				android:background="#ffffff"
+				android:elevation="4dp"
+				style="@style/PaperCard"
+			>
+				<TextView
+					android:layout_width="wrap_content"
+					android:layout_height="wrap_content"
+					android:text="Plant details"
+					style="@style/SectionTitle"
+				/>
+
+				<LinearLayout
+					android:layout_width="match_parent"
+					android:layout_height="wrap_content"
+					android:orientation="vertical"
+					android:divider="@drawable/full_divider"
+					android:showDividers="middle"
+					android:layout_marginTop="16dp"
+				>
+					<LinearLayout
+						android:layout_width="match_parent"
+						android:layout_height="wrap_content"
+						android:orientation="vertical"
+						android:paddingLeft="16dp"
+						android:paddingRight="16dp"
+						android:paddingTop="8dp"
+						android:paddingBottom="16dp"
+					>
+						<TextView
+							android:layout_width="match_parent"
+							android:layout_height="wrap_content"
+							android:text="Plant name"
+							style="@style/SubsectionTitle"
+						/>
+
+						<EditText
+							android:layout_width="match_parent"
+							android:layout_height="wrap_content"
+							android:hint="New plant"
+							android:id="@+id/plant_name"
+							style="@style/SubsectionSubTitle"
+						/>
+					</LinearLayout>
+
+					<LinearLayout
+						android:layout_width="match_parent"
+						android:layout_height="wrap_content"
+						android:orientation="vertical"
+						android:paddingLeft="16dp"
+						android:paddingRight="16dp"
+						android:paddingTop="16dp"
+						android:paddingBottom="16dp"
+					>
+						<TextView
+							android:layout_width="match_parent"
+							android:layout_height="wrap_content"
+							android:text="Plant strain"
+							style="@style/SubsectionTitle"
+						/>
+
+						<EditText
+							android:layout_width="match_parent"
+							android:layout_height="wrap_content"
+							android:hint="Lemon haze"
+							android:id="@+id/plant_strain"
+							style="@style/SubsectionSubTitle"
+						/>
+					</LinearLayout>
+				</LinearLayout>
+			</LinearLayout>
+
+			<LinearLayout
+				android:layout_width="match_parent"
+				android:layout_height="wrap_content"
+				android:orientation="vertical"
+				android:background="#ffffff"
+				android:elevation="4dp"
+				android:layout_marginTop="8dp"
+				style="@style/PaperCard"
+			>
+				<TextView
+					android:layout_width="wrap_content"
+					android:layout_height="wrap_content"
+					android:text="Stage details"
+					style="@style/SectionTitle"
+				/>
+
+				<LinearLayout
+					android:layout_width="match_parent"
+					android:layout_height="wrap_content"
+					android:orientation="vertical"
+					android:divider="@drawable/full_divider"
+					android:showDividers="middle"
+					android:layout_marginTop="16dp"
+				>
+					<LinearLayout
+						android:layout_width="match_parent"
+						android:layout_height="wrap_content"
+						android:orientation="vertical"
+						android:paddingLeft="16dp"
+						android:paddingRight="16dp"
+						android:paddingTop="8dp"
+						android:paddingBottom="16dp"
+					>
+						<TextView
+							android:layout_width="match_parent"
+							android:layout_height="wrap_content"
+							android:text="Plant stage"
+							style="@style/SubsectionTitle"
+						/>
+
+						<TextView
+							android:layout_width="match_parent"
+							android:layout_height="wrap_content"
+							android:text="Germination"
+							android:id="@+id/plant_stage"
+							style="@style/SubsectionSubTitle"
+						/>
+					</LinearLayout>
+				</LinearLayout>
+			</LinearLayout>
+
+			<LinearLayout
+				android:layout_width="match_parent"
+				android:layout_height="wrap_content"
+				android:id="@+id/link_container"
+				android:orientation="vertical"
+				android:background="#ffffff"
+				android:elevation="4dp"
+				android:layout_marginTop="8dp"
+				android:divider="@drawable/full_divider"
+				android:showDividers="middle"
+				android:visibility="gone"
+				style="@style/PaperCard"
+			>
+				<LinearLayout
+					android:layout_width="match_parent"
+					android:layout_height="wrap_content"
+					android:id="@+id/view_photos"
+					android:orientation="horizontal"
+					android:padding="16dp"
+				>
+					<TextView
+						android:layout_width="match_parent"
+						android:layout_height="wrap_content"
+						android:layout_gravity="center_vertical"
+						android:text="View photos"
+						style="@style/SubsectionTitle"
+					/>
+				</LinearLayout>
+
+				<LinearLayout
+					android:layout_width="match_parent"
+					android:layout_height="wrap_content"
+					android:id="@+id/view_history"
+					android:orientation="horizontal"
+					android:padding="16dp"
+				>
+					<TextView
+						android:layout_width="match_parent"
+						android:layout_height="wrap_content"
+						android:layout_gravity="center_vertical"
+						android:text="View history"
+						style="@style/SubsectionTitle"
+					/>
+				</LinearLayout>
+			</LinearLayout>
+		</LinearLayout>
+	</ScrollView>
+
+	<FrameLayout
+		android:layout_width="wrap_content"
+		android:layout_height="wrap_content"
+		android:id="@+id/fab_complete"
+		android:layout_gravity="bottom|right"
+		android:layout_margin="16dp"
+	>
+		<ImageView
+			android:layout_width="57dp"
+			android:layout_height="56dp"
+			android:layout_marginTop="3dp"
+			android:src="@drawable/fab_button_shadow"
+			android:layout_gravity="center_horizontal"
+		/>
+
+		<FrameLayout
+			android:layout_width="wrap_content"
+			android:layout_height="wrap_content"
+		>
+			<ImageView
+				android:layout_width="56dp"
+				android:layout_height="56dp"
+				android:background="@drawable/complete_button_bg"
+			/>
+
+			<ImageView
+				android:layout_width="24dp"
+				android:layout_height="24dp"
+				android:layout_gravity="center"
+				android:src="@drawable/ic_floting_done"
+			/>
+		</FrameLayout>
+	</FrameLayout>
+</FrameLayout>

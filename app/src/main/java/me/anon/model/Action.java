@@ -1,6 +1,7 @@
 package me.anon.model;
 
 import lombok.Data;
+import lombok.Getter;
 import lombok.experimental.Accessors;
 
 /**
@@ -18,11 +19,32 @@ public abstract class Action
 
 	public enum ActionName
 	{
-		FEED,
-		WATER,
-		TRIM,
-		TOP,
-		FIM,
-		LST;
+		FEED("Feed"),
+		WATER("Water"),
+		TRIM("Trim"),
+		TOP("Topped"),
+		FIM("Fuck I Missed"),
+		LST("Low Stress Training"),
+		LOLLIPOP("Lollipop"),
+		FLUSH("Flush"),
+		FLIPPED("Flipped to flower");
+
+		@Getter private String printString;
+
+		private ActionName(String name)
+		{
+			this.printString = name;
+		}
+
+		public static String[] names()
+		{
+			String[] names = new String[values().length];
+			for (int index = 0; index < names.length; index++)
+			{
+				names[index] = values()[index].getPrintString();
+			}
+
+			return names;
+		}
 	}
 }
