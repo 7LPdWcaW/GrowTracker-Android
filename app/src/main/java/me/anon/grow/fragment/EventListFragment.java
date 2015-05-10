@@ -1,5 +1,6 @@
 package me.anon.grow.fragment;
 
+import android.app.Activity;
 import android.app.AlertDialog;
 import android.app.Fragment;
 import android.content.DialogInterface;
@@ -103,6 +104,22 @@ public class EventListFragment extends Fragment
 		actions.removeAll(Collections.singleton(null));
 		adapter.setActions(actions);
 	}
+
+	@Override public void onActivityResult(int requestCode, int resultCode, Intent data)
+	{
+		if (requestCode == 2)
+		{
+			if (resultCode != Activity.RESULT_CANCELED)
+			{
+				PlantManager.getInstance().upsert(plantIndex, plant);
+				setActions();
+				adapter.notifyDataSetChanged();
+			}
+		}
+
+		super.onActivityResult(requestCode, resultCode, data);
+	}
+
 
 	@Views.OnClick public void onFabAddClick(View view)
 	{
