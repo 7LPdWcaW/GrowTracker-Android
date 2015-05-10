@@ -18,8 +18,10 @@ import me.anon.grow.PlantDetailsActivity;
 import me.anon.grow.R;
 import me.anon.lib.DateRenderer;
 import me.anon.model.Action;
+import me.anon.model.EmptyAction;
 import me.anon.model.Feed;
 import me.anon.model.Plant;
+import me.anon.model.PlantStage;
 import me.anon.model.Water;
 import me.anon.view.PlantHolder;
 
@@ -48,6 +50,11 @@ public class PlantAdapter extends RecyclerView.Adapter<PlantHolder>
 
 		summary += plant.getStrain() + " - " + plant.getStage();
 
+		if (plant.getStage() == PlantStage.VEGETATION || plant.getStage() == PlantStage.GERMINATION)
+		{
+			summary += " (" + new DateRenderer().timeAgo(plant.getPlantDate()).formattedDate + ")";
+		}
+
 		if (plant.getActions() != null && plant.getActions().size() > 0)
 		{
 			Feed lastFeed = null;
@@ -57,6 +64,15 @@ public class PlantAdapter extends RecyclerView.Adapter<PlantHolder>
 			for (int index = actions.size() - 1; index >= 0; index--)
 			{
 				Action action = actions.get(index);
+
+				if (action instanceof EmptyAction && ((EmptyAction)action).getAction() == Action.ActionName.FLIPPED)
+				{
+					long flipDate = action.getDate();
+					summary += " (" + new DateRenderer().timeAgo(flipDate).formattedDate + ")";
+
+					continue;
+				}
+
 				if (action instanceof Feed)
 				{
 					lastFeed = (Feed)action;
