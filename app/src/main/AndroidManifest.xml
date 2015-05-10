@@ -19,12 +19,12 @@
 			</intent-filter>
 		</activity>
 
-		<activity android:name=".MainActivity" />
-		<activity android:name=".AddPlantActivity" />
-		<activity android:name=".AddFeedingActivity" />
-		<activity android:name=".ViewPhotosActivity" />
-		<activity android:name=".EventsActivity" />
+		<activity android:name=".MainActivity" android:screenOrientation="portrait" />
+		<activity android:name=".AddPlantActivity" android:screenOrientation="portrait" />
+		<activity android:name=".AddFeedingActivity" android:screenOrientation="portrait" />
+		<activity android:name=".ViewPhotosActivity" android:screenOrientation="portrait" />
+		<activity android:name=".EventsActivity" android:screenOrientation="portrait" />
 		<activity android:name=".fragment.ImageLightboxDialog" />
-		<activity android:name=".PlantDetailsActivity" android:windowSoftInputMode="stateAlwaysHidden" />
+		<activity android:name=".PlantDetailsActivity" android:windowSoftInputMode="stateAlwaysHidden" android:screenOrientation="portrait" />
 	</application>
 </manifest>
