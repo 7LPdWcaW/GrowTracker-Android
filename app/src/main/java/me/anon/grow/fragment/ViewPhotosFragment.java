@@ -1,7 +1,12 @@
 package me.anon.grow.fragment;
 
+import android.app.Activity;
 import android.app.Fragment;
+import android.content.Intent;
+import android.net.Uri;
 import android.os.Bundle;
+import android.os.Environment;
+import android.provider.MediaStore;
 import android.support.annotation.Nullable;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -9,6 +14,10 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.WindowManager;
+
+import com.kenny.snackbar.SnackBar;
+
+import java.io.File;
 
 import me.anon.controller.adapter.ImageAdapter;
 import me.anon.grow.R;
@@ -85,6 +94,38 @@ public class ViewPhotosFragment extends Fragment
 
 	@Views.OnClick public void onFabPhotoClick(final View view)
 	{
+		Intent intent = new Intent(android.provider.MediaStore.ACTION_IMAGE_CAPTURE);
 
+		File path = new File(Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DCIM).getPath() + "/GrowTracker/" + plant.getName() + "/");
+		path.mkdirs();
+		File out = new File(path, System.currentTimeMillis() + ".jpg");
+
+		plant.getImages().add(out.getAbsolutePath());
+
+		intent.putExtra(MediaStore.EXTRA_OUTPUT, Uri.fromFile(out));
+		startActivityForResult(intent, 1);
+	}
+
+	@Override public void onActivityResult(int requestCode, int resultCode, Intent data)
+	{
+		if (requestCode == 1)
+		{
+			if (resultCode == Activity.RESULT_CANCELED)
+			{
+				plant.getImages().remove(plant.getImages().size() - 1);
+			}
+			else
+			{
+				if (getActivity() != null)
+				{
+					SnackBar.show(getActivity(), "Image added");
+				}
+			}
+
+			PlantManager.getInstance().upsert(plantIndex, plant);
+
+			adapter.setImages(PlantManager.getInstance().getPlants().get(plantIndex).getImages());
+			adapter.notifyDataSetChanged();
+		}
 	}
 }
