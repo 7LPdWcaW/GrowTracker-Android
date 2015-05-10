@@ -18,7 +18,7 @@ public class Plant
 {
 	private String name;
 	private String strain;
-	private long plantDate;
+	private long plantDate = System.currentTimeMillis();
 	private PlantStage stage = PlantStage.GERMINATION;
 	private ArrayList<String> images = new ArrayList<>();
 	private ArrayList<Action> actions = new ArrayList<>();
