@@ -3,7 +3,6 @@ package me.anon.lib.manager;
 import android.content.Context;
 import android.text.TextUtils;
 
-import com.google.gson.Gson;
 import com.google.gson.JsonSyntaxException;
 import com.google.gson.reflect.TypeToken;
 
@@ -12,6 +11,7 @@ import java.util.ArrayList;
 import lombok.Data;
 import lombok.Getter;
 import lombok.experimental.Accessors;
+import me.anon.lib.helper.GsonHelper;
 import me.anon.model.Plant;
 
 /**
@@ -48,6 +48,19 @@ public class PlantManager
 		save();
 	}
 
+	public void upsert(int index, Plant plant)
+	{
+		if (index < 0)
+		{
+			addPlant(plant);
+		}
+		else
+		{
+			mPlants.set(index, plant);
+			save();
+		}
+	}
+
 	public void load()
 	{
 		if (FileManager.getInstance().fileExists(FILES_DIR + "/plants.json"))
@@ -58,7 +71,7 @@ public class PlantManager
 			{
 				if (!TextUtils.isEmpty(plantData))
 				{
-					mPlants = (ArrayList<Plant>)new Gson().fromJson(plantData, new TypeToken<ArrayList<Plant>>(){}.getRawType());
+					mPlants = (ArrayList<Plant>)GsonHelper.parse(plantData, new TypeToken<ArrayList<Plant>>(){}.getType());
 				}
 			}
 			catch (JsonSyntaxException e)
@@ -75,6 +88,6 @@ public class PlantManager
 
 	public void save()
 	{
-		FileManager.getInstance().writeFile(FILES_DIR + "/plants.json", new Gson().toJson(mPlants));
+		FileManager.getInstance().writeFile(FILES_DIR + "/plants.json", GsonHelper.parse(mPlants));
 	}
 }

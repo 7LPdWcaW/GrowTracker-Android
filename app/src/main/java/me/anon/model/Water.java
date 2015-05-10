@@ -17,4 +17,5 @@ public class Water extends Action
 	private long ppm;
 	private double ph;
 	private double runoff;
+	private int amount;
 }
