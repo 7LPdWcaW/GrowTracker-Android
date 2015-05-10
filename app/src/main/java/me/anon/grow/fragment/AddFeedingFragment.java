@@ -24,7 +24,7 @@ import me.anon.model.Plant;
 /**
  * // TODO: Add class description
  *
- * @author 
+ * @author 7LPdWcaW
  * @documentation // TODO Reference flow doc
  * @project GrowTracker
  */
@@ -70,6 +70,8 @@ public class AddFeedingFragment extends Fragment
 	@Override public void onActivityCreated(Bundle savedInstanceState)
 	{
 		super.onActivityCreated(savedInstanceState);
+
+		getActivity().setTitle("New feeding");
 
 		if (getArguments() != null)
 		{

@@ -37,7 +37,7 @@ import me.anon.model.PlantStage;
 /**
  * // TODO: Add class description
  *
- * @author 
+ * @author 7LPdWcaW
  * @documentation // TODO Reference flow doc
  * @project GrowTracker
  */
@@ -97,9 +97,12 @@ public class PlantDetailsFragment extends Fragment
 		if (plant == null)
 		{
 			plant = new Plant();
+			getActivity().setTitle("Add new plant");
 		}
 		else
 		{
+			getActivity().setTitle("Plant details");
+
 			actionContainer.setVisibility(View.VISIBLE);
 			linkContainer.setVisibility(View.VISIBLE);
 
