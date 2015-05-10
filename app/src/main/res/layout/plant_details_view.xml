@@ -109,8 +109,9 @@
 						<EditText
 							android:layout_width="match_parent"
 							android:layout_height="wrap_content"
-							android:hint="New plant"
 							android:id="@+id/plant_name"
+							android:hint="New plant"
+							android:nextFocusDown="@+id/plant_strain"
 							style="@style/SubsectionSubTitle"
 						/>
 					</LinearLayout>
@@ -136,6 +137,7 @@
 							android:layout_height="wrap_content"
 							android:hint="Lemon haze"
 							android:id="@+id/plant_strain"
+							android:nextFocusDown="@+id/plant_stage"
 							style="@style/SubsectionSubTitle"
 						/>
 					</LinearLayout>
