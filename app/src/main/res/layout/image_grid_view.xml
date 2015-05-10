@@ -25,7 +25,7 @@
 			android:layout_width="57dp"
 			android:layout_height="56dp"
 			android:layout_marginTop="3dp"
-			android:src="@drawable/add_button_shadow"
+			android:src="@drawable/fab_button_shadow"
 			android:layout_gravity="center_horizontal"
 		/>
 
@@ -36,14 +36,14 @@
 			<ImageView
 				android:layout_width="56dp"
 				android:layout_height="56dp"
-				android:background="@drawable/add_button_bg"
+				android:background="@drawable/photo_button_bg"
 			/>
 
 			<ImageView
 				android:layout_width="24dp"
 				android:layout_height="24dp"
 				android:layout_gravity="center"
-				android:src="@drawable/ic_floting_photo"
+				android:src="@drawable/ic_floating_photo"
 			/>
 		</FrameLayout>
 	</FrameLayout>
