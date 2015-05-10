@@ -1,6 +1,7 @@
 package me.anon.grow;
 
 import android.app.AlertDialog;
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.text.Html;
@@ -14,6 +15,8 @@ import java.io.InputStream;
 import lombok.experimental.Accessors;
 import me.anon.grow.fragment.PlantListFragment;
 import me.anon.lib.Views;
+import me.anon.lib.helper.GsonHelper;
+import me.anon.lib.manager.PlantManager;
 
 /**
  * // TODO: Add class description
@@ -44,7 +47,8 @@ public class MainActivity extends AppCompatActivity
 	@Override public boolean onCreateOptionsMenu(Menu menu)
 	{
 		menu.add(1, 1, 1, "Readme");
-		menu.add(2, 2, 2, "Version 0.1");
+		menu.add(2, 2, 2, "Export data");
+		menu.add(3, 3, 3, "Version 0.1");
 		return super.onCreateOptionsMenu(menu);
 	}
 
@@ -75,6 +79,15 @@ public class MainActivity extends AppCompatActivity
 				.show();
 
 			return true;
+		}
+		else if (item.getItemId() == 2)
+		{
+			String json = GsonHelper.parse(PlantManager.getInstance().getPlants());
+
+			Intent share = new Intent(Intent.ACTION_SEND);
+			share.putExtra(Intent.EXTRA_TEXT, json);
+			share.setType("text/plain");
+			startActivity(share);
 		}
 
 		return super.onOptionsItemSelected(item);
