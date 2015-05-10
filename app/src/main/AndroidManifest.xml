@@ -23,6 +23,7 @@
 		<activity android:name=".AddPlantActivity" />
 		<activity android:name=".AddFeedingActivity" />
 		<activity android:name=".ViewPhotosActivity" />
+		<activity android:name=".EventsActivity" />
 		<activity android:name=".fragment.ImageLightboxDialog" />
 		<activity android:name=".PlantDetailsActivity" android:windowSoftInputMode="stateAlwaysHidden" />
 	</application>
