@@ -1,6 +1,8 @@
 package me.anon.grow.fragment;
 
+import android.app.AlertDialog;
 import android.app.Fragment;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
@@ -11,11 +13,19 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.view.WindowManager;
 
-import me.anon.controller.adapter.PlantAdapter;
-import me.anon.grow.AddPlantActivity;
+import com.kenny.snackbar.SnackBar;
+import com.kenny.snackbar.SnackBarListener;
+
+import java.util.ArrayList;
+import java.util.Collections;
+
+import me.anon.controller.adapter.ActionAdapter;
+import me.anon.grow.AddFeedingActivity;
 import me.anon.grow.R;
 import me.anon.lib.Views;
 import me.anon.lib.manager.PlantManager;
+import me.anon.model.Action;
+import me.anon.model.EmptyAction;
 import me.anon.model.Plant;
 
 /**
@@ -28,7 +38,7 @@ import me.anon.model.Plant;
 @Views.Injectable
 public class EventListFragment extends Fragment
 {
-	private PlantAdapter adapter;
+	private ActionAdapter adapter;
 
 	@Views.InjectView(R.id.recycler_view) private RecyclerView recycler;
 
@@ -79,15 +89,65 @@ public class EventListFragment extends Fragment
 			return;
 		}
 
-		adapter = new PlantAdapter();
-		adapter.setPlants(PlantManager.getInstance().getPlants());
+		adapter = new ActionAdapter();
+		setActions();
 		recycler.setLayoutManager(new LinearLayoutManager(getActivity()));
 		recycler.setAdapter(adapter);
 	}
 
+	public void setActions()
+	{
+		ArrayList<Action> actions = new ArrayList<>();
+		actions.addAll(PlantManager.getInstance().getPlants().get(plantIndex).getActions());
+		Collections.reverse(actions);
+		actions.removeAll(Collections.singleton(null));
+		adapter.setActions(actions);
+	}
+
 	@Views.OnClick public void onFabAddClick(View view)
 	{
-		Intent addPlant = new Intent(getActivity(), AddPlantActivity.class);
-		startActivity(addPlant);
+		new AlertDialog.Builder(getActivity())
+			.setTitle("Select an option")
+			.setItems(Action.ActionName.names(), new DialogInterface.OnClickListener()
+			{
+				@Override public void onClick(DialogInterface dialog, int which)
+				{
+					if (which == 0 || which == 1)
+					{
+						Intent feeding = new Intent(getActivity(), AddFeedingActivity.class);
+						feeding.putExtra("plant_index", plantIndex);
+						feeding.putExtra("water", which == 1);
+						startActivityForResult(feeding, 2);
+					}
+					else
+					{
+						final EmptyAction action = new EmptyAction(Action.ActionName.values()[which]);
+						plant.getActions().add(action);
+						PlantManager.getInstance().upsert(plantIndex, plant);
+
+						SnackBar.show(getActivity(), action.getAction().getPrintString() + " added", "undo", new SnackBarListener()
+						{
+							@Override public void onSnackBarStarted(Object o)
+							{
+							}
+
+							@Override public void onSnackBarFinished(Object o)
+							{
+							}
+
+							@Override public void onSnackBarAction(Object o)
+							{
+								plant.getActions().remove(action);
+								PlantManager.getInstance().upsert(plantIndex, plant);
+							}
+						});
+					}
+
+					setActions();
+					adapter.notifyDataSetChanged();
+					dialog.dismiss();
+				}
+			})
+			.show();
 	}
 }
