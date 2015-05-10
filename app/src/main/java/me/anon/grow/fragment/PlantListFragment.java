@@ -43,9 +43,16 @@ public class PlantListFragment extends Fragment
 		super.onActivityCreated(savedInstanceState);
 
 		adapter = new PlantAdapter();
-		adapter.setPlants(PlantManager.getInstance().getPlants());
 		recycler.setLayoutManager(new LinearLayoutManager(getActivity()));
 		recycler.setAdapter(adapter);
+	}
+
+	@Override public void onResume()
+	{
+		super.onResume();
+
+		adapter.setPlants(PlantManager.getInstance().getPlants());
+		adapter.notifyDataSetChanged();
 	}
 
 	@Views.OnClick public void onFabAddClick(View view)

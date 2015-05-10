@@ -70,6 +70,7 @@
 								android:hint="6.4"
 								android:inputType="numberDecimal"
 								android:layout_gravity="bottom"
+								android:nextFocusDown="@+id/water_ppm"
 								style="@style/SubsectionSubTitle"
 							/>
 						</LinearLayout>
@@ -94,6 +95,7 @@
 								android:hint="250"
 								android:inputType="numberSigned"
 								android:layout_gravity="bottom"
+								android:nextFocusDown="@+id/runoff_ph"
 								style="@style/SubsectionSubTitle"
 							/>
 						</LinearLayout>
@@ -118,6 +120,7 @@
 								android:hint="6.4"
 								android:inputType="numberDecimal"
 								android:layout_gravity="bottom"
+								android:nextFocusDown="@+id/amount"
 								style="@style/SubsectionSubTitle"
 							/>
 						</LinearLayout>
@@ -154,6 +157,7 @@
 								android:id="@+id/amount"
 								android:hint="250ml"
 								android:inputType="numberSigned"
+								android:nextFocusDown="@+id/nutrient"
 								style="@style/SubsectionSubTitle"
 							/>
 						</LinearLayout>
@@ -209,6 +213,7 @@
 							android:editable="false"
 							android:inputType="none"
 							android:text="N/A"
+							android:nextFocusDown="@+id/nutrient_amount"
 							style="@style/SubsectionSubTitle"
 						/>
 					</LinearLayout>

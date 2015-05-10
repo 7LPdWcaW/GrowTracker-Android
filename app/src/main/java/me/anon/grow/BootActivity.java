@@ -19,5 +19,6 @@ public class BootActivity extends Activity
 
 		Intent main = new Intent(this, MainActivity.class);
 		startActivity(main);
+		finish();
 	}
 }
