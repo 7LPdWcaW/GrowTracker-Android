@@ -37,7 +37,7 @@ import me.anon.model.Plant;
  * @project GrowTracker
  */
 @Views.Injectable
-public class EventListFragment extends Fragment
+public class EventListFragment extends Fragment implements ActionAdapter.OnActionDeletedListener
 {
 	private ActionAdapter adapter;
 
@@ -91,6 +91,7 @@ public class EventListFragment extends Fragment
 		}
 
 		adapter = new ActionAdapter();
+		adapter.setOnActionDeletedListener(this);
 		setActions();
 		recycler.setLayoutManager(new LinearLayoutManager(getActivity()));
 		recycler.setAdapter(adapter);
@@ -144,13 +145,8 @@ public class EventListFragment extends Fragment
 
 						SnackBar.show(getActivity(), action.getAction().getPrintString() + " added", "undo", new SnackBarListener()
 						{
-							@Override public void onSnackBarStarted(Object o)
-							{
-							}
-
-							@Override public void onSnackBarFinished(Object o)
-							{
-							}
+							@Override public void onSnackBarStarted(Object o){}
+							@Override public void onSnackBarFinished(Object o){}
 
 							@Override public void onSnackBarAction(Object o)
 							{
@@ -166,5 +162,26 @@ public class EventListFragment extends Fragment
 				}
 			})
 			.show();
+	}
+
+	@Override public void onActionDeleted(final Action action)
+	{
+		final int originalIndex = plant.getActions().indexOf(action);
+		plant.getActions().remove(action);
+		setActions();
+		adapter.notifyDataSetChanged();
+
+		SnackBar.show(getActivity(), "Event deleted", "Undo", new SnackBarListener()
+		{
+			@Override public void onSnackBarStarted(Object o){}
+			@Override public void onSnackBarFinished(Object o){}
+
+			@Override public void onSnackBarAction(Object o)
+			{
+				plant.getActions().add(originalIndex, action);
+				setActions();
+				adapter.notifyDataSetChanged();
+			}
+		});
 	}
 }
