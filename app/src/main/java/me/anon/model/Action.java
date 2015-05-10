@@ -15,7 +15,7 @@ import lombok.experimental.Accessors;
 @Accessors(prefix = {"m", ""}, chain = true)
 public abstract class Action
 {
-	private long date;
+	private long date = System.currentTimeMillis();
 
 	public enum ActionName
 	{
