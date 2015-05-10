@@ -257,7 +257,7 @@ public class PlantDetailsFragment extends Fragment
 		}
 		else
 		{
-			name.setError("Name can not be empty");
+			strain.setError("strain can not be empty");
 			return;
 		}
 
