@@ -128,7 +128,7 @@ public class AddFeedingFragment extends Fragment
 						@Override public void onNutrientSelected(Nutrient nutrient)
 						{
 							feed.setNutrient(nutrient);
-							AddFeedingFragment.this.nutrient.setText(nutrient.getNpc() + ":" + nutrient.getPpc() + ":" + nutrient.getKpc());
+							AddFeedingFragment.this.nutrient.setText(nutrient.getNpc() + " : " + nutrient.getPpc() + " : " + nutrient.getKpc() + " / " + nutrient.getCapc() + " : " + nutrient.getSpc() + " : " + nutrient.getMgpc());
 						}
 					});
 					addNutrientDialogFragment.show(fm, "fragment_add_nutrient");

@@ -61,9 +61,9 @@ public class ActionAdapter extends RecyclerView.Adapter<ActionHolder>
 
 			if (((Feed)action).getNutrient() != null)
 			{
-				summary += ((Feed)action).getNutrient().getNpc() + ":" + ((Feed)action).getNutrient().getPpc() + ":" + ((Feed)action).getNutrient().getKpc();
+				summary += ((Feed)action).getNutrient().getNpc() + " : " + ((Feed)action).getNutrient().getPpc() + " : " + ((Feed)action).getNutrient().getKpc();
 				summary += "/";
-				summary += ((Feed)action).getNutrient().getCapc() + ":" + ((Feed)action).getNutrient().getSpc() + ":" + ((Feed)action).getNutrient().getMgpc();
+				summary += ((Feed)action).getNutrient().getCapc() + " : " + ((Feed)action).getNutrient().getSpc() + " : " + ((Feed)action).getNutrient().getMgpc();
 				summary += " (" + ((Feed)action).getMlpl() + "ml/l)";
 				summary += "\n";
 			}
