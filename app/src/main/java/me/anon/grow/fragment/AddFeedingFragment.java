@@ -140,7 +140,7 @@ public class AddFeedingFragment extends Fragment
 	@Views.OnClick public void onFabCompleteClick(final View view)
 	{
 		double waterPh = Double.valueOf(TextUtils.isEmpty(this.waterPh.getText()) ? "0.0" : this.waterPh.getText().toString());
-		int ppm = Integer.valueOf(TextUtils.isEmpty(this.waterPpm.getText()) ? "0" : this.waterPh.getText().toString());
+		int ppm = Integer.valueOf(TextUtils.isEmpty(this.waterPpm.getText()) ? "0" : this.waterPpm.getText().toString());
 		double runoffPh = Double.valueOf(TextUtils.isEmpty(this.runoffPh.getText()) ? "0.0" : this.runoffPh.getText().toString());
 		int amount = Integer.valueOf(TextUtils.isEmpty(this.amount.getText()) ? "0" : this.amount.getText().toString());
 		int nutrientAmount = Integer.valueOf(TextUtils.isEmpty(this.nutrientAmount.getText()) ? "0" : this.nutrientAmount.getText().toString());
