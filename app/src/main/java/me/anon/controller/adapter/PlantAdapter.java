@@ -108,6 +108,10 @@ public class PlantAdapter extends RecyclerView.Adapter<PlantHolder>
 		{
 			ImageLoader.getInstance().displayImage("file://" + plant.getImages().get(plant.getImages().size() - 1), viewHolder.getImage(), MainApplication.getDisplayImageOptions());
 		}
+		else
+		{
+			viewHolder.getImage().setImageResource(R.drawable.default_plant);
+		}
 
 		viewHolder.itemView.setOnClickListener(new View.OnClickListener()
 		{
