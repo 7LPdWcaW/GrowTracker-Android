@@ -6,13 +6,14 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
-import com.google.gson.Gson;
+import com.nostra13.universalimageloader.core.ImageLoader;
 
 import java.util.ArrayList;
 import java.util.List;
 
 import lombok.Getter;
 import lombok.Setter;
+import me.anon.grow.MainApplication;
 import me.anon.grow.PlantDetailsActivity;
 import me.anon.grow.R;
 import me.anon.model.Plant;
@@ -39,6 +40,12 @@ public class PlantAdapter extends RecyclerView.Adapter<PlantHolder>
 		final Plant plant = plants.get(i);
 		viewHolder.getName().setText(plant.getName());
 		viewHolder.getSummary().setText(plant.getStrain() + " - " + plant.getStage());
+
+		ImageLoader.getInstance().cancelDisplayTask(viewHolder.getImage());
+		if (plant.getImages() != null && plant.getImages().size() > 0)
+		{
+			ImageLoader.getInstance().displayImage("file://" + plant.getImages().get(plant.getImages().size() - 1), viewHolder.getImage(), MainApplication.getDisplayImageOptions());
+		}
 
 		viewHolder.itemView.setOnClickListener(new View.OnClickListener()
 		{
