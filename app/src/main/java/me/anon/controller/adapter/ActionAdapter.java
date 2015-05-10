@@ -1,5 +1,7 @@
 package me.anon.controller.adapter;
 
+import android.app.AlertDialog;
+import android.content.DialogInterface;
 import android.support.v7.widget.RecyclerView;
 import android.text.TextUtils;
 import android.view.LayoutInflater;
@@ -30,6 +32,12 @@ import me.anon.view.ActionHolder;
  */
 public class ActionAdapter extends RecyclerView.Adapter<ActionHolder>
 {
+	public interface OnActionDeletedListener
+	{
+		public void onActionDeleted(Action action);
+	}
+
+	@Setter private OnActionDeletedListener onActionDeletedListener;
 	@Getter @Setter private List<Action> actions = new ArrayList<>();
 
 	@Override public ActionHolder onCreateViewHolder(ViewGroup viewGroup, int i)
@@ -37,7 +45,7 @@ public class ActionAdapter extends RecyclerView.Adapter<ActionHolder>
 		return new ActionHolder(LayoutInflater.from(viewGroup.getContext()).inflate(R.layout.action_item, viewGroup, false));
 	}
 
-	@Override public void onBindViewHolder(ActionHolder viewHolder, final int i)
+	@Override public void onBindViewHolder(final ActionHolder viewHolder, final int i)
 	{
 		final Action action = actions.get(i);
 
@@ -81,6 +89,30 @@ public class ActionAdapter extends RecyclerView.Adapter<ActionHolder>
 			viewHolder.getSummary().setText(summary);
 			viewHolder.getSummary().setVisibility(View.VISIBLE);
 		}
+
+		viewHolder.itemView.setOnLongClickListener(new View.OnLongClickListener()
+		{
+			@Override public boolean onLongClick(View v)
+			{
+				new AlertDialog.Builder(v.getContext())
+					.setTitle("Delete this event?")
+					.setMessage("Are you sure you want to delete " + viewHolder.getName().getText())
+					.setPositiveButton("Yes", new DialogInterface.OnClickListener()
+					{
+						@Override public void onClick(DialogInterface dialog, int which)
+						{
+							if (onActionDeletedListener != null)
+							{
+								onActionDeletedListener.onActionDeleted(action);
+							}
+						}
+					})
+					.setNegativeButton("No", null)
+					.show();
+
+				return true;
+			}
+		});
 	}
 
 	@Override public int getItemCount()
