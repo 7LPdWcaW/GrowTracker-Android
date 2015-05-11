@@ -49,7 +49,7 @@ public class PlantAdapter extends RecyclerView.Adapter<PlantHolder>
 
 		String summary = "";
 
-		summary += plant.getStrain() + " - " + plant.getStage();
+		summary += plant.getStrain() + " - " + plant.getStage().getPrintString();
 
 		if (plant.getStage() == PlantStage.VEGETATION || plant.getStage() == PlantStage.GERMINATION)
 		{
