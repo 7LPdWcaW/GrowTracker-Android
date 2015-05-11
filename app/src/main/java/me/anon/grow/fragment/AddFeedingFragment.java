@@ -116,7 +116,7 @@ public class AddFeedingFragment extends Fragment
 								Action action = actions.get(i);
 								if (action instanceof Feed)
 								{
-									nutrient = ((Feed)action).getNutrient();
+									nutrient = nutrient;
 									break;
 								}
 							}
@@ -130,7 +130,21 @@ public class AddFeedingFragment extends Fragment
 						@Override public void onNutrientSelected(Nutrient nutrient)
 						{
 							feed.setNutrient(nutrient);
-							AddFeedingFragment.this.nutrient.setText(nutrient.getNpc() + " : " + nutrient.getPpc() + " : " + nutrient.getKpc() + " / " + nutrient.getCapc() + " : " + nutrient.getSpc() + " : " + nutrient.getMgpc());
+
+							String nutrientStr = "";
+							nutrientStr += nutrient.getNpc() == null ? "-" : nutrient.getNpc();
+							nutrientStr += " : ";
+							nutrientStr += nutrient.getPpc() == null ? "-" : nutrient.getPpc();
+							nutrientStr += " : ";
+							nutrientStr += nutrient.getKpc() == null ? "-" : nutrient.getKpc();
+							nutrientStr += "/";
+							nutrientStr += nutrient.getCapc() == null ? "-" : nutrient.getCapc();
+							nutrientStr += " : ";
+							nutrientStr += nutrient.getSpc() == null ? "-" : nutrient.getSpc();
+							nutrientStr += " : ";
+							nutrientStr += nutrient.getMgpc() == null ? "-" : nutrient.getMgpc();
+
+							AddFeedingFragment.this.nutrient.setText(nutrientStr);
 						}
 					});
 					addNutrientDialogFragment.show(fm, "fragment_add_nutrient");
