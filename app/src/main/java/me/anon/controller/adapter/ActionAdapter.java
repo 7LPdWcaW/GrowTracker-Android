@@ -79,7 +79,7 @@ public class ActionAdapter extends RecyclerView.Adapter<ActionHolder>
 			summary += "\n";
 			summary += "PPM: " + ((Water)action).getPpm() + ", Amount: " + ((Water)action).getAmount() + "ml";
 		}
-		else if (action instanceof EmptyAction)
+		else if (action instanceof EmptyAction && ((EmptyAction)action).getAction() != null)
 		{
 			viewHolder.getName().setText(((EmptyAction)action).getAction().getPrintString());
 		}
