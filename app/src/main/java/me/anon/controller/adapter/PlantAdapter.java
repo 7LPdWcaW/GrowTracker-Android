@@ -70,25 +70,22 @@ public class PlantAdapter extends RecyclerView.Adapter<PlantHolder>
 				{
 					long flipDate = action.getDate();
 					summary += " (" + new DateRenderer().timeAgo(flipDate).formattedDate + ")";
-
-					continue;
 				}
 
-				if (action instanceof Feed)
+				if (action instanceof Feed && lastFeed == null)
 				{
 					lastFeed = (Feed)action;
-					break;
 				}
-				else if (action instanceof Water)
+
+				if (action instanceof Water && lastWater == null)
 				{
 					lastWater = (Water)action;
-					break;
 				}
 			}
 
 			if (lastFeed != null && lastFeed.getNutrient() != null)
 			{
-				summary += "<br/>";
+				summary += "<br/><br/>";
 				summary += "Last fed: <b>" + new DateRenderer().timeAgo(lastFeed.getDate()).formattedDate + "</b> ago with ";
 
 				if (lastFeed.getMlpl() != null)
