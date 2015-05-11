@@ -44,8 +44,6 @@ import me.anon.model.PlantStage;
 @Views.Injectable
 public class PlantDetailsFragment extends Fragment
 {
-	private final String[] stages = {"Germination", "Vegetation", "Flower", "Curing"};
-
 	@Views.InjectView(R.id.action_container) private View actionContainer;
 	@Views.InjectView(R.id.link_container) private View linkContainer;
 
@@ -111,7 +109,7 @@ public class PlantDetailsFragment extends Fragment
 
 			if (plant.getStage() != null)
 			{
-				stage.setText(stages[plant.getStage().ordinal()]);
+				stage.setText(plant.getStage().getPrintString());
 			}
 		}
 	}
@@ -223,17 +221,17 @@ public class PlantDetailsFragment extends Fragment
 	@Views.OnClick public void onPlantStageClick(final View view)
 	{
 		new AlertDialog.Builder(view.getContext())
-			.setTitle("Strain")
-			.setItems(stages, new DialogInterface.OnClickListener()
+			.setTitle("Stage")
+			.setItems(PlantStage.names(), new DialogInterface.OnClickListener()
 			{
 				@Override public void onClick(DialogInterface dialog, int which)
 				{
-					if (which == 3)
+					if (which == 2)
 					{
 						plant.getActions().add(new EmptyAction(Action.ActionName.FLIPPED));
 					}
 
-					((TextView)view).setText(stages[which]);
+					((TextView)view).setText(PlantStage.values()[which].getPrintString());
 				}
 			})
 			.show();

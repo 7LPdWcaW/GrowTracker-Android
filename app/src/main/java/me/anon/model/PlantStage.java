@@ -1,5 +1,7 @@
 package me.anon.model;
 
+import lombok.Getter;
+
 /**
  * // TODO: Add class description
  *
@@ -9,8 +11,26 @@ package me.anon.model;
  */
 public enum PlantStage
 {
-	GERMINATION,
-	VEGETATION,
-	FLOWER,
-	CURING;
+	GERMINATION("Germination"),
+	VEGETATION("Vegetation"),
+	FLOWER("Flower"),
+	CURING("Curing");
+
+	@Getter private String printString;
+
+		private PlantStage(String name)
+		{
+			this.printString = name;
+		}
+
+		public static String[] names()
+		{
+			String[] names = new String[values().length];
+			for (int index = 0; index < names.length; index++)
+			{
+				names[index] = values()[index].getPrintString();
+			}
+
+			return names;
+		}
 }
