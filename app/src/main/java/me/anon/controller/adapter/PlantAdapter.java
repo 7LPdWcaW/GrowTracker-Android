@@ -89,15 +89,56 @@ public class PlantAdapter extends RecyclerView.Adapter<PlantHolder>
 			{
 				summary += "\n";
 				summary += "Last fed: " + new DateRenderer().timeAgo(lastFeed.getDate()).formattedDate + " ago with ";
-				summary += lastFeed.getMlpl() + "ml/l of ";
-				summary += lastFeed.getNutrient().getNpc() + " : " + lastFeed.getNutrient().getPpc() + " : " + lastFeed.getNutrient().getKpc();
+
+				if (lastFeed.getMlpl() != null)
+				{
+					summary += lastFeed.getMlpl() + "ml/l of ";
+				}
+
+				summary += lastFeed.getNutrient().getNpc() == null ? "-" : lastFeed.getNutrient().getNpc();
+				summary += " : ";
+				summary += lastFeed.getNutrient().getPpc() == null ? "-" : lastFeed.getNutrient().getPpc();
+				summary += " : ";
+				summary += lastFeed.getNutrient().getKpc() == null ? "-" : lastFeed.getNutrient().getKpc();
+				summary += "\n";
+
+				if (lastFeed.getPh() != null)
+				{
+					summary += lastFeed.getPh() + " PH";
+				}
+
+				if (lastFeed.getPh() != null || lastFeed.getRunoff() != null)
+				{
+					summary += lastFeed.getPh() != null ? " -> " : "";
+					summary += lastFeed.getRunoff() + " PH ";
+				}
+
+				if (lastFeed.getAmount() != null)
+				{
+					summary += lastFeed.getAmount() + "ml";
+				}
 			}
 			else if (lastWater != null)
 			{
 				summary += "\n";
 				summary += "Last watered: " + new DateRenderer().timeAgo(lastWater.getDate()).formattedDate + " ago";
 				summary += "\n";
-				summary += lastWater.getPh() + " PH -> " + lastWater.getRunoff() + " PH (" + lastWater.getAmount() + "ml)";
+
+				if (lastWater.getPh() != null)
+				{
+					summary += lastWater.getPh() + " PH";
+				}
+
+				if (lastWater.getPh() != null || lastWater.getRunoff() != null)
+				{
+					summary += lastWater.getPh() != null ? " -> " : "";
+					summary += lastWater.getRunoff() + " PH ";
+				}
+
+				if (lastWater.getAmount() != null)
+				{
+					summary += lastWater.getAmount() + "ml";
+				}
 			}
 		}
 

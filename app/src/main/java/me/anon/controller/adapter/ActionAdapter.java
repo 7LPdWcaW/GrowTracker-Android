@@ -61,23 +61,81 @@ public class ActionAdapter extends RecyclerView.Adapter<ActionHolder>
 
 			if (((Feed)action).getNutrient() != null)
 			{
-				summary += ((Feed)action).getNutrient().getNpc() + " : " + ((Feed)action).getNutrient().getPpc() + " : " + ((Feed)action).getNutrient().getKpc();
+				summary += ((Feed)action).getNutrient().getNpc() == null ? "-" : ((Feed)action).getNutrient().getNpc();
+				summary += " : ";
+				summary += ((Feed)action).getNutrient().getPpc() == null ? "-" : ((Feed)action).getNutrient().getPpc();
+				summary += " : ";
+				summary += ((Feed)action).getNutrient().getKpc() == null ? "-" : ((Feed)action).getNutrient().getKpc();
 				summary += "/";
-				summary += ((Feed)action).getNutrient().getCapc() + " : " + ((Feed)action).getNutrient().getSpc() + " : " + ((Feed)action).getNutrient().getMgpc();
-				summary += " (" + ((Feed)action).getMlpl() + "ml/l)";
+				summary += ((Feed)action).getNutrient().getCapc() == null ? "-" : ((Feed)action).getNutrient().getCapc();
+				summary += " : ";
+				summary += ((Feed)action).getNutrient().getSpc() == null ? "-" : ((Feed)action).getNutrient().getSpc();
+				summary += " : ";
+				summary += ((Feed)action).getNutrient().getMgpc() == null ? "-" : ((Feed)action).getNutrient().getMgpc();
+				summary += " (";
+				summary += ((Feed)action).getMlpl() == null ? "n/a" : ((Feed)action).getMlpl() + "ml/l";
+				summary += ")";
 				summary += "\n";
 			}
 
-			summary += "PH: " + ((Feed)action).getPh() + ", Runoff: " + ((Feed)action).getRunoff();
-			summary += "\n";
-			summary += "PPM: " + ((Feed)action).getPpm() + ", Amount: " + ((Feed)action).getAmount() + "ml";
+			StringBuilder waterStr = new StringBuilder();
+
+			if (((Feed)action).getPh() != null)
+			{
+				waterStr.append("PH: " + ((Feed)action).getPh() + ", ");
+			}
+
+			if (((Feed)action).getRunoff() != null)
+			{
+				waterStr.append("Runoff: " + ((Feed)action).getRunoff() + ", ");
+			}
+
+			summary += waterStr.toString().length() > 0 ? waterStr.toString().substring(0, waterStr.length() - 2) + "\n" : "";
+
+			waterStr = new StringBuilder();
+
+			if (((Feed)action).getPpm() != null)
+			{
+				waterStr.append("PPM: " + ((Feed)action).getPpm() + ", ");
+			}
+
+			if (((Feed)action).getAmount() != null)
+			{
+				waterStr.append("Amount: " + ((Feed)action).getAmount() + "ml, ");
+			}
+
+			summary += waterStr.toString().length() > 0 ? waterStr.toString().substring(0, waterStr.length() - 2) : "";
 		}
 		else if (action instanceof Water)
 		{
 			viewHolder.getName().setText("Watered");
-			summary += "PH: " + ((Water)action).getPh() + ", Runoff: " + ((Water)action).getRunoff();
-			summary += "\n";
-			summary += "PPM: " + ((Water)action).getPpm() + ", Amount: " + ((Water)action).getAmount() + "ml";
+			StringBuilder waterStr = new StringBuilder();
+
+			if (((Water)action).getPh() != null)
+			{
+				waterStr.append("PH: " + ((Water)action).getPh() + ", ");
+			}
+
+			if (((Water)action).getRunoff() != null)
+			{
+				waterStr.append("Runoff: " + ((Water)action).getRunoff() + ", ");
+			}
+
+			summary += waterStr.toString().length() > 0 ? waterStr.toString().substring(0, waterStr.length() - 2) + "\n" : "";
+
+			waterStr = new StringBuilder();
+
+			if (((Water)action).getPpm() != null)
+			{
+				waterStr.append("PPM: " + ((Water)action).getPpm() + ", ");
+			}
+
+			if (((Water)action).getAmount() != null)
+			{
+				waterStr.append("Amount: " + ((Water)action).getAmount() + "ml, ");
+			}
+
+			summary += waterStr.toString().length() > 0 ? waterStr.toString().substring(0, waterStr.length() - 2) : "";
 		}
 		else if (action instanceof EmptyAction && ((EmptyAction)action).getAction() != null)
 		{
