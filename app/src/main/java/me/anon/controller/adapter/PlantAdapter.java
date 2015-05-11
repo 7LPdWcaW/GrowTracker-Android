@@ -2,6 +2,7 @@ package me.anon.controller.adapter;
 
 import android.content.Intent;
 import android.support.v7.widget.RecyclerView;
+import android.text.Html;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -87,62 +88,63 @@ public class PlantAdapter extends RecyclerView.Adapter<PlantHolder>
 
 			if (lastFeed != null && lastFeed.getNutrient() != null)
 			{
-				summary += "\n";
-				summary += "Last fed: " + new DateRenderer().timeAgo(lastFeed.getDate()).formattedDate + " ago with ";
+				summary += "<br/>";
+				summary += "Last fed: <b>" + new DateRenderer().timeAgo(lastFeed.getDate()).formattedDate + "</b> ago with ";
 
 				if (lastFeed.getMlpl() != null)
 				{
-					summary += lastFeed.getMlpl() + "ml/l of ";
+					summary += "<b>" + lastFeed.getMlpl() + "ml/l</b> of";
 				}
 
+				summary += "<b>";
 				summary += lastFeed.getNutrient().getNpc() == null ? "-" : lastFeed.getNutrient().getNpc();
 				summary += " : ";
 				summary += lastFeed.getNutrient().getPpc() == null ? "-" : lastFeed.getNutrient().getPpc();
 				summary += " : ";
 				summary += lastFeed.getNutrient().getKpc() == null ? "-" : lastFeed.getNutrient().getKpc();
-				summary += "\n";
+				summary += "</b><br/>";
 
 				if (lastFeed.getPh() != null)
 				{
-					summary += lastFeed.getPh() + " PH";
+					summary += "<b>" + lastFeed.getPh() + " PH</b>";
 				}
 
 				if (lastFeed.getPh() != null || lastFeed.getRunoff() != null)
 				{
 					summary += lastFeed.getPh() != null ? " -> " : "";
-					summary += lastFeed.getRunoff() + " PH ";
+					summary += "<b>" + lastFeed.getRunoff() + " PH</b> ";
 				}
 
 				if (lastFeed.getAmount() != null)
 				{
-					summary += lastFeed.getAmount() + "ml";
+					summary += "<b>" + lastFeed.getAmount() + "ml</b>";
 				}
 			}
 			else if (lastWater != null)
 			{
-				summary += "\n";
-				summary += "Last watered: " + new DateRenderer().timeAgo(lastWater.getDate()).formattedDate + " ago";
-				summary += "\n";
+				summary += "<br/>";
+				summary += "Last watered: <b>" + new DateRenderer().timeAgo(lastWater.getDate()).formattedDate + "</b> ago";
+				summary += "<br/>";
 
 				if (lastWater.getPh() != null)
 				{
-					summary += lastWater.getPh() + " PH";
+					summary += lastWater.getPh() + " PH</b>";
 				}
 
 				if (lastWater.getPh() != null || lastWater.getRunoff() != null)
 				{
 					summary += lastWater.getPh() != null ? " -> " : "";
-					summary += lastWater.getRunoff() + " PH ";
+					summary += "<b>" + lastWater.getRunoff() + " PH</b> ";
 				}
 
 				if (lastWater.getAmount() != null)
 				{
-					summary += lastWater.getAmount() + "ml";
+					summary += "<b>" + lastWater.getAmount() + "ml</b>";
 				}
 			}
 		}
 
-		viewHolder.getSummary().setText(summary);
+		viewHolder.getSummary().setText(Html.fromHtml(summary));
 
 		ImageLoader.getInstance().cancelDisplayTask(viewHolder.getImage());
 		if (plant.getImages() != null && plant.getImages().size() > 0)
