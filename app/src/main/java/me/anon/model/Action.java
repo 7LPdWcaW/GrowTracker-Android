@@ -16,18 +16,20 @@ import lombok.experimental.Accessors;
 public abstract class Action
 {
 	private long date = System.currentTimeMillis();
+	private String notes;
 
 	public enum ActionName
 	{
 		FEED("Feed"),
 		WATER("Water"),
-		TRIM("Trim"),
-		TOP("Topped"),
 		FIM("Fuck I Missed"),
+		FLIPPED("Flipped to flower"),
+		FLUSH("Flush"),
 		LST("Low Stress Training"),
 		LOLLIPOP("Lollipop"),
-		FLUSH("Flush"),
-		FLIPPED("Flipped to flower");
+		TOP("Topped"),
+		TRANSPLANTED("Transplanted"),
+		TRIM("Trim");
 
 		@Getter private String printString;
 
