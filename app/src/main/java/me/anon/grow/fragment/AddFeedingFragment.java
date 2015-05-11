@@ -141,11 +141,11 @@ public class AddFeedingFragment extends Fragment
 
 	@Views.OnClick public void onFabCompleteClick(final View view)
 	{
-		double waterPh = Double.valueOf(TextUtils.isEmpty(this.waterPh.getText()) ? "0.0" : this.waterPh.getText().toString());
-		int ppm = Integer.valueOf(TextUtils.isEmpty(this.waterPpm.getText()) ? "0" : this.waterPpm.getText().toString());
-		double runoffPh = Double.valueOf(TextUtils.isEmpty(this.runoffPh.getText()) ? "0.0" : this.runoffPh.getText().toString());
-		int amount = Integer.valueOf(TextUtils.isEmpty(this.amount.getText()) ? "0" : this.amount.getText().toString());
-		int nutrientAmount = Integer.valueOf(TextUtils.isEmpty(this.nutrientAmount.getText()) ? "0" : this.nutrientAmount.getText().toString());
+		Double waterPh = TextUtils.isEmpty(this.waterPh.getText()) ? null : Double.valueOf(this.waterPh.getText().toString());
+		Long ppm = TextUtils.isEmpty(this.waterPpm.getText()) ? null : Long.valueOf(this.waterPpm.getText().toString());
+		Double runoffPh = TextUtils.isEmpty(this.runoffPh.getText()) ? null : Double.valueOf(this.runoffPh.getText().toString());
+		Integer amount = TextUtils.isEmpty(this.amount.getText()) ? null : Integer.valueOf(this.amount.getText().toString());
+		Integer nutrientAmount = TextUtils.isEmpty(this.nutrientAmount.getText()) ? null : Integer.valueOf(this.nutrientAmount.getText().toString());
 
 		feed.setPh(waterPh);
 		feed.setPpm(ppm);
