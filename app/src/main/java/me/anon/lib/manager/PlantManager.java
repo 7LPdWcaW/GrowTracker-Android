@@ -37,7 +37,7 @@ public class PlantManager
 	public void initialise(Context context)
 	{
 		this.context = context.getApplicationContext();
-		FILES_DIR = this.context.getFilesDir().getAbsolutePath();
+		FILES_DIR = this.context.getExternalFilesDir(null).getAbsolutePath();
 
 		load();
 	}
