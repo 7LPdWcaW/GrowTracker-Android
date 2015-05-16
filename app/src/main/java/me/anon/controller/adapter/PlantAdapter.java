@@ -122,7 +122,7 @@ public class PlantAdapter extends RecyclerView.Adapter<PlantHolder>
 
 				if (lastWater.getPh() != null)
 				{
-					summary += lastWater.getPh() + " PH</b>";
+					summary += "<b>" + lastFeed.getPh() + " PH</b>";
 				}
 
 				if (lastWater.getPh() != null || lastWater.getRunoff() != null)
