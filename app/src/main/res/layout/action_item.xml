@@ -5,7 +5,8 @@
 	android:layout_width="match_parent"
 	android:layout_height="wrap_content"
 	android:orientation="vertical"
-	android:padding="8dp"
+	android:background="#90CAF9"
+	android:padding="12dp"
 >
 	<RelativeLayout
 		android:layout_width="match_parent"
