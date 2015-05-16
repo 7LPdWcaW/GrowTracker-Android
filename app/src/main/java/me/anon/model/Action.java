@@ -20,22 +20,24 @@ public abstract class Action
 
 	public enum ActionName
 	{
-		FEED("Feed"),
-		WATER("Water"),
-		FIM("Fuck I Missed"),
-		FLIPPED("Flipped to flower"),
-		FLUSH("Flush"),
-		LST("Low Stress Training"),
-		LOLLIPOP("Lollipop"),
-		TOP("Topped"),
-		TRANSPLANTED("Transplanted"),
-		TRIM("Trim");
+		FEED("Feed", 0xff90CAF9),
+		WATER("Water", 0xffBBDEFB),
+		FIM("Fuck I Missed", 0xffFFCC80),
+		FLIPPED("Flipped to flower", 0xffB39DDB),
+		FLUSH("Flush", 0xffFFE082),
+		LST("Low Stress Training", 0xffFFF59D),
+		LOLLIPOP("Lollipop", 0xffFFD180),
+		TOP("Topped", 0xffFFE57F),
+		TRANSPLANTED("Transplanted", 0xffFFFF8D),
+		TRIM("Trim", 0xffFFAB91);
 
 		@Getter private String printString;
+		@Getter private int colour;
 
-		private ActionName(String name)
+		private ActionName(String name, int colour)
 		{
 			this.printString = name;
+			this.colour = colour;
 		}
 
 		public static String[] names()
