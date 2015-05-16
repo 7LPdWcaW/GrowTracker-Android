@@ -3,6 +3,7 @@ package me.anon.controller.adapter;
 import android.app.AlertDialog;
 import android.content.DialogInterface;
 import android.support.v7.widget.RecyclerView;
+import android.text.Html;
 import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -51,12 +52,26 @@ public class ActionAdapter extends RecyclerView.Adapter<ActionHolder>
 
 		DateFormat dateFormat = android.text.format.DateFormat.getDateFormat(viewHolder.getDate().getContext());
 		DateFormat timeFormat = android.text.format.DateFormat.getTimeFormat(viewHolder.getDate().getContext());
-		viewHolder.getDate().setText(dateFormat.format(new Date(action.getDate())) + " " + timeFormat.format(new Date(action.getDate())) + " - " + new DateRenderer().timeAgo(action.getDate()).formattedDate + " ago");
+
+		String dateStr = dateFormat.format(new Date(action.getDate())) + " " + timeFormat.format(new Date(action.getDate())) + " - <b>" + new DateRenderer().timeAgo(action.getDate()).formattedDate + "</b> ago";
+
+		if (i > 0)
+		{
+			long difference = actions.get(i - 1).getDate() - action.getDate();
+			int days = (int)Math.floor(((double)difference / 60d / 60d / 24d / 1000d));
+
+			dateStr += " (-" + days + "d)";
+		}
+
+		viewHolder.getDate().setText(Html.fromHtml(dateStr));
 		viewHolder.getSummary().setVisibility(View.GONE);
+
+		viewHolder.itemView.setBackgroundColor(0xffffffff);
 
 		String summary = "";
 		if (action instanceof Feed)
 		{
+			viewHolder.itemView.setBackgroundColor(Action.ActionName.FEED.getColour());
 			viewHolder.getName().setText("Feed with nutrients");
 
 			if (((Feed)action).getNutrient() != null)
@@ -108,6 +123,7 @@ public class ActionAdapter extends RecyclerView.Adapter<ActionHolder>
 		}
 		else if (action instanceof Water)
 		{
+			viewHolder.itemView.setBackgroundColor(Action.ActionName.WATER.getColour());
 			viewHolder.getName().setText("Watered");
 			StringBuilder waterStr = new StringBuilder();
 
@@ -140,6 +156,7 @@ public class ActionAdapter extends RecyclerView.Adapter<ActionHolder>
 		else if (action instanceof EmptyAction && ((EmptyAction)action).getAction() != null)
 		{
 			viewHolder.getName().setText(((EmptyAction)action).getAction().getPrintString());
+			viewHolder.itemView.setBackgroundColor(((EmptyAction)action).getAction().getColour());
 		}
 
 		if (!TextUtils.isEmpty(summary))

@@ -5,7 +5,8 @@
 	android:layout_width="match_parent"
 	android:layout_height="wrap_content"
 	android:orientation="vertical"
-	android:padding="8dp"
+	android:background="#90CAF9"
+	android:padding="12dp"
 >
 	<RelativeLayout
 		android:layout_width="match_parent"
@@ -19,7 +20,9 @@
 			android:textSize="14sp"
 			android:layout_centerVertical="true"
 			android:textColor="#666666"
+			android:layout_marginLeft="8dp"
 			android:fontFamily="sans-serif-light"
+			android:layout_alignParentTop="true"
 		/>
 
 		<TextView
@@ -28,6 +31,7 @@
 			android:id="@+id/name"
 			android:layout_centerVertical="true"
 			android:layout_toLeftOf="@id/date"
+			android:layout_alignParentTop="true"
 			style="@style/SubsectionTitle"
 		/>
 	</RelativeLayout>
