@@ -32,6 +32,11 @@ public class DateRenderer
 	 */
 	public TimeAgo timeAgo(double time)
 	{
+		return timeAgo(time, -1);
+	}
+
+	public TimeAgo timeAgo(double time, int unitindex)
+	{
 		TimeAgo result = null;
 
 		Unit[] units = new Unit[]
@@ -55,14 +60,23 @@ public class DateRenderer
 
 		String formattedDate = null;
 		Unit lastUnit = null;
-		for (Unit unit : units)
+
+		if (unitindex < 0)
 		{
-			if (difference < unit.limit)
+			for (Unit unit : units)
 			{
-				formattedDate = getFormattedDate(unit, difference);
-				lastUnit = unit;
-				break;
+				if (difference < unit.limit)
+				{
+					formattedDate = getFormattedDate(unit, difference);
+					lastUnit = unit;
+					break;
+				}
 			}
+		}
+		else
+		{
+			formattedDate = getFormattedDate(units[unitindex], difference);
+			lastUnit = units[unitindex];
 		}
 
 		if (formattedDate == null)

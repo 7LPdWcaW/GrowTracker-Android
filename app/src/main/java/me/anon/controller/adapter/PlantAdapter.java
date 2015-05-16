@@ -49,12 +49,8 @@ public class PlantAdapter extends RecyclerView.Adapter<PlantHolder>
 
 		String summary = "";
 
-		summary += plant.getStrain() + " - " + plant.getStage().getPrintString();
-
-		if (plant.getStage() == PlantStage.VEGETATION || plant.getStage() == PlantStage.GERMINATION)
-		{
-			summary += " (" + new DateRenderer().timeAgo(plant.getPlantDate()).formattedDate + ")";
-		}
+		summary += plant.getStrain() + " - ";
+		summary += "Planted (" + new DateRenderer().timeAgo(plant.getPlantDate(), 3).formattedDate + " ago)";
 
 		if (plant.getActions() != null && plant.getActions().size() > 0)
 		{
@@ -66,10 +62,11 @@ public class PlantAdapter extends RecyclerView.Adapter<PlantHolder>
 			{
 				Action action = actions.get(index);
 
-				if (action instanceof EmptyAction && ((EmptyAction)action).getAction() == Action.ActionName.FLIPPED)
+				if (action instanceof EmptyAction && ((EmptyAction)action).getAction() == Action.ActionName.FLIPPED && plant.getStage() == PlantStage.FLOWER)
 				{
 					long flipDate = action.getDate();
-					summary += " (" + new DateRenderer().timeAgo(flipDate).formattedDate + ")";
+					String time = new DateRenderer().timeAgo(flipDate, 3).formattedDate;
+					summary += " / (" + time.replaceAll("[^0-9]", "") + "f)";
 				}
 
 				if (action instanceof Feed && lastFeed == null)
