@@ -26,6 +26,7 @@ import java.util.Locale;
 import me.anon.grow.AddFeedingActivity;
 import me.anon.grow.EventsActivity;
 import me.anon.grow.R;
+import me.anon.grow.StatisticsActivity;
 import me.anon.grow.ViewPhotosActivity;
 import me.anon.lib.Views;
 import me.anon.lib.helper.FabAnimator;
@@ -226,6 +227,13 @@ public class PlantDetailsFragment extends Fragment
 				}
 			})
 			.show();
+	}
+
+	@Views.OnClick public void onViewStatisticsClick(View view)
+	{
+		Intent stats = new Intent(getActivity(), StatisticsActivity.class);
+		stats.putExtra("plant_index", plantIndex);
+		startActivity(stats);
 	}
 
 	@Views.OnClick public void onViewHistoryClick(View view)

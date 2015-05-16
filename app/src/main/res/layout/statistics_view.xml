@@ -2,6 +2,7 @@
 
 <ScrollView
 	xmlns:android="http://schemas.android.com/apk/res/android"
+	xmlns:chart="http://schemas.android.com/apk/res-auto"
 	android:layout_width="match_parent"
 	android:layout_height="match_parent"
 >
@@ -10,6 +11,55 @@
 		android:layout_height="wrap_content"
 		android:orientation="vertical"
 	>
+		<LinearLayout
+			android:layout_width="match_parent"
+			android:layout_height="wrap_content"
+			android:orientation="vertical"
+			android:background="#ffffff"
+			android:paddingBottom="0dp"
+			android:elevation="4dp"
+			style="@style/PaperCard"
+		>
+			<TextView
+				android:layout_width="wrap_content"
+				android:layout_height="wrap_content"
+				android:text="Runoff PH"
+				style="@style/SectionTitle"
+			/>
 
+			<com.db.chart.view.LineChartView
+				android:layout_width="match_parent"
+				android:layout_height="250dp"
+				android:id="@+id/runoff"
+				android:padding="16dp"
+				android:layout_marginTop="16dp"
+			/>
+		</LinearLayout>
+
+		<LinearLayout
+			android:layout_width="match_parent"
+			android:layout_height="wrap_content"
+			android:orientation="vertical"
+			android:background="#ffffff"
+			android:layout_marginTop="8dp"
+			android:paddingBottom="0dp"
+			android:elevation="4dp"
+			style="@style/PaperCard"
+		>
+			<TextView
+				android:layout_width="wrap_content"
+				android:layout_height="wrap_content"
+				android:text="PPM"
+				style="@style/SectionTitle"
+			/>
+
+			<com.db.chart.view.LineChartView
+				android:layout_width="match_parent"
+				android:layout_height="250dp"
+				android:id="@+id/ppm"
+				android:padding="16dp"
+				android:layout_marginTop="16dp"
+			/>
+		</LinearLayout>
 	</LinearLayout>
 </ScrollView>
