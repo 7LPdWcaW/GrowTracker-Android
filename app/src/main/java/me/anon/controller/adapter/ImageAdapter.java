@@ -14,10 +14,8 @@ import java.util.List;
 import lombok.Getter;
 import lombok.Setter;
 import me.anon.grow.MainApplication;
-import me.anon.grow.PlantDetailsActivity;
 import me.anon.grow.R;
 import me.anon.grow.fragment.ImageLightboxDialog;
-import me.anon.model.Plant;
 import me.anon.view.ImageHolder;
 
 /**

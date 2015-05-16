@@ -56,12 +56,12 @@ public class AddNutrientDialogFragment extends DialogFragment
 
 		if (nutrient != null)
 		{
-			n.setText(String.valueOf(nutrient.getNpc()));
-			p.setText(String.valueOf(nutrient.getPpc()));
-			k.setText(String.valueOf(nutrient.getKpc()));
-			s.setText(String.valueOf(nutrient.getSpc()));
-			ca.setText(String.valueOf(nutrient.getCapc()));
-			mg.setText(String.valueOf(nutrient.getMgpc()));
+			n.setText(nutrient.getNpc() == null ? "" : String.valueOf(nutrient.getNpc()));
+			p.setText(nutrient.getPpc() == null ? "" : String.valueOf(nutrient.getPpc()));
+			k.setText(nutrient.getKpc() == null ? "" : String.valueOf(nutrient.getKpc()));
+			s.setText(nutrient.getSpc() == null ? "" : String.valueOf(nutrient.getSpc()));
+			ca.setText(nutrient.getCapc() == null ? "" : String.valueOf(nutrient.getCapc()));
+			mg.setText(nutrient.getMgpc() == null ? "" : String.valueOf(nutrient.getMgpc()));
 		}
 
 		return new AlertDialog.Builder(getActivity())
@@ -73,12 +73,12 @@ public class AddNutrientDialogFragment extends DialogFragment
 				{
 					Nutrient nutrient = new Nutrient();
 
-					double npc = Double.valueOf(TextUtils.isEmpty(n.getText()) ? "0.0" : n.getText().toString());
-					double ppc = Double.valueOf(TextUtils.isEmpty(p.getText()) ? "0.0" : p.getText().toString());
-					double kpc = Double.valueOf(TextUtils.isEmpty(k.getText()) ? "0.0" : k.getText().toString());
-					double spc = Double.valueOf(TextUtils.isEmpty(s.getText()) ? "0.0" : s.getText().toString());
-					double capc = Double.valueOf(TextUtils.isEmpty(ca.getText()) ? "0.0" : ca.getText().toString());
-					double mgpc = Double.valueOf(TextUtils.isEmpty(mg.getText()) ? "0.0" : mg.getText().toString());
+					Double npc = TextUtils.isEmpty(n.getText()) ? null : Double.valueOf(n.getText().toString());
+					Double ppc = TextUtils.isEmpty(p.getText()) ? null : Double.valueOf(p.getText().toString());
+					Double kpc = TextUtils.isEmpty(k.getText()) ? null : Double.valueOf(k.getText().toString());
+					Double spc = TextUtils.isEmpty(s.getText()) ? null : Double.valueOf(s.getText().toString());
+					Double capc = TextUtils.isEmpty(ca.getText()) ? null : Double.valueOf(ca.getText().toString());
+					Double mgpc = TextUtils.isEmpty(mg.getText()) ? null : Double.valueOf(mg.getText().toString());
 
 					nutrient.setNpc(npc);
 					nutrient.setPpc(ppc);
