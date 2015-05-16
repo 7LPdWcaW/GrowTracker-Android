@@ -16,12 +16,14 @@ import android.view.ViewGroup;
 import android.view.WindowManager;
 
 import com.kenny.snackbar.SnackBar;
+import com.kenny.snackbar.SnackBarListener;
 
 import java.io.File;
 
 import me.anon.controller.adapter.ImageAdapter;
 import me.anon.grow.R;
 import me.anon.lib.Views;
+import me.anon.lib.helper.FabAnimator;
 import me.anon.lib.manager.PlantManager;
 import me.anon.model.Plant;
 
@@ -120,7 +122,23 @@ public class ViewPhotosFragment extends Fragment
 			{
 				if (getActivity() != null)
 				{
-					SnackBar.show(getActivity(), "Image added");
+					SnackBar.show(getActivity(), "Image added", "Take another", new SnackBarListener()
+					{
+						@Override public void onSnackBarStarted(Object o)
+						{
+							FabAnimator.animateUp(getView().findViewById(R.id.fab_photo));
+						}
+
+						@Override public void onSnackBarFinished(Object o)
+						{
+							FabAnimator.animateDown(getView().findViewById(R.id.fab_photo));
+						}
+
+						@Override public void onSnackBarAction(Object o)
+						{
+							onFabPhotoClick(null);
+						}
+					});
 				}
 			}
 

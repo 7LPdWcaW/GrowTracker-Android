@@ -28,6 +28,7 @@ import me.anon.grow.EventsActivity;
 import me.anon.grow.R;
 import me.anon.grow.ViewPhotosActivity;
 import me.anon.lib.Views;
+import me.anon.lib.helper.FabAnimator;
 import me.anon.lib.manager.PlantManager;
 import me.anon.model.Action;
 import me.anon.model.EmptyAction;
@@ -147,7 +148,23 @@ public class PlantDetailsFragment extends Fragment
 			{
 				if (getActivity() != null)
 				{
-					SnackBar.show(getActivity(), "Image added");
+					SnackBar.show(getActivity(), "Image added", "Take another", new SnackBarListener()
+					{
+						@Override public void onSnackBarStarted(Object o)
+						{
+							FabAnimator.animateUp(getView().findViewById(R.id.fab_complete));
+						}
+
+						@Override public void onSnackBarFinished(Object o)
+						{
+							FabAnimator.animateDown(getView().findViewById(R.id.fab_complete));
+						}
+
+						@Override public void onSnackBarAction(Object o)
+						{
+							onPhotoClick(null);
+						}
+					});
 				}
 			}
 
@@ -187,8 +204,15 @@ public class PlantDetailsFragment extends Fragment
 
 						SnackBar.show(getActivity(), action.getAction().getPrintString() + " added", "undo", new SnackBarListener()
 						{
-							@Override public void onSnackBarStarted(Object o){}
-							@Override public void onSnackBarFinished(Object o){}
+							@Override public void onSnackBarStarted(Object o)
+							{
+								FabAnimator.animateUp(getView().findViewById(R.id.fab_complete));
+							}
+
+							@Override public void onSnackBarFinished(Object o)
+							{
+								FabAnimator.animateDown(getView().findViewById(R.id.fab_complete));
+							}
 
 							@Override public void onSnackBarAction(Object o)
 							{
