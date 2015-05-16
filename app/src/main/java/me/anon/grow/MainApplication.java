@@ -29,6 +29,7 @@ public class MainApplication extends Application
 		displayImageOptions = new DisplayImageOptions.Builder()
 			.cacheInMemory(true)
 			.cacheOnDisk(true)
+			.resetViewBeforeLoading(true)
 			.build();
 
 		ImageLoader.getInstance().init(new ImageLoaderConfiguration.Builder(this).build());
