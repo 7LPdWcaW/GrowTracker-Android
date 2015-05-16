@@ -27,7 +27,7 @@ public abstract class Action
 		FLUSH("Flush", 0xffFFE082),
 		LST("Low Stress Training", 0xffFFF59D),
 		LOLLIPOP("Lollipop", 0xffFFD180),
-		TOP("Topped", 0xffFFE57F),
+		TOP("Topped", 0xffBCAAA4),
 		TRANSPLANTED("Transplanted", 0xffFFFF8D),
 		TRIM("Trim", 0xffFFAB91);
 
