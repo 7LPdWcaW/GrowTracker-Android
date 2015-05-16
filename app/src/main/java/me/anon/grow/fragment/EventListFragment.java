@@ -24,6 +24,7 @@ import me.anon.controller.adapter.ActionAdapter;
 import me.anon.grow.AddFeedingActivity;
 import me.anon.grow.R;
 import me.anon.lib.Views;
+import me.anon.lib.helper.FabAnimator;
 import me.anon.lib.manager.PlantManager;
 import me.anon.model.Action;
 import me.anon.model.EmptyAction;
@@ -147,8 +148,15 @@ public class EventListFragment extends Fragment implements ActionAdapter.OnActio
 
 						SnackBar.show(getActivity(), action.getAction().getPrintString() + " added", "undo", new SnackBarListener()
 						{
-							@Override public void onSnackBarStarted(Object o){}
-							@Override public void onSnackBarFinished(Object o){}
+							@Override public void onSnackBarStarted(Object o)
+							{
+								FabAnimator.animateUp(getView().findViewById(R.id.fab_add));
+							}
+
+							@Override public void onSnackBarFinished(Object o)
+							{
+								FabAnimator.animateDown(getView().findViewById(R.id.fab_add));
+							}
 
 							@Override public void onSnackBarAction(Object o)
 							{
