@@ -2,6 +2,7 @@ package me.anon.controller.adapter;
 
 import android.content.Intent;
 import android.support.v7.widget.RecyclerView;
+import android.text.Html;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -48,12 +49,8 @@ public class PlantAdapter extends RecyclerView.Adapter<PlantHolder>
 
 		String summary = "";
 
-		summary += plant.getStrain() + " - " + plant.getStage();
-
-		if (plant.getStage() == PlantStage.VEGETATION || plant.getStage() == PlantStage.GERMINATION)
-		{
-			summary += " (" + new DateRenderer().timeAgo(plant.getPlantDate()).formattedDate + ")";
-		}
+		summary += plant.getStrain() + " - ";
+		summary += "Planted (" + new DateRenderer().timeAgo(plant.getPlantDate(), 3).formattedDate + " ago)";
 
 		if (plant.getActions() != null && plant.getActions().size() > 0)
 		{
@@ -65,43 +62,83 @@ public class PlantAdapter extends RecyclerView.Adapter<PlantHolder>
 			{
 				Action action = actions.get(index);
 
-				if (action instanceof EmptyAction && ((EmptyAction)action).getAction() == Action.ActionName.FLIPPED)
+				if (action instanceof EmptyAction && ((EmptyAction)action).getAction() == Action.ActionName.FLIPPED && plant.getStage() == PlantStage.FLOWER)
 				{
 					long flipDate = action.getDate();
-					summary += " (" + new DateRenderer().timeAgo(flipDate).formattedDate + ")";
-
-					continue;
+					String time = new DateRenderer().timeAgo(flipDate, 3).formattedDate;
+					summary += " / (" + time.replaceAll("[^0-9]", "") + "f)";
 				}
 
-				if (action instanceof Feed)
+				if (action instanceof Feed && lastFeed == null)
 				{
 					lastFeed = (Feed)action;
-					break;
 				}
-				else if (action instanceof Water)
+
+				if (action instanceof Water && lastWater == null)
 				{
 					lastWater = (Water)action;
-					break;
 				}
 			}
 
 			if (lastFeed != null && lastFeed.getNutrient() != null)
 			{
-				summary += "\n";
-				summary += "Last fed: " + new DateRenderer().timeAgo(lastFeed.getDate()).formattedDate + " ago with ";
-				summary += lastFeed.getMlpl() + "ml/l of ";
-				summary += lastFeed.getNutrient().getNpc() + " : " + lastFeed.getNutrient().getPpc() + " : " + lastFeed.getNutrient().getKpc();
+				summary += "<br/><br/>";
+				summary += "Last fed: <b>" + new DateRenderer().timeAgo(lastFeed.getDate()).formattedDate + "</b> ago with ";
+
+				if (lastFeed.getMlpl() != null)
+				{
+					summary += "<b>" + lastFeed.getMlpl() + "ml/l</b> of";
+				}
+
+				summary += "<b>";
+				summary += lastFeed.getNutrient().getNpc() == null ? "-" : lastFeed.getNutrient().getNpc();
+				summary += " : ";
+				summary += lastFeed.getNutrient().getPpc() == null ? "-" : lastFeed.getNutrient().getPpc();
+				summary += " : ";
+				summary += lastFeed.getNutrient().getKpc() == null ? "-" : lastFeed.getNutrient().getKpc();
+				summary += "</b><br/>";
+
+				if (lastFeed.getPh() != null)
+				{
+					summary += "<b>" + lastFeed.getPh() + " PH</b>";
+				}
+
+				if (lastFeed.getPh() != null || lastFeed.getRunoff() != null)
+				{
+					summary += lastFeed.getPh() != null ? " -> " : "";
+					summary += "<b>" + lastFeed.getRunoff() + " PH</b> ";
+				}
+
+				if (lastFeed.getAmount() != null)
+				{
+					summary += "<b>" + lastFeed.getAmount() + "ml</b>";
+				}
 			}
 			else if (lastWater != null)
 			{
-				summary += "\n";
-				summary += "Last watered: " + new DateRenderer().timeAgo(lastWater.getDate()).formattedDate + " ago";
-				summary += "\n";
-				summary += lastWater.getPh() + " PH -> " + lastWater.getRunoff() + " PH (" + lastWater.getAmount() + "ml)";
+				summary += "<br/>";
+				summary += "Last watered: <b>" + new DateRenderer().timeAgo(lastWater.getDate()).formattedDate + "</b> ago";
+				summary += "<br/>";
+
+				if (lastWater.getPh() != null)
+				{
+					summary += "<b>" + lastFeed.getPh() + " PH</b>";
+				}
+
+				if (lastWater.getPh() != null || lastWater.getRunoff() != null)
+				{
+					summary += lastWater.getPh() != null ? " -> " : "";
+					summary += "<b>" + lastWater.getRunoff() + " PH</b> ";
+				}
+
+				if (lastWater.getAmount() != null)
+				{
+					summary += "<b>" + lastWater.getAmount() + "ml</b>";
+				}
 			}
 		}
 
-		viewHolder.getSummary().setText(summary);
+		viewHolder.getSummary().setText(Html.fromHtml(summary));
 
 		ImageLoader.getInstance().cancelDisplayTask(viewHolder.getImage());
 		if (plant.getImages() != null && plant.getImages().size() > 0)
