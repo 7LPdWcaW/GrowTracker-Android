@@ -18,6 +18,7 @@ import me.anon.grow.R;
 import me.anon.lib.Views;
 import me.anon.lib.manager.PlantManager;
 import me.anon.model.Action;
+import me.anon.model.Feed;
 import me.anon.model.Plant;
 import me.anon.model.Water;
 
@@ -51,6 +52,7 @@ public class StatisticsFragment extends Fragment
 
 	@Views.InjectView(R.id.runoff) private LineChartView runoff;
 	@Views.InjectView(R.id.ppm) private LineChartView ppm;
+	@Views.InjectView(R.id.nutrients) private LineChartView nutrients;
 
 	@Nullable @Override public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState)
 	{
@@ -79,6 +81,89 @@ public class StatisticsFragment extends Fragment
 
 		setRunoff();
 		setPpm();
+		setNutrients();
+	}
+
+	private void setNutrients()
+	{
+		LineSet nPcSet = new LineSet();
+
+		nPcSet.setDots(true);
+		nPcSet.setDotsColor(0xffffffff);
+		nPcSet.setLineColor(0xff00ACC1);
+		nPcSet.setDotsRadius(12.0f);
+		nPcSet.setDotsStrokeThickness(6.0f);
+		nPcSet.setDotsStrokeColor(0xff26C6DA);
+		nPcSet.setLineThickness(10.0f);
+
+		LineSet pPcSet = new LineSet();
+		pPcSet.setDots(true);
+		pPcSet.setDotsColor(0xffffffff);
+		pPcSet.setLineColor(0xff6D4C41);
+		pPcSet.setDotsRadius(12.0f);
+		pPcSet.setDotsStrokeThickness(6.0f);
+		pPcSet.setDotsStrokeColor(0xff8D6E63);
+		pPcSet.setLineThickness(10.0f);
+
+		LineSet kPcSet = new LineSet();
+		kPcSet.setDots(true);
+		kPcSet.setDotsColor(0xffffffff);
+		kPcSet.setLineColor(0xff6D4C41); // 600
+		kPcSet.setDotsRadius(12.0f);
+		kPcSet.setDotsStrokeThickness(6.0f);
+		kPcSet.setDotsStrokeColor(0xff8D6E63); // 400
+		kPcSet.setLineThickness(10.0f);
+
+		LineSet caPcSet = new LineSet();
+		caPcSet.setDots(true);
+		caPcSet.setDotsColor(0xffffffff);
+		caPcSet.setLineColor(0xffFB8C00);
+		caPcSet.setDotsRadius(12.0f);
+		caPcSet.setDotsStrokeThickness(6.0f);
+		caPcSet.setDotsStrokeColor(0xffFFA726);
+		caPcSet.setLineThickness(10.0f);
+
+		LineSet sPcSet = new LineSet();
+		sPcSet.setDots(true);
+		sPcSet.setDotsColor(0xffffffff);
+		sPcSet.setLineColor(0xff7CB342);
+		sPcSet.setDotsRadius(12.0f);
+		sPcSet.setDotsStrokeThickness(6.0f);
+		sPcSet.setDotsStrokeColor(0xff9CCC65);
+		sPcSet.setLineThickness(10.0f);
+
+		LineSet mgPcSet = new LineSet();
+		mgPcSet.setDots(true);
+		mgPcSet.setDotsColor(0xffffffff);
+		mgPcSet.setLineColor(0xff00ACC1);
+		mgPcSet.setDotsRadius(12.0f);
+		mgPcSet.setDotsStrokeThickness(6.0f);
+		mgPcSet.setDotsStrokeColor(0xff26C6DA);
+		mgPcSet.setLineThickness(10.0f);
+
+		for (Action action : plant.getActions())
+		{
+			if (action instanceof Feed && ((Feed)action).getNutrient() != null)
+			{
+				nPcSet.addPoint(new Point("", ((Feed)action).getNutrient().getNpc() == null ? 0 : ((Feed)action).getNutrient().getNpc().floatValue()));
+				pPcSet.addPoint(new Point("", ((Feed)action).getNutrient().getPpc() == null ? 0 : ((Feed)action).getNutrient().getPpc().floatValue()));
+				kPcSet.addPoint(new Point("", ((Feed)action).getNutrient().getKpc() == null ? 0 : ((Feed)action).getNutrient().getKpc().floatValue()));
+
+				caPcSet.addPoint(new Point("", ((Feed)action).getNutrient().getCapc() == null ? 0 : ((Feed)action).getNutrient().getCapc().floatValue()));
+				sPcSet.addPoint(new Point("", ((Feed)action).getNutrient().getSpc() == null ? 0 : ((Feed)action).getNutrient().getSpc().floatValue()));
+				mgPcSet.addPoint(new Point("", ((Feed)action).getNutrient().getMgpc() == null ? 0 : ((Feed)action).getNutrient().getMgpc().floatValue()));
+			}
+		}
+
+		nutrients.setXAxis(false);
+		nutrients.setXLabels(XController.LabelPosition.OUTSIDE);
+		nutrients.setYAxis(false);
+		nutrients.setYLabels(YController.LabelPosition.OUTSIDE);
+		nutrients.setBackgroundColor(0xff1A237E);
+		nutrients.setLabelColor(0xffffffff);
+		nutrients.addData(nPcSet);
+		nutrients.addData(pPcSet);
+		nutrients.show();
 	}
 
 	private void setPpm()
