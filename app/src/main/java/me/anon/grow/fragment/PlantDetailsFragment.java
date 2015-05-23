@@ -160,12 +160,18 @@ public class PlantDetailsFragment extends Fragment
 					{
 						@Override public void onSnackBarStarted(Object o)
 						{
-							FabAnimator.animateUp(getView().findViewById(R.id.fab_complete));
+							if (getView() != null)
+							{
+								FabAnimator.animateUp(getView().findViewById(R.id.fab_complete));
+							}
 						}
 
 						@Override public void onSnackBarFinished(Object o)
 						{
-							FabAnimator.animateDown(getView().findViewById(R.id.fab_complete));
+							if (getView() != null)
+							{
+								FabAnimator.animateDown(getView().findViewById(R.id.fab_complete));
+							}
 						}
 
 						@Override public void onSnackBarAction(Object o)
@@ -214,12 +220,18 @@ public class PlantDetailsFragment extends Fragment
 						{
 							@Override public void onSnackBarStarted(Object o)
 							{
-								FabAnimator.animateUp(getView().findViewById(R.id.fab_complete));
+								if (getView() != null)
+								{
+									FabAnimator.animateUp(getView().findViewById(R.id.fab_complete));
+								}
 							}
 
 							@Override public void onSnackBarFinished(Object o)
 							{
-								FabAnimator.animateDown(getView().findViewById(R.id.fab_complete));
+								if (getView() != null)
+								{
+									FabAnimator.animateDown(getView().findViewById(R.id.fab_complete));
+								}
 							}
 
 							@Override public void onSnackBarAction(Object o)

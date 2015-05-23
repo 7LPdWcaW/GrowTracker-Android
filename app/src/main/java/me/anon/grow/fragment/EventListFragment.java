@@ -150,12 +150,18 @@ public class EventListFragment extends Fragment implements ActionAdapter.OnActio
 						{
 							@Override public void onSnackBarStarted(Object o)
 							{
-								FabAnimator.animateUp(getView().findViewById(R.id.fab_add));
+								if (getView() != null)
+								{
+									FabAnimator.animateUp(getView().findViewById(R.id.fab_add));
+								}
 							}
 
 							@Override public void onSnackBarFinished(Object o)
 							{
-								FabAnimator.animateDown(getView().findViewById(R.id.fab_add));
+								if (getView() != null)
+								{
+									FabAnimator.animateDown(getView().findViewById(R.id.fab_add));
+								}
 							}
 
 							@Override public void onSnackBarAction(Object o)
@@ -183,8 +189,21 @@ public class EventListFragment extends Fragment implements ActionAdapter.OnActio
 
 		SnackBar.show(getActivity(), "Event deleted", "Undo", new SnackBarListener()
 		{
-			@Override public void onSnackBarStarted(Object o){}
-			@Override public void onSnackBarFinished(Object o){}
+			@Override public void onSnackBarStarted(Object o)
+			{
+				if (getView() != null)
+				{
+					FabAnimator.animateUp(getView().findViewById(R.id.fab_add));
+				}
+			}
+
+			@Override public void onSnackBarFinished(Object o)
+			{
+				if (getView() != null)
+				{
+					FabAnimator.animateDown(getView().findViewById(R.id.fab_add));
+				}
+			}
 
 			@Override public void onSnackBarAction(Object o)
 			{
