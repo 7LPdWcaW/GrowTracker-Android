@@ -20,6 +20,7 @@ import me.anon.model.Action;
 import me.anon.model.Feed;
 import me.anon.model.Nutrient;
 import me.anon.model.Plant;
+import me.anon.model.Water;
 
 /**
  * // TODO: Add class description
@@ -114,9 +115,9 @@ public class AddFeedingFragment extends Fragment
 							for (int i = actions.size() - 1; i >= 0; i--)
 							{
 								Action action = actions.get(i);
-								if (action instanceof Feed)
+								if (action instanceof Feed && ((Feed)action).getNutrient() != null)
 								{
-									nutrient = nutrient;
+									nutrient = ((Feed)action).getNutrient();
 									break;
 								}
 							}
@@ -172,7 +173,20 @@ public class AddFeedingFragment extends Fragment
 			plant.setActions(new ArrayList<Action>());
 		}
 
-		plant.getActions().add(feed);
+		if (feed.getNutrient() == null)
+		{
+			Water water = new Water();
+			water.setPh(feed.getPh());
+			water.setPpm(feed.getPpm());
+			water.setRunoff(feed.getRunoff());
+			water.setAmount(feed.getAmount());
+			plant.getActions().add(water);
+		}
+		else
+		{
+			plant.getActions().add(feed);
+		}
+
 		PlantManager.getInstance().upsert(plantIndex, plant);
 		getActivity().finish();
 	}
