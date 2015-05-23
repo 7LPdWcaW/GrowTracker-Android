@@ -115,7 +115,7 @@ public class AddFeedingFragment extends Fragment
 							for (int i = actions.size() - 1; i >= 0; i--)
 							{
 								Action action = actions.get(i);
-								if (action instanceof Feed)
+								if (action instanceof Feed && ((Feed)action).getNutrient() != null)
 								{
 									nutrient = ((Feed)action).getNutrient();
 									break;
