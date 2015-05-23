@@ -25,6 +25,8 @@ import me.anon.model.Water;
 /**
  * // TODO: Add class description
  *
+ * TODO: Average time between feeds
+ *
  * @author 7LPdWcaW
  * @documentation // TODO Reference flow doc
  * @project GrowTracker
@@ -203,12 +205,16 @@ public class StatisticsFragment extends Fragment
 	private void setRunoff()
 	{
 		LineSet set = new LineSet();
+		double min = Double.MAX_VALUE;
+		double max = Double.MIN_VALUE;
 
 		for (Action action : plant.getActions())
 		{
 			if (action instanceof Water && ((Water)action).getRunoff() != null)
 			{
 				set.addPoint(new Point("", ((Water)action).getRunoff().floatValue()));
+				min = Math.min(min, ((Water)action).getRunoff().floatValue());
+				max = Math.max(max, ((Water)action).getRunoff().floatValue());
 			}
 		}
 
@@ -227,7 +233,7 @@ public class StatisticsFragment extends Fragment
 		runoff.setYLabels(YController.LabelPosition.OUTSIDE);
 		runoff.setBackgroundColor(0xff01579B);
 		runoff.setLabelColor(0xffffffff);
-		runoff.setAxisBorderValues(0, 14, 1);
+		runoff.setAxisBorderValues((int)Math.max(min, 0), (int)max + 1, 1);
 		runoff.addData(set);
 		runoff.show();
 	}
