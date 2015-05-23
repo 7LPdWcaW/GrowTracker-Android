@@ -21,6 +21,7 @@ import com.kenny.snackbar.SnackBar;
 import com.kenny.snackbar.SnackBarListener;
 
 import java.io.File;
+import java.io.IOException;
 import java.util.Locale;
 
 import me.anon.grow.AddFeedingActivity;
@@ -128,6 +129,13 @@ public class PlantDetailsFragment extends Fragment
 
 		File path = new File(Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DCIM).getPath() + "/GrowTracker/" + plant.getName() + "/");
 		path.mkdirs();
+
+		try
+		{
+			new File(path, ".nomedia").createNewFile();
+		}
+		catch (IOException e){}
+
 		File out = new File(path, System.currentTimeMillis() + ".jpg");
 
 		plant.getImages().add(out.getAbsolutePath());
