@@ -10,6 +10,9 @@ import android.support.annotation.Nullable;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
+import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.WindowManager;
@@ -28,7 +31,9 @@ import me.anon.lib.helper.FabAnimator;
 import me.anon.lib.manager.PlantManager;
 import me.anon.model.Action;
 import me.anon.model.EmptyAction;
+import me.anon.model.Feed;
 import me.anon.model.Plant;
+import me.anon.model.Water;
 
 /**
  * // TODO: Add class description
@@ -46,6 +51,8 @@ public class EventListFragment extends Fragment implements ActionAdapter.OnActio
 
 	private int plantIndex = -1;
 	private Plant plant;
+
+	private boolean feeding = true, watering = true, actions = true;
 
 	/**
 	 * @param plantIndex If -1, assume new plant
@@ -68,6 +75,12 @@ public class EventListFragment extends Fragment implements ActionAdapter.OnActio
 		Views.inject(this, view);
 
 		return view;
+	}
+
+	@Override public void onCreate(Bundle savedInstanceState)
+	{
+		super.onCreate(savedInstanceState);
+		setHasOptionsMenu(true);
 	}
 
 	@Override public void onActivityCreated(Bundle savedInstanceState)
@@ -123,7 +136,6 @@ public class EventListFragment extends Fragment implements ActionAdapter.OnActio
 
 		super.onActivityResult(requestCode, resultCode, data);
 	}
-
 
 	@Views.OnClick public void onFabAddClick(View view)
 	{
@@ -212,5 +224,55 @@ public class EventListFragment extends Fragment implements ActionAdapter.OnActio
 				adapter.notifyDataSetChanged();
 			}
 		});
+	}
+
+	@Override public void onCreateOptionsMenu(Menu menu, MenuInflater inflater)
+	{
+		inflater.inflate(R.menu.event_filter_menu, menu);
+		super.onCreateOptionsMenu(menu, inflater);
+	}
+
+	@Override public boolean onOptionsItemSelected(MenuItem item)
+	{
+		ArrayList<Action> items = new ArrayList<>();
+		items.addAll(PlantManager.getInstance().getPlants().get(plantIndex).getActions());
+		Collections.reverse(items);
+
+		item.setChecked(!item.isChecked());
+
+		if (item.getItemId() == R.id.filter_actions)
+		{
+			actions = item.isChecked();
+		}
+		else if (item.getItemId() == R.id.filter_waterings)
+		{
+			watering = item.isChecked();
+		}
+		else if (item.getItemId() == R.id.filter_feedings)
+		{
+			feeding = item.isChecked();
+		}
+
+		for (int index = 0; index < items.size(); index++)
+		{
+			if (!actions && items.get(index) instanceof EmptyAction)
+			{
+				items.set(index, null);
+			}
+			else if (!watering && items.get(index) instanceof Water)
+			{
+				items.set(index, null);
+			}
+			else if (!feeding && items.get(index) instanceof Feed)
+			{
+				items.set(index, null);
+			}
+		}
+
+		items.removeAll(Collections.singleton(null));
+		adapter.setActions(items);
+		adapter.notifyDataSetChanged();
+
+		return true;
 	}
 }
