@@ -10,10 +10,10 @@ import android.view.ViewGroup;
 import com.nostra13.universalimageloader.core.ImageLoader;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 import lombok.Getter;
-import lombok.Setter;
 import me.anon.grow.MainApplication;
 import me.anon.grow.PlantDetailsActivity;
 import me.anon.grow.R;
@@ -35,7 +35,14 @@ import me.anon.view.PlantHolder;
  */
 public class PlantAdapter extends RecyclerView.Adapter<PlantHolder>
 {
-	@Getter @Setter private List<Plant> plants = new ArrayList<>();
+	@Getter private List<Plant> plants = new ArrayList<>();
+
+	public void setPlants(List<Plant> plants)
+	{
+		this.plants.clear();
+		this.plants.addAll(plants);
+		Collections.reverse(this.plants);
+	}
 
 	@Override public PlantHolder onCreateViewHolder(ViewGroup viewGroup, int i)
 	{
