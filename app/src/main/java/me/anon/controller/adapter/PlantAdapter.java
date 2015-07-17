@@ -162,7 +162,7 @@ public class PlantAdapter extends RecyclerView.Adapter<PlantHolder>
 			@Override public void onClick(View v)
 			{
 				Intent details = new Intent(v.getContext(), PlantDetailsActivity.class);
-				details.putExtra("plant_index", i);
+				details.putExtra("plant_index", plants.size() - i - 1);
 				v.getContext().startActivity(details);
 			}
 		});
