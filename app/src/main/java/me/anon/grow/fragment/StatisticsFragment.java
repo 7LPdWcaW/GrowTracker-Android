@@ -19,6 +19,7 @@ import me.anon.grow.R;
 import me.anon.lib.Views;
 import me.anon.lib.manager.PlantManager;
 import me.anon.model.Action;
+import me.anon.model.Feed;
 import me.anon.model.Plant;
 import me.anon.model.Water;
 
@@ -88,7 +89,66 @@ public class StatisticsFragment extends Fragment
 
 	private void setNutrients()
 	{
+		ArrayList<String> xVals = new ArrayList<>();
 
+		ArrayList<Entry> nPcVals = new ArrayList<>();
+		ArrayList<Entry> pPcVals = new ArrayList<>();
+		ArrayList<Entry> kPcVals = new ArrayList<>();
+
+		LineData data = new LineData();
+
+		int index = 0;
+		for (Action action : plant.getActions())
+		{
+			if (action instanceof Feed && ((Feed)action).getNutrient() != null)
+			{
+				nPcVals.add(new Entry(((Feed)action).getNutrient().getNpc() == null ? 0 : ((Feed)action).getNutrient().getNpc().floatValue(), index));
+				pPcVals.add(new Entry(((Feed)action).getNutrient().getPpc() == null ? 0 : ((Feed)action).getNutrient().getPpc().floatValue(), index));
+				kPcVals.add(new Entry(((Feed)action).getNutrient().getKpc() == null ? 0 : ((Feed)action).getNutrient().getKpc().floatValue(), index));
+
+				xVals.add("");
+				index++;
+			}
+		}
+
+		LineDataSet nPcDataSet = new LineDataSet(nPcVals, "N");
+		LineDataSet kPcDataSet = new LineDataSet(kPcVals, "K");
+		LineDataSet pPcDataSet = new LineDataSet(pPcVals, "P");
+		int[] colours = {0xffffffff, 0xffF4FF81, 0xffFFD180};
+		index = 0;
+
+		for (LineDataSet set : new LineDataSet[]{nPcDataSet, kPcDataSet, pPcDataSet})
+		{
+			set.setDrawCubic(true);
+			set.setLineWidth(1.0f);
+			set.setDrawCircleHole(false);
+			set.setColor(colours[index]);
+			set.setCircleColor(colours[index]);
+			set.setValueTextColor(colours[index]);
+			set.setCircleSize(2.0f);
+			set.setValueTextSize(8.0f);
+
+			index++;
+		}
+
+		ArrayList<LineDataSet> dataSets = new ArrayList<>();
+		dataSets.add(nPcDataSet);
+		dataSets.add(kPcDataSet);
+		dataSets.add(pPcDataSet);
+
+		nutrients.getAxisLeft().setXOffset(8.0f);
+		nutrients.getLegend().setTextColor(0xffffffff);
+		nutrients.setBackgroundColor(0xff006064);
+		nutrients.setGridBackgroundColor(0xff006064);
+		nutrients.setDrawGridBackground(false);
+		nutrients.setHighlightEnabled(false);
+		nutrients.getAxisLeft().setTextColor(0xffffffff);
+		nutrients.getAxisRight().setEnabled(false);
+		nutrients.setScaleYEnabled(false);
+		nutrients.setDescription("");
+		nutrients.setPinchZoom(false);
+		nutrients.setDoubleTapToZoomEnabled(false);
+		nutrients.setData(new LineData(xVals, dataSets));
 	}
 
 	private void setPpm()
@@ -129,11 +189,11 @@ public class StatisticsFragment extends Fragment
 		runoff.setBackgroundColor(0xff01579B);
 		runoff.setGridBackgroundColor(0xff01579B);
 		runoff.setDrawGridBackground(false);
-
 		runoff.setHighlightEnabled(false);
 		runoff.getLegend().setEnabled(false);
 		runoff.getAxisLeft().setTextColor(0xffffffff);
 		runoff.getAxisRight().setEnabled(false);
+		runoff.getAxisLeft().setXOffset(8.0f);
 		runoff.getAxisLeft().setAxisMinValue(min - 0.5f);
 		runoff.getAxisLeft().setAxisMaxValue(max + 0.5f);
 		runoff.getAxisLeft().setStartAtZero(false);
