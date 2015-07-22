@@ -1,9 +1,7 @@
 package me.anon.grow.fragment;
 
 import android.app.Activity;
-import android.app.AlertDialog;
 import android.app.Fragment;
-import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
@@ -24,7 +22,6 @@ import java.util.ArrayList;
 import java.util.Collections;
 
 import me.anon.controller.adapter.ActionAdapter;
-import me.anon.grow.AddFeedingActivity;
 import me.anon.grow.R;
 import me.anon.lib.Views;
 import me.anon.lib.helper.FabAnimator;
@@ -139,57 +136,51 @@ public class EventListFragment extends Fragment implements ActionAdapter.OnActio
 
 	@Views.OnClick public void onFabAddClick(View view)
 	{
-		new AlertDialog.Builder(getActivity())
-			.setTitle("Select an option")
-			.setItems(Action.ActionName.names(), new DialogInterface.OnClickListener()
+		ActionDialogFragment dialogFragment = new ActionDialogFragment();
+		dialogFragment.setOnActionSelected(new ActionDialogFragment.OnActionSelected()
+		{
+			@Override public void onActionSelected(Action.ActionName actionName, String notes)
 			{
-				@Override public void onClick(DialogInterface dialog, int which)
+				final EmptyAction action = new EmptyAction(actionName);
+
+				if (notes != null)
 				{
-					if (which == 0 || which == 1)
-					{
-						Intent feeding = new Intent(getActivity(), AddFeedingActivity.class);
-						feeding.putExtra("plant_index", plantIndex);
-						feeding.putExtra("water", which == 1);
-						startActivityForResult(feeding, 2);
-					}
-					else
-					{
-						final EmptyAction action = new EmptyAction(Action.ActionName.values()[which]);
-						plant.getActions().add(action);
-						PlantManager.getInstance().upsert(plantIndex, plant);
-
-						SnackBar.show(getActivity(), action.getAction().getPrintString() + " added", "undo", new SnackBarListener()
-						{
-							@Override public void onSnackBarStarted(Object o)
-							{
-								if (getView() != null)
-								{
-									FabAnimator.animateUp(getView().findViewById(R.id.fab_add));
-								}
-							}
-
-							@Override public void onSnackBarFinished(Object o)
-							{
-								if (getView() != null)
-								{
-									FabAnimator.animateDown(getView().findViewById(R.id.fab_add));
-								}
-							}
-
-							@Override public void onSnackBarAction(Object o)
-							{
-								plant.getActions().remove(action);
-								PlantManager.getInstance().upsert(plantIndex, plant);
-							}
-						});
-					}
-
-					setActions();
-					adapter.notifyDataSetChanged();
-					dialog.dismiss();
+					action.setNotes(notes);
 				}
-			})
-			.show();
+
+				plant.getActions().add(action);
+				PlantManager.getInstance().upsert(plantIndex, plant);
+
+				SnackBar.show(getActivity(), action.getAction().getPrintString() + " added", "undo", new SnackBarListener()
+				{
+					@Override public void onSnackBarStarted(Object o)
+					{
+						if (getView() != null)
+						{
+							FabAnimator.animateUp(getView().findViewById(R.id.fab_add));
+						}
+					}
+
+					@Override public void onSnackBarFinished(Object o)
+					{
+						if (getView() != null)
+						{
+							FabAnimator.animateDown(getView().findViewById(R.id.fab_add));
+						}
+					}
+
+					@Override public void onSnackBarAction(Object o)
+					{
+						plant.getActions().remove(action);
+						PlantManager.getInstance().upsert(plantIndex, plant);
+					}
+				});
+
+				setActions();
+				adapter.notifyDataSetChanged();
+			}
+		});
+		dialogFragment.show(getFragmentManager(), null);
 	}
 
 	@Override public void onActionDeleted(final Action action)
