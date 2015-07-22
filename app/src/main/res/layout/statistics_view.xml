@@ -15,7 +15,7 @@
 			android:layout_width="match_parent"
 			android:layout_height="wrap_content"
 			android:orientation="vertical"
-			android:background="#ffffff"
+			android:background="#ff01579B"
 			android:paddingBottom="0dp"
 			android:elevation="4dp"
 			style="@style/PaperCard"
@@ -25,14 +25,15 @@
 				android:layout_height="wrap_content"
 				android:text="Runoff PH"
 				style="@style/SectionTitle"
+				android:textColor="#ffffffff"
 			/>
 
-			<com.db.chart.view.LineChartView
+			<com.github.mikephil.charting.charts.LineChart
 				android:layout_width="match_parent"
 				android:layout_height="250dp"
 				android:id="@+id/runoff"
 				android:padding="16dp"
-				android:layout_marginTop="16dp"
+				android:layout_marginTop="8dp"
 			/>
 		</LinearLayout>
 
@@ -40,7 +41,7 @@
 			android:layout_width="match_parent"
 			android:layout_height="wrap_content"
 			android:orientation="vertical"
-			android:background="#ffffff"
+			android:background="#1B5E20"
 			android:layout_marginTop="8dp"
 			android:paddingBottom="0dp"
 			android:elevation="4dp"
@@ -51,14 +52,15 @@
 				android:layout_height="wrap_content"
 				android:text="PPM"
 				style="@style/SectionTitle"
+				android:textColor="#ffffffff"
 			/>
 
-			<com.db.chart.view.LineChartView
+			<com.github.mikephil.charting.charts.LineChart
 				android:layout_width="match_parent"
 				android:layout_height="250dp"
 				android:id="@+id/ppm"
 				android:padding="16dp"
-				android:layout_marginTop="16dp"
+				android:layout_marginTop="8dp"
 			/>
 		</LinearLayout>
 
@@ -66,7 +68,7 @@
 			android:layout_width="match_parent"
 			android:layout_height="wrap_content"
 			android:orientation="vertical"
-			android:background="#ffffff"
+			android:background="#ff006064"
 			android:layout_marginTop="8dp"
 			android:paddingBottom="0dp"
 			android:elevation="4dp"
@@ -77,14 +79,15 @@
 				android:layout_height="wrap_content"
 				android:text="Nutrients"
 				style="@style/SectionTitle"
+				android:textColor="#ffffffff"
 			/>
 
-			<com.db.chart.view.LineChartView
+			<com.github.mikephil.charting.charts.LineChart
 				android:layout_width="match_parent"
 				android:layout_height="250dp"
 				android:id="@+id/nutrients"
 				android:padding="16dp"
-				android:layout_marginTop="16dp"
+				android:layout_marginTop="8dp"
 			/>
 		</LinearLayout>
 	</LinearLayout>
