@@ -1,10 +1,12 @@
 package me.anon.grow;
 
 import android.app.Application;
+import android.graphics.Bitmap;
 
 import com.nostra13.universalimageloader.core.DisplayImageOptions;
 import com.nostra13.universalimageloader.core.ImageLoader;
 import com.nostra13.universalimageloader.core.ImageLoaderConfiguration;
+import com.nostra13.universalimageloader.core.assist.ImageScaleType;
 
 import lombok.Getter;
 import me.anon.lib.manager.PlantManager;
@@ -29,9 +31,14 @@ public class MainApplication extends Application
 		displayImageOptions = new DisplayImageOptions.Builder()
 			.cacheInMemory(true)
 			.cacheOnDisk(true)
-			.resetViewBeforeLoading(true)
+			.showImageOnLoading(R.drawable.ic_image)
+			.imageScaleType(ImageScaleType.IN_SAMPLE_POWER_OF_2)
+			.bitmapConfig(Bitmap.Config.RGB_565)
 			.build();
 
-		ImageLoader.getInstance().init(new ImageLoaderConfiguration.Builder(this).build());
+		ImageLoader.getInstance().init(new ImageLoaderConfiguration.Builder(this)
+			.diskCacheExtraOptions(256, 256, null)
+			.memoryCacheExtraOptions(256, 256)
+			.build());
 	}
 }
