@@ -8,7 +8,11 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.view.WindowManager;
 
+import com.github.mikephil.charting.charts.BarChart;
 import com.github.mikephil.charting.charts.LineChart;
+import com.github.mikephil.charting.data.BarData;
+import com.github.mikephil.charting.data.BarDataSet;
+import com.github.mikephil.charting.data.BarEntry;
 import com.github.mikephil.charting.data.Entry;
 import com.github.mikephil.charting.data.LineData;
 import com.github.mikephil.charting.data.LineDataSet;
@@ -55,7 +59,7 @@ public class StatisticsFragment extends Fragment
 
 	@Views.InjectView(R.id.runoff) private LineChart runoff;
 	@Views.InjectView(R.id.ppm) private LineChart ppm;
-	@Views.InjectView(R.id.nutrients) private LineChart nutrients;
+	@Views.InjectView(R.id.nutrients) private BarChart nutrients;
 
 	@Nullable @Override public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState)
 	{
@@ -91,9 +95,9 @@ public class StatisticsFragment extends Fragment
 	{
 		ArrayList<String> xVals = new ArrayList<>();
 
-		ArrayList<Entry> nPcVals = new ArrayList<>();
-		ArrayList<Entry> pPcVals = new ArrayList<>();
-		ArrayList<Entry> kPcVals = new ArrayList<>();
+		ArrayList<BarEntry> nPcVals = new ArrayList<>();
+		ArrayList<BarEntry> pPcVals = new ArrayList<>();
+		ArrayList<BarEntry> kPcVals = new ArrayList<>();
 
 		LineData data = new LineData();
 
@@ -102,36 +106,31 @@ public class StatisticsFragment extends Fragment
 		{
 			if (action instanceof Feed && ((Feed)action).getNutrient() != null)
 			{
-				nPcVals.add(new Entry(((Feed)action).getNutrient().getNpc() == null ? 0 : ((Feed)action).getNutrient().getNpc().floatValue(), index));
-				pPcVals.add(new Entry(((Feed)action).getNutrient().getPpc() == null ? 0 : ((Feed)action).getNutrient().getPpc().floatValue(), index));
-				kPcVals.add(new Entry(((Feed)action).getNutrient().getKpc() == null ? 0 : ((Feed)action).getNutrient().getKpc().floatValue(), index));
+				nPcVals.add(new BarEntry(((Feed)action).getNutrient().getNpc() == null ? 0 : ((Feed)action).getNutrient().getNpc().floatValue(), index));
+				pPcVals.add(new BarEntry(((Feed)action).getNutrient().getPpc() == null ? 0 : ((Feed)action).getNutrient().getPpc().floatValue(), index));
+				kPcVals.add(new BarEntry(((Feed)action).getNutrient().getKpc() == null ? 0 : ((Feed)action).getNutrient().getKpc().floatValue(), index));
 
 				xVals.add("");
 				index++;
 			}
 		}
 
-		LineDataSet nPcDataSet = new LineDataSet(nPcVals, "N");
-		LineDataSet kPcDataSet = new LineDataSet(kPcVals, "K");
-		LineDataSet pPcDataSet = new LineDataSet(pPcVals, "P");
+		BarDataSet nPcDataSet = new BarDataSet(nPcVals, "N");
+		BarDataSet kPcDataSet = new BarDataSet(kPcVals, "K");
+		BarDataSet pPcDataSet = new BarDataSet(pPcVals, "P");
 		int[] colours = {0xffffffff, 0xffF4FF81, 0xffFFD180};
 		index = 0;
 
-		for (LineDataSet set : new LineDataSet[]{nPcDataSet, kPcDataSet, pPcDataSet})
+		for (BarDataSet set : new BarDataSet[]{nPcDataSet, kPcDataSet, pPcDataSet})
 		{
-			set.setDrawCubic(true);
-			set.setLineWidth(1.0f);
-			set.setDrawCircleHole(false);
 			set.setColor(colours[index]);
-			set.setCircleColor(colours[index]);
 			set.setValueTextColor(colours[index]);
-			set.setCircleSize(2.0f);
 			set.setValueTextSize(8.0f);
 
 			index++;
 		}
 
-		ArrayList<LineDataSet> dataSets = new ArrayList<>();
+		ArrayList<BarDataSet> dataSets = new ArrayList<>();
 		dataSets.add(nPcDataSet);
 		dataSets.add(kPcDataSet);
 		dataSets.add(pPcDataSet);
@@ -148,7 +147,7 @@ public class StatisticsFragment extends Fragment
 		nutrients.setDescription("");
 		nutrients.setPinchZoom(false);
 		nutrients.setDoubleTapToZoomEnabled(false);
-		nutrients.setData(new LineData(xVals, dataSets));
+		nutrients.setData(new BarData(xVals, dataSets));
 	}
 
 	private void setPpm()
