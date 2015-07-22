@@ -54,7 +54,7 @@ public class ImageAdapter extends RecyclerView.Adapter<ImageHolder>
 			{
 				Intent details = new Intent(v.getContext(), ImageLightboxDialog.class);
 				details.putExtra("images", (String[])images.toArray(new String[getItemCount()]));
-				details.putExtra("image_position", images.size() - i - 1);
+				details.putExtra("image_position", i);
 				v.getContext().startActivity(details);
 			}
 		});
