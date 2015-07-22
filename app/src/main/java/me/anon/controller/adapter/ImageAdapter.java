@@ -9,10 +9,10 @@ import android.view.ViewGroup;
 import com.nostra13.universalimageloader.core.ImageLoader;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 import lombok.Getter;
-import lombok.Setter;
 import me.anon.grow.MainApplication;
 import me.anon.grow.R;
 import me.anon.grow.fragment.ImageLightboxDialog;
@@ -27,7 +27,14 @@ import me.anon.view.ImageHolder;
  */
 public class ImageAdapter extends RecyclerView.Adapter<ImageHolder>
 {
-	@Getter @Setter private List<String> images = new ArrayList<>();
+	@Getter private List<String> images = new ArrayList<>();
+
+	public void setImages(List<String> images)
+	{
+		this.images.clear();
+		this.images.addAll(images);
+		Collections.reverse(this.images);
+	}
 
 	@Override public ImageHolder onCreateViewHolder(ViewGroup viewGroup, int i)
 	{
@@ -47,7 +54,7 @@ public class ImageAdapter extends RecyclerView.Adapter<ImageHolder>
 			{
 				Intent details = new Intent(v.getContext(), ImageLightboxDialog.class);
 				details.putExtra("images", (String[])images.toArray(new String[getItemCount()]));
-				details.putExtra("image_position", i);
+				details.putExtra("image_position", images.size() - i - 1);
 				v.getContext().startActivity(details);
 			}
 		});
