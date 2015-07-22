@@ -197,55 +197,48 @@ public class PlantDetailsFragment extends Fragment
 
 	@Views.OnClick public void onActionClick(final View view)
 	{
-		new AlertDialog.Builder(getActivity())
-			.setTitle("Select an option")
-			.setItems(Action.ActionName.names(), new DialogInterface.OnClickListener()
+		ActionDialogFragment dialogFragment = new ActionDialogFragment();
+		dialogFragment.setOnActionSelected(new ActionDialogFragment.OnActionSelected()
+		{
+			@Override public void onActionSelected(Action.ActionName actionName, String notes)
 			{
-				@Override public void onClick(DialogInterface dialog, int which)
+				final EmptyAction action = new EmptyAction(actionName);
+
+				if (notes != null)
 				{
-					if (which == 0 || which == 1)
-					{
-						Intent feeding = new Intent(getActivity(), AddFeedingActivity.class);
-						feeding.putExtra("plant_index", plantIndex);
-						feeding.putExtra("water", which == 1);
-						startActivityForResult(feeding, 2);
-					}
-					else
-					{
-						final EmptyAction action = new EmptyAction(Action.ActionName.values()[which]);
-						plant.getActions().add(action);
-						PlantManager.getInstance().upsert(plantIndex, plant);
-
-						SnackBar.show(getActivity(), action.getAction().getPrintString() + " added", "undo", new SnackBarListener()
-						{
-							@Override public void onSnackBarStarted(Object o)
-							{
-								if (getView() != null)
-								{
-									FabAnimator.animateUp(getView().findViewById(R.id.fab_complete));
-								}
-							}
-
-							@Override public void onSnackBarFinished(Object o)
-							{
-								if (getView() != null)
-								{
-									FabAnimator.animateDown(getView().findViewById(R.id.fab_complete));
-								}
-							}
-
-							@Override public void onSnackBarAction(Object o)
-							{
-								plant.getActions().remove(action);
-								PlantManager.getInstance().upsert(plantIndex, plant);
-							}
-						});
-					}
-
-					dialog.dismiss();
+					action.setNotes(notes);
 				}
-			})
-			.show();
+
+				plant.getActions().add(action);
+				PlantManager.getInstance().upsert(plantIndex, plant);
+
+				SnackBar.show(getActivity(), action.getAction().getPrintString() + " added", "undo", new SnackBarListener()
+				{
+					@Override public void onSnackBarStarted(Object o)
+					{
+						if (getView() != null)
+						{
+							FabAnimator.animateUp(getView().findViewById(R.id.fab_complete));
+						}
+					}
+
+					@Override public void onSnackBarFinished(Object o)
+					{
+						if (getView() != null)
+						{
+							FabAnimator.animateDown(getView().findViewById(R.id.fab_complete));
+						}
+					}
+
+					@Override public void onSnackBarAction(Object o)
+					{
+						plant.getActions().remove(action);
+						PlantManager.getInstance().upsert(plantIndex, plant);
+					}
+				});
+			}
+		});
+		dialogFragment.show(getFragmentManager(), null);
 	}
 
 	@Views.OnClick public void onViewHistoryClick(View view)
