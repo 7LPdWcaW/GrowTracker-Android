@@ -153,7 +153,43 @@ public class StatisticsFragment extends Fragment
 
 	private void setPpm()
 	{
+		ArrayList<Entry> vals = new ArrayList<>();
+		ArrayList<String> xVals = new ArrayList<>();
+		LineData data = new LineData();
 
+		int index = 0;
+		for (Action action : plant.getActions())
+		{
+			if (action instanceof Water && ((Water)action).getPpm() != null)
+			{
+				vals.add(new Entry(((Water)action).getPpm().floatValue(), index++));
+				xVals.add("");
+			}
+		}
+
+		LineDataSet dataSet = new LineDataSet(vals, "PPM");
+		dataSet.setDrawCubic(true);
+		dataSet.setLineWidth(2.0f);
+		dataSet.setDrawCircleHole(false);
+		dataSet.setCircleColor(0xffffffff);
+		dataSet.setValueTextColor(0xffffffff);
+		dataSet.setCircleSize(5.0f);
+		dataSet.setValueTextSize(8.0f);
+		dataSet.setColor(0xffA7FFEB);
+
+		ppm.setBackgroundColor(0xff1B5E20);
+		ppm.setGridBackgroundColor(0xff1B5E20);
+		ppm.setDrawGridBackground(false);
+		ppm.setHighlightEnabled(false);
+		ppm.getLegend().setEnabled(false);
+		ppm.getAxisLeft().setTextColor(0xffffffff);
+		ppm.getAxisRight().setEnabled(false);
+		ppm.getAxisLeft().setXOffset(8.0f);
+		ppm.setScaleYEnabled(false);
+		ppm.setDescription("");
+		ppm.setPinchZoom(false);
+		ppm.setDoubleTapToZoomEnabled(false);
+		ppm.setData(new LineData(xVals, dataSet));
 	}
 
 	private void setRunoff()

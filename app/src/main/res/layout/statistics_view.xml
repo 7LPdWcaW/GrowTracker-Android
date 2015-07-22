@@ -16,7 +16,6 @@
 			android:layout_height="wrap_content"
 			android:orientation="vertical"
 			android:background="#ff01579B"
-			android:paddingBottom="0dp"
 			android:elevation="4dp"
 			style="@style/PaperCard"
 		>
@@ -43,7 +42,6 @@
 			android:orientation="vertical"
 			android:background="#1B5E20"
 			android:layout_marginTop="8dp"
-			android:paddingBottom="0dp"
 			android:elevation="4dp"
 			style="@style/PaperCard"
 		>
@@ -70,7 +68,6 @@
 			android:orientation="vertical"
 			android:background="#ff006064"
 			android:layout_marginTop="8dp"
-			android:paddingBottom="0dp"
 			android:elevation="4dp"
 			style="@style/PaperCard"
 		>
