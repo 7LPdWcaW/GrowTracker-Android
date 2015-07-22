@@ -157,6 +157,8 @@ public class ActionAdapter extends RecyclerView.Adapter<ActionHolder>
 		{
 			viewHolder.getName().setText(((EmptyAction)action).getAction().getPrintString());
 			viewHolder.itemView.setBackgroundColor(((EmptyAction)action).getAction().getColour());
+
+			summary = action.getNotes();
 		}
 
 		if (!TextUtils.isEmpty(summary))
