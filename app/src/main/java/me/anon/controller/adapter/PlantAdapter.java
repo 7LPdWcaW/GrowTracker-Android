@@ -94,7 +94,7 @@ public class PlantAdapter extends RecyclerView.Adapter<PlantHolder>
 
 				if (lastFeed.getMlpl() != null)
 				{
-					summary += "<b>" + lastFeed.getMlpl() + "ml/l</b> of";
+					summary += "<b>" + lastFeed.getMlpl() + "ml/l</b> of ";
 				}
 
 				summary += "<b>";
@@ -123,7 +123,7 @@ public class PlantAdapter extends RecyclerView.Adapter<PlantHolder>
 			}
 			else if (lastWater != null)
 			{
-				summary += "<br/>";
+				summary += "<br/><br/>";
 				summary += "Last watered: <b>" + new DateRenderer().timeAgo(lastWater.getDate()).formattedDate + "</b> ago";
 				summary += "<br/>";
 
@@ -143,6 +143,11 @@ public class PlantAdapter extends RecyclerView.Adapter<PlantHolder>
 					summary += "<b>" + lastWater.getAmount() + "ml</b>";
 				}
 			}
+		}
+
+		if (summary.endsWith("<br/>"))
+		{
+			summary = summary.substring(0, summary.length() - "<br/>".length());
 		}
 
 		viewHolder.getSummary().setText(Html.fromHtml(summary));
