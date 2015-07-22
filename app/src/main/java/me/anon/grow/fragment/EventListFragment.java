@@ -250,11 +250,11 @@ public class EventListFragment extends Fragment implements ActionAdapter.OnActio
 			{
 				items.set(index, null);
 			}
-			else if (!watering && items.get(index) instanceof Water)
+			else if (!feeding && items.get(index).getClass() == Feed.class)
 			{
 				items.set(index, null);
 			}
-			else if (!feeding && items.get(index) instanceof Feed)
+			else if (!watering && items.get(index).getClass() == Water.class)
 			{
 				items.set(index, null);
 			}
