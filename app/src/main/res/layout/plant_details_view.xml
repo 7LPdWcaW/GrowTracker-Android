@@ -221,13 +221,18 @@
 				android:showDividers="middle"
 				android:visibility="gone"
 				style="@style/PaperCard"
+				android:paddingTop="0dp"
+				android:paddingBottom="0dp"
 			>
 				<LinearLayout
 					android:layout_width="match_parent"
 					android:layout_height="wrap_content"
 					android:id="@+id/view_photos"
 					android:orientation="horizontal"
-					android:padding="16dp"
+					android:paddingTop="16dp"
+					android:paddingBottom="16dp"
+					android:paddingRight="16dp"
+					android:paddingLeft="24dp"
 				>
 					<TextView
 						android:layout_width="match_parent"
@@ -243,7 +248,10 @@
 					android:layout_height="wrap_content"
 					android:id="@+id/view_history"
 					android:orientation="horizontal"
-					android:padding="16dp"
+					android:paddingTop="16dp"
+					android:paddingBottom="16dp"
+					android:paddingRight="16dp"
+					android:paddingLeft="24dp"
 				>
 					<TextView
 						android:layout_width="match_parent"
@@ -259,7 +267,10 @@
 					android:layout_height="wrap_content"
 					android:id="@+id/view_statistics"
 					android:orientation="horizontal"
-					android:padding="16dp"
+					android:paddingTop="16dp"
+					android:paddingBottom="16dp"
+					android:paddingRight="16dp"
+					android:paddingLeft="24dp"
 				>
 					<TextView
 						android:layout_width="match_parent"
