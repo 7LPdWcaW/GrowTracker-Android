@@ -101,6 +101,9 @@ public class PlantDetailsFragment extends Fragment
 		{
 			plant = new Plant();
 			getActivity().setTitle("Add new plant");
+
+			plant.getActions().add(new StageChange(PlantStage.PLANTED));
+			plant.getActions().add(new StageChange(PlantStage.GERMINATION));
 		}
 		else
 		{
