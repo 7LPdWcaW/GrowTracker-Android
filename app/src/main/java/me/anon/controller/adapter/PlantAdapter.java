@@ -57,90 +57,98 @@ public class PlantAdapter extends RecyclerView.Adapter<PlantHolder>
 		String summary = "";
 
 		summary += plant.getStrain() + " - ";
-		summary += "Planted (" + new DateRenderer().timeAgo(plant.getPlantDate(), 3).formattedDate + " ago)";
 
-		if (plant.getActions() != null && plant.getActions().size() > 0)
+		if (plant.getStage() == PlantStage.HARVESTED)
 		{
-			Feed lastFeed = null;
-			Water lastWater = null;
+			summary += "Harvested";
+		}
+		else
+		{
+			summary += "Planted (" + new DateRenderer().timeAgo(plant.getPlantDate(), 3).formattedDate + " ago)";
 
-			ArrayList<Action> actions = plant.getActions();
-			for (int index = actions.size() - 1; index >= 0; index--)
+			if (plant.getActions() != null && plant.getActions().size() > 0)
 			{
-				Action action = actions.get(index);
+				Feed lastFeed = null;
+				Water lastWater = null;
 
-				if (action instanceof EmptyAction && ((EmptyAction)action).getAction() == Action.ActionName.FLIPPED && plant.getStage() == PlantStage.FLOWER)
+				ArrayList<Action> actions = plant.getActions();
+				for (int index = actions.size() - 1; index >= 0; index--)
 				{
-					long flipDate = action.getDate();
-					String time = new DateRenderer().timeAgo(flipDate, 3).formattedDate;
-					summary += " / (" + time.replaceAll("[^0-9]", "") + "f)";
+					Action action = actions.get(index);
+
+					if (action instanceof EmptyAction && ((EmptyAction)action).getAction() == Action.ActionName.FLIPPED && plant.getStage() == PlantStage.FLOWER)
+					{
+						long flipDate = action.getDate();
+						String time = new DateRenderer().timeAgo(flipDate, 3).formattedDate;
+						summary += " / (" + time.replaceAll("[^0-9]", "") + "f)";
+					}
+
+					if (action instanceof Feed && lastFeed == null)
+					{
+						lastFeed = (Feed)action;
+					}
+
+					if (action instanceof Water && lastWater == null)
+					{
+						lastWater = (Water)action;
+					}
 				}
 
-				if (action instanceof Feed && lastFeed == null)
+				if (lastFeed != null && lastFeed.getNutrient() != null)
 				{
-					lastFeed = (Feed)action;
+					summary += "<br/><br/>";
+					summary += "Last fed: <b>" + new DateRenderer().timeAgo(lastFeed.getDate()).formattedDate + "</b> ago with ";
+
+					if (lastFeed.getMlpl() != null)
+					{
+						summary += "<b>" + lastFeed.getMlpl() + "ml/l</b> of ";
+					}
+
+					summary += "<b>";
+					summary += lastFeed.getNutrient().getNpc() == null ? "-" : lastFeed.getNutrient().getNpc();
+					summary += " : ";
+					summary += lastFeed.getNutrient().getPpc() == null ? "-" : lastFeed.getNutrient().getPpc();
+					summary += " : ";
+					summary += lastFeed.getNutrient().getKpc() == null ? "-" : lastFeed.getNutrient().getKpc();
+					summary += "</b><br/>";
+
+					if (lastFeed.getPh() != null)
+					{
+						summary += "<b>" + lastFeed.getPh() + " PH</b>";
+					}
+
+					if (lastFeed.getPh() != null || lastFeed.getRunoff() != null)
+					{
+						summary += lastFeed.getPh() != null ? " -> " : "";
+						summary += "<b>" + lastFeed.getRunoff() + " PH</b> ";
+					}
+
+					if (lastFeed.getAmount() != null)
+					{
+						summary += "<b>" + lastFeed.getAmount() + "ml</b>";
+					}
 				}
-
-				if (action instanceof Water && lastWater == null)
+				else if (lastWater != null)
 				{
-					lastWater = (Water)action;
-				}
-			}
+					summary += "<br/><br/>";
+					summary += "Last watered: <b>" + new DateRenderer().timeAgo(lastWater.getDate()).formattedDate + "</b> ago";
+					summary += "<br/>";
 
-			if (lastFeed != null && lastFeed.getNutrient() != null)
-			{
-				summary += "<br/><br/>";
-				summary += "Last fed: <b>" + new DateRenderer().timeAgo(lastFeed.getDate()).formattedDate + "</b> ago with ";
+					if (lastWater.getPh() != null)
+					{
+						summary += "<b>" + lastWater.getPh() + " PH</b>";
+					}
 
-				if (lastFeed.getMlpl() != null)
-				{
-					summary += "<b>" + lastFeed.getMlpl() + "ml/l</b> of ";
-				}
+					if (lastWater.getPh() != null || lastWater.getRunoff() != null)
+					{
+						summary += lastWater.getPh() != null ? " -> " : "";
+						summary += "<b>" + lastWater.getRunoff() + " PH</b> ";
+					}
 
-				summary += "<b>";
-				summary += lastFeed.getNutrient().getNpc() == null ? "-" : lastFeed.getNutrient().getNpc();
-				summary += " : ";
-				summary += lastFeed.getNutrient().getPpc() == null ? "-" : lastFeed.getNutrient().getPpc();
-				summary += " : ";
-				summary += lastFeed.getNutrient().getKpc() == null ? "-" : lastFeed.getNutrient().getKpc();
-				summary += "</b><br/>";
-
-				if (lastFeed.getPh() != null)
-				{
-					summary += "<b>" + lastFeed.getPh() + " PH</b>";
-				}
-
-				if (lastFeed.getPh() != null || lastFeed.getRunoff() != null)
-				{
-					summary += lastFeed.getPh() != null ? " -> " : "";
-					summary += "<b>" + lastFeed.getRunoff() + " PH</b> ";
-				}
-
-				if (lastFeed.getAmount() != null)
-				{
-					summary += "<b>" + lastFeed.getAmount() + "ml</b>";
-				}
-			}
-			else if (lastWater != null)
-			{
-				summary += "<br/><br/>";
-				summary += "Last watered: <b>" + new DateRenderer().timeAgo(lastWater.getDate()).formattedDate + "</b> ago";
-				summary += "<br/>";
-
-				if (lastWater.getPh() != null)
-				{
-					summary += "<b>" + lastWater.getPh() + " PH</b>";
-				}
-
-				if (lastWater.getPh() != null || lastWater.getRunoff() != null)
-				{
-					summary += lastWater.getPh() != null ? " -> " : "";
-					summary += "<b>" + lastWater.getRunoff() + " PH</b> ";
-				}
-
-				if (lastWater.getAmount() != null)
-				{
-					summary += "<b>" + lastWater.getAmount() + "ml</b>";
+					if (lastWater.getAmount() != null)
+					{
+						summary += "<b>" + lastWater.getAmount() + "ml</b>";
+					}
 				}
 			}
 		}
