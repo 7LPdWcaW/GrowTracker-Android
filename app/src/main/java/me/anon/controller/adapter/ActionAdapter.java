@@ -22,6 +22,7 @@ import me.anon.model.Action;
 import me.anon.model.EmptyAction;
 import me.anon.model.Feed;
 import me.anon.model.NoteAction;
+import me.anon.model.StageChange;
 import me.anon.model.Water;
 import me.anon.view.ActionHolder;
 
@@ -167,6 +168,11 @@ public class ActionAdapter extends RecyclerView.Adapter<ActionHolder>
 			viewHolder.itemView.setBackgroundColor(0xffffffff);
 
 			summary = action.getNotes();
+		}
+		else if (action instanceof StageChange)
+		{
+			viewHolder.getName().setText(((StageChange)action).getNewStage().getPrintString());
+			viewHolder.itemView.setBackgroundColor(0xffB39DDB);
 		}
 
 		if (!TextUtils.isEmpty(summary))

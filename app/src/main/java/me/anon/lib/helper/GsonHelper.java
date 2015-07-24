@@ -16,6 +16,7 @@ import me.anon.model.Action;
 import me.anon.model.EmptyAction;
 import me.anon.model.Feed;
 import me.anon.model.NoteAction;
+import me.anon.model.StageChange;
 import me.anon.model.Water;
 
 /**
@@ -71,6 +72,10 @@ public class GsonHelper
 					{
 						action = g.fromJson(jsonObj, NoteAction.class);
 					}
+					else if (json.getAsJsonObject().get("type").getAsString().equals("StageChange"))
+					{
+						action = g.fromJson(jsonObj, StageChange.class);
+					}
 				}
 
 				return action;
@@ -110,6 +115,14 @@ public class GsonHelper
 					Gson g = new Gson();
 					JsonObject jsonObj = (JsonObject)g.toJsonTree(src);
 					jsonObj.addProperty("type", "Note");
+
+					return jsonObj;
+				}
+				else if (src instanceof StageChange)
+				{
+					Gson g = new Gson();
+					JsonObject jsonObj = (JsonObject)g.toJsonTree(src);
+					jsonObj.addProperty("type", "StageChange");
 
 					return jsonObj;
 				}

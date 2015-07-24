@@ -12,8 +12,13 @@ import lombok.experimental.Accessors;
  */
 @Data
 @Accessors(prefix = {"m", ""}, chain = true)
-public class StageChange
+public class StageChange extends Action
 {
-	private long date = System.currentTimeMillis();
 	private PlantStage newStage;
+
+	public StageChange(PlantStage stage)
+	{
+		this.setDate(System.currentTimeMillis());
+		this.setNewStage(stage);
+	}
 }
