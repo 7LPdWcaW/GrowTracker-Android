@@ -23,7 +23,6 @@ public abstract class Action
 		FEED("Feed", 0xff90CAF9),
 		WATER("Water", 0xffBBDEFB),
 		FIM("Fuck I Missed", 0xffFFCC80),
-		FLIPPED("Flipped to flower", 0xffB39DDB),
 		FLUSH("Flush", 0xffFFE082),
 		LST("Low Stress Training", 0xffFFF59D),
 		LOLLIPOP("Lollipop", 0xffFFD180),

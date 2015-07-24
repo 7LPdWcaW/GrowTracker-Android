@@ -19,10 +19,10 @@ import me.anon.grow.PlantDetailsActivity;
 import me.anon.grow.R;
 import me.anon.lib.DateRenderer;
 import me.anon.model.Action;
-import me.anon.model.EmptyAction;
 import me.anon.model.Feed;
 import me.anon.model.Plant;
 import me.anon.model.PlantStage;
+import me.anon.model.StageChange;
 import me.anon.model.Water;
 import me.anon.view.PlantHolder;
 
@@ -76,7 +76,7 @@ public class PlantAdapter extends RecyclerView.Adapter<PlantHolder>
 				{
 					Action action = actions.get(index);
 
-					if (action instanceof EmptyAction && ((EmptyAction)action).getAction() == Action.ActionName.FLIPPED && plant.getStage() == PlantStage.FLOWER)
+					if (action instanceof StageChange && ((StageChange)action).getNewStage() == PlantStage.FLOWER && plant.getStage() == PlantStage.FLOWER)
 					{
 						long flipDate = action.getDate();
 						String time = new DateRenderer().timeAgo(flipDate, 3).formattedDate;
