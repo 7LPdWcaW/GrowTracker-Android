@@ -21,6 +21,7 @@ import me.anon.lib.DateRenderer;
 import me.anon.model.Action;
 import me.anon.model.EmptyAction;
 import me.anon.model.Feed;
+import me.anon.model.NoteAction;
 import me.anon.model.Water;
 import me.anon.view.ActionHolder;
 
@@ -157,6 +158,13 @@ public class ActionAdapter extends RecyclerView.Adapter<ActionHolder>
 		{
 			viewHolder.getName().setText(((EmptyAction)action).getAction().getPrintString());
 			viewHolder.itemView.setBackgroundColor(((EmptyAction)action).getAction().getColour());
+
+			summary = action.getNotes();
+		}
+		else if (action instanceof NoteAction)
+		{
+			viewHolder.getName().setText("Note");
+			viewHolder.itemView.setBackgroundColor(0xffffffff);
 
 			summary = action.getNotes();
 		}

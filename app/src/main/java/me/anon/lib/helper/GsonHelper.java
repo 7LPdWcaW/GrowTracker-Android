@@ -15,6 +15,7 @@ import java.lang.reflect.Type;
 import me.anon.model.Action;
 import me.anon.model.EmptyAction;
 import me.anon.model.Feed;
+import me.anon.model.NoteAction;
 import me.anon.model.Water;
 
 /**
@@ -66,6 +67,10 @@ public class GsonHelper
 					{
 						action = g.fromJson(jsonObj, EmptyAction.class);
 					}
+					else if (json.getAsJsonObject().get("type").getAsString().equals("Note"))
+					{
+						action = g.fromJson(jsonObj, NoteAction.class);
+					}
 				}
 
 				return action;
@@ -97,6 +102,14 @@ public class GsonHelper
 					Gson g = new Gson();
 					JsonObject jsonObj = (JsonObject)g.toJsonTree(src);
 					jsonObj.addProperty("type", "Action");
+
+					return jsonObj;
+				}
+				else if (src instanceof NoteAction)
+				{
+					Gson g = new Gson();
+					JsonObject jsonObj = (JsonObject)g.toJsonTree(src);
+					jsonObj.addProperty("type", "Note");
 
 					return jsonObj;
 				}
