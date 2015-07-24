@@ -15,8 +15,58 @@
 			android:layout_width="match_parent"
 			android:layout_height="wrap_content"
 			android:orientation="vertical"
+			android:elevation="4dp"
+			android:background="#ffffff"
+			style="@style/PaperCard"
+		>
+			<TextView
+				android:layout_width="wrap_content"
+				android:layout_height="wrap_content"
+				android:text="General"
+				style="@style/SectionTitle"
+			/>
+
+			<LinearLayout
+				android:layout_width="wrap_content"
+				android:layout_height="wrap_content"
+				android:padding="16dp"
+				android:orientation="vertical"
+			>
+				<LinearLayout
+					android:layout_width="wrap_content"
+					android:layout_height="wrap_content"
+					android:orientation="horizontal"
+				>
+					<TextView
+						android:layout_width="wrap_content"
+						android:layout_height="wrap_content"
+						android:layout_marginTop="8dp"
+						android:text="Total time:"
+						android:gravity="center_vertical"
+						style="@style/SubsectionTitle"
+					/>
+
+					<TextView
+						android:layout_width="wrap_content"
+						android:layout_height="wrap_content"
+						android:id="@+id/grow_time"
+						android:textSize="14sp"
+						android:textColor="#666666"
+						android:layout_marginLeft="8dp"
+						android:fontFamily="sans-serif-light"
+						android:gravity="center_vertical"
+					/>
+				</LinearLayout>
+			</LinearLayout>
+		</LinearLayout>
+
+		<LinearLayout
+			android:layout_width="match_parent"
+			android:layout_height="wrap_content"
+			android:orientation="vertical"
 			android:background="#ff01579B"
 			android:elevation="4dp"
+			android:layout_marginTop="8dp"
 			style="@style/PaperCard"
 		>
 			<TextView

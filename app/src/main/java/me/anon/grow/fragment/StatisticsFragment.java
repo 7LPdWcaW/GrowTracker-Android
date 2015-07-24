@@ -7,6 +7,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.WindowManager;
+import android.widget.TextView;
 
 import com.github.mikephil.charting.charts.BarChart;
 import com.github.mikephil.charting.charts.LineChart;
@@ -25,6 +26,8 @@ import me.anon.lib.manager.PlantManager;
 import me.anon.model.Action;
 import me.anon.model.Feed;
 import me.anon.model.Plant;
+import me.anon.model.PlantStage;
+import me.anon.model.StageChange;
 import me.anon.model.Water;
 
 /**
@@ -61,6 +64,8 @@ public class StatisticsFragment extends Fragment
 	@Views.InjectView(R.id.ppm) private LineChart ppm;
 	@Views.InjectView(R.id.nutrients) private BarChart nutrients;
 
+	@Views.InjectView(R.id.grow_time) private TextView growTime;
+
 	@Nullable @Override public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState)
 	{
 		View view = inflater.inflate(R.layout.statistics_view, container, false);
@@ -86,9 +91,29 @@ public class StatisticsFragment extends Fragment
 			}
 		}
 
+		setStatistics();
 		setRunoff();
 		setPpm();
 		setNutrients();
+	}
+
+	private void setStatistics()
+	{
+		long startDate = plant.getPlantDate();
+		long endDate = System.currentTimeMillis();
+
+		for (Action action : plant.getActions())
+		{
+			if (action instanceof StageChange && ((StageChange)action).getNewStage() == PlantStage.HARVESTED)
+			{
+				endDate = action.getDate();
+			}
+		}
+
+		long seconds = ((endDate - startDate) / 1000);
+		double days = (double)seconds * 0.0000115741d;
+
+		growTime.setText(String.format("%1$,.2f", days) + " days");
 	}
 
 	private void setNutrients()
