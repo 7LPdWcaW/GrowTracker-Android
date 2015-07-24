@@ -101,6 +101,9 @@ public class PlantDetailsFragment extends Fragment
 		{
 			plant = new Plant();
 			getActivity().setTitle("Add new plant");
+
+			plant.getActions().add(new StageChange(PlantStage.PLANTED));
+			plant.getActions().add(new StageChange(PlantStage.GERMINATION));
 		}
 		else
 		{
@@ -308,14 +311,17 @@ public class PlantDetailsFragment extends Fragment
 
 	@Views.OnClick public void onPlantStageClick(final View view)
 	{
+		String[] stages = new String[PlantStage.names().length - 1];
+		System.arraycopy(PlantStage.names(), 1, stages, 0, stages.length);
+
 		new AlertDialog.Builder(view.getContext())
 			.setTitle("Stage")
-			.setItems(PlantStage.names(), new DialogInterface.OnClickListener()
+			.setItems(stages, new DialogInterface.OnClickListener()
 			{
 				@Override public void onClick(DialogInterface dialog, int which)
 				{
-					plant.getActions().add(new StageChange(PlantStage.values()[which]));
-					((TextView)view).setText(PlantStage.values()[which].getPrintString());
+					plant.getActions().add(new StageChange(PlantStage.values()[which + 1]));
+					((TextView)view).setText(PlantStage.values()[which + 1].getPrintString());
 				}
 			})
 			.show();
