@@ -34,6 +34,7 @@ import me.anon.lib.helper.FabAnimator;
 import me.anon.lib.manager.PlantManager;
 import me.anon.model.Action;
 import me.anon.model.EmptyAction;
+import me.anon.model.NoteAction;
 import me.anon.model.Plant;
 import me.anon.model.PlantStage;
 
@@ -122,6 +123,47 @@ public class PlantDetailsFragment extends Fragment
 		Intent feeding = new Intent(view.getContext(), AddFeedingActivity.class);
 		feeding.putExtra("plant_index", plantIndex);
 		startActivityForResult(feeding, 2);
+	}
+
+	@Views.OnClick public void onNoteClick(final View view)
+	{
+		NoteDialogFragment dialogFragment = new NoteDialogFragment();
+		dialogFragment.setOnDialogConfirmed(new NoteDialogFragment.OnDialogConfirmed()
+		{
+			@Override public void onDialogConfirmed(String notes)
+			{
+				final NoteAction action = new NoteAction(notes);
+
+				plant.getActions().add(action);
+				PlantManager.getInstance().upsert(plantIndex, plant);
+
+				SnackBar.show(getActivity(), "Note added", "undo", new SnackBarListener()
+				{
+					@Override public void onSnackBarStarted(Object o)
+					{
+						if (getView() != null)
+						{
+							FabAnimator.animateUp(getView().findViewById(R.id.fab_complete));
+						}
+					}
+
+					@Override public void onSnackBarFinished(Object o)
+					{
+						if (getView() != null)
+						{
+							FabAnimator.animateDown(getView().findViewById(R.id.fab_complete));
+						}
+					}
+
+					@Override public void onSnackBarAction(Object o)
+					{
+						plant.getActions().remove(action);
+						PlantManager.getInstance().upsert(plantIndex, plant);
+					}
+				});
+			}
+		});
+		dialogFragment.show(getFragmentManager(), null);
 	}
 
 	@Views.OnClick public void onPhotoClick(final View view)
