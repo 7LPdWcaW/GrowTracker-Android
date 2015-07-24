@@ -39,7 +39,7 @@
 					android:gravity="center"
 					android:paddingBottom="16dp"
 					android:paddingTop="16dp"
-					android:text="Add feeding"
+					android:text="Feed"
 				/>
 
 				<TextView
@@ -51,7 +51,19 @@
 					android:gravity="center"
 					android:paddingBottom="16dp"
 					android:paddingTop="16dp"
-					android:text="Add action"
+					android:text="Action"
+				/>
+
+				<TextView
+					android:layout_width="0dp"
+					android:layout_height="match_parent"
+					android:id="@+id/note"
+					android:layout_weight="1"
+					android:layout_gravity="center_vertical"
+					android:gravity="center"
+					android:paddingBottom="16dp"
+					android:paddingTop="16dp"
+					android:text="Note"
 				/>
 
 				<TextView
@@ -63,7 +75,7 @@
 					android:gravity="center"
 					android:paddingBottom="16dp"
 					android:paddingTop="16dp"
-					android:text="Add photo"
+					android:text="Photo"
 				/>
 			</LinearLayout>
 
