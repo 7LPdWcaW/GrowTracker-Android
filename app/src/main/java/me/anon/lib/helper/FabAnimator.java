@@ -15,13 +15,13 @@ public class FabAnimator
 	{
 		if (fab == null) return;
 
-		fab.animate().yBy(-(fab.getHeight() * 0.85f)).setDuration(200).start();
+		fab.animate().translationYBy(-(fab.getHeight() * 0.85f)).setDuration(200).start();
 	}
 
 	public static void animateDown(View fab)
 	{
 		if (fab == null) return;
 
-		fab.animate().yBy((fab.getHeight() * 0.85f)).setDuration(200).start();
+		fab.animate().translationYBy((fab.getHeight() * 0.85f)).setDuration(200).start();
 	}
 }
