@@ -37,6 +37,7 @@ import me.anon.model.EmptyAction;
 import me.anon.model.NoteAction;
 import me.anon.model.Plant;
 import me.anon.model.PlantStage;
+import me.anon.model.StageChange;
 
 /**
  * // TODO: Add class description
@@ -313,11 +314,7 @@ public class PlantDetailsFragment extends Fragment
 			{
 				@Override public void onClick(DialogInterface dialog, int which)
 				{
-					if (which == 2)
-					{
-						plant.getActions().add(new EmptyAction(Action.ActionName.FLIPPED));
-					}
-
+					plant.getActions().add(new StageChange(PlantStage.values()[which]));
 					((TextView)view).setText(PlantStage.values()[which].getPrintString());
 				}
 			})
