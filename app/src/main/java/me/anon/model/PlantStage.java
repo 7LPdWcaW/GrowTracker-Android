@@ -14,7 +14,8 @@ public enum PlantStage
 	GERMINATION("Germination"),
 	VEGETATION("Vegetation"),
 	FLOWER("Flower"),
-	CURING("Curing");
+	CURING("Curing"),
+	HARVESTED("Harvested");
 
 	@Getter private String printString;
 
