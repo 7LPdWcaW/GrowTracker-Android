@@ -11,6 +11,7 @@ import lombok.Getter;
  */
 public enum PlantStage
 {
+	PLANTED("Planted"),
 	GERMINATION("Germination"),
 	VEGETATION("Vegetation"),
 	FLOWER("Flower"),
