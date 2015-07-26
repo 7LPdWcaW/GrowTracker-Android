@@ -60,7 +60,7 @@ public class ActionAdapter extends RecyclerView.Adapter<ActionHolder>
 		if (i > 0)
 		{
 			long difference = actions.get(i - 1).getDate() - action.getDate();
-			int days = (int)Math.floor(((double)difference / 60d / 60d / 24d / 1000d));
+			int days = (int)Math.round(((double)difference / 60d / 60d / 24d / 1000d));
 
 			dateStr += " (-" + days + "d)";
 		}
