@@ -27,13 +27,13 @@
 			/>
 
 			<LinearLayout
-				android:layout_width="wrap_content"
+				android:layout_width="match_parent"
 				android:layout_height="wrap_content"
 				android:padding="16dp"
 				android:orientation="vertical"
 			>
 				<LinearLayout
-					android:layout_width="wrap_content"
+					android:layout_width="match_parent"
 					android:layout_height="wrap_content"
 					android:orientation="horizontal"
 				>
@@ -58,28 +58,61 @@
 				</LinearLayout>
 
 				<LinearLayout
-					android:layout_width="wrap_content"
+					android:layout_width="match_parent"
 					android:layout_height="wrap_content"
 					android:orientation="horizontal"
 				>
-					<TextView
-						android:layout_width="wrap_content"
+					<LinearLayout
+						android:layout_width="0dp"
 						android:layout_height="wrap_content"
-						android:text="Total feeds:"
-						android:gravity="center_vertical"
-						style="@style/SubsectionTitle"
-					/>
+						android:orientation="horizontal"
+						android:layout_weight="1"
+					>
+						<TextView
+							android:layout_width="wrap_content"
+							android:layout_height="wrap_content"
+							android:text="Total feeds:"
+							android:gravity="center_vertical"
+							style="@style/SubsectionTitle"
+						/>
 
-					<TextView
-						android:layout_width="wrap_content"
+						<TextView
+							android:layout_width="wrap_content"
+							android:layout_height="wrap_content"
+							android:id="@+id/feed_count"
+							android:textSize="14sp"
+							android:textColor="#666666"
+							android:layout_marginLeft="8dp"
+							android:fontFamily="sans-serif-light"
+							android:gravity="center_vertical"
+						/>
+					</LinearLayout>
+
+					<LinearLayout
+						android:layout_width="0dp"
 						android:layout_height="wrap_content"
-						android:id="@+id/feed_count"
-						android:textSize="14sp"
-						android:textColor="#666666"
-						android:layout_marginLeft="8dp"
-						android:fontFamily="sans-serif-light"
-						android:gravity="center_vertical"
-					/>
+						android:orientation="horizontal"
+						android:layout_weight="1"
+					>
+						<TextView
+							android:layout_width="wrap_content"
+							android:layout_height="wrap_content"
+							android:text="Total waters:"
+							android:gravity="center_vertical"
+							style="@style/SubsectionTitle"
+						/>
+
+						<TextView
+							android:layout_width="wrap_content"
+							android:layout_height="wrap_content"
+							android:id="@+id/water_count"
+							android:textSize="14sp"
+							android:textColor="#666666"
+							android:layout_marginLeft="8dp"
+							android:fontFamily="sans-serif-light"
+							android:gravity="center_vertical"
+						/>
+					</LinearLayout>
 				</LinearLayout>
 			</LinearLayout>
 		</LinearLayout>
