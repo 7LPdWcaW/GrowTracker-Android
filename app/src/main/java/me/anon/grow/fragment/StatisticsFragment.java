@@ -65,6 +65,7 @@ public class StatisticsFragment extends Fragment
 	@Views.InjectView(R.id.nutrients) private BarChart nutrients;
 
 	@Views.InjectView(R.id.grow_time) private TextView growTime;
+	@Views.InjectView(R.id.feed_count) private TextView feedCount;
 
 	@Nullable @Override public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState)
 	{
@@ -101,6 +102,7 @@ public class StatisticsFragment extends Fragment
 	{
 		long startDate = plant.getPlantDate();
 		long endDate = System.currentTimeMillis();
+		int totalFeed = 0;
 
 		for (Action action : plant.getActions())
 		{
@@ -108,12 +110,18 @@ public class StatisticsFragment extends Fragment
 			{
 				endDate = action.getDate();
 			}
+
+			if (action instanceof Feed)
+			{
+				totalFeed++;
+			}
 		}
 
 		long seconds = ((endDate - startDate) / 1000);
 		double days = (double)seconds * 0.0000115741d;
 
 		growTime.setText(String.format("%1$,.2f", days) + " days");
+		feedCount.setText(String.valueOf(totalFeed));
 	}
 
 	private void setNutrients()

@@ -40,7 +40,6 @@
 					<TextView
 						android:layout_width="wrap_content"
 						android:layout_height="wrap_content"
-						android:layout_marginTop="8dp"
 						android:text="Total time:"
 						android:gravity="center_vertical"
 						style="@style/SubsectionTitle"
@@ -50,6 +49,31 @@
 						android:layout_width="wrap_content"
 						android:layout_height="wrap_content"
 						android:id="@+id/grow_time"
+						android:textSize="14sp"
+						android:textColor="#666666"
+						android:layout_marginLeft="8dp"
+						android:fontFamily="sans-serif-light"
+						android:gravity="center_vertical"
+					/>
+				</LinearLayout>
+
+				<LinearLayout
+					android:layout_width="wrap_content"
+					android:layout_height="wrap_content"
+					android:orientation="horizontal"
+				>
+					<TextView
+						android:layout_width="wrap_content"
+						android:layout_height="wrap_content"
+						android:text="Total feeds:"
+						android:gravity="center_vertical"
+						style="@style/SubsectionTitle"
+					/>
+
+					<TextView
+						android:layout_width="wrap_content"
+						android:layout_height="wrap_content"
+						android:id="@+id/feed_count"
 						android:textSize="14sp"
 						android:textColor="#666666"
 						android:layout_marginLeft="8dp"
