@@ -66,6 +66,7 @@ public class StatisticsFragment extends Fragment
 
 	@Views.InjectView(R.id.grow_time) private TextView growTime;
 	@Views.InjectView(R.id.feed_count) private TextView feedCount;
+	@Views.InjectView(R.id.water_count) private TextView waterCount;
 
 	@Nullable @Override public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState)
 	{
@@ -102,7 +103,7 @@ public class StatisticsFragment extends Fragment
 	{
 		long startDate = plant.getPlantDate();
 		long endDate = System.currentTimeMillis();
-		int totalFeed = 0;
+		int totalFeed = 0, totalWater = 0;
 
 		for (Action action : plant.getActions())
 		{
@@ -115,6 +116,10 @@ public class StatisticsFragment extends Fragment
 			{
 				totalFeed++;
 			}
+			else if (action instanceof Water)
+			{
+				totalWater++;
+			}
 		}
 
 		long seconds = ((endDate - startDate) / 1000);
@@ -122,6 +127,7 @@ public class StatisticsFragment extends Fragment
 
 		growTime.setText(String.format("%1$,.2f", days) + " days");
 		feedCount.setText(String.valueOf(totalFeed));
+		waterCount.setText(String.valueOf(totalWater));
 	}
 
 	private void setNutrients()
