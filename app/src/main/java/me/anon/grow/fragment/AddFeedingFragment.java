@@ -160,7 +160,7 @@ public class AddFeedingFragment extends Fragment
 		Long ppm = TextUtils.isEmpty(this.waterPpm.getText()) ? null : Long.valueOf(this.waterPpm.getText().toString());
 		Double runoffPh = TextUtils.isEmpty(this.runoffPh.getText()) ? null : Double.valueOf(this.runoffPh.getText().toString());
 		Integer amount = TextUtils.isEmpty(this.amount.getText()) ? null : Integer.valueOf(this.amount.getText().toString());
-		Integer nutrientAmount = TextUtils.isEmpty(this.nutrientAmount.getText()) ? null : Integer.valueOf(this.nutrientAmount.getText().toString());
+		Double nutrientAmount = TextUtils.isEmpty(this.nutrientAmount.getText()) ? null : Double.valueOf(this.nutrientAmount.getText().toString());
 
 		feed.setPh(waterPh);
 		feed.setPpm(ppm);

@@ -239,7 +239,7 @@
 							android:layout_height="wrap_content"
 							android:id="@+id/nutrient_amount"
 							android:hint="0ml"
-							android:inputType="numberSigned"
+							android:inputType="numberDecimal"
 							style="@style/SubsectionSubTitle"
 						/>
 					</LinearLayout>
