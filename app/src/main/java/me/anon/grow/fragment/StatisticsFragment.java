@@ -70,6 +70,10 @@ public class StatisticsFragment extends Fragment
 	@Views.InjectView(R.id.water_count) private TextView waterCount;
 	@Views.InjectView(R.id.flush_count) private TextView flushCount;
 
+	@Views.InjectView(R.id.min_ph) private TextView minph;
+	@Views.InjectView(R.id.max_ph) private TextView maxph;
+	@Views.InjectView(R.id.ave_ph) private TextView aveph;
+
 	@Nullable @Override public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState)
 	{
 		View view = inflater.inflate(R.layout.statistics_view, container, false);
@@ -244,6 +248,7 @@ public class StatisticsFragment extends Fragment
 		LineData data = new LineData();
 		float min = 14f;
 		float max = -14f;
+		float ave = 0;
 
 		int index = 0;
 		for (Action action : plant.getActions())
@@ -255,8 +260,13 @@ public class StatisticsFragment extends Fragment
 
 				min = Math.min(min, ((Water)action).getRunoff().floatValue());
 				max = Math.max(max, ((Water)action).getRunoff().floatValue());
+				ave += ((Water)action).getRunoff().floatValue();
 			}
 		}
+
+		minph.setText(String.valueOf(min));
+		maxph.setText(String.valueOf(max));
+		aveph.setText(String.format("%1$,.2f", (ave / (double)index)));
 
 		LineDataSet dataSet = new LineDataSet(vals, "Runoff PH");
 		dataSet.setDrawCubic(true);
