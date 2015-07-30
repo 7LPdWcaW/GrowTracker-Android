@@ -36,9 +36,6 @@ public class MainApplication extends Application
 			.bitmapConfig(Bitmap.Config.RGB_565)
 			.build();
 
-		ImageLoader.getInstance().init(new ImageLoaderConfiguration.Builder(this)
-			.diskCacheExtraOptions(256, 256, null)
-			.memoryCacheExtraOptions(256, 256)
-			.build());
+		ImageLoader.getInstance().init(new ImageLoaderConfiguration.Builder(this).build());
 	}
 }
