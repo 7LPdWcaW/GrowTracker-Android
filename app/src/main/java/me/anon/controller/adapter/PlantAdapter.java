@@ -94,41 +94,7 @@ public class PlantAdapter extends RecyclerView.Adapter<PlantHolder>
 					}
 				}
 
-				if (lastFeed != null && lastFeed.getNutrient() != null)
-				{
-					summary += "<br/><br/>";
-					summary += "Last fed: <b>" + new DateRenderer().timeAgo(lastFeed.getDate()).formattedDate + "</b> ago with ";
-
-					if (lastFeed.getMlpl() != null)
-					{
-						summary += "<b>" + lastFeed.getMlpl() + "ml/l</b> of ";
-					}
-
-					summary += "<b>";
-					summary += lastFeed.getNutrient().getNpc() == null ? "-" : lastFeed.getNutrient().getNpc();
-					summary += " : ";
-					summary += lastFeed.getNutrient().getPpc() == null ? "-" : lastFeed.getNutrient().getPpc();
-					summary += " : ";
-					summary += lastFeed.getNutrient().getKpc() == null ? "-" : lastFeed.getNutrient().getKpc();
-					summary += "</b><br/>";
-
-					if (lastFeed.getPh() != null)
-					{
-						summary += "<b>" + lastFeed.getPh() + " PH</b>";
-					}
-
-					if (lastFeed.getPh() != null || lastFeed.getRunoff() != null)
-					{
-						summary += lastFeed.getPh() != null ? " -> " : "";
-						summary += "<b>" + lastFeed.getRunoff() + " PH</b> ";
-					}
-
-					if (lastFeed.getAmount() != null)
-					{
-						summary += "<b>" + lastFeed.getAmount() + "ml</b>";
-					}
-				}
-				else if (lastWater != null)
+				if (lastWater != null)
 				{
 					summary += "<br/><br/>";
 					summary += "Last watered: <b>" + new DateRenderer().timeAgo(lastWater.getDate()).formattedDate + "</b> ago";
@@ -148,6 +114,44 @@ public class PlantAdapter extends RecyclerView.Adapter<PlantHolder>
 					if (lastWater.getAmount() != null)
 					{
 						summary += "<b>" + lastWater.getAmount() + "ml</b>";
+					}
+				}
+
+				if (lastFeed != null)
+				{
+					summary += "<br/><br/>";
+					summary += "Last fed: <b>" + new DateRenderer().timeAgo(lastFeed.getDate()).formattedDate + "</b> ago with ";
+
+					if (lastFeed.getMlpl() != null)
+					{
+						summary += "<b>" + lastFeed.getMlpl() + "ml/l</b>";
+					}
+
+					if (lastFeed.getNutrient() != null)
+					{
+						summary += " of <b>";
+						summary += lastFeed.getNutrient().getNpc() == null ? "-" : lastFeed.getNutrient().getNpc();
+						summary += " : ";
+						summary += lastFeed.getNutrient().getPpc() == null ? "-" : lastFeed.getNutrient().getPpc();
+						summary += " : ";
+						summary += lastFeed.getNutrient().getKpc() == null ? "-" : lastFeed.getNutrient().getKpc();
+						summary += "</b><br/>";
+					}
+
+					if (lastFeed.getPh() != null)
+					{
+						summary += "<b>" + lastFeed.getPh() + " PH</b>";
+					}
+
+					if (lastFeed.getPh() != null || lastFeed.getRunoff() != null)
+					{
+						summary += lastFeed.getPh() != null ? " -> " : "";
+						summary += "<b>" + lastFeed.getRunoff() + " PH</b> ";
+					}
+
+					if (lastFeed.getAmount() != null)
+					{
+						summary += "<b>" + lastFeed.getAmount() + "ml</b>";
 					}
 				}
 			}
