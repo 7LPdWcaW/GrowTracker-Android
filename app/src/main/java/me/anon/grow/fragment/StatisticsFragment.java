@@ -24,6 +24,7 @@ import me.anon.grow.R;
 import me.anon.lib.Views;
 import me.anon.lib.manager.PlantManager;
 import me.anon.model.Action;
+import me.anon.model.EmptyAction;
 import me.anon.model.Feed;
 import me.anon.model.Plant;
 import me.anon.model.PlantStage;
@@ -67,6 +68,7 @@ public class StatisticsFragment extends Fragment
 	@Views.InjectView(R.id.grow_time) private TextView growTime;
 	@Views.InjectView(R.id.feed_count) private TextView feedCount;
 	@Views.InjectView(R.id.water_count) private TextView waterCount;
+	@Views.InjectView(R.id.flush_count) private TextView flushCount;
 
 	@Nullable @Override public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState)
 	{
@@ -103,7 +105,7 @@ public class StatisticsFragment extends Fragment
 	{
 		long startDate = plant.getPlantDate();
 		long endDate = System.currentTimeMillis();
-		int totalFeed = 0, totalWater = 0;
+		int totalFeed = 0, totalWater = 0, totalFlush = 0;
 
 		for (Action action : plant.getActions())
 		{
@@ -120,6 +122,10 @@ public class StatisticsFragment extends Fragment
 			{
 				totalWater++;
 			}
+			else if (action instanceof EmptyAction && ((EmptyAction)action).getAction() == Action.ActionName.FLUSH)
+			{
+				totalFlush++;
+			}
 		}
 
 		long seconds = ((endDate - startDate) / 1000);
@@ -128,6 +134,7 @@ public class StatisticsFragment extends Fragment
 		growTime.setText(String.format("%1$,.2f", days) + " days");
 		feedCount.setText(String.valueOf(totalFeed));
 		waterCount.setText(String.valueOf(totalWater));
+		flushCount.setText(String.valueOf(totalFlush));
 	}
 
 	private void setNutrients()
