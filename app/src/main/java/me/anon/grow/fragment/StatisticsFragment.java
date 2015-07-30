@@ -74,6 +74,10 @@ public class StatisticsFragment extends Fragment
 	@Views.InjectView(R.id.max_ph) private TextView maxph;
 	@Views.InjectView(R.id.ave_ph) private TextView aveph;
 
+	@Views.InjectView(R.id.min_ppm) private TextView minppm;
+	@Views.InjectView(R.id.max_ppm) private TextView maxppm;
+	@Views.InjectView(R.id.ave_ppm) private TextView aveppm;
+
 	@Nullable @Override public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState)
 	{
 		View view = inflater.inflate(R.layout.statistics_view, container, false);
@@ -206,6 +210,10 @@ public class StatisticsFragment extends Fragment
 		ArrayList<String> xVals = new ArrayList<>();
 		LineData data = new LineData();
 
+		long min = Long.MAX_VALUE;
+		long max = Long.MIN_VALUE;
+		long ave = 0;
+
 		int index = 0;
 		for (Action action : plant.getActions())
 		{
@@ -213,8 +221,16 @@ public class StatisticsFragment extends Fragment
 			{
 				vals.add(new Entry(((Water)action).getPpm().floatValue(), index++));
 				xVals.add("");
+
+				min = Math.min(min, ((Water)action).getPpm().longValue());
+				max = Math.max(max, ((Water)action).getPpm().longValue());
+				ave += ((Water)action).getPpm();
 			}
 		}
+
+		minppm.setText(String.valueOf((int)min));
+		maxppm.setText(String.valueOf((int)max));
+		aveppm.setText(String.valueOf((int)(ave / (double)index)));
 
 		LineDataSet dataSet = new LineDataSet(vals, "PPM");
 		dataSet.setDrawCubic(true);
