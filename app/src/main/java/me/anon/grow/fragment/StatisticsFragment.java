@@ -7,6 +7,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.WindowManager;
+import android.widget.TextView;
 
 import com.github.mikephil.charting.charts.BarChart;
 import com.github.mikephil.charting.charts.LineChart;
@@ -23,8 +24,11 @@ import me.anon.grow.R;
 import me.anon.lib.Views;
 import me.anon.lib.manager.PlantManager;
 import me.anon.model.Action;
+import me.anon.model.EmptyAction;
 import me.anon.model.Feed;
 import me.anon.model.Plant;
+import me.anon.model.PlantStage;
+import me.anon.model.StageChange;
 import me.anon.model.Water;
 
 /**
@@ -61,6 +65,19 @@ public class StatisticsFragment extends Fragment
 	@Views.InjectView(R.id.ppm) private LineChart ppm;
 	@Views.InjectView(R.id.nutrients) private BarChart nutrients;
 
+	@Views.InjectView(R.id.grow_time) private TextView growTime;
+	@Views.InjectView(R.id.feed_count) private TextView feedCount;
+	@Views.InjectView(R.id.water_count) private TextView waterCount;
+	@Views.InjectView(R.id.flush_count) private TextView flushCount;
+
+	@Views.InjectView(R.id.min_ph) private TextView minph;
+	@Views.InjectView(R.id.max_ph) private TextView maxph;
+	@Views.InjectView(R.id.ave_ph) private TextView aveph;
+
+	@Views.InjectView(R.id.min_ppm) private TextView minppm;
+	@Views.InjectView(R.id.max_ppm) private TextView maxppm;
+	@Views.InjectView(R.id.ave_ppm) private TextView aveppm;
+
 	@Nullable @Override public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState)
 	{
 		View view = inflater.inflate(R.layout.statistics_view, container, false);
@@ -86,9 +103,46 @@ public class StatisticsFragment extends Fragment
 			}
 		}
 
+		setStatistics();
 		setRunoff();
 		setPpm();
 		setNutrients();
+	}
+
+	private void setStatistics()
+	{
+		long startDate = plant.getPlantDate();
+		long endDate = System.currentTimeMillis();
+		int totalFeed = 0, totalWater = 0, totalFlush = 0;
+
+		for (Action action : plant.getActions())
+		{
+			if (action instanceof StageChange && ((StageChange)action).getNewStage() == PlantStage.HARVESTED)
+			{
+				endDate = action.getDate();
+			}
+
+			if (action instanceof Feed)
+			{
+				totalFeed++;
+			}
+			else if (action instanceof Water)
+			{
+				totalWater++;
+			}
+			else if (action instanceof EmptyAction && ((EmptyAction)action).getAction() == Action.ActionName.FLUSH)
+			{
+				totalFlush++;
+			}
+		}
+
+		long seconds = ((endDate - startDate) / 1000);
+		double days = (double)seconds * 0.0000115741d;
+
+		growTime.setText(String.format("%1$,.2f", days) + " days");
+		feedCount.setText(String.valueOf(totalFeed));
+		waterCount.setText(String.valueOf(totalWater));
+		flushCount.setText(String.valueOf(totalFlush));
 	}
 
 	private void setNutrients()
@@ -156,6 +210,10 @@ public class StatisticsFragment extends Fragment
 		ArrayList<String> xVals = new ArrayList<>();
 		LineData data = new LineData();
 
+		long min = Long.MAX_VALUE;
+		long max = Long.MIN_VALUE;
+		long ave = 0;
+
 		int index = 0;
 		for (Action action : plant.getActions())
 		{
@@ -163,8 +221,16 @@ public class StatisticsFragment extends Fragment
 			{
 				vals.add(new Entry(((Water)action).getPpm().floatValue(), index++));
 				xVals.add("");
+
+				min = Math.min(min, ((Water)action).getPpm().longValue());
+				max = Math.max(max, ((Water)action).getPpm().longValue());
+				ave += ((Water)action).getPpm();
 			}
 		}
+
+		minppm.setText(String.valueOf((int)min));
+		maxppm.setText(String.valueOf((int)max));
+		aveppm.setText(String.valueOf((int)(ave / (double)index)));
 
 		LineDataSet dataSet = new LineDataSet(vals, "PPM");
 		dataSet.setDrawCubic(true);
@@ -198,6 +264,7 @@ public class StatisticsFragment extends Fragment
 		LineData data = new LineData();
 		float min = 14f;
 		float max = -14f;
+		float ave = 0;
 
 		int index = 0;
 		for (Action action : plant.getActions())
@@ -209,8 +276,13 @@ public class StatisticsFragment extends Fragment
 
 				min = Math.min(min, ((Water)action).getRunoff().floatValue());
 				max = Math.max(max, ((Water)action).getRunoff().floatValue());
+				ave += ((Water)action).getRunoff().floatValue();
 			}
 		}
+
+		minph.setText(String.valueOf(min));
+		maxph.setText(String.valueOf(max));
+		aveph.setText(String.format("%1$,.2f", (ave / (double)index)));
 
 		LineDataSet dataSet = new LineDataSet(vals, "Runoff PH");
 		dataSet.setDrawCubic(true);
