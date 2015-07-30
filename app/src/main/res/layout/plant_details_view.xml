@@ -13,7 +13,6 @@
 			android:layout_width="match_parent"
 			android:layout_height="wrap_content"
 			android:orientation="vertical"
-			android:paddingBottom="88dp"
 		>
 			<LinearLayout
 				android:layout_width="match_parent"
@@ -283,38 +282,4 @@
 			</LinearLayout>
 		</LinearLayout>
 	</ScrollView>
-
-	<FrameLayout
-		android:layout_width="wrap_content"
-		android:layout_height="wrap_content"
-		android:id="@+id/fab_complete"
-		android:layout_gravity="bottom|right"
-		android:layout_margin="16dp"
-	>
-		<ImageView
-			android:layout_width="57dp"
-			android:layout_height="56dp"
-			android:layout_marginTop="3dp"
-			android:src="@drawable/fab_button_shadow"
-			android:layout_gravity="center_horizontal"
-		/>
-
-		<FrameLayout
-			android:layout_width="wrap_content"
-			android:layout_height="wrap_content"
-		>
-			<ImageView
-				android:layout_width="56dp"
-				android:layout_height="56dp"
-				android:background="@drawable/complete_button_bg"
-			/>
-
-			<ImageView
-				android:layout_width="24dp"
-				android:layout_height="24dp"
-				android:layout_gravity="center"
-				android:src="@drawable/ic_floting_done"
-			/>
-		</FrameLayout>
-	</FrameLayout>
 </FrameLayout>
