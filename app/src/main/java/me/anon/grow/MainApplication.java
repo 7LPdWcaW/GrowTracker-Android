@@ -37,8 +37,7 @@ public class MainApplication extends Application
 			.build();
 
 		ImageLoader.getInstance().init(new ImageLoaderConfiguration.Builder(this)
-			.diskCacheExtraOptions(256, 256, null)
-			.memoryCacheExtraOptions(256, 256)
+			.memoryCacheExtraOptions(512, 512)
 			.build());
 	}
 }
