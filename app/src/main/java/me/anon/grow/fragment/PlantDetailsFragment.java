@@ -327,7 +327,7 @@ public class PlantDetailsFragment extends Fragment
 			.show();
 	}
 
-	@Views.OnClick public void onFabCompleteClick(final View view)
+	public void save()
 	{
 		name.setError(null);
 		strain.setError(null);
