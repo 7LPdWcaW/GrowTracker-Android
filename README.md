@@ -2,6 +2,8 @@
 
 Welcome to grow tracker. This app was created to help record data about growing plants in order to monitor the growing conditions to help make the plants grow better, and identify potential issues during the grow process.
 
+[Latest APK: (MD5) 0fc0a09a828d4a90d92a098a2b3f1c4e v1.0](https://github.com/7LPdWcaW/GrowTracker-Android/tree/master/app/app-release.apk)
+
 # Installation
 
 The app requires no permissions except for external storage (for caching plant data and images) which you can see [here](https://github.com/7LPdWcaW/GrowTracker-Android/blob/develop/app/src/main/AndroidManifest.xml) in order for users to maintain anonymity.
@@ -24,7 +26,7 @@ The app requires no permissions except for external storage (for caching plant d
 
 # About the app
 
-The app uses a simple JSON structure to store all the data about the plants that can be found in '/sdcard/Android/data/me.anon.grow/files/plants.json'. All photos taken in the app are stored in '/sdcard/DCIM/GrowTracker/' in the corresponding plant name folder.
+The app uses a simple JSON structure to store all the data about the plants that can be found in `/sdcard/Android/data/me.anon.grow/files/plants.json`. All photos taken in the app are stored in `/sdcard/DCIM/GrowTracker/` in the corresponding plant name folder. `NOTE`: Photos will **not** show in any gallery app and will only be accessible through GrowTracker, or other **file** browser apps such as `ESFile Explorer`
 
 The structure is very simple. Note: date timestamps are all unix timestamps from 1/1/1970 in milliseconds. All objects in arrays are in date order, where index 0 is the oldest and index (size - 1) is the newest.
 
