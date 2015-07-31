@@ -9,11 +9,7 @@ import android.view.ViewGroup;
 import android.view.WindowManager;
 import android.widget.TextView;
 
-import com.github.mikephil.charting.charts.BarChart;
 import com.github.mikephil.charting.charts.LineChart;
-import com.github.mikephil.charting.data.BarData;
-import com.github.mikephil.charting.data.BarDataSet;
-import com.github.mikephil.charting.data.BarEntry;
 import com.github.mikephil.charting.data.Entry;
 import com.github.mikephil.charting.data.LineData;
 import com.github.mikephil.charting.data.LineDataSet;
@@ -61,9 +57,9 @@ public class StatisticsFragment extends Fragment
 		return fragment;
 	}
 
+	@Views.InjectView(R.id.input_ph) private LineChart inputPh;
 	@Views.InjectView(R.id.runoff) private LineChart runoff;
 	@Views.InjectView(R.id.ppm) private LineChart ppm;
-	@Views.InjectView(R.id.nutrients) private BarChart nutrients;
 
 	@Views.InjectView(R.id.grow_time) private TextView growTime;
 	@Views.InjectView(R.id.feed_count) private TextView feedCount;
@@ -73,6 +69,10 @@ public class StatisticsFragment extends Fragment
 	@Views.InjectView(R.id.min_ph) private TextView minph;
 	@Views.InjectView(R.id.max_ph) private TextView maxph;
 	@Views.InjectView(R.id.ave_ph) private TextView aveph;
+
+	@Views.InjectView(R.id.min_input_ph) private TextView minInputPh;
+	@Views.InjectView(R.id.max_input_ph) private TextView maxInputPh;
+	@Views.InjectView(R.id.ave_input_ph) private TextView aveInputPh;
 
 	@Views.InjectView(R.id.min_ppm) private TextView minppm;
 	@Views.InjectView(R.id.max_ppm) private TextView maxppm;
@@ -104,9 +104,9 @@ public class StatisticsFragment extends Fragment
 		}
 
 		setStatistics();
+		setInput();
 		setRunoff();
 		setPpm();
-		setNutrients();
 	}
 
 	private void setStatistics()
@@ -143,65 +143,6 @@ public class StatisticsFragment extends Fragment
 		feedCount.setText(String.valueOf(totalFeed));
 		waterCount.setText(String.valueOf(totalWater));
 		flushCount.setText(String.valueOf(totalFlush));
-	}
-
-	private void setNutrients()
-	{
-		ArrayList<String> xVals = new ArrayList<>();
-
-		ArrayList<BarEntry> nPcVals = new ArrayList<>();
-		ArrayList<BarEntry> pPcVals = new ArrayList<>();
-		ArrayList<BarEntry> kPcVals = new ArrayList<>();
-
-		LineData data = new LineData();
-
-		int index = 0;
-		for (Action action : plant.getActions())
-		{
-			if (action instanceof Feed && ((Feed)action).getNutrient() != null)
-			{
-				nPcVals.add(new BarEntry(((Feed)action).getNutrient().getNpc() == null ? 0 : ((Feed)action).getNutrient().getNpc().floatValue(), index));
-				pPcVals.add(new BarEntry(((Feed)action).getNutrient().getPpc() == null ? 0 : ((Feed)action).getNutrient().getPpc().floatValue(), index));
-				kPcVals.add(new BarEntry(((Feed)action).getNutrient().getKpc() == null ? 0 : ((Feed)action).getNutrient().getKpc().floatValue(), index));
-
-				xVals.add("");
-				index++;
-			}
-		}
-
-		BarDataSet nPcDataSet = new BarDataSet(nPcVals, "N");
-		BarDataSet kPcDataSet = new BarDataSet(kPcVals, "K");
-		BarDataSet pPcDataSet = new BarDataSet(pPcVals, "P");
-		int[] colours = {0xffffffff, 0xffF4FF81, 0xffFFD180};
-		index = 0;
-
-		for (BarDataSet set : new BarDataSet[]{nPcDataSet, kPcDataSet, pPcDataSet})
-		{
-			set.setColor(colours[index]);
-			set.setValueTextColor(colours[index]);
-			set.setValueTextSize(8.0f);
-
-			index++;
-		}
-
-		ArrayList<BarDataSet> dataSets = new ArrayList<>();
-		dataSets.add(nPcDataSet);
-		dataSets.add(kPcDataSet);
-		dataSets.add(pPcDataSet);
-
-		nutrients.getAxisLeft().setXOffset(8.0f);
-		nutrients.getLegend().setTextColor(0xffffffff);
-		nutrients.setBackgroundColor(0xff006064);
-		nutrients.setGridBackgroundColor(0xff006064);
-		nutrients.setDrawGridBackground(false);
-		nutrients.setHighlightEnabled(false);
-		nutrients.getAxisLeft().setTextColor(0xffffffff);
-		nutrients.getAxisRight().setEnabled(false);
-		nutrients.setScaleYEnabled(false);
-		nutrients.setDescription("");
-		nutrients.setPinchZoom(false);
-		nutrients.setDoubleTapToZoomEnabled(false);
-		nutrients.setData(new BarData(xVals, dataSets));
 	}
 
 	private void setPpm()
@@ -255,6 +196,60 @@ public class StatisticsFragment extends Fragment
 		ppm.setPinchZoom(false);
 		ppm.setDoubleTapToZoomEnabled(false);
 		ppm.setData(new LineData(xVals, dataSet));
+	}
+
+	private void setInput()
+	{
+		ArrayList<Entry> vals = new ArrayList<>();
+		ArrayList<String> xVals = new ArrayList<>();
+		LineData data = new LineData();
+		float min = 14f;
+		float max = -14f;
+		float ave = 0;
+
+		int index = 0;
+		for (Action action : plant.getActions())
+		{
+			if (action instanceof Water && ((Water)action).getPh() != null)
+			{
+				vals.add(new Entry(((Water)action).getPh().floatValue(), index++));
+				xVals.add("");
+
+				min = Math.min(min, ((Water)action).getPh().floatValue());
+				max = Math.max(max, ((Water)action).getPh().floatValue());
+				ave += ((Water)action).getPh().floatValue();
+			}
+		}
+
+		minInputPh.setText(String.valueOf(min));
+		maxInputPh.setText(String.valueOf(max));
+		aveInputPh.setText(String.format("%1$,.2f", (ave / (double)index)));
+
+		LineDataSet dataSet = new LineDataSet(vals, "Input PH");
+		dataSet.setDrawCubic(true);
+		dataSet.setLineWidth(2.0f);
+		dataSet.setDrawCircleHole(false);
+		dataSet.setCircleColor(0xffffffff);
+		dataSet.setValueTextColor(0xffffffff);
+		dataSet.setCircleSize(5.0f);
+		dataSet.setValueTextSize(8.0f);
+
+		inputPh.setBackgroundColor(0xff006064);
+		inputPh.setGridBackgroundColor(0xff006064);
+		inputPh.setDrawGridBackground(false);
+		inputPh.setHighlightEnabled(false);
+		inputPh.getLegend().setEnabled(false);
+		inputPh.getAxisLeft().setTextColor(0xffffffff);
+		inputPh.getAxisRight().setEnabled(false);
+		inputPh.getAxisLeft().setXOffset(8.0f);
+		inputPh.getAxisLeft().setAxisMinValue(min - 0.5f);
+		inputPh.getAxisLeft().setAxisMaxValue(max + 0.5f);
+		inputPh.getAxisLeft().setStartAtZero(false);
+		inputPh.setScaleYEnabled(false);
+		inputPh.setDescription("");
+		inputPh.setPinchZoom(false);
+		inputPh.setDoubleTapToZoomEnabled(false);
+		inputPh.setData(new LineData(xVals, dataSet));
 	}
 
 	private void setRunoff()
