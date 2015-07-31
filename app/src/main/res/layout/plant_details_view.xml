@@ -228,10 +228,7 @@
 					android:layout_height="wrap_content"
 					android:id="@+id/view_photos"
 					android:orientation="horizontal"
-					android:paddingTop="16dp"
-					android:paddingBottom="16dp"
-					android:paddingRight="16dp"
-					android:paddingLeft="24dp"
+					android:padding="16dp"
 				>
 					<TextView
 						android:layout_width="match_parent"
@@ -247,10 +244,7 @@
 					android:layout_height="wrap_content"
 					android:id="@+id/view_history"
 					android:orientation="horizontal"
-					android:paddingTop="16dp"
-					android:paddingBottom="16dp"
-					android:paddingRight="16dp"
-					android:paddingLeft="24dp"
+					android:padding="16dp"
 				>
 					<TextView
 						android:layout_width="match_parent"
@@ -266,10 +260,7 @@
 					android:layout_height="wrap_content"
 					android:id="@+id/view_statistics"
 					android:orientation="horizontal"
-					android:paddingTop="16dp"
-					android:paddingBottom="16dp"
-					android:paddingRight="16dp"
-					android:paddingLeft="24dp"
+					android:padding="16dp"
 				>
 					<TextView
 						android:layout_width="match_parent"
