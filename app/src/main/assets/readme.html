@@ -1,5 +1,4 @@
 <html>
-    <title>Readme</title>
     <body>
         <h1>Read me</h1>
         <div>
@@ -15,60 +14,82 @@
             <br />
             The structure is very simple. Note: date timestamps are all unix timestamps from 1/1/1970 in milliseconds. All objects in arrays are in date order, where index 0 is the oldest and index (size - 1) is the newest.
             <br />
-            <p>Plant object</p>
+            <h3>Plant object</h3>
             <pre>
 {
-    "actions": [],
-    "images": [],
+    "actions": [&lt;Action Object&gt;],
+    "images": [&lt;String&gt;],
     "name": "test",
-    "stage": "GERMINATION",
+    "stage": &lt;Plant Stage&gt;,
     "strain": "test",
     "plantDate": 1234567890
 }
             </pre>
 
-            <p>Action object (feed)</p>
+            <h3>Plant Stage (ENUM)</h3>
+            <p>One of, <pre>PLANTED, GERMINATION, VEGETATION, FLOWER, CURING, HARVESTED</pre></p>
+
+            <h3>Action object (feeding)</h3>
+            <p>Nutrient object consists of standard percentage of elements in the solution. Ca %, K %, Mg %, N %, P %, S %. usually in the format "1.5:1.0:2.6" for Ca/K/Mg</p>
             <pre>
 {
     "nutrient": {
-        "capc": 0,
-        "kpc": 3,
-        "mgpc": 0,
-        "npc": 1,
-        "ppc": 2,
-        "spc": 0
+        "capc": &lt;Double&gt;,
+        "kpc": &lt;Double&gt;,
+        "mgpc": &lt;Double&gt;,
+        "npc": &lt;Double&gt;,
+        "ppc": &lt;Double&gt;,
+        "spc": &lt;Double&gt;
     },
-    "mlpl": 500,
-    "ph": 6.5,
-    "ppm": 250,
-    "runoff": 6.6,
-    "amount": 0,
-    "date": 1431268453111,
+    "mlpl": &lt;Double&gt;,
+    "ph": &lt;Double&gt;,
+    "ppm": &lt;Long&gt;,
+    "runoff": &lt;Double&gt;,
+    "amount": &lt;Integer&gt;,
+    "date": &lt;Long&gt;,
     "type": "Feed"
 }
             </pre>
-            <p>Action object (water)</p>
+            <h3>Action object (water)</h3>
+            <p>Water action is the same as a feeding action, sans the "nutrient" object</p>
             <pre>
 {
-    "ph": 6.5,
-    "ppm": 250,
-    "runoff": 6.6,
-    "amount": 0,
+    "ph": &lt;Double&gt;,
+    "ppm": &lt;Long&gt;,
+    "runoff": &lt;Double&gt;,
+    "amount": &lt;Integer&gt;,
     "date": 1431268453111,
     "type": "Water"
 }
             </pre>
-            <p>Action object (other)</p>
-            <p>Action can be one of: TRIM, TOP, FIM, LST, LOLLIPOP, FLUSH, FLIPPED</p>
+            <h3>Action object (other)</h3>
+            <p>Action can be one of, <pre>TRIM, TOP, FIM, LST, LOLLIPOP, FLUSH</pre></p>
             <pre>
 {
-    "action": "FIM",
+    "action": &lt;Action&gt;,
     "date": 1431258118968,
     "type": "Action"
 }
             </pre>
+            <h3>Stage change</h3>
+            <pre>
+{
+    "newStage": &lt;Plant Stage&gt;,
+    "date": 1431258118968,
+    "type": "StageChange"
+}
+            </pre>
 
-              <p>Image object is a simple string path to an image. Each image is named by the timestamp when it was taken, in milliseconds.</p>
+            <h3>Note</h3>
+            <pre>
+{
+    "notes": &lt;String&gt;,
+    "date": 1431258118968,
+    "type": "Note"
+}
+            </pre>
+
+            <p>Image object is a simple string path to an image. Each image is named by the timestamp when it was taken, in milliseconds.</p>
         </div>
 
         <h1>Open source libraries</h1>
