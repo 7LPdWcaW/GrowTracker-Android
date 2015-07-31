@@ -103,7 +103,6 @@ public class PlantDetailsFragment extends Fragment
 			getActivity().setTitle("Add new plant");
 
 			plant.getActions().add(new StageChange(PlantStage.PLANTED));
-			plant.getActions().add(new StageChange(PlantStage.GERMINATION));
 		}
 		else
 		{
@@ -320,7 +319,11 @@ public class PlantDetailsFragment extends Fragment
 			{
 				@Override public void onClick(DialogInterface dialog, int which)
 				{
-					plant.getActions().add(new StageChange(PlantStage.values()[which + 1]));
+					if (plantIndex > -1)
+					{
+						plant.getActions().add(new StageChange(PlantStage.values()[which + 1]));
+					}
+
 					((TextView)view).setText(PlantStage.values()[which + 1].getPrintString());
 				}
 			})
@@ -353,6 +356,11 @@ public class PlantDetailsFragment extends Fragment
 		}
 
 		plant.setStage(PlantStage.valueOf(stage.getText().toString().toUpperCase(Locale.ENGLISH)));
+
+		if (plantIndex < 0)
+		{
+			plant.getActions().add(new StageChange(PlantStage.valueOf(stage.getText().toString().toUpperCase(Locale.ENGLISH))));
+		}
 
 		PlantManager.getInstance().upsert(plantIndex, plant);
 		getActivity().finish();
