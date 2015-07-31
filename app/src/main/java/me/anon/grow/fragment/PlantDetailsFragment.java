@@ -320,7 +320,11 @@ public class PlantDetailsFragment extends Fragment
 			{
 				@Override public void onClick(DialogInterface dialog, int which)
 				{
-					plant.getActions().add(new StageChange(PlantStage.values()[which + 1]));
+					if (plantIndex > -1)
+					{
+						plant.getActions().add(new StageChange(PlantStage.values()[which + 1]));
+					}
+
 					((TextView)view).setText(PlantStage.values()[which + 1].getPrintString());
 				}
 			})
