@@ -1,0 +1,31 @@
+<manifest
+	xmlns:android="http://schemas.android.com/apk/res/android"
+	package="me.anon.grow"
+>
+	<uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
+	<uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
+
+	<application
+		android:allowBackup="true"
+		android:icon="@mipmap/ic_launcher"
+		android:label="@string/app_name"
+		android:theme="@style/AppTheme"
+		android:name=".MainApplication"
+	>
+		<activity android:name=".BootActivity">
+			<intent-filter>
+				<category android:name="android.intent.category.LAUNCHER" />
+				<action android:name="android.intent.action.MAIN" />
+			</intent-filter>
+		</activity>
+
+		<activity android:name=".MainActivity" android:screenOrientation="portrait" />
+		<activity android:name=".AddPlantActivity" android:screenOrientation="portrait" />
+		<activity android:name=".AddFeedingActivity" android:screenOrientation="portrait" />
+		<activity android:name=".ViewPhotosActivity" android:screenOrientation="portrait" />
+		<activity android:name=".EventsActivity" android:screenOrientation="portrait" />
+		<activity android:name=".StatisticsActivity" android:screenOrientation="portrait" />
+		<activity android:name=".fragment.ImageLightboxDialog" />
+		<activity android:name=".PlantDetailsActivity" android:windowSoftInputMode="stateAlwaysHidden" android:screenOrientation="portrait" />
+	</application>
+</manifest>

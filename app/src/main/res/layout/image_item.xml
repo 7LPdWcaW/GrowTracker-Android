@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<me.anon.view.SquareRelativeLayout
+	xmlns:android="http://schemas.android.com/apk/res/android"
+	android:layout_width="wrap_content"
+	android:layout_height="wrap_content"
+	android:paddingRight="12dp"
+	android:paddingBottom="12dp"
+>
+	<ImageView
+		android:layout_width="match_parent"
+		android:layout_height="match_parent"
+		android:id="@+id/image"
+		android:src="@drawable/ic_image"
+		android:scaleType="centerCrop"
+	/>
+</me.anon.view.SquareRelativeLayout>
