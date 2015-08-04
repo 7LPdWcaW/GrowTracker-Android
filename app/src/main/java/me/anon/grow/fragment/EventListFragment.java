@@ -133,12 +133,9 @@ public class EventListFragment extends Fragment implements ActionAdapter.OnActio
 		}
 		else if (requestCode == 3)
 		{
-			if (resultCode != Activity.RESULT_CANCELED)
-			{
-				plant = PlantManager.getInstance().getPlants().get(plantIndex);
-				setActions();
-				adapter.notifyDataSetChanged();
-			}
+			plant = PlantManager.getInstance().getPlants().get(plantIndex);
+			setActions();
+			adapter.notifyDataSetChanged();
 		}
 
 		super.onActivityResult(requestCode, resultCode, data);
