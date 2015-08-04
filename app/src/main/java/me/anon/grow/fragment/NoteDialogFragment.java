@@ -41,7 +41,7 @@ public class NoteDialogFragment extends DialogFragment
 		final Context context = getActivity();
 
 		AlertDialog.Builder dialog = new AlertDialog.Builder(context);
-		dialog.setTitle("Add note");
+		dialog.setTitle((action == null ? "Add" : "Edit") + " note");
 		View view = LayoutInflater.from(getActivity()).inflate(R.layout.note_dialog, null);
 
 		Views.inject(this, view);
