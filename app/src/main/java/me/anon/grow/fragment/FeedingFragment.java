@@ -73,8 +73,6 @@ public class FeedingFragment extends Fragment
 	{
 		super.onActivityCreated(savedInstanceState);
 
-		getActivity().setTitle("New feeding");
-
 		if (getArguments() != null)
 		{
 			plantIndex = getArguments().getInt("plant_index");
