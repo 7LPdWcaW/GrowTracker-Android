@@ -213,6 +213,8 @@ public class EventListFragment extends Fragment implements ActionAdapter.OnActio
 
 					plant.getActions().set(originalIndex, noteAction);
 					PlantManager.getInstance().upsert(plantIndex, plant);
+					setActions();
+					adapter.notifyDataSetChanged();
 
 					SnackBar.show(getActivity(), "Note updated", "undo", new SnackBarListener()
 					{
@@ -236,6 +238,57 @@ public class EventListFragment extends Fragment implements ActionAdapter.OnActio
 						{
 							plant.getActions().set(originalIndex, action);
 							PlantManager.getInstance().upsert(plantIndex, plant);
+							setActions();
+							adapter.notifyDataSetChanged();
+						}
+					});
+				}
+			});
+			dialogFragment.show(getFragmentManager(), null);
+		}
+		else if (action instanceof EmptyAction)
+		{
+			ActionDialogFragment dialogFragment = new ActionDialogFragment((EmptyAction)action);
+			dialogFragment.setOnActionSelected(new ActionDialogFragment.OnActionSelected()
+			{
+				@Override public void onActionSelected(Action.ActionName actionName, String notes)
+				{
+					final EmptyAction action = new EmptyAction(actionName);
+
+					if (notes != null)
+					{
+						action.setNotes(notes);
+					}
+
+					plant.getActions().set(originalIndex, action);
+					PlantManager.getInstance().upsert(plantIndex, plant);
+					setActions();
+					adapter.notifyDataSetChanged();
+
+					SnackBar.show(getActivity(), action.getAction().getPrintString() + " updated", "undo", new SnackBarListener()
+					{
+						@Override public void onSnackBarStarted(Object o)
+						{
+							if (getView() != null)
+							{
+								FabAnimator.animateUp(getView().findViewById(R.id.fab_complete));
+							}
+						}
+
+						@Override public void onSnackBarFinished(Object o)
+						{
+							if (getView() != null)
+							{
+								FabAnimator.animateDown(getView().findViewById(R.id.fab_complete));
+							}
+						}
+
+						@Override public void onSnackBarAction(Object o)
+						{
+							plant.getActions().set(originalIndex, action);
+							PlantManager.getInstance().upsert(plantIndex, plant);
+							setActions();
+							adapter.notifyDataSetChanged();
 						}
 					});
 				}
