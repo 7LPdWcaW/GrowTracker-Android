@@ -171,10 +171,25 @@ public class FeedingFragment extends Fragment
 
 	private void setUi()
 	{
-		waterPh.setText(String.valueOf(feed.getPh()));
-		waterPpm.setText(String.valueOf(feed.getPpm()));
-		runoffPh.setText(String.valueOf(feed.getRunoff()));
-		amount.setText(String.valueOf(feed.getAmount()));
+		if (feed.getPh() != null)
+		{
+			waterPh.setText(String.valueOf(feed.getPh()));
+		}
+
+		if (feed.getPpm() != null)
+		{
+			waterPpm.setText(String.valueOf(feed.getPpm()));
+		}
+
+		if (runoffPh != null)
+		{
+			runoffPh.setText(String.valueOf(feed.getRunoff()));
+		}
+
+		if (amount != null)
+		{
+			amount.setText(String.valueOf(feed.getAmount()));
+		}
 
 		if (feed.getNutrient() != null)
 		{
@@ -194,7 +209,10 @@ public class FeedingFragment extends Fragment
 			nutrient.setText(nutrientStr);
 		}
 
-		nutrientAmount.setText(String.valueOf(feed.getMlpl()));
+		if (feed.getMlpl() != null)
+		{
+			nutrientAmount.setText(String.valueOf(feed.getMlpl()));
+		}
 	}
 
 	@Views.OnClick public void onFabCompleteClick(final View view)
