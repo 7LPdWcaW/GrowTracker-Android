@@ -46,7 +46,7 @@ public class ActionDialogFragment extends DialogFragment
 		final Context context = getActivity();
 
 		AlertDialog.Builder dialog = new AlertDialog.Builder(context);
-		dialog.setTitle("Add action");
+		dialog.setTitle((action == null ? "Add" : "Edit") + " action");
 		View view = LayoutInflater.from(getActivity()).inflate(R.layout.action_dialog, null);
 
 		Views.inject(this, view);
