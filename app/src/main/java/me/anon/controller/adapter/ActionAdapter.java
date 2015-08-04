@@ -35,12 +35,13 @@ import me.anon.view.ActionHolder;
  */
 public class ActionAdapter extends RecyclerView.Adapter<ActionHolder>
 {
-	public interface OnActionDeletedListener
+	public interface OnActionSelectListener
 	{
 		public void onActionDeleted(Action action);
+		public void onActionEdit(Action action);
 	}
 
-	@Setter private OnActionDeletedListener onActionDeletedListener;
+	@Setter private OnActionSelectListener onActionSelectListener;
 	@Getter @Setter private List<Action> actions = new ArrayList<>();
 
 	@Override public ActionHolder onCreateViewHolder(ViewGroup viewGroup, int i)
@@ -199,22 +200,41 @@ public class ActionAdapter extends RecyclerView.Adapter<ActionHolder>
 
 		viewHolder.itemView.setOnLongClickListener(new View.OnLongClickListener()
 		{
-			@Override public boolean onLongClick(View v)
+			@Override public boolean onLongClick(final View v)
 			{
 				new AlertDialog.Builder(v.getContext())
-					.setTitle("Delete this event?")
-					.setMessage("Are you sure you want to delete " + viewHolder.getName().getText())
-					.setPositiveButton("Yes", new DialogInterface.OnClickListener()
+					.setTitle("Select an option")
+					.setItems(new String[]{"Edit action", "Delete action"}, new DialogInterface.OnClickListener()
 					{
 						@Override public void onClick(DialogInterface dialog, int which)
 						{
-							if (onActionDeletedListener != null)
+							if (which == 0)
 							{
-								onActionDeletedListener.onActionDeleted(action);
+								if (onActionSelectListener != null)
+								{
+									onActionSelectListener.onActionEdit(action);
+								}
+							}
+							else if (which == 1)
+							{
+								new AlertDialog.Builder(v.getContext())
+									.setTitle("Delete this event?")
+									.setMessage("Are you sure you want to delete " + viewHolder.getName().getText())
+									.setPositiveButton("Yes", new DialogInterface.OnClickListener()
+									{
+										@Override public void onClick(DialogInterface dialog, int which)
+										{
+											if (onActionSelectListener != null)
+											{
+												onActionSelectListener.onActionDeleted(action);
+											}
+										}
+									})
+									.setNegativeButton("No", null)
+									.show();
 							}
 						}
 					})
-					.setNegativeButton("No", null)
 					.show();
 
 				return true;
