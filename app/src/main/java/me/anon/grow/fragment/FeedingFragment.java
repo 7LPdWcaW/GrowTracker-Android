@@ -173,11 +173,26 @@ public class FeedingFragment extends Fragment
 			water.setPpm(feed.getPpm());
 			water.setRunoff(feed.getRunoff());
 			water.setAmount(feed.getAmount());
-			plant.getActions().add(water);
+
+			if (actionIndex < 0)
+			{
+				plant.getActions().add(water);
+			}
+			else
+			{
+				plant.getActions().set(actionIndex, water);
+			}
 		}
 		else
 		{
-			plant.getActions().add(feed);
+			if (actionIndex < 0)
+			{
+				plant.getActions().add(feed);
+			}
+			else
+			{
+				plant.getActions().set(actionIndex, feed);
+			}
 		}
 
 		PlantManager.getInstance().upsert(plantIndex, plant);
