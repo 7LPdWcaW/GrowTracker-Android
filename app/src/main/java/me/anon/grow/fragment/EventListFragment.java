@@ -30,6 +30,7 @@ import me.anon.lib.manager.PlantManager;
 import me.anon.model.Action;
 import me.anon.model.EmptyAction;
 import me.anon.model.Feed;
+import me.anon.model.NoteAction;
 import me.anon.model.Plant;
 import me.anon.model.Water;
 
@@ -190,13 +191,57 @@ public class EventListFragment extends Fragment implements ActionAdapter.OnActio
 		dialogFragment.show(getFragmentManager(), null);
 	}
 
-	@Override public void onActionEdit(Action action)
+	@Override public void onActionEdit(final Action action)
 	{
 		final int originalIndex = plant.getActions().indexOf(action);
-		Intent edit = new Intent(getActivity(), EditFeedingActivity.class);
-		edit.putExtra("plant_index", plantIndex);
-		edit.putExtra("action_index", originalIndex);
-		startActivityForResult(edit, 3);
+
+		if (action instanceof Water)
+		{
+			Intent edit = new Intent(getActivity(), EditFeedingActivity.class);
+			edit.putExtra("plant_index", plantIndex);
+			edit.putExtra("action_index", originalIndex);
+			startActivityForResult(edit, 3);
+		}
+		else if (action instanceof NoteAction)
+		{
+			NoteDialogFragment dialogFragment = new NoteDialogFragment((NoteAction)action);
+			dialogFragment.setOnDialogConfirmed(new NoteDialogFragment.OnDialogConfirmed()
+			{
+				@Override public void onDialogConfirmed(String notes)
+				{
+					final NoteAction noteAction = new NoteAction(notes);
+
+					plant.getActions().set(originalIndex, noteAction);
+					PlantManager.getInstance().upsert(plantIndex, plant);
+
+					SnackBar.show(getActivity(), "Note updated", "undo", new SnackBarListener()
+					{
+						@Override public void onSnackBarStarted(Object o)
+						{
+							if (getView() != null)
+							{
+								FabAnimator.animateUp(getView().findViewById(R.id.fab_complete));
+							}
+						}
+
+						@Override public void onSnackBarFinished(Object o)
+						{
+							if (getView() != null)
+							{
+								FabAnimator.animateDown(getView().findViewById(R.id.fab_complete));
+							}
+						}
+
+						@Override public void onSnackBarAction(Object o)
+						{
+							plant.getActions().set(originalIndex, action);
+							PlantManager.getInstance().upsert(plantIndex, plant);
+						}
+					});
+				}
+			});
+			dialogFragment.show(getFragmentManager(), null);
+		}
 	}
 
 	@Override public void onActionDeleted(final Action action)
