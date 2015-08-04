@@ -241,6 +241,7 @@ public class FeedingFragment extends Fragment
 			water.setPpm(feed.getPpm());
 			water.setRunoff(feed.getRunoff());
 			water.setAmount(feed.getAmount());
+			water.setDate(feed.getDate());
 
 			if (actionIndex < 0)
 			{
