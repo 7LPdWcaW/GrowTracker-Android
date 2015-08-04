@@ -22,6 +22,7 @@ import java.util.ArrayList;
 import java.util.Collections;
 
 import me.anon.controller.adapter.ActionAdapter;
+import me.anon.grow.EditFeedingActivity;
 import me.anon.grow.R;
 import me.anon.lib.Views;
 import me.anon.lib.helper.FabAnimator;
@@ -29,6 +30,7 @@ import me.anon.lib.manager.PlantManager;
 import me.anon.model.Action;
 import me.anon.model.EmptyAction;
 import me.anon.model.Feed;
+import me.anon.model.NoteAction;
 import me.anon.model.Plant;
 import me.anon.model.Water;
 
@@ -40,7 +42,7 @@ import me.anon.model.Water;
  * @project GrowTracker
  */
 @Views.Injectable
-public class EventListFragment extends Fragment implements ActionAdapter.OnActionDeletedListener
+public class EventListFragment extends Fragment implements ActionAdapter.OnActionSelectListener
 {
 	private ActionAdapter adapter;
 
@@ -104,7 +106,7 @@ public class EventListFragment extends Fragment implements ActionAdapter.OnActio
 		}
 
 		adapter = new ActionAdapter();
-		adapter.setOnActionDeletedListener(this);
+		adapter.setOnActionSelectListener(this);
 		setActions();
 		recycler.setLayoutManager(new LinearLayoutManager(getActivity()));
 		recycler.setAdapter(adapter);
@@ -129,6 +131,12 @@ public class EventListFragment extends Fragment implements ActionAdapter.OnActio
 				setActions();
 				adapter.notifyDataSetChanged();
 			}
+		}
+		else if (requestCode == 3)
+		{
+			plant = PlantManager.getInstance().getPlants().get(plantIndex);
+			setActions();
+			adapter.notifyDataSetChanged();
 		}
 
 		super.onActivityResult(requestCode, resultCode, data);
@@ -181,6 +189,112 @@ public class EventListFragment extends Fragment implements ActionAdapter.OnActio
 			}
 		});
 		dialogFragment.show(getFragmentManager(), null);
+	}
+
+	@Override public void onActionEdit(final Action action)
+	{
+		final int originalIndex = plant.getActions().indexOf(action);
+
+		if (action instanceof Water)
+		{
+			Intent edit = new Intent(getActivity(), EditFeedingActivity.class);
+			edit.putExtra("plant_index", plantIndex);
+			edit.putExtra("action_index", originalIndex);
+			startActivityForResult(edit, 3);
+		}
+		else if (action instanceof NoteAction)
+		{
+			NoteDialogFragment dialogFragment = new NoteDialogFragment((NoteAction)action);
+			dialogFragment.setOnDialogConfirmed(new NoteDialogFragment.OnDialogConfirmed()
+			{
+				@Override public void onDialogConfirmed(String notes)
+				{
+					final NoteAction noteAction = new NoteAction(notes);
+
+					plant.getActions().set(originalIndex, noteAction);
+					PlantManager.getInstance().upsert(plantIndex, plant);
+					setActions();
+					adapter.notifyDataSetChanged();
+
+					SnackBar.show(getActivity(), "Note updated", "undo", new SnackBarListener()
+					{
+						@Override public void onSnackBarStarted(Object o)
+						{
+							if (getView() != null)
+							{
+								FabAnimator.animateUp(getView().findViewById(R.id.fab_complete));
+							}
+						}
+
+						@Override public void onSnackBarFinished(Object o)
+						{
+							if (getView() != null)
+							{
+								FabAnimator.animateDown(getView().findViewById(R.id.fab_complete));
+							}
+						}
+
+						@Override public void onSnackBarAction(Object o)
+						{
+							plant.getActions().set(originalIndex, action);
+							PlantManager.getInstance().upsert(plantIndex, plant);
+							setActions();
+							adapter.notifyDataSetChanged();
+						}
+					});
+				}
+			});
+			dialogFragment.show(getFragmentManager(), null);
+		}
+		else if (action instanceof EmptyAction)
+		{
+			ActionDialogFragment dialogFragment = new ActionDialogFragment((EmptyAction)action);
+			dialogFragment.setOnActionSelected(new ActionDialogFragment.OnActionSelected()
+			{
+				@Override public void onActionSelected(Action.ActionName actionName, String notes)
+				{
+					final EmptyAction action = new EmptyAction(actionName);
+
+					if (notes != null)
+					{
+						action.setNotes(notes);
+					}
+
+					plant.getActions().set(originalIndex, action);
+					PlantManager.getInstance().upsert(plantIndex, plant);
+					setActions();
+					adapter.notifyDataSetChanged();
+
+					SnackBar.show(getActivity(), action.getAction().getPrintString() + " updated", "undo", new SnackBarListener()
+					{
+						@Override public void onSnackBarStarted(Object o)
+						{
+							if (getView() != null)
+							{
+								FabAnimator.animateUp(getView().findViewById(R.id.fab_complete));
+							}
+						}
+
+						@Override public void onSnackBarFinished(Object o)
+						{
+							if (getView() != null)
+							{
+								FabAnimator.animateDown(getView().findViewById(R.id.fab_complete));
+							}
+						}
+
+						@Override public void onSnackBarAction(Object o)
+						{
+							plant.getActions().set(originalIndex, action);
+							PlantManager.getInstance().upsert(plantIndex, plant);
+							setActions();
+							adapter.notifyDataSetChanged();
+						}
+					});
+				}
+			});
+			dialogFragment.show(getFragmentManager(), null);
+		}
 	}
 
 	@Override public void onActionDeleted(final Action action)

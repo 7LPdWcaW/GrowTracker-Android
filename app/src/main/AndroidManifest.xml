@@ -22,6 +22,7 @@
 		<activity android:name=".MainActivity" android:screenOrientation="portrait" />
 		<activity android:name=".AddPlantActivity" android:screenOrientation="portrait" />
 		<activity android:name=".AddFeedingActivity" android:screenOrientation="portrait" />
+		<activity android:name=".EditFeedingActivity" android:screenOrientation="portrait" />
 		<activity android:name=".ViewPhotosActivity" android:screenOrientation="portrait" />
 		<activity android:name=".EventsActivity" android:screenOrientation="portrait" />
 		<activity android:name=".StatisticsActivity" android:screenOrientation="portrait" />

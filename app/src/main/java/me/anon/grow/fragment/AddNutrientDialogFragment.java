@@ -92,7 +92,18 @@ public class AddNutrientDialogFragment extends DialogFragment
 						onAddNutrientListener.onNutrientSelected(nutrient);
 					}
 				}
-			}).setNegativeButton("Cancel", new DialogInterface.OnClickListener()
+			})
+			.setNeutralButton("Clear", new DialogInterface.OnClickListener()
+			{
+				@Override public void onClick(DialogInterface dialog, int which)
+				{
+					if (onAddNutrientListener != null)
+					{
+						onAddNutrientListener.onNutrientSelected(null);
+					}
+				}
+			})
+			.setNegativeButton("Cancel", new DialogInterface.OnClickListener()
 			{
 				public void onClick(DialogInterface dialog, int whichButton)
 				{
