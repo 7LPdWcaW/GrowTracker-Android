@@ -22,6 +22,7 @@ import java.util.ArrayList;
 import java.util.Collections;
 
 import me.anon.controller.adapter.ActionAdapter;
+import me.anon.grow.EditFeedingActivity;
 import me.anon.grow.R;
 import me.anon.lib.Views;
 import me.anon.lib.helper.FabAnimator;
@@ -40,7 +41,7 @@ import me.anon.model.Water;
  * @project GrowTracker
  */
 @Views.Injectable
-public class EventListFragment extends Fragment implements ActionAdapter.OnActionDeletedListener
+public class EventListFragment extends Fragment implements ActionAdapter.OnActionSelectListener
 {
 	private ActionAdapter adapter;
 
@@ -104,7 +105,7 @@ public class EventListFragment extends Fragment implements ActionAdapter.OnActio
 		}
 
 		adapter = new ActionAdapter();
-		adapter.setOnActionDeletedListener(this);
+		adapter.setOnActionSelectListener(this);
 		setActions();
 		recycler.setLayoutManager(new LinearLayoutManager(getActivity()));
 		recycler.setAdapter(adapter);
@@ -126,6 +127,15 @@ public class EventListFragment extends Fragment implements ActionAdapter.OnActio
 			if (resultCode != Activity.RESULT_CANCELED)
 			{
 				PlantManager.getInstance().upsert(plantIndex, plant);
+				setActions();
+				adapter.notifyDataSetChanged();
+			}
+		}
+		else if (requestCode == 3)
+		{
+			if (resultCode != Activity.RESULT_CANCELED)
+			{
+				plant = PlantManager.getInstance().getPlants().get(plantIndex);
 				setActions();
 				adapter.notifyDataSetChanged();
 			}
@@ -181,6 +191,15 @@ public class EventListFragment extends Fragment implements ActionAdapter.OnActio
 			}
 		});
 		dialogFragment.show(getFragmentManager(), null);
+	}
+
+	@Override public void onActionEdit(Action action)
+	{
+		final int originalIndex = plant.getActions().indexOf(action);
+		Intent edit = new Intent(getActivity(), EditFeedingActivity.class);
+		edit.putExtra("plant_index", plantIndex);
+		edit.putExtra("action_index", originalIndex);
+		startActivityForResult(edit, 3);
 	}
 
 	@Override public void onActionDeleted(final Action action)

@@ -16,7 +16,7 @@ import me.anon.lib.Views;
  */
 @Views.Injectable
 @Accessors(prefix = {"m", ""}, chain = true)
-public class AddFeedingActivity extends AppCompatActivity
+public class EditFeedingActivity extends AppCompatActivity
 {
 	private static final String TAG_FRAGMENT = "current_fragment";
 
@@ -24,13 +24,18 @@ public class AddFeedingActivity extends AppCompatActivity
 	{
 		super.onCreate(savedInstanceState);
 
+		setTitle("Edit feeding");
+
 		setContentView(R.layout.fragment_holder);
 		Views.inject(this);
 
 		int plantIndex = -1;
+		int feedingIndex = -1;
+
 		if (getIntent().getExtras() != null)
 		{
 			plantIndex = getIntent().getExtras().getInt("plant_index", -1);
+			feedingIndex = getIntent().getExtras().getInt("action_index", -1);
 		}
 
 		if (plantIndex < 0)
@@ -41,7 +46,7 @@ public class AddFeedingActivity extends AppCompatActivity
 
 		if (getFragmentManager().findFragmentByTag(TAG_FRAGMENT) == null)
 		{
-			getFragmentManager().beginTransaction().replace(R.id.fragment_holder, FeedingFragment.newInstance(plantIndex, -1), TAG_FRAGMENT).commit();
+			getFragmentManager().beginTransaction().replace(R.id.fragment_holder, FeedingFragment.newInstance(plantIndex, feedingIndex), TAG_FRAGMENT).commit();
 		}
 	}
 }

@@ -30,7 +30,7 @@ import me.anon.model.Water;
  * @project GrowTracker
  */
 @Views.Injectable
-public class AddFeedingFragment extends Fragment
+public class FeedingFragment extends Fragment
 {
 	@Views.InjectView(R.id.water_ph) private TextView waterPh;
 	@Views.InjectView(R.id.water_ppm) private TextView waterPpm;
@@ -41,6 +41,7 @@ public class AddFeedingFragment extends Fragment
 	@Views.InjectView(R.id.nutrient_amount) private TextView nutrientAmount;
 
 	private int plantIndex = -1;
+	private int actionIndex = -1;
 	private Plant plant;
 	private Feed feed;
 
@@ -48,13 +49,13 @@ public class AddFeedingFragment extends Fragment
 	 * @param plantIndex If -1, assume new plant
 	 * @return Instantiated details fragment
 	 */
-	public static AddFeedingFragment newInstance(int plantIndex, boolean feeding)
+	public static FeedingFragment newInstance(int plantIndex, int feedingIndex)
 	{
 		Bundle args = new Bundle();
 		args.putInt("plant_index", plantIndex);
-		args.putBoolean("feeding", feeding);
+		args.putInt("action_index", feedingIndex);
 
-		AddFeedingFragment fragment = new AddFeedingFragment();
+		FeedingFragment fragment = new FeedingFragment();
 		fragment.setArguments(args);
 
 		return fragment;
@@ -77,18 +78,12 @@ public class AddFeedingFragment extends Fragment
 		if (getArguments() != null)
 		{
 			plantIndex = getArguments().getInt("plant_index");
+			actionIndex = getArguments().getInt("action_index");
 
 			if (plantIndex > -1)
 			{
 				plant = PlantManager.getInstance().getPlants().get(plantIndex);
 				getActivity().getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_ALWAYS_HIDDEN);
-			}
-
-			boolean feeding = getArguments().getBoolean("feeding", true);
-
-			if (!feeding)
-			{
-				nutrientContainer.setVisibility(View.GONE);
 			}
 		}
 
@@ -145,7 +140,7 @@ public class AddFeedingFragment extends Fragment
 							nutrientStr += " : ";
 							nutrientStr += nutrient.getMgpc() == null ? "-" : nutrient.getMgpc();
 
-							AddFeedingFragment.this.nutrient.setText(nutrientStr);
+							FeedingFragment.this.nutrient.setText(nutrientStr);
 						}
 					});
 					addNutrientDialogFragment.show(fm, "fragment_add_nutrient");
