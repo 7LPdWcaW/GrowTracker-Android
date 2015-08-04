@@ -24,6 +24,8 @@ public class AddFeedingActivity extends AppCompatActivity
 	{
 		super.onCreate(savedInstanceState);
 
+		setTitle("New feeding");
+
 		setContentView(R.layout.fragment_holder);
 		Views.inject(this);
 
