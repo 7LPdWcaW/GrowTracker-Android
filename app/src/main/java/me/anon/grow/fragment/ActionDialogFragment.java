@@ -75,7 +75,7 @@ public class ActionDialogFragment extends DialogFragment
 		}
 
 		dialog.setView(view);
-		dialog.setPositiveButton("Add", new DialogInterface.OnClickListener()
+		dialog.setPositiveButton(action == null ? "Add" : "Edit", new DialogInterface.OnClickListener()
 		{
 			@Override public void onClick(DialogInterface dialog, int which)
 			{
