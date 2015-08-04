@@ -17,6 +17,7 @@ import lombok.Setter;
 import me.anon.grow.R;
 import me.anon.lib.Views;
 import me.anon.model.Action;
+import me.anon.model.EmptyAction;
 
 @Views.Injectable
 public class ActionDialogFragment extends DialogFragment
@@ -31,7 +32,14 @@ public class ActionDialogFragment extends DialogFragment
 
 	@Setter private OnActionSelected onActionSelected;
 
+	private EmptyAction action;
+
 	public ActionDialogFragment(){}
+
+	public ActionDialogFragment(EmptyAction action)
+	{
+		this.action = action;
+	}
 
 	@Override public Dialog onCreateDialog(Bundle savedInstanceState)
 	{
@@ -47,6 +55,24 @@ public class ActionDialogFragment extends DialogFragment
 		System.arraycopy(Action.ActionName.names(), 2, actions, 0, actions.length);
 
 		actionsSpinner.setAdapter(new ArrayAdapter<String>(getActivity(), android.R.layout.simple_spinner_dropdown_item, actions));
+
+		if (action != null)
+		{
+			notes.setText(action.getNotes());
+			int selectionIndex = 0;
+
+			for (int index = 0; index < actions.length; index++)
+			{
+				String actionName = actions[index];
+				if (actionName.equalsIgnoreCase(action.getAction().getPrintString()))
+				{
+					selectionIndex = index;
+					break;
+				}
+			}
+
+			actionsSpinner.setSelection(selectionIndex);
+		}
 
 		dialog.setView(view);
 		dialog.setPositiveButton("Add", new DialogInterface.OnClickListener()
