@@ -14,6 +14,7 @@ import android.widget.EditText;
 import lombok.Setter;
 import me.anon.grow.R;
 import me.anon.lib.Views;
+import me.anon.model.NoteAction;
 
 @Views.Injectable
 public class NoteDialogFragment extends DialogFragment
@@ -24,23 +25,34 @@ public class NoteDialogFragment extends DialogFragment
 	}
 
 	@Views.InjectView(R.id.notes) private EditText notes;
+	private NoteAction action;
 
 	@Setter private OnDialogConfirmed onDialogConfirmed;
 
 	public NoteDialogFragment(){}
+
+	public NoteDialogFragment(NoteAction action)
+	{
+		this.action = action;
+	}
 
 	@Override public Dialog onCreateDialog(Bundle savedInstanceState)
 	{
 		final Context context = getActivity();
 
 		AlertDialog.Builder dialog = new AlertDialog.Builder(context);
-		dialog.setTitle("Add note");
+		dialog.setTitle((action == null ? "Add" : "Edit") + " note");
 		View view = LayoutInflater.from(getActivity()).inflate(R.layout.note_dialog, null);
 
 		Views.inject(this, view);
 
+		if (action != null)
+		{
+			notes.setText(action.getNotes());
+		}
+
 		dialog.setView(view);
-		dialog.setPositiveButton("Add", new DialogInterface.OnClickListener()
+		dialog.setPositiveButton(action == null ? "Add" : "Edit", new DialogInterface.OnClickListener()
 		{
 			@Override public void onClick(DialogInterface dialog, int which)
 			{

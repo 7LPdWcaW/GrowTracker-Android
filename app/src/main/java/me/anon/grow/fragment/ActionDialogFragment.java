@@ -17,6 +17,7 @@ import lombok.Setter;
 import me.anon.grow.R;
 import me.anon.lib.Views;
 import me.anon.model.Action;
+import me.anon.model.EmptyAction;
 
 @Views.Injectable
 public class ActionDialogFragment extends DialogFragment
@@ -31,14 +32,21 @@ public class ActionDialogFragment extends DialogFragment
 
 	@Setter private OnActionSelected onActionSelected;
 
+	private EmptyAction action;
+
 	public ActionDialogFragment(){}
+
+	public ActionDialogFragment(EmptyAction action)
+	{
+		this.action = action;
+	}
 
 	@Override public Dialog onCreateDialog(Bundle savedInstanceState)
 	{
 		final Context context = getActivity();
 
 		AlertDialog.Builder dialog = new AlertDialog.Builder(context);
-		dialog.setTitle("Add action");
+		dialog.setTitle((action == null ? "Add" : "Edit") + " action");
 		View view = LayoutInflater.from(getActivity()).inflate(R.layout.action_dialog, null);
 
 		Views.inject(this, view);
@@ -48,8 +56,26 @@ public class ActionDialogFragment extends DialogFragment
 
 		actionsSpinner.setAdapter(new ArrayAdapter<String>(getActivity(), android.R.layout.simple_spinner_dropdown_item, actions));
 
+		if (action != null)
+		{
+			notes.setText(action.getNotes());
+			int selectionIndex = 0;
+
+			for (int index = 0; index < actions.length; index++)
+			{
+				String actionName = actions[index];
+				if (actionName.equalsIgnoreCase(action.getAction().getPrintString()))
+				{
+					selectionIndex = index;
+					break;
+				}
+			}
+
+			actionsSpinner.setSelection(selectionIndex);
+		}
+
 		dialog.setView(view);
-		dialog.setPositiveButton("Add", new DialogInterface.OnClickListener()
+		dialog.setPositiveButton(action == null ? "Add" : "Edit", new DialogInterface.OnClickListener()
 		{
 			@Override public void onClick(DialogInterface dialog, int which)
 			{

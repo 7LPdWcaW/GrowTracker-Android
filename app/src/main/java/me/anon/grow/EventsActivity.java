@@ -4,7 +4,6 @@ import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 
 import lombok.experimental.Accessors;
-import me.anon.grow.fragment.AddFeedingFragment;
 import me.anon.grow.fragment.EventListFragment;
 import me.anon.lib.Views;
 
