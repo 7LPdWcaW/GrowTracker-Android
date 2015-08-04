@@ -99,12 +99,16 @@ public class ActionAdapter extends RecyclerView.Adapter<ActionHolder>
 
 			if (((Feed)action).getPh() != null)
 			{
-				waterStr.append("PH: " + ((Feed)action).getPh() + ", ");
+				waterStr.append("PH: ");
+				waterStr.append(((Feed)action).getPh());
+				waterStr.append(", ");
 			}
 
 			if (((Feed)action).getRunoff() != null)
 			{
-				waterStr.append("Runoff: " + ((Feed)action).getRunoff() + ", ");
+				waterStr.append("Runoff: ");
+				waterStr.append(((Feed)action).getRunoff());
+				waterStr.append(", ");
 			}
 
 			summary += waterStr.toString().length() > 0 ? waterStr.toString().substring(0, waterStr.length() - 2) + "\n" : "";
@@ -113,12 +117,16 @@ public class ActionAdapter extends RecyclerView.Adapter<ActionHolder>
 
 			if (((Feed)action).getPpm() != null)
 			{
-				waterStr.append("PPM: " + ((Feed)action).getPpm() + ", ");
+				waterStr.append("PPM: ");
+				waterStr.append(((Feed)action).getPpm());
+				waterStr.append(", ");
 			}
 
 			if (((Feed)action).getAmount() != null)
 			{
-				waterStr.append("Amount: " + ((Feed)action).getAmount() + "ml, ");
+				waterStr.append("Amount: ");
+				waterStr.append(((Feed)action).getAmount());
+				waterStr.append("ml, ");
 			}
 
 			summary += waterStr.toString().length() > 0 ? waterStr.toString().substring(0, waterStr.length() - 2) : "";
@@ -131,12 +139,16 @@ public class ActionAdapter extends RecyclerView.Adapter<ActionHolder>
 
 			if (((Water)action).getPh() != null)
 			{
-				waterStr.append("PH: " + ((Water)action).getPh() + ", ");
+				waterStr.append("PH: ");
+				waterStr.append(((Water)action).getPh());
+				waterStr.append(", ");
 			}
 
 			if (((Water)action).getRunoff() != null)
 			{
-				waterStr.append("Runoff: " + ((Water)action).getRunoff() + ", ");
+				waterStr.append("Runoff: ");
+				waterStr.append(((Water)action).getRunoff());
+				waterStr.append(", ");
 			}
 
 			summary += waterStr.toString().length() > 0 ? waterStr.toString().substring(0, waterStr.length() - 2) + "\n" : "";
@@ -145,12 +157,16 @@ public class ActionAdapter extends RecyclerView.Adapter<ActionHolder>
 
 			if (((Water)action).getPpm() != null)
 			{
-				waterStr.append("PPM: " + ((Water)action).getPpm() + ", ");
+				waterStr.append("PPM: ");
+				waterStr.append(((Water)action).getPpm());
+				waterStr.append(", ");
 			}
 
 			if (((Water)action).getAmount() != null)
 			{
-				waterStr.append("Amount: " + ((Water)action).getAmount() + "ml, ");
+				waterStr.append("Amount: ");
+				waterStr.append(((Water)action).getAmount());
+				waterStr.append("ml, ");
 			}
 
 			summary += waterStr.toString().length() > 0 ? waterStr.toString().substring(0, waterStr.length() - 2) : "";
