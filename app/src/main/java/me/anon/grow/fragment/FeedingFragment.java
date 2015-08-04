@@ -181,12 +181,12 @@ public class FeedingFragment extends Fragment
 			waterPpm.setText(String.valueOf(feed.getPpm()));
 		}
 
-		if (runoffPh != null)
+		if (feed.getRunoff() != null)
 		{
 			runoffPh.setText(String.valueOf(feed.getRunoff()));
 		}
 
-		if (amount != null)
+		if (feed.getAmount() != null)
 		{
 			amount.setText(String.valueOf(feed.getAmount()));
 		}
