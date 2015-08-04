@@ -83,9 +83,30 @@ public class FeedingFragment extends Fragment
 				plant = PlantManager.getInstance().getPlants().get(plantIndex);
 				getActivity().getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_ALWAYS_HIDDEN);
 			}
+
+			if (actionIndex > -1)
+			{
+				if (PlantManager.getInstance().getPlants().get(plantIndex).getActions().get(actionIndex) instanceof Feed)
+				{
+					feed = (Feed)PlantManager.getInstance().getPlants().get(plantIndex).getActions().get(actionIndex);
+				}
+				else if (PlantManager.getInstance().getPlants().get(plantIndex).getActions().get(actionIndex) instanceof Water)
+				{
+					Water water = (Water)PlantManager.getInstance().getPlants().get(plantIndex).getActions().get(actionIndex);
+
+					feed = new Feed();
+					feed.setPh(water.getPh());
+					feed.setPpm(water.getPpm());
+					feed.setRunoff(water.getRunoff());
+					feed.setAmount(water.getAmount());
+				}
+			}
 		}
 
-		feed = new Feed();
+		if (feed == null)
+		{
+			feed = new Feed();
+		}
 
 		if (plant == null)
 		{
@@ -93,6 +114,7 @@ public class FeedingFragment extends Fragment
 			return;
 		}
 
+		setUi();
 		nutrient.setOnFocusChangeListener(new View.OnFocusChangeListener()
 		{
 			@Override public void onFocusChange(View v, boolean hasFocus)
@@ -145,6 +167,34 @@ public class FeedingFragment extends Fragment
 				}
 			}
 		});
+	}
+
+	private void setUi()
+	{
+		waterPh.setText(String.valueOf(feed.getPh()));
+		waterPpm.setText(String.valueOf(feed.getPpm()));
+		runoffPh.setText(String.valueOf(feed.getRunoff()));
+		amount.setText(String.valueOf(feed.getAmount()));
+
+		if (feed.getNutrient() != null)
+		{
+			String nutrientStr = "";
+			nutrientStr += feed.getNutrient().getNpc() == null ? "-" : feed.getNutrient().getNpc();
+			nutrientStr += " : ";
+			nutrientStr += feed.getNutrient().getPpc() == null ? "-" : feed.getNutrient().getPpc();
+			nutrientStr += " : ";
+			nutrientStr += feed.getNutrient().getKpc() == null ? "-" : feed.getNutrient().getKpc();
+			nutrientStr += "/";
+			nutrientStr += feed.getNutrient().getCapc() == null ? "-" : feed.getNutrient().getCapc();
+			nutrientStr += " : ";
+			nutrientStr += feed.getNutrient().getSpc() == null ? "-" : feed.getNutrient().getSpc();
+			nutrientStr += " : ";
+			nutrientStr += feed.getNutrient().getMgpc() == null ? "-" : feed.getNutrient().getMgpc();
+
+			nutrient.setText(nutrientStr);
+		}
+
+		nutrientAmount.setText(String.valueOf(feed.getMlpl()));
 	}
 
 	@Views.OnClick public void onFabCompleteClick(final View view)
