@@ -147,20 +147,29 @@ public class FeedingFragment extends Fragment
 						{
 							feed.setNutrient(nutrient);
 
-							String nutrientStr = "";
-							nutrientStr += nutrient.getNpc() == null ? "-" : nutrient.getNpc();
-							nutrientStr += " : ";
-							nutrientStr += nutrient.getPpc() == null ? "-" : nutrient.getPpc();
-							nutrientStr += " : ";
-							nutrientStr += nutrient.getKpc() == null ? "-" : nutrient.getKpc();
-							nutrientStr += "/";
-							nutrientStr += nutrient.getCapc() == null ? "-" : nutrient.getCapc();
-							nutrientStr += " : ";
-							nutrientStr += nutrient.getSpc() == null ? "-" : nutrient.getSpc();
-							nutrientStr += " : ";
-							nutrientStr += nutrient.getMgpc() == null ? "-" : nutrient.getMgpc();
+							if (nutrient == null)
+							{
+								feed.setAmount(null);
+								FeedingFragment.this.nutrientAmount.setText(null);
+								FeedingFragment.this.nutrient.setText("N/A");
+							}
+							else
+							{
+								String nutrientStr = "";
+								nutrientStr += nutrient.getNpc() == null ? "-" : nutrient.getNpc();
+								nutrientStr += " : ";
+								nutrientStr += nutrient.getPpc() == null ? "-" : nutrient.getPpc();
+								nutrientStr += " : ";
+								nutrientStr += nutrient.getKpc() == null ? "-" : nutrient.getKpc();
+								nutrientStr += "/";
+								nutrientStr += nutrient.getCapc() == null ? "-" : nutrient.getCapc();
+								nutrientStr += " : ";
+								nutrientStr += nutrient.getSpc() == null ? "-" : nutrient.getSpc();
+								nutrientStr += " : ";
+								nutrientStr += nutrient.getMgpc() == null ? "-" : nutrient.getMgpc();
 
-							FeedingFragment.this.nutrient.setText(nutrientStr);
+								FeedingFragment.this.nutrient.setText(nutrientStr);
+							}
 						}
 					});
 					addNutrientDialogFragment.show(fm, "fragment_add_nutrient");
