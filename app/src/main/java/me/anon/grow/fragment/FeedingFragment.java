@@ -1,7 +1,9 @@
 package me.anon.grow.fragment;
 
+import android.app.DatePickerDialog;
 import android.app.Fragment;
 import android.app.FragmentManager;
+import android.app.TimePickerDialog;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.text.TextUtils;
@@ -9,9 +11,14 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.WindowManager;
+import android.widget.DatePicker;
 import android.widget.TextView;
+import android.widget.TimePicker;
 
+import java.text.DateFormat;
 import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.Date;
 
 import me.anon.grow.R;
 import me.anon.lib.Views;
@@ -36,6 +43,8 @@ public class FeedingFragment extends Fragment
 	@Views.InjectView(R.id.water_ppm) private TextView waterPpm;
 	@Views.InjectView(R.id.runoff_ph) private TextView runoffPh;
 	@Views.InjectView(R.id.amount) private TextView amount;
+	@Views.InjectView(R.id.date_container) private View dateContainer;
+	@Views.InjectView(R.id.date) private TextView date;
 	@Views.InjectView(R.id.nutrient_container) private View nutrientContainer;
 	@Views.InjectView(R.id.nutrient) private TextView nutrient;
 	@Views.InjectView(R.id.nutrient_amount) private TextView nutrientAmount;
@@ -180,6 +189,60 @@ public class FeedingFragment extends Fragment
 
 	private void setUi()
 	{
+		if (actionIndex > -1)
+		{
+			dateContainer.setVisibility(View.VISIBLE);
+			amount.setNextFocusDownId(R.id.date);
+
+			Calendar date = Calendar.getInstance();
+			date.setTimeInMillis(feed.getDate());
+
+			final DateFormat dateFormat = android.text.format.DateFormat.getDateFormat(getActivity());
+			final DateFormat timeFormat = android.text.format.DateFormat.getTimeFormat(getActivity());
+
+			String dateStr = dateFormat.format(new Date(feed.getDate())) + " " + timeFormat.format(new Date(feed.getDate()));
+			this.date.setText(dateStr);
+
+			this.date.setOnFocusChangeListener(new View.OnFocusChangeListener()
+			{
+				@Override public void onFocusChange(View v, boolean hasFocus)
+				{
+					if (hasFocus)
+					{
+						final Calendar date = Calendar.getInstance();
+						date.setTimeInMillis(feed.getDate());
+
+						String dateStr = dateFormat.format(date.getTime()) + " " + timeFormat.format(date.getTime());
+						FeedingFragment.this.date.setText(dateStr);
+
+						feed.setDate(date.getTimeInMillis());
+
+						new DatePickerDialog(getActivity(), new DatePickerDialog.OnDateSetListener()
+						{
+							@Override public void onDateSet(DatePicker view, int year, int monthOfYear, int dayOfMonth)
+							{
+								date.set(year, monthOfYear, dayOfMonth);
+
+								new TimePickerDialog(getActivity(), new TimePickerDialog.OnTimeSetListener()
+								{
+									@Override public void onTimeSet(TimePicker view, int hourOfDay, int minute)
+									{
+										date.set(Calendar.HOUR_OF_DAY, hourOfDay);
+										date.set(Calendar.MINUTE, minute);
+
+										String dateStr = dateFormat.format(date.getTime()) + " " + timeFormat.format(date.getTime());
+										FeedingFragment.this.date.setText(dateStr);
+
+										feed.setDate(date.getTimeInMillis());
+									}
+								}, date.get(Calendar.HOUR_OF_DAY), date.get(Calendar.MINUTE), true).show();
+							}
+						}, date.get(Calendar.YEAR), date.get(Calendar.MONTH), date.get(Calendar.DAY_OF_MONTH)).show();
+					}
+				}
+			});
+		}
+
 		if (feed.getPh() != null)
 		{
 			waterPh.setText(String.valueOf(feed.getPh()));
