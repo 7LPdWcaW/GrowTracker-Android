@@ -24,6 +24,7 @@ import com.kenny.snackbar.SnackBarListener;
 import java.io.File;
 import java.io.IOException;
 import java.text.DateFormat;
+import java.util.Calendar;
 import java.util.Date;
 import java.util.Locale;
 
@@ -130,8 +131,8 @@ public class PlantDetailsFragment extends Fragment
 
 	private void setUi()
 	{
-		DateFormat dateFormat = android.text.format.DateFormat.getDateFormat(getActivity());
-		DateFormat timeFormat = android.text.format.DateFormat.getTimeFormat(getActivity());
+		final DateFormat dateFormat = android.text.format.DateFormat.getDateFormat(getActivity());
+		final DateFormat timeFormat = android.text.format.DateFormat.getTimeFormat(getActivity());
 
 		String dateStr = dateFormat.format(new Date(plant.getPlantDate())) + " " + timeFormat.format(new Date(plant.getPlantDate()));
 		date.setText(dateStr);
@@ -141,7 +142,32 @@ public class PlantDetailsFragment extends Fragment
 		{
 			@Override public void onFocusChange(View v, boolean hasFocus)
 			{
-				
+				if (hasFocus)
+				{
+					final DateDialogFragment fragment = new DateDialogFragment(plant.getPlantDate());
+					fragment.setOnDateSelected(new DateDialogFragment.OnDateSelectedListener()
+					{
+						@Override public void onDateSelected(Calendar newDate)
+						{
+							plant.setPlantDate(newDate.getTimeInMillis());
+							String dateStr = dateFormat.format(new Date(plant.getPlantDate())) + " " + timeFormat.format(new Date(plant.getPlantDate()));
+							date.setText(dateStr);
+						}
+
+						@Override public void onCancelled()
+						{
+							getFragmentManager().beginTransaction().remove(fragment).commit();
+						}
+					});
+					getFragmentManager().beginTransaction().add(fragment, "date").commit();
+				}
+			}
+		});
+		date.setOnClickListener(new View.OnClickListener()
+		{
+			@Override public void onClick(View v)
+			{
+				date.requestFocus();
 			}
 		});
 	}
