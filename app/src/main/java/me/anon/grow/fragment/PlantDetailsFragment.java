@@ -167,6 +167,7 @@ public class PlantDetailsFragment extends Fragment
 		{
 			@Override public void onClick(View v)
 			{
+				date.clearFocus();
 				date.requestFocus();
 			}
 		});
