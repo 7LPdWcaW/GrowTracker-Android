@@ -138,37 +138,26 @@ public class PlantDetailsFragment extends Fragment
 		date.setText(dateStr);
 		clone.setChecked(plant.isClone());
 
-		date.setOnFocusChangeListener(new View.OnFocusChangeListener()
-		{
-			@Override public void onFocusChange(View v, boolean hasFocus)
-			{
-				if (hasFocus)
-				{
-					final DateDialogFragment fragment = new DateDialogFragment(plant.getPlantDate());
-					fragment.setOnDateSelected(new DateDialogFragment.OnDateSelectedListener()
-					{
-						@Override public void onDateSelected(Calendar newDate)
-						{
-							plant.setPlantDate(newDate.getTimeInMillis());
-							String dateStr = dateFormat.format(new Date(plant.getPlantDate())) + " " + timeFormat.format(new Date(plant.getPlantDate()));
-							date.setText(dateStr);
-						}
-
-						@Override public void onCancelled()
-						{
-							getFragmentManager().beginTransaction().remove(fragment).commit();
-						}
-					});
-					getFragmentManager().beginTransaction().add(fragment, "date").commit();
-				}
-			}
-		});
 		date.setOnClickListener(new View.OnClickListener()
 		{
 			@Override public void onClick(View v)
 			{
-				date.clearFocus();
-				date.requestFocus();
+				final DateDialogFragment fragment = new DateDialogFragment(plant.getPlantDate());
+				fragment.setOnDateSelected(new DateDialogFragment.OnDateSelectedListener()
+				{
+					@Override public void onDateSelected(Calendar newDate)
+					{
+						plant.setPlantDate(newDate.getTimeInMillis());
+						String dateStr = dateFormat.format(new Date(plant.getPlantDate())) + " " + timeFormat.format(new Date(plant.getPlantDate()));
+						date.setText(dateStr);
+					}
+
+					@Override public void onCancelled()
+					{
+						getFragmentManager().beginTransaction().remove(fragment).commit();
+					}
+				});
+				getFragmentManager().beginTransaction().add(fragment, "date").commit();
 			}
 		});
 	}
