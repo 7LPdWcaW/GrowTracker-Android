@@ -157,7 +157,7 @@
 								android:id="@+id/amount"
 								android:hint="250ml"
 								android:inputType="numberSigned"
-								android:nextFocusDown="@+id/nutrient"
+								android:nextFocusDown="@+id/date"
 								style="@style/SubsectionSubTitle"
 							/>
 						</LinearLayout>
@@ -173,7 +173,6 @@
 				android:background="#ffffff"
 				android:layout_marginTop="8dp"
 				android:elevation="4dp"
-				android:visibility="gone"
 				style="@style/PaperCard"
 			>
 				<TextView
@@ -207,7 +206,7 @@
 							style="@style/SubsectionTitle"
 						/>
 
-						<EditText
+						<TextView
 							android:layout_width="match_parent"
 							android:layout_height="wrap_content"
 							android:id="@+id/date"
