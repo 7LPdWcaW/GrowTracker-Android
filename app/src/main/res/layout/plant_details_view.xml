@@ -149,9 +149,87 @@
 							android:layout_height="wrap_content"
 							android:hint="Lemon haze"
 							android:id="@+id/plant_strain"
-							android:nextFocusDown="@+id/plant_stage"
+							android:nextFocusDown="@+id/plant_date"
 							android:singleLine="true"
 							style="@style/SubsectionSubTitle"
+						/>
+					</LinearLayout>
+				</LinearLayout>
+			</LinearLayout>
+
+			<LinearLayout
+				android:layout_width="match_parent"
+				android:layout_height="wrap_content"
+				android:orientation="vertical"
+				android:background="#ffffff"
+				android:elevation="4dp"
+				android:layout_marginTop="8dp"
+				style="@style/PaperCard"
+			>
+				<TextView
+					android:layout_width="wrap_content"
+					android:layout_height="wrap_content"
+					android:text="Grow details"
+					style="@style/SectionTitle"
+				/>
+
+				<LinearLayout
+					android:layout_width="match_parent"
+					android:layout_height="wrap_content"
+					android:orientation="vertical"
+					android:divider="@drawable/full_divider"
+					android:showDividers="middle"
+					android:layout_marginTop="16dp"
+				>
+					<LinearLayout
+						android:layout_width="match_parent"
+						android:layout_height="wrap_content"
+						android:orientation="vertical"
+						android:paddingLeft="16dp"
+						android:paddingRight="16dp"
+						android:paddingTop="8dp"
+						android:paddingBottom="16dp"
+					>
+						<TextView
+							android:layout_width="match_parent"
+							android:layout_height="wrap_content"
+							android:text="Plant date"
+							style="@style/SubsectionTitle"
+						/>
+
+						<EditText
+							android:layout_width="match_parent"
+							android:layout_height="wrap_content"
+							android:id="@+id/plant_date"
+							android:editable="false"
+							android:nextFocusDown="@+id/plant_stage"
+							style="@style/SubsectionSubTitle"
+						/>
+					</LinearLayout>
+
+					<LinearLayout
+						android:layout_width="match_parent"
+						android:layout_height="wrap_content"
+						android:orientation="horizontal"
+						android:paddingLeft="16dp"
+						android:paddingRight="16dp"
+						android:paddingTop="16dp"
+						android:paddingBottom="8dp"
+					>
+						<TextView
+							android:layout_width="wrap_content"
+							android:layout_height="wrap_content"
+							android:text="From clone?"
+							style="@style/SubsectionTitle"
+						/>
+
+						<CheckBox
+							android:layout_width="wrap_content"
+							android:layout_height="wrap_content"
+							android:id="@+id/from_clone"
+							android:singleLine="true"
+							android:gravity="center"
+							android:layout_marginLeft="16dp"
 						/>
 					</LinearLayout>
 				</LinearLayout>
