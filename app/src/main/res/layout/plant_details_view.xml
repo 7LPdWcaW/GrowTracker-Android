@@ -197,11 +197,10 @@
 							style="@style/SubsectionTitle"
 						/>
 
-						<EditText
+						<TextView
 							android:layout_width="match_parent"
 							android:layout_height="wrap_content"
 							android:id="@+id/plant_date"
-							android:editable="false"
 							android:nextFocusDown="@+id/plant_stage"
 							style="@style/SubsectionSubTitle"
 						/>
