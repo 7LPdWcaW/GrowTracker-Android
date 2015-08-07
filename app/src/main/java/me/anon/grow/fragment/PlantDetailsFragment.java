@@ -414,6 +414,7 @@ public class PlantDetailsFragment extends Fragment
 			plant.getActions().add(new StageChange(PlantStage.valueOf(stage.getText().toString().toUpperCase(Locale.ENGLISH))));
 		}
 
+		plant.setClone(clone.isChecked());
 		PlantManager.getInstance().upsert(plantIndex, plant);
 		getActivity().finish();
 	}
