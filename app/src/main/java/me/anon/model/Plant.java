@@ -2,7 +2,8 @@ package me.anon.model;
 
 import java.util.ArrayList;
 
-import lombok.Data;
+import lombok.Getter;
+import lombok.Setter;
 import lombok.experimental.Accessors;
 
 /**
@@ -12,7 +13,7 @@ import lombok.experimental.Accessors;
  * @documentation // TODO Reference flow doc
  * @project GrowTracker
  */
-@Data
+@Getter @Setter
 @Accessors(prefix = {"m", ""}, chain = true)
 public class Plant
 {

@@ -1,6 +1,7 @@
 package me.anon.model;
 
-import lombok.Data;
+import lombok.Getter;
+import lombok.Setter;
 import lombok.experimental.Accessors;
 
 /**
@@ -10,8 +11,8 @@ import lombok.experimental.Accessors;
  * @documentation // TODO Reference flow doc
  * @project GrowTracker
  */
-@Data
 @Accessors(prefix = {"m", ""}, chain = true)
+@Getter @Setter
 public class Feed extends Water
 {
 	private Nutrient nutrient;

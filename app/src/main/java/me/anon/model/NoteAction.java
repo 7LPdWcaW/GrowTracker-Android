@@ -1,6 +1,7 @@
 package me.anon.model;
 
-import lombok.Data;
+import lombok.Getter;
+import lombok.Setter;
 
 /**
  * // TODO: Add class description
@@ -9,7 +10,7 @@ import lombok.Data;
  * @documentation // TODO Reference flow doc
  * @project GrowTracker
  */
-@Data
+@Getter @Setter
 public class NoteAction extends Action
 {
 	public NoteAction(String note)
