@@ -92,7 +92,7 @@ Water action is the same as a feeding action, sans the "nutrient" object
 
 Action can be one of,
 
-`TRIM`, `TOP`, `FIM`, `LST`, `LOLLIPOP`, `FLUSH`
+`TRIM`, `TOP`, `FIM`, `LST`, `LOLLIPOP`, `FLUSH`, `FOLIAR_FEED`, `PESTICIDE_APPLICATION`
 
 ```
 {
