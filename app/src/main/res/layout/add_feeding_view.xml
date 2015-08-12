@@ -269,6 +269,7 @@
 							android:inputType="none"
 							android:text="N/A"
 							android:nextFocusDown="@+id/nutrient_amount"
+							android:background="@null"
 							style="@style/SubsectionSubTitle"
 						/>
 					</LinearLayout>

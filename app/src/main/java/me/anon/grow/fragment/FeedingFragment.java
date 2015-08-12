@@ -100,6 +100,7 @@ public class FeedingFragment extends Fragment
 					Water water = (Water)PlantManager.getInstance().getPlants().get(plantIndex).getActions().get(actionIndex);
 
 					feed = new Feed();
+					feed.setDate(water.getDate());
 					feed.setPh(water.getPh());
 					feed.setPpm(water.getPpm());
 					feed.setRunoff(water.getRunoff());
