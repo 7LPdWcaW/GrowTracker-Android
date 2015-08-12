@@ -23,8 +23,10 @@ public abstract class Action
 		WATER("Water", 0xffBBDEFB),
 		FIM("Fuck I Missed", 0xffFFCC80),
 		FLUSH("Flush", 0xffFFE082),
+		FOLIAR_FEED("Foliar Feed", 0xffE6EE9C),
 		LST("Low Stress Training", 0xffFFF59D),
 		LOLLIPOP("Lollipop", 0xffFFD180),
+		PESTICIDE_APPLICATION("Pesticide Application", 0xffEF9A9A),
 		TOP("Topped", 0xffBCAAA4),
 		TRANSPLANTED("Transplanted", 0xffFFFF8D),
 		TRIM("Trim", 0xffFFAB91);
