@@ -1,16 +1,18 @@
 <?xml version="1.0" encoding="utf-8"?>
+
 <FrameLayout
 	xmlns:android="http://schemas.android.com/apk/res/android"
 	android:layout_width="match_parent"
 	android:layout_height="match_parent"
 	android:id="@+id/image_box"
+	android:background="#ff000000"
 >
 	<ProgressBar
 		android:layout_width="wrap_content"
 		android:layout_height="wrap_content"
-		style="?android:attr/progressBarStyleLarge"
-		android:layout_gravity="center"
 		android:id="@+id/progress"
+		android:layout_gravity="center"
+		style="?android:attr/progressBarStyleLarge"
 	/>
 
 	<com.davemorrissey.labs.subscaleview.SubsamplingScaleImageView
@@ -20,4 +22,19 @@
 		android:layout_gravity="center"
 		android:scaleType="centerInside"
 	/>
+
+	<LinearLayout
+		android:layout_width="match_parent"
+		android:layout_height="wrap_content"
+		android:padding="16dp"
+		android:layout_gravity="bottom"
+		android:background="@drawable/bottom_fade"
+	>
+		<TextView
+			android:layout_width="wrap_content"
+			android:layout_height="wrap_content"
+			android:id="@+id/taken"
+			android:textColor="#ffffffff"
+		/>
+	</LinearLayout>
 </FrameLayout>
