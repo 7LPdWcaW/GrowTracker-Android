@@ -2,6 +2,7 @@ package me.anon.grow;
 
 import android.app.AlertDialog;
 import android.content.Intent;
+import android.content.pm.PackageManager;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.text.Html;
@@ -48,7 +49,15 @@ public class MainActivity extends AppCompatActivity
 	{
 		menu.add(1, 1, 1, "Readme");
 		menu.add(2, 2, 2, "Export data");
-		menu.add(3, 3, 3, "Version 0.1");
+		try
+		{
+			menu.add(3, 3, 3, "Version " + getPackageManager().getPackageInfo(getPackageName(), 0).versionName);
+		}
+		catch (PackageManager.NameNotFoundException e)
+		{
+			e.printStackTrace();
+		}
+
 		return super.onCreateOptionsMenu(menu);
 	}
 

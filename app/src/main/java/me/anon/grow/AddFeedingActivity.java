@@ -4,7 +4,7 @@ import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 
 import lombok.experimental.Accessors;
-import me.anon.grow.fragment.AddFeedingFragment;
+import me.anon.grow.fragment.FeedingFragment;
 import me.anon.lib.Views;
 
 /**
@@ -24,15 +24,15 @@ public class AddFeedingActivity extends AppCompatActivity
 	{
 		super.onCreate(savedInstanceState);
 
+		setTitle("New feeding");
+
 		setContentView(R.layout.fragment_holder);
 		Views.inject(this);
 
-		boolean feeding = true;
 		int plantIndex = -1;
 		if (getIntent().getExtras() != null)
 		{
 			plantIndex = getIntent().getExtras().getInt("plant_index", -1);
-			feeding = !getIntent().getExtras().getBoolean("water", false);
 		}
 
 		if (plantIndex < 0)
@@ -43,7 +43,7 @@ public class AddFeedingActivity extends AppCompatActivity
 
 		if (getFragmentManager().findFragmentByTag(TAG_FRAGMENT) == null)
 		{
-			getFragmentManager().beginTransaction().replace(R.id.fragment_holder, AddFeedingFragment.newInstance(plantIndex, feeding), TAG_FRAGMENT).commit();
+			getFragmentManager().beginTransaction().replace(R.id.fragment_holder, FeedingFragment.newInstance(plantIndex, -1), TAG_FRAGMENT).commit();
 		}
 	}
 }

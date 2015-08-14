@@ -1,7 +1,7 @@
 package me.anon.model;
 
-import lombok.Data;
 import lombok.Getter;
+import lombok.Setter;
 import lombok.experimental.Accessors;
 
 /**
@@ -11,12 +11,11 @@ import lombok.experimental.Accessors;
  * @documentation // TODO Reference flow doc
  * @project GrowTracker
  */
-@Data
 @Accessors(prefix = {"m", ""}, chain = true)
 public abstract class Action
 {
-	private long date = System.currentTimeMillis();
-	private String notes;
+	@Getter @Setter private long date = System.currentTimeMillis();
+	@Getter @Setter private String notes;
 
 	public enum ActionName
 	{
@@ -24,8 +23,10 @@ public abstract class Action
 		WATER("Water", 0xffBBDEFB),
 		FIM("Fuck I Missed", 0xffFFCC80),
 		FLUSH("Flush", 0xffFFE082),
+		FOLIAR_FEED("Foliar Feed", 0xffE6EE9C),
 		LST("Low Stress Training", 0xffFFF59D),
 		LOLLIPOP("Lollipop", 0xffFFD180),
+		PESTICIDE_APPLICATION("Pesticide Application", 0xffEF9A9A),
 		TOP("Topped", 0xffBCAAA4),
 		TRANSPLANTED("Transplanted", 0xffFFFF8D),
 		TRIM("Trim", 0xffFFAB91);
@@ -49,5 +50,16 @@ public abstract class Action
 
 			return names;
 		}
+	}
+
+	@Override public boolean equals(Object o)
+	{
+		if (o == this) return true;
+		if (!(o instanceof Action)) return false;
+		Action other = (Action)o;
+		if (!super.equals(o)) return false;
+		if (this.date != other.getDate()) return false;
+
+		return true;
 	}
 }
