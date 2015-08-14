@@ -2,7 +2,7 @@
 
 Welcome to grow tracker. This app was created to help record data about growing plants in order to monitor the growing conditions to help make the plants grow better, and identify potential issues during the grow process.
 
-[Latest APK: (MD5) 0fc0a09a828d4a90d92a098a2b3f1c4e v1.0](https://github.com/7LPdWcaW/GrowTracker-Android/raw/master/app/app-release.apk)
+[Latest APK: (MD5) 1415322161aff8582f45fca66cb7c3f6 v1.1](https://github.com/7LPdWcaW/GrowTracker-Android/raw/master/app/app-release.apk)
 
 # Installation
 
@@ -13,6 +13,8 @@ The app requires no permissions except for external storage (for caching plant d
 1. Follow [this guide](https://gameolith.uservoice.com/knowledgebase/articles/76902-android-4-0-tablets-allowing-app-installs-from) to enable unknown sources
 2. Download the APK from [here](https://github.com/7LPdWcaW/GrowTracker-Android/raw/master/app/app-release.apk)
 3. Click on downloaded app and install
+
+**For updates, do not uninstall first, you will lose your existing plant data**
 
 ![install](screenshots/install-thumb.png)
 ![plant list](screenshots/1-thumb.png)
