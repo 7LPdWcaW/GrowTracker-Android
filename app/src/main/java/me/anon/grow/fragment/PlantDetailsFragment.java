@@ -15,6 +15,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.WindowManager;
+import android.widget.CheckBox;
 import android.widget.TextView;
 
 import com.kenny.snackbar.SnackBar;
@@ -22,6 +23,9 @@ import com.kenny.snackbar.SnackBarListener;
 
 import java.io.File;
 import java.io.IOException;
+import java.text.DateFormat;
+import java.util.Calendar;
+import java.util.Date;
 import java.util.Locale;
 
 import me.anon.grow.AddFeedingActivity;
@@ -55,6 +59,8 @@ public class PlantDetailsFragment extends Fragment
 	@Views.InjectView(R.id.plant_name) private TextView name;
 	@Views.InjectView(R.id.plant_strain) private TextView strain;
 	@Views.InjectView(R.id.plant_stage) private TextView stage;
+	@Views.InjectView(R.id.plant_date) private TextView date;
+	@Views.InjectView(R.id.from_clone) private CheckBox clone;
 
 	private int plantIndex = -1;
 	private Plant plant;
@@ -119,6 +125,41 @@ public class PlantDetailsFragment extends Fragment
 				stage.setText(plant.getStage().getPrintString());
 			}
 		}
+
+		setUi();
+	}
+
+	private void setUi()
+	{
+		final DateFormat dateFormat = android.text.format.DateFormat.getDateFormat(getActivity());
+		final DateFormat timeFormat = android.text.format.DateFormat.getTimeFormat(getActivity());
+
+		String dateStr = dateFormat.format(new Date(plant.getPlantDate())) + " " + timeFormat.format(new Date(plant.getPlantDate()));
+		date.setText(dateStr);
+		clone.setChecked(plant.isClone());
+
+		date.setOnClickListener(new View.OnClickListener()
+		{
+			@Override public void onClick(View v)
+			{
+				final DateDialogFragment fragment = new DateDialogFragment(plant.getPlantDate());
+				fragment.setOnDateSelected(new DateDialogFragment.OnDateSelectedListener()
+				{
+					@Override public void onDateSelected(Calendar newDate)
+					{
+						plant.setPlantDate(newDate.getTimeInMillis());
+						String dateStr = dateFormat.format(new Date(plant.getPlantDate())) + " " + timeFormat.format(new Date(plant.getPlantDate()));
+						date.setText(dateStr);
+					}
+
+					@Override public void onCancelled()
+					{
+						getFragmentManager().beginTransaction().remove(fragment).commit();
+					}
+				});
+				getFragmentManager().beginTransaction().add(fragment, "date").commit();
+			}
+		});
 	}
 
 	@Views.OnClick public void onFeedingClick(final View view)
@@ -362,6 +403,7 @@ public class PlantDetailsFragment extends Fragment
 			plant.getActions().add(new StageChange(PlantStage.valueOf(stage.getText().toString().toUpperCase(Locale.ENGLISH))));
 		}
 
+		plant.setClone(clone.isChecked());
 		PlantManager.getInstance().upsert(plantIndex, plant);
 		getActivity().finish();
 	}

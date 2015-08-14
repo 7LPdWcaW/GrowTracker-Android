@@ -87,8 +87,7 @@ public class PlantAdapter extends RecyclerView.Adapter<PlantHolder>
 					{
 						lastFeed = (Feed)action;
 					}
-
-					if (action instanceof Water && lastWater == null)
+					else if (action instanceof Water && lastWater == null)
 					{
 						lastWater = (Water)action;
 					}

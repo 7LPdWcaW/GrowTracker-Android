@@ -2,7 +2,8 @@ package me.anon.model;
 
 import java.util.ArrayList;
 
-import lombok.Data;
+import lombok.Getter;
+import lombok.Setter;
 import lombok.experimental.Accessors;
 
 /**
@@ -12,13 +13,14 @@ import lombok.experimental.Accessors;
  * @documentation // TODO Reference flow doc
  * @project GrowTracker
  */
-@Data
+@Getter @Setter
 @Accessors(prefix = {"m", ""}, chain = true)
 public class Plant
 {
 	private String name;
 	private String strain;
 	private long plantDate = System.currentTimeMillis();
+	private boolean clone = false;
 	private PlantStage stage = PlantStage.GERMINATION;
 	private ArrayList<String> images = new ArrayList<>();
 	private ArrayList<Action> actions = new ArrayList<>();

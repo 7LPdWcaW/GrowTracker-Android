@@ -157,10 +157,65 @@
 								android:id="@+id/amount"
 								android:hint="250ml"
 								android:inputType="numberSigned"
-								android:nextFocusDown="@+id/nutrient"
+								android:nextFocusDown="@+id/date"
 								style="@style/SubsectionSubTitle"
 							/>
 						</LinearLayout>
+					</LinearLayout>
+				</LinearLayout>
+			</LinearLayout>
+
+			<LinearLayout
+				android:layout_width="match_parent"
+				android:layout_height="wrap_content"
+				android:id="@+id/date_container"
+				android:orientation="vertical"
+				android:background="#ffffff"
+				android:layout_marginTop="8dp"
+				android:elevation="4dp"
+				style="@style/PaperCard"
+			>
+				<TextView
+					android:layout_width="wrap_content"
+					android:layout_height="wrap_content"
+					android:text="Date and time"
+					style="@style/SectionTitle"
+				/>
+
+				<LinearLayout
+					android:layout_width="match_parent"
+					android:layout_height="wrap_content"
+					android:orientation="vertical"
+					android:divider="@drawable/full_divider"
+					android:showDividers="middle"
+					android:layout_marginTop="16dp"
+				>
+					<LinearLayout
+						android:layout_width="match_parent"
+						android:layout_height="wrap_content"
+						android:orientation="vertical"
+						android:paddingLeft="16dp"
+						android:paddingRight="16dp"
+						android:paddingTop="8dp"
+						android:paddingBottom="16dp"
+					>
+						<TextView
+							android:layout_width="match_parent"
+							android:layout_height="wrap_content"
+							android:text="Date"
+							style="@style/SubsectionTitle"
+						/>
+
+						<TextView
+							android:layout_width="match_parent"
+							android:layout_height="wrap_content"
+							android:id="@+id/date"
+							android:editable="false"
+							android:inputType="none"
+							android:text="Today"
+							android:nextFocusDown="@+id/nutrient"
+							style="@style/SubsectionSubTitle"
+						/>
 					</LinearLayout>
 				</LinearLayout>
 			</LinearLayout>
@@ -214,6 +269,7 @@
 							android:inputType="none"
 							android:text="N/A"
 							android:nextFocusDown="@+id/nutrient_amount"
+							android:background="@null"
 							style="@style/SubsectionSubTitle"
 						/>
 					</LinearLayout>

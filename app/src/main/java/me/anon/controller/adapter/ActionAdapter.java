@@ -35,12 +35,13 @@ import me.anon.view.ActionHolder;
  */
 public class ActionAdapter extends RecyclerView.Adapter<ActionHolder>
 {
-	public interface OnActionDeletedListener
+	public interface OnActionSelectListener
 	{
 		public void onActionDeleted(Action action);
+		public void onActionEdit(Action action);
 	}
 
-	@Setter private OnActionDeletedListener onActionDeletedListener;
+	@Setter private OnActionSelectListener onActionSelectListener;
 	@Getter @Setter private List<Action> actions = new ArrayList<>();
 
 	@Override public ActionHolder onCreateViewHolder(ViewGroup viewGroup, int i)
@@ -99,12 +100,16 @@ public class ActionAdapter extends RecyclerView.Adapter<ActionHolder>
 
 			if (((Feed)action).getPh() != null)
 			{
-				waterStr.append("PH: " + ((Feed)action).getPh() + ", ");
+				waterStr.append("PH: ");
+				waterStr.append(((Feed)action).getPh());
+				waterStr.append(", ");
 			}
 
 			if (((Feed)action).getRunoff() != null)
 			{
-				waterStr.append("Runoff: " + ((Feed)action).getRunoff() + ", ");
+				waterStr.append("Runoff: ");
+				waterStr.append(((Feed)action).getRunoff());
+				waterStr.append(", ");
 			}
 
 			summary += waterStr.toString().length() > 0 ? waterStr.toString().substring(0, waterStr.length() - 2) + "\n" : "";
@@ -113,12 +118,16 @@ public class ActionAdapter extends RecyclerView.Adapter<ActionHolder>
 
 			if (((Feed)action).getPpm() != null)
 			{
-				waterStr.append("PPM: " + ((Feed)action).getPpm() + ", ");
+				waterStr.append("PPM: ");
+				waterStr.append(((Feed)action).getPpm());
+				waterStr.append(", ");
 			}
 
 			if (((Feed)action).getAmount() != null)
 			{
-				waterStr.append("Amount: " + ((Feed)action).getAmount() + "ml, ");
+				waterStr.append("Amount: ");
+				waterStr.append(((Feed)action).getAmount());
+				waterStr.append("ml, ");
 			}
 
 			summary += waterStr.toString().length() > 0 ? waterStr.toString().substring(0, waterStr.length() - 2) : "";
@@ -131,12 +140,16 @@ public class ActionAdapter extends RecyclerView.Adapter<ActionHolder>
 
 			if (((Water)action).getPh() != null)
 			{
-				waterStr.append("PH: " + ((Water)action).getPh() + ", ");
+				waterStr.append("PH: ");
+				waterStr.append(((Water)action).getPh());
+				waterStr.append(", ");
 			}
 
 			if (((Water)action).getRunoff() != null)
 			{
-				waterStr.append("Runoff: " + ((Water)action).getRunoff() + ", ");
+				waterStr.append("Runoff: ");
+				waterStr.append(((Water)action).getRunoff());
+				waterStr.append(", ");
 			}
 
 			summary += waterStr.toString().length() > 0 ? waterStr.toString().substring(0, waterStr.length() - 2) + "\n" : "";
@@ -145,12 +158,16 @@ public class ActionAdapter extends RecyclerView.Adapter<ActionHolder>
 
 			if (((Water)action).getPpm() != null)
 			{
-				waterStr.append("PPM: " + ((Water)action).getPpm() + ", ");
+				waterStr.append("PPM: ");
+				waterStr.append(((Water)action).getPpm());
+				waterStr.append(", ");
 			}
 
 			if (((Water)action).getAmount() != null)
 			{
-				waterStr.append("Amount: " + ((Water)action).getAmount() + "ml, ");
+				waterStr.append("Amount: ");
+				waterStr.append(((Water)action).getAmount());
+				waterStr.append("ml, ");
 			}
 
 			summary += waterStr.toString().length() > 0 ? waterStr.toString().substring(0, waterStr.length() - 2) : "";
@@ -183,22 +200,41 @@ public class ActionAdapter extends RecyclerView.Adapter<ActionHolder>
 
 		viewHolder.itemView.setOnLongClickListener(new View.OnLongClickListener()
 		{
-			@Override public boolean onLongClick(View v)
+			@Override public boolean onLongClick(final View v)
 			{
 				new AlertDialog.Builder(v.getContext())
-					.setTitle("Delete this event?")
-					.setMessage("Are you sure you want to delete " + viewHolder.getName().getText())
-					.setPositiveButton("Yes", new DialogInterface.OnClickListener()
+					.setTitle("Select an option")
+					.setItems(new String[]{"Edit action", "Delete action"}, new DialogInterface.OnClickListener()
 					{
 						@Override public void onClick(DialogInterface dialog, int which)
 						{
-							if (onActionDeletedListener != null)
+							if (which == 0)
 							{
-								onActionDeletedListener.onActionDeleted(action);
+								if (onActionSelectListener != null)
+								{
+									onActionSelectListener.onActionEdit(action);
+								}
+							}
+							else if (which == 1)
+							{
+								new AlertDialog.Builder(v.getContext())
+									.setTitle("Delete this event?")
+									.setMessage("Are you sure you want to delete " + viewHolder.getName().getText())
+									.setPositiveButton("Yes", new DialogInterface.OnClickListener()
+									{
+										@Override public void onClick(DialogInterface dialog, int which)
+										{
+											if (onActionSelectListener != null)
+											{
+												onActionSelectListener.onActionDeleted(action);
+											}
+										}
+									})
+									.setNegativeButton("No", null)
+									.show();
 							}
 						}
 					})
-					.setNegativeButton("No", null)
 					.show();
 
 				return true;
