@@ -18,6 +18,7 @@ import java.util.ArrayList;
 
 import me.anon.grow.R;
 import me.anon.lib.Views;
+import me.anon.lib.helper.TimeHelper;
 import me.anon.lib.manager.PlantManager;
 import me.anon.model.Action;
 import me.anon.model.EmptyAction;
@@ -115,6 +116,8 @@ public class StatisticsFragment extends Fragment
 	{
 		long startDate = plant.getPlantDate();
 		long endDate = System.currentTimeMillis();
+		long feedDifference = 0L;
+		long lastFeed = 0L;
 		int totalFeed = 0, totalWater = 0, totalFlush = 0;
 
 		for (Action action : plant.getActions())
@@ -126,7 +129,14 @@ public class StatisticsFragment extends Fragment
 
 			if (action instanceof Feed)
 			{
+				if (lastFeed != 0)
+				{
+					feedDifference += Math.abs(action.getDate() - lastFeed);
+				}
+
 				totalFeed++;
+				lastFeed = action.getDate();
+
 			}
 			else if (action instanceof Water)
 			{
@@ -145,6 +155,7 @@ public class StatisticsFragment extends Fragment
 		feedCount.setText(String.valueOf(totalFeed));
 		waterCount.setText(String.valueOf(totalWater));
 		flushCount.setText(String.valueOf(totalFlush));
+		aveFeed.setText(String.format("%1$,.2f", (TimeHelper.toDays(feedDifference) / (double)totalFeed)) + " days");
 	}
 
 	private void setPpm()
