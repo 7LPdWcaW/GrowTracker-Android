@@ -66,6 +66,8 @@ public class StatisticsFragment extends Fragment
 	@Views.InjectView(R.id.water_count) private TextView waterCount;
 	@Views.InjectView(R.id.flush_count) private TextView flushCount;
 
+	@Views.InjectView(R.id.ave_feed) private TextView aveFeed;
+
 	@Views.InjectView(R.id.min_ph) private TextView minph;
 	@Views.InjectView(R.id.max_ph) private TextView maxph;
 	@Views.InjectView(R.id.ave_ph) private TextView aveph;
