@@ -68,6 +68,7 @@ public class StatisticsFragment extends Fragment
 	@Views.InjectView(R.id.flush_count) private TextView flushCount;
 
 	@Views.InjectView(R.id.ave_feed) private TextView aveFeed;
+	@Views.InjectView(R.id.ave_water) private TextView aveWater;
 
 	@Views.InjectView(R.id.min_ph) private TextView minph;
 	@Views.InjectView(R.id.max_ph) private TextView maxph;
@@ -117,7 +118,8 @@ public class StatisticsFragment extends Fragment
 		long startDate = plant.getPlantDate();
 		long endDate = System.currentTimeMillis();
 		long feedDifference = 0L;
-		long lastFeed = 0L;
+		long waterDifference = 0L;
+		long lastFeed = 0L, lastWater = 0L;
 		int totalFeed = 0, totalWater = 0, totalFlush = 0;
 
 		for (Action action : plant.getActions())
@@ -140,7 +142,13 @@ public class StatisticsFragment extends Fragment
 			}
 			else if (action instanceof Water)
 			{
+				if (lastWater != 0)
+				{
+					waterDifference += Math.abs(action.getDate() - lastWater);
+				}
+
 				totalWater++;
+				lastWater = action.getDate();
 			}
 			else if (action instanceof EmptyAction && ((EmptyAction)action).getAction() == Action.ActionName.FLUSH)
 			{
@@ -156,6 +164,7 @@ public class StatisticsFragment extends Fragment
 		waterCount.setText(String.valueOf(totalWater));
 		flushCount.setText(String.valueOf(totalFlush));
 		aveFeed.setText(String.format("%1$,.2f", (TimeHelper.toDays(feedDifference) / (double)totalFeed)) + " days");
+		aveWater.setText(String.format("%1$,.2f", (TimeHelper.toDays(waterDifference) / (double)totalWater)) + " days");
 	}
 
 	private void setPpm()
