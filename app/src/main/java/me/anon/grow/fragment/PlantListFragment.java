@@ -73,7 +73,7 @@ public class PlantListFragment extends Fragment
 		for (int index = 0; index < plantsSize; index++)
 		{
 			Plant plant = PlantManager.getInstance().getPlants().get(index);
-			ordered.set(prefs.getInt(String.valueOf(index), ordered.size()), plant);
+			ordered.set(prefs.getInt(String.valueOf(index), plantsSize - index - 1), plant);
 		}
 
 		adapter.setPlants(ordered);
