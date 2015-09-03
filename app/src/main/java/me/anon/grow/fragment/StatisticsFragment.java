@@ -15,6 +15,9 @@ import com.github.mikephil.charting.data.LineData;
 import com.github.mikephil.charting.data.LineDataSet;
 
 import java.util.ArrayList;
+import java.util.Comparator;
+import java.util.SortedMap;
+import java.util.TreeMap;
 
 import me.anon.grow.R;
 import me.anon.lib.Views;
@@ -66,6 +69,15 @@ public class StatisticsFragment extends Fragment
 	@Views.InjectView(R.id.feed_count) private TextView feedCount;
 	@Views.InjectView(R.id.water_count) private TextView waterCount;
 	@Views.InjectView(R.id.flush_count) private TextView flushCount;
+
+	@Views.InjectView(R.id.germ_time) private TextView germTime;
+	@Views.InjectView(R.id.germ_time_container) private View germTimeContainer;
+	@Views.InjectView(R.id.veg_time) private TextView vegTime;
+	@Views.InjectView(R.id.veg_time_container) private View vegTimeContainer;
+	@Views.InjectView(R.id.flower_time) private TextView flowerTime;
+	@Views.InjectView(R.id.flower_time_container) private View flowerTimeContainer;
+	@Views.InjectView(R.id.cure_time) private TextView cureTime;
+	@Views.InjectView(R.id.cure_time_container) private View cureTimeContainer;
 
 	@Views.InjectView(R.id.ave_feed) private TextView aveFeed;
 	@Views.InjectView(R.id.ave_water) private TextView aveWater;
@@ -121,12 +133,33 @@ public class StatisticsFragment extends Fragment
 		long waterDifference = 0L;
 		long lastFeed = 0L, lastWater = 0L;
 		int totalFeed = 0, totalWater = 0, totalFlush = 0;
+		SortedMap<PlantStage, Long> stages = new TreeMap<PlantStage, Long>(new Comparator<PlantStage>()
+		{
+			@Override public int compare(PlantStage lhs, PlantStage rhs)
+			{
+				if (lhs.ordinal() < rhs.ordinal())
+				{
+					return 1;
+				}
+				else if (lhs.ordinal() > rhs.ordinal())
+				{
+					return -1;
+				}
+
+				return 0;
+			}
+		});
 
 		for (Action action : plant.getActions())
 		{
-			if (action instanceof StageChange && ((StageChange)action).getNewStage() == PlantStage.HARVESTED)
+			if (action instanceof StageChange)
 			{
-				endDate = action.getDate();
+				stages.put(((StageChange)action).getNewStage(), action.getDate());
+
+				if (((StageChange)action).getNewStage() == PlantStage.HARVESTED)
+				{
+					endDate = action.getDate();
+				}
 			}
 
 			if (action instanceof Feed)
@@ -156,6 +189,28 @@ public class StatisticsFragment extends Fragment
 			}
 		}
 
+		int stageIndex = 0;
+		long lastStage = 0;
+		PlantStage previous = stages.firstKey();
+		for (PlantStage plantStage : stages.keySet())
+		{
+			long difference = 0;
+			if (stageIndex == 0)
+			{
+				difference = endDate - stages.get(plantStage);
+			}
+			else
+			{
+				difference = lastStage - stages.get(plantStage);
+			}
+
+			previous = plantStage;
+			lastStage = stages.get(plantStage);
+			stageIndex++;
+
+			stages.put(plantStage, difference);
+		}
+
 		long seconds = ((endDate - startDate) / 1000);
 		double days = (double)seconds * 0.0000115741d;
 
@@ -165,6 +220,30 @@ public class StatisticsFragment extends Fragment
 		flushCount.setText(String.valueOf(totalFlush));
 		aveFeed.setText(String.format("%1$,.2f", (TimeHelper.toDays(feedDifference) / (double)totalFeed)) + " days");
 		aveWater.setText(String.format("%1$,.2f", (TimeHelper.toDays(waterDifference) / (double)totalWater)) + " days");
+
+		if (stages.containsKey(PlantStage.GERMINATION))
+		{
+			germTime.setText((int)TimeHelper.toDays(stages.get(PlantStage.GERMINATION)) + " days");
+			germTimeContainer.setVisibility(View.VISIBLE);
+		}
+
+		if (stages.containsKey(PlantStage.VEGETATION))
+		{
+			vegTime.setText((int)TimeHelper.toDays(stages.get(PlantStage.VEGETATION)) + " days");
+			vegTimeContainer.setVisibility(View.VISIBLE);
+		}
+
+		if (stages.containsKey(PlantStage.FLOWER))
+		{
+			flowerTime.setText((int)TimeHelper.toDays(stages.get(PlantStage.FLOWER)) + " days");
+			flowerTimeContainer.setVisibility(View.VISIBLE);
+		}
+
+		if (stages.containsKey(PlantStage.CURING))
+		{
+			cureTime.setText((int)TimeHelper.toDays(stages.get(PlantStage.CURING)) + " days");
+			cureTimeContainer.setVisibility(View.VISIBLE);
+		}
 	}
 
 	private void setPpm()

@@ -37,6 +37,130 @@
 					android:layout_height="wrap_content"
 					android:orientation="horizontal"
 				>
+					<LinearLayout
+						android:layout_width="0dp"
+						android:layout_height="wrap_content"
+						android:id="@+id/germ_time_container"
+						android:orientation="horizontal"
+						android:layout_weight="1"
+						android:visibility="gone"
+					>
+						<TextView
+							android:layout_width="wrap_content"
+							android:layout_height="wrap_content"
+							android:text="Germination:"
+							android:gravity="center_vertical"
+							style="@style/SubsectionTitle"
+						/>
+
+						<TextView
+							android:layout_width="wrap_content"
+							android:layout_height="wrap_content"
+							android:id="@+id/germ_time"
+							android:textSize="14sp"
+							android:textColor="#666666"
+							android:layout_marginLeft="8dp"
+							android:fontFamily="sans-serif-light"
+							android:gravity="center_vertical"
+						/>
+					</LinearLayout>
+
+					<LinearLayout
+						android:layout_width="0dp"
+						android:layout_height="wrap_content"
+						android:id="@+id/veg_time_container"
+						android:orientation="horizontal"
+						android:layout_weight="1"
+						android:visibility="gone"
+					>
+						<TextView
+							android:layout_width="wrap_content"
+							android:layout_height="wrap_content"
+							android:text="Vegetation:"
+							android:gravity="center_vertical"
+							style="@style/SubsectionTitle"
+						/>
+
+						<TextView
+							android:layout_width="wrap_content"
+							android:layout_height="wrap_content"
+							android:id="@+id/veg_time"
+							android:textSize="14sp"
+							android:textColor="#666666"
+							android:layout_marginLeft="8dp"
+							android:fontFamily="sans-serif-light"
+							android:gravity="center_vertical"
+						/>
+					</LinearLayout>
+				</LinearLayout>
+
+				<LinearLayout
+					android:layout_width="match_parent"
+					android:layout_height="wrap_content"
+					android:orientation="horizontal"
+				>
+					<LinearLayout
+						android:layout_width="0dp"
+						android:layout_height="wrap_content"
+						android:id="@+id/flower_time_container"
+						android:orientation="horizontal"
+						android:layout_weight="1"
+						android:visibility="gone"
+					>
+						<TextView
+							android:layout_width="wrap_content"
+							android:layout_height="wrap_content"
+							android:text="Flower:"
+							android:gravity="center_vertical"
+							style="@style/SubsectionTitle"
+						/>
+
+						<TextView
+							android:layout_width="wrap_content"
+							android:layout_height="wrap_content"
+							android:id="@+id/flower_time"
+							android:textSize="14sp"
+							android:textColor="#666666"
+							android:layout_marginLeft="8dp"
+							android:fontFamily="sans-serif-light"
+							android:gravity="center_vertical"
+						/>
+					</LinearLayout>
+
+					<LinearLayout
+						android:layout_width="0dp"
+						android:layout_height="wrap_content"
+						android:id="@+id/cure_time_container"
+						android:orientation="horizontal"
+						android:layout_weight="1"
+						android:visibility="gone"
+					>
+						<TextView
+							android:layout_width="wrap_content"
+							android:layout_height="wrap_content"
+							android:text="Curing:"
+							android:gravity="center_vertical"
+							style="@style/SubsectionTitle"
+						/>
+
+						<TextView
+							android:layout_width="wrap_content"
+							android:layout_height="wrap_content"
+							android:id="@+id/cure_time"
+							android:textSize="14sp"
+							android:textColor="#666666"
+							android:layout_marginLeft="8dp"
+							android:fontFamily="sans-serif-light"
+							android:gravity="center_vertical"
+						/>
+					</LinearLayout>
+				</LinearLayout>
+
+				<LinearLayout
+					android:layout_width="match_parent"
+					android:layout_height="wrap_content"
+					android:orientation="horizontal"
+				>
 					<TextView
 						android:layout_width="wrap_content"
 						android:layout_height="wrap_content"
