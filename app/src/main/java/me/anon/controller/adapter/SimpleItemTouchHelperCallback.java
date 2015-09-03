@@ -39,5 +39,4 @@ public class SimpleItemTouchHelperCallback extends ItemTouchHelper.Callback
 	{
 		mAdapter.onItemDismiss(viewHolder.getAdapterPosition());
 	}
-
 }
