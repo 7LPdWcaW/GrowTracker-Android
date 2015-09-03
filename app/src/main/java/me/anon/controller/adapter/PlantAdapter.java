@@ -33,7 +33,7 @@ import me.anon.view.PlantHolder;
  * @documentation // TODO Reference flow doc
  * @project GrowTracker
  */
-public class PlantAdapter extends RecyclerView.Adapter<PlantHolder>
+public class PlantAdapter extends RecyclerView.Adapter<PlantHolder> implements ItemTouchHelperAdapter
 {
 	@Getter private List<Plant> plants = new ArrayList<>();
 
@@ -187,5 +187,31 @@ public class PlantAdapter extends RecyclerView.Adapter<PlantHolder>
 	@Override public int getItemCount()
 	{
 		return plants.size();
+	}
+
+	@Override public void onItemMove(int fromPosition, int toPosition)
+	{
+		if (fromPosition < toPosition)
+		{
+			for (int index = fromPosition; index < toPosition; index++)
+			{
+				Collections.swap(plants, index, index + 1);
+			}
+		}
+		else
+		{
+			for (int index = fromPosition; index > toPosition; index--)
+			{
+				Collections.swap(plants, index, index - 1);
+			}
+		}
+
+		notifyItemMoved(fromPosition, toPosition);
+	}
+
+	@Override public void onItemDismiss(int position)
+	{
+		plants.remove(position);
+		notifyItemRemoved(position);
 	}
 }

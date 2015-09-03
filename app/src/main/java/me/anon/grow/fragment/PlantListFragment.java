@@ -6,11 +6,13 @@ import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.support.v7.widget.helper.ItemTouchHelper;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
 import me.anon.controller.adapter.PlantAdapter;
+import me.anon.controller.adapter.SimpleItemTouchHelperCallback;
 import me.anon.grow.AddPlantActivity;
 import me.anon.grow.R;
 import me.anon.lib.Views;
@@ -47,6 +49,10 @@ public class PlantListFragment extends Fragment
 		adapter = new PlantAdapter();
 		recycler.setLayoutManager(new LinearLayoutManager(getActivity()));
 		recycler.setAdapter(adapter);
+
+		ItemTouchHelper.Callback callback = new SimpleItemTouchHelperCallback(adapter);
+		ItemTouchHelper touchHelper = new ItemTouchHelper(callback);
+		touchHelper.attachToRecyclerView(recycler);
 	}
 
 	@Override public void onResume()
