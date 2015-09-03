@@ -186,6 +186,8 @@ public class FeedingFragment extends Fragment
 
 	private void setUi()
 	{
+		getActivity().setTitle("Feeding " + plant.getName());
+
 		Calendar date = Calendar.getInstance();
 		date.setTimeInMillis(feed.getDate());
 
