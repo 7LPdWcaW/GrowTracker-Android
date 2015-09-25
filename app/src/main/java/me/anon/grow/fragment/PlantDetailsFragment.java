@@ -36,7 +36,6 @@ import me.anon.grow.ViewPhotosActivity;
 import me.anon.lib.Views;
 import me.anon.lib.helper.FabAnimator;
 import me.anon.lib.manager.PlantManager;
-import me.anon.model.Action;
 import me.anon.model.EmptyAction;
 import me.anon.model.NoteAction;
 import me.anon.model.Plant;
@@ -287,15 +286,8 @@ public class PlantDetailsFragment extends Fragment
 		ActionDialogFragment dialogFragment = new ActionDialogFragment();
 		dialogFragment.setOnActionSelected(new ActionDialogFragment.OnActionSelected()
 		{
-			@Override public void onActionSelected(Action.ActionName actionName, String notes)
+			@Override public void onActionSelected(final EmptyAction action)
 			{
-				final EmptyAction action = new EmptyAction(actionName);
-
-				if (notes != null)
-				{
-					action.setNotes(notes);
-				}
-
 				plant.getActions().add(action);
 				PlantManager.getInstance().upsert(plantIndex, plant);
 
