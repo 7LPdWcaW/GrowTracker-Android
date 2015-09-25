@@ -12,6 +12,11 @@ import android.view.View;
 import android.widget.ArrayAdapter;
 import android.widget.EditText;
 import android.widget.Spinner;
+import android.widget.TextView;
+
+import java.text.DateFormat;
+import java.util.Calendar;
+import java.util.Date;
 
 import lombok.Setter;
 import me.anon.grow.R;
@@ -24,21 +29,24 @@ public class ActionDialogFragment extends DialogFragment
 {
 	public static interface OnActionSelected
 	{
-		public void onActionSelected(Action.ActionName action, String notes);
+		public void onActionSelected(EmptyAction action);
 	}
 
 	@Views.InjectView(R.id.actions) private Spinner actionsSpinner;
 	@Views.InjectView(R.id.notes) private EditText notes;
+	@Views.InjectView(R.id.date) private TextView date;
 
 	@Setter private OnActionSelected onActionSelected;
 
 	private EmptyAction action;
+	private boolean edit = false;
 
 	public ActionDialogFragment(){}
 
 	public ActionDialogFragment(EmptyAction action)
 	{
 		this.action = action;
+		edit = true;
 	}
 
 	@Override public Dialog onCreateDialog(Bundle savedInstanceState)
@@ -46,42 +54,80 @@ public class ActionDialogFragment extends DialogFragment
 		final Context context = getActivity();
 
 		AlertDialog.Builder dialog = new AlertDialog.Builder(context);
-		dialog.setTitle((action == null ? "Add" : "Edit") + " action");
+		dialog.setTitle((edit ? "Edit" : "Add") + " action");
 		View view = LayoutInflater.from(getActivity()).inflate(R.layout.action_dialog, null);
 
 		Views.inject(this, view);
 
-		String[] actions = new String[Action.ActionName.names().length - 2];
+		if (action == null)
+		{
+			action = new EmptyAction(null);
+		}
+
+		final String[] actions = new String[Action.ActionName.names().length - 2];
 		System.arraycopy(Action.ActionName.names(), 2, actions, 0, actions.length);
 
 		actionsSpinner.setAdapter(new ArrayAdapter<String>(getActivity(), android.R.layout.simple_spinner_dropdown_item, actions));
 
-		if (action != null)
+		Calendar date = Calendar.getInstance();
+		date.setTimeInMillis(action.getDate());
+
+		final DateFormat dateFormat = android.text.format.DateFormat.getDateFormat(getActivity());
+		final DateFormat timeFormat = android.text.format.DateFormat.getTimeFormat(getActivity());
+
+		String dateStr = dateFormat.format(new Date(action.getDate())) + " " + timeFormat.format(new Date(action.getDate()));
+
+		this.date.setText(dateStr);
+		this.date.setOnClickListener(new View.OnClickListener()
 		{
-			notes.setText(action.getNotes());
-			int selectionIndex = 0;
-
-			for (int index = 0; index < actions.length; index++)
+			@Override public void onClick(View v)
 			{
-				String actionName = actions[index];
-				if (actionName.equalsIgnoreCase(action.getAction().getPrintString()))
+				final DateDialogFragment fragment = new DateDialogFragment(action.getDate());
+				fragment.setOnDateSelected(new DateDialogFragment.OnDateSelectedListener()
 				{
-					selectionIndex = index;
-					break;
-				}
-			}
+					@Override public void onDateSelected(Calendar date)
+					{
+						String dateStr = dateFormat.format(date.getTime()) + " " + timeFormat.format(date.getTime());
+						ActionDialogFragment.this.date.setText(dateStr);
 
-			actionsSpinner.setSelection(selectionIndex);
+						action.setDate(date.getTimeInMillis());
+					}
+
+					@Override public void onCancelled()
+					{
+						getFragmentManager().beginTransaction().remove(fragment).commit();
+					}
+				});
+				getFragmentManager().beginTransaction().add(fragment, "date").commit();
+			}
+		});
+
+		notes.setText(action.getNotes());
+		int selectionIndex = 0;
+
+		for (int index = 0; index < actions.length; index++)
+		{
+			String actionName = actions[index];
+			if (action.getAction() != null && actionName.equalsIgnoreCase(action.getAction().getPrintString()))
+			{
+				selectionIndex = index;
+				break;
+			}
 		}
 
+		actionsSpinner.setSelection(selectionIndex);
+
 		dialog.setView(view);
-		dialog.setPositiveButton(action == null ? "Add" : "Edit", new DialogInterface.OnClickListener()
+		dialog.setPositiveButton(edit ? "Edit" : "Add", new DialogInterface.OnClickListener()
 		{
 			@Override public void onClick(DialogInterface dialog, int which)
 			{
 				if (onActionSelected != null)
 				{
-					onActionSelected.onActionSelected(Action.ActionName.values()[actionsSpinner.getSelectedItemPosition() + 2], TextUtils.isEmpty(notes.getText()) ? null : notes.getText().toString());
+					action.setAction(Action.ActionName.values()[actionsSpinner.getSelectedItemPosition() + 2]);
+					action.setNotes(TextUtils.isEmpty(notes.getText()) ? null : notes.getText().toString());
+
+					onActionSelected.onActionSelected(action);
 				}
 			}
 		});
