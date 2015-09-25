@@ -147,15 +147,8 @@ public class EventListFragment extends Fragment implements ActionAdapter.OnActio
 		ActionDialogFragment dialogFragment = new ActionDialogFragment();
 		dialogFragment.setOnActionSelected(new ActionDialogFragment.OnActionSelected()
 		{
-			@Override public void onActionSelected(Action.ActionName actionName, String notes)
+			@Override public void onActionSelected(final EmptyAction action)
 			{
-				final EmptyAction action = new EmptyAction(actionName);
-
-				if (notes != null)
-				{
-					action.setNotes(notes);
-				}
-
 				plant.getActions().add(action);
 				PlantManager.getInstance().upsert(plantIndex, plant);
 
@@ -251,15 +244,8 @@ public class EventListFragment extends Fragment implements ActionAdapter.OnActio
 			ActionDialogFragment dialogFragment = new ActionDialogFragment((EmptyAction)action);
 			dialogFragment.setOnActionSelected(new ActionDialogFragment.OnActionSelected()
 			{
-				@Override public void onActionSelected(Action.ActionName actionName, String notes)
+				@Override public void onActionSelected(final EmptyAction action)
 				{
-					final EmptyAction action = new EmptyAction(actionName);
-
-					if (notes != null)
-					{
-						action.setNotes(notes);
-					}
-
 					plant.getActions().set(originalIndex, action);
 					PlantManager.getInstance().upsert(plantIndex, plant);
 					setActions();
