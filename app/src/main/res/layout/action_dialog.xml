@@ -17,8 +17,25 @@
 		android:layout_width="match_parent"
 		android:layout_height="wrap_content"
 		android:layout_gravity="center_vertical"
-		android:text="Notes"
+		android:text="Date"
 		android:layout_marginTop="16dp"
+		style="@style/SubsectionTitle"
+	/>
+
+	<TextView
+		android:layout_width="match_parent"
+		android:layout_height="wrap_content"
+		android:id="@+id/date"
+		android:layout_marginTop="8dp"
+		style="@style/SubsectionSubTitle"
+	/>
+
+	<TextView
+		android:layout_width="match_parent"
+		android:layout_height="wrap_content"
+		android:layout_gravity="center_vertical"
+		android:text="Notes"
+		android:layout_marginTop="24dp"
 		style="@style/SubsectionTitle"
 	/>
 
