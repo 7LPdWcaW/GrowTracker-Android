@@ -64,6 +64,11 @@ public class ActionDialogFragment extends DialogFragment
 			action = new EmptyAction(null);
 		}
 
+		if (savedInstanceState != null)
+		{
+			action.setDate(savedInstanceState.getLong("date", System.currentTimeMillis()));
+		}
+
 		final String[] actions = new String[Action.ActionName.names().length - 2];
 		System.arraycopy(Action.ActionName.names(), 2, actions, 0, actions.length);
 
@@ -135,5 +140,11 @@ public class ActionDialogFragment extends DialogFragment
 		dialog.setNegativeButton("Cancel", null);
 
 		return dialog.create();
+	}
+
+	@Override public void onSaveInstanceState(Bundle outState)
+	{
+		super.onSaveInstanceState(outState);
+		outState.putLong("date", action.getDate());
 	}
 }
