@@ -49,6 +49,7 @@ public class PlantAdapter extends RecyclerView.Adapter<PlantHolder> implements I
 	{
 		this.plants.clear();
 		this.plants.addAll(plants);
+		this.plants.removeAll(Collections.singleton(null));
 	}
 
 	@Override public PlantHolder onCreateViewHolder(ViewGroup viewGroup, int i)
