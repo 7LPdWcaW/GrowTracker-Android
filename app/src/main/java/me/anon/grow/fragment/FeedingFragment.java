@@ -42,6 +42,7 @@ public class FeedingFragment extends Fragment
 	@Views.InjectView(R.id.date_container) private View dateContainer;
 	@Views.InjectView(R.id.date) private TextView date;
 	@Views.InjectView(R.id.nutrient_container) private View nutrientContainer;
+	@Views.InjectView(R.id.nutrient_nutrient_container) private View nutrientNutrientContainer;
 	@Views.InjectView(R.id.nutrient) private TextView nutrient;
 	@Views.InjectView(R.id.nutrient_amount) private TextView nutrientAmount;
 
@@ -121,64 +122,72 @@ public class FeedingFragment extends Fragment
 		}
 
 		setUi();
+		nutrientNutrientContainer.setOnClickListener(new View.OnClickListener()
+		{
+			@Override public void onClick(View v)
+			{
+				Nutrient nutrient = feed.getNutrient();
+				if (feed.getNutrient() == null)
+				{
+					if (plant.getActions() != null)
+					{
+						ArrayList<Action> actions = plant.getActions();
+						for (int i = actions.size() - 1; i >= 0; i--)
+						{
+							Action action = actions.get(i);
+							if (action instanceof Feed && ((Feed)action).getNutrient() != null)
+							{
+								nutrient = ((Feed)action).getNutrient();
+								break;
+							}
+						}
+					}
+				}
+
+				FragmentManager fm = getFragmentManager();
+				AddNutrientDialogFragment addNutrientDialogFragment = new AddNutrientDialogFragment(nutrient);
+				addNutrientDialogFragment.setOnAddNutrientListener(new AddNutrientDialogFragment.OnAddNutrientListener()
+				{
+					@Override public void onNutrientSelected(Nutrient nutrient)
+					{
+						feed.setNutrient(nutrient);
+
+						if (nutrient == null)
+						{
+							feed.setAmount(null);
+							FeedingFragment.this.nutrientAmount.setText(null);
+							FeedingFragment.this.nutrient.setText("N/A");
+						}
+						else
+						{
+							String nutrientStr = "";
+							nutrientStr += nutrient.getNpc() == null ? "-" : nutrient.getNpc();
+							nutrientStr += " : ";
+							nutrientStr += nutrient.getPpc() == null ? "-" : nutrient.getPpc();
+							nutrientStr += " : ";
+							nutrientStr += nutrient.getKpc() == null ? "-" : nutrient.getKpc();
+							nutrientStr += "/";
+							nutrientStr += nutrient.getCapc() == null ? "-" : nutrient.getCapc();
+							nutrientStr += " : ";
+							nutrientStr += nutrient.getSpc() == null ? "-" : nutrient.getSpc();
+							nutrientStr += " : ";
+							nutrientStr += nutrient.getMgpc() == null ? "-" : nutrient.getMgpc();
+
+							FeedingFragment.this.nutrient.setText(nutrientStr);
+						}
+					}
+				});
+				addNutrientDialogFragment.show(fm, "fragment_add_nutrient");
+			}
+		});
 		nutrient.setOnFocusChangeListener(new View.OnFocusChangeListener()
 		{
 			@Override public void onFocusChange(View v, boolean hasFocus)
 			{
 				if (hasFocus)
 				{
-					Nutrient nutrient = feed.getNutrient();
-					if (feed.getNutrient() == null)
-					{
-						if (plant.getActions() != null)
-						{
-							ArrayList<Action> actions = plant.getActions();
-							for (int i = actions.size() - 1; i >= 0; i--)
-							{
-								Action action = actions.get(i);
-								if (action instanceof Feed && ((Feed)action).getNutrient() != null)
-								{
-									nutrient = ((Feed)action).getNutrient();
-									break;
-								}
-							}
-						}
-					}
-
-					FragmentManager fm = getFragmentManager();
-					AddNutrientDialogFragment addNutrientDialogFragment = new AddNutrientDialogFragment(nutrient);
-					addNutrientDialogFragment.setOnAddNutrientListener(new AddNutrientDialogFragment.OnAddNutrientListener()
-					{
-						@Override public void onNutrientSelected(Nutrient nutrient)
-						{
-							feed.setNutrient(nutrient);
-
-							if (nutrient == null)
-							{
-								feed.setAmount(null);
-								FeedingFragment.this.nutrientAmount.setText(null);
-								FeedingFragment.this.nutrient.setText("N/A");
-							}
-							else
-							{
-								String nutrientStr = "";
-								nutrientStr += nutrient.getNpc() == null ? "-" : nutrient.getNpc();
-								nutrientStr += " : ";
-								nutrientStr += nutrient.getPpc() == null ? "-" : nutrient.getPpc();
-								nutrientStr += " : ";
-								nutrientStr += nutrient.getKpc() == null ? "-" : nutrient.getKpc();
-								nutrientStr += "/";
-								nutrientStr += nutrient.getCapc() == null ? "-" : nutrient.getCapc();
-								nutrientStr += " : ";
-								nutrientStr += nutrient.getSpc() == null ? "-" : nutrient.getSpc();
-								nutrientStr += " : ";
-								nutrientStr += nutrient.getMgpc() == null ? "-" : nutrient.getMgpc();
-
-								FeedingFragment.this.nutrient.setText(nutrientStr);
-							}
-						}
-					});
-					addNutrientDialogFragment.show(fm, "fragment_add_nutrient");
+					nutrientNutrientContainer.performClick();
+					nutrientNutrientContainer.requestFocusFromTouch();
 				}
 			}
 		});
@@ -197,7 +206,7 @@ public class FeedingFragment extends Fragment
 		String dateStr = dateFormat.format(new Date(feed.getDate())) + " " + timeFormat.format(new Date(feed.getDate()));
 		this.date.setText(dateStr);
 
-		this.date.setOnClickListener(new View.OnClickListener()
+		this.dateContainer.setOnClickListener(new View.OnClickListener()
 		{
 			@Override public void onClick(View v)
 			{
