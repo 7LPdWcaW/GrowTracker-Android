@@ -168,7 +168,6 @@
 			<LinearLayout
 				android:layout_width="match_parent"
 				android:layout_height="wrap_content"
-				android:id="@+id/date_container"
 				android:orientation="vertical"
 				android:background="#ffffff"
 				android:layout_marginTop="8dp"
@@ -193,6 +192,7 @@
 					<LinearLayout
 						android:layout_width="match_parent"
 						android:layout_height="wrap_content"
+						android:id="@+id/date_container"
 						android:orientation="vertical"
 						android:paddingLeft="16dp"
 						android:paddingRight="16dp"
@@ -248,7 +248,9 @@
 					<LinearLayout
 						android:layout_width="match_parent"
 						android:layout_height="wrap_content"
+						android:id="@+id/nutrient_nutrient_container"
 						android:orientation="vertical"
+						android:focusable="true"
 						android:paddingLeft="16dp"
 						android:paddingRight="16dp"
 						android:paddingTop="8dp"
