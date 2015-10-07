@@ -210,6 +210,7 @@ public class FeedingFragment extends Fragment
 						FeedingFragment.this.date.setText(dateStr);
 
 						feed.setDate(date.getTimeInMillis());
+						onCancelled();
 					}
 
 					@Override public void onCancelled()
