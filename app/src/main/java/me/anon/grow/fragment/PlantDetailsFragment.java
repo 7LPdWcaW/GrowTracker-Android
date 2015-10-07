@@ -149,6 +149,8 @@ public class PlantDetailsFragment extends Fragment
 						plant.setPlantDate(newDate.getTimeInMillis());
 						String dateStr = dateFormat.format(new Date(plant.getPlantDate())) + " " + timeFormat.format(new Date(plant.getPlantDate()));
 						date.setText(dateStr);
+						
+						onCancelled();
 					}
 
 					@Override public void onCancelled()

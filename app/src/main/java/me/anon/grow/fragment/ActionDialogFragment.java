@@ -91,6 +91,7 @@ public class ActionDialogFragment extends DialogFragment
 						ActionDialogFragment.this.date.setText(dateStr);
 
 						action.setDate(date.getTimeInMillis());
+						onCancelled();
 					}
 
 					@Override public void onCancelled()
