@@ -59,6 +59,7 @@ public class PlantDetailsFragment extends Fragment
 	@Views.InjectView(R.id.plant_strain) private TextView strain;
 	@Views.InjectView(R.id.plant_stage) private TextView stage;
 	@Views.InjectView(R.id.plant_date) private TextView date;
+	@Views.InjectView(R.id.plant_date_container) private View dateContainer;
 	@Views.InjectView(R.id.from_clone) private CheckBox clone;
 
 	private int plantIndex = -1;
@@ -137,7 +138,7 @@ public class PlantDetailsFragment extends Fragment
 		date.setText(dateStr);
 		clone.setChecked(plant.isClone());
 
-		date.setOnClickListener(new View.OnClickListener()
+		dateContainer.setOnClickListener(new View.OnClickListener()
 		{
 			@Override public void onClick(View v)
 			{
@@ -149,7 +150,7 @@ public class PlantDetailsFragment extends Fragment
 						plant.setPlantDate(newDate.getTimeInMillis());
 						String dateStr = dateFormat.format(new Date(plant.getPlantDate())) + " " + timeFormat.format(new Date(plant.getPlantDate()));
 						date.setText(dateStr);
-						
+
 						onCancelled();
 					}
 
@@ -343,7 +344,7 @@ public class PlantDetailsFragment extends Fragment
 		startActivity(photos);
 	}
 
-	@Views.OnClick public void onPlantStageClick(final View view)
+	@Views.OnClick public void onPlantStageContainerClick(final View view)
 	{
 		String[] stages = new String[PlantStage.names().length - 1];
 		System.arraycopy(PlantStage.names(), 1, stages, 0, stages.length);
@@ -359,7 +360,7 @@ public class PlantDetailsFragment extends Fragment
 						plant.getActions().add(new StageChange(PlantStage.values()[which + 1]));
 					}
 
-					((TextView)view).setText(PlantStage.values()[which + 1].getPrintString());
+					stage.setText(PlantStage.values()[which + 1].getPrintString());
 				}
 			})
 			.show();
