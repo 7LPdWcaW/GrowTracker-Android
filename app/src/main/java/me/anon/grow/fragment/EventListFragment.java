@@ -1,7 +1,9 @@
 package me.anon.grow.fragment;
 
 import android.app.Activity;
+import android.app.AlertDialog;
 import android.app.Fragment;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
@@ -19,6 +21,7 @@ import com.kenny.snackbar.SnackBar;
 import com.kenny.snackbar.SnackBarListener;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collections;
 
 import me.anon.controller.adapter.ActionAdapter;
@@ -52,8 +55,9 @@ public class EventListFragment extends Fragment implements ActionAdapter.OnActio
 	private int plantIndex = -1;
 	private Plant plant;
 
-	private boolean feeding = true, watering = true, actions = true;
+	private boolean feeding = true, watering = true;
 	private boolean notes = true, stages = true;
+	private ArrayList<Action.ActionName> selected = new ArrayList<>();
 
 	/**
 	 * @param plantIndex If -1, assume new plant
@@ -107,6 +111,7 @@ public class EventListFragment extends Fragment implements ActionAdapter.OnActio
 			return;
 		}
 
+		selected.addAll(new ArrayList<Action.ActionName>(Arrays.asList(Action.ActionName.values())));
 		adapter = new ActionAdapter();
 		adapter.setOnActionSelectListener(this);
 		setActions();
@@ -327,15 +332,46 @@ public class EventListFragment extends Fragment implements ActionAdapter.OnActio
 
 	@Override public boolean onOptionsItemSelected(MenuItem item)
 	{
-		ArrayList<Action> items = new ArrayList<>();
-		items.addAll(PlantManager.getInstance().getPlants().get(plantIndex).getActions());
-		Collections.reverse(items);
-
-		item.setChecked(!item.isChecked());
+		if (item.isCheckable())
+		{
+			item.setChecked(!item.isChecked());
+		}
 
 		if (item.getItemId() == R.id.filter_actions)
 		{
-			actions = item.isChecked();
+			CharSequence[] actionItems = new CharSequence[Action.ActionName.values().length];
+			boolean[] selectedItems = new boolean[Action.ActionName.values().length];
+
+			for (int index = 0; index < actionItems.length; index++)
+			{
+				actionItems[index] = Action.ActionName.values()[index].getPrintString();
+				selectedItems[index] = selected.contains(Action.ActionName.values()[index]);
+			}
+
+			new AlertDialog.Builder(getActivity())
+				.setTitle("Actions")
+				.setMultiChoiceItems(actionItems, selectedItems, new DialogInterface.OnMultiChoiceClickListener()
+				{
+					@Override public void onClick(DialogInterface dialog, int which, boolean isChecked)
+					{
+						if (isChecked)
+						{
+							selected.add(Action.ActionName.values()[which]);
+						}
+						else
+						{
+							selected.remove(Action.ActionName.values()[which]);
+						}
+					}
+				})
+				.setPositiveButton("Done", new DialogInterface.OnClickListener()
+				{
+					@Override public void onClick(DialogInterface dialog, int which)
+					{
+						filter();
+					}
+				})
+				.show();
 		}
 		else if (item.getItemId() == R.id.filter_waterings)
 		{
@@ -354,11 +390,25 @@ public class EventListFragment extends Fragment implements ActionAdapter.OnActio
 			stages = item.isChecked();
 		}
 
+		filter();
+
+		return true;
+	}
+
+	private void filter()
+	{
+		ArrayList<Action> items = new ArrayList<>();
+		items.addAll(PlantManager.getInstance().getPlants().get(plantIndex).getActions());
+		Collections.reverse(items);
+
 		for (int index = 0; index < items.size(); index++)
 		{
-			if (!actions && items.get(index) instanceof EmptyAction)
+			if (items.get(index) instanceof EmptyAction)
 			{
-				items.set(index, null);
+				if (!selected.contains(((EmptyAction)items.get(index)).getAction()))
+				{
+					items.set(index, null);
+				}
 			}
 			else if (!notes && items.get(index) instanceof NoteAction)
 			{
@@ -381,7 +431,5 @@ public class EventListFragment extends Fragment implements ActionAdapter.OnActio
 		items.removeAll(Collections.singleton(null));
 		adapter.setActions(items);
 		adapter.notifyDataSetChanged();
-
-		return true;
 	}
 }
