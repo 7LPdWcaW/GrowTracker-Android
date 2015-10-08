@@ -13,6 +13,7 @@ import com.github.mikephil.charting.charts.LineChart;
 import com.github.mikephil.charting.data.Entry;
 import com.github.mikephil.charting.data.LineData;
 import com.github.mikephil.charting.data.LineDataSet;
+import com.github.mikephil.charting.utils.ValueFormatter;
 
 import java.util.ArrayList;
 import java.util.Comparator;
@@ -93,6 +94,14 @@ public class StatisticsFragment extends Fragment
 	@Views.InjectView(R.id.min_ppm) private TextView minppm;
 	@Views.InjectView(R.id.max_ppm) private TextView maxppm;
 	@Views.InjectView(R.id.ave_ppm) private TextView aveppm;
+
+	private ValueFormatter formatter = new ValueFormatter()
+	{
+		@Override public String getFormattedValue(float value)
+		{
+			return String.format("%.2f", value);
+		}
+	};
 
 	@Nullable @Override public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState)
 	{
@@ -334,6 +343,10 @@ public class StatisticsFragment extends Fragment
 		dataSet.setValueTextColor(0xffffffff);
 		dataSet.setCircleSize(5.0f);
 		dataSet.setValueTextSize(8.0f);
+		dataSet.setValueFormatter(formatter);
+
+		LineData lineData = new LineData(xVals, dataSet);
+		lineData.setValueFormatter(formatter);
 
 		inputPh.setBackgroundColor(0xff006064);
 		inputPh.setGridBackgroundColor(0xff006064);
@@ -342,6 +355,7 @@ public class StatisticsFragment extends Fragment
 		inputPh.getLegend().setEnabled(false);
 		inputPh.getAxisLeft().setTextColor(0xffffffff);
 		inputPh.getAxisRight().setEnabled(false);
+		inputPh.getAxisLeft().setValueFormatter(formatter);
 		inputPh.getAxisLeft().setXOffset(8.0f);
 		inputPh.getAxisLeft().setAxisMinValue(min - 0.5f);
 		inputPh.getAxisLeft().setAxisMaxValue(max + 0.5f);
@@ -350,7 +364,7 @@ public class StatisticsFragment extends Fragment
 		inputPh.setDescription("");
 		inputPh.setPinchZoom(false);
 		inputPh.setDoubleTapToZoomEnabled(false);
-		inputPh.setData(new LineData(xVals, dataSet));
+		inputPh.setData(lineData);
 	}
 
 	private void setRunoff()
@@ -388,6 +402,10 @@ public class StatisticsFragment extends Fragment
 		dataSet.setValueTextColor(0xffffffff);
 		dataSet.setCircleSize(5.0f);
 		dataSet.setValueTextSize(8.0f);
+		dataSet.setValueFormatter(formatter);
+
+		LineData lineData = new LineData(xVals, dataSet);
+		lineData.setValueFormatter(formatter);
 
 		runoff.setBackgroundColor(0xff01579B);
 		runoff.setGridBackgroundColor(0xff01579B);
@@ -396,6 +414,7 @@ public class StatisticsFragment extends Fragment
 		runoff.getLegend().setEnabled(false);
 		runoff.getAxisLeft().setTextColor(0xffffffff);
 		runoff.getAxisRight().setEnabled(false);
+		runoff.getAxisLeft().setValueFormatter(formatter);
 		runoff.getAxisLeft().setXOffset(8.0f);
 		runoff.getAxisLeft().setAxisMinValue(min - 0.5f);
 		runoff.getAxisLeft().setAxisMaxValue(max + 0.5f);
@@ -404,6 +423,6 @@ public class StatisticsFragment extends Fragment
 		runoff.setDescription("");
 		runoff.setPinchZoom(false);
 		runoff.setDoubleTapToZoomEnabled(false);
-		runoff.setData(new LineData(xVals, dataSet));
+		runoff.setData(lineData);
 	}
 }
