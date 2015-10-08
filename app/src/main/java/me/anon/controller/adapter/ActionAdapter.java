@@ -74,7 +74,7 @@ public class ActionAdapter extends RecyclerView.Adapter<ActionHolder>
 		String summary = "";
 		if (action instanceof Feed)
 		{
-			viewHolder.itemView.setBackgroundColor(Action.ActionName.FEED.getColour());
+			viewHolder.itemView.setBackgroundColor(0x9A90CAF9);
 			viewHolder.getName().setText("Feed with nutrients");
 
 			if (((Feed)action).getNutrient() != null)
@@ -134,7 +134,7 @@ public class ActionAdapter extends RecyclerView.Adapter<ActionHolder>
 		}
 		else if (action instanceof Water)
 		{
-			viewHolder.itemView.setBackgroundColor(Action.ActionName.WATER.getColour());
+			viewHolder.itemView.setBackgroundColor(0x9ABBDEFB);
 			viewHolder.getName().setText("Watered");
 			StringBuilder waterStr = new StringBuilder();
 
@@ -189,7 +189,7 @@ public class ActionAdapter extends RecyclerView.Adapter<ActionHolder>
 		else if (action instanceof StageChange)
 		{
 			viewHolder.getName().setText(((StageChange)action).getNewStage().getPrintString());
-			viewHolder.itemView.setBackgroundColor(0xffB39DDB);
+			viewHolder.itemView.setBackgroundColor(0x9AB39DDB);
 		}
 
 		if (!TextUtils.isEmpty(summary))
