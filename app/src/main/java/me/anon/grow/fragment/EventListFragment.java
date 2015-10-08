@@ -32,6 +32,7 @@ import me.anon.model.EmptyAction;
 import me.anon.model.Feed;
 import me.anon.model.NoteAction;
 import me.anon.model.Plant;
+import me.anon.model.StageChange;
 import me.anon.model.Water;
 
 /**
@@ -52,6 +53,7 @@ public class EventListFragment extends Fragment implements ActionAdapter.OnActio
 	private Plant plant;
 
 	private boolean feeding = true, watering = true, actions = true;
+	private boolean notes = true, stages = true;
 
 	/**
 	 * @param plantIndex If -1, assume new plant
@@ -343,10 +345,26 @@ public class EventListFragment extends Fragment implements ActionAdapter.OnActio
 		{
 			feeding = item.isChecked();
 		}
+		else if (item.getItemId() == R.id.filter_notes)
+		{
+			notes = item.isChecked();
+		}
+		else if (item.getItemId() == R.id.filter_stages)
+		{
+			stages = item.isChecked();
+		}
 
 		for (int index = 0; index < items.size(); index++)
 		{
 			if (!actions && items.get(index) instanceof EmptyAction)
+			{
+				items.set(index, null);
+			}
+			else if (!notes && items.get(index) instanceof NoteAction)
+			{
+				items.set(index, null);
+			}
+			else if (!stages && items.get(index) instanceof StageChange)
 			{
 				items.set(index, null);
 			}

@@ -25,6 +25,18 @@
 				/>
 
 				<item
+					android:id="@+id/filter_notes"
+					android:title="Notes"
+					android:checked="true"
+				/>
+
+				<item
+					android:id="@+id/filter_stages"
+					android:title="Stage changes"
+					android:checked="true"
+				/>
+
+				<item
 					android:id="@+id/filter_actions"
 					android:title="Actions"
 					android:checked="true"
