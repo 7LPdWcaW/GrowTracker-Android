@@ -41,6 +41,7 @@ import me.anon.model.NoteAction;
 import me.anon.model.Plant;
 import me.anon.model.PlantStage;
 import me.anon.model.StageChange;
+import me.anon.model.Water;
 
 /**
  * // TODO: Add class description
@@ -277,7 +278,31 @@ public class PlantDetailsFragment extends Fragment
 		{
 			if (resultCode != Activity.RESULT_CANCELED)
 			{
-				PlantManager.getInstance().upsert(plantIndex, plant);
+				String type = plant.getActions().get(plant.getActions().size() - 1) instanceof Water ? "Watering" : "Feeding";
+
+				SnackBar.show(getActivity(), type + " added", "Apply to another plant", new SnackBarListener()
+				{
+					@Override public void onSnackBarStarted(Object o)
+					{
+						if (getView() != null)
+						{
+							FabAnimator.animateUp(getView().findViewById(R.id.fab_complete));
+						}
+					}
+
+					@Override public void onSnackBarFinished(Object o)
+					{
+						if (getView() != null)
+						{
+							FabAnimator.animateDown(getView().findViewById(R.id.fab_complete));
+						}
+					}
+
+					@Override public void onSnackBarAction(Object o)
+					{
+						
+					}
+				});
 			}
 		}
 
