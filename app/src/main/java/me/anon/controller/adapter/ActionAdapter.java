@@ -74,7 +74,7 @@ public class ActionAdapter extends RecyclerView.Adapter<ActionHolder>
 		String summary = "";
 		if (action instanceof Feed)
 		{
-			viewHolder.itemView.setBackgroundColor(Action.ActionName.FEED.getColour());
+			viewHolder.itemView.setBackgroundColor(0xff90CAF9);
 			viewHolder.getName().setText("Feed with nutrients");
 
 			if (((Feed)action).getNutrient() != null)
@@ -134,7 +134,7 @@ public class ActionAdapter extends RecyclerView.Adapter<ActionHolder>
 		}
 		else if (action instanceof Water)
 		{
-			viewHolder.itemView.setBackgroundColor(Action.ActionName.WATER.getColour());
+			viewHolder.itemView.setBackgroundColor(0xffBBDEFB);
 			viewHolder.getName().setText("Watered");
 			StringBuilder waterStr = new StringBuilder();
 
