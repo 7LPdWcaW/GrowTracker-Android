@@ -69,8 +69,8 @@ public class ActionDialogFragment extends DialogFragment
 			action.setDate(savedInstanceState.getLong("date", System.currentTimeMillis()));
 		}
 
-		final String[] actions = new String[Action.ActionName.names().length - 2];
-		System.arraycopy(Action.ActionName.names(), 2, actions, 0, actions.length);
+		final String[] actions = new String[Action.ActionName.names().length];
+		System.arraycopy(Action.ActionName.names(), 0, actions, 0, actions.length);
 
 		actionsSpinner.setAdapter(new ArrayAdapter<String>(getActivity(), android.R.layout.simple_spinner_dropdown_item, actions));
 
@@ -130,7 +130,7 @@ public class ActionDialogFragment extends DialogFragment
 			{
 				if (onActionSelected != null)
 				{
-					action.setAction(Action.ActionName.values()[actionsSpinner.getSelectedItemPosition() + 2]);
+					action.setAction(Action.ActionName.values()[actionsSpinner.getSelectedItemPosition()]);
 					action.setNotes(TextUtils.isEmpty(notes.getText()) ? null : notes.getText().toString());
 
 					onActionSelected.onActionSelected(action);

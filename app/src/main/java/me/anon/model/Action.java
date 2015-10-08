@@ -19,8 +19,6 @@ public abstract class Action
 
 	public enum ActionName
 	{
-		FEED("Feed", 0xff90CAF9),
-		WATER("Water", 0xffBBDEFB),
 		FIM("Fuck I Missed", 0xffFFCC80),
 		FLUSH("Flush", 0xffFFE082),
 		FOLIAR_FEED("Foliar Feed", 0xffE6EE9C),
