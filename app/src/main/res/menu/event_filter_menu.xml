@@ -2,34 +2,41 @@
 
 <menu
 	xmlns:android="http://schemas.android.com/apk/res/android"
-	xmlns:app="http://schemas.android.com/apk/res-auto"
 >
+	<group android:checkableBehavior="all">
+		<item
+			android:id="@+id/filter_feedings"
+			android:checked="true"
+			android:title="Feedings"
+		/>
+	</group>
+
+	<group android:checkableBehavior="all">
+		<item
+			android:id="@+id/filter_waterings"
+			android:checked="true"
+			android:title="Waterings"
+		/>
+	</group>
+
+	<group android:checkableBehavior="all">
+		<item
+			android:id="@+id/filter_notes"
+			android:checked="true"
+			android:title="Notes"
+		/>
+	</group>
+
+	<group android:checkableBehavior="all">
+		<item
+			android:id="@+id/filter_stages"
+			android:checked="true"
+			android:title="Stage changes"
+		/>
+	</group>
+
 	<item
-		android:id="@+id/filter"
-		android:icon="@drawable/ic_menu_sort"
-		android:title="Filter"
-		app:showAsAction="always"
-	>
-		<menu>
-			<group android:checkableBehavior="all">
-				<item
-					android:id="@+id/filter_feedings"
-					android:title="Feedings"
-					android:checked="true"
-				/>
-
-				<item
-					android:id="@+id/filter_waterings"
-					android:title="Waterings"
-					android:checked="true"
-				/>
-
-				<item
-					android:id="@+id/filter_actions"
-					android:title="Actions"
-					android:checked="true"
-				/>
-			</group>
-		</menu>
-	</item>
+		android:id="@+id/filter_actions"
+		android:title="Actions"
+	/>
 </menu>
