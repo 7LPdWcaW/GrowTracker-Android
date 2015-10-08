@@ -1,5 +1,6 @@
 package me.anon.grow.fragment;
 
+import android.app.Activity;
 import android.app.Fragment;
 import android.app.FragmentManager;
 import android.os.Bundle;
@@ -325,6 +326,7 @@ public class FeedingFragment extends Fragment
 		}
 
 		PlantManager.getInstance().upsert(plantIndex, plant);
+		getActivity().setResult(Activity.RESULT_OK);
 		getActivity().finish();
 	}
 }
