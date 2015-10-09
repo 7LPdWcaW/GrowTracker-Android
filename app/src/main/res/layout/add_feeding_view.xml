@@ -351,6 +351,7 @@
 							android:id="@+id/notes"
 							android:inputType="none"
 							android:lines="4"
+							android:gravity="top"
 							style="@style/SubsectionSubTitle"
 						/>
 					</LinearLayout>
