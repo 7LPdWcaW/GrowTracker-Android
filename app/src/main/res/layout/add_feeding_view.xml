@@ -298,6 +298,60 @@
 							android:id="@+id/nutrient_amount"
 							android:hint="0ml"
 							android:inputType="numberDecimal"
+							android:nextFocusDown="@+id/notes"
+							style="@style/SubsectionSubTitle"
+						/>
+					</LinearLayout>
+				</LinearLayout>
+			</LinearLayout>
+
+			<LinearLayout
+				android:layout_width="match_parent"
+				android:layout_height="wrap_content"
+				android:orientation="vertical"
+				android:background="#ffffff"
+				android:layout_marginTop="8dp"
+				android:elevation="4dp"
+				style="@style/PaperCard"
+			>
+				<TextView
+					android:layout_width="wrap_content"
+					android:layout_height="wrap_content"
+					android:text="Notes"
+					style="@style/SectionTitle"
+				/>
+
+				<LinearLayout
+					android:layout_width="match_parent"
+					android:layout_height="wrap_content"
+					android:orientation="vertical"
+					android:divider="@drawable/full_divider"
+					android:showDividers="middle"
+					android:layout_marginTop="16dp"
+				>
+					<LinearLayout
+						android:layout_width="match_parent"
+						android:layout_height="wrap_content"
+						android:orientation="vertical"
+						android:paddingLeft="16dp"
+						android:paddingRight="16dp"
+						android:paddingTop="8dp"
+						android:paddingBottom="16dp"
+					>
+						<TextView
+							android:layout_width="match_parent"
+							android:layout_height="wrap_content"
+							android:text="Notes"
+							style="@style/SubsectionTitle"
+						/>
+
+						<EditText
+							android:layout_width="match_parent"
+							android:layout_height="wrap_content"
+							android:id="@+id/notes"
+							android:inputType="none"
+							android:lines="4"
+							android:gravity="top"
 							style="@style/SubsectionSubTitle"
 						/>
 					</LinearLayout>
