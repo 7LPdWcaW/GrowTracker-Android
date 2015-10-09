@@ -109,6 +109,7 @@ public class FeedingFragment extends Fragment
 					feed.setPpm(water.getPpm());
 					feed.setRunoff(water.getRunoff());
 					feed.setAmount(water.getAmount());
+					feed.setNotes(water.getNotes());
 				}
 			}
 		}
@@ -308,6 +309,7 @@ public class FeedingFragment extends Fragment
 			water.setRunoff(feed.getRunoff());
 			water.setAmount(feed.getAmount());
 			water.setDate(feed.getDate());
+			water.setNotes(feed.getNotes());
 
 			if (actionIndex < 0)
 			{
