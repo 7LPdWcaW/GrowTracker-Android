@@ -5,9 +5,11 @@ import android.app.AlertDialog;
 import android.app.Fragment;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.Environment;
+import android.preference.PreferenceManager;
 import android.provider.MediaStore;
 import android.support.annotation.Nullable;
 import android.text.TextUtils;
@@ -29,6 +31,7 @@ import java.util.Date;
 import java.util.Locale;
 
 import me.anon.grow.AddFeedingActivity;
+import me.anon.grow.EditFeedingActivity;
 import me.anon.grow.EventsActivity;
 import me.anon.grow.R;
 import me.anon.grow.StatisticsActivity;
@@ -300,7 +303,28 @@ public class PlantDetailsFragment extends Fragment
 
 					@Override public void onSnackBarAction(Object o)
 					{
-						
+						CharSequence[] plants = new CharSequence[PlantManager.getInstance().getPlants().size()];
+						for (int index = 0; index < plants.length; index++)
+						{
+							plants[index] = PlantManager.getInstance().getPlants().get(index).getName();
+						}
+
+						new AlertDialog.Builder(getActivity())
+							.setTitle("Select plant")
+							.setItems(plants, new DialogInterface.OnClickListener()
+							{
+								@Override public void onClick(DialogInterface dialog, int which)
+								{
+									Water water = (Water)plant.getActions().get(plant.getActions().size() - 1);
+									PlantManager.getInstance().getPlants().get(which).getActions().add(water);
+
+									Intent edit = new Intent(getActivity(), EditFeedingActivity.class);
+									edit.putExtra("plant_index", which);
+									edit.putExtra("action_index", PlantManager.getInstance().getPlants().get(which).getActions().size() - 1);
+									startActivityForResult(edit, 2);
+								}
+							})
+							.show();
 					}
 				});
 			}
@@ -421,6 +445,21 @@ public class PlantDetailsFragment extends Fragment
 		if (plantIndex < 0)
 		{
 			plant.getActions().add(new StageChange(PlantStage.valueOf(stage.getText().toString().toUpperCase(Locale.ENGLISH))));
+
+			SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(getActivity());
+			SharedPreferences.Editor edit = prefs.edit();
+
+			int plantsSize = PlantManager.getInstance().getPlants().size();
+
+			for (int index = 0; index < plantsSize; index++)
+			{
+				int currentPos = prefs.getInt(String.valueOf(index), 0);
+
+				edit.putInt(String.valueOf(index), currentPos + 1);
+			}
+
+			edit.putInt(String.valueOf(plantsSize + 1), 0);
+			edit.apply();
 		}
 
 		plant.setClone(clone.isChecked());
