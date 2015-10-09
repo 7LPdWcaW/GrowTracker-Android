@@ -10,6 +10,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.WindowManager;
+import android.widget.EditText;
 import android.widget.TextView;
 
 import java.text.DateFormat;
@@ -46,6 +47,7 @@ public class FeedingFragment extends Fragment
 	@Views.InjectView(R.id.nutrient_nutrient_container) private View nutrientNutrientContainer;
 	@Views.InjectView(R.id.nutrient) private TextView nutrient;
 	@Views.InjectView(R.id.nutrient_amount) private TextView nutrientAmount;
+	@Views.InjectView(R.id.notes) private EditText notes;
 
 	private int plantIndex = -1;
 	private int actionIndex = -1;
@@ -274,6 +276,8 @@ public class FeedingFragment extends Fragment
 		{
 			nutrientAmount.setText(String.valueOf(feed.getMlpl()));
 		}
+
+		notes.setText(feed.getNotes());
 	}
 
 	@Views.OnClick public void onFabCompleteClick(final View view)
@@ -289,6 +293,7 @@ public class FeedingFragment extends Fragment
 		feed.setRunoff(runoffPh);
 		feed.setAmount(amount);
 		feed.setMlpl(nutrientAmount);
+		feed.setNotes(TextUtils.isEmpty(notes.getText().toString()) ? null : notes.getText().toString());
 
 		if (plant.getActions() == null)
 		{
