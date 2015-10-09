@@ -176,15 +176,11 @@ public class ActionAdapter extends RecyclerView.Adapter<ActionHolder>
 		{
 			viewHolder.getName().setText(((EmptyAction)action).getAction().getPrintString());
 			viewHolder.itemView.setBackgroundColor(((EmptyAction)action).getAction().getColour());
-
-			summary = action.getNotes();
 		}
 		else if (action instanceof NoteAction)
 		{
 			viewHolder.getName().setText("Note");
 			viewHolder.itemView.setBackgroundColor(0xffffffff);
-
-			summary = action.getNotes();
 		}
 		else if (action instanceof StageChange)
 		{
@@ -192,9 +188,15 @@ public class ActionAdapter extends RecyclerView.Adapter<ActionHolder>
 			viewHolder.itemView.setBackgroundColor(0x9AB39DDB);
 		}
 
+		if (!TextUtils.isEmpty(action.getNotes()))
+		{
+			summary += summary.length() > 0 ? "<br />" : "";
+			summary += action.getNotes();
+		}
+
 		if (!TextUtils.isEmpty(summary))
 		{
-			viewHolder.getSummary().setText(summary);
+			viewHolder.getSummary().setText(Html.fromHtml(summary));
 			viewHolder.getSummary().setVisibility(View.VISIBLE);
 		}
 
