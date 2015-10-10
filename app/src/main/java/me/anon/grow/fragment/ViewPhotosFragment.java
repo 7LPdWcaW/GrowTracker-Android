@@ -134,9 +134,10 @@ public class ViewPhotosFragment extends Fragment
 										for (Integer integer : adapter.getSelected())
 										{
 											String image = adapter.getImages().get(integer);
-											PlantManager.getInstance().getPlants().get(plantIndex).getImages().remove(image);
+											plant.getImages().remove(image);
 										}
 
+										PlantManager.getInstance().upsert(plantIndex, plant);
 										adapter.setImages(PlantManager.getInstance().getPlants().get(plantIndex).getImages());
 										adapter.notifyDataSetChanged();
 										mode.finish();
