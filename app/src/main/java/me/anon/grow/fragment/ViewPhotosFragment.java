@@ -1,7 +1,9 @@
 package me.anon.grow.fragment;
 
 import android.app.Activity;
+import android.app.AlertDialog;
 import android.app.Fragment;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
@@ -117,8 +119,34 @@ public class ViewPhotosFragment extends Fragment
 						return false;
 					}
 
-					@Override public boolean onActionItemClicked(ActionMode mode, MenuItem item)
+					@Override public boolean onActionItemClicked(final ActionMode mode, MenuItem item)
 					{
+						if (item.getItemId() == R.id.delete)
+						{
+							new AlertDialog.Builder(getActivity())
+								.setTitle("Are you sure?")
+								.setMessage("You're about to delete " + adapter.getSelected().size() + " images, are you sure? You will not be able to recover these")
+								.setPositiveButton("Yes", new DialogInterface.OnClickListener()
+								{
+									@Override public void onClick(DialogInterface dialog, int which)
+									{
+										for (Integer integer : adapter.getSelected())
+										{
+											String image = adapter.getImages().get(integer);
+											PlantManager.getInstance().getPlants().get(plantIndex).getImages().remove(image);
+										}
+
+										adapter.setImages(PlantManager.getInstance().getPlants().get(plantIndex).getImages());
+										adapter.notifyDataSetChanged();
+										mode.finish();
+									}
+								})
+								.setNegativeButton("No", null)
+								.show();
+
+							return true;
+						}
+
 						return false;
 					}
 
