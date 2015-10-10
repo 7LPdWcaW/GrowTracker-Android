@@ -14,4 +14,14 @@
 		android:src="@drawable/ic_image"
 		android:scaleType="centerCrop"
 	/>
+
+	<CheckBox
+		android:layout_width="wrap_content"
+		android:layout_height="wrap_content"
+		android:id="@+id/selection"
+		android:buttonTint="@color/blue"
+		android:background="#ffffff"
+		android:layout_alignParentRight="true"
+		android:layout_alignParentTop="true"
+	/>
 </me.anon.view.SquareRelativeLayout>

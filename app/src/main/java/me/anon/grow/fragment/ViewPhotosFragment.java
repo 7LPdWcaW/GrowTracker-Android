@@ -106,6 +106,9 @@ public class ViewPhotosFragment extends Fragment
 					@Override public boolean onCreateActionMode(ActionMode mode, Menu menu)
 					{
 						getActivity().getMenuInflater().inflate(R.menu.photo_menu, menu);
+						adapter.setInActionMode(true);
+						adapter.notifyDataSetChanged();
+
 						return true;
 					}
 
@@ -121,6 +124,8 @@ public class ViewPhotosFragment extends Fragment
 
 					@Override public void onDestroyActionMode(ActionMode mode)
 					{
+						adapter.setInActionMode(false);
+						adapter.notifyDataSetChanged();
 					}
 				});
 
