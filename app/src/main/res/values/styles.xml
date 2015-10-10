@@ -5,6 +5,16 @@
 
 		<item name="colorPrimary">#4AA74E</item>
 		<item name="colorPrimaryDark">#387E3B</item>
+
+		<item name="actionModeBackground">@color/blue</item>
+		<item name="android:actionModeBackground">@color/blue</item>
+
+		<item name="actionModeStyle">@style/ActionMode</item>
+		<item name="android:actionModeStyle">@style/ActionMode</item>
+	</style>
+
+	<style name="ActionMode" parent="@style/Widget.AppCompat.ActionMode">
+    	<item name="android:background">@color/blue</item>
 	</style>
 
 	<style name="fullscreen" parent="Theme.AppCompat">
