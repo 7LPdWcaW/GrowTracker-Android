@@ -1,5 +1,7 @@
 package me.anon.model;
 
+import android.support.annotation.Nullable;
+
 import lombok.Getter;
 import lombok.Setter;
 
@@ -13,7 +15,7 @@ import lombok.Setter;
 @Getter @Setter
 public class EmptyAction extends Action
 {
-	private ActionName action;
+	@Nullable private ActionName action;
 
 	public EmptyAction(Action.ActionName action)
 	{

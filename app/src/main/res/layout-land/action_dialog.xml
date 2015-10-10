@@ -1,0 +1,65 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<LinearLayout
+	xmlns:android="http://schemas.android.com/apk/res/android"
+	android:layout_width="match_parent"
+	android:layout_height="match_parent"
+	android:orientation="horizontal"
+	android:padding="16dp"
+>
+	<LinearLayout
+		android:layout_width="0dp"
+		android:layout_height="wrap_content"
+		android:orientation="vertical"
+		android:layout_marginRight="12dp"
+		android:layout_weight="1"
+	>
+		<Spinner
+			android:layout_width="match_parent"
+			android:layout_height="wrap_content"
+			android:id="@+id/actions"
+		/>
+
+		<TextView
+			android:layout_width="match_parent"
+			android:layout_height="wrap_content"
+			android:layout_gravity="center_vertical"
+			android:text="Date"
+			android:layout_marginTop="16dp"
+			style="@style/SubsectionTitle"
+		/>
+
+		<TextView
+			android:layout_width="match_parent"
+			android:layout_height="wrap_content"
+			android:id="@+id/date"
+			android:layout_marginTop="8dp"
+			style="@style/SubsectionSubTitle"
+		/>
+	</LinearLayout>
+
+	<LinearLayout
+		android:layout_width="0dp"
+		android:layout_height="wrap_content"
+		android:orientation="vertical"
+		android:layout_marginLeft="12dp"
+		android:layout_weight="1"
+	>
+		<TextView
+			android:layout_width="match_parent"
+			android:layout_height="wrap_content"
+			android:layout_gravity="center_vertical"
+			android:text="Notes"
+			style="@style/SubsectionTitle"
+		/>
+
+		<EditText
+			android:layout_width="match_parent"
+			android:layout_height="match_parent"
+			android:id="@+id/notes"
+			android:gravity="top"
+			android:lines="4"
+			android:layout_marginTop="8dp"
+		/>
+	</LinearLayout>
+</LinearLayout>

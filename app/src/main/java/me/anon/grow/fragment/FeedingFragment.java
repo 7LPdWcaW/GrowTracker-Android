@@ -1,5 +1,6 @@
 package me.anon.grow.fragment;
 
+import android.app.Activity;
 import android.app.Fragment;
 import android.app.FragmentManager;
 import android.os.Bundle;
@@ -9,6 +10,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.WindowManager;
+import android.widget.EditText;
 import android.widget.TextView;
 
 import java.text.DateFormat;
@@ -42,8 +44,10 @@ public class FeedingFragment extends Fragment
 	@Views.InjectView(R.id.date_container) private View dateContainer;
 	@Views.InjectView(R.id.date) private TextView date;
 	@Views.InjectView(R.id.nutrient_container) private View nutrientContainer;
+	@Views.InjectView(R.id.nutrient_nutrient_container) private View nutrientNutrientContainer;
 	@Views.InjectView(R.id.nutrient) private TextView nutrient;
 	@Views.InjectView(R.id.nutrient_amount) private TextView nutrientAmount;
+	@Views.InjectView(R.id.notes) private EditText notes;
 
 	private int plantIndex = -1;
 	private int actionIndex = -1;
@@ -105,6 +109,7 @@ public class FeedingFragment extends Fragment
 					feed.setPpm(water.getPpm());
 					feed.setRunoff(water.getRunoff());
 					feed.setAmount(water.getAmount());
+					feed.setNotes(water.getNotes());
 				}
 			}
 		}
@@ -121,64 +126,72 @@ public class FeedingFragment extends Fragment
 		}
 
 		setUi();
+		nutrientNutrientContainer.setOnClickListener(new View.OnClickListener()
+		{
+			@Override public void onClick(View v)
+			{
+				Nutrient nutrient = feed.getNutrient();
+				if (feed.getNutrient() == null)
+				{
+					if (plant.getActions() != null)
+					{
+						ArrayList<Action> actions = plant.getActions();
+						for (int i = actions.size() - 1; i >= 0; i--)
+						{
+							Action action = actions.get(i);
+							if (action instanceof Feed && ((Feed)action).getNutrient() != null)
+							{
+								nutrient = ((Feed)action).getNutrient();
+								break;
+							}
+						}
+					}
+				}
+
+				FragmentManager fm = getFragmentManager();
+				AddNutrientDialogFragment addNutrientDialogFragment = new AddNutrientDialogFragment(nutrient);
+				addNutrientDialogFragment.setOnAddNutrientListener(new AddNutrientDialogFragment.OnAddNutrientListener()
+				{
+					@Override public void onNutrientSelected(Nutrient nutrient)
+					{
+						feed.setNutrient(nutrient);
+
+						if (nutrient == null)
+						{
+							feed.setAmount(null);
+							FeedingFragment.this.nutrientAmount.setText(null);
+							FeedingFragment.this.nutrient.setText("N/A");
+						}
+						else
+						{
+							String nutrientStr = "";
+							nutrientStr += nutrient.getNpc() == null ? "-" : nutrient.getNpc();
+							nutrientStr += " : ";
+							nutrientStr += nutrient.getPpc() == null ? "-" : nutrient.getPpc();
+							nutrientStr += " : ";
+							nutrientStr += nutrient.getKpc() == null ? "-" : nutrient.getKpc();
+							nutrientStr += "/";
+							nutrientStr += nutrient.getCapc() == null ? "-" : nutrient.getCapc();
+							nutrientStr += " : ";
+							nutrientStr += nutrient.getSpc() == null ? "-" : nutrient.getSpc();
+							nutrientStr += " : ";
+							nutrientStr += nutrient.getMgpc() == null ? "-" : nutrient.getMgpc();
+
+							FeedingFragment.this.nutrient.setText(nutrientStr);
+						}
+					}
+				});
+				addNutrientDialogFragment.show(fm, "fragment_add_nutrient");
+			}
+		});
 		nutrient.setOnFocusChangeListener(new View.OnFocusChangeListener()
 		{
 			@Override public void onFocusChange(View v, boolean hasFocus)
 			{
 				if (hasFocus)
 				{
-					Nutrient nutrient = feed.getNutrient();
-					if (feed.getNutrient() == null)
-					{
-						if (plant.getActions() != null)
-						{
-							ArrayList<Action> actions = plant.getActions();
-							for (int i = actions.size() - 1; i >= 0; i--)
-							{
-								Action action = actions.get(i);
-								if (action instanceof Feed && ((Feed)action).getNutrient() != null)
-								{
-									nutrient = ((Feed)action).getNutrient();
-									break;
-								}
-							}
-						}
-					}
-
-					FragmentManager fm = getFragmentManager();
-					AddNutrientDialogFragment addNutrientDialogFragment = new AddNutrientDialogFragment(nutrient);
-					addNutrientDialogFragment.setOnAddNutrientListener(new AddNutrientDialogFragment.OnAddNutrientListener()
-					{
-						@Override public void onNutrientSelected(Nutrient nutrient)
-						{
-							feed.setNutrient(nutrient);
-
-							if (nutrient == null)
-							{
-								feed.setAmount(null);
-								FeedingFragment.this.nutrientAmount.setText(null);
-								FeedingFragment.this.nutrient.setText("N/A");
-							}
-							else
-							{
-								String nutrientStr = "";
-								nutrientStr += nutrient.getNpc() == null ? "-" : nutrient.getNpc();
-								nutrientStr += " : ";
-								nutrientStr += nutrient.getPpc() == null ? "-" : nutrient.getPpc();
-								nutrientStr += " : ";
-								nutrientStr += nutrient.getKpc() == null ? "-" : nutrient.getKpc();
-								nutrientStr += "/";
-								nutrientStr += nutrient.getCapc() == null ? "-" : nutrient.getCapc();
-								nutrientStr += " : ";
-								nutrientStr += nutrient.getSpc() == null ? "-" : nutrient.getSpc();
-								nutrientStr += " : ";
-								nutrientStr += nutrient.getMgpc() == null ? "-" : nutrient.getMgpc();
-
-								FeedingFragment.this.nutrient.setText(nutrientStr);
-							}
-						}
-					});
-					addNutrientDialogFragment.show(fm, "fragment_add_nutrient");
+					nutrientNutrientContainer.performClick();
+					nutrientNutrientContainer.requestFocusFromTouch();
 				}
 			}
 		});
@@ -186,6 +199,8 @@ public class FeedingFragment extends Fragment
 
 	private void setUi()
 	{
+		getActivity().setTitle("Feeding " + plant.getName());
+
 		Calendar date = Calendar.getInstance();
 		date.setTimeInMillis(feed.getDate());
 
@@ -195,7 +210,7 @@ public class FeedingFragment extends Fragment
 		String dateStr = dateFormat.format(new Date(feed.getDate())) + " " + timeFormat.format(new Date(feed.getDate()));
 		this.date.setText(dateStr);
 
-		this.date.setOnClickListener(new View.OnClickListener()
+		this.dateContainer.setOnClickListener(new View.OnClickListener()
 		{
 			@Override public void onClick(View v)
 			{
@@ -208,6 +223,7 @@ public class FeedingFragment extends Fragment
 						FeedingFragment.this.date.setText(dateStr);
 
 						feed.setDate(date.getTimeInMillis());
+						onCancelled();
 					}
 
 					@Override public void onCancelled()
@@ -261,6 +277,8 @@ public class FeedingFragment extends Fragment
 		{
 			nutrientAmount.setText(String.valueOf(feed.getMlpl()));
 		}
+
+		notes.setText(feed.getNotes());
 	}
 
 	@Views.OnClick public void onFabCompleteClick(final View view)
@@ -276,6 +294,7 @@ public class FeedingFragment extends Fragment
 		feed.setRunoff(runoffPh);
 		feed.setAmount(amount);
 		feed.setMlpl(nutrientAmount);
+		feed.setNotes(TextUtils.isEmpty(notes.getText().toString()) ? null : notes.getText().toString());
 
 		if (plant.getActions() == null)
 		{
@@ -290,6 +309,7 @@ public class FeedingFragment extends Fragment
 			water.setRunoff(feed.getRunoff());
 			water.setAmount(feed.getAmount());
 			water.setDate(feed.getDate());
+			water.setNotes(feed.getNotes());
 
 			if (actionIndex < 0)
 			{
@@ -313,6 +333,7 @@ public class FeedingFragment extends Fragment
 		}
 
 		PlantManager.getInstance().upsert(plantIndex, plant);
+		getActivity().setResult(Activity.RESULT_OK);
 		getActivity().finish();
 	}
 }

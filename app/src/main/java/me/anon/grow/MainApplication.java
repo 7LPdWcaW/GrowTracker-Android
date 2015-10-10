@@ -32,12 +32,12 @@ public class MainApplication extends Application
 			.cacheInMemory(true)
 			.cacheOnDisk(true)
 			.showImageOnLoading(R.drawable.ic_image)
-			.imageScaleType(ImageScaleType.IN_SAMPLE_POWER_OF_2)
+			.imageScaleType(ImageScaleType.EXACTLY_STRETCHED)
 			.bitmapConfig(Bitmap.Config.RGB_565)
 			.build();
 
 		ImageLoader.getInstance().init(new ImageLoaderConfiguration.Builder(this)
-			.memoryCacheExtraOptions(512, 512)
+			.threadPoolSize(6)
 			.build());
 	}
 }

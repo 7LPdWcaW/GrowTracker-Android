@@ -1,5 +1,6 @@
 package me.anon.controller.adapter;
 
+import android.content.Context;
 import android.content.Intent;
 import android.support.v7.widget.RecyclerView;
 import android.text.Html;
@@ -18,6 +19,7 @@ import me.anon.grow.MainApplication;
 import me.anon.grow.PlantDetailsActivity;
 import me.anon.grow.R;
 import me.anon.lib.DateRenderer;
+import me.anon.lib.manager.PlantManager;
 import me.anon.model.Action;
 import me.anon.model.Feed;
 import me.anon.model.Plant;
@@ -33,15 +35,21 @@ import me.anon.view.PlantHolder;
  * @documentation // TODO Reference flow doc
  * @project GrowTracker
  */
-public class PlantAdapter extends RecyclerView.Adapter<PlantHolder>
+public class PlantAdapter extends RecyclerView.Adapter<PlantHolder> implements ItemTouchHelperAdapter
 {
 	@Getter private List<Plant> plants = new ArrayList<>();
+	private Context context;
+
+	public PlantAdapter(Context context)
+	{
+		this.context = context;
+	}
 
 	public void setPlants(List<Plant> plants)
 	{
 		this.plants.clear();
 		this.plants.addAll(plants);
-		Collections.reverse(this.plants);
+		this.plants.removeAll(Collections.singleton(null));
 	}
 
 	@Override public PlantHolder onCreateViewHolder(ViewGroup viewGroup, int i)
@@ -102,12 +110,11 @@ public class PlantAdapter extends RecyclerView.Adapter<PlantHolder>
 					if (lastWater.getPh() != null)
 					{
 						summary += "<b>" + lastWater.getPh() + " PH</b>";
-					}
 
-					if (lastWater.getPh() != null || lastWater.getRunoff() != null)
-					{
-						summary += lastWater.getPh() != null ? " -> " : "";
-						summary += "<b>" + lastWater.getRunoff() + " PH</b> ";
+						if (lastWater.getRunoff() != null)
+						{
+							summary += " -> <b>" + lastWater.getRunoff() + " PH</b> ";
+						}
 					}
 
 					if (lastWater.getAmount() != null)
@@ -140,12 +147,11 @@ public class PlantAdapter extends RecyclerView.Adapter<PlantHolder>
 					if (lastFeed.getPh() != null)
 					{
 						summary += "<b>" + lastFeed.getPh() + " PH</b>";
-					}
 
-					if (lastFeed.getPh() != null || lastFeed.getRunoff() != null)
-					{
-						summary += lastFeed.getPh() != null ? " -> " : "";
-						summary += "<b>" + lastFeed.getRunoff() + " PH</b> ";
+						if (lastFeed.getRunoff() != null)
+						{
+							summary += " -> <b>" + lastFeed.getRunoff() + " PH</b> ";
+						}
 					}
 
 					if (lastFeed.getAmount() != null)
@@ -178,7 +184,7 @@ public class PlantAdapter extends RecyclerView.Adapter<PlantHolder>
 			@Override public void onClick(View v)
 			{
 				Intent details = new Intent(v.getContext(), PlantDetailsActivity.class);
-				details.putExtra("plant_index", plants.size() - i - 1);
+				details.putExtra("plant_index", PlantManager.getInstance().getPlants().indexOf(plant));
 				v.getContext().startActivity(details);
 			}
 		});
@@ -187,5 +193,31 @@ public class PlantAdapter extends RecyclerView.Adapter<PlantHolder>
 	@Override public int getItemCount()
 	{
 		return plants.size();
+	}
+
+	@Override public void onItemMove(int fromPosition, int toPosition)
+	{
+		if (fromPosition < toPosition)
+		{
+			for (int index = fromPosition; index < toPosition; index++)
+			{
+				Collections.swap(plants, index, index + 1);
+			}
+		}
+		else
+		{
+			for (int index = fromPosition; index > toPosition; index--)
+			{
+				Collections.swap(plants, index, index - 1);
+			}
+		}
+
+		notifyItemMoved(fromPosition, toPosition);
+	}
+
+	@Override public void onItemDismiss(int position)
+	{
+		plants.remove(position);
+		notifyItemRemoved(position);
 	}
 }

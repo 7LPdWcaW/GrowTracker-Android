@@ -5,9 +5,11 @@ import android.app.AlertDialog;
 import android.app.Fragment;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.Environment;
+import android.preference.PreferenceManager;
 import android.provider.MediaStore;
 import android.support.annotation.Nullable;
 import android.text.TextUtils;
@@ -29,6 +31,7 @@ import java.util.Date;
 import java.util.Locale;
 
 import me.anon.grow.AddFeedingActivity;
+import me.anon.grow.EditFeedingActivity;
 import me.anon.grow.EventsActivity;
 import me.anon.grow.R;
 import me.anon.grow.StatisticsActivity;
@@ -36,12 +39,12 @@ import me.anon.grow.ViewPhotosActivity;
 import me.anon.lib.Views;
 import me.anon.lib.helper.FabAnimator;
 import me.anon.lib.manager.PlantManager;
-import me.anon.model.Action;
 import me.anon.model.EmptyAction;
 import me.anon.model.NoteAction;
 import me.anon.model.Plant;
 import me.anon.model.PlantStage;
 import me.anon.model.StageChange;
+import me.anon.model.Water;
 
 /**
  * // TODO: Add class description
@@ -60,6 +63,7 @@ public class PlantDetailsFragment extends Fragment
 	@Views.InjectView(R.id.plant_strain) private TextView strain;
 	@Views.InjectView(R.id.plant_stage) private TextView stage;
 	@Views.InjectView(R.id.plant_date) private TextView date;
+	@Views.InjectView(R.id.plant_date_container) private View dateContainer;
 	@Views.InjectView(R.id.from_clone) private CheckBox clone;
 
 	private int plantIndex = -1;
@@ -138,7 +142,7 @@ public class PlantDetailsFragment extends Fragment
 		date.setText(dateStr);
 		clone.setChecked(plant.isClone());
 
-		date.setOnClickListener(new View.OnClickListener()
+		dateContainer.setOnClickListener(new View.OnClickListener()
 		{
 			@Override public void onClick(View v)
 			{
@@ -150,6 +154,8 @@ public class PlantDetailsFragment extends Fragment
 						plant.setPlantDate(newDate.getTimeInMillis());
 						String dateStr = dateFormat.format(new Date(plant.getPlantDate())) + " " + timeFormat.format(new Date(plant.getPlantDate()));
 						date.setText(dateStr);
+
+						onCancelled();
 					}
 
 					@Override public void onCancelled()
@@ -275,7 +281,52 @@ public class PlantDetailsFragment extends Fragment
 		{
 			if (resultCode != Activity.RESULT_CANCELED)
 			{
-				PlantManager.getInstance().upsert(plantIndex, plant);
+				String type = plant.getActions().get(plant.getActions().size() - 1) instanceof Water ? "Watering" : "Feeding";
+
+				SnackBar.show(getActivity(), type + " added", "Apply to another plant", new SnackBarListener()
+				{
+					@Override public void onSnackBarStarted(Object o)
+					{
+						if (getView() != null)
+						{
+							FabAnimator.animateUp(getView().findViewById(R.id.fab_complete));
+						}
+					}
+
+					@Override public void onSnackBarFinished(Object o)
+					{
+						if (getView() != null)
+						{
+							FabAnimator.animateDown(getView().findViewById(R.id.fab_complete));
+						}
+					}
+
+					@Override public void onSnackBarAction(Object o)
+					{
+						CharSequence[] plants = new CharSequence[PlantManager.getInstance().getPlants().size()];
+						for (int index = 0; index < plants.length; index++)
+						{
+							plants[index] = PlantManager.getInstance().getPlants().get(index).getName();
+						}
+
+						new AlertDialog.Builder(getActivity())
+							.setTitle("Select plant")
+							.setItems(plants, new DialogInterface.OnClickListener()
+							{
+								@Override public void onClick(DialogInterface dialog, int which)
+								{
+									Water water = (Water)plant.getActions().get(plant.getActions().size() - 1);
+									PlantManager.getInstance().getPlants().get(which).getActions().add(water);
+
+									Intent edit = new Intent(getActivity(), EditFeedingActivity.class);
+									edit.putExtra("plant_index", which);
+									edit.putExtra("action_index", PlantManager.getInstance().getPlants().get(which).getActions().size() - 1);
+									startActivityForResult(edit, 2);
+								}
+							})
+							.show();
+					}
+				});
 			}
 		}
 
@@ -287,15 +338,8 @@ public class PlantDetailsFragment extends Fragment
 		ActionDialogFragment dialogFragment = new ActionDialogFragment();
 		dialogFragment.setOnActionSelected(new ActionDialogFragment.OnActionSelected()
 		{
-			@Override public void onActionSelected(Action.ActionName actionName, String notes)
+			@Override public void onActionSelected(final EmptyAction action)
 			{
-				final EmptyAction action = new EmptyAction(actionName);
-
-				if (notes != null)
-				{
-					action.setNotes(notes);
-				}
-
 				plant.getActions().add(action);
 				PlantManager.getInstance().upsert(plantIndex, plant);
 
@@ -349,7 +393,7 @@ public class PlantDetailsFragment extends Fragment
 		startActivity(photos);
 	}
 
-	@Views.OnClick public void onPlantStageClick(final View view)
+	@Views.OnClick public void onPlantStageContainerClick(final View view)
 	{
 		String[] stages = new String[PlantStage.names().length - 1];
 		System.arraycopy(PlantStage.names(), 1, stages, 0, stages.length);
@@ -365,7 +409,7 @@ public class PlantDetailsFragment extends Fragment
 						plant.getActions().add(new StageChange(PlantStage.values()[which + 1]));
 					}
 
-					((TextView)view).setText(PlantStage.values()[which + 1].getPrintString());
+					stage.setText(PlantStage.values()[which + 1].getPrintString());
 				}
 			})
 			.show();
@@ -401,6 +445,21 @@ public class PlantDetailsFragment extends Fragment
 		if (plantIndex < 0)
 		{
 			plant.getActions().add(new StageChange(PlantStage.valueOf(stage.getText().toString().toUpperCase(Locale.ENGLISH))));
+
+			SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(getActivity());
+			SharedPreferences.Editor edit = prefs.edit();
+
+			int plantsSize = PlantManager.getInstance().getPlants().size();
+
+			for (int index = 0; index < plantsSize; index++)
+			{
+				int currentPos = prefs.getInt(String.valueOf(index), 0);
+
+				edit.putInt(String.valueOf(index), currentPos + 1);
+			}
+
+			edit.putInt(String.valueOf(plantsSize + 1), 0);
+			edit.apply();
 		}
 
 		plant.setClone(clone.isChecked());
