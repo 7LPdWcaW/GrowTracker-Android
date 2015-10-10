@@ -8,9 +8,13 @@ import android.os.Bundle;
 import android.os.Environment;
 import android.provider.MediaStore;
 import android.support.annotation.Nullable;
+import android.support.v7.app.AppCompatActivity;
+import android.support.v7.view.ActionMode;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
+import android.view.Menu;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.WindowManager;
@@ -93,6 +97,36 @@ public class ViewPhotosFragment extends Fragment
 
 		adapter = new ImageAdapter();
 		adapter.setImages(PlantManager.getInstance().getPlants().get(plantIndex).getImages());
+		adapter.setOnLongClickListener(new View.OnLongClickListener()
+		{
+			@Override public boolean onLongClick(View v)
+			{
+				((AppCompatActivity)getActivity()).startSupportActionMode(new ActionMode.Callback()
+				{
+					@Override public boolean onCreateActionMode(ActionMode mode, Menu menu)
+					{
+						menu.add("Delete");
+						return true;
+					}
+
+					@Override public boolean onPrepareActionMode(ActionMode mode, Menu menu)
+					{
+						return false;
+					}
+
+					@Override public boolean onActionItemClicked(ActionMode mode, MenuItem item)
+					{
+						return false;
+					}
+
+					@Override public void onDestroyActionMode(ActionMode mode)
+					{
+						mode.finish();
+					}
+				});
+				return true;
+			}
+		});
 		recycler.setLayoutManager(new GridLayoutManager(getActivity(), 3));
 		recycler.setAdapter(adapter);
 	}

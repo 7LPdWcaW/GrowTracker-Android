@@ -13,6 +13,7 @@ import java.util.Collections;
 import java.util.List;
 
 import lombok.Getter;
+import lombok.Setter;
 import me.anon.grow.MainApplication;
 import me.anon.grow.R;
 import me.anon.grow.fragment.ImageLightboxDialog;
@@ -28,6 +29,7 @@ import me.anon.view.ImageHolder;
 public class ImageAdapter extends RecyclerView.Adapter<ImageHolder>
 {
 	@Getter private List<String> images = new ArrayList<>();
+	@Setter private View.OnLongClickListener onLongClickListener;
 
 	public void setImages(List<String> images)
 	{
@@ -58,6 +60,11 @@ public class ImageAdapter extends RecyclerView.Adapter<ImageHolder>
 				v.getContext().startActivity(details);
 			}
 		});
+
+		if (onLongClickListener != null)
+		{
+			viewHolder.itemView.setOnLongClickListener(onLongClickListener);
+		}
 	}
 
 	@Override public int getItemCount()
