@@ -248,7 +248,7 @@ public class EventListFragment extends Fragment implements ActionAdapter.OnActio
 		}
 		else if (action instanceof EmptyAction)
 		{
-			ActionDialogFragment dialogFragment = new ActionDialogFragment((EmptyAction)action);
+			ActionDialogFragment dialogFragment = ActionDialogFragment.newInstance((EmptyAction)action);
 			dialogFragment.setOnActionSelected(new ActionDialogFragment.OnActionSelected()
 			{
 				@Override public void onActionSelected(final EmptyAction action)

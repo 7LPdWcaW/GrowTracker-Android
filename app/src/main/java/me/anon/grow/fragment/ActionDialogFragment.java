@@ -6,6 +6,7 @@ import android.app.DialogFragment;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.os.Bundle;
+import android.support.annotation.Nullable;
 import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -41,13 +42,21 @@ public class ActionDialogFragment extends DialogFragment
 	private EmptyAction action;
 	private boolean edit = false;
 
-	public ActionDialogFragment(){}
-
-	public ActionDialogFragment(EmptyAction action)
+	public static ActionDialogFragment newInstance()
 	{
-		this.action = action;
-		edit = true;
+		return newInstance(null);
 	}
+
+	public static ActionDialogFragment newInstance(@Nullable EmptyAction action)
+	{
+		ActionDialogFragment fragment = new ActionDialogFragment();
+		fragment.action = action;
+		fragment.edit = action != null;
+
+		return fragment;
+	}
+
+	public ActionDialogFragment(){}
 
 	@Override public Dialog onCreateDialog(Bundle savedInstanceState)
 	{
