@@ -26,6 +26,7 @@ import com.kenny.snackbar.SnackBarListener;
 
 import java.io.File;
 import java.io.IOException;
+import java.util.ArrayList;
 
 import me.anon.controller.adapter.ImageAdapter;
 import me.anon.grow.R;
@@ -143,6 +144,27 @@ public class ViewPhotosFragment extends Fragment
 								})
 								.setNegativeButton("No", null)
 								.show();
+
+							return true;
+						}
+						else if (item.getItemId() == R.id.share)
+						{
+							Intent intent = new Intent();
+							intent.setAction(Intent.ACTION_SEND_MULTIPLE);
+							intent.setType("image/jpeg");
+
+							ArrayList<Uri> files = new ArrayList<Uri>();
+
+							for (Integer integer : adapter.getSelected())
+							{
+								String image = adapter.getImages().get(integer);
+								File file = new File(image);
+								Uri uri = Uri.fromFile(file);
+								files.add(uri);
+							}
+
+							intent.putParcelableArrayListExtra(Intent.EXTRA_STREAM, files);
+							startActivity(intent);
 
 							return true;
 						}
