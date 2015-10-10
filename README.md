@@ -41,6 +41,8 @@ The structure is very simple. Note: date timestamps are all unix timestamps from
     "name": "test",
     "stage": <Plant Stage>,
     "strain": "test",
+    "clone": <boolean>,
+    "stage": <Stage>,
     "plantDate": 1234567890
 }
 ```
