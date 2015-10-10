@@ -105,7 +105,7 @@ public class ViewPhotosFragment extends Fragment
 				{
 					@Override public boolean onCreateActionMode(ActionMode mode, Menu menu)
 					{
-						menu.add("Delete");
+						getActivity().getMenuInflater().inflate(R.menu.photo_menu, menu);
 						return true;
 					}
 
@@ -121,9 +121,9 @@ public class ViewPhotosFragment extends Fragment
 
 					@Override public void onDestroyActionMode(ActionMode mode)
 					{
-						mode.finish();
 					}
 				});
+
 				return true;
 			}
 		});
