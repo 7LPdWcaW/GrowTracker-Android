@@ -190,13 +190,13 @@ public class ActionAdapter extends RecyclerView.Adapter<ActionHolder>
 
 		if (!TextUtils.isEmpty(action.getNotes()))
 		{
-			summary += summary.length() > 0 ? "<br />" : "";
+			summary += summary.length() > 0 ? "\n\n" : "";
 			summary += action.getNotes();
 		}
 
 		if (!TextUtils.isEmpty(summary))
 		{
-			viewHolder.getSummary().setText(Html.fromHtml(summary));
+			viewHolder.getSummary().setText(summary);
 			viewHolder.getSummary().setVisibility(View.VISIBLE);
 		}
 
