@@ -1,16 +1,22 @@
 package me.anon.grow.fragment;
 
 import android.app.Activity;
+import android.app.AlertDialog;
 import android.app.Fragment;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.Environment;
 import android.provider.MediaStore;
 import android.support.annotation.Nullable;
+import android.support.v7.app.AppCompatActivity;
+import android.support.v7.view.ActionMode;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
+import android.view.Menu;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.WindowManager;
@@ -20,6 +26,7 @@ import com.kenny.snackbar.SnackBarListener;
 
 import java.io.File;
 import java.io.IOException;
+import java.util.ArrayList;
 
 import me.anon.controller.adapter.ImageAdapter;
 import me.anon.grow.R;
@@ -93,6 +100,89 @@ public class ViewPhotosFragment extends Fragment
 
 		adapter = new ImageAdapter();
 		adapter.setImages(PlantManager.getInstance().getPlants().get(plantIndex).getImages());
+		adapter.setOnLongClickListener(new View.OnLongClickListener()
+		{
+			@Override public boolean onLongClick(View v)
+			{
+				((AppCompatActivity)getActivity()).startSupportActionMode(new ActionMode.Callback()
+				{
+					@Override public boolean onCreateActionMode(ActionMode mode, Menu menu)
+					{
+						getActivity().getMenuInflater().inflate(R.menu.photo_menu, menu);
+						adapter.setInActionMode(true);
+						adapter.notifyDataSetChanged();
+
+						return true;
+					}
+
+					@Override public boolean onPrepareActionMode(ActionMode mode, Menu menu)
+					{
+						return false;
+					}
+
+					@Override public boolean onActionItemClicked(final ActionMode mode, MenuItem item)
+					{
+						if (item.getItemId() == R.id.delete)
+						{
+							new AlertDialog.Builder(getActivity())
+								.setTitle("Are you sure?")
+								.setMessage("You're about to delete " + adapter.getSelected().size() + " images, are you sure? You will not be able to recover these")
+								.setPositiveButton("Yes", new DialogInterface.OnClickListener()
+								{
+									@Override public void onClick(DialogInterface dialog, int which)
+									{
+										for (Integer integer : adapter.getSelected())
+										{
+											String image = adapter.getImages().get(integer);
+											plant.getImages().remove(image);
+										}
+
+										PlantManager.getInstance().upsert(plantIndex, plant);
+										adapter.setImages(PlantManager.getInstance().getPlants().get(plantIndex).getImages());
+										adapter.notifyDataSetChanged();
+										mode.finish();
+									}
+								})
+								.setNegativeButton("No", null)
+								.show();
+
+							return true;
+						}
+						else if (item.getItemId() == R.id.share)
+						{
+							Intent intent = new Intent();
+							intent.setAction(Intent.ACTION_SEND_MULTIPLE);
+							intent.setType("image/jpeg");
+
+							ArrayList<Uri> files = new ArrayList<Uri>();
+
+							for (Integer integer : adapter.getSelected())
+							{
+								String image = adapter.getImages().get(integer);
+								File file = new File(image);
+								Uri uri = Uri.fromFile(file);
+								files.add(uri);
+							}
+
+							intent.putParcelableArrayListExtra(Intent.EXTRA_STREAM, files);
+							startActivity(intent);
+
+							return true;
+						}
+
+						return false;
+					}
+
+					@Override public void onDestroyActionMode(ActionMode mode)
+					{
+						adapter.setInActionMode(false);
+						adapter.notifyDataSetChanged();
+					}
+				});
+
+				return true;
+			}
+		});
 		recycler.setLayoutManager(new GridLayoutManager(getActivity(), 3));
 		recycler.setAdapter(adapter);
 	}

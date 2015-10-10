@@ -74,7 +74,7 @@ public class ActionAdapter extends RecyclerView.Adapter<ActionHolder>
 		String summary = "";
 		if (action instanceof Feed)
 		{
-			viewHolder.itemView.setBackgroundColor(Action.ActionName.FEED.getColour());
+			viewHolder.itemView.setBackgroundColor(0x9A90CAF9);
 			viewHolder.getName().setText("Feed with nutrients");
 
 			if (((Feed)action).getNutrient() != null)
@@ -134,7 +134,7 @@ public class ActionAdapter extends RecyclerView.Adapter<ActionHolder>
 		}
 		else if (action instanceof Water)
 		{
-			viewHolder.itemView.setBackgroundColor(Action.ActionName.WATER.getColour());
+			viewHolder.itemView.setBackgroundColor(0x9ABBDEFB);
 			viewHolder.getName().setText("Watered");
 			StringBuilder waterStr = new StringBuilder();
 
@@ -176,20 +176,22 @@ public class ActionAdapter extends RecyclerView.Adapter<ActionHolder>
 		{
 			viewHolder.getName().setText(((EmptyAction)action).getAction().getPrintString());
 			viewHolder.itemView.setBackgroundColor(((EmptyAction)action).getAction().getColour());
-
-			summary = action.getNotes();
 		}
 		else if (action instanceof NoteAction)
 		{
 			viewHolder.getName().setText("Note");
 			viewHolder.itemView.setBackgroundColor(0xffffffff);
-
-			summary = action.getNotes();
 		}
 		else if (action instanceof StageChange)
 		{
 			viewHolder.getName().setText(((StageChange)action).getNewStage().getPrintString());
-			viewHolder.itemView.setBackgroundColor(0xffB39DDB);
+			viewHolder.itemView.setBackgroundColor(0x9AB39DDB);
+		}
+
+		if (!TextUtils.isEmpty(action.getNotes()))
+		{
+			summary += summary.length() > 0 ? "\n\n" : "";
+			summary += action.getNotes();
 		}
 
 		if (!TextUtils.isEmpty(summary))
