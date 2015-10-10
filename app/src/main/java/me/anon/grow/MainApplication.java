@@ -37,7 +37,6 @@ public class MainApplication extends Application
 			.build();
 
 		ImageLoader.getInstance().init(new ImageLoaderConfiguration.Builder(this)
-			.memoryCacheExtraOptions(512, 512)
 			.threadPoolSize(6)
 			.build());
 	}
