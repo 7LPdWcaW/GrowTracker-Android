@@ -42,6 +42,7 @@ import me.anon.lib.manager.PlantManager;
 import me.anon.model.EmptyAction;
 import me.anon.model.NoteAction;
 import me.anon.model.Plant;
+import me.anon.model.PlantMedium;
 import me.anon.model.PlantStage;
 import me.anon.model.StageChange;
 import me.anon.model.Water;
@@ -62,6 +63,7 @@ public class PlantDetailsFragment extends Fragment
 	@Views.InjectView(R.id.plant_name) private TextView name;
 	@Views.InjectView(R.id.plant_strain) private TextView strain;
 	@Views.InjectView(R.id.plant_stage) private TextView stage;
+	@Views.InjectView(R.id.plant_medium) private TextView medium;
 	@Views.InjectView(R.id.plant_date) private TextView date;
 	@Views.InjectView(R.id.plant_date_container) private View dateContainer;
 	@Views.InjectView(R.id.from_clone) private CheckBox clone;
@@ -127,6 +129,11 @@ public class PlantDetailsFragment extends Fragment
 			if (plant.getStage() != null)
 			{
 				stage.setText(plant.getStage().getPrintString());
+			}
+
+			if (plant.getMedium() != null)
+			{
+				medium.setText(plant.getMedium().getPrintString());
 			}
 		}
 
@@ -410,6 +417,23 @@ public class PlantDetailsFragment extends Fragment
 					}
 
 					stage.setText(PlantStage.values()[which + 1].getPrintString());
+				}
+			})
+			.show();
+	}
+
+	@Views.OnClick public void onPlantMediumContainerClick(final View view)
+	{
+		String[] mediums = PlantMedium.names();
+
+		new AlertDialog.Builder(view.getContext())
+			.setTitle("Medium")
+			.setItems(mediums, new DialogInterface.OnClickListener()
+			{
+				@Override public void onClick(DialogInterface dialog, int which)
+				{
+					medium.setText(PlantMedium.values()[which].getPrintString());
+					plant.setMedium(PlantMedium.values()[which]);
 				}
 			})
 			.show();
