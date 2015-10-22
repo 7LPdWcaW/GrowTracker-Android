@@ -209,6 +209,29 @@
 					</LinearLayout>
 
 					<LinearLayout
+						android:layout_width="match_parent"
+						android:layout_height="wrap_content"
+						android:id="@+id/plant_medium_container"
+						android:orientation="vertical"
+						android:padding="16dp"
+					>
+						<TextView
+							android:layout_width="match_parent"
+							android:layout_height="wrap_content"
+							android:text="Medium"
+							style="@style/SubsectionTitle"
+						/>
+
+						<TextView
+							android:layout_width="match_parent"
+							android:layout_height="wrap_content"
+							android:text="Soil"
+							android:id="@+id/plant_medium"
+							style="@style/SubsectionSubTitle"
+						/>
+					</LinearLayout>
+
+					<LinearLayout
 						android:layout_width="0dp"
 						android:layout_height="wrap_content"
 						android:orientation="horizontal"
