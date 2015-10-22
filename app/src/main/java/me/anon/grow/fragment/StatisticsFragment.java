@@ -28,6 +28,7 @@ import me.anon.model.Action;
 import me.anon.model.EmptyAction;
 import me.anon.model.Feed;
 import me.anon.model.Plant;
+import me.anon.model.PlantMedium;
 import me.anon.model.PlantStage;
 import me.anon.model.StageChange;
 import me.anon.model.Water;
@@ -65,6 +66,7 @@ public class StatisticsFragment extends Fragment
 	@Views.InjectView(R.id.input_ph) private LineChart inputPh;
 	@Views.InjectView(R.id.runoff) private LineChart runoff;
 	@Views.InjectView(R.id.ppm) private LineChart ppm;
+	@Views.InjectView(R.id.temp) private LineChart temp;
 
 	@Views.InjectView(R.id.grow_time) private TextView growTime;
 	@Views.InjectView(R.id.feed_count) private TextView feedCount;
@@ -96,6 +98,11 @@ public class StatisticsFragment extends Fragment
 	@Views.InjectView(R.id.min_ppm) private TextView minppm;
 	@Views.InjectView(R.id.max_ppm) private TextView maxppm;
 	@Views.InjectView(R.id.ave_ppm) private TextView aveppm;
+
+	@Views.InjectView(R.id.temp_container) private View tempContainer;
+	@Views.InjectView(R.id.min_temp) private TextView mintemp;
+	@Views.InjectView(R.id.max_temp) private TextView maxtemp;
+	@Views.InjectView(R.id.ave_temp) private TextView avetemp;
 
 	private ValueFormatter formatter = new ValueFormatter()
 	{
@@ -134,6 +141,7 @@ public class StatisticsFragment extends Fragment
 		setInput();
 		setRunoff();
 		setPpm();
+		setTemp();
 	}
 
 	private void setStatistics()
@@ -432,5 +440,69 @@ public class StatisticsFragment extends Fragment
 		runoff.setPinchZoom(false);
 		runoff.setDoubleTapToZoomEnabled(false);
 		runoff.setData(lineData);
+	}
+
+	private void setTemp()
+	{
+		if (plant.getMedium() == PlantMedium.HYDRO)
+		{
+			tempContainer.setVisibility(View.VISIBLE);
+
+			ArrayList<Entry> vals = new ArrayList<>();
+			ArrayList<String> xVals = new ArrayList<>();
+			LineData data = new LineData();
+			float min = -100f;
+			float max = 100f;
+			float ave = 0;
+
+			int index = 0;
+			for (Action action : plant.getActions())
+			{
+				if (action instanceof Water && ((Water)action).getTemp() != null)
+				{
+					vals.add(new Entry(((Water)action).getTemp().floatValue(), index++));
+					xVals.add("");
+
+					min = Math.min(min, ((Water)action).getTemp().floatValue());
+					max = Math.max(max, ((Water)action).getTemp().floatValue());
+					ave += ((Water)action).getTemp().floatValue();
+				}
+			}
+
+			mintemp.setText(String.valueOf(min));
+			maxtemp.setText(String.valueOf(max));
+			avetemp.setText(String.format("%1$,.2f", (ave / (double)index)));
+
+			LineDataSet dataSet = new LineDataSet(vals, "Temperature");
+			dataSet.setDrawCubic(true);
+			dataSet.setLineWidth(2.0f);
+			dataSet.setDrawCircleHole(false);
+			dataSet.setCircleColor(0xffffffff);
+			dataSet.setValueTextColor(0xffffffff);
+			dataSet.setCircleSize(5.0f);
+			dataSet.setValueTextSize(8.0f);
+			dataSet.setValueFormatter(formatter);
+
+			LineData lineData = new LineData(xVals, dataSet);
+			lineData.setValueFormatter(formatter);
+
+			temp.setBackgroundColor(0xff311B92);
+			temp.setGridBackgroundColor(0xff311B92);
+			temp.setDrawGridBackground(false);
+			temp.setHighlightEnabled(false);
+			temp.getLegend().setEnabled(false);
+			temp.getAxisLeft().setTextColor(0xffffffff);
+			temp.getAxisRight().setEnabled(false);
+			temp.getAxisLeft().setValueFormatter(formatter);
+			temp.getAxisLeft().setXOffset(8.0f);
+			temp.getAxisLeft().setAxisMinValue(min - 5f);
+			temp.getAxisLeft().setAxisMaxValue(max + 5f);
+			temp.getAxisLeft().setStartAtZero(false);
+			temp.setScaleYEnabled(false);
+			temp.setDescription("");
+			temp.setPinchZoom(false);
+			temp.setDoubleTapToZoomEnabled(false);
+			temp.setData(lineData);
+		}
 	}
 }

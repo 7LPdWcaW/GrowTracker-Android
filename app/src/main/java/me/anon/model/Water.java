@@ -19,4 +19,5 @@ public class Water extends Action
 	private Double ph;
 	private Double runoff;
 	private Integer amount;
+	private Integer temp;
 }
