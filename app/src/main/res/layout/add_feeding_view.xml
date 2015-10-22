@@ -161,6 +161,32 @@
 								style="@style/SubsectionSubTitle"
 							/>
 						</LinearLayout>
+
+						<LinearLayout
+							android:layout_width="0dp"
+							android:layout_height="wrap_content"
+							android:id="@+id/temp_container"
+							android:orientation="vertical"
+							android:layout_weight="1"
+							android:visibility="gone"
+						>
+							<TextView
+								android:layout_width="match_parent"
+								android:layout_height="wrap_content"
+								android:text="Temp (ºC)"
+								style="@style/SubsectionTitle"
+							/>
+
+							<EditText
+								android:layout_width="match_parent"
+								android:layout_height="wrap_content"
+								android:id="@+id/temp"
+								android:hint="24ºC"
+								android:inputType="numberSigned"
+								android:nextFocusDown="@+id/date"
+								style="@style/SubsectionSubTitle"
+							/>
+						</LinearLayout>
 					</LinearLayout>
 				</LinearLayout>
 			</LinearLayout>
