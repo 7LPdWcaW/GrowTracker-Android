@@ -130,6 +130,13 @@ public class ActionAdapter extends RecyclerView.Adapter<ActionHolder>
 				waterStr.append("ml, ");
 			}
 
+			if (((Feed)action).getTemp() != null)
+			{
+				waterStr.append("<b>Temp: </b>");
+				waterStr.append(((Feed)action).getTemp());
+				waterStr.append("ºC, ");
+			}
+
 			summary += waterStr.toString().length() > 0 ? waterStr.toString().substring(0, waterStr.length() - 2) : "";
 		}
 		else if (action instanceof Water)
@@ -168,6 +175,13 @@ public class ActionAdapter extends RecyclerView.Adapter<ActionHolder>
 				waterStr.append("<b>Amount: </b>");
 				waterStr.append(((Water)action).getAmount());
 				waterStr.append("ml, ");
+			}
+
+			if (((Water)action).getTemp() != null)
+			{
+				waterStr.append("<b>Temp: </b>");
+				waterStr.append(((Water)action).getTemp());
+				waterStr.append("ºC, ");
 			}
 
 			summary += waterStr.toString().length() > 0 ? waterStr.toString().substring(0, waterStr.length() - 2) : "";
