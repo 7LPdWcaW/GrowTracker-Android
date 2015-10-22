@@ -77,6 +77,8 @@ public class StatisticsFragment extends Fragment
 	@Views.InjectView(R.id.veg_time_container) private View vegTimeContainer;
 	@Views.InjectView(R.id.flower_time) private TextView flowerTime;
 	@Views.InjectView(R.id.flower_time_container) private View flowerTimeContainer;
+	@Views.InjectView(R.id.dry_time) private TextView dryTime;
+	@Views.InjectView(R.id.dry_time_container) private View dryTimeContainer;
 	@Views.InjectView(R.id.cure_time) private TextView cureTime;
 	@Views.InjectView(R.id.cure_time_container) private View cureTimeContainer;
 
@@ -246,6 +248,12 @@ public class StatisticsFragment extends Fragment
 		{
 			flowerTime.setText((int)TimeHelper.toDays(stages.get(PlantStage.FLOWER)) + " days");
 			flowerTimeContainer.setVisibility(View.VISIBLE);
+		}
+
+		if (stages.containsKey(PlantStage.DRYING))
+		{
+			dryTime.setText((int)TimeHelper.toDays(stages.get(PlantStage.DRYING)) + " days");
+			dryTimeContainer.setVisibility(View.VISIBLE);
 		}
 
 		if (stages.containsKey(PlantStage.CURING))
