@@ -22,6 +22,7 @@ public class Plant
 	private long plantDate = System.currentTimeMillis();
 	private boolean clone = false;
 	private PlantStage stage = PlantStage.GERMINATION;
+	private PlantMedium medium = PlantMedium.SOIL;
 	private ArrayList<String> images = new ArrayList<>();
 	private ArrayList<Action> actions = new ArrayList<>();
 }

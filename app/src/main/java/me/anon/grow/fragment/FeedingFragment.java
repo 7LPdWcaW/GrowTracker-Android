@@ -25,6 +25,7 @@ import me.anon.model.Action;
 import me.anon.model.Feed;
 import me.anon.model.Nutrient;
 import me.anon.model.Plant;
+import me.anon.model.PlantMedium;
 import me.anon.model.Water;
 
 /**
@@ -41,6 +42,8 @@ public class FeedingFragment extends Fragment
 	@Views.InjectView(R.id.water_ppm) private TextView waterPpm;
 	@Views.InjectView(R.id.runoff_ph) private TextView runoffPh;
 	@Views.InjectView(R.id.amount) private TextView amount;
+	@Views.InjectView(R.id.temp_container) private View tempContainer;
+	@Views.InjectView(R.id.temp) private TextView temp;
 	@Views.InjectView(R.id.date_container) private View dateContainer;
 	@Views.InjectView(R.id.date) private TextView date;
 	@Views.InjectView(R.id.nutrient_container) private View nutrientContainer;
@@ -109,6 +112,7 @@ public class FeedingFragment extends Fragment
 					feed.setPpm(water.getPpm());
 					feed.setRunoff(water.getRunoff());
 					feed.setAmount(water.getAmount());
+					feed.setTemp(water.getTemp());
 					feed.setNotes(water.getNotes());
 				}
 			}
@@ -255,6 +259,16 @@ public class FeedingFragment extends Fragment
 			amount.setText(String.valueOf(feed.getAmount()));
 		}
 
+		if (plant.getMedium() == PlantMedium.HYDRO)
+		{
+			tempContainer.setVisibility(View.VISIBLE);
+
+			if (feed.getTemp() != null)
+			{
+				temp.setText(String.valueOf(feed.getTemp()));
+			}
+		}
+
 		if (feed.getNutrient() != null)
 		{
 			String nutrientStr = "";
@@ -287,12 +301,14 @@ public class FeedingFragment extends Fragment
 		Long ppm = TextUtils.isEmpty(this.waterPpm.getText()) ? null : Long.valueOf(this.waterPpm.getText().toString());
 		Double runoffPh = TextUtils.isEmpty(this.runoffPh.getText()) ? null : Double.valueOf(this.runoffPh.getText().toString());
 		Integer amount = TextUtils.isEmpty(this.amount.getText()) ? null : Integer.valueOf(this.amount.getText().toString());
+		Integer temp = TextUtils.isEmpty(this.temp.getText()) ? null : Integer.valueOf(this.temp.getText().toString());
 		Double nutrientAmount = TextUtils.isEmpty(this.nutrientAmount.getText()) ? null : Double.valueOf(this.nutrientAmount.getText().toString());
 
 		feed.setPh(waterPh);
 		feed.setPpm(ppm);
 		feed.setRunoff(runoffPh);
 		feed.setAmount(amount);
+		feed.setTemp(temp);
 		feed.setMlpl(nutrientAmount);
 		feed.setNotes(TextUtils.isEmpty(notes.getText().toString()) ? null : notes.getText().toString());
 
@@ -308,6 +324,7 @@ public class FeedingFragment extends Fragment
 			water.setPpm(feed.getPpm());
 			water.setRunoff(feed.getRunoff());
 			water.setAmount(feed.getAmount());
+			water.setTemp(feed.getTemp());
 			water.setDate(feed.getDate());
 			water.setNotes(feed.getNotes());
 

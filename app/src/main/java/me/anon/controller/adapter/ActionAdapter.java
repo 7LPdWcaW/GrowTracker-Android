@@ -93,41 +93,48 @@ public class ActionAdapter extends RecyclerView.Adapter<ActionHolder>
 				summary += " (";
 				summary += ((Feed)action).getMlpl() == null ? "n/a" : ((Feed)action).getMlpl() + "ml/l";
 				summary += ")";
-				summary += "\n";
+				summary += "<br/>";
 			}
 
 			StringBuilder waterStr = new StringBuilder();
 
 			if (((Feed)action).getPh() != null)
 			{
-				waterStr.append("PH: ");
+				waterStr.append("<b>PH: </b>");
 				waterStr.append(((Feed)action).getPh());
 				waterStr.append(", ");
 			}
 
 			if (((Feed)action).getRunoff() != null)
 			{
-				waterStr.append("Runoff: ");
+				waterStr.append("<b>Runoff: </b>");
 				waterStr.append(((Feed)action).getRunoff());
 				waterStr.append(", ");
 			}
 
-			summary += waterStr.toString().length() > 0 ? waterStr.toString().substring(0, waterStr.length() - 2) + "\n" : "";
+			summary += waterStr.toString().length() > 0 ? waterStr.toString().substring(0, waterStr.length() - 2) + "<br/>" : "";
 
 			waterStr = new StringBuilder();
 
 			if (((Feed)action).getPpm() != null)
 			{
-				waterStr.append("PPM: ");
+				waterStr.append("<b>PPM: </b>");
 				waterStr.append(((Feed)action).getPpm());
 				waterStr.append(", ");
 			}
 
 			if (((Feed)action).getAmount() != null)
 			{
-				waterStr.append("Amount: ");
+				waterStr.append("<b>Amount: </b>");
 				waterStr.append(((Feed)action).getAmount());
 				waterStr.append("ml, ");
+			}
+
+			if (((Feed)action).getTemp() != null)
+			{
+				waterStr.append("<b>Temp: </b>");
+				waterStr.append(((Feed)action).getTemp());
+				waterStr.append("ºC, ");
 			}
 
 			summary += waterStr.toString().length() > 0 ? waterStr.toString().substring(0, waterStr.length() - 2) : "";
@@ -140,34 +147,41 @@ public class ActionAdapter extends RecyclerView.Adapter<ActionHolder>
 
 			if (((Water)action).getPh() != null)
 			{
-				waterStr.append("PH: ");
+				waterStr.append("<b>PH: </b>");
 				waterStr.append(((Water)action).getPh());
 				waterStr.append(", ");
 			}
 
 			if (((Water)action).getRunoff() != null)
 			{
-				waterStr.append("Runoff: ");
+				waterStr.append("<b>Runoff: </b>");
 				waterStr.append(((Water)action).getRunoff());
 				waterStr.append(", ");
 			}
 
-			summary += waterStr.toString().length() > 0 ? waterStr.toString().substring(0, waterStr.length() - 2) + "\n" : "";
+			summary += waterStr.toString().length() > 0 ? waterStr.toString().substring(0, waterStr.length() - 2) + "<br/>" : "";
 
 			waterStr = new StringBuilder();
 
 			if (((Water)action).getPpm() != null)
 			{
-				waterStr.append("PPM: ");
+				waterStr.append("<b>PPM: </b>");
 				waterStr.append(((Water)action).getPpm());
 				waterStr.append(", ");
 			}
 
 			if (((Water)action).getAmount() != null)
 			{
-				waterStr.append("Amount: ");
+				waterStr.append("<b>Amount: </b>");
 				waterStr.append(((Water)action).getAmount());
 				waterStr.append("ml, ");
+			}
+
+			if (((Water)action).getTemp() != null)
+			{
+				waterStr.append("<b>Temp: </b>");
+				waterStr.append(((Water)action).getTemp());
+				waterStr.append("ºC, ");
 			}
 
 			summary += waterStr.toString().length() > 0 ? waterStr.toString().substring(0, waterStr.length() - 2) : "";
@@ -190,13 +204,18 @@ public class ActionAdapter extends RecyclerView.Adapter<ActionHolder>
 
 		if (!TextUtils.isEmpty(action.getNotes()))
 		{
-			summary += summary.length() > 0 ? "\n\n" : "";
+			summary += summary.length() > 0 ? "<br/><br/>" : "";
 			summary += action.getNotes();
+		}
+
+		if (summary.endsWith("<br/>"))
+		{
+			summary = summary.substring(0, summary.length() - "<br/>".length());
 		}
 
 		if (!TextUtils.isEmpty(summary))
 		{
-			viewHolder.getSummary().setText(summary);
+			viewHolder.getSummary().setText(Html.fromHtml(summary));
 			viewHolder.getSummary().setVisibility(View.VISIBLE);
 		}
 
