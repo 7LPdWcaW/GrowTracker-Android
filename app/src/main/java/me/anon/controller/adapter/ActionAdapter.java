@@ -40,6 +40,7 @@ public class ActionAdapter extends RecyclerView.Adapter<ActionHolder>
 		public void onActionDeleted(Action action);
 		public void onActionEdit(Action action);
 		public void onActionCopy(Action action);
+		public void onActionDuplicate(Action action);
 	}
 
 	@Setter private OnActionSelectListener onActionSelectListener;
@@ -226,7 +227,7 @@ public class ActionAdapter extends RecyclerView.Adapter<ActionHolder>
 			{
 				new AlertDialog.Builder(v.getContext())
 					.setTitle("Select an option")
-					.setItems(new String[]{"Copy to", "Edit action", "Delete action"}, new DialogInterface.OnClickListener()
+					.setItems(new String[]{"Duplicate", "Copy to", "Edit action", "Delete action"}, new DialogInterface.OnClickListener()
 					{
 						@Override public void onClick(DialogInterface dialog, int which)
 						{
@@ -234,17 +235,24 @@ public class ActionAdapter extends RecyclerView.Adapter<ActionHolder>
 							{
 								if (onActionSelectListener != null)
 								{
-									onActionSelectListener.onActionCopy(action);
+									onActionSelectListener.onActionDuplicate(action);
 								}
 							}
 							else if (which == 1)
 							{
 								if (onActionSelectListener != null)
 								{
-									onActionSelectListener.onActionEdit(action);
+									onActionSelectListener.onActionCopy(action);
 								}
 							}
 							else if (which == 2)
+							{
+								if (onActionSelectListener != null)
+								{
+									onActionSelectListener.onActionEdit(action);
+								}
+							}
+							else if (which == 3)
 							{
 								new AlertDialog.Builder(v.getContext())
 									.setTitle("Delete this event?")
