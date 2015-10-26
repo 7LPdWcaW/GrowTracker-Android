@@ -7,6 +7,8 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import com.nostra13.universalimageloader.core.ImageLoader;
+import com.nostra13.universalimageloader.core.imageaware.ImageAware;
+import com.nostra13.universalimageloader.core.imageaware.ImageViewAware;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -50,7 +52,8 @@ public class ImageAdapter extends RecyclerView.Adapter<ImageHolder>
 		final String imageUri = images.get(position);
 
 		ImageLoader.getInstance().cancelDisplayTask(viewHolder.getImage());
-		ImageLoader.getInstance().displayImage("file://" + imageUri, viewHolder.getImage(), MainApplication.getDisplayImageOptions());
+		ImageAware imageAware = new ImageViewAware(viewHolder.getImage(), true);
+		ImageLoader.getInstance().displayImage("file://" + imageUri, imageAware, MainApplication.getDisplayImageOptions());
 
 		viewHolder.itemView.setOnClickListener(new View.OnClickListener()
 		{
