@@ -228,10 +228,11 @@ public class EventListFragment extends Fragment implements ActionAdapter.OnActio
 
 	@Override public void onActionCopy(final Action action)
 	{
-		CharSequence[] plants = new CharSequence[PlantManager.getInstance().getPlants().size()];
+		final ArrayList<Plant> sortedPlants = PlantManager.getInstance().getSortedPlantList();
+		CharSequence[] plants = new CharSequence[sortedPlants.size()];
 		for (int index = 0; index < plants.length; index++)
 		{
-			plants[index] = PlantManager.getInstance().getPlants().get(index).getName();
+			plants[index] = sortedPlants.get(index).getName();
 		}
 
 		new AlertDialog.Builder(getActivity())
@@ -240,12 +241,14 @@ public class EventListFragment extends Fragment implements ActionAdapter.OnActio
 			{
 				@Override public void onClick(DialogInterface dialog, final int which)
 				{
-					PlantManager.getInstance().getPlants().get(which).getActions().add(action);
+					final int originalIndex = PlantManager.getInstance().getPlants().indexOf(sortedPlants.get(which));
+
+					PlantManager.getInstance().getPlants().get(originalIndex).getActions().add(action);
 					PlantManager.getInstance().save();
 					setActions();
 					adapter.notifyDataSetChanged();
 
-					SnackBar.show(getActivity(), "Action added to " + PlantManager.getInstance().getPlants().get(which).getName(), "Undo", new SnackBarListener()
+					SnackBar.show(getActivity(), "Action added to " + PlantManager.getInstance().getPlants().get(originalIndex).getName(), "Undo", new SnackBarListener()
 					{
 						@Override public void onSnackBarStarted(Object o)
 						{
@@ -265,7 +268,7 @@ public class EventListFragment extends Fragment implements ActionAdapter.OnActio
 
 						@Override public void onSnackBarAction(Object o)
 						{
-							PlantManager.getInstance().getPlants().get(which).getActions().remove(PlantManager.getInstance().getPlants().get(which).getActions().size() - 1);
+							PlantManager.getInstance().getPlants().get(originalIndex).getActions().remove(PlantManager.getInstance().getPlants().get(originalIndex).getActions().size() - 1);
 							PlantManager.getInstance().save();
 							setActions();
 							adapter.notifyDataSetChanged();
