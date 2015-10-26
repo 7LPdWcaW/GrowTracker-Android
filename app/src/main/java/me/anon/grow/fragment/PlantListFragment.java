@@ -13,16 +13,12 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-
 import me.anon.controller.adapter.PlantAdapter;
 import me.anon.controller.adapter.SimpleItemTouchHelperCallback;
 import me.anon.grow.AddPlantActivity;
 import me.anon.grow.R;
 import me.anon.lib.Views;
 import me.anon.lib.manager.PlantManager;
-import me.anon.model.Plant;
 
 /**
  * // TODO: Add class description
@@ -65,18 +61,7 @@ public class PlantListFragment extends Fragment
 	{
 		super.onResume();
 
-		int plantsSize =  PlantManager.getInstance().getPlants().size();
-		ArrayList<Plant> ordered = new ArrayList<>();
-		ordered.addAll(Arrays.asList(new Plant[plantsSize]));
-
-		SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(getActivity());
-		for (int index = 0; index < plantsSize; index++)
-		{
-			Plant plant = PlantManager.getInstance().getPlants().get(index);
-			ordered.set(prefs.getInt(String.valueOf(index), plantsSize - index - 1), plant);
-		}
-
-		adapter.setPlants(ordered);
+		adapter.setPlants(PlantManager.getInstance().getSortedPlantList());
 		adapter.notifyDataSetChanged();
 	}
 
