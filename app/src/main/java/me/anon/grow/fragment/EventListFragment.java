@@ -191,6 +191,91 @@ public class EventListFragment extends Fragment implements ActionAdapter.OnActio
 		dialogFragment.show(getFragmentManager(), null);
 	}
 
+	@Override public void onActionDuplicate(Action action)
+	{
+		PlantManager.getInstance().getPlants().get(plantIndex).getActions().add(action);
+		PlantManager.getInstance().save();
+		setActions();
+		adapter.notifyDataSetChanged();
+
+		SnackBar.show(getActivity(), "Action duplicated", "Undo", new SnackBarListener()
+		{
+			@Override public void onSnackBarStarted(Object o)
+			{
+				if (getView() != null)
+				{
+					FabAnimator.animateUp(getView().findViewById(R.id.fab_complete));
+				}
+			}
+
+			@Override public void onSnackBarFinished(Object o)
+			{
+				if (getView() != null)
+				{
+					FabAnimator.animateDown(getView().findViewById(R.id.fab_complete));
+				}
+			}
+
+			@Override public void onSnackBarAction(Object o)
+			{
+				PlantManager.getInstance().getPlants().get(plantIndex).getActions().remove(PlantManager.getInstance().getPlants().get(plantIndex).getActions().size() - 1);
+				PlantManager.getInstance().save();
+				setActions();
+				adapter.notifyDataSetChanged();
+			}
+		});
+	}
+
+	@Override public void onActionCopy(final Action action)
+	{
+		CharSequence[] plants = new CharSequence[PlantManager.getInstance().getPlants().size()];
+		for (int index = 0; index < plants.length; index++)
+		{
+			plants[index] = PlantManager.getInstance().getPlants().get(index).getName();
+		}
+
+		new AlertDialog.Builder(getActivity())
+			.setTitle("Select plant")
+			.setItems(plants, new DialogInterface.OnClickListener()
+			{
+				@Override public void onClick(DialogInterface dialog, final int which)
+				{
+					PlantManager.getInstance().getPlants().get(which).getActions().add(action);
+					PlantManager.getInstance().save();
+					setActions();
+					adapter.notifyDataSetChanged();
+
+					SnackBar.show(getActivity(), "Action added to " + PlantManager.getInstance().getPlants().get(which).getName(), "Undo", new SnackBarListener()
+					{
+						@Override public void onSnackBarStarted(Object o)
+						{
+							if (getView() != null)
+							{
+								FabAnimator.animateUp(getView().findViewById(R.id.fab_complete));
+							}
+						}
+
+						@Override public void onSnackBarFinished(Object o)
+						{
+							if (getView() != null)
+							{
+								FabAnimator.animateDown(getView().findViewById(R.id.fab_complete));
+							}
+						}
+
+						@Override public void onSnackBarAction(Object o)
+						{
+							PlantManager.getInstance().getPlants().get(which).getActions().remove(PlantManager.getInstance().getPlants().get(which).getActions().size() - 1);
+							PlantManager.getInstance().save();
+							setActions();
+							adapter.notifyDataSetChanged();
+						}
+					});
+				}
+			})
+			.show();
+	}
+
 	@Override public void onActionEdit(final Action action)
 	{
 		final int originalIndex = plant.getActions().indexOf(action);
