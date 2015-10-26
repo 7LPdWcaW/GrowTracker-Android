@@ -1,12 +1,15 @@
 package me.anon.lib.manager;
 
 import android.content.Context;
+import android.content.SharedPreferences;
+import android.preference.PreferenceManager;
 import android.text.TextUtils;
 
 import com.google.gson.JsonSyntaxException;
 import com.google.gson.reflect.TypeToken;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 
 import lombok.Data;
 import lombok.Getter;
@@ -40,6 +43,31 @@ public class PlantManager
 		FILES_DIR = this.context.getExternalFilesDir(null).getAbsolutePath();
 
 		load();
+	}
+
+	public ArrayList<Plant> getSortedPlantList()
+	{
+		int plantsSize =  PlantManager.getInstance().getPlants().size();
+		ArrayList<Plant> ordered = new ArrayList<>();
+		ordered.addAll(Arrays.asList(new Plant[plantsSize]));
+
+		SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(context);
+		for (int index = 0; index < plantsSize; index++)
+		{
+			Plant plant = PlantManager.getInstance().getPlants().get(index);
+
+			try
+			{
+				ordered.set(prefs.getInt(String.valueOf(index), plantsSize - index - 1), plant);
+			}
+			catch (Exception e)
+			{
+				e.printStackTrace();
+				ordered.add(plant);
+			}
+		}
+
+		return ordered;
 	}
 
 	public void addPlant(Plant plant)
