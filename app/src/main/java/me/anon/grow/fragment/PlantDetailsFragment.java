@@ -26,6 +26,7 @@ import com.kenny.snackbar.SnackBarListener;
 import java.io.File;
 import java.io.IOException;
 import java.text.DateFormat;
+import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.Locale;
@@ -310,10 +311,11 @@ public class PlantDetailsFragment extends Fragment
 
 					@Override public void onSnackBarAction(Object o)
 					{
-						CharSequence[] plants = new CharSequence[PlantManager.getInstance().getPlants().size()];
+						final ArrayList<Plant> sortedPlants = PlantManager.getInstance().getSortedPlantList();
+						CharSequence[] plants = new CharSequence[sortedPlants.size()];
 						for (int index = 0; index < plants.length; index++)
 						{
-							plants[index] = PlantManager.getInstance().getPlants().get(index).getName();
+							plants[index] = sortedPlants.get(index).getName();
 						}
 
 						new AlertDialog.Builder(getActivity())
@@ -322,12 +324,14 @@ public class PlantDetailsFragment extends Fragment
 							{
 								@Override public void onClick(DialogInterface dialog, int which)
 								{
+									final int originalIndex = PlantManager.getInstance().getPlants().indexOf(sortedPlants.get(which));
+
 									Water water = (Water)plant.getActions().get(plant.getActions().size() - 1);
-									PlantManager.getInstance().getPlants().get(which).getActions().add(water);
+									PlantManager.getInstance().getPlants().get(originalIndex).getActions().add(water);
 
 									Intent edit = new Intent(getActivity(), EditFeedingActivity.class);
-									edit.putExtra("plant_index", which);
-									edit.putExtra("action_index", PlantManager.getInstance().getPlants().get(which).getActions().size() - 1);
+									edit.putExtra("plant_index", originalIndex);
+									edit.putExtra("action_index", PlantManager.getInstance().getPlants().get(originalIndex).getActions().size() - 1);
 									startActivityForResult(edit, 2);
 								}
 							})
