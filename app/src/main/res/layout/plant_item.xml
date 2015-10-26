@@ -27,11 +27,11 @@
 				android:id="@+id/image"
 				android:layout_gravity="center"
 				android:scaleType="centerCrop"
-				android:adjustViewBounds="true"
 				android:layout_alignBottom="@+id/summary_container"
 				android:layout_alignLeft="@+id/summary_container"
 				android:layout_alignRight="@+id/summary_container"
 				android:layout_alignTop="@+id/summary_container"
+				android:maxHeight="256dp"
 				android:alpha="0.5"
 			/>
 

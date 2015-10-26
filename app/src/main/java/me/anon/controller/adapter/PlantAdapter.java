@@ -9,6 +9,8 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import com.nostra13.universalimageloader.core.ImageLoader;
+import com.nostra13.universalimageloader.core.imageaware.ImageAware;
+import com.nostra13.universalimageloader.core.imageaware.ImageViewAware;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -172,7 +174,8 @@ public class PlantAdapter extends RecyclerView.Adapter<PlantHolder> implements I
 		ImageLoader.getInstance().cancelDisplayTask(viewHolder.getImage());
 		if (plant.getImages() != null && plant.getImages().size() > 0)
 		{
-			ImageLoader.getInstance().displayImage("file://" + plant.getImages().get(plant.getImages().size() - 1), viewHolder.getImage(), MainApplication.getDisplayImageOptions());
+			ImageAware imageAware = new ImageViewAware(viewHolder.getImage(), true);
+			ImageLoader.getInstance().displayImage("file://" + plant.getImages().get(plant.getImages().size() - 1), imageAware, MainApplication.getDisplayImageOptions());
 		}
 		else
 		{
