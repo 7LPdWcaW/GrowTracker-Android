@@ -18,6 +18,7 @@ import lombok.Getter;
 import lombok.Setter;
 import me.anon.grow.R;
 import me.anon.lib.DateRenderer;
+import me.anon.lib.helper.ModelHelper;
 import me.anon.model.Action;
 import me.anon.model.EmptyAction;
 import me.anon.model.Feed;
@@ -235,14 +236,14 @@ public class ActionAdapter extends RecyclerView.Adapter<ActionHolder>
 							{
 								if (onActionSelectListener != null)
 								{
-									onActionSelectListener.onActionDuplicate(action);
+									onActionSelectListener.onActionDuplicate((Action)ModelHelper.copy(action));
 								}
 							}
 							else if (which == 1)
 							{
 								if (onActionSelectListener != null)
 								{
-									onActionSelectListener.onActionCopy(action);
+									onActionSelectListener.onActionCopy((Action)ModelHelper.copy(action));
 								}
 							}
 							else if (which == 2)

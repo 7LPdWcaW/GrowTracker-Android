@@ -23,6 +23,7 @@ import com.kenny.snackbar.SnackBarListener;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
+import java.util.Random;
 
 import me.anon.controller.adapter.ActionAdapter;
 import me.anon.grow.EditFeedingActivity;
@@ -193,6 +194,7 @@ public class EventListFragment extends Fragment implements ActionAdapter.OnActio
 
 	@Override public void onActionDuplicate(Action action)
 	{
+		action.setDate(action.getDate() + new Random().nextInt(1000));
 		PlantManager.getInstance().getPlants().get(plantIndex).getActions().add(action);
 		PlantManager.getInstance().save();
 		setActions();
@@ -242,6 +244,8 @@ public class EventListFragment extends Fragment implements ActionAdapter.OnActio
 				@Override public void onClick(DialogInterface dialog, final int which)
 				{
 					final int originalIndex = PlantManager.getInstance().getPlants().indexOf(sortedPlants.get(which));
+
+					action.setDate(action.getDate() + new Random().nextInt(1000));
 
 					PlantManager.getInstance().getPlants().get(originalIndex).getActions().add(action);
 					PlantManager.getInstance().save();
