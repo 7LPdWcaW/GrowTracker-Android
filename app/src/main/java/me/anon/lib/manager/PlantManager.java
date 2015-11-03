@@ -10,6 +10,7 @@ import com.google.gson.reflect.TypeToken;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collections;
 
 import lombok.Data;
 import lombok.Getter;
@@ -66,6 +67,8 @@ public class PlantManager
 				ordered.add(plant);
 			}
 		}
+
+		ordered.removeAll(Collections.singleton(null));
 
 		return ordered;
 	}
