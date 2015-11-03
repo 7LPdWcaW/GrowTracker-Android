@@ -19,6 +19,16 @@ android {
 	lintOptions {
 		abortOnError false
 	}
+
+	productFlavors {
+		production {
+			buildConfigField "Boolean", "DISCRETE", "false"
+		}
+
+		discrete {
+			buildConfigField "Boolean", "DISCRETE", "true"
+		}
+	}
 }
 
 dependencies {
