@@ -111,11 +111,11 @@ public class PlantAdapter extends RecyclerView.Adapter<PlantHolder> implements I
 
 					if (lastWater.getPh() != null)
 					{
-						summary += "<b>" + lastWater.getPh() + " PH</b>";
+						summary += "<b>" + lastWater.getPh() + " PH</b> ";
 
 						if (lastWater.getRunoff() != null)
 						{
-							summary += " -> <b>" + lastWater.getRunoff() + " PH</b> ";
+							summary += "-> <b>" + lastWater.getRunoff() + " PH</b> ";
 						}
 					}
 
@@ -148,11 +148,11 @@ public class PlantAdapter extends RecyclerView.Adapter<PlantHolder> implements I
 
 					if (lastFeed.getPh() != null)
 					{
-						summary += "<b>" + lastFeed.getPh() + " PH</b>";
+						summary += "<b>" + lastFeed.getPh() + " PH</b> ";
 
 						if (lastFeed.getRunoff() != null)
 						{
-							summary += " -> <b>" + lastFeed.getRunoff() + " PH</b> ";
+							summary += "-> <b>" + lastFeed.getRunoff() + " PH</b> ";
 						}
 					}
 
