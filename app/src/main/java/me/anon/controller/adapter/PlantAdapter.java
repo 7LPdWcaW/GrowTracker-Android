@@ -15,18 +15,19 @@ import com.nostra13.universalimageloader.core.imageaware.ImageViewAware;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+import java.util.SortedMap;
 
 import lombok.Getter;
 import me.anon.grow.MainApplication;
 import me.anon.grow.PlantDetailsActivity;
 import me.anon.grow.R;
 import me.anon.lib.DateRenderer;
+import me.anon.lib.helper.TimeHelper;
 import me.anon.lib.manager.PlantManager;
 import me.anon.model.Action;
 import me.anon.model.Feed;
 import me.anon.model.Plant;
 import me.anon.model.PlantStage;
-import me.anon.model.StageChange;
 import me.anon.model.Water;
 import me.anon.view.PlantHolder;
 
@@ -74,7 +75,8 @@ public class PlantAdapter extends RecyclerView.Adapter<PlantHolder> implements I
 		}
 		else
 		{
-			summary += "Planted (" + new DateRenderer().timeAgo(plant.getPlantDate(), 3).formattedDate + " ago)";
+			DateRenderer.TimeAgo planted = new DateRenderer().timeAgo(plant.getPlantDate());
+			summary += "<b>Planted " + planted.time + " " + planted.unit.type + " ago</b>";
 
 			if (plant.getActions() != null && plant.getActions().size() > 0)
 			{
@@ -86,13 +88,6 @@ public class PlantAdapter extends RecyclerView.Adapter<PlantHolder> implements I
 				{
 					Action action = actions.get(index);
 
-					if (action instanceof StageChange && ((StageChange)action).getNewStage() == PlantStage.FLOWER && plant.getStage() == PlantStage.FLOWER)
-					{
-						long flipDate = action.getDate();
-						String time = new DateRenderer().timeAgo(flipDate, 3).formattedDate;
-						summary += " / (" + time.replaceAll("[^0-9]", "") + "f)";
-					}
-
 					if (action instanceof Feed && lastFeed == null)
 					{
 						lastFeed = (Feed)action;
@@ -102,6 +97,9 @@ public class PlantAdapter extends RecyclerView.Adapter<PlantHolder> implements I
 						lastWater = (Water)action;
 					}
 				}
+
+				SortedMap<PlantStage, Long> stageTimes = plant.calculateStageTime();
+				summary += " / <b>" + (int)TimeHelper.toDays(stageTimes.get(plant.getStage())) + plant.getStage().getPrintString().substring(0, 1).toLowerCase() + "</b>";
 
 				if (lastWater != null)
 				{
