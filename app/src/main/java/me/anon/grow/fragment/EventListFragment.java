@@ -206,7 +206,7 @@ public class EventListFragment extends Fragment implements ActionAdapter.OnActio
 			{
 				if (getView() != null)
 				{
-					FabAnimator.animateUp(getView().findViewById(R.id.fab_complete));
+					FabAnimator.animateUp(getView().findViewById(R.id.fab_add));
 				}
 			}
 
@@ -214,7 +214,7 @@ public class EventListFragment extends Fragment implements ActionAdapter.OnActio
 			{
 				if (getView() != null)
 				{
-					FabAnimator.animateDown(getView().findViewById(R.id.fab_complete));
+					FabAnimator.animateDown(getView().findViewById(R.id.fab_add));
 				}
 			}
 
@@ -258,7 +258,7 @@ public class EventListFragment extends Fragment implements ActionAdapter.OnActio
 						{
 							if (getView() != null)
 							{
-								FabAnimator.animateUp(getView().findViewById(R.id.fab_complete));
+								FabAnimator.animateUp(getView().findViewById(R.id.fab_add));
 							}
 						}
 
@@ -266,7 +266,7 @@ public class EventListFragment extends Fragment implements ActionAdapter.OnActio
 						{
 							if (getView() != null)
 							{
-								FabAnimator.animateDown(getView().findViewById(R.id.fab_complete));
+								FabAnimator.animateDown(getView().findViewById(R.id.fab_add));
 							}
 						}
 
@@ -314,7 +314,7 @@ public class EventListFragment extends Fragment implements ActionAdapter.OnActio
 						{
 							if (getView() != null)
 							{
-								FabAnimator.animateUp(getView().findViewById(R.id.fab_complete));
+								FabAnimator.animateUp(getView().findViewById(R.id.fab_add));
 							}
 						}
 
@@ -322,7 +322,7 @@ public class EventListFragment extends Fragment implements ActionAdapter.OnActio
 						{
 							if (getView() != null)
 							{
-								FabAnimator.animateDown(getView().findViewById(R.id.fab_complete));
+								FabAnimator.animateDown(getView().findViewById(R.id.fab_add));
 							}
 						}
 
@@ -356,7 +356,7 @@ public class EventListFragment extends Fragment implements ActionAdapter.OnActio
 						{
 							if (getView() != null)
 							{
-								FabAnimator.animateUp(getView().findViewById(R.id.fab_complete));
+								FabAnimator.animateUp(getView().findViewById(R.id.fab_add));
 							}
 						}
 
@@ -364,7 +364,7 @@ public class EventListFragment extends Fragment implements ActionAdapter.OnActio
 						{
 							if (getView() != null)
 							{
-								FabAnimator.animateDown(getView().findViewById(R.id.fab_complete));
+								FabAnimator.animateDown(getView().findViewById(R.id.fab_add));
 							}
 						}
 
