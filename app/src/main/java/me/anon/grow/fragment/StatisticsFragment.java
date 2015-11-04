@@ -16,9 +16,7 @@ import com.github.mikephil.charting.data.LineDataSet;
 import com.github.mikephil.charting.utils.ValueFormatter;
 
 import java.util.ArrayList;
-import java.util.Comparator;
 import java.util.SortedMap;
-import java.util.TreeMap;
 
 import me.anon.grow.R;
 import me.anon.lib.Views;
@@ -152,29 +150,11 @@ public class StatisticsFragment extends Fragment
 		long waterDifference = 0L;
 		long lastFeed = 0L, lastWater = 0L;
 		int totalFeed = 0, totalWater = 0, totalFlush = 0;
-		SortedMap<PlantStage, Long> stages = new TreeMap<PlantStage, Long>(new Comparator<PlantStage>()
-		{
-			@Override public int compare(PlantStage lhs, PlantStage rhs)
-			{
-				if (lhs.ordinal() < rhs.ordinal())
-				{
-					return 1;
-				}
-				else if (lhs.ordinal() > rhs.ordinal())
-				{
-					return -1;
-				}
-
-				return 0;
-			}
-		});
 
 		for (Action action : plant.getActions())
 		{
 			if (action instanceof StageChange)
 			{
-				stages.put(((StageChange)action).getNewStage(), action.getDate());
-
 				if (((StageChange)action).getNewStage() == PlantStage.HARVESTED)
 				{
 					endDate = action.getDate();
@@ -208,28 +188,6 @@ public class StatisticsFragment extends Fragment
 			}
 		}
 
-		int stageIndex = 0;
-		long lastStage = 0;
-		PlantStage previous = stages.firstKey();
-		for (PlantStage plantStage : stages.keySet())
-		{
-			long difference = 0;
-			if (stageIndex == 0)
-			{
-				difference = endDate - stages.get(plantStage);
-			}
-			else
-			{
-				difference = lastStage - stages.get(plantStage);
-			}
-
-			previous = plantStage;
-			lastStage = stages.get(plantStage);
-			stageIndex++;
-
-			stages.put(plantStage, difference);
-		}
-
 		long seconds = ((endDate - startDate) / 1000);
 		double days = (double)seconds * 0.0000115741d;
 
@@ -239,6 +197,8 @@ public class StatisticsFragment extends Fragment
 		flushCount.setText(String.valueOf(totalFlush));
 		aveFeed.setText(String.format("%1$,.2f", (TimeHelper.toDays(feedDifference) / (double)totalFeed)) + " days");
 		aveWater.setText(String.format("%1$,.2f", (TimeHelper.toDays(waterDifference) / (double)totalWater)) + " days");
+
+		SortedMap<PlantStage, Long> stages = plant.calculateStageTime();
 
 		if (stages.containsKey(PlantStage.GERMINATION))
 		{
