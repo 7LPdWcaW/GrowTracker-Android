@@ -12,6 +12,7 @@ import android.os.Environment;
 import android.preference.PreferenceManager;
 import android.provider.MediaStore;
 import android.support.annotation.Nullable;
+import android.text.Html;
 import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.Menu;
@@ -369,7 +370,7 @@ public class PlantDetailsFragment extends Fragment
 		{
 			new AlertDialog.Builder(getActivity())
 				.setTitle("Are you sure?")
-				.setMessage("You are about to delete this plant and all of the images associated with it, are you sure? This can not be undone.")
+				.setMessage(Html.fromHtml("You are about to delete <b>" + plant.getName() + "</b> and all of the images associated with it, are you sure? This can not be undone."))
 				.setPositiveButton("Yes", new DialogInterface.OnClickListener()
 				{
 					@Override public void onClick(DialogInterface dialog, int which)
