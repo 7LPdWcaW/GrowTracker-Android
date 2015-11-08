@@ -2,6 +2,7 @@ package me.anon.grow;
 
 import android.app.Application;
 import android.graphics.Bitmap;
+import android.preference.PreferenceManager;
 
 import com.nostra13.universalimageloader.core.DisplayImageOptions;
 import com.nostra13.universalimageloader.core.ImageLoader;
@@ -21,10 +22,13 @@ import me.anon.lib.manager.PlantManager;
 public class MainApplication extends Application
 {
 	@Getter private static DisplayImageOptions displayImageOptions;
+	@Getter private static boolean encrypted = false;
 
 	@Override public void onCreate()
 	{
 		super.onCreate();
+
+		encrypted = PreferenceManager.getDefaultSharedPreferences(this).getBoolean("encrypt", false);
 
 		PlantManager.getInstance().initialise(this);
 
