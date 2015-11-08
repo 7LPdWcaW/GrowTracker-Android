@@ -24,7 +24,7 @@ import javax.crypto.spec.SecretKeySpec;
  */
 public class EncryptionHelper
 {
-	private static SecretKey generateKey(String key)
+	public static SecretKey generateKey(String key)
 	{
 		try
 		{
