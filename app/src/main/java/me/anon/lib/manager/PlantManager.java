@@ -16,8 +16,11 @@ import java.util.Collections;
 import lombok.Data;
 import lombok.Getter;
 import lombok.experimental.Accessors;
+import me.anon.grow.MainApplication;
+import me.anon.lib.helper.EncryptionHelper;
 import me.anon.lib.helper.GsonHelper;
 import me.anon.model.Plant;
+import me.anon.model.PlantStage;
 
 /**
  * // TODO: Add class description
@@ -54,9 +57,16 @@ public class PlantManager
 		ordered.addAll(Arrays.asList(new Plant[plantsSize]));
 
 		SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(context);
+		boolean hideHarvested = prefs.getBoolean("hide_harvested", false);
+
 		for (int index = 0; index < plantsSize; index++)
 		{
 			Plant plant = PlantManager.getInstance().getPlants().get(index);
+
+			if (hideHarvested && plant.getStage() == PlantStage.HARVESTED)
+			{
+				continue;
+			}
 
 			try
 			{
@@ -122,7 +132,21 @@ public class PlantManager
 	{
 		if (FileManager.getInstance().fileExists(FILES_DIR + "/plants.json"))
 		{
-			String plantData = FileManager.getInstance().readFileAsString(FILES_DIR + "/plants.json");
+			String plantData;
+
+			if (MainApplication.isEncrypted())
+			{
+				if (TextUtils.isEmpty(MainApplication.getKey()))
+				{
+					return;
+				}
+
+				plantData = EncryptionHelper.decrypt(MainApplication.getKey(), FileManager.getInstance().readFile(FILES_DIR + "/plants.json"));
+			}
+			else
+			{
+				plantData = FileManager.getInstance().readFileAsString(FILES_DIR + "/plants.json");
+			}
 
 			try
 			{
@@ -145,6 +169,18 @@ public class PlantManager
 
 	public void save()
 	{
-		FileManager.getInstance().writeFile(FILES_DIR + "/plants.json", GsonHelper.parse(mPlants));
+		if (MainApplication.isEncrypted())
+		{
+			if (TextUtils.isEmpty(MainApplication.getKey()))
+			{
+				return;
+			}
+
+			FileManager.getInstance().writeFile(FILES_DIR + "/plants.json", EncryptionHelper.encrypt(MainApplication.getKey(), GsonHelper.parse(mPlants)));
+		}
+		else
+		{
+			FileManager.getInstance().writeFile(FILES_DIR + "/plants.json", GsonHelper.parse(mPlants));
+		}
 	}
 }
