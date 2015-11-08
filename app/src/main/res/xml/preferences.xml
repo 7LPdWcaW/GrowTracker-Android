@@ -12,6 +12,13 @@
 			android:summary="Hide all plants that have been harvested"
 			android:defaultValue="false"
 		/>
+
+		<CheckBoxPreference
+			android:key="encrypt"
+			android:title="Encrypt data"
+			android:summary="Adds a pin lock to the app and encrypts all data/images"
+			android:defaultValue="false"
+		/>
 	</PreferenceCategory>
 
 	<PreferenceCategory
