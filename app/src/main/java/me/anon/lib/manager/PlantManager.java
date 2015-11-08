@@ -15,6 +15,8 @@ import java.util.Collections;
 import lombok.Data;
 import lombok.Getter;
 import lombok.experimental.Accessors;
+import me.anon.grow.MainApplication;
+import me.anon.lib.helper.EncryptionHelper;
 import me.anon.lib.helper.GsonHelper;
 import me.anon.model.Plant;
 import me.anon.model.PlantStage;
@@ -113,7 +115,16 @@ public class PlantManager
 	{
 		if (FileManager.getInstance().fileExists(FILES_DIR + "/plants.json"))
 		{
-			String plantData = FileManager.getInstance().readFileAsString(FILES_DIR + "/plants.json");
+			String plantData;
+
+			if (MainApplication.isEncrypted())
+			{
+				plantData = EncryptionHelper.decrypt("password", FileManager.getInstance().readFile(FILES_DIR + "/plants.json"));
+			}
+			else
+			{
+				plantData = FileManager.getInstance().readFileAsString(FILES_DIR + "/plants.json");
+			}
 
 			try
 			{
@@ -136,6 +147,13 @@ public class PlantManager
 
 	public void save()
 	{
-		FileManager.getInstance().writeFile(FILES_DIR + "/plants.json", GsonHelper.parse(mPlants));
+		if (MainApplication.isEncrypted())
+		{
+			FileManager.getInstance().writeFile(FILES_DIR + "/plants.json", EncryptionHelper.encrypt("password", GsonHelper.parse(mPlants)));
+		}
+		else
+		{
+			FileManager.getInstance().writeFile(FILES_DIR + "/plants.json", GsonHelper.parse(mPlants));
+		}
 	}
 }
