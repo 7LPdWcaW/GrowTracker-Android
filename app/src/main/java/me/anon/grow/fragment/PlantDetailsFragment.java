@@ -14,6 +14,9 @@ import android.provider.MediaStore;
 import android.support.annotation.Nullable;
 import android.text.TextUtils;
 import android.view.LayoutInflater;
+import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.WindowManager;
@@ -85,6 +88,12 @@ public class PlantDetailsFragment extends Fragment
 		fragment.setArguments(args);
 
 		return fragment;
+	}
+
+	@Override public void onCreate(Bundle savedInstanceState)
+	{
+		super.onCreate(savedInstanceState);
+		setHasOptionsMenu(true);
 	}
 
 	@Nullable @Override public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState)
@@ -342,6 +351,41 @@ public class PlantDetailsFragment extends Fragment
 		}
 
 		super.onActivityResult(requestCode, resultCode, data);
+	}
+
+	@Override public void onCreateOptionsMenu(Menu menu, MenuInflater inflater)
+	{
+		if (plantIndex > -1)
+		{
+			inflater.inflate(R.menu.plant_menu, menu);
+		}
+
+		super.onCreateOptionsMenu(menu, inflater);
+	}
+
+	@Override public boolean onOptionsItemSelected(MenuItem item)
+	{
+		if (item.getItemId() == R.id.delete)
+		{
+			new AlertDialog.Builder(getActivity())
+				.setTitle("Are you sure?")
+				.setMessage("You are about to delete this plant and all of the images associated with it, are you sure? This can not be undone.")
+				.setPositiveButton("Yes", new DialogInterface.OnClickListener()
+				{
+					@Override public void onClick(DialogInterface dialog, int which)
+					{
+						PlantManager.getInstance().deletePlant(plantIndex);
+						PlantManager.getInstance().save();
+						getActivity().finish();
+					}
+				})
+				.setNegativeButton("No", null)
+				.show();
+
+			return true;
+		}
+
+		return super.onOptionsItemSelected(item);
 	}
 
 	@Views.OnClick public void onActionClick(final View view)
