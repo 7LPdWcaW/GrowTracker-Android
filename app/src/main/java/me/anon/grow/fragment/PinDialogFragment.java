@@ -27,6 +27,7 @@ public class PinDialogFragment extends DialogFragment
 	@Views.InjectView(R.id.pin) private EditText input;
 
 	@Setter private OnDialogConfirmed onDialogConfirmed;
+	@Setter private String title = "Pin";
 
 	public PinDialogFragment(){}
 
@@ -35,7 +36,7 @@ public class PinDialogFragment extends DialogFragment
 		final Context context = getActivity();
 
 		AlertDialog.Builder dialog = new AlertDialog.Builder(context);
-		dialog.setTitle("Pin");
+		dialog.setTitle(title);
 		View view = LayoutInflater.from(getActivity()).inflate(R.layout.pin_dialog, null);
 
 		Views.inject(this, view);

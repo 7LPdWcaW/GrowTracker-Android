@@ -8,6 +8,7 @@ import android.preference.CheckBoxPreference;
 import android.preference.Preference;
 import android.preference.PreferenceFragment;
 import android.text.Html;
+import android.widget.Toast;
 
 import java.io.BufferedInputStream;
 import java.io.IOException;
@@ -56,6 +57,7 @@ public class SettingsFragment extends PreferenceFragment implements Preference.O
 				final PinDialogFragment check1 = new PinDialogFragment();
 				final PinDialogFragment check2 = new PinDialogFragment();
 
+				check1.setTitle("Enter a passphrase");
 				check1.setOnDialogConfirmed(new PinDialogFragment.OnDialogConfirmed()
 				{
 					@Override public void onDialogConfirmed(String input)
@@ -65,6 +67,7 @@ public class SettingsFragment extends PreferenceFragment implements Preference.O
 					}
 				});
 
+				check2.setTitle("Re-enter your passphrase");
 				check2.setOnDialogConfirmed(new PinDialogFragment.OnDialogConfirmed()
 				{
 					@Override public void onDialogConfirmed(String input)
@@ -76,6 +79,7 @@ public class SettingsFragment extends PreferenceFragment implements Preference.O
 						else
 						{
 							((CheckBoxPreference)preference).setChecked(false);
+							Toast.makeText(getActivity(), "Error - passphrases did not match up", Toast.LENGTH_SHORT).show();
 						}
 					}
 				});
