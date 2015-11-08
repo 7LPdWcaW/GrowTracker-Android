@@ -13,6 +13,8 @@ import android.text.Html;
 import android.util.Base64;
 import android.widget.Toast;
 
+import com.nostra13.universalimageloader.core.ImageLoader;
+
 import java.io.BufferedInputStream;
 import java.io.IOException;
 import java.io.InputStream;
@@ -96,6 +98,9 @@ public class SettingsFragment extends PreferenceFragment implements Preference.O
 							{
 								new EncryptTask().executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR, plant.getImages());
 							}
+
+							ImageLoader.getInstance().clearMemoryCache();
+							ImageLoader.getInstance().clearDiskCache();
 						}
 						else
 						{
@@ -121,9 +126,7 @@ public class SettingsFragment extends PreferenceFragment implements Preference.O
 						if (inputCheck.equals(check))
 						{
 							// Decrypt plant data
-							PreferenceManager.getDefaultSharedPreferences(getActivity()).edit()
-								.remove("encryption_check_key")
-								.apply();
+							PreferenceManager.getDefaultSharedPreferences(getActivity()).edit().remove("encryption_check_key").apply();
 							MainApplication.setEncrypted(false);
 							PlantManager.getInstance().save();
 
@@ -132,6 +135,9 @@ public class SettingsFragment extends PreferenceFragment implements Preference.O
 							{
 								new DecryptTask().executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR, plant.getImages());
 							}
+
+							ImageLoader.getInstance().clearMemoryCache();
+							ImageLoader.getInstance().clearDiskCache();
 						}
 						else
 						{
