@@ -25,7 +25,7 @@ public class BootActivity extends Activity
 	{
 		super.onCreate(savedInstanceState);
 
-		if (MainApplication.isEncrypted() && TextUtils.isEmpty(MainApplication.getKey()))
+		if (MainApplication.isEncrypted())
 		{
 			final PinDialogFragment check = new PinDialogFragment();
 			check.setTitle("Enter your passphrase");
