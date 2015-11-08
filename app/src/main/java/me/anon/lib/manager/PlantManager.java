@@ -59,7 +59,16 @@ public class PlantManager
 
 			try
 			{
-				ordered.set(prefs.getInt(String.valueOf(index), plantsSize - index - 1), plant);
+				int orderIndex = prefs.getInt(String.valueOf(index), plantsSize - index - 1);
+				
+				if (ordered.get(orderIndex) == null)
+				{
+					ordered.set(orderIndex, plant);
+				}
+				else
+				{
+					ordered.add(orderIndex, plant);
+				}
 			}
 			catch (Exception e)
 			{
