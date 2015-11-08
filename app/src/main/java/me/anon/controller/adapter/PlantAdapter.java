@@ -76,7 +76,7 @@ public class PlantAdapter extends RecyclerView.Adapter<PlantHolder> implements I
 		else
 		{
 			DateRenderer.TimeAgo planted = new DateRenderer().timeAgo(plant.getPlantDate(), 3);
-			summary += "<b>Planted " + planted.time + " " + planted.unit.type + " ago</b>";
+			summary += "<b>Planted " + (int)planted.time + " " + planted.unit.type + " ago</b>";
 
 			if (plant.getActions() != null && plant.getActions().size() > 0)
 			{
