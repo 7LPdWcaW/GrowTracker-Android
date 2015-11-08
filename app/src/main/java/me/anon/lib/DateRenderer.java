@@ -56,16 +56,16 @@ public class DateRenderer
 		long currentTime = System.currentTimeMillis();
 		double difference = (double)((double)(currentTime - time) / 1000d);
 
-		if (difference < 5)
-		{
-			return new TimeAgo(units[0], round(difference / (double)units[0].inSeconds, 2), now);
-		}
-
 		String formattedDate = null;
 		Unit lastUnit = null;
 
 		if (unitindex < 0)
 		{
+			if (difference < 5)
+			{
+				return new TimeAgo(units[0], round(difference / (double)units[0].inSeconds, 2), now);
+			}
+
 			for (Unit unit : units)
 			{
 				if (difference < unit.limit)
