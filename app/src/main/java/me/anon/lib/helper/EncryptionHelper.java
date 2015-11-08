@@ -60,8 +60,9 @@ public class EncryptionHelper
 				cipher.init(Cipher.ENCRYPT_MODE, secretKey);
 
 				CipherOutputStream cos = new CipherOutputStream(fos, cipher);
+				byte[] bytes = input.getBytes("UTF-8");
 
-				for (byte b : input.getBytes("UTF-8"))
+				for (byte b : bytes)
 				{
 					cos.write(b);
 				}

@@ -7,14 +7,18 @@ import android.os.Bundle;
 import android.preference.CheckBoxPreference;
 import android.preference.Preference;
 import android.preference.PreferenceFragment;
+import android.preference.PreferenceManager;
 import android.text.Html;
+import android.util.Base64;
 import android.widget.Toast;
 
 import java.io.BufferedInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 
+import me.anon.grow.MainApplication;
 import me.anon.grow.R;
+import me.anon.lib.helper.EncryptionHelper;
 import me.anon.lib.helper.GsonHelper;
 import me.anon.lib.manager.PlantManager;
 
@@ -75,6 +79,13 @@ public class SettingsFragment extends PreferenceFragment implements Preference.O
 						if (input.equals(pin.toString()))
 						{
 							// encrypt
+							PreferenceManager.getDefaultSharedPreferences(getActivity()).edit()
+								.putString("encryption_check_key", Base64.encodeToString(EncryptionHelper.encrypt(pin.toString(), pin.toString()), Base64.NO_WRAP))
+								.apply();
+
+							MainApplication.setEncrypted(true);
+							MainApplication.setKey(pin.toString());
+							PlantManager.getInstance().save();
 						}
 						else
 						{
@@ -85,6 +96,36 @@ public class SettingsFragment extends PreferenceFragment implements Preference.O
 				});
 
 				check1.show(getFragmentManager(), null);
+			}
+			else
+			{
+				final PinDialogFragment check = new PinDialogFragment();
+				check.setTitle("Enter your passphrase");
+				check.setOnDialogConfirmed(new PinDialogFragment.OnDialogConfirmed()
+				{
+					@Override public void onDialogConfirmed(String input)
+					{
+						String check = PreferenceManager.getDefaultSharedPreferences(getActivity()).getString("encryption_check_key", "");
+						String inputCheck = Base64.encodeToString(EncryptionHelper.encrypt(input, input), Base64.NO_WRAP);
+
+						if (inputCheck.equals(check))
+						{
+							// decrypt
+							PreferenceManager.getDefaultSharedPreferences(getActivity()).edit()
+								.remove("encryption_check_key")
+								.apply();
+							MainApplication.setEncrypted(false);
+							PlantManager.getInstance().save();
+						}
+						else
+						{
+							((CheckBoxPreference)preference).setChecked(true);
+							Toast.makeText(getActivity(), "Error - incorrect passphrase", Toast.LENGTH_SHORT).show();
+						}
+					}
+				});
+
+				check.show(getFragmentManager(), null);
 			}
 
 			return true;
