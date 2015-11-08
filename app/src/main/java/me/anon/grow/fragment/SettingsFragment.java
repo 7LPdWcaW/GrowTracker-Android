@@ -3,6 +3,7 @@ package me.anon.grow.fragment;
 import android.app.AlertDialog;
 import android.content.Intent;
 import android.content.pm.PackageManager;
+import android.os.AsyncTask;
 import android.os.Bundle;
 import android.preference.CheckBoxPreference;
 import android.preference.Preference;
@@ -21,6 +22,9 @@ import me.anon.grow.R;
 import me.anon.lib.helper.EncryptionHelper;
 import me.anon.lib.helper.GsonHelper;
 import me.anon.lib.manager.PlantManager;
+import me.anon.lib.task.DecryptTask;
+import me.anon.lib.task.EncryptTask;
+import me.anon.model.Plant;
 
 /**
  * // TODO: Add class description
@@ -78,7 +82,7 @@ public class SettingsFragment extends PreferenceFragment implements Preference.O
 					{
 						if (input.equals(pin.toString()))
 						{
-							// encrypt
+							// Encrypt plant data
 							PreferenceManager.getDefaultSharedPreferences(getActivity()).edit()
 								.putString("encryption_check_key", Base64.encodeToString(EncryptionHelper.encrypt(pin.toString(), pin.toString()), Base64.NO_WRAP))
 								.apply();
@@ -86,6 +90,12 @@ public class SettingsFragment extends PreferenceFragment implements Preference.O
 							MainApplication.setEncrypted(true);
 							MainApplication.setKey(pin.toString());
 							PlantManager.getInstance().save();
+
+							// Encrypt images
+							for (Plant plant : PlantManager.getInstance().getPlants())
+							{
+								new EncryptTask().executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR, plant.getImages());
+							}
 						}
 						else
 						{
@@ -110,12 +120,18 @@ public class SettingsFragment extends PreferenceFragment implements Preference.O
 
 						if (inputCheck.equals(check))
 						{
-							// decrypt
+							// Decrypt plant data
 							PreferenceManager.getDefaultSharedPreferences(getActivity()).edit()
 								.remove("encryption_check_key")
 								.apply();
 							MainApplication.setEncrypted(false);
 							PlantManager.getInstance().save();
+
+							// Decrypt images
+							for (Plant plant : PlantManager.getInstance().getPlants())
+							{
+								new DecryptTask().executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR, plant.getImages());
+							}
 						}
 						else
 						{
