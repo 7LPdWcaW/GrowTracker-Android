@@ -45,7 +45,7 @@ public class SettingsFragment extends PreferenceFragment implements Preference.O
 
 		try
 		{
-			findPreference("version").setSummary("Version " + getActivity().getPackageManager().getPackageInfo(getActivity().getPackageName(), 0).versionName);
+			findPreference("version").setTitle("Version " + getActivity().getPackageManager().getPackageInfo(getActivity().getPackageName(), 0).versionName);
 		}
 		catch (PackageManager.NameNotFoundException e)
 		{
