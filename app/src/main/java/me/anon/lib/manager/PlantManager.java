@@ -8,6 +8,7 @@ import android.text.TextUtils;
 import com.google.gson.JsonSyntaxException;
 import com.google.gson.reflect.TypeToken;
 
+import java.io.File;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
@@ -60,7 +61,7 @@ public class PlantManager
 			try
 			{
 				int orderIndex = prefs.getInt(String.valueOf(index), plantsSize - index - 1);
-				
+
 				if (ordered.get(orderIndex) == null)
 				{
 					ordered.set(orderIndex, plant);
@@ -86,6 +87,22 @@ public class PlantManager
 	{
 		mPlants.add(plant);
 		save();
+	}
+
+	public void deletePlant(int plantIndex)
+	{
+		// Delete images
+		for (String filePath : mPlants.get(plantIndex).getImages())
+		{
+			new File(filePath).delete();
+		}
+
+		// Remove plant
+		mPlants.remove(plantIndex);
+
+		// Remove from shared prefs
+		SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(context);
+		prefs.edit().remove(String.valueOf(plantIndex)).apply();
 	}
 
 	public void upsert(int index, Plant plant)
