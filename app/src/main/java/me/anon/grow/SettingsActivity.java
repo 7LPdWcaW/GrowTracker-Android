@@ -4,7 +4,7 @@ import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 
 import lombok.experimental.Accessors;
-import me.anon.grow.fragment.PlantListFragment;
+import me.anon.grow.fragment.SettingsFragment;
 import me.anon.lib.Views;
 
 /**
@@ -30,7 +30,7 @@ public class SettingsActivity extends AppCompatActivity
 
 		if (getFragmentManager().findFragmentByTag(TAG_FRAGMENT) == null)
 		{
-			getFragmentManager().beginTransaction().replace(R.id.fragment_holder, new PlantListFragment(), TAG_FRAGMENT).commit();
+			getFragmentManager().beginTransaction().replace(R.id.fragment_holder, new SettingsFragment(), TAG_FRAGMENT).commit();
 		}
 	}
 }

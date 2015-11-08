@@ -4,6 +4,7 @@ import android.app.AlertDialog;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.os.Bundle;
+import android.preference.CheckBoxPreference;
 import android.preference.Preference;
 import android.preference.PreferenceFragment;
 import android.text.Html;
@@ -23,7 +24,7 @@ import me.anon.lib.manager.PlantManager;
  * @documentation // TODO Reference flow doc
  * @project GrowTracker
  */
-public class SettingsFragment extends PreferenceFragment implements Preference.OnPreferenceClickListener
+public class SettingsFragment extends PreferenceFragment implements Preference.OnPreferenceClickListener, Preference.OnPreferenceChangeListener
 {
 	@Override public void onActivityCreated(Bundle savedInstanceState)
 	{
@@ -40,8 +41,52 @@ public class SettingsFragment extends PreferenceFragment implements Preference.O
 			e.printStackTrace();
 		}
 
+		findPreference("encrypt").setOnPreferenceChangeListener(this);
 		findPreference("readme").setOnPreferenceClickListener(this);
 		findPreference("export").setOnPreferenceClickListener(this);
+	}
+
+	@Override public boolean onPreferenceChange(final Preference preference, Object newValue)
+	{
+		if ("encrypt".equals(preference.getKey()))
+		{
+			if ((Boolean)newValue == true)
+			{
+				final StringBuffer pin = new StringBuffer();
+				final PinDialogFragment check1 = new PinDialogFragment();
+				final PinDialogFragment check2 = new PinDialogFragment();
+
+				check1.setOnDialogConfirmed(new PinDialogFragment.OnDialogConfirmed()
+				{
+					@Override public void onDialogConfirmed(String input)
+					{
+						pin.append(input);
+						check2.show(getFragmentManager(), null);
+					}
+				});
+
+				check2.setOnDialogConfirmed(new PinDialogFragment.OnDialogConfirmed()
+				{
+					@Override public void onDialogConfirmed(String input)
+					{
+						if (input.equals(pin.toString()))
+						{
+							// encrypt
+						}
+						else
+						{
+							((CheckBoxPreference)preference).setChecked(false);
+						}
+					}
+				});
+
+				check1.show(getFragmentManager(), null);
+			}
+
+			return true;
+		}
+
+		return false;
 	}
 
 	@Override public boolean onPreferenceClick(Preference preference)
