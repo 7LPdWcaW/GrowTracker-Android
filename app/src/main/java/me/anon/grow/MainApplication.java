@@ -10,6 +10,7 @@ import com.nostra13.universalimageloader.core.ImageLoaderConfiguration;
 import com.nostra13.universalimageloader.core.assist.ImageScaleType;
 
 import lombok.Getter;
+import lombok.Setter;
 import me.anon.lib.manager.PlantManager;
 
 /**
@@ -22,7 +23,8 @@ import me.anon.lib.manager.PlantManager;
 public class MainApplication extends Application
 {
 	@Getter private static DisplayImageOptions displayImageOptions;
-	@Getter private static boolean encrypted = false;
+	@Getter @Setter private static boolean encrypted = false;
+	@Getter @Setter private static String key = "";
 
 	@Override public void onCreate()
 	{

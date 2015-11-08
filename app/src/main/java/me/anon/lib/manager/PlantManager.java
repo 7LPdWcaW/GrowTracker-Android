@@ -119,7 +119,12 @@ public class PlantManager
 
 			if (MainApplication.isEncrypted())
 			{
-				plantData = EncryptionHelper.decrypt("password", FileManager.getInstance().readFile(FILES_DIR + "/plants.json"));
+				if (TextUtils.isEmpty(MainApplication.getKey()))
+				{
+					return;
+				}
+
+				plantData = EncryptionHelper.decrypt(MainApplication.getKey(), FileManager.getInstance().readFile(FILES_DIR + "/plants.json"));
 			}
 			else
 			{
@@ -149,7 +154,12 @@ public class PlantManager
 	{
 		if (MainApplication.isEncrypted())
 		{
-			FileManager.getInstance().writeFile(FILES_DIR + "/plants.json", EncryptionHelper.encrypt("password", GsonHelper.parse(mPlants)));
+			if (TextUtils.isEmpty(MainApplication.getKey()))
+			{
+				return;
+			}
+
+			FileManager.getInstance().writeFile(FILES_DIR + "/plants.json", EncryptionHelper.encrypt(MainApplication.getKey(), GsonHelper.parse(mPlants)));
 		}
 		else
 		{
