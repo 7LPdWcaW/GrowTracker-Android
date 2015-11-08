@@ -17,6 +17,7 @@ import lombok.Getter;
 import lombok.experimental.Accessors;
 import me.anon.lib.helper.GsonHelper;
 import me.anon.model.Plant;
+import me.anon.model.PlantStage;
 
 /**
  * // TODO: Add class description
@@ -53,14 +54,21 @@ public class PlantManager
 		ordered.addAll(Arrays.asList(new Plant[plantsSize]));
 
 		SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(context);
+		boolean hideHarvested = prefs.getBoolean("hide_harvested", false);
+
 		for (int index = 0; index < plantsSize; index++)
 		{
 			Plant plant = PlantManager.getInstance().getPlants().get(index);
 
+			if (hideHarvested && plant.getStage() == PlantStage.HARVESTED)
+			{
+				continue;
+			}
+
 			try
 			{
 				int orderIndex = prefs.getInt(String.valueOf(index), plantsSize - index - 1);
-				
+
 				if (ordered.get(orderIndex) == null)
 				{
 					ordered.set(orderIndex, plant);
