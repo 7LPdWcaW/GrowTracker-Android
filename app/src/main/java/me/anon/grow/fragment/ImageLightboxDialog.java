@@ -1,6 +1,7 @@
 package me.anon.grow.fragment;
 
 import android.app.Activity;
+import android.graphics.Bitmap;
 import android.os.Bundle;
 import android.os.Parcelable;
 import android.support.v4.view.PagerAdapter;
@@ -16,6 +17,8 @@ import android.widget.TextView;
 
 import com.davemorrissey.labs.subscaleview.ImageSource;
 import com.davemorrissey.labs.subscaleview.SubsamplingScaleImageView;
+import com.nostra13.universalimageloader.core.ImageLoader;
+import com.nostra13.universalimageloader.core.listener.SimpleImageLoadingListener;
 
 import java.text.DateFormat;
 import java.util.Date;
@@ -130,7 +133,14 @@ public class ImageLightboxDialog extends Activity
 		{
 			final SubsamplingScaleImageView imageView = (SubsamplingScaleImageView)v.findViewById(R.id.image);
 			imageView.setDoubleTapZoomScale(1.5f);
-			imageView.setImage(ImageSource.uri("file://" + images[position]));
+
+			ImageLoader.getInstance().loadImage("file://" + images[position], new SimpleImageLoadingListener()
+			{
+				@Override public void onLoadingComplete(String imageUri, View view, Bitmap loadedImage)
+				{
+					imageView.setImage(ImageSource.bitmap(loadedImage));
+				}
+			});
 		}
 
 		@Override public boolean isViewFromObject(View view, Object object)
