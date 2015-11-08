@@ -7,6 +7,7 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.net.Uri;
+import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.Environment;
 import android.preference.PreferenceManager;
@@ -34,12 +35,14 @@ import java.util.Locale;
 import me.anon.grow.AddFeedingActivity;
 import me.anon.grow.EditFeedingActivity;
 import me.anon.grow.EventsActivity;
+import me.anon.grow.MainApplication;
 import me.anon.grow.R;
 import me.anon.grow.StatisticsActivity;
 import me.anon.grow.ViewPhotosActivity;
 import me.anon.lib.Views;
 import me.anon.lib.helper.FabAnimator;
 import me.anon.lib.manager.PlantManager;
+import me.anon.lib.task.EncryptTask;
 import me.anon.model.EmptyAction;
 import me.anon.model.NoteAction;
 import me.anon.model.Plant;
@@ -257,6 +260,13 @@ public class PlantDetailsFragment extends Fragment
 			{
 				if (getActivity() != null)
 				{
+					if (MainApplication.isEncrypted())
+					{
+						ArrayList<String> image = new ArrayList<>();
+						image.add(plant.getImages().get(plant.getImages().size() - 1));
+						new EncryptTask().executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR, image);
+					}
+
 					SnackBar.show(getActivity(), "Image added", "Take another", new SnackBarListener()
 					{
 						@Override public void onSnackBarStarted(Object o)
