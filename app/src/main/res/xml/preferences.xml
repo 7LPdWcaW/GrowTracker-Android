@@ -18,6 +18,7 @@
 		android:title="About"
 	>
 		<Preference
+			android:key="readme"
 			android:title="Read me"
 		/>
 
