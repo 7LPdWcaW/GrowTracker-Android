@@ -1,6 +1,7 @@
 package me.anon.grow.fragment;
 
 import android.app.AlertDialog;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.os.AsyncTask;
@@ -63,54 +64,71 @@ public class SettingsFragment extends PreferenceFragment implements Preference.O
 		{
 			if ((Boolean)newValue == true)
 			{
-				final StringBuffer pin = new StringBuffer();
-				final PinDialogFragment check1 = new PinDialogFragment();
-				final PinDialogFragment check2 = new PinDialogFragment();
-
-				check1.setTitle("Enter a passphrase");
-				check1.setOnDialogConfirmed(new PinDialogFragment.OnDialogConfirmed()
-				{
-					@Override public void onDialogConfirmed(String input)
+				new AlertDialog.Builder(getActivity())
+					.setTitle("Warning")
+					.setMessage("This is basic form of AES encryption based on a provided passphrase. This is not a guarantee form of encryption from law enforcement agencies as was designed to stop plain sight")
+					.setPositiveButton("Accept", new DialogInterface.OnClickListener()
 					{
-						pin.append(input);
-						check2.show(getFragmentManager(), null);
-					}
-				});
-
-				check2.setTitle("Re-enter your passphrase");
-				check2.setOnDialogConfirmed(new PinDialogFragment.OnDialogConfirmed()
-				{
-					@Override public void onDialogConfirmed(String input)
-					{
-						if (input.equals(pin.toString()))
+						@Override public void onClick(DialogInterface dialog, int which)
 						{
-							// Encrypt plant data
-							PreferenceManager.getDefaultSharedPreferences(getActivity()).edit()
-								.putString("encryption_check_key", Base64.encodeToString(EncryptionHelper.encrypt(pin.toString(), pin.toString()), Base64.NO_WRAP))
-								.apply();
+							final StringBuffer pin = new StringBuffer();
+							final PinDialogFragment check1 = new PinDialogFragment();
+							final PinDialogFragment check2 = new PinDialogFragment();
 
-							MainApplication.setEncrypted(true);
-							MainApplication.setKey(pin.toString());
-							PlantManager.getInstance().save();
-
-							// Encrypt images
-							for (Plant plant : PlantManager.getInstance().getPlants())
+							check1.setTitle("Enter a passphrase");
+							check1.setOnDialogConfirmed(new PinDialogFragment.OnDialogConfirmed()
 							{
-								new EncryptTask().executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR, plant.getImages());
-							}
+								@Override public void onDialogConfirmed(String input)
+								{
+									pin.append(input);
+									check2.show(getFragmentManager(), null);
+								}
+							});
 
-							ImageLoader.getInstance().clearMemoryCache();
-							ImageLoader.getInstance().clearDiskCache();
+							check2.setTitle("Re-enter your passphrase");
+							check2.setOnDialogConfirmed(new PinDialogFragment.OnDialogConfirmed()
+							{
+								@Override public void onDialogConfirmed(String input)
+								{
+									if (input.equals(pin.toString()))
+									{
+										// Encrypt plant data
+										PreferenceManager.getDefaultSharedPreferences(getActivity()).edit()
+											.putString("encryption_check_key", Base64.encodeToString(EncryptionHelper.encrypt(pin.toString(), pin.toString()), Base64.NO_WRAP))
+											.apply();
+
+										MainApplication.setEncrypted(true);
+										MainApplication.setKey(pin.toString());
+										PlantManager.getInstance().save();
+
+										// Encrypt images
+										for (Plant plant : PlantManager.getInstance().getPlants())
+										{
+											new EncryptTask().executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR, plant.getImages());
+										}
+
+										ImageLoader.getInstance().clearMemoryCache();
+										ImageLoader.getInstance().clearDiskCache();
+									}
+									else
+									{
+										((CheckBoxPreference)preference).setChecked(false);
+										Toast.makeText(getActivity(), "Error - passphrases did not match up", Toast.LENGTH_SHORT).show();
+									}
+								}
+							});
+
+							check1.show(getFragmentManager(), null);
 						}
-						else
+					})
+					.setNegativeButton("Decline", new DialogInterface.OnClickListener()
+					{
+						@Override public void onClick(DialogInterface dialog, int which)
 						{
 							((CheckBoxPreference)preference).setChecked(false);
-							Toast.makeText(getActivity(), "Error - passphrases did not match up", Toast.LENGTH_SHORT).show();
 						}
-					}
-				});
-
-				check1.show(getFragmentManager(), null);
+					})
+					.show();
 			}
 			else
 			{
