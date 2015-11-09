@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.SortedMap;
 import java.util.TreeMap;
+import java.util.UUID;
 
 import lombok.Getter;
 import lombok.Setter;
@@ -20,6 +21,7 @@ import lombok.experimental.Accessors;
 @Accessors(prefix = {"m", ""}, chain = true)
 public class Plant
 {
+	private String id = UUID.randomUUID().toString();
 	private String name;
 	private String strain;
 	private long plantDate = System.currentTimeMillis();
