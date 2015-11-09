@@ -128,6 +128,14 @@ Action can be one of,
 
 Image object is a simple string path to an image. Each image is named by the timestamp when it was taken, in milliseconds.
 
+#Encryption
+
+Note that this is **not** a guarantee form of encryption from law enforcement agencies.
+
+Encryption in the app uses basic AES for encryption using the provided passphrase. If the passphrase is less than 128 bits (16 UTF-8 chars), it will be padded with `0x0` bytes. You can view the key generator method [here](https://github.com/7LPdWcaW/GrowTracker-Android/blob/master/app/src/main/java/me/anon/lib/helper/EncryptionHelper.java#L27)
+
+You can decrypt your files using your passphrase either by writing a script that uses AES decryption, or an online tool such as [Online-Domain-Tools](http://aes.online-domain-tools.com/).
+
 #License
 
 Copyright 2011-2015 7LPdWcaW
