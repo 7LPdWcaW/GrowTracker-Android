@@ -2,10 +2,13 @@ package me.anon.controller.adapter;
 
 import android.app.AlertDialog;
 import android.content.DialogInterface;
+import android.support.v7.widget.PopupMenu;
 import android.support.v7.widget.RecyclerView;
 import android.text.Html;
 import android.text.TextUtils;
+import android.view.Gravity;
 import android.view.LayoutInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 
@@ -224,60 +227,69 @@ public class ActionAdapter extends RecyclerView.Adapter<ActionHolder>
 			viewHolder.getSummary().setVisibility(View.VISIBLE);
 		}
 
-		viewHolder.itemView.setOnLongClickListener(new View.OnLongClickListener()
+		viewHolder.getOverflow().setOnClickListener(new View.OnClickListener()
 		{
-			@Override public boolean onLongClick(final View v)
+			@Override public void onClick(final View v)
 			{
-				new AlertDialog.Builder(v.getContext())
-					.setTitle("Select an option")
-					.setItems(new String[]{"Duplicate", "Copy to", "Edit action", "Delete action"}, new DialogInterface.OnClickListener()
+				PopupMenu menu = new PopupMenu(v.getContext(), v, Gravity.BOTTOM);
+				menu.inflate(R.menu.event_overflow);
+				menu.setOnMenuItemClickListener(new PopupMenu.OnMenuItemClickListener()
+				{
+					@Override public boolean onMenuItemClick(MenuItem item)
 					{
-						@Override public void onClick(DialogInterface dialog, int which)
+						if (item.getItemId() == R.id.duplicate)
 						{
-							if (which == 0)
+							if (onActionSelectListener != null)
 							{
-								if (onActionSelectListener != null)
-								{
-									onActionSelectListener.onActionDuplicate((Action)ModelHelper.copy(action));
-								}
+								onActionSelectListener.onActionDuplicate((Action)ModelHelper.copy(action));
 							}
-							else if (which == 1)
-							{
-								if (onActionSelectListener != null)
-								{
-									onActionSelectListener.onActionCopy((Action)ModelHelper.copy(action));
-								}
-							}
-							else if (which == 2)
-							{
-								if (onActionSelectListener != null)
-								{
-									onActionSelectListener.onActionEdit(action);
-								}
-							}
-							else if (which == 3)
-							{
-								new AlertDialog.Builder(v.getContext())
-									.setTitle("Delete this event?")
-									.setMessage("Are you sure you want to delete " + viewHolder.getName().getText())
-									.setPositiveButton("Yes", new DialogInterface.OnClickListener()
-									{
-										@Override public void onClick(DialogInterface dialog, int which)
-										{
-											if (onActionSelectListener != null)
-											{
-												onActionSelectListener.onActionDeleted(action);
-											}
-										}
-									})
-									.setNegativeButton("No", null)
-									.show();
-							}
-						}
-					})
-					.show();
 
-				return true;
+							return true;
+						}
+						else if (item.getItemId() == R.id.copy)
+						{
+							if (onActionSelectListener != null)
+							{
+								onActionSelectListener.onActionCopy((Action)ModelHelper.copy(action));
+							}
+
+							return true;
+						}
+						else if (item.getItemId() == R.id.edit)
+						{
+							if (onActionSelectListener != null)
+							{
+								onActionSelectListener.onActionEdit(action);
+							}
+
+							return true;
+						}
+						else if (item.getItemId() == R.id.delete)
+						{
+							new AlertDialog.Builder(v.getContext())
+								.setTitle("Delete this event?")
+								.setMessage("Are you sure you want to delete " + viewHolder.getName().getText())
+								.setPositiveButton("Yes", new DialogInterface.OnClickListener()
+								{
+									@Override public void onClick(DialogInterface dialog, int which)
+									{
+										if (onActionSelectListener != null)
+										{
+											onActionSelectListener.onActionDeleted(action);
+										}
+									}
+								})
+								.setNegativeButton("No", null)
+								.show();
+
+							return true;
+						}
+
+						return false;
+					}
+				});
+
+				menu.show();
 			}
 		});
 	}
