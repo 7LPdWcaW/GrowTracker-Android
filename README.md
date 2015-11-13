@@ -28,7 +28,7 @@ The app requires no permissions except for external storage (for caching plant d
 
 # About the app
 
-The app uses a simple JSON structure to store all the data about the plants that can be found in `/sdcard/Android/data/me.anon.grow/files/plants.json`. All photos taken in the app are stored in `/sdcard/DCIM/GrowTracker/` in the corresponding plant name folder. `NOTE`: Photos will **not** show in any gallery app and will only be accessible through GrowTracker, or other **file** browser apps such as `ESFile Explorer`
+The app uses a simple JSON structure to store all the data about the plants that can be found in `/sdcard/Android/data/me.anon.grow/files/plants.json`. All photos taken in the app are stored in `/sdcard/DCIM/GrowTracker/` in the corresponding plant id folder. `NOTE`: Photos will **not** show in any gallery app and will only be accessible through GrowTracker, or other **file** browser apps such as `ESFile Explorer`
 
 The structure is very simple. Note: date timestamps are all unix timestamps from 1/1/1970 in milliseconds. All objects in arrays are in date order, where index 0 is the oldest and index (size - 1) is the newest.
 
@@ -36,6 +36,7 @@ The structure is very simple. Note: date timestamps are all unix timestamps from
 
 ```
 {
+    "id": <String>,
     "actions": [<Action Object>],
     "images": [<String>],
     "name": "test",
@@ -43,9 +44,16 @@ The structure is very simple. Note: date timestamps are all unix timestamps from
     "strain": "test",
     "clone": <boolean>,
     "stage": <Stage>,
+    "medium": <Medium>,
     "plantDate": 1234567890
 }
 ```
+
+### Medium (ENUM)
+
+One of,
+
+`SOIL`, `HYDRO`
 
 ### Plant Stage (ENUM)
 
@@ -54,6 +62,8 @@ One of,
 `PLANTED`, `GERMINATION`, `VEGETATION`, `FLOWER`, `CURING`, `HARVESTED`
 
 ### Action object (feeding)
+
+Temperature measured in ºC
 
 Nutrient object consists of standard percentage of elements in the solution. Ca %, K %, Mg %, N %, P %, S %. usually in the format "1.5:1.0:2.6" for Ca/K/Mg
 
@@ -73,11 +83,14 @@ Nutrient object consists of standard percentage of elements in the solution. Ca 
     "runoff": <Double>,
     "amount": <Integer>,
     "date": <Long>,
-    "type": "Feed"
+    "type": "Feed",
+    "temp": <Integer>
 }
 ```
 
 ### Action object (water)
+
+Temperature measured in ºC
 
 Water action is the same as a feeding action, sans the "nutrient" object
 
@@ -88,7 +101,8 @@ Water action is the same as a feeding action, sans the "nutrient" object
     "runoff": <Double>,
     "amount": <Integer>,
     "date": 1431268453111,
-    "type": "Water"
+    "type": "Water",
+    "temp": <Integer>
 }
 ```
 
