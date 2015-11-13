@@ -9,6 +9,7 @@ import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.support.v7.widget.helper.ItemTouchHelper;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -26,6 +27,7 @@ import java.util.Collections;
 import java.util.Random;
 
 import me.anon.controller.adapter.ActionAdapter;
+import me.anon.controller.adapter.SimpleItemTouchHelperCallback;
 import me.anon.grow.EditFeedingActivity;
 import me.anon.grow.R;
 import me.anon.lib.Views;
@@ -115,9 +117,33 @@ public class EventListFragment extends Fragment implements ActionAdapter.OnActio
 		selected.addAll(new ArrayList<Action.ActionName>(Arrays.asList(Action.ActionName.values())));
 		adapter = new ActionAdapter();
 		adapter.setOnActionSelectListener(this);
+
 		setActions();
+
 		recycler.setLayoutManager(new LinearLayoutManager(getActivity()));
 		recycler.setAdapter(adapter);
+
+		ItemTouchHelper.Callback callback = new SimpleItemTouchHelperCallback(adapter)
+		{
+			@Override public boolean isLongPressDragEnabled()
+			{
+				return selected.size() == Action.ActionName.values().length && feeding && watering && notes && stages;
+			}
+		};
+		ItemTouchHelper touchHelper = new ItemTouchHelper(callback);
+		touchHelper.attachToRecyclerView(recycler);
+
+		adapter.registerAdapterDataObserver(new RecyclerView.AdapterDataObserver()
+		{
+			@Override public void onItemRangeMoved(int fromPosition, int toPosition, int itemCount)
+			{
+				if (selected.size() == Action.ActionName.values().length && feeding && watering && notes && stages)
+				{
+					plant.setActions((ArrayList<Action>)adapter.getActions());
+					PlantManager.getInstance().upsert(plantIndex, plant);
+				}
+			}
+		});
 	}
 
 	public void setActions()
