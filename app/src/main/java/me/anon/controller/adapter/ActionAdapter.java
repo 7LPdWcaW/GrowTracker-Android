@@ -14,6 +14,7 @@ import android.view.ViewGroup;
 
 import java.text.DateFormat;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.Date;
 import java.util.List;
 
@@ -37,7 +38,7 @@ import me.anon.view.ActionHolder;
  * @documentation // TODO Reference flow doc
  * @project GrowTracker
  */
-public class ActionAdapter extends RecyclerView.Adapter<ActionHolder>
+public class ActionAdapter extends RecyclerView.Adapter<ActionHolder> implements ItemTouchHelperAdapter
 {
 	public interface OnActionSelectListener
 	{
@@ -266,21 +267,16 @@ public class ActionAdapter extends RecyclerView.Adapter<ActionHolder>
 						}
 						else if (item.getItemId() == R.id.delete)
 						{
-							new AlertDialog.Builder(v.getContext())
-								.setTitle("Delete this event?")
-								.setMessage("Are you sure you want to delete " + viewHolder.getName().getText())
-								.setPositiveButton("Yes", new DialogInterface.OnClickListener()
+							new AlertDialog.Builder(v.getContext()).setTitle("Delete this event?").setMessage("Are you sure you want to delete " + viewHolder.getName().getText()).setPositiveButton("Yes", new DialogInterface.OnClickListener()
+							{
+								@Override public void onClick(DialogInterface dialog, int which)
 								{
-									@Override public void onClick(DialogInterface dialog, int which)
+									if (onActionSelectListener != null)
 									{
-										if (onActionSelectListener != null)
-										{
-											onActionSelectListener.onActionDeleted(action);
-										}
+										onActionSelectListener.onActionDeleted(action);
 									}
-								})
-								.setNegativeButton("No", null)
-								.show();
+								}
+							}).setNegativeButton("No", null).show();
 
 							return true;
 						}
@@ -297,5 +293,31 @@ public class ActionAdapter extends RecyclerView.Adapter<ActionHolder>
 	@Override public int getItemCount()
 	{
 		return actions.size();
+	}
+
+	@Override public void onItemMove(int fromPosition, int toPosition)
+	{
+		if (fromPosition < toPosition)
+		{
+			for (int index = fromPosition; index < toPosition; index++)
+			{
+				Collections.swap(actions, index, index + 1);
+			}
+		}
+		else
+		{
+			for (int index = fromPosition; index > toPosition; index--)
+			{
+				Collections.swap(actions, index, index - 1);
+			}
+		}
+
+		notifyItemMoved(fromPosition, toPosition);
+	}
+
+	@Override public void onItemDismiss(int position)
+	{
+		actions.remove(position);
+		notifyItemRemoved(position);
 	}
 }

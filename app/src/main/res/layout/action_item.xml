@@ -33,6 +33,7 @@
 					android:src="@drawable/ic_overflow"
 					android:layout_alignParentRight="true"
 					android:background="@null"
+					android:adjustViewBounds="true"
 					android:tint="#333333"
 				/>
 
