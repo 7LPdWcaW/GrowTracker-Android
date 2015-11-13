@@ -59,7 +59,8 @@ public class ActionAdapter extends RecyclerView.Adapter<ActionHolder>
 		DateFormat dateFormat = android.text.format.DateFormat.getDateFormat(viewHolder.getDate().getContext());
 		DateFormat timeFormat = android.text.format.DateFormat.getTimeFormat(viewHolder.getDate().getContext());
 
-		String dateStr = dateFormat.format(new Date(action.getDate())) + " " + timeFormat.format(new Date(action.getDate())) + " - <b>" + new DateRenderer().timeAgo(action.getDate()).formattedDate + "</b> ago";
+		String fullDateStr = dateFormat.format(new Date(action.getDate())) + " " + timeFormat.format(new Date(action.getDate()));
+		String dateStr = "<b>" + new DateRenderer().timeAgo(action.getDate()).formattedDate + "</b> ago";
 
 		if (i > 0)
 		{
@@ -69,15 +70,16 @@ public class ActionAdapter extends RecyclerView.Adapter<ActionHolder>
 			dateStr += " (-" + days + "d)";
 		}
 
+		viewHolder.getFullDate().setText(Html.fromHtml(fullDateStr));
 		viewHolder.getDate().setText(Html.fromHtml(dateStr));
 		viewHolder.getSummary().setVisibility(View.GONE);
 
-		viewHolder.itemView.setBackgroundColor(0xffffffff);
+		viewHolder.getCard().setCardBackgroundColor(0xffffffff);
 
 		String summary = "";
 		if (action instanceof Feed)
 		{
-			viewHolder.itemView.setBackgroundColor(0x9A90CAF9);
+			viewHolder.getCard().setCardBackgroundColor(0x9A90CAF9);
 			viewHolder.getName().setText("Feed with nutrients");
 
 			if (((Feed)action).getNutrient() != null)
@@ -144,7 +146,7 @@ public class ActionAdapter extends RecyclerView.Adapter<ActionHolder>
 		}
 		else if (action instanceof Water)
 		{
-			viewHolder.itemView.setBackgroundColor(0x9ABBDEFB);
+			viewHolder.getCard().setCardBackgroundColor(0x9ABBDEFB);
 			viewHolder.getName().setText("Watered");
 			StringBuilder waterStr = new StringBuilder();
 
@@ -192,17 +194,17 @@ public class ActionAdapter extends RecyclerView.Adapter<ActionHolder>
 		else if (action instanceof EmptyAction && ((EmptyAction)action).getAction() != null)
 		{
 			viewHolder.getName().setText(((EmptyAction)action).getAction().getPrintString());
-			viewHolder.itemView.setBackgroundColor(((EmptyAction)action).getAction().getColour());
+			viewHolder.getCard().setCardBackgroundColor(((EmptyAction)action).getAction().getColour());
 		}
 		else if (action instanceof NoteAction)
 		{
 			viewHolder.getName().setText("Note");
-			viewHolder.itemView.setBackgroundColor(0xffffffff);
+			viewHolder.getCard().setCardBackgroundColor(0xffffffff);
 		}
 		else if (action instanceof StageChange)
 		{
 			viewHolder.getName().setText(((StageChange)action).getNewStage().getPrintString());
-			viewHolder.itemView.setBackgroundColor(0x9AB39DDB);
+			viewHolder.getCard().setCardBackgroundColor(0x9AB39DDB);
 		}
 
 		if (!TextUtils.isEmpty(action.getNotes()))
