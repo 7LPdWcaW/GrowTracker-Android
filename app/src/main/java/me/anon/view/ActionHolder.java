@@ -3,6 +3,7 @@ package me.anon.view;
 import android.support.v7.widget.CardView;
 import android.support.v7.widget.RecyclerView;
 import android.view.View;
+import android.widget.ImageButton;
 import android.widget.TextView;
 
 import lombok.Data;
@@ -25,6 +26,7 @@ public class ActionHolder extends RecyclerView.ViewHolder
 	@Views.InjectView(R.id.full_date) private TextView fullDate;
 	@Views.InjectView(R.id.name) private TextView name;
 	@Views.InjectView(R.id.summary) private TextView summary;
+	@Views.InjectView(R.id.overflow) private ImageButton overflow;
 
 	public ActionHolder(View itemView)
 	{
