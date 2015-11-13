@@ -139,7 +139,11 @@ public class EventListFragment extends Fragment implements ActionAdapter.OnActio
 			{
 				if (selected.size() == Action.ActionName.values().length && feeding && watering && notes && stages)
 				{
-					plant.setActions((ArrayList<Action>)adapter.getActions());
+					ArrayList<Action> actions = new ArrayList<Action>();
+					actions.addAll((ArrayList<Action>)adapter.getActions());
+					Collections.reverse(actions);
+
+					plant.setActions(actions);
 					PlantManager.getInstance().upsert(plantIndex, plant);
 				}
 			}
