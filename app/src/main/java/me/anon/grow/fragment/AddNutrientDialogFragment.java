@@ -45,6 +45,7 @@ public class AddNutrientDialogFragment extends DialogFragment
 		this.nutrient = nutrient;
 	}
 
+	@SuppressLint("ValidFragment")
 	public AddNutrientDialogFragment()
 	{
 	}
