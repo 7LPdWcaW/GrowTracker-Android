@@ -7,13 +7,18 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.net.Uri;
+import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.Environment;
 import android.preference.PreferenceManager;
 import android.provider.MediaStore;
 import android.support.annotation.Nullable;
+import android.text.Html;
 import android.text.TextUtils;
 import android.view.LayoutInflater;
+import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.WindowManager;
@@ -26,6 +31,7 @@ import com.kenny.snackbar.SnackBarListener;
 import java.io.File;
 import java.io.IOException;
 import java.text.DateFormat;
+import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.Locale;
@@ -33,15 +39,18 @@ import java.util.Locale;
 import me.anon.grow.AddFeedingActivity;
 import me.anon.grow.EditFeedingActivity;
 import me.anon.grow.EventsActivity;
+import me.anon.grow.MainApplication;
 import me.anon.grow.R;
 import me.anon.grow.StatisticsActivity;
 import me.anon.grow.ViewPhotosActivity;
 import me.anon.lib.Views;
 import me.anon.lib.helper.FabAnimator;
 import me.anon.lib.manager.PlantManager;
+import me.anon.lib.task.EncryptTask;
 import me.anon.model.EmptyAction;
 import me.anon.model.NoteAction;
 import me.anon.model.Plant;
+import me.anon.model.PlantMedium;
 import me.anon.model.PlantStage;
 import me.anon.model.StageChange;
 import me.anon.model.Water;
@@ -62,6 +71,7 @@ public class PlantDetailsFragment extends Fragment
 	@Views.InjectView(R.id.plant_name) private TextView name;
 	@Views.InjectView(R.id.plant_strain) private TextView strain;
 	@Views.InjectView(R.id.plant_stage) private TextView stage;
+	@Views.InjectView(R.id.plant_medium) private TextView medium;
 	@Views.InjectView(R.id.plant_date) private TextView date;
 	@Views.InjectView(R.id.plant_date_container) private View dateContainer;
 	@Views.InjectView(R.id.from_clone) private CheckBox clone;
@@ -82,6 +92,12 @@ public class PlantDetailsFragment extends Fragment
 		fragment.setArguments(args);
 
 		return fragment;
+	}
+
+	@Override public void onCreate(Bundle savedInstanceState)
+	{
+		super.onCreate(savedInstanceState);
+		setHasOptionsMenu(true);
 	}
 
 	@Nullable @Override public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState)
@@ -124,13 +140,24 @@ public class PlantDetailsFragment extends Fragment
 			name.setText(plant.getName());
 			strain.setText(plant.getStrain());
 
-			if (plant.getStage() != null)
+			if (plant.getMedium() != null)
 			{
-				stage.setText(plant.getStage().getPrintString());
+				medium.setText(plant.getMedium().getPrintString());
 			}
 		}
 
 		setUi();
+	}
+
+	@Override public void onResume()
+	{
+		super.onResume();
+
+		// Always re-set stage incase order was changed in event list
+		if (plant.getStage() != null)
+		{
+			stage.setText(plant.getStage().getPrintString());
+		}
 	}
 
 	private void setUi()
@@ -220,7 +247,7 @@ public class PlantDetailsFragment extends Fragment
 	{
 		Intent intent = new Intent(android.provider.MediaStore.ACTION_IMAGE_CAPTURE);
 
-		File path = new File(Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DCIM).getPath() + "/GrowTracker/" + plant.getName() + "/");
+		File path = new File(Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DCIM).getPath() + "/GrowTracker/" + plant.getId() + "/");
 		path.mkdirs();
 
 		try
@@ -249,6 +276,13 @@ public class PlantDetailsFragment extends Fragment
 			{
 				if (getActivity() != null)
 				{
+					if (MainApplication.isEncrypted())
+					{
+						ArrayList<String> image = new ArrayList<>();
+						image.add(plant.getImages().get(plant.getImages().size() - 1));
+						new EncryptTask().executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR, image);
+					}
+
 					SnackBar.show(getActivity(), "Image added", "Take another", new SnackBarListener()
 					{
 						@Override public void onSnackBarStarted(Object o)
@@ -303,10 +337,11 @@ public class PlantDetailsFragment extends Fragment
 
 					@Override public void onSnackBarAction(Object o)
 					{
-						CharSequence[] plants = new CharSequence[PlantManager.getInstance().getPlants().size()];
+						final ArrayList<Plant> sortedPlants = PlantManager.getInstance().getSortedPlantList();
+						CharSequence[] plants = new CharSequence[sortedPlants.size()];
 						for (int index = 0; index < plants.length; index++)
 						{
-							plants[index] = PlantManager.getInstance().getPlants().get(index).getName();
+							plants[index] = sortedPlants.get(index).getName();
 						}
 
 						new AlertDialog.Builder(getActivity())
@@ -315,12 +350,14 @@ public class PlantDetailsFragment extends Fragment
 							{
 								@Override public void onClick(DialogInterface dialog, int which)
 								{
+									final int originalIndex = PlantManager.getInstance().getPlants().indexOf(sortedPlants.get(which));
+
 									Water water = (Water)plant.getActions().get(plant.getActions().size() - 1);
-									PlantManager.getInstance().getPlants().get(which).getActions().add(water);
+									PlantManager.getInstance().getPlants().get(originalIndex).getActions().add(water);
 
 									Intent edit = new Intent(getActivity(), EditFeedingActivity.class);
-									edit.putExtra("plant_index", which);
-									edit.putExtra("action_index", PlantManager.getInstance().getPlants().get(which).getActions().size() - 1);
+									edit.putExtra("plant_index", originalIndex);
+									edit.putExtra("action_index", PlantManager.getInstance().getPlants().get(originalIndex).getActions().size() - 1);
 									startActivityForResult(edit, 2);
 								}
 							})
@@ -331,6 +368,41 @@ public class PlantDetailsFragment extends Fragment
 		}
 
 		super.onActivityResult(requestCode, resultCode, data);
+	}
+
+	@Override public void onCreateOptionsMenu(Menu menu, MenuInflater inflater)
+	{
+		if (plantIndex > -1)
+		{
+			inflater.inflate(R.menu.plant_menu, menu);
+		}
+
+		super.onCreateOptionsMenu(menu, inflater);
+	}
+
+	@Override public boolean onOptionsItemSelected(MenuItem item)
+	{
+		if (item.getItemId() == R.id.delete)
+		{
+			new AlertDialog.Builder(getActivity())
+				.setTitle("Are you sure?")
+				.setMessage(Html.fromHtml("You are about to delete <b>" + plant.getName() + "</b> and all of the images associated with it, are you sure? This can not be undone."))
+				.setPositiveButton("Yes", new DialogInterface.OnClickListener()
+				{
+					@Override public void onClick(DialogInterface dialog, int which)
+					{
+						PlantManager.getInstance().deletePlant(plantIndex);
+						PlantManager.getInstance().save();
+						getActivity().finish();
+					}
+				})
+				.setNegativeButton("No", null)
+				.show();
+
+			return true;
+		}
+
+		return super.onOptionsItemSelected(item);
 	}
 
 	@Views.OnClick public void onActionClick(final View view)
@@ -395,21 +467,61 @@ public class PlantDetailsFragment extends Fragment
 
 	@Views.OnClick public void onPlantStageContainerClick(final View view)
 	{
-		String[] stages = new String[PlantStage.names().length - 1];
-		System.arraycopy(PlantStage.names(), 1, stages, 0, stages.length);
+		StageDialogFragment dialogFragment = StageDialogFragment.newInstance();
+		dialogFragment.setOnStageUpdated(new StageDialogFragment.OnStageUpdated()
+		{
+			@Override public void onStageUpdated(final StageChange action)
+			{
+				plant.getActions().add(action);
+				PlantManager.getInstance().upsert(plantIndex, plant);
+				stage.setText(action.getNewStage().getPrintString());
+
+				SnackBar.show(getActivity(), "Stage updated", "undo", new SnackBarListener()
+				{
+					@Override public void onSnackBarStarted(Object o)
+					{
+						if (getView() != null)
+						{
+							FabAnimator.animateUp(getView().findViewById(R.id.fab_add));
+						}
+					}
+
+					@Override public void onSnackBarFinished(Object o)
+					{
+						if (getView() != null)
+						{
+							FabAnimator.animateDown(getView().findViewById(R.id.fab_add));
+						}
+					}
+
+					@Override public void onSnackBarAction(Object o)
+					{
+						plant.getActions().remove(action);
+						PlantManager.getInstance().upsert(plantIndex, plant);
+
+						if (plant.getStage() != null)
+						{
+							stage.setText(plant.getStage().getPrintString());
+						}
+					}
+				});
+			}
+		});
+		dialogFragment.show(getFragmentManager(), null);
+	}
+
+	@Views.OnClick public void onPlantMediumContainerClick(final View view)
+	{
+		String[] mediums = PlantMedium.names();
 
 		new AlertDialog.Builder(view.getContext())
-			.setTitle("Stage")
-			.setItems(stages, new DialogInterface.OnClickListener()
+			.setTitle("Medium")
+			.setItems(mediums, new DialogInterface.OnClickListener()
 			{
 				@Override public void onClick(DialogInterface dialog, int which)
 				{
-					if (plantIndex > -1)
-					{
-						plant.getActions().add(new StageChange(PlantStage.values()[which + 1]));
-					}
-
-					stage.setText(PlantStage.values()[which + 1].getPrintString());
+					medium.setText(PlantMedium.values()[which].getPrintString());
+					plant.setMedium(PlantMedium.values()[which]);
 				}
 			})
 			.show();
@@ -440,12 +552,14 @@ public class PlantDetailsFragment extends Fragment
 			return;
 		}
 
-		plant.setStage(PlantStage.valueOf(stage.getText().toString().toUpperCase(Locale.ENGLISH)));
+		PlantStage newStage = PlantStage.valueOf(stage.getText().toString().toUpperCase(Locale.ENGLISH));
+		if (plant.getStage() != newStage || (plantIndex < 0 && newStage == PlantStage.GERMINATION))
+		{
+			plant.getActions().add(new StageChange(newStage));
+		}
 
 		if (plantIndex < 0)
 		{
-			plant.getActions().add(new StageChange(PlantStage.valueOf(stage.getText().toString().toUpperCase(Locale.ENGLISH))));
-
 			SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(getActivity());
 			SharedPreferences.Editor edit = prefs.edit();
 

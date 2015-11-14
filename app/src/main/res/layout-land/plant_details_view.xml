@@ -124,6 +124,7 @@
 							android:hint="New plant"
 							android:nextFocusDown="@+id/plant_strain"
 							android:singleLine="true"
+							android:inputType="textCapWords"
 							style="@style/SubsectionSubTitle"
 						/>
 					</LinearLayout>
@@ -151,6 +152,7 @@
 							android:id="@+id/plant_strain"
 							android:nextFocusDown="@+id/plant_date"
 							android:singleLine="true"
+							android:inputType="textCapWords"
 							style="@style/SubsectionSubTitle"
 						/>
 					</LinearLayout>
@@ -204,6 +206,29 @@
 							android:layout_height="wrap_content"
 							android:id="@+id/plant_date"
 							android:nextFocusDown="@+id/plant_stage"
+							style="@style/SubsectionSubTitle"
+						/>
+					</LinearLayout>
+
+					<LinearLayout
+						android:layout_width="match_parent"
+						android:layout_height="wrap_content"
+						android:id="@+id/plant_medium_container"
+						android:orientation="vertical"
+						android:padding="16dp"
+					>
+						<TextView
+							android:layout_width="match_parent"
+							android:layout_height="wrap_content"
+							android:text="Medium"
+							style="@style/SubsectionTitle"
+						/>
+
+						<TextView
+							android:layout_width="match_parent"
+							android:layout_height="wrap_content"
+							android:text="Soil"
+							android:id="@+id/plant_medium"
 							style="@style/SubsectionSubTitle"
 						/>
 					</LinearLayout>

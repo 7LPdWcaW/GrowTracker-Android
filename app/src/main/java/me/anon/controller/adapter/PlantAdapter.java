@@ -9,22 +9,25 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import com.nostra13.universalimageloader.core.ImageLoader;
+import com.nostra13.universalimageloader.core.imageaware.ImageAware;
+import com.nostra13.universalimageloader.core.imageaware.ImageViewAware;
 
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+import java.util.SortedMap;
 
 import lombok.Getter;
 import me.anon.grow.MainApplication;
 import me.anon.grow.PlantDetailsActivity;
 import me.anon.grow.R;
 import me.anon.lib.DateRenderer;
+import me.anon.lib.helper.TimeHelper;
 import me.anon.lib.manager.PlantManager;
 import me.anon.model.Action;
 import me.anon.model.Feed;
 import me.anon.model.Plant;
 import me.anon.model.PlantStage;
-import me.anon.model.StageChange;
 import me.anon.model.Water;
 import me.anon.view.PlantHolder;
 
@@ -72,7 +75,8 @@ public class PlantAdapter extends RecyclerView.Adapter<PlantHolder> implements I
 		}
 		else
 		{
-			summary += "Planted (" + new DateRenderer().timeAgo(plant.getPlantDate(), 3).formattedDate + " ago)";
+			DateRenderer.TimeAgo planted = new DateRenderer().timeAgo(plant.getPlantDate(), 3);
+			summary += "<b>Planted " + (int)planted.time + " " + planted.unit.type + " ago</b>";
 
 			if (plant.getActions() != null && plant.getActions().size() > 0)
 			{
@@ -84,13 +88,6 @@ public class PlantAdapter extends RecyclerView.Adapter<PlantHolder> implements I
 				{
 					Action action = actions.get(index);
 
-					if (action instanceof StageChange && ((StageChange)action).getNewStage() == PlantStage.FLOWER && plant.getStage() == PlantStage.FLOWER)
-					{
-						long flipDate = action.getDate();
-						String time = new DateRenderer().timeAgo(flipDate, 3).formattedDate;
-						summary += " / (" + time.replaceAll("[^0-9]", "") + "f)";
-					}
-
 					if (action instanceof Feed && lastFeed == null)
 					{
 						lastFeed = (Feed)action;
@@ -101,6 +98,13 @@ public class PlantAdapter extends RecyclerView.Adapter<PlantHolder> implements I
 					}
 				}
 
+				SortedMap<PlantStage, Long> stageTimes = plant.calculateStageTime();
+
+				if (stageTimes.containsKey(plant.getStage()))
+				{
+					summary += " / <b>" + (int)TimeHelper.toDays(stageTimes.get(plant.getStage())) + plant.getStage().getPrintString().substring(0, 1).toLowerCase() + "</b>";
+				}
+
 				if (lastWater != null)
 				{
 					summary += "<br/><br/>";
@@ -109,11 +113,11 @@ public class PlantAdapter extends RecyclerView.Adapter<PlantHolder> implements I
 
 					if (lastWater.getPh() != null)
 					{
-						summary += "<b>" + lastWater.getPh() + " PH</b>";
+						summary += "<b>" + lastWater.getPh() + " PH</b> ";
 
 						if (lastWater.getRunoff() != null)
 						{
-							summary += " -> <b>" + lastWater.getRunoff() + " PH</b> ";
+							summary += "-> <b>" + lastWater.getRunoff() + " PH</b> ";
 						}
 					}
 
@@ -146,11 +150,11 @@ public class PlantAdapter extends RecyclerView.Adapter<PlantHolder> implements I
 
 					if (lastFeed.getPh() != null)
 					{
-						summary += "<b>" + lastFeed.getPh() + " PH</b>";
+						summary += "<b>" + lastFeed.getPh() + " PH</b> ";
 
 						if (lastFeed.getRunoff() != null)
 						{
-							summary += " -> <b>" + lastFeed.getRunoff() + " PH</b> ";
+							summary += "-> <b>" + lastFeed.getRunoff() + " PH</b> ";
 						}
 					}
 
@@ -172,7 +176,8 @@ public class PlantAdapter extends RecyclerView.Adapter<PlantHolder> implements I
 		ImageLoader.getInstance().cancelDisplayTask(viewHolder.getImage());
 		if (plant.getImages() != null && plant.getImages().size() > 0)
 		{
-			ImageLoader.getInstance().displayImage("file://" + plant.getImages().get(plant.getImages().size() - 1), viewHolder.getImage(), MainApplication.getDisplayImageOptions());
+			ImageAware imageAware = new ImageViewAware(viewHolder.getImage(), true);
+			ImageLoader.getInstance().displayImage("file://" + plant.getImages().get(plant.getImages().size() - 1), imageAware, MainApplication.getDisplayImageOptions());
 		}
 		else
 		{

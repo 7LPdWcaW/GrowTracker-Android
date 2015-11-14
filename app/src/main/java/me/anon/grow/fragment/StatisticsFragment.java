@@ -16,9 +16,7 @@ import com.github.mikephil.charting.data.LineDataSet;
 import com.github.mikephil.charting.utils.ValueFormatter;
 
 import java.util.ArrayList;
-import java.util.Comparator;
 import java.util.SortedMap;
-import java.util.TreeMap;
 
 import me.anon.grow.R;
 import me.anon.lib.Views;
@@ -28,6 +26,7 @@ import me.anon.model.Action;
 import me.anon.model.EmptyAction;
 import me.anon.model.Feed;
 import me.anon.model.Plant;
+import me.anon.model.PlantMedium;
 import me.anon.model.PlantStage;
 import me.anon.model.StageChange;
 import me.anon.model.Water;
@@ -65,6 +64,7 @@ public class StatisticsFragment extends Fragment
 	@Views.InjectView(R.id.input_ph) private LineChart inputPh;
 	@Views.InjectView(R.id.runoff) private LineChart runoff;
 	@Views.InjectView(R.id.ppm) private LineChart ppm;
+	@Views.InjectView(R.id.temp) private LineChart temp;
 
 	@Views.InjectView(R.id.grow_time) private TextView growTime;
 	@Views.InjectView(R.id.feed_count) private TextView feedCount;
@@ -77,6 +77,8 @@ public class StatisticsFragment extends Fragment
 	@Views.InjectView(R.id.veg_time_container) private View vegTimeContainer;
 	@Views.InjectView(R.id.flower_time) private TextView flowerTime;
 	@Views.InjectView(R.id.flower_time_container) private View flowerTimeContainer;
+	@Views.InjectView(R.id.dry_time) private TextView dryTime;
+	@Views.InjectView(R.id.dry_time_container) private View dryTimeContainer;
 	@Views.InjectView(R.id.cure_time) private TextView cureTime;
 	@Views.InjectView(R.id.cure_time_container) private View cureTimeContainer;
 
@@ -94,6 +96,11 @@ public class StatisticsFragment extends Fragment
 	@Views.InjectView(R.id.min_ppm) private TextView minppm;
 	@Views.InjectView(R.id.max_ppm) private TextView maxppm;
 	@Views.InjectView(R.id.ave_ppm) private TextView aveppm;
+
+	@Views.InjectView(R.id.temp_container) private View tempContainer;
+	@Views.InjectView(R.id.min_temp) private TextView mintemp;
+	@Views.InjectView(R.id.max_temp) private TextView maxtemp;
+	@Views.InjectView(R.id.ave_temp) private TextView avetemp;
 
 	private ValueFormatter formatter = new ValueFormatter()
 	{
@@ -132,6 +139,7 @@ public class StatisticsFragment extends Fragment
 		setInput();
 		setRunoff();
 		setPpm();
+		setTemp();
 	}
 
 	private void setStatistics()
@@ -142,29 +150,11 @@ public class StatisticsFragment extends Fragment
 		long waterDifference = 0L;
 		long lastFeed = 0L, lastWater = 0L;
 		int totalFeed = 0, totalWater = 0, totalFlush = 0;
-		SortedMap<PlantStage, Long> stages = new TreeMap<PlantStage, Long>(new Comparator<PlantStage>()
-		{
-			@Override public int compare(PlantStage lhs, PlantStage rhs)
-			{
-				if (lhs.ordinal() < rhs.ordinal())
-				{
-					return 1;
-				}
-				else if (lhs.ordinal() > rhs.ordinal())
-				{
-					return -1;
-				}
-
-				return 0;
-			}
-		});
 
 		for (Action action : plant.getActions())
 		{
 			if (action instanceof StageChange)
 			{
-				stages.put(((StageChange)action).getNewStage(), action.getDate());
-
 				if (((StageChange)action).getNewStage() == PlantStage.HARVESTED)
 				{
 					endDate = action.getDate();
@@ -198,28 +188,6 @@ public class StatisticsFragment extends Fragment
 			}
 		}
 
-		int stageIndex = 0;
-		long lastStage = 0;
-		PlantStage previous = stages.firstKey();
-		for (PlantStage plantStage : stages.keySet())
-		{
-			long difference = 0;
-			if (stageIndex == 0)
-			{
-				difference = endDate - stages.get(plantStage);
-			}
-			else
-			{
-				difference = lastStage - stages.get(plantStage);
-			}
-
-			previous = plantStage;
-			lastStage = stages.get(plantStage);
-			stageIndex++;
-
-			stages.put(plantStage, difference);
-		}
-
 		long seconds = ((endDate - startDate) / 1000);
 		double days = (double)seconds * 0.0000115741d;
 
@@ -229,6 +197,8 @@ public class StatisticsFragment extends Fragment
 		flushCount.setText(String.valueOf(totalFlush));
 		aveFeed.setText(String.format("%1$,.2f", (TimeHelper.toDays(feedDifference) / (double)totalFeed)) + " days");
 		aveWater.setText(String.format("%1$,.2f", (TimeHelper.toDays(waterDifference) / (double)totalWater)) + " days");
+
+		SortedMap<PlantStage, Long> stages = plant.calculateStageTime();
 
 		if (stages.containsKey(PlantStage.GERMINATION))
 		{
@@ -246,6 +216,12 @@ public class StatisticsFragment extends Fragment
 		{
 			flowerTime.setText((int)TimeHelper.toDays(stages.get(PlantStage.FLOWER)) + " days");
 			flowerTimeContainer.setVisibility(View.VISIBLE);
+		}
+
+		if (stages.containsKey(PlantStage.DRYING))
+		{
+			dryTime.setText((int)TimeHelper.toDays(stages.get(PlantStage.DRYING)) + " days");
+			dryTimeContainer.setVisibility(View.VISIBLE);
 		}
 
 		if (stages.containsKey(PlantStage.CURING))
@@ -424,5 +400,69 @@ public class StatisticsFragment extends Fragment
 		runoff.setPinchZoom(false);
 		runoff.setDoubleTapToZoomEnabled(false);
 		runoff.setData(lineData);
+	}
+
+	private void setTemp()
+	{
+		if (plant.getMedium() == PlantMedium.HYDRO)
+		{
+			tempContainer.setVisibility(View.VISIBLE);
+
+			ArrayList<Entry> vals = new ArrayList<>();
+			ArrayList<String> xVals = new ArrayList<>();
+			LineData data = new LineData();
+			float min = -100f;
+			float max = 100f;
+			float ave = 0;
+
+			int index = 0;
+			for (Action action : plant.getActions())
+			{
+				if (action instanceof Water && ((Water)action).getTemp() != null)
+				{
+					vals.add(new Entry(((Water)action).getTemp().floatValue(), index++));
+					xVals.add("");
+
+					min = Math.min(min, ((Water)action).getTemp().floatValue());
+					max = Math.max(max, ((Water)action).getTemp().floatValue());
+					ave += ((Water)action).getTemp().floatValue();
+				}
+			}
+
+			mintemp.setText(String.valueOf(min));
+			maxtemp.setText(String.valueOf(max));
+			avetemp.setText(String.format("%1$,.2f", (ave / (double)index)));
+
+			LineDataSet dataSet = new LineDataSet(vals, "Temperature");
+			dataSet.setDrawCubic(true);
+			dataSet.setLineWidth(2.0f);
+			dataSet.setDrawCircleHole(false);
+			dataSet.setCircleColor(0xffffffff);
+			dataSet.setValueTextColor(0xffffffff);
+			dataSet.setCircleSize(5.0f);
+			dataSet.setValueTextSize(8.0f);
+			dataSet.setValueFormatter(formatter);
+
+			LineData lineData = new LineData(xVals, dataSet);
+			lineData.setValueFormatter(formatter);
+
+			temp.setBackgroundColor(0xff311B92);
+			temp.setGridBackgroundColor(0xff311B92);
+			temp.setDrawGridBackground(false);
+			temp.setHighlightEnabled(false);
+			temp.getLegend().setEnabled(false);
+			temp.getAxisLeft().setTextColor(0xffffffff);
+			temp.getAxisRight().setEnabled(false);
+			temp.getAxisLeft().setValueFormatter(formatter);
+			temp.getAxisLeft().setXOffset(8.0f);
+			temp.getAxisLeft().setAxisMinValue(min - 5f);
+			temp.getAxisLeft().setAxisMaxValue(max + 5f);
+			temp.getAxisLeft().setStartAtZero(false);
+			temp.setScaleYEnabled(false);
+			temp.setDescription("");
+			temp.setPinchZoom(false);
+			temp.setDoubleTapToZoomEnabled(false);
+			temp.setData(lineData);
+		}
 	}
 }

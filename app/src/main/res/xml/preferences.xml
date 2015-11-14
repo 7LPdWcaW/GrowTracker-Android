@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<PreferenceScreen
+	xmlns:android="http://schemas.android.com/apk/res/android"
+>
+	<PreferenceCategory
+		android:title="General"
+	>
+		<CheckBoxPreference
+			android:key="hide_harvested"
+			android:title="Hide harvested"
+			android:summary="Hide all plants that have been harvested"
+			android:defaultValue="false"
+		/>
+
+		<CheckBoxPreference
+			android:key="encrypt"
+			android:title="Encrypt data"
+			android:summary="Adds a pin lock to the app and encrypts all data/images"
+			android:defaultValue="false"
+		/>
+	</PreferenceCategory>
+
+	<PreferenceCategory
+		android:title="About"
+	>
+		<Preference
+			android:key="readme"
+			android:title="Read me"
+		/>
+
+		<Preference
+			android:key="export"
+			android:title="Export data"
+		/>
+
+		<Preference
+			android:key="version"
+			android:title="Version v1.2"
+		/>
+	</PreferenceCategory>
+</PreferenceScreen>
