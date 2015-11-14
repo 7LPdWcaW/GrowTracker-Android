@@ -267,16 +267,21 @@ public class ActionAdapter extends RecyclerView.Adapter<ActionHolder> implements
 						}
 						else if (item.getItemId() == R.id.delete)
 						{
-							new AlertDialog.Builder(v.getContext()).setTitle("Delete this event?").setMessage("Are you sure you want to delete " + viewHolder.getName().getText()).setPositiveButton("Yes", new DialogInterface.OnClickListener()
-							{
-								@Override public void onClick(DialogInterface dialog, int which)
+							new AlertDialog.Builder(v.getContext())
+								.setTitle("Delete this event?")
+								.setMessage("Are you sure you want to delete " + viewHolder.getName().getText())
+								.setPositiveButton("Yes", new DialogInterface.OnClickListener()
 								{
-									if (onActionSelectListener != null)
+									@Override public void onClick(DialogInterface dialog, int which)
 									{
-										onActionSelectListener.onActionDeleted(action);
+										if (onActionSelectListener != null)
+										{
+											onActionSelectListener.onActionDeleted(action);
+										}
 									}
-								}
-							}).setNegativeButton("No", null).show();
+								})
+								.setNegativeButton("No", null)
+								.show();
 
 							return true;
 						}
