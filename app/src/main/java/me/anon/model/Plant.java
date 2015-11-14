@@ -1,5 +1,7 @@
 package me.anon.model;
 
+import android.support.annotation.Nullable;
+
 import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.SortedMap;
@@ -26,10 +28,29 @@ public class Plant
 	private String strain;
 	private long plantDate = System.currentTimeMillis();
 	private boolean clone = false;
-	private PlantStage stage = PlantStage.GERMINATION;
 	private PlantMedium medium = PlantMedium.SOIL;
 	private ArrayList<String> images = new ArrayList<>();
 	private ArrayList<Action> actions = new ArrayList<>();
+
+	/**
+	 * Stage is now calculated via latest {@link StageChange} action
+	 */
+	//@Deprecated private PlantStage stage;
+
+	@Nullable
+	public PlantStage getStage()
+	{
+		for (int index = actions.size() - 1; index >= 0; index--)
+		{
+			if (actions.get(index) instanceof StageChange)
+			{
+				return ((StageChange)actions.get(index)).getNewStage();
+			}
+		}
+
+		// This should never be reached.
+		return null;
+	}
 
 	/**
 	 * Calculates the time spent in each plant stage
