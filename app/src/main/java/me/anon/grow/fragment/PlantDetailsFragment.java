@@ -522,7 +522,6 @@ public class PlantDetailsFragment extends Fragment
 		if (plant.getStage() != newStage || (plantIndex < 0 && newStage == PlantStage.GERMINATION))
 		{
 			plant.getActions().add(new StageChange(newStage));
-			plant.setStage(newStage);
 		}
 
 		if (plantIndex < 0)
