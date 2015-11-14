@@ -60,7 +60,7 @@ public class StageDialogFragment extends DialogFragment
 		final Context context = getActivity();
 
 		AlertDialog.Builder dialog = new AlertDialog.Builder(context);
-		dialog.setTitle((edit ? "Edit" : "Add") + " action");
+		dialog.setTitle((edit ? "Edit" : "Change") + " stage");
 		View view = LayoutInflater.from(getActivity()).inflate(R.layout.stage_dialog, null);
 
 		Views.inject(this, view);
@@ -129,7 +129,7 @@ public class StageDialogFragment extends DialogFragment
 		actionsSpinner.setSelection(selectionIndex);
 
 		dialog.setView(view);
-		dialog.setPositiveButton(edit ? "Edit" : "Add", new DialogInterface.OnClickListener()
+		dialog.setPositiveButton(edit ? "Edit" : "Set", new DialogInterface.OnClickListener()
 		{
 			@Override public void onClick(DialogInterface dialog, int which)
 			{
