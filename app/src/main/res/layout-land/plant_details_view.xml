@@ -124,6 +124,7 @@
 							android:hint="New plant"
 							android:nextFocusDown="@+id/plant_strain"
 							android:singleLine="true"
+							android:inputType="textCapWords"
 							style="@style/SubsectionSubTitle"
 						/>
 					</LinearLayout>
@@ -151,6 +152,7 @@
 							android:id="@+id/plant_strain"
 							android:nextFocusDown="@+id/plant_date"
 							android:singleLine="true"
+							android:inputType="textCapWords"
 							style="@style/SubsectionSubTitle"
 						/>
 					</LinearLayout>
