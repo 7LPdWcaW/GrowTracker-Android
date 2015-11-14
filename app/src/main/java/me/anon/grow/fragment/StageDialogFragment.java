@@ -21,7 +21,7 @@ import lombok.Setter;
 import me.anon.grow.R;
 import me.anon.lib.Views;
 import me.anon.model.PlantStage;
-import me.anon.model.StageChange;
+import me.anon.model.StageChange;	
 
 @Views.Injectable
 public class StageDialogFragment extends DialogFragment

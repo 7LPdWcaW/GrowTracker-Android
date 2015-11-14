@@ -1,5 +1,6 @@
 package me.anon.grow.fragment;
 
+import android.annotation.SuppressLint;
 import android.app.AlertDialog;
 import android.app.Dialog;
 import android.app.DialogFragment;
@@ -29,6 +30,7 @@ public class PinDialogFragment extends DialogFragment
 	@Setter private OnDialogConfirmed onDialogConfirmed;
 	@Setter private String title = "Pin";
 
+	@SuppressLint("ValidFragment")
 	public PinDialogFragment(){}
 
 	@Override public Dialog onCreateDialog(Bundle savedInstanceState)
