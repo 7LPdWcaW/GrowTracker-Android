@@ -9,6 +9,7 @@ import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.support.v7.widget.helper.ItemTouchHelper;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -23,8 +24,10 @@ import com.kenny.snackbar.SnackBarListener;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
+import java.util.Random;
 
 import me.anon.controller.adapter.ActionAdapter;
+import me.anon.controller.adapter.SimpleItemTouchHelperCallback;
 import me.anon.grow.EditFeedingActivity;
 import me.anon.grow.R;
 import me.anon.lib.Views;
@@ -58,6 +61,7 @@ public class EventListFragment extends Fragment implements ActionAdapter.OnActio
 	private boolean feeding = true, watering = true;
 	private boolean notes = true, stages = true;
 	private ArrayList<Action.ActionName> selected = new ArrayList<>();
+	private boolean beingDragged = false;
 
 	/**
 	 * @param plantIndex If -1, assume new plant
@@ -114,9 +118,42 @@ public class EventListFragment extends Fragment implements ActionAdapter.OnActio
 		selected.addAll(new ArrayList<Action.ActionName>(Arrays.asList(Action.ActionName.values())));
 		adapter = new ActionAdapter();
 		adapter.setOnActionSelectListener(this);
+
 		setActions();
+
 		recycler.setLayoutManager(new LinearLayoutManager(getActivity()));
 		recycler.setAdapter(adapter);
+
+		ItemTouchHelper.Callback callback = new SimpleItemTouchHelperCallback(adapter)
+		{
+			@Override public boolean isLongPressDragEnabled()
+			{
+				return selected.size() == Action.ActionName.values().length && feeding && watering && notes && stages;
+			}
+		};
+		ItemTouchHelper touchHelper = new ItemTouchHelper(callback);
+		touchHelper.attachToRecyclerView(recycler);
+
+		adapter.registerAdapterDataObserver(new RecyclerView.AdapterDataObserver()
+		{
+			@Override public void onItemRangeMoved(int fromPosition, int toPosition, int itemCount)
+			{
+				if (selected.size() == Action.ActionName.values().length && feeding && watering && notes && stages)
+				{
+					ArrayList<Action> actions = new ArrayList<Action>();
+					actions.addAll((ArrayList<Action>)adapter.getActions());
+					Collections.reverse(actions);
+
+					plant.setActions(actions);
+				}
+			}
+		});
+	}
+
+	@Override public void onDestroy()
+	{
+		super.onDestroy();
+		PlantManager.getInstance().upsert(plantIndex, plant);
 	}
 
 	public void setActions()
@@ -191,6 +228,97 @@ public class EventListFragment extends Fragment implements ActionAdapter.OnActio
 		dialogFragment.show(getFragmentManager(), null);
 	}
 
+	@Override public void onActionDuplicate(Action action)
+	{
+		action.setDate(action.getDate() + new Random().nextInt(1000));
+		PlantManager.getInstance().getPlants().get(plantIndex).getActions().add(action);
+		PlantManager.getInstance().save();
+		setActions();
+		adapter.notifyDataSetChanged();
+
+		SnackBar.show(getActivity(), "Action duplicated", "Undo", new SnackBarListener()
+		{
+			@Override public void onSnackBarStarted(Object o)
+			{
+				if (getView() != null)
+				{
+					FabAnimator.animateUp(getView().findViewById(R.id.fab_add));
+				}
+			}
+
+			@Override public void onSnackBarFinished(Object o)
+			{
+				if (getView() != null)
+				{
+					FabAnimator.animateDown(getView().findViewById(R.id.fab_add));
+				}
+			}
+
+			@Override public void onSnackBarAction(Object o)
+			{
+				PlantManager.getInstance().getPlants().get(plantIndex).getActions().remove(PlantManager.getInstance().getPlants().get(plantIndex).getActions().size() - 1);
+				PlantManager.getInstance().save();
+				setActions();
+				adapter.notifyDataSetChanged();
+			}
+		});
+	}
+
+	@Override public void onActionCopy(final Action action)
+	{
+		final ArrayList<Plant> sortedPlants = PlantManager.getInstance().getSortedPlantList();
+		CharSequence[] plants = new CharSequence[sortedPlants.size()];
+		for (int index = 0; index < plants.length; index++)
+		{
+			plants[index] = sortedPlants.get(index).getName();
+		}
+
+		new AlertDialog.Builder(getActivity())
+			.setTitle("Select plant")
+			.setItems(plants, new DialogInterface.OnClickListener()
+			{
+				@Override public void onClick(DialogInterface dialog, final int which)
+				{
+					final int originalIndex = PlantManager.getInstance().getPlants().indexOf(sortedPlants.get(which));
+
+					action.setDate(action.getDate() + new Random().nextInt(1000));
+
+					PlantManager.getInstance().getPlants().get(originalIndex).getActions().add(action);
+					PlantManager.getInstance().save();
+					setActions();
+					adapter.notifyDataSetChanged();
+
+					SnackBar.show(getActivity(), "Action added to " + PlantManager.getInstance().getPlants().get(originalIndex).getName(), "Undo", new SnackBarListener()
+					{
+						@Override public void onSnackBarStarted(Object o)
+						{
+							if (getView() != null)
+							{
+								FabAnimator.animateUp(getView().findViewById(R.id.fab_add));
+							}
+						}
+
+						@Override public void onSnackBarFinished(Object o)
+						{
+							if (getView() != null)
+							{
+								FabAnimator.animateDown(getView().findViewById(R.id.fab_add));
+							}
+						}
+
+						@Override public void onSnackBarAction(Object o)
+						{
+							PlantManager.getInstance().getPlants().get(originalIndex).getActions().remove(PlantManager.getInstance().getPlants().get(originalIndex).getActions().size() - 1);
+							PlantManager.getInstance().save();
+							setActions();
+							adapter.notifyDataSetChanged();
+						}
+					});
+				}
+			})
+			.show();
+	}
+
 	@Override public void onActionEdit(final Action action)
 	{
 		final int originalIndex = plant.getActions().indexOf(action);
@@ -222,7 +350,7 @@ public class EventListFragment extends Fragment implements ActionAdapter.OnActio
 						{
 							if (getView() != null)
 							{
-								FabAnimator.animateUp(getView().findViewById(R.id.fab_complete));
+								FabAnimator.animateUp(getView().findViewById(R.id.fab_add));
 							}
 						}
 
@@ -230,7 +358,7 @@ public class EventListFragment extends Fragment implements ActionAdapter.OnActio
 						{
 							if (getView() != null)
 							{
-								FabAnimator.animateDown(getView().findViewById(R.id.fab_complete));
+								FabAnimator.animateDown(getView().findViewById(R.id.fab_add));
 							}
 						}
 
@@ -264,7 +392,7 @@ public class EventListFragment extends Fragment implements ActionAdapter.OnActio
 						{
 							if (getView() != null)
 							{
-								FabAnimator.animateUp(getView().findViewById(R.id.fab_complete));
+								FabAnimator.animateUp(getView().findViewById(R.id.fab_add));
 							}
 						}
 
@@ -272,7 +400,49 @@ public class EventListFragment extends Fragment implements ActionAdapter.OnActio
 						{
 							if (getView() != null)
 							{
-								FabAnimator.animateDown(getView().findViewById(R.id.fab_complete));
+								FabAnimator.animateDown(getView().findViewById(R.id.fab_add));
+							}
+						}
+
+						@Override public void onSnackBarAction(Object o)
+						{
+							plant.getActions().set(originalIndex, action);
+							PlantManager.getInstance().upsert(plantIndex, plant);
+							setActions();
+							adapter.notifyDataSetChanged();
+						}
+					});
+				}
+			});
+			dialogFragment.show(getFragmentManager(), null);
+		}
+		else if (action instanceof StageChange)
+		{
+			StageDialogFragment dialogFragment = StageDialogFragment.newInstance((StageChange)action);
+			dialogFragment.setOnStageUpdated(new StageDialogFragment.OnStageUpdated()
+			{
+				@Override public void onStageUpdated(final StageChange action)
+				{
+					plant.getActions().set(originalIndex, action);
+					PlantManager.getInstance().upsert(plantIndex, plant);
+					setActions();
+					adapter.notifyDataSetChanged();
+
+					SnackBar.show(getActivity(), "Stage updated", "undo", new SnackBarListener()
+					{
+						@Override public void onSnackBarStarted(Object o)
+						{
+							if (getView() != null)
+							{
+								FabAnimator.animateUp(getView().findViewById(R.id.fab_add));
+							}
+						}
+
+						@Override public void onSnackBarFinished(Object o)
+						{
+							if (getView() != null)
+							{
+								FabAnimator.animateDown(getView().findViewById(R.id.fab_add));
 							}
 						}
 

@@ -1,5 +1,8 @@
 package me.anon.lib;
 
+import java.math.BigDecimal;
+import java.math.RoundingMode;
+
 public class DateRenderer
 {
 	public static final String SECONDS = "seconds";
@@ -51,18 +54,18 @@ public class DateRenderer
 		};
 
 		long currentTime = System.currentTimeMillis();
-		int difference = (int)((currentTime - time) / 1000);
-
-		if (difference < 5)
-		{
-			return new TimeAgo(units[0], now);
-		}
+		double difference = (double)((double)(currentTime - time) / 1000d);
 
 		String formattedDate = null;
 		Unit lastUnit = null;
 
 		if (unitindex < 0)
 		{
+			if (difference < 5)
+			{
+				return new TimeAgo(units[0], round(difference / (double)units[0].inSeconds, 2), now);
+			}
+
 			for (Unit unit : units)
 			{
 				if (difference < unit.limit)
@@ -85,10 +88,22 @@ public class DateRenderer
 			formattedDate = getFormattedDate(lastUnit, difference);
 		}
 
-		return new TimeAgo(lastUnit, formattedDate);
+		return new TimeAgo(lastUnit, round(difference / (double)lastUnit.inSeconds, 2), formattedDate);
 	}
 
-	private String getFormattedDate(Unit unit, int difference)
+	private static double round(double value, int places)
+	{
+		if (places < 0)
+		{
+			throw new IllegalArgumentException();
+		}
+
+		BigDecimal bd = new BigDecimal(value);
+		bd = bd.setScale(places, RoundingMode.HALF_UP);
+		return bd.doubleValue();
+	}
+
+	private String getFormattedDate(Unit unit, double difference)
 	{
 		int newDiff = (int)Math.floor(difference / unit.inSeconds);
 		return String.format("%s%s", newDiff, unit.name);
@@ -97,11 +112,13 @@ public class DateRenderer
 	public class TimeAgo
 	{
 		public Unit unit;
+		public double time;
 		public String formattedDate;
 
-		public TimeAgo(Unit unit, String formattedDate)
+		public TimeAgo(Unit unit, double time, String formattedDate)
 		{
 			this.unit = unit;
+			this.time = time;
 			this.formattedDate = formattedDate;
 		}
 	}

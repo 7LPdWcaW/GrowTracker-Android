@@ -1,5 +1,6 @@
 package me.anon.grow.fragment;
 
+import android.annotation.SuppressLint;
 import android.app.DatePickerDialog;
 import android.app.Fragment;
 import android.app.TimePickerDialog;
@@ -31,8 +32,10 @@ public class DateDialogFragment extends Fragment
 
 	@Setter private OnDateSelectedListener onDateSelected;
 
+	@SuppressLint("ValidFragment")
 	public DateDialogFragment(){}
 
+	@SuppressLint("ValidFragment")
 	public DateDialogFragment(long time)
 	{
 		this.time = time;

@@ -130,6 +130,40 @@
 					<LinearLayout
 						android:layout_width="0dp"
 						android:layout_height="wrap_content"
+						android:id="@+id/dry_time_container"
+						android:orientation="horizontal"
+						android:layout_weight="1"
+						android:visibility="gone"
+					>
+						<TextView
+							android:layout_width="wrap_content"
+							android:layout_height="wrap_content"
+							android:text="Drying:"
+							android:gravity="center_vertical"
+							style="@style/SubsectionTitle"
+						/>
+
+						<TextView
+							android:layout_width="wrap_content"
+							android:layout_height="wrap_content"
+							android:id="@+id/dry_time"
+							android:textSize="14sp"
+							android:textColor="#666666"
+							android:layout_marginLeft="8dp"
+							android:fontFamily="sans-serif-light"
+							android:gravity="center_vertical"
+						/>
+					</LinearLayout>
+				</LinearLayout>
+
+				<LinearLayout
+					android:layout_width="match_parent"
+					android:layout_height="wrap_content"
+					android:orientation="horizontal"
+				>
+					<LinearLayout
+						android:layout_width="0dp"
+						android:layout_height="wrap_content"
 						android:id="@+id/cure_time_container"
 						android:orientation="horizontal"
 						android:layout_weight="1"
@@ -675,6 +709,122 @@
 						android:layout_width="wrap_content"
 						android:layout_height="wrap_content"
 						android:id="@+id/ave_ppm"
+						android:textSize="14sp"
+						android:textColor="#ffffff"
+						android:layout_marginLeft="8dp"
+						android:fontFamily="sans-serif-light"
+						android:gravity="center_vertical"
+					/>
+				</LinearLayout>
+			</LinearLayout>
+		</LinearLayout>
+
+		<LinearLayout
+			android:layout_width="match_parent"
+			android:layout_height="wrap_content"
+			android:id="@+id/temp_container"
+			android:orientation="vertical"
+			android:background="#311B92"
+			android:layout_marginTop="8dp"
+			android:elevation="4dp"
+			android:visibility="gone"
+			style="@style/PaperCard"
+		>
+			<TextView
+				android:layout_width="wrap_content"
+				android:layout_height="wrap_content"
+				android:text="Temperature"
+				style="@style/SectionTitle"
+				android:textColor="#ffffffff"
+			/>
+
+			<com.github.mikephil.charting.charts.LineChart
+				android:layout_width="match_parent"
+				android:layout_height="250dp"
+				android:id="@+id/temp"
+				android:padding="16dp"
+				android:layout_marginTop="8dp"
+			/>
+
+			<LinearLayout
+				android:layout_width="match_parent"
+				android:layout_height="wrap_content"
+				android:orientation="horizontal"
+				android:padding="16dp"
+			>
+				<LinearLayout
+					android:layout_width="0dp"
+					android:layout_height="wrap_content"
+					android:orientation="horizontal"
+					android:layout_weight="1"
+				>
+					<TextView
+						android:layout_width="wrap_content"
+						android:layout_height="wrap_content"
+						android:text="Min:"
+						android:gravity="center_vertical"
+						style="@style/SubsectionTitle"
+						android:textColor="#ffffff"
+					/>
+
+					<TextView
+						android:layout_width="wrap_content"
+						android:layout_height="wrap_content"
+						android:id="@+id/min_temp"
+						android:textSize="14sp"
+						android:layout_marginLeft="8dp"
+						android:fontFamily="sans-serif-light"
+						android:gravity="center_vertical"
+						android:textColor="#ffffff"
+					/>
+				</LinearLayout>
+
+				<LinearLayout
+					android:layout_width="0dp"
+					android:layout_height="wrap_content"
+					android:orientation="horizontal"
+					android:layout_weight="1"
+				>
+					<TextView
+						android:layout_width="wrap_content"
+						android:layout_height="wrap_content"
+						android:text="Max:"
+						android:gravity="center_vertical"
+						style="@style/SubsectionTitle"
+						android:textColor="#ffffff"
+					/>
+
+					<TextView
+						android:layout_width="wrap_content"
+						android:layout_height="wrap_content"
+						android:id="@+id/max_temp"
+						android:textSize="14sp"
+						android:layout_marginLeft="8dp"
+						android:fontFamily="sans-serif-light"
+						android:gravity="center_vertical"
+						android:textColor="#ffffff"
+					/>
+				</LinearLayout>
+
+				<LinearLayout
+					android:layout_width="0dp"
+					android:layout_height="wrap_content"
+					android:orientation="horizontal"
+					android:layout_weight="1"
+				>
+					<TextView
+						android:layout_width="wrap_content"
+						android:layout_height="wrap_content"
+						android:text="Ave:"
+						android:gravity="center_vertical"
+						style="@style/SubsectionTitle"
+						android:textColor="#ffffffff"
+					/>
+
+					<TextView
+						android:layout_width="wrap_content"
+						android:layout_height="wrap_content"
+						android:id="@+id/ave_temp"
 						android:textSize="14sp"
 						android:textColor="#ffffff"
 						android:layout_marginLeft="8dp"

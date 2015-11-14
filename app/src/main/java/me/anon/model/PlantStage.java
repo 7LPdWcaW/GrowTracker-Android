@@ -15,6 +15,7 @@ public enum PlantStage
 	GERMINATION("Germination"),
 	VEGETATION("Vegetation"),
 	FLOWER("Flower"),
+	DRYING("Drying"),
 	CURING("Curing"),
 	HARVESTED("Harvested");
 
