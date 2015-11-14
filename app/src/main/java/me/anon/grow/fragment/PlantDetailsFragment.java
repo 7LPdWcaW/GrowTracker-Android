@@ -140,11 +140,6 @@ public class PlantDetailsFragment extends Fragment
 			name.setText(plant.getName());
 			strain.setText(plant.getStrain());
 
-			if (plant.getStage() != null)
-			{
-				stage.setText(plant.getStage().getPrintString());
-			}
-
 			if (plant.getMedium() != null)
 			{
 				medium.setText(plant.getMedium().getPrintString());
@@ -152,6 +147,17 @@ public class PlantDetailsFragment extends Fragment
 		}
 
 		setUi();
+	}
+
+	@Override public void onResume()
+	{
+		super.onResume();
+
+		// Always re-set stage incase order was changed in event list
+		if (plant.getStage() != null)
+		{
+			stage.setText(plant.getStage().getPrintString());
+		}
 	}
 
 	private void setUi()
