@@ -16,15 +16,19 @@ The app requires no permissions except for external storage (for caching plant d
 
 **For updates, do not uninstall first, you will lose your existing plant data**
 
-![install](screenshots/install-thumb.png)
-![plant list](screenshots/1-thumb.png)
-![plant details](screenshots/2-thumb.png)
-![feeding](screenshots/3-thumb.png)
-![nutrients](screenshots/4-thumb.png)
-![actions](screenshots/5-thumb.png)
-![pictures](screenshots/6-thumb.png)
-![statistics](screenshots/7-thumb.png)
-![past actions](screenshots/8-thumb.png)
+[![install](screenshots/install-thumb.png)](screenshots/install.png)
+[![plant list](screenshots/1-thumb.png)](screenshots/1.png)
+[![discrete plant list](screenshots/1b-thumb.png)](screenshots/1b.png)
+[![plant details](screenshots/2-thumb.png)](screenshots/2.png)
+[![feeding](screenshots/3-thumb.png)](screenshots/3.png)
+[![nutrients](screenshots/4-thumb.png)](screenshots/4.png)
+[![actions](screenshots/5-thumb.png)](screenshots/5.png)
+[![pictures](screenshots/6-thumb.png)](screenshots/6.png)
+[![statistics](screenshots/7-thumb.png)](screenshots/7.png)
+[![past actions](screenshots/8-thumb.png)](screenshots/8.png)
+[![action filters](screenshots/9-thumb.png)](screenshots/9.png)
+[![action options](screenshots/10-thumb.png)](screenshots/10.png)
+[![settings](screenshots/11-thumb.png)](screenshots/11.png)
 
 # About the app
 
