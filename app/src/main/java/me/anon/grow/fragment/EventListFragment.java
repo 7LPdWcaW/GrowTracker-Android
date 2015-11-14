@@ -61,6 +61,7 @@ public class EventListFragment extends Fragment implements ActionAdapter.OnActio
 	private boolean feeding = true, watering = true;
 	private boolean notes = true, stages = true;
 	private ArrayList<Action.ActionName> selected = new ArrayList<>();
+	private boolean beingDragged = false;
 
 	/**
 	 * @param plantIndex If -1, assume new plant
@@ -144,10 +145,15 @@ public class EventListFragment extends Fragment implements ActionAdapter.OnActio
 					Collections.reverse(actions);
 
 					plant.setActions(actions);
-					PlantManager.getInstance().upsert(plantIndex, plant);
 				}
 			}
 		});
+	}
+
+	@Override public void onDestroy()
+	{
+		super.onDestroy();
+		PlantManager.getInstance().upsert(plantIndex, plant);
 	}
 
 	public void setActions()
