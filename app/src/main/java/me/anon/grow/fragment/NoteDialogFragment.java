@@ -1,5 +1,6 @@
 package me.anon.grow.fragment;
 
+import android.annotation.SuppressLint;
 import android.app.AlertDialog;
 import android.app.Dialog;
 import android.app.DialogFragment;
@@ -29,8 +30,10 @@ public class NoteDialogFragment extends DialogFragment
 
 	@Setter private OnDialogConfirmed onDialogConfirmed;
 
+	@SuppressLint("ValidFragment")
 	public NoteDialogFragment(){}
 
+	@SuppressLint("ValidFragment")
 	public NoteDialogFragment(NoteAction action)
 	{
 		this.action = action;
