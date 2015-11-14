@@ -470,11 +470,6 @@ public class PlantDetailsFragment extends Fragment
 			{
 				@Override public void onClick(DialogInterface dialog, int which)
 				{
-					if (plantIndex > -1)
-					{
-						plant.getActions().add(new StageChange(PlantStage.values()[which + 1]));
-					}
-
 					stage.setText(PlantStage.values()[which + 1].getPrintString());
 				}
 			})
@@ -523,12 +518,15 @@ public class PlantDetailsFragment extends Fragment
 			return;
 		}
 
-		plant.setStage(PlantStage.valueOf(stage.getText().toString().toUpperCase(Locale.ENGLISH)));
+		PlantStage newStage = PlantStage.valueOf(stage.getText().toString().toUpperCase(Locale.ENGLISH));
+		if (plant.getStage() != newStage || (plantIndex < 0 && newStage == PlantStage.GERMINATION))
+		{
+			plant.getActions().add(new StageChange(newStage));
+			plant.setStage(newStage);
+		}
 
 		if (plantIndex < 0)
 		{
-			plant.getActions().add(new StageChange(PlantStage.valueOf(stage.getText().toString().toUpperCase(Locale.ENGLISH))));
-
 			SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(getActivity());
 			SharedPreferences.Editor edit = prefs.edit();
 
