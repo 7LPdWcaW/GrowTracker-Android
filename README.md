@@ -44,7 +44,6 @@ The structure is very simple. Note: date timestamps are all unix timestamps from
     "actions": [<Action Object>],
     "images": [<String>],
     "name": "test",
-    "stage": <Plant Stage>,
     "strain": "test",
     "clone": <boolean>,
     "stage": <Stage>,
