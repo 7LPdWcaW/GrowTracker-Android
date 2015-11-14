@@ -48,7 +48,6 @@ The structure is very simple. Note: date timestamps are all unix timestamps from
     "name": "test",
     "strain": "test",
     "clone": <boolean>,
-    "stage": <Stage>,
     "medium": <Medium>,
     "plantDate": 1234567890
 }
