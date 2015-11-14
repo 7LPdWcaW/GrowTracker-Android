@@ -140,11 +140,6 @@ public class PlantDetailsFragment extends Fragment
 			name.setText(plant.getName());
 			strain.setText(plant.getStrain());
 
-			if (plant.getStage() != null)
-			{
-				stage.setText(plant.getStage().getPrintString());
-			}
-
 			if (plant.getMedium() != null)
 			{
 				medium.setText(plant.getMedium().getPrintString());
@@ -152,6 +147,17 @@ public class PlantDetailsFragment extends Fragment
 		}
 
 		setUi();
+	}
+
+	@Override public void onResume()
+	{
+		super.onResume();
+
+		// Always re-set stage incase order was changed in event list
+		if (plant.getStage() != null)
+		{
+			stage.setText(plant.getStage().getPrintString());
+		}
 	}
 
 	private void setUi()
@@ -461,24 +467,47 @@ public class PlantDetailsFragment extends Fragment
 
 	@Views.OnClick public void onPlantStageContainerClick(final View view)
 	{
-		String[] stages = new String[PlantStage.names().length - 1];
-		System.arraycopy(PlantStage.names(), 1, stages, 0, stages.length);
-
-		new AlertDialog.Builder(view.getContext())
-			.setTitle("Stage")
-			.setItems(stages, new DialogInterface.OnClickListener()
+		StageDialogFragment dialogFragment = StageDialogFragment.newInstance();
+		dialogFragment.setOnStageUpdated(new StageDialogFragment.OnStageUpdated()
+		{
+			@Override public void onStageUpdated(final StageChange action)
 			{
-				@Override public void onClick(DialogInterface dialog, int which)
+				plant.getActions().add(action);
+				PlantManager.getInstance().upsert(plantIndex, plant);
+				stage.setText(action.getNewStage().getPrintString());
+
+				SnackBar.show(getActivity(), "Stage updated", "undo", new SnackBarListener()
 				{
-					if (plantIndex > -1)
+					@Override public void onSnackBarStarted(Object o)
 					{
-						plant.getActions().add(new StageChange(PlantStage.values()[which + 1]));
+						if (getView() != null)
+						{
+							FabAnimator.animateUp(getView().findViewById(R.id.fab_add));
+						}
 					}
 
-					stage.setText(PlantStage.values()[which + 1].getPrintString());
-				}
-			})
-			.show();
+					@Override public void onSnackBarFinished(Object o)
+					{
+						if (getView() != null)
+						{
+							FabAnimator.animateDown(getView().findViewById(R.id.fab_add));
+						}
+					}
+
+					@Override public void onSnackBarAction(Object o)
+					{
+						plant.getActions().remove(action);
+						PlantManager.getInstance().upsert(plantIndex, plant);
+
+						if (plant.getStage() != null)
+						{
+							stage.setText(plant.getStage().getPrintString());
+						}
+					}
+				});
+			}
+		});
+		dialogFragment.show(getFragmentManager(), null);
 	}
 
 	@Views.OnClick public void onPlantMediumContainerClick(final View view)
@@ -523,12 +552,14 @@ public class PlantDetailsFragment extends Fragment
 			return;
 		}
 
-		plant.setStage(PlantStage.valueOf(stage.getText().toString().toUpperCase(Locale.ENGLISH)));
+		PlantStage newStage = PlantStage.valueOf(stage.getText().toString().toUpperCase(Locale.ENGLISH));
+		if (plant.getStage() != newStage || (plantIndex < 0 && newStage == PlantStage.GERMINATION))
+		{
+			plant.getActions().add(new StageChange(newStage));
+		}
 
 		if (plantIndex < 0)
 		{
-			plant.getActions().add(new StageChange(PlantStage.valueOf(stage.getText().toString().toUpperCase(Locale.ENGLISH))));
-
 			SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(getActivity());
 			SharedPreferences.Editor edit = prefs.edit();
 

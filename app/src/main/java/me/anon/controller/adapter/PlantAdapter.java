@@ -99,7 +99,11 @@ public class PlantAdapter extends RecyclerView.Adapter<PlantHolder> implements I
 				}
 
 				SortedMap<PlantStage, Long> stageTimes = plant.calculateStageTime();
-				summary += " / <b>" + (int)TimeHelper.toDays(stageTimes.get(plant.getStage())) + plant.getStage().getPrintString().substring(0, 1).toLowerCase() + "</b>";
+
+				if (stageTimes.containsKey(plant.getStage()))
+				{
+					summary += " / <b>" + (int)TimeHelper.toDays(stageTimes.get(plant.getStage())) + plant.getStage().getPrintString().substring(0, 1).toLowerCase() + "</b>";
+				}
 
 				if (lastWater != null)
 				{

@@ -61,6 +61,7 @@ public class EventListFragment extends Fragment implements ActionAdapter.OnActio
 	private boolean feeding = true, watering = true;
 	private boolean notes = true, stages = true;
 	private ArrayList<Action.ActionName> selected = new ArrayList<>();
+	private boolean beingDragged = false;
 
 	/**
 	 * @param plantIndex If -1, assume new plant
@@ -144,10 +145,15 @@ public class EventListFragment extends Fragment implements ActionAdapter.OnActio
 					Collections.reverse(actions);
 
 					plant.setActions(actions);
-					PlantManager.getInstance().upsert(plantIndex, plant);
 				}
 			}
 		});
+	}
+
+	@Override public void onDestroy()
+	{
+		super.onDestroy();
+		PlantManager.getInstance().upsert(plantIndex, plant);
 	}
 
 	public void setActions()
@@ -381,6 +387,48 @@ public class EventListFragment extends Fragment implements ActionAdapter.OnActio
 					adapter.notifyDataSetChanged();
 
 					SnackBar.show(getActivity(), action.getAction().getPrintString() + " updated", "undo", new SnackBarListener()
+					{
+						@Override public void onSnackBarStarted(Object o)
+						{
+							if (getView() != null)
+							{
+								FabAnimator.animateUp(getView().findViewById(R.id.fab_add));
+							}
+						}
+
+						@Override public void onSnackBarFinished(Object o)
+						{
+							if (getView() != null)
+							{
+								FabAnimator.animateDown(getView().findViewById(R.id.fab_add));
+							}
+						}
+
+						@Override public void onSnackBarAction(Object o)
+						{
+							plant.getActions().set(originalIndex, action);
+							PlantManager.getInstance().upsert(plantIndex, plant);
+							setActions();
+							adapter.notifyDataSetChanged();
+						}
+					});
+				}
+			});
+			dialogFragment.show(getFragmentManager(), null);
+		}
+		else if (action instanceof StageChange)
+		{
+			StageDialogFragment dialogFragment = StageDialogFragment.newInstance((StageChange)action);
+			dialogFragment.setOnStageUpdated(new StageDialogFragment.OnStageUpdated()
+			{
+				@Override public void onStageUpdated(final StageChange action)
+				{
+					plant.getActions().set(originalIndex, action);
+					PlantManager.getInstance().upsert(plantIndex, plant);
+					setActions();
+					adapter.notifyDataSetChanged();
+
+					SnackBar.show(getActivity(), "Stage updated", "undo", new SnackBarListener()
 					{
 						@Override public void onSnackBarStarted(Object o)
 						{
