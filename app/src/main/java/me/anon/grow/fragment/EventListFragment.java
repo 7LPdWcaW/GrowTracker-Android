@@ -410,6 +410,48 @@ public class EventListFragment extends Fragment implements ActionAdapter.OnActio
 			});
 			dialogFragment.show(getFragmentManager(), null);
 		}
+		else if (action instanceof StageChange)
+		{
+			StageDialogFragment dialogFragment = StageDialogFragment.newInstance((StageChange)action);
+			dialogFragment.setOnStageUpdated(new StageDialogFragment.OnStageUpdated()
+			{
+				@Override public void onStageUpdated(final StageChange action)
+				{
+					plant.getActions().set(originalIndex, action);
+					PlantManager.getInstance().upsert(plantIndex, plant);
+					setActions();
+					adapter.notifyDataSetChanged();
+
+					SnackBar.show(getActivity(), "Stage updated", "undo", new SnackBarListener()
+					{
+						@Override public void onSnackBarStarted(Object o)
+						{
+							if (getView() != null)
+							{
+								FabAnimator.animateUp(getView().findViewById(R.id.fab_add));
+							}
+						}
+
+						@Override public void onSnackBarFinished(Object o)
+						{
+							if (getView() != null)
+							{
+								FabAnimator.animateDown(getView().findViewById(R.id.fab_add));
+							}
+						}
+
+						@Override public void onSnackBarAction(Object o)
+						{
+							plant.getActions().set(originalIndex, action);
+							PlantManager.getInstance().upsert(plantIndex, plant);
+							setActions();
+							adapter.notifyDataSetChanged();
+						}
+					});
+				}
+			});
+			dialogFragment.show(getFragmentManager(), null);
+		}
 	}
 
 	@Override public void onActionDeleted(final Action action)
