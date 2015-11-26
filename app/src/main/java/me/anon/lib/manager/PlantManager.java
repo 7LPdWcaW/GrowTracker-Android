@@ -10,7 +10,6 @@ import com.google.gson.reflect.TypeToken;
 
 import java.io.File;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Collections;
 
 import lombok.Data;
@@ -54,7 +53,6 @@ public class PlantManager
 	{
 		int plantsSize =  PlantManager.getInstance().getPlants().size();
 		ArrayList<Plant> ordered = new ArrayList<>();
-		ordered.addAll(Arrays.asList(new Plant[plantsSize]));
 
 		SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(context);
 		boolean hideHarvested = prefs.getBoolean("hide_harvested", false);
@@ -68,24 +66,7 @@ public class PlantManager
 				continue;
 			}
 
-			try
-			{
-				int orderIndex = prefs.getInt(String.valueOf(index), plantsSize - index - 1);
-
-				if (ordered.get(orderIndex) == null)
-				{
-					ordered.set(orderIndex, plant);
-				}
-				else
-				{
-					ordered.add(orderIndex, plant);
-				}
-			}
-			catch (Exception e)
-			{
-				e.printStackTrace();
-				ordered.add(plant);
-			}
+			ordered.add(plant);
 		}
 
 		ordered.removeAll(Collections.singleton(null));
