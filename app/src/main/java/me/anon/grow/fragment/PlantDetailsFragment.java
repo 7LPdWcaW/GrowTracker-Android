@@ -472,39 +472,46 @@ public class PlantDetailsFragment extends Fragment
 		{
 			@Override public void onStageUpdated(final StageChange action)
 			{
-				plant.getActions().add(action);
-				PlantManager.getInstance().upsert(plantIndex, plant);
 				stage.setText(action.getNewStage().getPrintString());
 
-				SnackBar.show(getActivity(), "Stage updated", "undo", new SnackBarListener()
+				if (plantIndex > -1)
 				{
-					@Override public void onSnackBarStarted(Object o)
-					{
-						if (getView() != null)
-						{
-							FabAnimator.animateUp(getView().findViewById(R.id.fab_add));
-						}
-					}
+					plant.getActions().add(action);
+					PlantManager.getInstance().upsert(plantIndex, plant);
 
-					@Override public void onSnackBarFinished(Object o)
+					SnackBar.show(getActivity(), "Stage updated", "undo", new SnackBarListener()
 					{
-						if (getView() != null)
+						@Override public void onSnackBarStarted(Object o)
 						{
-							FabAnimator.animateDown(getView().findViewById(R.id.fab_add));
+							if (getView() != null)
+							{
+								FabAnimator.animateUp(getView().findViewById(R.id.fab_add));
+							}
 						}
-					}
 
-					@Override public void onSnackBarAction(Object o)
-					{
-						plant.getActions().remove(action);
-						PlantManager.getInstance().upsert(plantIndex, plant);
-
-						if (plant.getStage() != null)
+						@Override public void onSnackBarFinished(Object o)
 						{
-							stage.setText(plant.getStage().getPrintString());
+							if (getView() != null)
+							{
+								FabAnimator.animateDown(getView().findViewById(R.id.fab_add));
+							}
 						}
-					}
-				});
+
+						@Override public void onSnackBarAction(Object o)
+						{
+							if (plantIndex > -1)
+							{
+								plant.getActions().remove(action);
+								PlantManager.getInstance().upsert(plantIndex, plant);
+							}
+
+							if (plant.getStage() != null)
+							{
+								stage.setText(plant.getStage().getPrintString());
+							}
+						}
+					});
+				}
 			}
 		});
 		dialogFragment.show(getFragmentManager(), null);
