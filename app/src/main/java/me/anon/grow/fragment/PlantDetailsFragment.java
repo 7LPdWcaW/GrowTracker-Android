@@ -45,6 +45,7 @@ import me.anon.grow.StatisticsActivity;
 import me.anon.grow.ViewPhotosActivity;
 import me.anon.lib.Views;
 import me.anon.lib.helper.FabAnimator;
+import me.anon.lib.helper.ModelHelper;
 import me.anon.lib.manager.PlantManager;
 import me.anon.lib.task.EncryptTask;
 import me.anon.model.EmptyAction;
@@ -353,11 +354,12 @@ public class PlantDetailsFragment extends Fragment
 									final int originalIndex = PlantManager.getInstance().getPlants().indexOf(sortedPlants.get(which));
 
 									Water water = (Water)plant.getActions().get(plant.getActions().size() - 1);
-									PlantManager.getInstance().getPlants().get(originalIndex).getActions().add(water);
+									Water copy = (Water)ModelHelper.copy(water);
+									PlantManager.getInstance().getPlants().get(originalIndex).getActions().add(copy);
 
 									Intent edit = new Intent(getActivity(), EditFeedingActivity.class);
 									edit.putExtra("plant_index", originalIndex);
-									edit.putExtra("action_index", PlantManager.getInstance().getPlants().get(originalIndex).getActions().size() - 1);
+									edit.putExtra("action_index", PlantManager.getInstance().getPlants().get(originalIndex).getActions().indexOf(copy));
 									startActivityForResult(edit, 2);
 								}
 							})
