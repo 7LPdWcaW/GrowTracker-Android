@@ -88,11 +88,11 @@ public class PlantAdapter extends RecyclerView.Adapter<PlantHolder> implements I
 				{
 					Action action = actions.get(index);
 
-					if (action instanceof Feed && lastFeed == null)
+					if (action.getClass().isAssignableFrom(Feed.class) && lastFeed == null)
 					{
 						lastFeed = (Feed)action;
 					}
-					else if (action instanceof Water && lastWater == null)
+					else if (action.getClass().isAssignableFrom(Water.class) && lastWater == null)
 					{
 						lastWater = (Water)action;
 					}
