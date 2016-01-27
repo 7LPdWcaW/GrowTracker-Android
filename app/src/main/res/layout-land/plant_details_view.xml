@@ -211,11 +211,15 @@
 					</LinearLayout>
 
 					<LinearLayout
-						android:layout_width="match_parent"
+						android:layout_width="0dp"
 						android:layout_height="wrap_content"
 						android:id="@+id/plant_medium_container"
 						android:orientation="vertical"
-						android:padding="16dp"
+						android:paddingLeft="16dp"
+						android:paddingRight="16dp"
+						android:paddingTop="8dp"
+						android:paddingBottom="16dp"
+						android:layout_weight="1"
 					>
 						<TextView
 							android:layout_width="match_parent"
