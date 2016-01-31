@@ -287,6 +287,7 @@ public class StatisticsFragment extends Fragment
 	private void setInput()
 	{
 		ArrayList<Entry> vals = new ArrayList<>();
+		ArrayList<Entry> averageVals = new ArrayList<>();
 		ArrayList<String> xVals = new ArrayList<>();
 		LineData data = new LineData();
 		float min = 14f;
@@ -298,12 +299,15 @@ public class StatisticsFragment extends Fragment
 		{
 			if (action instanceof Water && ((Water)action).getPh() != null)
 			{
-				vals.add(new Entry(((Water)action).getPh().floatValue(), index++));
+				vals.add(new Entry(((Water)action).getPh().floatValue(), index));
 				xVals.add("");
 
 				min = Math.min(min, ((Water)action).getPh().floatValue());
 				max = Math.max(max, ((Water)action).getPh().floatValue());
 				ave += ((Water)action).getPh().floatValue();
+
+				averageVals.add(new Entry((float)((double)ave / ((double)index + 1.0d)), index));
+				index++;
 			}
 		}
 
@@ -321,7 +325,20 @@ public class StatisticsFragment extends Fragment
 		dataSet.setValueTextSize(8.0f);
 		dataSet.setValueFormatter(formatter);
 
-		LineData lineData = new LineData(xVals, dataSet);
+		LineDataSet averageDataSet = new LineDataSet(averageVals, "Average PH");
+		averageDataSet.setDrawCubic(true);
+		averageDataSet.setLineWidth(1.0f);
+		averageDataSet.setDrawCircleHole(false);
+		averageDataSet.setColor(0xffffffff);
+		averageDataSet.setCircleSize(0.0f);
+		averageDataSet.setValueTextSize(0.0f);
+		averageDataSet.setValueFormatter(null);
+
+		ArrayList<LineDataSet> dataSets = new ArrayList<LineDataSet>();
+		dataSets.add(dataSet);
+		dataSets.add(averageDataSet);
+
+		LineData lineData = new LineData(xVals, dataSets);
 		lineData.setValueFormatter(formatter);
 
 		inputPh.setBackgroundColor(0xff006064);
@@ -340,6 +357,7 @@ public class StatisticsFragment extends Fragment
 		inputPh.setDescription("");
 		inputPh.setPinchZoom(false);
 		inputPh.setDoubleTapToZoomEnabled(false);
+
 		inputPh.setData(lineData);
 	}
 
