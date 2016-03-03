@@ -141,11 +141,26 @@ public class PlantAdapter extends RecyclerView.Adapter<PlantHolder> implements I
 					{
 						summary += " of <b>";
 						summary += lastFeed.getNutrient().getNpc() == null ? "-" : lastFeed.getNutrient().getNpc();
-						summary += " : ";
+						summary += "</b>:<b>";
 						summary += lastFeed.getNutrient().getPpc() == null ? "-" : lastFeed.getNutrient().getPpc();
-						summary += " : ";
+						summary += "</b>:<b>";
 						summary += lastFeed.getNutrient().getKpc() == null ? "-" : lastFeed.getNutrient().getKpc();
-						summary += "</b><br/>";
+						summary += "</b>";
+
+						if (lastFeed.getNutrient().getMgpc() != null
+						|| lastFeed.getNutrient().getSpc() != null
+						|| lastFeed.getNutrient().getCapc() != null)
+						{
+							summary += "/<b>";
+							summary += lastFeed.getNutrient().getCapc() == null ? "-" : lastFeed.getNutrient().getCapc();
+							summary += "</b>:<b>";
+							summary += lastFeed.getNutrient().getSpc() == null ? "-" : lastFeed.getNutrient().getSpc();
+							summary += "</b>:<b>";
+							summary += lastFeed.getNutrient().getMgpc() == null ? "-" : lastFeed.getNutrient().getMgpc();
+							summary += "</b>";
+						}
+
+						summary += "<br/>";
 					}
 
 					if (lastFeed.getPh() != null)
