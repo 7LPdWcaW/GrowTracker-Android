@@ -60,6 +60,8 @@ public class ActionAdapter extends RecyclerView.Adapter<ActionHolder> implements
 	{
 		final Action action = actions.get(i);
 
+		if (action == null) return;
+
 		DateFormat dateFormat = android.text.format.DateFormat.getDateFormat(viewHolder.getDate().getContext());
 		DateFormat timeFormat = android.text.format.DateFormat.getTimeFormat(viewHolder.getDate().getContext());
 
@@ -81,24 +83,34 @@ public class ActionAdapter extends RecyclerView.Adapter<ActionHolder> implements
 		viewHolder.getCard().setCardBackgroundColor(0xffffffff);
 
 		String summary = "";
-		if (action instanceof Feed)
+		if (action.getClass() == Feed.class)
 		{
 			viewHolder.getCard().setCardBackgroundColor(0x9A90CAF9);
 			viewHolder.getName().setText("Feed with nutrients");
 
 			if (((Feed)action).getNutrient() != null)
 			{
+				summary += "<b>";
 				summary += ((Feed)action).getNutrient().getNpc() == null ? "-" : ((Feed)action).getNutrient().getNpc();
-				summary += " : ";
+				summary += "</b>:<b>";
 				summary += ((Feed)action).getNutrient().getPpc() == null ? "-" : ((Feed)action).getNutrient().getPpc();
-				summary += " : ";
+				summary += "</b>:<b>";
 				summary += ((Feed)action).getNutrient().getKpc() == null ? "-" : ((Feed)action).getNutrient().getKpc();
-				summary += "/";
-				summary += ((Feed)action).getNutrient().getCapc() == null ? "-" : ((Feed)action).getNutrient().getCapc();
-				summary += " : ";
-				summary += ((Feed)action).getNutrient().getSpc() == null ? "-" : ((Feed)action).getNutrient().getSpc();
-				summary += " : ";
-				summary += ((Feed)action).getNutrient().getMgpc() == null ? "-" : ((Feed)action).getNutrient().getMgpc();
+				summary += "</b>";
+
+				if (((Feed)action).getNutrient().getMgpc() != null
+				|| ((Feed)action).getNutrient().getSpc() != null
+				|| ((Feed)action).getNutrient().getCapc() != null)
+				{
+					summary += " / <b>";
+					summary += ((Feed)action).getNutrient().getCapc() == null ? "-" : ((Feed)action).getNutrient().getCapc();
+					summary += "</b>:<b>";
+					summary += ((Feed)action).getNutrient().getSpc() == null ? "-" : ((Feed)action).getNutrient().getSpc();
+					summary += "</b>:<b>";
+					summary += ((Feed)action).getNutrient().getMgpc() == null ? "-" : ((Feed)action).getNutrient().getMgpc();
+					summary += "</b>";
+				}
+
 				summary += " (";
 				summary += ((Feed)action).getMlpl() == null ? "n/a" : ((Feed)action).getMlpl() + "ml/l";
 				summary += ")";
@@ -109,14 +121,14 @@ public class ActionAdapter extends RecyclerView.Adapter<ActionHolder> implements
 
 			if (((Feed)action).getPh() != null)
 			{
-				waterStr.append("<b>PH: </b>");
+				waterStr.append("<b>In pH: </b>");
 				waterStr.append(((Feed)action).getPh());
 				waterStr.append(", ");
 			}
 
 			if (((Feed)action).getRunoff() != null)
 			{
-				waterStr.append("<b>Runoff: </b>");
+				waterStr.append("<b>Out pH: </b>");
 				waterStr.append(((Feed)action).getRunoff());
 				waterStr.append(", ");
 			}
@@ -148,7 +160,7 @@ public class ActionAdapter extends RecyclerView.Adapter<ActionHolder> implements
 
 			summary += waterStr.toString().length() > 0 ? waterStr.toString().substring(0, waterStr.length() - 2) : "";
 		}
-		else if (action instanceof Water)
+		else if (action.getClass() == Water.class)
 		{
 			viewHolder.getCard().setCardBackgroundColor(0x9ABBDEFB);
 			viewHolder.getName().setText("Watered");
@@ -156,14 +168,14 @@ public class ActionAdapter extends RecyclerView.Adapter<ActionHolder> implements
 
 			if (((Water)action).getPh() != null)
 			{
-				waterStr.append("<b>PH: </b>");
+				waterStr.append("<b>In pH: </b>");
 				waterStr.append(((Water)action).getPh());
 				waterStr.append(", ");
 			}
 
 			if (((Water)action).getRunoff() != null)
 			{
-				waterStr.append("<b>Runoff: </b>");
+				waterStr.append("<b>Out pH: </b>");
 				waterStr.append(((Water)action).getRunoff());
 				waterStr.append(", ");
 			}
