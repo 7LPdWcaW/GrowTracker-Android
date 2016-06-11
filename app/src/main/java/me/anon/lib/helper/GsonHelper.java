@@ -14,7 +14,6 @@ import java.lang.reflect.Type;
 
 import me.anon.model.Action;
 import me.anon.model.EmptyAction;
-import me.anon.model.Feed;
 import me.anon.model.NoteAction;
 import me.anon.model.StageChange;
 import me.anon.model.Water;
@@ -56,11 +55,7 @@ public class GsonHelper
 
 				if (json.getAsJsonObject().has("type"))
 				{
-					if (json.getAsJsonObject().get("type").getAsString().equals("Feed"))
-					{
-						action = g.fromJson(jsonObj, Feed.class);
-					}
-					else if (json.getAsJsonObject().get("type").getAsString().equals("Water"))
+					if (json.getAsJsonObject().get("type").getAsString().equals("Water"))
 					{
 						action = g.fromJson(jsonObj, Water.class);
 					}
@@ -86,15 +81,7 @@ public class GsonHelper
 		{
 			@Override public JsonElement serialize(Action src, Type typeOfSrc, JsonSerializationContext context)
 			{
-				if (src instanceof Feed)
-				{
-					Gson g = new Gson();
-					JsonObject jsonObj = (JsonObject)g.toJsonTree(src);
-					jsonObj.addProperty("type", "Feed");
-
-					return jsonObj;
-				}
-				else if (src instanceof Water)
+				if (src instanceof Water)
 				{
 					Gson g = new Gson();
 					JsonObject jsonObj = (JsonObject)g.toJsonTree(src);
