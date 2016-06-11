@@ -62,7 +62,6 @@ public class StatisticsFragment extends Fragment
 	}
 
 	@Views.InjectView(R.id.input_ph) private LineChart inputPh;
-	@Views.InjectView(R.id.runoff) private LineChart runoff;
 	@Views.InjectView(R.id.ppm) private LineChart ppm;
 	@Views.InjectView(R.id.temp) private LineChart temp;
 
@@ -84,10 +83,6 @@ public class StatisticsFragment extends Fragment
 
 	@Views.InjectView(R.id.ave_feed) private TextView aveFeed;
 	@Views.InjectView(R.id.ave_water) private TextView aveWater;
-
-	@Views.InjectView(R.id.min_ph) private TextView minph;
-	@Views.InjectView(R.id.max_ph) private TextView maxph;
-	@Views.InjectView(R.id.ave_ph) private TextView aveph;
 
 	@Views.InjectView(R.id.min_input_ph) private TextView minInputPh;
 	@Views.InjectView(R.id.max_input_ph) private TextView maxInputPh;
@@ -137,7 +132,6 @@ public class StatisticsFragment extends Fragment
 
 		setStatistics();
 		setInput();
-		setRunoff();
 		setPpm();
 		setTemp();
 	}
@@ -286,24 +280,53 @@ public class StatisticsFragment extends Fragment
 
 	private void setInput()
 	{
-		ArrayList<Entry> vals = new ArrayList<>();
+		ArrayList<Entry> inputVals = new ArrayList<>();
+		ArrayList<Entry> runoffVals = new ArrayList<>();
+		ArrayList<Entry> averageVals = new ArrayList<>();
 		ArrayList<String> xVals = new ArrayList<>();
 		LineData data = new LineData();
 		float min = 14f;
 		float max = -14f;
+		float totalIn = 0;
+		float totalOut = 0;
 		float ave = 0;
 
 		int index = 0;
 		for (Action action : plant.getActions())
 		{
-			if (action instanceof Water && ((Water)action).getPh() != null)
+			if (action instanceof Water)
 			{
-				vals.add(new Entry(((Water)action).getPh().floatValue(), index++));
+				if (((Water)action).getPh() != null)
+				{
+					inputVals.add(new Entry(((Water)action).getPh().floatValue(), index));
+					min = Math.min(min, ((Water)action).getPh().floatValue());
+					max = Math.max(max, ((Water)action).getPh().floatValue());
+
+					totalIn += ((Water)action).getPh().floatValue();
+				}
+
+				if (((Water)action).getRunoff() != null)
+				{
+					runoffVals.add(new Entry(((Water)action).getRunoff().floatValue(), index));
+					min = Math.min(min, ((Water)action).getRunoff().floatValue());
+					max = Math.max(max, ((Water)action).getRunoff().floatValue());
+
+					totalOut += ((Water)action).getRunoff().floatValue();
+				}
+
 				xVals.add("");
 
-				min = Math.min(min, ((Water)action).getPh().floatValue());
-				max = Math.max(max, ((Water)action).getPh().floatValue());
-				ave += ((Water)action).getPh().floatValue();
+				float aveIn = totalIn;
+				float aveOut = totalOut;
+				if (index > 0)
+				{
+					aveIn /= (float)index;
+					aveOut /= (float)index;
+				}
+
+//				averageVals.add(new Entry((aveIn + aveOut) / (float)index, index));
+
+				index++;
 			}
 		}
 
@@ -311,7 +334,7 @@ public class StatisticsFragment extends Fragment
 		maxInputPh.setText(String.valueOf(max));
 		aveInputPh.setText(String.format("%1$,.2f", (ave / (double)index)));
 
-		LineDataSet dataSet = new LineDataSet(vals, "Input PH");
+		LineDataSet dataSet = new LineDataSet(inputVals, "Input PH");
 		dataSet.setDrawCubic(true);
 		dataSet.setLineWidth(2.0f);
 		dataSet.setDrawCircleHole(false);
@@ -321,18 +344,44 @@ public class StatisticsFragment extends Fragment
 		dataSet.setValueTextSize(8.0f);
 		dataSet.setValueFormatter(formatter);
 
-		LineData lineData = new LineData(xVals, dataSet);
+		LineDataSet runoffDataSet = new LineDataSet(runoffVals, "Runoff PH");
+		runoffDataSet.setDrawCubic(true);
+		runoffDataSet.setLineWidth(2.0f);
+		runoffDataSet.setDrawCircleHole(false);
+		runoffDataSet.setColor(0xffFFF9C4);
+		runoffDataSet.setCircleColor(0xffFFF9C4);
+		runoffDataSet.setValueTextColor(0xffFFF9C4);
+		runoffDataSet.setCircleSize(5.0f);
+		runoffDataSet.setValueTextSize(8.0f);
+		runoffDataSet.setValueFormatter(formatter);
+
+		LineDataSet averageDataSet = new LineDataSet(averageVals, "Average PH");
+		averageDataSet.setDrawCubic(true);
+		averageDataSet.setLineWidth(1.0f);
+		averageDataSet.setDrawCircleHole(false);
+		averageDataSet.setColor(0xffffffff);
+		averageDataSet.setCircleSize(0.0f);
+		averageDataSet.setValueTextSize(0.0f);
+		averageDataSet.setValueFormatter(null);
+
+		ArrayList<LineDataSet> dataSets = new ArrayList<LineDataSet>();
+		dataSets.add(dataSet);
+		dataSets.add(runoffDataSet);
+//		dataSets.add(averageDataSet);
+
+		LineData lineData = new LineData(xVals, dataSets);
 		lineData.setValueFormatter(formatter);
 
 		inputPh.setBackgroundColor(0xff006064);
 		inputPh.setGridBackgroundColor(0xff006064);
 		inputPh.setDrawGridBackground(false);
 		inputPh.setHighlightEnabled(false);
-		inputPh.getLegend().setEnabled(false);
+		inputPh.getLegend().setTextColor(0xffffffff);
+//		inputPh.getLegend().setEnabled(false);
 		inputPh.getAxisLeft().setTextColor(0xffffffff);
 		inputPh.getAxisRight().setEnabled(false);
 		inputPh.getAxisLeft().setValueFormatter(formatter);
-		inputPh.getAxisLeft().setXOffset(8.0f);
+//		inputPh.getAxisLeft().setXOffset(8.0f);
 		inputPh.getAxisLeft().setAxisMinValue(min - 0.5f);
 		inputPh.getAxisLeft().setAxisMaxValue(max + 0.5f);
 		inputPh.getAxisLeft().setStartAtZero(false);
@@ -340,66 +389,8 @@ public class StatisticsFragment extends Fragment
 		inputPh.setDescription("");
 		inputPh.setPinchZoom(false);
 		inputPh.setDoubleTapToZoomEnabled(false);
+
 		inputPh.setData(lineData);
-	}
-
-	private void setRunoff()
-	{
-		ArrayList<Entry> vals = new ArrayList<>();
-		ArrayList<String> xVals = new ArrayList<>();
-		LineData data = new LineData();
-		float min = 14f;
-		float max = -14f;
-		float ave = 0;
-
-		int index = 0;
-		for (Action action : plant.getActions())
-		{
-			if (action instanceof Water && ((Water)action).getRunoff() != null)
-			{
-				vals.add(new Entry(((Water)action).getRunoff().floatValue(), index++));
-				xVals.add("");
-
-				min = Math.min(min, ((Water)action).getRunoff().floatValue());
-				max = Math.max(max, ((Water)action).getRunoff().floatValue());
-				ave += ((Water)action).getRunoff().floatValue();
-			}
-		}
-
-		minph.setText(String.valueOf(min));
-		maxph.setText(String.valueOf(max));
-		aveph.setText(String.format("%1$,.2f", (ave / (double)index)));
-
-		LineDataSet dataSet = new LineDataSet(vals, "Runoff PH");
-		dataSet.setDrawCubic(true);
-		dataSet.setLineWidth(2.0f);
-		dataSet.setDrawCircleHole(false);
-		dataSet.setCircleColor(0xffffffff);
-		dataSet.setValueTextColor(0xffffffff);
-		dataSet.setCircleSize(5.0f);
-		dataSet.setValueTextSize(8.0f);
-		dataSet.setValueFormatter(formatter);
-
-		LineData lineData = new LineData(xVals, dataSet);
-		lineData.setValueFormatter(formatter);
-
-		runoff.setBackgroundColor(0xff01579B);
-		runoff.setGridBackgroundColor(0xff01579B);
-		runoff.setDrawGridBackground(false);
-		runoff.setHighlightEnabled(false);
-		runoff.getLegend().setEnabled(false);
-		runoff.getAxisLeft().setTextColor(0xffffffff);
-		runoff.getAxisRight().setEnabled(false);
-		runoff.getAxisLeft().setValueFormatter(formatter);
-		runoff.getAxisLeft().setXOffset(8.0f);
-		runoff.getAxisLeft().setAxisMinValue(min - 0.5f);
-		runoff.getAxisLeft().setAxisMaxValue(max + 0.5f);
-		runoff.getAxisLeft().setStartAtZero(false);
-		runoff.setScaleYEnabled(false);
-		runoff.setDescription("");
-		runoff.setPinchZoom(false);
-		runoff.setDoubleTapToZoomEnabled(false);
-		runoff.setData(lineData);
 	}
 
 	private void setTemp()
