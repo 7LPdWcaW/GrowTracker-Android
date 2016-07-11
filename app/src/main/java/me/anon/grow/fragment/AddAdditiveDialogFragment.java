@@ -23,7 +23,7 @@ import me.anon.model.Nutrient;
  * @project GrowTracker
  */
 @Views.Injectable
-public class AddNutrientDialogFragment extends DialogFragment
+public class AddAdditiveDialogFragment extends DialogFragment
 {
 	public interface OnAddNutrientListener
 	{
@@ -40,13 +40,13 @@ public class AddNutrientDialogFragment extends DialogFragment
 	@Setter private OnAddNutrientListener onAddNutrientListener;
 
 	@SuppressLint("ValidFragment")
-	public AddNutrientDialogFragment(Nutrient nutrient)
+	public AddAdditiveDialogFragment(Nutrient nutrient)
 	{
 		this.nutrient = nutrient;
 	}
 
 	@SuppressLint("ValidFragment")
-	public AddNutrientDialogFragment()
+	public AddAdditiveDialogFragment()
 	{
 	}
 
