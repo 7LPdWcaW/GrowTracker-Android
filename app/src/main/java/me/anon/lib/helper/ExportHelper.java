@@ -1,11 +1,15 @@
 package me.anon.lib.helper;
 
 import android.content.Context;
+import android.os.Environment;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.text.TextUtils;
 
 import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileOutputStream;
+import java.io.FileWriter;
 import java.text.DateFormat;
 import java.util.Date;
 import java.util.SortedMap;
@@ -32,6 +36,30 @@ public class ExportHelper
 	 */
 	@Nullable public static File exportPlant(Context context, @NonNull Plant plant)
 	{
+		String folderPath = "";
+
+		if (Environment.getExternalStorageDirectory() != null)
+		{
+			folderPath = Environment.getExternalStorageDirectory().getAbsolutePath();
+		}
+		else
+		{
+			folderPath = Environment.DIRECTORY_DOWNLOADS;
+		}
+
+		File exportFolder = new File(folderPath + "/GrowLogs/");
+		exportFolder.mkdirs();
+
+		// temp folder to write to
+		File tempFolder = new File(exportFolder.getAbsolutePath() + "/" + plant.getId());
+
+		if (tempFolder.exists())
+		{
+			deleteRecursive(tempFolder);
+		}
+
+		tempFolder.mkdir();
+
 		long startDate = plant.getPlantDate();
 		long endDate = System.currentTimeMillis();
 		long feedDifference = 0L;
@@ -246,6 +274,56 @@ public class ExportHelper
 		plantDetails.append(NEW_LINE);
 		plantDetails.append("```").append(NEW_LINE).append(GsonHelper.parse(plant)).append(NEW_LINE).append("```");
 
+		// Write the log
+		try
+		{
+			FileWriter fileWriter = new FileWriter(tempFolder.getAbsolutePath() + "/growlog.md", false);
+			fileWriter.write(plantDetails.toString());
+			fileWriter.close();
+			fileWriter.flush();
+		}
+		catch (Exception e)
+		{
+			e.printStackTrace();
+		}
+
+		// Copy images to dir
+		for (String filePath : plant.getImages())
+		{
+			try
+			{
+				File currentImage = new File(filePath);
+				long fileDate = Long.parseLong(currentImage.getName().replaceAll("[^0-9]", ""));
+
+				if (fileDate == 0)
+				{
+					fileDate = currentImage.lastModified();
+				}
+
+				File imageFolderPath = new File(tempFolder.getAbsolutePath() + "/images/" + dateFolder(context, fileDate) + "/");
+				imageFolderPath.mkdirs();
+
+				FileInputStream fis = new FileInputStream(currentImage);
+				FileOutputStream fos = new FileOutputStream(new File(imageFolderPath.getAbsolutePath() + "/" + imageFolderPath.list().length + ".jpg"));
+
+				byte[] buffer = new byte[8192];
+				int len = 0;
+
+				while ((len = fis.read(buffer)) != -1)
+				{
+					fos.write(buffer, 0, len);
+				}
+
+				fis.close();
+				fos.flush();
+				fos.close();
+			}
+			catch (Exception e)
+			{
+				e.printStackTrace();
+			}
+		}
+
 		return null;
 	}
 
@@ -261,5 +339,36 @@ public class ExportHelper
 		final DateFormat timeFormat = android.text.format.DateFormat.getTimeFormat(context);
 
 		return dateFormat.format(new Date(timestamp)) + " " + timeFormat.format(new Date(timestamp));
+	}
+
+	/**
+	 * Returns a string suitable for folders based on timestamp
+	 * @param context
+	 * @param timestamp
+	 * @return
+	 */
+	public static String dateFolder(Context context, long timestamp)
+	{
+		final DateFormat dateFormat = android.text.format.DateFormat.getDateFormat(context);
+
+		return dateFormat.format(new Date(timestamp)).replaceAll("[^0-9]", "-");
+	}
+
+	public static void deleteRecursive(File fileOrDirectory)
+	{
+		if (fileOrDirectory.isDirectory())
+		{
+			File[] files = fileOrDirectory.listFiles();
+
+			if (files != null)
+			{
+				for (File child : files)
+				{
+					deleteRecursive(child);
+				}
+			}
+		}
+
+		fileOrDirectory.delete();
 	}
 }
