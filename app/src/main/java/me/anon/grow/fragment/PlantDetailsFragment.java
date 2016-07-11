@@ -44,6 +44,7 @@ import me.anon.grow.R;
 import me.anon.grow.StatisticsActivity;
 import me.anon.grow.ViewPhotosActivity;
 import me.anon.lib.Views;
+import me.anon.lib.helper.ExportHelper;
 import me.anon.lib.helper.FabAnimator;
 import me.anon.lib.helper.ModelHelper;
 import me.anon.lib.manager.PlantManager;
@@ -401,6 +402,11 @@ public class PlantDetailsFragment extends Fragment
 				.setNegativeButton("No", null)
 				.show();
 
+			return true;
+		}
+		else if (item.getItemId() == R.id.export)
+		{
+			File exportedFile = ExportHelper.exportPlant(getActivity(), plant);
 			return true;
 		}
 
