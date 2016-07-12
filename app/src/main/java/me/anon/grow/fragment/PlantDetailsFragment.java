@@ -407,12 +407,23 @@ public class PlantDetailsFragment extends Fragment
 		}
 		else if (item.getItemId() == R.id.export)
 		{
-			File exportedFile = ExportHelper.exportPlant(getActivity(), plant);
+			Toast.makeText(getActivity(), "Exporting grow log...", Toast.LENGTH_SHORT).show();
 
-			if (exportedFile != null && exportedFile.exists())
+			new AsyncTask<Plant, Void, File>()
 			{
-				Toast.makeText(getActivity(), "Grow log successfully exported to " + exportedFile.getAbsolutePath(), Toast.LENGTH_SHORT).show();
-			}
+				@Override protected File doInBackground(Plant... params)
+				{
+					return ExportHelper.exportPlant(getActivity(), plant);
+				}
+
+				@Override protected void onPostExecute(File file)
+				{
+					if (file != null && file.exists() && getActivity() != null)
+					{
+						Toast.makeText(getActivity(), "Grow log successfully exported to " + file.getAbsolutePath(), Toast.LENGTH_SHORT).show();
+					}
+				}
+			}.executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR, plant);
 
 			return true;
 		}
