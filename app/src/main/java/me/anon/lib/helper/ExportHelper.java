@@ -164,6 +164,36 @@ public class ExportHelper
 		plantDetails.append(" - *Average time between waterings*: ").append(String.format("%1$,.2f days", (TimeHelper.toDays(waterDifference) / (double)totalWater)));
 		plantDetails.append(NEW_LINE);
 
+		String[] avePh = new String[3];
+		StatsHelper.setInputData(plant, null, avePh);
+		plantDetails.append(" - *Minimum input pH*: ").append(avePh[0]);
+		plantDetails.append(NEW_LINE);
+		plantDetails.append(" - *Maximum input pH*: ").append(avePh[1]);
+		plantDetails.append(NEW_LINE);
+		plantDetails.append(" - *Average input pH*: ").append(avePh[2]);
+		plantDetails.append(NEW_LINE);
+
+		String[] avePpm = new String[3];
+		StatsHelper.setPpmData(plant, null, avePpm);
+		plantDetails.append(" - *Minimum input ppm*: ").append(avePpm[0]);
+		plantDetails.append(NEW_LINE);
+		plantDetails.append(" - *Maximum input ppm*: ").append(avePpm[1]);
+		plantDetails.append(NEW_LINE);
+		plantDetails.append(" - *Average input ppm*: ").append(avePpm[2]);
+		plantDetails.append(NEW_LINE);
+
+		if (plant.getMedium() == PlantMedium.HYDRO)
+		{
+			String[] aveTemp = new String[3];
+			StatsHelper.setTempData(plant, null, aveTemp);
+			plantDetails.append(" - *Minimum input temperature*: ").append(aveTemp[0]);
+			plantDetails.append(NEW_LINE);
+			plantDetails.append(" - *Maximum input temperature*: ").append(aveTemp[1]);
+			plantDetails.append(NEW_LINE);
+			plantDetails.append(" - *Average input temperature*: ").append(aveTemp[2]);
+			plantDetails.append(NEW_LINE);
+		}
+
 		plantDetails.append("##Timeline");
 		plantDetails.append(NEW_LINE);
 
