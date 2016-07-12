@@ -82,60 +82,63 @@ public class StatsHelper
 			}
 		}
 
-		LineDataSet dataSet = new LineDataSet(inputVals, "Input PH");
-		dataSet.setDrawCubic(true);
-		dataSet.setLineWidth(2.0f);
-		dataSet.setDrawCircleHole(false);
-		dataSet.setCircleColor(0xffffffff);
-		dataSet.setValueTextColor(0xffffffff);
-		dataSet.setCircleSize(5.0f);
-		dataSet.setValueTextSize(8.0f);
-		dataSet.setValueFormatter(formatter);
+		if (chart != null)
+		{
+			LineDataSet dataSet = new LineDataSet(inputVals, "Input PH");
+			dataSet.setDrawCubic(true);
+			dataSet.setLineWidth(2.0f);
+			dataSet.setDrawCircleHole(false);
+			dataSet.setCircleColor(0xffffffff);
+			dataSet.setValueTextColor(0xffffffff);
+			dataSet.setCircleSize(5.0f);
+			dataSet.setValueTextSize(8.0f);
+			dataSet.setValueFormatter(formatter);
 
-		LineDataSet runoffDataSet = new LineDataSet(runoffVals, "Runoff PH");
-		runoffDataSet.setDrawCubic(true);
-		runoffDataSet.setLineWidth(2.0f);
-		runoffDataSet.setDrawCircleHole(false);
-		runoffDataSet.setColor(0xffFFF9C4);
-		runoffDataSet.setCircleColor(0xffFFF9C4);
-		runoffDataSet.setValueTextColor(0xffFFF9C4);
-		runoffDataSet.setCircleSize(5.0f);
-		runoffDataSet.setValueTextSize(8.0f);
-		runoffDataSet.setValueFormatter(formatter);
+			LineDataSet runoffDataSet = new LineDataSet(runoffVals, "Runoff PH");
+			runoffDataSet.setDrawCubic(true);
+			runoffDataSet.setLineWidth(2.0f);
+			runoffDataSet.setDrawCircleHole(false);
+			runoffDataSet.setColor(0xffFFF9C4);
+			runoffDataSet.setCircleColor(0xffFFF9C4);
+			runoffDataSet.setValueTextColor(0xffFFF9C4);
+			runoffDataSet.setCircleSize(5.0f);
+			runoffDataSet.setValueTextSize(8.0f);
+			runoffDataSet.setValueFormatter(formatter);
 
-		LineDataSet averageDataSet = new LineDataSet(averageVals, "Average PH");
-		averageDataSet.setDrawCubic(true);
-		averageDataSet.setLineWidth(1.0f);
-		averageDataSet.setDrawCircleHole(false);
-		averageDataSet.setColor(0xffffffff);
-		averageDataSet.setCircleSize(0.0f);
-		averageDataSet.setValueTextSize(0.0f);
-		averageDataSet.setValueFormatter(null);
+			LineDataSet averageDataSet = new LineDataSet(averageVals, "Average PH");
+			averageDataSet.setDrawCubic(true);
+			averageDataSet.setLineWidth(1.0f);
+			averageDataSet.setDrawCircleHole(false);
+			averageDataSet.setColor(0xffffffff);
+			averageDataSet.setCircleSize(0.0f);
+			averageDataSet.setValueTextSize(0.0f);
+			averageDataSet.setValueFormatter(null);
 
-		ArrayList<LineDataSet> dataSets = new ArrayList<LineDataSet>();
-		dataSets.add(dataSet);
-		dataSets.add(runoffDataSet);
+			ArrayList<LineDataSet> dataSets = new ArrayList<LineDataSet>();
+			dataSets.add(dataSet);
+			dataSets.add(runoffDataSet);
 
-		LineData lineData = new LineData(xVals, dataSets);
-		lineData.setValueFormatter(formatter);
+			LineData lineData = new LineData(xVals, dataSets);
+			lineData.setValueFormatter(formatter);
 
-		chart.setBackgroundColor(0xff006064);
-		chart.setGridBackgroundColor(0xff006064);
-		chart.setDrawGridBackground(false);
-		chart.setHighlightEnabled(false);
-		chart.getLegend().setTextColor(0xffffffff);
-		chart.getAxisLeft().setTextColor(0xffffffff);
-		chart.getAxisRight().setEnabled(false);
-		chart.getAxisLeft().setValueFormatter(formatter);
-		chart.getAxisLeft().setAxisMinValue(min - 0.5f);
-		chart.getAxisLeft().setAxisMaxValue(max + 0.5f);
-		chart.getAxisLeft().setStartAtZero(false);
-		chart.setScaleYEnabled(false);
-		chart.setDescription("");
-		chart.setPinchZoom(false);
-		chart.setDoubleTapToZoomEnabled(false);
+			chart.setBackgroundColor(0xff006064);
+			chart.setGridBackgroundColor(0xff006064);
+			chart.setDrawGridBackground(false);
+			chart.setHighlightEnabled(false);
+			chart.getLegend().setTextColor(0xffffffff);
+			chart.getAxisLeft().setTextColor(0xffffffff);
+			chart.getAxisRight().setEnabled(false);
+			chart.getAxisLeft().setValueFormatter(formatter);
+			chart.getAxisLeft().setAxisMinValue(min - 0.5f);
+			chart.getAxisLeft().setAxisMaxValue(max + 0.5f);
+			chart.getAxisLeft().setStartAtZero(false);
+			chart.setScaleYEnabled(false);
+			chart.setDescription("");
+			chart.setPinchZoom(false);
+			chart.setDoubleTapToZoomEnabled(false);
 
-		chart.setData(lineData);
+			chart.setData(lineData);
+		}
 
 		if (additionalRef != null)
 		{
@@ -176,29 +179,32 @@ public class StatsHelper
 			}
 		}
 
-		LineDataSet dataSet = new LineDataSet(vals, "PPM");
-		dataSet.setDrawCubic(true);
-		dataSet.setLineWidth(2.0f);
-		dataSet.setDrawCircleHole(false);
-		dataSet.setCircleColor(0xffffffff);
-		dataSet.setValueTextColor(0xffffffff);
-		dataSet.setCircleSize(5.0f);
-		dataSet.setValueTextSize(8.0f);
-		dataSet.setColor(0xffA7FFEB);
+		if (chart != null)
+		{
+			LineDataSet dataSet = new LineDataSet(vals, "PPM");
+			dataSet.setDrawCubic(true);
+			dataSet.setLineWidth(2.0f);
+			dataSet.setDrawCircleHole(false);
+			dataSet.setCircleColor(0xffffffff);
+			dataSet.setValueTextColor(0xffffffff);
+			dataSet.setCircleSize(5.0f);
+			dataSet.setValueTextSize(8.0f);
+			dataSet.setColor(0xffA7FFEB);
 
-		chart.setBackgroundColor(0xff1B5E20);
-		chart.setGridBackgroundColor(0xff1B5E20);
-		chart.setDrawGridBackground(false);
-		chart.setHighlightEnabled(false);
-		chart.getLegend().setEnabled(false);
-		chart.getAxisLeft().setTextColor(0xffffffff);
-		chart.getAxisRight().setEnabled(false);
-		chart.getAxisLeft().setXOffset(8.0f);
-		chart.setScaleYEnabled(false);
-		chart.setDescription("");
-		chart.setPinchZoom(false);
-		chart.setDoubleTapToZoomEnabled(false);
-		chart.setData(new LineData(xVals, dataSet));
+			chart.setBackgroundColor(0xff1B5E20);
+			chart.setGridBackgroundColor(0xff1B5E20);
+			chart.setDrawGridBackground(false);
+			chart.setHighlightEnabled(false);
+			chart.getLegend().setEnabled(false);
+			chart.getAxisLeft().setTextColor(0xffffffff);
+			chart.getAxisRight().setEnabled(false);
+			chart.getAxisLeft().setXOffset(8.0f);
+			chart.setScaleYEnabled(false);
+			chart.setDescription("");
+			chart.setPinchZoom(false);
+			chart.setDoubleTapToZoomEnabled(false);
+			chart.setData(new LineData(xVals, dataSet));
+		}
 
 		if (additionalRef != null)
 		{
@@ -238,36 +244,39 @@ public class StatsHelper
 			}
 		}
 
-		LineDataSet dataSet = new LineDataSet(vals, "Temperature");
-		dataSet.setDrawCubic(true);
-		dataSet.setLineWidth(2.0f);
-		dataSet.setDrawCircleHole(false);
-		dataSet.setCircleColor(0xffffffff);
-		dataSet.setValueTextColor(0xffffffff);
-		dataSet.setCircleSize(5.0f);
-		dataSet.setValueTextSize(8.0f);
-		dataSet.setValueFormatter(formatter);
+		if (chart != null)
+		{
+			LineDataSet dataSet = new LineDataSet(vals, "Temperature");
+			dataSet.setDrawCubic(true);
+			dataSet.setLineWidth(2.0f);
+			dataSet.setDrawCircleHole(false);
+			dataSet.setCircleColor(0xffffffff);
+			dataSet.setValueTextColor(0xffffffff);
+			dataSet.setCircleSize(5.0f);
+			dataSet.setValueTextSize(8.0f);
+			dataSet.setValueFormatter(formatter);
 
-		LineData lineData = new LineData(xVals, dataSet);
-		lineData.setValueFormatter(formatter);
+			LineData lineData = new LineData(xVals, dataSet);
+			lineData.setValueFormatter(formatter);
 
-		chart.setBackgroundColor(0xff311B92);
-		chart.setGridBackgroundColor(0xff311B92);
-		chart.setDrawGridBackground(false);
-		chart.setHighlightEnabled(false);
-		chart.getLegend().setEnabled(false);
-		chart.getAxisLeft().setTextColor(0xffffffff);
-		chart.getAxisRight().setEnabled(false);
-		chart.getAxisLeft().setValueFormatter(formatter);
-		chart.getAxisLeft().setXOffset(8.0f);
-		chart.getAxisLeft().setAxisMinValue(min - 5f);
-		chart.getAxisLeft().setAxisMaxValue(max + 5f);
-		chart.getAxisLeft().setStartAtZero(false);
-		chart.setScaleYEnabled(false);
-		chart.setDescription("");
-		chart.setPinchZoom(false);
-		chart.setDoubleTapToZoomEnabled(false);
-		chart.setData(lineData);
+			chart.setBackgroundColor(0xff311B92);
+			chart.setGridBackgroundColor(0xff311B92);
+			chart.setDrawGridBackground(false);
+			chart.setHighlightEnabled(false);
+			chart.getLegend().setEnabled(false);
+			chart.getAxisLeft().setTextColor(0xffffffff);
+			chart.getAxisRight().setEnabled(false);
+			chart.getAxisLeft().setValueFormatter(formatter);
+			chart.getAxisLeft().setXOffset(8.0f);
+			chart.getAxisLeft().setAxisMinValue(min - 5f);
+			chart.getAxisLeft().setAxisMaxValue(max + 5f);
+			chart.getAxisLeft().setStartAtZero(false);
+			chart.setScaleYEnabled(false);
+			chart.setDescription("");
+			chart.setPinchZoom(false);
+			chart.setDoubleTapToZoomEnabled(false);
+			chart.setData(lineData);
+		}
 
 		if (additionalRef != null)
 		{
