@@ -1,10 +1,15 @@
 package me.anon.lib.helper;
 
 import android.content.Context;
+import android.graphics.Bitmap;
 import android.os.Environment;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.text.TextUtils;
+import android.view.View;
+import android.view.ViewGroup;
+
+import com.github.mikephil.charting.charts.LineChart;
 
 import net.lingala.zip4j.core.ZipFile;
 import net.lingala.zip4j.model.ZipParameters;
@@ -14,6 +19,7 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.FileWriter;
+import java.io.OutputStream;
 import java.text.DateFormat;
 import java.util.Date;
 import java.util.SortedMap;
@@ -23,6 +29,7 @@ import me.anon.model.EmptyAction;
 import me.anon.model.Feed;
 import me.anon.model.NoteAction;
 import me.anon.model.Plant;
+import me.anon.model.PlantMedium;
 import me.anon.model.PlantStage;
 import me.anon.model.StageChange;
 import me.anon.model.Water;
@@ -35,7 +42,11 @@ public class ExportHelper
 	private static final String NEW_LINE = "\r\n\r\n";
 
 	/**
+	 * Creates a grow log for given plant and zips them into a compressed file
+	 *
+	 * @param context
 	 * @param plant
+	 *
 	 * @return
 	 */
 	@Nullable public static File exportPlant(Context context, @NonNull Plant plant)
@@ -283,12 +294,84 @@ public class ExportHelper
 		{
 			FileWriter fileWriter = new FileWriter(tempFolder.getAbsolutePath() + "/growlog.md", false);
 			fileWriter.write(plantDetails.toString());
-			fileWriter.close();
 			fileWriter.flush();
+			fileWriter.close();
 		}
 		catch (Exception e)
 		{
 			e.printStackTrace();
+		}
+
+		// Create stats charts and save images
+		int width = 512 + (totalWater + totalFeed * 150);
+		int height = 512;
+		int widthMeasureSpec = View.MeasureSpec.makeMeasureSpec(width, View.MeasureSpec.EXACTLY);
+		int heightMeasureSpec = View.MeasureSpec.makeMeasureSpec(height, View.MeasureSpec.EXACTLY);
+
+		LineChart inputPh = new LineChart(context);
+		inputPh.setLayoutParams(new ViewGroup.LayoutParams(width, height));
+		inputPh.setMinimumWidth(width);
+		inputPh.setMinimumHeight(height);
+		inputPh.measure(widthMeasureSpec, heightMeasureSpec);
+		inputPh.requestLayout();
+		inputPh.layout(0, 0, width, height);
+		StatsHelper.setInputData(plant, inputPh, null);
+
+		try
+		{
+			OutputStream stream = new FileOutputStream(tempFolder.getAbsolutePath() + "/input-ph.png");
+			inputPh.getChartBitmap().compress(Bitmap.CompressFormat.PNG, 100, stream);
+
+			stream.close();
+		}
+		catch (Exception e)
+		{
+			e.printStackTrace();
+		}
+
+		LineChart ppm = new LineChart(context);
+		ppm.setLayoutParams(new ViewGroup.LayoutParams(width, height));
+		ppm.setMinimumWidth(width);
+		ppm.setMinimumHeight(height);
+		ppm.measure(widthMeasureSpec, heightMeasureSpec);
+		ppm.requestLayout();
+		ppm.layout(0, 0, width, height);
+		StatsHelper.setPpmData(plant, ppm, null);
+
+		try
+		{
+			OutputStream stream = new FileOutputStream(tempFolder.getAbsolutePath() + "/ppm.png");
+			ppm.getChartBitmap().compress(Bitmap.CompressFormat.PNG, 100, stream);
+
+			stream.close();
+		}
+		catch (Exception e)
+		{
+			e.printStackTrace();
+		}
+
+		if (plant.getMedium() == PlantMedium.HYDRO)
+		{
+			LineChart temp = new LineChart(context);
+			temp.setLayoutParams(new ViewGroup.LayoutParams(width, height));
+			temp.setMinimumWidth(width);
+			temp.setMinimumHeight(height);
+			temp.measure(widthMeasureSpec, heightMeasureSpec);
+			temp.requestLayout();
+			temp.layout(0, 0, width, height);
+			StatsHelper.setTempData(plant, temp, null);
+
+			try
+			{
+				OutputStream stream = new FileOutputStream(tempFolder.getAbsolutePath() + "/temp.png");
+				temp.getChartBitmap().compress(Bitmap.CompressFormat.PNG, 100, stream);
+
+				stream.close();
+			}
+			catch (Exception e)
+			{
+				e.printStackTrace();
+			}
 		}
 
 		// Copy images to dir
