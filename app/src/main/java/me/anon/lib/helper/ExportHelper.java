@@ -6,6 +6,10 @@ import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.text.TextUtils;
 
+import net.lingala.zip4j.core.ZipFile;
+import net.lingala.zip4j.model.ZipParameters;
+import net.lingala.zip4j.util.Zip4jConstants;
+
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
@@ -324,7 +328,24 @@ public class ExportHelper
 			}
 		}
 
-		return null;
+		File finalFile = new File(exportFolder.getAbsolutePath() + "/" + plant.getName().replaceAll("[^a-zA-Z]+", "-") + ".zip");
+
+		try
+		{
+			ZipFile outFile = new ZipFile(finalFile);
+			ZipParameters params = new ZipParameters();
+			params.setCompressionMethod(Zip4jConstants.COMP_DEFLATE);
+			params.setCompressionLevel(Zip4jConstants.DEFLATE_LEVEL_NORMAL);
+			outFile.addFile(new File(tempFolder.getAbsolutePath() + "/growlog.md"), params);
+			outFile.addFolder(new File(tempFolder.getAbsolutePath() + "/images/"), params);
+
+		}
+		catch (Exception e)
+		{
+			e.printStackTrace();
+		}
+
+		return finalFile;
 	}
 
 	/**
