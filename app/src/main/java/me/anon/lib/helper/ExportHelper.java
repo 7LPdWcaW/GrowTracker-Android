@@ -1,5 +1,6 @@
 package me.anon.lib.helper;
 
+import android.app.Activity;
 import android.content.Context;
 import android.graphics.Bitmap;
 import android.os.Environment;
@@ -49,7 +50,7 @@ public class ExportHelper
 	 *
 	 * @return
 	 */
-	@Nullable public static File exportPlant(Context context, @NonNull Plant plant)
+	@Nullable public static File exportPlant(final Context context, @NonNull final Plant plant)
 	{
 		String folderPath = "";
 
@@ -66,7 +67,7 @@ public class ExportHelper
 		exportFolder.mkdirs();
 
 		// temp folder to write to
-		File tempFolder = new File(exportFolder.getAbsolutePath() + "/" + plant.getId());
+		final File tempFolder = new File(exportFolder.getAbsolutePath() + "/" + plant.getId());
 
 		if (tempFolder.exists())
 		{
@@ -333,76 +334,84 @@ public class ExportHelper
 		}
 
 		// Create stats charts and save images
-		int width = 512 + (totalWater + totalFeed * 150);
-		int height = 512;
-		int widthMeasureSpec = View.MeasureSpec.makeMeasureSpec(width, View.MeasureSpec.EXACTLY);
-		int heightMeasureSpec = View.MeasureSpec.makeMeasureSpec(height, View.MeasureSpec.EXACTLY);
-
-		LineChart inputPh = new LineChart(context);
-		inputPh.setLayoutParams(new ViewGroup.LayoutParams(width, height));
-		inputPh.setMinimumWidth(width);
-		inputPh.setMinimumHeight(height);
-		inputPh.measure(widthMeasureSpec, heightMeasureSpec);
-		inputPh.requestLayout();
-		inputPh.layout(0, 0, width, height);
-		StatsHelper.setInputData(plant, inputPh, null);
-
-		try
+		final int finalTotalWater = totalWater;
+		final int finalTotalFeed = totalFeed;
+		((Activity)context).runOnUiThread(new Runnable()
 		{
-			OutputStream stream = new FileOutputStream(tempFolder.getAbsolutePath() + "/input-ph.png");
-			inputPh.getChartBitmap().compress(Bitmap.CompressFormat.PNG, 100, stream);
-
-			stream.close();
-		}
-		catch (Exception e)
-		{
-			e.printStackTrace();
-		}
-
-		LineChart ppm = new LineChart(context);
-		ppm.setLayoutParams(new ViewGroup.LayoutParams(width, height));
-		ppm.setMinimumWidth(width);
-		ppm.setMinimumHeight(height);
-		ppm.measure(widthMeasureSpec, heightMeasureSpec);
-		ppm.requestLayout();
-		ppm.layout(0, 0, width, height);
-		StatsHelper.setPpmData(plant, ppm, null);
-
-		try
-		{
-			OutputStream stream = new FileOutputStream(tempFolder.getAbsolutePath() + "/ppm.png");
-			ppm.getChartBitmap().compress(Bitmap.CompressFormat.PNG, 100, stream);
-
-			stream.close();
-		}
-		catch (Exception e)
-		{
-			e.printStackTrace();
-		}
-
-		if (plant.getMedium() == PlantMedium.HYDRO)
-		{
-			LineChart temp = new LineChart(context);
-			temp.setLayoutParams(new ViewGroup.LayoutParams(width, height));
-			temp.setMinimumWidth(width);
-			temp.setMinimumHeight(height);
-			temp.measure(widthMeasureSpec, heightMeasureSpec);
-			temp.requestLayout();
-			temp.layout(0, 0, width, height);
-			StatsHelper.setTempData(plant, temp, null);
-
-			try
+			@Override public void run()
 			{
-				OutputStream stream = new FileOutputStream(tempFolder.getAbsolutePath() + "/temp.png");
-				temp.getChartBitmap().compress(Bitmap.CompressFormat.PNG, 100, stream);
+				int width = 512 + (finalTotalWater + finalTotalFeed * 150);
+				int height = 512;
+				int widthMeasureSpec = View.MeasureSpec.makeMeasureSpec(width, View.MeasureSpec.EXACTLY);
+				int heightMeasureSpec = View.MeasureSpec.makeMeasureSpec(height, View.MeasureSpec.EXACTLY);
 
-				stream.close();
+				LineChart inputPh = new LineChart(context);
+				inputPh.setLayoutParams(new ViewGroup.LayoutParams(width, height));
+				inputPh.setMinimumWidth(width);
+				inputPh.setMinimumHeight(height);
+				inputPh.measure(widthMeasureSpec, heightMeasureSpec);
+				inputPh.requestLayout();
+				inputPh.layout(0, 0, width, height);
+				StatsHelper.setInputData(plant, inputPh, null);
+
+				try
+				{
+					OutputStream stream = new FileOutputStream(tempFolder.getAbsolutePath() + "/input-ph.png");
+					inputPh.getChartBitmap().compress(Bitmap.CompressFormat.PNG, 100, stream);
+
+					stream.close();
+				}
+				catch (Exception e)
+				{
+					e.printStackTrace();
+				}
+
+				LineChart ppm = new LineChart(context);
+				ppm.setLayoutParams(new ViewGroup.LayoutParams(width, height));
+				ppm.setMinimumWidth(width);
+				ppm.setMinimumHeight(height);
+				ppm.measure(widthMeasureSpec, heightMeasureSpec);
+				ppm.requestLayout();
+				ppm.layout(0, 0, width, height);
+				StatsHelper.setPpmData(plant, ppm, null);
+
+				try
+				{
+					OutputStream stream = new FileOutputStream(tempFolder.getAbsolutePath() + "/ppm.png");
+					ppm.getChartBitmap().compress(Bitmap.CompressFormat.PNG, 100, stream);
+
+					stream.close();
+				}
+				catch (Exception e)
+				{
+					e.printStackTrace();
+				}
+
+				if (plant.getMedium() == PlantMedium.HYDRO)
+				{
+					LineChart temp = new LineChart(context);
+					temp.setLayoutParams(new ViewGroup.LayoutParams(width, height));
+					temp.setMinimumWidth(width);
+					temp.setMinimumHeight(height);
+					temp.measure(widthMeasureSpec, heightMeasureSpec);
+					temp.requestLayout();
+					temp.layout(0, 0, width, height);
+					StatsHelper.setTempData(plant, temp, null);
+
+					try
+					{
+						OutputStream stream = new FileOutputStream(tempFolder.getAbsolutePath() + "/temp.png");
+						temp.getChartBitmap().compress(Bitmap.CompressFormat.PNG, 100, stream);
+
+						stream.close();
+					}
+					catch (Exception e)
+					{
+						e.printStackTrace();
+					}
+				}
 			}
-			catch (Exception e)
-			{
-				e.printStackTrace();
-			}
-		}
+		});
 
 		// Copy images to dir
 		for (String filePath : plant.getImages())
