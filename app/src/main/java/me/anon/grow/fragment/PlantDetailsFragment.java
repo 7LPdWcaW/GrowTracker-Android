@@ -24,6 +24,7 @@ import android.view.ViewGroup;
 import android.view.WindowManager;
 import android.widget.CheckBox;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.kenny.snackbar.SnackBar;
 import com.kenny.snackbar.SnackBarListener;
@@ -407,6 +408,12 @@ public class PlantDetailsFragment extends Fragment
 		else if (item.getItemId() == R.id.export)
 		{
 			File exportedFile = ExportHelper.exportPlant(getActivity(), plant);
+
+			if (exportedFile != null && exportedFile.exists())
+			{
+				Toast.makeText(getActivity(), "Grow log successfully exported to " + exportedFile.getAbsolutePath(), Toast.LENGTH_SHORT).show();
+			}
+
 			return true;
 		}
 
