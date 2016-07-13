@@ -355,7 +355,7 @@ public class ExportHelper
 				imageFolderPath.mkdirs();
 
 				FileInputStream fis = new FileInputStream(currentImage);
-				FileOutputStream fos = new FileOutputStream(new File(imageFolderPath.getAbsolutePath() + "/" + fileDate + "-" + imageFolderPath.list().length + ".jpg"));
+				FileOutputStream fos = new FileOutputStream(new File(imageFolderPath.getAbsolutePath() + "/" + fileDate + ".jpg"));
 
 				byte[] buffer = new byte[8192];
 				int len = 0;
