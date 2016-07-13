@@ -460,12 +460,13 @@ public class ExportHelper
 			params.setCompressionLevel(Zip4jConstants.DEFLATE_LEVEL_NORMAL);
 			outFile.addFile(new File(tempFolder.getAbsolutePath() + "/growlog.md"), params);
 			outFile.addFolder(new File(tempFolder.getAbsolutePath() + "/images/"), params);
-
 		}
 		catch (Exception e)
 		{
 			e.printStackTrace();
 		}
+
+		deleteRecursive(tempFolder);
 
 		return finalFile;
 	}
