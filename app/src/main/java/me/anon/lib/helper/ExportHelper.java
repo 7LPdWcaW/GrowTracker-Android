@@ -355,7 +355,7 @@ public class ExportHelper
 				imageFolderPath.mkdirs();
 
 				FileInputStream fis = new FileInputStream(currentImage);
-				FileOutputStream fos = new FileOutputStream(new File(imageFolderPath.getAbsolutePath() + "/" + imageFolderPath.list().length + ".jpg"));
+				FileOutputStream fos = new FileOutputStream(new File(imageFolderPath.getAbsolutePath() + "/" + fileDate + "-" + imageFolderPath.list().length + ".jpg"));
 
 				byte[] buffer = new byte[8192];
 				int len = 0;
@@ -384,7 +384,7 @@ public class ExportHelper
 			{
 				finalFile.delete();
 			}
-			
+
 			final ZipFile outFile = new ZipFile(finalFile);
 			final ZipParameters params = new ZipParameters();
 			params.setCompressionMethod(Zip4jConstants.COMP_DEFLATE);
