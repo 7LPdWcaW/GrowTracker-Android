@@ -10,8 +10,10 @@ import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.media.MediaScannerConnection;
 import android.net.Uri;
 import android.os.AsyncTask;
+import android.os.Build;
 import android.os.Bundle;
 import android.os.Environment;
 import android.preference.PreferenceManager;
@@ -437,6 +439,15 @@ public class PlantDetailsFragment extends Fragment
 							{
 								Toast.makeText(getActivity(), "Grow log successfully exported to " + file.getAbsolutePath(), Toast.LENGTH_SHORT).show();
 								notificationManager.cancel(0xec9047);
+
+								if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT)
+								{
+									new MediaScannerWrapper(getActivity(), file.getAbsolutePath(), "application/zip").scan();
+								}
+								else
+								{
+									getActivity().sendBroadcast(new Intent(Intent.ACTION_MEDIA_MOUNTED, Uri.fromFile(file)));
+								}
 							}
 						}
 					});
@@ -632,5 +643,50 @@ public class PlantDetailsFragment extends Fragment
 		plant.setClone(clone.isChecked());
 		PlantManager.getInstance().upsert(plantIndex, plant);
 		getActivity().finish();
+	}
+
+	/**
+	 * Media scanner class to tell the OS to pick up the images taken via the app in the gallery
+	 * viewers
+	 */
+	public static class MediaScannerWrapper implements MediaScannerConnection.MediaScannerConnectionClient
+	{
+		private MediaScannerConnection mConnection;
+		private String mPath;
+		private String mMimeType;
+
+		// filePath - where to scan;
+		// mime type of media to scan i.e. "image/jpeg".
+		// use "*/*" for any media
+		public MediaScannerWrapper(Context ctx, String filePath, String mime)
+		{
+			mPath = filePath;
+			mMimeType = mime;
+			mConnection = new MediaScannerConnection(ctx, this);
+		}
+
+		// do the scanning
+		public void scan()
+		{
+			mConnection.connect();
+		}
+
+		// start the scan when scanner is ready
+		public void onMediaScannerConnected()
+		{
+			mConnection.scanFile(mPath, mMimeType);
+		}
+
+		public void onScanCompleted(String path, Uri uri)
+		{
+			try
+			{
+				mConnection.disconnect();
+			}
+			catch (Exception e)
+			{
+				e.printStackTrace();
+			}
+		}
 	}
 }
