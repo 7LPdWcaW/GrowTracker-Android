@@ -8,7 +8,11 @@ import android.text.TextUtils;
 import com.google.gson.JsonSyntaxException;
 import com.google.gson.reflect.TypeToken;
 
+import java.io.BufferedWriter;
 import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
+import java.io.OutputStreamWriter;
 import java.util.ArrayList;
 import java.util.Collections;
 
@@ -18,6 +22,7 @@ import lombok.experimental.Accessors;
 import me.anon.grow.MainApplication;
 import me.anon.lib.helper.EncryptionHelper;
 import me.anon.lib.helper.GsonHelper;
+import me.anon.lib.stream.EncryptOutputStream;
 import me.anon.model.Plant;
 import me.anon.model.PlantStage;
 
@@ -150,18 +155,25 @@ public class PlantManager
 
 	public void save()
 	{
-		if (MainApplication.isEncrypted())
+		try
 		{
-			if (TextUtils.isEmpty(MainApplication.getKey()))
+			if (MainApplication.isEncrypted())
 			{
-				return;
-			}
+				if (TextUtils.isEmpty(MainApplication.getKey()))
+				{
+					return;
+				}
 
-			FileManager.getInstance().writeFile(FILES_DIR + "/plants.json", EncryptionHelper.encrypt(MainApplication.getKey(), GsonHelper.parse(mPlants)));
+				GsonHelper.parse(mPlants, new BufferedWriter(new OutputStreamWriter(new EncryptOutputStream(MainApplication.getKey(), new File(FILES_DIR + "/plants.json")))));
+			}
+			else
+			{
+				GsonHelper.parse(mPlants, new BufferedWriter(new OutputStreamWriter(new FileOutputStream(new File(FILES_DIR + "/plants.json")))));
+			}
 		}
-		else
+		catch (FileNotFoundException e)
 		{
-			FileManager.getInstance().writeFile(FILES_DIR + "/plants.json", GsonHelper.parse(mPlants));
+			e.printStackTrace();
 		}
 	}
 }

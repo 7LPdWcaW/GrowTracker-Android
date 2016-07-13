@@ -7,6 +7,7 @@ import android.support.annotation.Nullable;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.helper.ItemTouchHelper;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -67,12 +68,13 @@ public class PlantListFragment extends Fragment
 		adapter.notifyDataSetChanged();
 	}
 
-	@Override public void onPause()
+	@Override public void onDestroy()
 	{
-		super.onPause();
+		super.onDestroy();
 
 		ArrayList<Plant> plants = new ArrayList<Plant>();
 		plants.addAll(new ArrayList(Arrays.asList(new Plant[adapter.getItemCount()])));
+
 		for (Plant plant : PlantManager.getInstance().getPlants())
 		{
 			int adapterIndex = adapter.getPlants().indexOf(plant);
