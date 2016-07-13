@@ -324,6 +324,8 @@ public class ExportHelper
 		plantDetails.append("##Raw plant data");
 		plantDetails.append(NEW_LINE);
 		plantDetails.append("```").append(NEW_LINE).append(GsonHelper.parse(plant)).append(NEW_LINE).append("```");
+		plantDetails.append(NEW_LINE);
+		plantDetails.append("Generated using [Grow Tracker](https://github.com/7LPdWcaW/GrowTracker-Android)");
 
 		// Write the log
 		try
