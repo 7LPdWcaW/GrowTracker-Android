@@ -48,6 +48,7 @@ import me.anon.grow.MainApplication;
 import me.anon.grow.R;
 import me.anon.grow.StatisticsActivity;
 import me.anon.grow.ViewPhotosActivity;
+import me.anon.lib.ExportCallback;
 import me.anon.lib.Views;
 import me.anon.lib.helper.ExportHelper;
 import me.anon.lib.helper.FabAnimator;
@@ -428,16 +429,19 @@ public class PlantDetailsFragment extends Fragment
 			{
 				@Override protected File doInBackground(Plant... params)
 				{
-					return ExportHelper.exportPlant(getActivity(), plant);
-				}
-
-				@Override protected void onPostExecute(File file)
-				{
-					if (file != null && file.exists() && getActivity() != null)
+					ExportHelper.exportPlant(getActivity(), plant, new ExportCallback()
 					{
-						Toast.makeText(getActivity(), "Grow log successfully exported to " + file.getAbsolutePath(), Toast.LENGTH_SHORT).show();
-						notificationManager.cancel(0xec9047);
-					}
+						@Override public void onCallback(Context context, File file)
+						{
+							if (file != null && file.exists() && getActivity() != null)
+							{
+								Toast.makeText(getActivity(), "Grow log successfully exported to " + file.getAbsolutePath(), Toast.LENGTH_SHORT).show();
+								notificationManager.cancel(0xec9047);
+							}
+						}
+					});
+
+					return null;
 				}
 			}.executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR, plant);
 
