@@ -1,12 +1,5 @@
 package me.anon.lib.helper;
 
-/**
- * // TODO: Add class description
- *
- * @author 
- * @documentation // TODO Reference flow doc
- * @project GrowTracker
- */
 public class ModelHelper
 {
 	/**

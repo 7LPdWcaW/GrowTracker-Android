@@ -13,13 +13,6 @@ import java.util.Calendar;
 
 import lombok.Setter;
 
-/**
- * // TODO: Add class description
- *
- * @author 
- * @documentation // TODO Reference flow doc
- * @project GrowTracker
- */
 public class DateDialogFragment extends Fragment
 {
 	private long time;
