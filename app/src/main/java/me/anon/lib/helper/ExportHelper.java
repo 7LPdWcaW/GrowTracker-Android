@@ -93,7 +93,7 @@ public class ExportHelper
 				}
 			}
 
-			if (action instanceof Feed)
+			if (action.getClass() == Feed.class)
 			{
 				if (lastFeed != 0)
 				{
@@ -104,7 +104,7 @@ public class ExportHelper
 				lastFeed = action.getDate();
 
 			}
-			else if (action instanceof Water)
+			else if (action.getClass() == Water.class)
 			{
 				if (lastWater != 0)
 				{
@@ -114,7 +114,8 @@ public class ExportHelper
 				totalWater++;
 				lastWater = action.getDate();
 			}
-			else if (action instanceof EmptyAction && ((EmptyAction)action).getAction() == Action.ActionName.FLUSH)
+
+			if (action instanceof EmptyAction && ((EmptyAction)action).getAction() == Action.ActionName.FLUSH)
 			{
 				totalFlush++;
 			}
