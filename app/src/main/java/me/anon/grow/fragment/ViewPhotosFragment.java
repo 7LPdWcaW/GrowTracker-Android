@@ -28,11 +28,14 @@ import com.kenny.snackbar.SnackBarListener;
 import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.List;
 
 import me.anon.controller.adapter.ImageAdapter;
+import me.anon.controller.adapter.SectionedGridRecyclerViewAdapter;
 import me.anon.grow.MainApplication;
 import me.anon.grow.R;
 import me.anon.lib.Views;
+import me.anon.lib.helper.ExportHelper;
 import me.anon.lib.helper.FabAnimator;
 import me.anon.lib.manager.PlantManager;
 import me.anon.lib.task.EncryptTask;
@@ -186,8 +189,36 @@ public class ViewPhotosFragment extends Fragment
 				return true;
 			}
 		});
+
+		recycler.setHasFixedSize(true);
 		recycler.setLayoutManager(new GridLayoutManager(getActivity(), 3));
-		recycler.setAdapter(adapter);
+
+		String lastFileDate = "";
+		List<SectionedGridRecyclerViewAdapter.Section> sections = new ArrayList<SectionedGridRecyclerViewAdapter.Section>();
+		for (int index = 0, count = adapter.getImages().size(); index < count; index++)
+		{
+			String image = adapter.getImages().get(index);
+
+			File currentImage = new File(image);
+			long fileDate = Long.parseLong(currentImage.getName().replaceAll("[^0-9]", ""));
+
+			if (fileDate == 0)
+			{
+				fileDate = currentImage.lastModified();
+			}
+
+			String printedFileDate = ExportHelper.dateFolder(getActivity(), fileDate);
+			if (!lastFileDate.equalsIgnoreCase(printedFileDate))
+			{
+				lastFileDate = printedFileDate;
+				sections.add(new SectionedGridRecyclerViewAdapter.Section(index, printedFileDate));
+			}
+		}
+
+		SectionedGridRecyclerViewAdapter sectionedAdapter = new SectionedGridRecyclerViewAdapter(getActivity(), R.layout.section, R.id.section_text, recycler, adapter);
+		sectionedAdapter.setSections(sections.toArray(new SectionedGridRecyclerViewAdapter.Section[sections.size()]));
+
+		recycler.setAdapter(sectionedAdapter);
 	}
 
 	@Views.OnClick public void onFabPhotoClick(final View view)
