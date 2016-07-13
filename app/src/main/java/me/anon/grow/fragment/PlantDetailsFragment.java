@@ -3,6 +3,10 @@ package me.anon.grow.fragment;
 import android.app.Activity;
 import android.app.AlertDialog;
 import android.app.Fragment;
+import android.app.Notification;
+import android.app.NotificationManager;
+import android.app.PendingIntent;
+import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
@@ -408,6 +412,17 @@ public class PlantDetailsFragment extends Fragment
 		else if (item.getItemId() == R.id.export)
 		{
 			Toast.makeText(getActivity(), "Exporting grow log...", Toast.LENGTH_SHORT).show();
+			final NotificationManager notificationManager = (NotificationManager)getActivity().getSystemService(Context.NOTIFICATION_SERVICE);
+
+			Notification exportNotification = new Notification.Builder(getActivity())
+				.setContentText("Exporting grow log for " + plant.getName())
+				.setContentTitle("Exporting")
+				.setContentIntent(PendingIntent.getActivity(getActivity(), 0, new Intent(), PendingIntent.FLAG_UPDATE_CURRENT))
+				.setTicker("Exporting grow log for " + plant.getName())
+				.setSmallIcon(R.drawable.ic_stat_name)
+				.getNotification();
+
+			notificationManager.notify(0xec9047, exportNotification);
 
 			new AsyncTask<Plant, Void, File>()
 			{
@@ -421,6 +436,7 @@ public class PlantDetailsFragment extends Fragment
 					if (file != null && file.exists() && getActivity() != null)
 					{
 						Toast.makeText(getActivity(), "Grow log successfully exported to " + file.getAbsolutePath(), Toast.LENGTH_SHORT).show();
+						notificationManager.cancel(0xec9047);
 					}
 				}
 			}.executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR, plant);

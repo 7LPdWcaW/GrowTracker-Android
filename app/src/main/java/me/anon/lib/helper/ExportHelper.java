@@ -459,7 +459,26 @@ public class ExportHelper
 			params.setCompressionMethod(Zip4jConstants.COMP_DEFLATE);
 			params.setCompressionLevel(Zip4jConstants.DEFLATE_LEVEL_NORMAL);
 			outFile.addFile(new File(tempFolder.getAbsolutePath() + "/growlog.md"), params);
-			outFile.addFolder(new File(tempFolder.getAbsolutePath() + "/images/"), params);
+
+			if (new File(tempFolder.getAbsolutePath() + "/input-ph.png").exists())
+			{
+				outFile.addFile(new File(tempFolder.getAbsolutePath() + "/input-ph.png"), params);
+			}
+
+			if (new File(tempFolder.getAbsolutePath() + "/ppm.png").exists())
+			{
+				outFile.addFile(new File(tempFolder.getAbsolutePath() + "/ppm.png"), params);
+			}
+
+			if (new File(tempFolder.getAbsolutePath() + "/temp.png").exists())
+			{
+				outFile.addFile(new File(tempFolder.getAbsolutePath() + "/temp.png"), params);
+			}
+
+			if (new File(tempFolder.getAbsolutePath() + "/images/").exists())
+			{
+				outFile.addFolder(new File(tempFolder.getAbsolutePath() + "/images/"), params);
+			}
 		}
 		catch (Exception e)
 		{
