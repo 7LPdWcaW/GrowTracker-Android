@@ -47,7 +47,7 @@ public class MainApplication extends Application
 			.cacheInMemory(true)
 			.cacheOnDisk(true)
 			.showImageOnLoading(R.drawable.ic_image)
-			.imageScaleType(ImageScaleType.EXACTLY_STRETCHED)
+			.imageScaleType(ImageScaleType.IN_SAMPLE_POWER_OF_2)
 			.bitmapConfig(Bitmap.Config.RGB_565)
 			.build();
 
