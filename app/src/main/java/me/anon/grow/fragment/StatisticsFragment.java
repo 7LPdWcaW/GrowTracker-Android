@@ -127,7 +127,7 @@ public class StatisticsFragment extends Fragment
 		aveInputPh.setText(inputAdditional[2]);
 
 		String[] ppmAdditional = new String[3];
-		StatsHelper.setPpmData(plant, ppm, inputAdditional);
+		StatsHelper.setPpmData(plant, ppm, ppmAdditional);
 		minppm.setText(ppmAdditional[0]);
 		maxppm.setText(ppmAdditional[1]);
 		aveppm.setText(ppmAdditional[2]);
