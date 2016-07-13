@@ -25,6 +25,7 @@ import java.text.DateFormat;
 import java.util.Date;
 import java.util.SortedMap;
 
+import me.anon.lib.ExportCallback;
 import me.anon.model.Action;
 import me.anon.model.EmptyAction;
 import me.anon.model.Feed;
@@ -47,10 +48,11 @@ public class ExportHelper
 	 *
 	 * @param context
 	 * @param plant
+	 * @param callback
 	 *
 	 * @return
 	 */
-	@Nullable public static File exportPlant(final Context context, @NonNull final Plant plant)
+	@Nullable public static void exportPlant(final Context context, @NonNull final Plant plant, final ExportCallback callback)
 	{
 		String folderPath = "";
 
@@ -335,7 +337,45 @@ public class ExportHelper
 			e.printStackTrace();
 		}
 
+		// Copy images to dir
+		for (String filePath : plant.getImages())
+		{
+			try
+			{
+				File currentImage = new File(filePath);
+				long fileDate = Long.parseLong(currentImage.getName().replaceAll("[^0-9]", ""));
+
+				if (fileDate == 0)
+				{
+					fileDate = currentImage.lastModified();
+				}
+
+				File imageFolderPath = new File(tempFolder.getAbsolutePath() + "/images/" + dateFolder(context, fileDate) + "/");
+				imageFolderPath.mkdirs();
+
+				FileInputStream fis = new FileInputStream(currentImage);
+				FileOutputStream fos = new FileOutputStream(new File(imageFolderPath.getAbsolutePath() + "/" + imageFolderPath.list().length + ".jpg"));
+
+				byte[] buffer = new byte[8192];
+				int len = 0;
+
+				while ((len = fis.read(buffer)) != -1)
+				{
+					fos.write(buffer, 0, len);
+				}
+
+				fis.close();
+				fos.flush();
+				fos.close();
+			}
+			catch (Exception e)
+			{
+				e.printStackTrace();
+			}
+		}
+
 		// Create stats charts and save images
+		final File finalFile = new File(exportFolder.getAbsolutePath() + "/" + plant.getName().replaceAll("[^a-zA-Z]+", "-") + ".zip");
 		final int finalTotalWater = totalWater;
 		final int finalTotalFeed = totalFeed;
 		((Activity)context).runOnUiThread(new Runnable()
@@ -412,84 +452,44 @@ public class ExportHelper
 						e.printStackTrace();
 					}
 				}
+
+				try
+				{
+					ZipFile outFile = new ZipFile(finalFile);
+					ZipParameters params = new ZipParameters();
+					params.setCompressionMethod(Zip4jConstants.COMP_DEFLATE);
+					params.setCompressionLevel(Zip4jConstants.DEFLATE_LEVEL_NORMAL);
+					outFile.addFile(new File(tempFolder.getAbsolutePath() + "/growlog.md"), params);
+
+					if (new File(tempFolder.getAbsolutePath() + "/input-ph.png").exists())
+					{
+						outFile.addFile(new File(tempFolder.getAbsolutePath() + "/input-ph.png"), params);
+					}
+
+					if (new File(tempFolder.getAbsolutePath() + "/ppm.png").exists())
+					{
+						outFile.addFile(new File(tempFolder.getAbsolutePath() + "/ppm.png"), params);
+					}
+
+					if (new File(tempFolder.getAbsolutePath() + "/temp.png").exists())
+					{
+						outFile.addFile(new File(tempFolder.getAbsolutePath() + "/temp.png"), params);
+					}
+
+					if (new File(tempFolder.getAbsolutePath() + "/images/").exists())
+					{
+						outFile.addFolder(new File(tempFolder.getAbsolutePath() + "/images/"), params);
+					}
+				}
+				catch (Exception e)
+				{
+					e.printStackTrace();
+				}
+
+				deleteRecursive(tempFolder);
+				callback.onCallback(context, finalFile);
 			}
 		});
-
-		// Copy images to dir
-		for (String filePath : plant.getImages())
-		{
-			try
-			{
-				File currentImage = new File(filePath);
-				long fileDate = Long.parseLong(currentImage.getName().replaceAll("[^0-9]", ""));
-
-				if (fileDate == 0)
-				{
-					fileDate = currentImage.lastModified();
-				}
-
-				File imageFolderPath = new File(tempFolder.getAbsolutePath() + "/images/" + dateFolder(context, fileDate) + "/");
-				imageFolderPath.mkdirs();
-
-				FileInputStream fis = new FileInputStream(currentImage);
-				FileOutputStream fos = new FileOutputStream(new File(imageFolderPath.getAbsolutePath() + "/" + imageFolderPath.list().length + ".jpg"));
-
-				byte[] buffer = new byte[8192];
-				int len = 0;
-
-				while ((len = fis.read(buffer)) != -1)
-				{
-					fos.write(buffer, 0, len);
-				}
-
-				fis.close();
-				fos.flush();
-				fos.close();
-			}
-			catch (Exception e)
-			{
-				e.printStackTrace();
-			}
-		}
-
-		File finalFile = new File(exportFolder.getAbsolutePath() + "/" + plant.getName().replaceAll("[^a-zA-Z]+", "-") + ".zip");
-
-		try
-		{
-			ZipFile outFile = new ZipFile(finalFile);
-			ZipParameters params = new ZipParameters();
-			params.setCompressionMethod(Zip4jConstants.COMP_DEFLATE);
-			params.setCompressionLevel(Zip4jConstants.DEFLATE_LEVEL_NORMAL);
-			outFile.addFile(new File(tempFolder.getAbsolutePath() + "/growlog.md"), params);
-
-			if (new File(tempFolder.getAbsolutePath() + "/input-ph.png").exists())
-			{
-				outFile.addFile(new File(tempFolder.getAbsolutePath() + "/input-ph.png"), params);
-			}
-
-			if (new File(tempFolder.getAbsolutePath() + "/ppm.png").exists())
-			{
-				outFile.addFile(new File(tempFolder.getAbsolutePath() + "/ppm.png"), params);
-			}
-
-			if (new File(tempFolder.getAbsolutePath() + "/temp.png").exists())
-			{
-				outFile.addFile(new File(tempFolder.getAbsolutePath() + "/temp.png"), params);
-			}
-
-			if (new File(tempFolder.getAbsolutePath() + "/images/").exists())
-			{
-				outFile.addFolder(new File(tempFolder.getAbsolutePath() + "/images/"), params);
-			}
-		}
-		catch (Exception e)
-		{
-			e.printStackTrace();
-		}
-
-		deleteRecursive(tempFolder);
-
-		return finalFile;
 	}
 
 	/**
