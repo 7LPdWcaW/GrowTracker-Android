@@ -140,7 +140,7 @@ public class ExportHelper
 		for (PlantStage plantStage : stages.keySet())
 		{
 			plantDetails.append("- *").append(plantStage.getPrintString()).append("*: ");
-			plantDetails.append(printableDate(context, plant.getPlantDate()));
+			plantDetails.append(printableDate(context, stages.get(plantStage)));
 
 			if (plantStage != PlantStage.PLANTED && plantStage != PlantStage.HARVESTED)
 			{
@@ -305,6 +305,7 @@ public class ExportHelper
 
 				if (newLine)
 				{
+					plantDetails.delete(plantDetails.length() - 2, plantDetails.length() - 1);
 					plantDetails.append(NEW_LINE);
 				}
 			}
