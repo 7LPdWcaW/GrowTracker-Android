@@ -105,7 +105,6 @@ public class ViewPhotosFragment extends Fragment
 		}
 
 		adapter = new ImageAdapter();
-		adapter.setImages(PlantManager.getInstance().getPlants().get(plantIndex).getImages());
 		adapter.setOnLongClickListener(new View.OnLongClickListener()
 		{
 			@Override public boolean onLongClick(View v)
@@ -144,7 +143,7 @@ public class ViewPhotosFragment extends Fragment
 										}
 
 										PlantManager.getInstance().upsert(plantIndex, plant);
-										adapter.setImages(PlantManager.getInstance().getPlants().get(plantIndex).getImages());
+										setAdapter();
 										adapter.notifyDataSetChanged();
 										mode.finish();
 									}
@@ -192,6 +191,13 @@ public class ViewPhotosFragment extends Fragment
 
 		recycler.setHasFixedSize(true);
 		recycler.setLayoutManager(new GridLayoutManager(getActivity(), 3));
+
+		setAdapter();
+	}
+
+	private void setAdapter()
+	{
+		adapter.setImages(PlantManager.getInstance().getPlants().get(plantIndex).getImages());
 
 		String lastFileDate = "";
 		List<SectionedGridRecyclerViewAdapter.Section> sections = new ArrayList<SectionedGridRecyclerViewAdapter.Section>();
@@ -248,6 +254,7 @@ public class ViewPhotosFragment extends Fragment
 		{
 			if (resultCode == Activity.RESULT_CANCELED)
 			{
+				new File(plant.getImages().get(plant.getImages().size() - 1)).delete();
 				plant.getImages().remove(plant.getImages().size() - 1);
 			}
 			else
@@ -289,7 +296,7 @@ public class ViewPhotosFragment extends Fragment
 
 			PlantManager.getInstance().upsert(plantIndex, plant);
 
-			adapter.setImages(PlantManager.getInstance().getPlants().get(plantIndex).getImages());
+			setAdapter();
 			adapter.notifyDataSetChanged();
 		}
 	}
