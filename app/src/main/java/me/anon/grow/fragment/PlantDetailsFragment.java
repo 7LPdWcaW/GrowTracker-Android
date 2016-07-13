@@ -24,6 +24,7 @@ import android.view.ViewGroup;
 import android.view.WindowManager;
 import android.widget.CheckBox;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.kenny.snackbar.SnackBar;
 import com.kenny.snackbar.SnackBarListener;
@@ -44,6 +45,7 @@ import me.anon.grow.R;
 import me.anon.grow.StatisticsActivity;
 import me.anon.grow.ViewPhotosActivity;
 import me.anon.lib.Views;
+import me.anon.lib.helper.ExportHelper;
 import me.anon.lib.helper.FabAnimator;
 import me.anon.lib.helper.ModelHelper;
 import me.anon.lib.manager.PlantManager;
@@ -400,6 +402,28 @@ public class PlantDetailsFragment extends Fragment
 				})
 				.setNegativeButton("No", null)
 				.show();
+
+			return true;
+		}
+		else if (item.getItemId() == R.id.export)
+		{
+			Toast.makeText(getActivity(), "Exporting grow log...", Toast.LENGTH_SHORT).show();
+
+			new AsyncTask<Plant, Void, File>()
+			{
+				@Override protected File doInBackground(Plant... params)
+				{
+					return ExportHelper.exportPlant(getActivity(), plant);
+				}
+
+				@Override protected void onPostExecute(File file)
+				{
+					if (file != null && file.exists() && getActivity() != null)
+					{
+						Toast.makeText(getActivity(), "Grow log successfully exported to " + file.getAbsolutePath(), Toast.LENGTH_SHORT).show();
+					}
+				}
+			}.executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR, plant);
 
 			return true;
 		}

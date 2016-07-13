@@ -10,16 +10,12 @@ import android.view.WindowManager;
 import android.widget.TextView;
 
 import com.github.mikephil.charting.charts.LineChart;
-import com.github.mikephil.charting.data.Entry;
-import com.github.mikephil.charting.data.LineData;
-import com.github.mikephil.charting.data.LineDataSet;
-import com.github.mikephil.charting.utils.ValueFormatter;
 
-import java.util.ArrayList;
 import java.util.SortedMap;
 
 import me.anon.grow.R;
 import me.anon.lib.Views;
+import me.anon.lib.helper.StatsHelper;
 import me.anon.lib.helper.TimeHelper;
 import me.anon.lib.manager.PlantManager;
 import me.anon.model.Action;
@@ -97,14 +93,6 @@ public class StatisticsFragment extends Fragment
 	@Views.InjectView(R.id.max_temp) private TextView maxtemp;
 	@Views.InjectView(R.id.ave_temp) private TextView avetemp;
 
-	private ValueFormatter formatter = new ValueFormatter()
-	{
-		@Override public String getFormattedValue(float value)
-		{
-			return String.format("%.2f", value);
-		}
-	};
-
 	@Nullable @Override public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState)
 	{
 		View view = inflater.inflate(R.layout.statistics_view, container, false);
@@ -131,9 +119,29 @@ public class StatisticsFragment extends Fragment
 		}
 
 		setStatistics();
-		setInput();
-		setPpm();
-		setTemp();
+
+		String[] inputAdditional = new String[3];
+		StatsHelper.setInputData(plant, inputPh, inputAdditional);
+		minInputPh.setText(inputAdditional[0]);
+		maxInputPh.setText(inputAdditional[1]);
+		aveInputPh.setText(inputAdditional[2]);
+
+		String[] ppmAdditional = new String[3];
+		StatsHelper.setPpmData(plant, ppm, inputAdditional);
+		minppm.setText(ppmAdditional[0]);
+		maxppm.setText(ppmAdditional[1]);
+		aveppm.setText(ppmAdditional[2]);
+
+		if (plant.getMedium() == PlantMedium.HYDRO)
+		{
+			tempContainer.setVisibility(View.VISIBLE);
+
+			String[] tempAdditional = new String[3];
+			StatsHelper.setTempData(plant, temp, tempAdditional);
+			minppm.setText(tempAdditional[0]);
+			maxppm.setText(tempAdditional[1]);
+			aveppm.setText(tempAdditional[2]);
+		}
 	}
 
 	private void setStatistics()
@@ -222,238 +230,6 @@ public class StatisticsFragment extends Fragment
 		{
 			cureTime.setText((int)TimeHelper.toDays(stages.get(PlantStage.CURING)) + " days");
 			cureTimeContainer.setVisibility(View.VISIBLE);
-		}
-	}
-
-	private void setPpm()
-	{
-		ArrayList<Entry> vals = new ArrayList<>();
-		ArrayList<String> xVals = new ArrayList<>();
-		LineData data = new LineData();
-
-		long min = Long.MAX_VALUE;
-		long max = Long.MIN_VALUE;
-		long ave = 0;
-
-		int index = 0;
-		for (Action action : plant.getActions())
-		{
-			if (action instanceof Water && ((Water)action).getPpm() != null)
-			{
-				vals.add(new Entry(((Water)action).getPpm().floatValue(), index++));
-				xVals.add("");
-
-				min = Math.min(min, ((Water)action).getPpm().longValue());
-				max = Math.max(max, ((Water)action).getPpm().longValue());
-				ave += ((Water)action).getPpm();
-			}
-		}
-
-		minppm.setText(String.valueOf((int)min));
-		maxppm.setText(String.valueOf((int)max));
-		aveppm.setText(String.valueOf((int)(ave / (double)index)));
-
-		LineDataSet dataSet = new LineDataSet(vals, "PPM");
-		dataSet.setDrawCubic(true);
-		dataSet.setLineWidth(2.0f);
-		dataSet.setDrawCircleHole(false);
-		dataSet.setCircleColor(0xffffffff);
-		dataSet.setValueTextColor(0xffffffff);
-		dataSet.setCircleSize(5.0f);
-		dataSet.setValueTextSize(8.0f);
-		dataSet.setColor(0xffA7FFEB);
-
-		ppm.setBackgroundColor(0xff1B5E20);
-		ppm.setGridBackgroundColor(0xff1B5E20);
-		ppm.setDrawGridBackground(false);
-		ppm.setHighlightEnabled(false);
-		ppm.getLegend().setEnabled(false);
-		ppm.getAxisLeft().setTextColor(0xffffffff);
-		ppm.getAxisRight().setEnabled(false);
-		ppm.getAxisLeft().setXOffset(8.0f);
-		ppm.setScaleYEnabled(false);
-		ppm.setDescription("");
-		ppm.setPinchZoom(false);
-		ppm.setDoubleTapToZoomEnabled(false);
-		ppm.setData(new LineData(xVals, dataSet));
-	}
-
-	private void setInput()
-	{
-		ArrayList<Entry> inputVals = new ArrayList<>();
-		ArrayList<Entry> runoffVals = new ArrayList<>();
-		ArrayList<Entry> averageVals = new ArrayList<>();
-		ArrayList<String> xVals = new ArrayList<>();
-		LineData data = new LineData();
-		float min = 14f;
-		float max = -14f;
-		float totalIn = 0;
-		float totalOut = 0;
-		float ave = 0;
-
-		int index = 0;
-		for (Action action : plant.getActions())
-		{
-			if (action instanceof Water)
-			{
-				if (((Water)action).getPh() != null)
-				{
-					inputVals.add(new Entry(((Water)action).getPh().floatValue(), index));
-					min = Math.min(min, ((Water)action).getPh().floatValue());
-					max = Math.max(max, ((Water)action).getPh().floatValue());
-
-					totalIn += ((Water)action).getPh().floatValue();
-				}
-
-				if (((Water)action).getRunoff() != null)
-				{
-					runoffVals.add(new Entry(((Water)action).getRunoff().floatValue(), index));
-					min = Math.min(min, ((Water)action).getRunoff().floatValue());
-					max = Math.max(max, ((Water)action).getRunoff().floatValue());
-
-					totalOut += ((Water)action).getRunoff().floatValue();
-				}
-
-				xVals.add("");
-
-				float aveIn = totalIn;
-				float aveOut = totalOut;
-				if (index > 0)
-				{
-					aveIn /= (float)index;
-					aveOut /= (float)index;
-				}
-
-//				averageVals.add(new Entry((aveIn + aveOut) / (float)index, index));
-
-				index++;
-			}
-		}
-
-		minInputPh.setText(String.valueOf(min));
-		maxInputPh.setText(String.valueOf(max));
-		aveInputPh.setText(String.format("%1$,.2f", (ave / (double)index)));
-
-		LineDataSet dataSet = new LineDataSet(inputVals, "Input PH");
-		dataSet.setDrawCubic(true);
-		dataSet.setLineWidth(2.0f);
-		dataSet.setDrawCircleHole(false);
-		dataSet.setCircleColor(0xffffffff);
-		dataSet.setValueTextColor(0xffffffff);
-		dataSet.setCircleSize(5.0f);
-		dataSet.setValueTextSize(8.0f);
-		dataSet.setValueFormatter(formatter);
-
-		LineDataSet runoffDataSet = new LineDataSet(runoffVals, "Runoff PH");
-		runoffDataSet.setDrawCubic(true);
-		runoffDataSet.setLineWidth(2.0f);
-		runoffDataSet.setDrawCircleHole(false);
-		runoffDataSet.setColor(0xffFFF9C4);
-		runoffDataSet.setCircleColor(0xffFFF9C4);
-		runoffDataSet.setValueTextColor(0xffFFF9C4);
-		runoffDataSet.setCircleSize(5.0f);
-		runoffDataSet.setValueTextSize(8.0f);
-		runoffDataSet.setValueFormatter(formatter);
-
-		LineDataSet averageDataSet = new LineDataSet(averageVals, "Average PH");
-		averageDataSet.setDrawCubic(true);
-		averageDataSet.setLineWidth(1.0f);
-		averageDataSet.setDrawCircleHole(false);
-		averageDataSet.setColor(0xffffffff);
-		averageDataSet.setCircleSize(0.0f);
-		averageDataSet.setValueTextSize(0.0f);
-		averageDataSet.setValueFormatter(null);
-
-		ArrayList<LineDataSet> dataSets = new ArrayList<LineDataSet>();
-		dataSets.add(dataSet);
-		dataSets.add(runoffDataSet);
-//		dataSets.add(averageDataSet);
-
-		LineData lineData = new LineData(xVals, dataSets);
-		lineData.setValueFormatter(formatter);
-
-		inputPh.setBackgroundColor(0xff006064);
-		inputPh.setGridBackgroundColor(0xff006064);
-		inputPh.setDrawGridBackground(false);
-		inputPh.setHighlightEnabled(false);
-		inputPh.getLegend().setTextColor(0xffffffff);
-//		inputPh.getLegend().setEnabled(false);
-		inputPh.getAxisLeft().setTextColor(0xffffffff);
-		inputPh.getAxisRight().setEnabled(false);
-		inputPh.getAxisLeft().setValueFormatter(formatter);
-//		inputPh.getAxisLeft().setXOffset(8.0f);
-		inputPh.getAxisLeft().setAxisMinValue(min - 0.5f);
-		inputPh.getAxisLeft().setAxisMaxValue(max + 0.5f);
-		inputPh.getAxisLeft().setStartAtZero(false);
-		inputPh.setScaleYEnabled(false);
-		inputPh.setDescription("");
-		inputPh.setPinchZoom(false);
-		inputPh.setDoubleTapToZoomEnabled(false);
-
-		inputPh.setData(lineData);
-	}
-
-	private void setTemp()
-	{
-		if (plant.getMedium() == PlantMedium.HYDRO)
-		{
-			tempContainer.setVisibility(View.VISIBLE);
-
-			ArrayList<Entry> vals = new ArrayList<>();
-			ArrayList<String> xVals = new ArrayList<>();
-			LineData data = new LineData();
-			float min = -100f;
-			float max = 100f;
-			float ave = 0;
-
-			int index = 0;
-			for (Action action : plant.getActions())
-			{
-				if (action instanceof Water && ((Water)action).getTemp() != null)
-				{
-					vals.add(new Entry(((Water)action).getTemp().floatValue(), index++));
-					xVals.add("");
-
-					min = Math.min(min, ((Water)action).getTemp().floatValue());
-					max = Math.max(max, ((Water)action).getTemp().floatValue());
-					ave += ((Water)action).getTemp().floatValue();
-				}
-			}
-
-			mintemp.setText(String.valueOf(min));
-			maxtemp.setText(String.valueOf(max));
-			avetemp.setText(String.format("%1$,.2f", (ave / (double)index)));
-
-			LineDataSet dataSet = new LineDataSet(vals, "Temperature");
-			dataSet.setDrawCubic(true);
-			dataSet.setLineWidth(2.0f);
-			dataSet.setDrawCircleHole(false);
-			dataSet.setCircleColor(0xffffffff);
-			dataSet.setValueTextColor(0xffffffff);
-			dataSet.setCircleSize(5.0f);
-			dataSet.setValueTextSize(8.0f);
-			dataSet.setValueFormatter(formatter);
-
-			LineData lineData = new LineData(xVals, dataSet);
-			lineData.setValueFormatter(formatter);
-
-			temp.setBackgroundColor(0xff311B92);
-			temp.setGridBackgroundColor(0xff311B92);
-			temp.setDrawGridBackground(false);
-			temp.setHighlightEnabled(false);
-			temp.getLegend().setEnabled(false);
-			temp.getAxisLeft().setTextColor(0xffffffff);
-			temp.getAxisRight().setEnabled(false);
-			temp.getAxisLeft().setValueFormatter(formatter);
-			temp.getAxisLeft().setXOffset(8.0f);
-			temp.getAxisLeft().setAxisMinValue(min - 5f);
-			temp.getAxisLeft().setAxisMaxValue(max + 5f);
-			temp.getAxisLeft().setStartAtZero(false);
-			temp.setScaleYEnabled(false);
-			temp.setDescription("");
-			temp.setPinchZoom(false);
-			temp.setDoubleTapToZoomEnabled(false);
-			temp.setData(lineData);
 		}
 	}
 }
