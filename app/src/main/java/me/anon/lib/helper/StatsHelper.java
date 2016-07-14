@@ -39,8 +39,8 @@ public class StatsHelper
 		ArrayList<Entry> averageVals = new ArrayList<>();
 		ArrayList<String> xVals = new ArrayList<>();
 		LineData data = new LineData();
-		float min = 14f;
-		float max = -14f;
+		float min = Float.MAX_VALUE;
+		float max = Float.MIN_VALUE;
 		float totalIn = 0;
 		float totalOut = 0;
 		float ave = 0;
