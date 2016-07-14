@@ -2,16 +2,18 @@ package me.anon.grow.fragment;
 
 import android.app.Fragment;
 import android.content.Intent;
-import android.content.SharedPreferences;
 import android.os.Bundle;
-import android.preference.PreferenceManager;
 import android.support.annotation.Nullable;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.helper.ItemTouchHelper;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+
+import java.util.ArrayList;
+import java.util.Arrays;
 
 import me.anon.controller.adapter.PlantAdapter;
 import me.anon.controller.adapter.SimpleItemTouchHelperCallback;
@@ -19,6 +21,7 @@ import me.anon.grow.AddPlantActivity;
 import me.anon.grow.R;
 import me.anon.lib.Views;
 import me.anon.lib.manager.PlantManager;
+import me.anon.model.Plant;
 
 /**
  * // TODO: Add class description
@@ -65,19 +68,29 @@ public class PlantListFragment extends Fragment
 		adapter.notifyDataSetChanged();
 	}
 
-	@Override public void onPause()
+	@Override public void onDestroy()
 	{
-		super.onPause();
+		super.onDestroy();
 
-		SharedPreferences.Editor prefs = PreferenceManager.getDefaultSharedPreferences(getActivity()).edit();
-		int plantsSize = adapter.getItemCount();
+		ArrayList<Plant> plants = new ArrayList<Plant>();
+		plants.addAll(new ArrayList(Arrays.asList(new Plant[adapter.getItemCount()])));
 
-		for (int index = 0; index < plantsSize; index++)
+		for (Plant plant : PlantManager.getInstance().getPlants())
 		{
-			prefs.putInt(String.valueOf(PlantManager.getInstance().getPlants().indexOf(adapter.getPlants().get(index))), index);
+			int adapterIndex = adapter.getPlants().indexOf(plant);
+
+			if (adapterIndex > -1)
+			{
+				plants.set(adapterIndex, plant);
+			}
+			else
+			{
+				plants.add(plant);
+			}
 		}
 
-		prefs.apply();
+		PlantManager.getInstance().setPlants(plants);
+		PlantManager.getInstance().save();
 	}
 
 	@Views.OnClick public void onFabAddClick(View view)
