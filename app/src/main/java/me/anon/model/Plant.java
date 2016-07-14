@@ -4,6 +4,8 @@ import android.support.annotation.Nullable;
 
 import java.util.ArrayList;
 import java.util.Comparator;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.SortedMap;
 import java.util.TreeMap;
 import java.util.UUID;
@@ -50,6 +52,25 @@ public class Plant
 
 		// This should never be reached.
 		return null;
+	}
+
+	/**
+	 * Returns a map of plant stages
+	 * @return
+	 */
+	public Map<PlantStage, Action> getStages()
+	{
+		HashMap<PlantStage, Action> stages = new HashMap<>();
+
+		for (int index = actions.size() - 1; index >= 0; index--)
+		{
+			if (actions.get(index) instanceof StageChange)
+			{
+				stages.put(((StageChange)actions.get(index)).getNewStage(), actions.get(index));
+			}
+		}
+
+		return stages;
 	}
 
 	/**
