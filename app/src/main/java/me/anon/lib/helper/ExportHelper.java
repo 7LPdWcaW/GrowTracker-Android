@@ -24,6 +24,7 @@ import java.io.FileWriter;
 import java.io.OutputStream;
 import java.text.DateFormat;
 import java.util.Date;
+import java.util.Map;
 import java.util.SortedMap;
 
 import me.anon.lib.ExportCallback;
@@ -141,10 +142,12 @@ public class ExportHelper
 		plantDetails.append(NEW_LINE);
 
 		SortedMap<PlantStage, Long> stages = plant.calculateStageTime();
+		Map<PlantStage, Action> plantStages = plant.getStages();
+
 		for (PlantStage plantStage : stages.keySet())
 		{
 			plantDetails.append("- *").append(plantStage.getPrintString()).append("*: ");
-			plantDetails.append(printableDate(context, stages.get(plantStage)));
+			plantDetails.append(printableDate(context, plantStages.get(plantStage).getDate()));
 
 			if (plantStage != PlantStage.PLANTED && plantStage != PlantStage.HARVESTED)
 			{
@@ -323,7 +326,7 @@ public class ExportHelper
 
 		plantDetails.append("##Raw plant data");
 		plantDetails.append(NEW_LINE);
-		plantDetails.append("```").append(NEW_LINE).append(GsonHelper.parse(plant)).append(NEW_LINE).append("```");
+		plantDetails.append("```").append("\r\n").append(GsonHelper.parse(plant)).append("\r\n").append("```");
 		plantDetails.append(NEW_LINE);
 		plantDetails.append("Generated using [Grow Tracker](https://github.com/7LPdWcaW/GrowTracker-Android)");
 
