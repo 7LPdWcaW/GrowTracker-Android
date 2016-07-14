@@ -1,380 +1,357 @@
 <?xml version="1.0" encoding="utf-8"?>
 
-<FrameLayout
+<ScrollView
 	xmlns:android="http://schemas.android.com/apk/res/android"
 	android:layout_width="match_parent"
-	android:layout_height="wrap_content"
+	android:layout_height="match_parent"
 >
-	<ScrollView
+	<LinearLayout
 		android:layout_width="match_parent"
-		android:layout_height="match_parent"
+		android:layout_height="wrap_content"
+		android:orientation="vertical"
 	>
 		<LinearLayout
 			android:layout_width="match_parent"
 			android:layout_height="wrap_content"
-			android:orientation="vertical"
+			android:id="@+id/action_container"
+			android:orientation="horizontal"
+			android:background="#ffffff"
+			android:elevation="4dp"
+			android:layout_marginBottom="8dp"
+			android:divider="@drawable/vertical_full_divider"
+			android:showDividers="middle"
+			android:dividerPadding="8dp"
+			android:padding="0dp"
+			android:visibility="gone"
+			style="@style/PaperCard"
 		>
-			<LinearLayout
-				android:layout_width="match_parent"
+			<TextView
+				android:layout_width="0dp"
+				android:layout_height="match_parent"
+				android:id="@+id/feeding"
+				android:layout_weight="1"
+				android:layout_gravity="center_vertical"
+				android:gravity="center"
+				android:paddingBottom="16dp"
+				android:paddingTop="16dp"
+				android:text="Feed"
+			/>
+
+			<TextView
+				android:layout_width="0dp"
+				android:layout_height="match_parent"
+				android:id="@+id/action"
+				android:layout_weight="1"
+				android:layout_gravity="center_vertical"
+				android:gravity="center"
+				android:paddingBottom="16dp"
+				android:paddingTop="16dp"
+				android:text="Action"
+			/>
+
+			<TextView
+				android:layout_width="0dp"
+				android:layout_height="match_parent"
+				android:id="@+id/note"
+				android:layout_weight="1"
+				android:layout_gravity="center_vertical"
+				android:gravity="center"
+				android:paddingBottom="16dp"
+				android:paddingTop="16dp"
+				android:text="Note"
+			/>
+
+			<TextView
+				android:layout_width="0dp"
+				android:layout_height="match_parent"
+				android:id="@+id/photo"
+				android:layout_weight="1"
+				android:layout_gravity="center_vertical"
+				android:gravity="center"
+				android:paddingBottom="16dp"
+				android:paddingTop="16dp"
+				android:text="Photo"
+			/>
+		</LinearLayout>
+
+		<LinearLayout
+			android:layout_width="match_parent"
+			android:layout_height="wrap_content"
+			android:orientation="vertical"
+			android:background="#ffffff"
+			android:elevation="4dp"
+			style="@style/PaperCard"
+		>
+			<TextView
+				android:layout_width="wrap_content"
 				android:layout_height="wrap_content"
-				android:id="@+id/action_container"
-				android:orientation="horizontal"
-				android:background="#ffffff"
-				android:elevation="4dp"
-				android:layout_marginBottom="8dp"
-				android:divider="@drawable/vertical_full_divider"
-				android:showDividers="middle"
-				android:dividerPadding="8dp"
-				android:padding="0dp"
-				android:visibility="gone"
-				style="@style/PaperCard"
-			>
-				<TextView
-					android:layout_width="0dp"
-					android:layout_height="match_parent"
-					android:id="@+id/feeding"
-					android:layout_weight="1"
-					android:layout_gravity="center_vertical"
-					android:gravity="center"
-					android:paddingBottom="16dp"
-					android:paddingTop="16dp"
-					android:text="Feed"
-				/>
-
-				<TextView
-					android:layout_width="0dp"
-					android:layout_height="match_parent"
-					android:id="@+id/action"
-					android:layout_weight="1"
-					android:layout_gravity="center_vertical"
-					android:gravity="center"
-					android:paddingBottom="16dp"
-					android:paddingTop="16dp"
-					android:text="Action"
-				/>
-
-				<TextView
-					android:layout_width="0dp"
-					android:layout_height="match_parent"
-					android:id="@+id/note"
-					android:layout_weight="1"
-					android:layout_gravity="center_vertical"
-					android:gravity="center"
-					android:paddingBottom="16dp"
-					android:paddingTop="16dp"
-					android:text="Note"
-				/>
-
-				<TextView
-					android:layout_width="0dp"
-					android:layout_height="match_parent"
-					android:id="@+id/photo"
-					android:layout_weight="1"
-					android:layout_gravity="center_vertical"
-					android:gravity="center"
-					android:paddingBottom="16dp"
-					android:paddingTop="16dp"
-					android:text="Photo"
-				/>
-			</LinearLayout>
-
-			<LinearLayout
-				android:layout_width="match_parent"
-				android:layout_height="wrap_content"
-				android:orientation="vertical"
-				android:background="#ffffff"
-				android:elevation="4dp"
-				style="@style/PaperCard"
-			>
-				<TextView
-					android:layout_width="wrap_content"
-					android:layout_height="wrap_content"
-					android:text="Plant details"
-					style="@style/SectionTitle"
-				/>
-
-				<LinearLayout
-					android:layout_width="match_parent"
-					android:layout_height="wrap_content"
-					android:orientation="vertical"
-					android:divider="@drawable/full_divider"
-					android:showDividers="middle"
-					android:layout_marginTop="16dp"
-				>
-					<LinearLayout
-						android:layout_width="match_parent"
-						android:layout_height="wrap_content"
-						android:orientation="vertical"
-						android:paddingLeft="16dp"
-						android:paddingRight="16dp"
-						android:paddingTop="8dp"
-						android:paddingBottom="16dp"
-					>
-						<TextView
-							android:layout_width="match_parent"
-							android:layout_height="wrap_content"
-							android:text="Plant name"
-							style="@style/SubsectionTitle"
-						/>
-
-						<EditText
-							android:layout_width="match_parent"
-							android:layout_height="wrap_content"
-							android:id="@+id/plant_name"
-							android:hint="New plant"
-							android:nextFocusDown="@+id/plant_strain"
-							android:singleLine="true"
-							android:inputType="textCapWords"
-							style="@style/SubsectionSubTitle"
-						/>
-					</LinearLayout>
-
-					<LinearLayout
-						android:layout_width="match_parent"
-						android:layout_height="wrap_content"
-						android:orientation="vertical"
-						android:paddingLeft="16dp"
-						android:paddingRight="16dp"
-						android:paddingTop="16dp"
-						android:paddingBottom="16dp"
-					>
-						<TextView
-							android:layout_width="match_parent"
-							android:layout_height="wrap_content"
-							android:text="Plant strain"
-							style="@style/SubsectionTitle"
-						/>
-
-						<EditText
-							android:layout_width="match_parent"
-							android:layout_height="wrap_content"
-							android:hint="Lemon haze"
-							android:id="@+id/plant_strain"
-							android:nextFocusDown="@+id/plant_date"
-							android:singleLine="true"
-							android:inputType="textCapWords"
-							style="@style/SubsectionSubTitle"
-						/>
-					</LinearLayout>
-				</LinearLayout>
-			</LinearLayout>
+				android:text="Plant details"
+				style="@style/SectionTitle"
+			/>
 
 			<LinearLayout
 				android:layout_width="match_parent"
 				android:layout_height="wrap_content"
 				android:orientation="vertical"
-				android:background="#ffffff"
-				android:elevation="4dp"
-				android:layout_marginTop="8dp"
-				style="@style/PaperCard"
-			>
-				<TextView
-					android:layout_width="wrap_content"
-					android:layout_height="wrap_content"
-					android:text="Grow details"
-					style="@style/SectionTitle"
-				/>
-
-				<LinearLayout
-					android:layout_width="match_parent"
-					android:layout_height="wrap_content"
-					android:orientation="vertical"
-					android:divider="@drawable/full_divider"
-					android:showDividers="middle"
-					android:layout_marginTop="16dp"
-				>
-					<LinearLayout
-						android:layout_width="match_parent"
-						android:layout_height="wrap_content"
-						android:id="@+id/plant_date_container"
-						android:orientation="vertical"
-						android:paddingLeft="16dp"
-						android:paddingRight="16dp"
-						android:paddingTop="8dp"
-						android:paddingBottom="16dp"
-					>
-						<TextView
-							android:layout_width="match_parent"
-							android:layout_height="wrap_content"
-							android:text="Plant date"
-							style="@style/SubsectionTitle"
-						/>
-
-						<TextView
-							android:layout_width="match_parent"
-							android:layout_height="wrap_content"
-							android:id="@+id/plant_date"
-							android:nextFocusDown="@+id/plant_stage"
-							style="@style/SubsectionSubTitle"
-						/>
-					</LinearLayout>
-
-					<LinearLayout
-						android:layout_width="match_parent"
-						android:layout_height="wrap_content"
-						android:id="@+id/plant_medium_container"
-						android:orientation="vertical"
-						android:padding="16dp"
-					>
-						<TextView
-							android:layout_width="match_parent"
-							android:layout_height="wrap_content"
-							android:text="Medium"
-							style="@style/SubsectionTitle"
-						/>
-
-						<TextView
-							android:layout_width="match_parent"
-							android:layout_height="wrap_content"
-							android:text="Soil"
-							android:id="@+id/plant_medium"
-							style="@style/SubsectionSubTitle"
-						/>
-					</LinearLayout>
-
-					<LinearLayout
-						android:layout_width="match_parent"
-						android:layout_height="wrap_content"
-						android:orientation="horizontal"
-						android:paddingLeft="16dp"
-						android:paddingRight="16dp"
-						android:paddingTop="16dp"
-						android:paddingBottom="8dp"
-					>
-						<TextView
-							android:layout_width="wrap_content"
-							android:layout_height="wrap_content"
-							android:text="From clone?"
-							style="@style/SubsectionTitle"
-						/>
-
-						<CheckBox
-							android:layout_width="wrap_content"
-							android:layout_height="wrap_content"
-							android:id="@+id/from_clone"
-							android:singleLine="true"
-							android:gravity="center"
-							android:layout_marginLeft="16dp"
-						/>
-					</LinearLayout>
-				</LinearLayout>
-			</LinearLayout>
-
-			<LinearLayout
-				android:layout_width="match_parent"
-				android:layout_height="wrap_content"
-				android:orientation="vertical"
-				android:background="#ffffff"
-				android:elevation="4dp"
-				android:layout_marginTop="8dp"
-				style="@style/PaperCard"
-			>
-				<TextView
-					android:layout_width="wrap_content"
-					android:layout_height="wrap_content"
-					android:text="Stage details"
-					style="@style/SectionTitle"
-				/>
-
-				<LinearLayout
-					android:layout_width="match_parent"
-					android:layout_height="wrap_content"
-					android:id="@+id/plant_stage_container"
-					android:orientation="vertical"
-					android:divider="@drawable/full_divider"
-					android:showDividers="middle"
-					android:layout_marginTop="16dp"
-				>
-					<LinearLayout
-						android:layout_width="match_parent"
-						android:layout_height="wrap_content"
-						android:orientation="vertical"
-						android:paddingLeft="16dp"
-						android:paddingRight="16dp"
-						android:paddingTop="8dp"
-						android:paddingBottom="16dp"
-					>
-						<TextView
-							android:layout_width="match_parent"
-							android:layout_height="wrap_content"
-							android:text="Plant stage"
-							style="@style/SubsectionTitle"
-						/>
-
-						<TextView
-							android:layout_width="match_parent"
-							android:layout_height="wrap_content"
-							android:text="Germination"
-							android:id="@+id/plant_stage"
-							style="@style/SubsectionSubTitle"
-						/>
-					</LinearLayout>
-				</LinearLayout>
-			</LinearLayout>
-
-			<LinearLayout
-				android:layout_width="match_parent"
-				android:layout_height="wrap_content"
-				android:id="@+id/link_container"
-				android:orientation="vertical"
-				android:background="#ffffff"
-				android:elevation="4dp"
-				android:layout_marginTop="8dp"
 				android:divider="@drawable/full_divider"
 				android:showDividers="middle"
-				android:visibility="gone"
-				style="@style/PaperCard"
-				android:paddingTop="0dp"
-				android:paddingBottom="0dp"
+				android:layout_marginTop="16dp"
 			>
 				<LinearLayout
 					android:layout_width="match_parent"
 					android:layout_height="wrap_content"
-					android:id="@+id/view_photos"
-					android:orientation="horizontal"
-					android:padding="16dp"
+					android:orientation="vertical"
+					android:paddingLeft="16dp"
+					android:paddingRight="16dp"
+					android:paddingTop="8dp"
+					android:paddingBottom="16dp"
 				>
 					<TextView
 						android:layout_width="match_parent"
 						android:layout_height="wrap_content"
-						android:layout_gravity="center_vertical"
-						android:text="View photos"
+						android:text="Plant name"
 						style="@style/SubsectionTitle"
+					/>
+
+					<EditText
+						android:layout_width="match_parent"
+						android:layout_height="wrap_content"
+						android:id="@+id/plant_name"
+						android:hint="New plant"
+						android:nextFocusDown="@+id/plant_strain"
+						android:singleLine="true"
+						android:inputType="textCapWords"
+						style="@style/SubsectionSubTitle"
 					/>
 				</LinearLayout>
 
 				<LinearLayout
 					android:layout_width="match_parent"
 					android:layout_height="wrap_content"
-					android:id="@+id/view_history"
-					android:orientation="horizontal"
-					android:padding="16dp"
+					android:orientation="vertical"
+					android:paddingLeft="16dp"
+					android:paddingRight="16dp"
+					android:paddingTop="16dp"
+					android:paddingBottom="16dp"
 				>
 					<TextView
 						android:layout_width="match_parent"
 						android:layout_height="wrap_content"
-						android:layout_gravity="center_vertical"
-						android:text="View history"
+						android:text="Plant strain"
 						style="@style/SubsectionTitle"
 					/>
-				</LinearLayout>
 
-				<LinearLayout
-					android:layout_width="match_parent"
-					android:layout_height="wrap_content"
-					android:id="@+id/view_statistics"
-					android:orientation="horizontal"
-					android:padding="16dp"
-				>
-					<TextView
+					<EditText
 						android:layout_width="match_parent"
 						android:layout_height="wrap_content"
-						android:layout_gravity="center_vertical"
-						android:text="View statistics"
-						style="@style/SubsectionTitle"
+						android:hint="Lemon haze"
+						android:id="@+id/plant_strain"
+						android:nextFocusDown="@+id/plant_date"
+						android:singleLine="true"
+						android:inputType="textCapWords"
+						style="@style/SubsectionSubTitle"
 					/>
 				</LinearLayout>
 			</LinearLayout>
 		</LinearLayout>
-	</ScrollView>
-</FrameLayout>
+
+		<LinearLayout
+			android:layout_width="match_parent"
+			android:layout_height="wrap_content"
+			android:orientation="vertical"
+			android:background="#ffffff"
+			android:elevation="4dp"
+			android:layout_marginTop="8dp"
+			style="@style/PaperCard"
+		>
+			<TextView
+				android:layout_width="wrap_content"
+				android:layout_height="wrap_content"
+				android:text="Grow details"
+				style="@style/SectionTitle"
+			/>
+
+			<LinearLayout
+				android:layout_width="match_parent"
+				android:layout_height="wrap_content"
+				android:orientation="vertical"
+				android:divider="@drawable/full_divider"
+				android:showDividers="middle"
+				android:layout_marginTop="16dp"
+			>
+				<LinearLayout
+					android:layout_width="match_parent"
+					android:layout_height="wrap_content"
+					android:id="@+id/plant_date_container"
+					android:orientation="vertical"
+					android:paddingLeft="16dp"
+					android:paddingRight="16dp"
+					android:paddingTop="8dp"
+					android:paddingBottom="16dp"
+				>
+					<TextView
+						android:layout_width="match_parent"
+						android:layout_height="wrap_content"
+						android:text="Plant date"
+						style="@style/SubsectionTitle"
+					/>
+
+					<TextView
+						android:layout_width="match_parent"
+						android:layout_height="wrap_content"
+						android:id="@+id/plant_date"
+						android:nextFocusDown="@+id/plant_stage"
+						style="@style/SubsectionSubTitle"
+					/>
+				</LinearLayout>
+
+				<LinearLayout
+					android:layout_width="match_parent"
+					android:layout_height="wrap_content"
+					android:id="@+id/plant_medium_container"
+					android:orientation="vertical"
+					android:padding="16dp"
+				>
+					<TextView
+						android:layout_width="match_parent"
+						android:layout_height="wrap_content"
+						android:text="Medium"
+						style="@style/SubsectionTitle"
+					/>
+
+					<TextView
+						android:layout_width="match_parent"
+						android:layout_height="wrap_content"
+						android:text="Soil"
+						android:id="@+id/plant_medium"
+						style="@style/SubsectionSubTitle"
+					/>
+				</LinearLayout>
+
+				<LinearLayout
+					android:layout_width="match_parent"
+					android:layout_height="wrap_content"
+					android:orientation="horizontal"
+					android:paddingLeft="16dp"
+					android:paddingRight="16dp"
+					android:paddingTop="16dp"
+					android:paddingBottom="8dp"
+				>
+					<TextView
+						android:layout_width="wrap_content"
+						android:layout_height="wrap_content"
+						android:text="From clone?"
+						style="@style/SubsectionTitle"
+					/>
+
+					<CheckBox
+						android:layout_width="wrap_content"
+						android:layout_height="wrap_content"
+						android:id="@+id/from_clone"
+						android:singleLine="true"
+						android:gravity="center"
+						android:layout_marginLeft="16dp"
+					/>
+				</LinearLayout>
+			</LinearLayout>
+		</LinearLayout>
+
+		<LinearLayout
+			android:layout_width="match_parent"
+			android:layout_height="wrap_content"
+			android:orientation="vertical"
+			android:background="#ffffff"
+			android:elevation="4dp"
+			android:layout_marginTop="8dp"
+			style="@style/PaperCard"
+		>
+			<TextView
+				android:layout_width="wrap_content"
+				android:layout_height="wrap_content"
+				android:text="Stage details"
+				style="@style/SectionTitle"
+			/>
+
+			<LinearLayout
+				android:layout_width="match_parent"
+				android:layout_height="wrap_content"
+				android:id="@+id/plant_stage_container"
+				android:orientation="vertical"
+				android:divider="@drawable/full_divider"
+				android:showDividers="middle"
+				android:layout_marginTop="16dp"
+			>
+				<LinearLayout
+					android:layout_width="match_parent"
+					android:layout_height="wrap_content"
+					android:orientation="vertical"
+					android:paddingLeft="16dp"
+					android:paddingRight="16dp"
+					android:paddingTop="8dp"
+					android:paddingBottom="16dp"
+				>
+					<TextView
+						android:layout_width="match_parent"
+						android:layout_height="wrap_content"
+						android:text="Plant stage"
+						style="@style/SubsectionTitle"
+					/>
+
+					<TextView
+						android:layout_width="match_parent"
+						android:layout_height="wrap_content"
+						android:text="Germination"
+						android:id="@+id/plant_stage"
+						style="@style/SubsectionSubTitle"
+					/>
+				</LinearLayout>
+			</LinearLayout>
+		</LinearLayout>
+
+		<LinearLayout
+			android:layout_width="match_parent"
+			android:layout_height="wrap_content"
+			android:id="@+id/link_container"
+			android:orientation="vertical"
+			android:background="#ffffff"
+			android:elevation="4dp"
+			android:layout_marginTop="8dp"
+			android:divider="@drawable/full_divider"
+			android:showDividers="middle"
+			android:visibility="gone"
+			style="@style/PaperCard"
+			android:paddingTop="0dp"
+			android:paddingBottom="0dp"
+		>
+			<TextView
+				android:layout_width="match_parent"
+				android:layout_height="wrap_content"
+				android:id="@+id/view_photos"
+				android:layout_gravity="center_vertical"
+				android:text="View photos"
+				style="@style/SubsectionTitle"
+				android:padding="16dp"
+			/>
+
+			<TextView
+				android:layout_width="match_parent"
+				android:layout_height="wrap_content"
+				android:id="@+id/view_history"
+				android:layout_gravity="center_vertical"
+				android:text="View history"
+				style="@style/SubsectionTitle"
+				android:padding="16dp"
+			/>
+
+			<TextView
+				android:layout_width="match_parent"
+				android:layout_height="wrap_content"
+				android:id="@+id/view_statistics"
+				android:layout_gravity="center_vertical"
+				android:text="View statistics"
+				style="@style/SubsectionTitle"
+				android:padding="16dp"
+			/>
+		</LinearLayout>
+	</LinearLayout>
+</ScrollView>

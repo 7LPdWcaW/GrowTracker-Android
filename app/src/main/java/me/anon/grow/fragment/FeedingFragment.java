@@ -130,6 +130,7 @@ public class FeedingFragment extends Fragment
 		}
 
 		setUi();
+		setHints();
 		nutrientNutrientContainer.setOnClickListener(new View.OnClickListener()
 		{
 			@Override public void onClick(View v)
@@ -199,6 +200,77 @@ public class FeedingFragment extends Fragment
 				}
 			}
 		});
+	}
+
+	private void setHints()
+	{
+		if (feed != null)
+		{
+			Feed hintFeed = null;
+
+			for (int index = plant.getActions().size() - 1; index >= 0; index--)
+			{
+				if (plant.getActions().get(index).getClass() == Feed.class)
+				{
+					hintFeed = (Feed)plant.getActions().get(index);
+					break;
+				}
+				else if (plant.getActions().get(index).getClass() == Water.class)
+				{
+					Water water = (Water)plant.getActions().get(index);
+
+					hintFeed = new Feed();
+					hintFeed.setDate(water.getDate());
+					hintFeed.setPh(water.getPh());
+					hintFeed.setPpm(water.getPpm());
+					hintFeed.setRunoff(water.getRunoff());
+					hintFeed.setAmount(water.getAmount());
+					hintFeed.setTemp(water.getTemp());
+					hintFeed.setNotes(water.getNotes());
+					break;
+				}
+			}
+
+			if (hintFeed != null)
+			{
+				if (hintFeed.getPh() != null)
+				{
+					waterPh.setHint(String.valueOf(hintFeed.getPh()));
+				}
+
+				if (hintFeed.getPpm() != null)
+				{
+					waterPpm.setHint(String.valueOf(hintFeed.getPpm()));
+				}
+
+				if (hintFeed.getRunoff() != null)
+				{
+					runoffPh.setHint(String.valueOf(hintFeed.getRunoff()));
+				}
+
+				if (hintFeed.getAmount() != null)
+				{
+					amount.setHint(String.valueOf(hintFeed.getAmount()));
+				}
+
+				if (plant.getMedium() == PlantMedium.HYDRO)
+				{
+					tempContainer.setVisibility(View.VISIBLE);
+
+					if (hintFeed.getTemp() != null)
+					{
+						temp.setHint(String.valueOf(hintFeed.getTemp()));
+					}
+				}
+
+				if (hintFeed.getMlpl() != null)
+				{
+					nutrientAmount.setHint(String.valueOf(hintFeed.getMlpl()));
+				}
+
+				notes.setHint(hintFeed.getNotes());
+			}
+		}
 	}
 
 	private void setUi()

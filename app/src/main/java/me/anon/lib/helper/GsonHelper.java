@@ -10,6 +10,7 @@ import com.google.gson.JsonParseException;
 import com.google.gson.JsonSerializationContext;
 import com.google.gson.JsonSerializer;
 
+import java.io.Writer;
 import java.lang.reflect.Type;
 
 import me.anon.model.Action;
@@ -41,6 +42,11 @@ public class GsonHelper
 	public static String parse(Object object)
 	{
 		return getGson().toJson(object);
+	}
+
+	public static void parse(Object object, Writer writer)
+	{
+		getGson().toJson(object, writer);
 	}
 
 	public static Gson getGson()
