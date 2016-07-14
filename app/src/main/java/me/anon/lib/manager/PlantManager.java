@@ -1,9 +1,11 @@
 package me.anon.lib.manager;
 
 import android.content.Context;
+import android.content.Intent;
 import android.content.SharedPreferences;
 import android.preference.PreferenceManager;
 import android.text.TextUtils;
+import android.widget.Toast;
 
 import com.google.gson.JsonSyntaxException;
 import com.google.gson.reflect.TypeToken;
@@ -36,7 +38,7 @@ public class PlantManager
 
 	private static String FILES_DIR;
 
-	private ArrayList<Plant> mPlants;
+	private final ArrayList<Plant> mPlants = new ArrayList<>();
 	private Context context;
 
 	private PlantManager(){}
@@ -72,6 +74,12 @@ public class PlantManager
 		ordered.removeAll(Collections.singleton(null));
 
 		return ordered;
+	}
+
+	public void setPlants(ArrayList<Plant> plants)
+	{
+		this.mPlants.clear();
+		this.mPlants.addAll(plants);
 	}
 
 	public void addPlant(Plant plant)
@@ -133,7 +141,8 @@ public class PlantManager
 			{
 				if (!TextUtils.isEmpty(plantData))
 				{
-					mPlants = (ArrayList<Plant>)GsonHelper.parse(plantData, new TypeToken<ArrayList<Plant>>(){}.getType());
+					mPlants.clear();
+					mPlants.addAll((ArrayList<Plant>)GsonHelper.parse(plantData, new TypeToken<ArrayList<Plant>>(){}.getType()));
 				}
 			}
 			catch (JsonSyntaxException e)
@@ -141,27 +150,35 @@ public class PlantManager
 				e.printStackTrace();
 			}
 		}
-
-		if (mPlants == null)
-		{
-			mPlants = new ArrayList<>();
-		}
 	}
 
 	public void save()
 	{
-		if (MainApplication.isEncrypted())
+		synchronized (mPlants)
 		{
-			if (TextUtils.isEmpty(MainApplication.getKey()))
+			if (MainApplication.isEncrypted())
 			{
-				return;
+				if (TextUtils.isEmpty(MainApplication.getKey()))
+				{
+					return;
+				}
+
+				FileManager.getInstance().writeFile(FILES_DIR + "/plants.json", EncryptionHelper.encrypt(MainApplication.getKey(), GsonHelper.parse(mPlants)));
+			}
+			else
+			{
+				FileManager.getInstance().writeFile(FILES_DIR + "/plants.json", GsonHelper.parse(mPlants));
 			}
 
-			FileManager.getInstance().writeFile(FILES_DIR + "/plants.json", EncryptionHelper.encrypt(MainApplication.getKey(), GsonHelper.parse(mPlants)));
-		}
-		else
-		{
-			FileManager.getInstance().writeFile(FILES_DIR + "/plants.json", GsonHelper.parse(mPlants));
+			if (new File(FILES_DIR + "/plants.json").length() == 0 || !new File(FILES_DIR + "/plants.json").exists())
+			{
+				Toast.makeText(context, "There was a fatal problem saving the plant data, please backup this data", Toast.LENGTH_LONG).show();
+				String sendData = GsonHelper.parse(mPlants);
+				Intent share = new Intent(Intent.ACTION_SEND);
+				share.setType("text/plain");
+				share.putExtra(Intent.EXTRA_TEXT, "== WARNING : PLEASE BACK UP THIS DATA == \r\n\r\n " + sendData);
+				context.startActivity(share);
+			}
 		}
 	}
 }

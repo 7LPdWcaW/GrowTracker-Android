@@ -13,6 +13,7 @@ import android.view.ViewGroup;
 import com.github.mikephil.charting.charts.LineChart;
 
 import net.lingala.zip4j.core.ZipFile;
+import net.lingala.zip4j.exception.ZipException;
 import net.lingala.zip4j.model.ZipParameters;
 import net.lingala.zip4j.util.Zip4jConstants;
 
@@ -25,6 +26,7 @@ import java.text.DateFormat;
 import java.util.Date;
 import java.util.SortedMap;
 
+import me.anon.lib.ExportCallback;
 import me.anon.model.Action;
 import me.anon.model.EmptyAction;
 import me.anon.model.Feed;
@@ -47,10 +49,11 @@ public class ExportHelper
 	 *
 	 * @param context
 	 * @param plant
+	 * @param callback
 	 *
 	 * @return
 	 */
-	@Nullable public static File exportPlant(final Context context, @NonNull final Plant plant)
+	@Nullable public static void exportPlant(final Context context, @NonNull final Plant plant, final ExportCallback callback)
 	{
 		String folderPath = "";
 
@@ -93,7 +96,7 @@ public class ExportHelper
 				}
 			}
 
-			if (action instanceof Feed)
+			if (action.getClass() == Feed.class)
 			{
 				if (lastFeed != 0)
 				{
@@ -104,7 +107,7 @@ public class ExportHelper
 				lastFeed = action.getDate();
 
 			}
-			else if (action instanceof Water)
+			else if (action.getClass() == Water.class)
 			{
 				if (lastWater != 0)
 				{
@@ -114,7 +117,8 @@ public class ExportHelper
 				totalWater++;
 				lastWater = action.getDate();
 			}
-			else if (action instanceof EmptyAction && ((EmptyAction)action).getAction() == Action.ActionName.FLUSH)
+
+			if (action instanceof EmptyAction && ((EmptyAction)action).getAction() == Action.ActionName.FLUSH)
 			{
 				totalFlush++;
 			}
@@ -140,7 +144,7 @@ public class ExportHelper
 		for (PlantStage plantStage : stages.keySet())
 		{
 			plantDetails.append("- *").append(plantStage.getPrintString()).append("*: ");
-			plantDetails.append(printableDate(context, plant.getPlantDate()));
+			plantDetails.append(printableDate(context, stages.get(plantStage)));
 
 			if (plantStage != PlantStage.PLANTED && plantStage != PlantStage.HARVESTED)
 			{
@@ -305,6 +309,7 @@ public class ExportHelper
 
 				if (newLine)
 				{
+					plantDetails.delete(plantDetails.length() - 2, plantDetails.length() - 1);
 					plantDetails.append(NEW_LINE);
 				}
 			}
@@ -319,6 +324,8 @@ public class ExportHelper
 		plantDetails.append("##Raw plant data");
 		plantDetails.append(NEW_LINE);
 		plantDetails.append("```").append(NEW_LINE).append(GsonHelper.parse(plant)).append(NEW_LINE).append("```");
+		plantDetails.append(NEW_LINE);
+		plantDetails.append("Generated using [Grow Tracker](https://github.com/7LPdWcaW/GrowTracker-Android)");
 
 		// Write the log
 		try
@@ -332,86 +339,6 @@ public class ExportHelper
 		{
 			e.printStackTrace();
 		}
-
-		// Create stats charts and save images
-		final int finalTotalWater = totalWater;
-		final int finalTotalFeed = totalFeed;
-		((Activity)context).runOnUiThread(new Runnable()
-		{
-			@Override public void run()
-			{
-				int width = 512 + (finalTotalWater + finalTotalFeed * 150);
-				int height = 512;
-				int widthMeasureSpec = View.MeasureSpec.makeMeasureSpec(width, View.MeasureSpec.EXACTLY);
-				int heightMeasureSpec = View.MeasureSpec.makeMeasureSpec(height, View.MeasureSpec.EXACTLY);
-
-				LineChart inputPh = new LineChart(context);
-				inputPh.setLayoutParams(new ViewGroup.LayoutParams(width, height));
-				inputPh.setMinimumWidth(width);
-				inputPh.setMinimumHeight(height);
-				inputPh.measure(widthMeasureSpec, heightMeasureSpec);
-				inputPh.requestLayout();
-				inputPh.layout(0, 0, width, height);
-				StatsHelper.setInputData(plant, inputPh, null);
-
-				try
-				{
-					OutputStream stream = new FileOutputStream(tempFolder.getAbsolutePath() + "/input-ph.png");
-					inputPh.getChartBitmap().compress(Bitmap.CompressFormat.PNG, 100, stream);
-
-					stream.close();
-				}
-				catch (Exception e)
-				{
-					e.printStackTrace();
-				}
-
-				LineChart ppm = new LineChart(context);
-				ppm.setLayoutParams(new ViewGroup.LayoutParams(width, height));
-				ppm.setMinimumWidth(width);
-				ppm.setMinimumHeight(height);
-				ppm.measure(widthMeasureSpec, heightMeasureSpec);
-				ppm.requestLayout();
-				ppm.layout(0, 0, width, height);
-				StatsHelper.setPpmData(plant, ppm, null);
-
-				try
-				{
-					OutputStream stream = new FileOutputStream(tempFolder.getAbsolutePath() + "/ppm.png");
-					ppm.getChartBitmap().compress(Bitmap.CompressFormat.PNG, 100, stream);
-
-					stream.close();
-				}
-				catch (Exception e)
-				{
-					e.printStackTrace();
-				}
-
-				if (plant.getMedium() == PlantMedium.HYDRO)
-				{
-					LineChart temp = new LineChart(context);
-					temp.setLayoutParams(new ViewGroup.LayoutParams(width, height));
-					temp.setMinimumWidth(width);
-					temp.setMinimumHeight(height);
-					temp.measure(widthMeasureSpec, heightMeasureSpec);
-					temp.requestLayout();
-					temp.layout(0, 0, width, height);
-					StatsHelper.setTempData(plant, temp, null);
-
-					try
-					{
-						OutputStream stream = new FileOutputStream(tempFolder.getAbsolutePath() + "/temp.png");
-						temp.getChartBitmap().compress(Bitmap.CompressFormat.PNG, 100, stream);
-
-						stream.close();
-					}
-					catch (Exception e)
-					{
-						e.printStackTrace();
-					}
-				}
-			}
-		});
 
 		// Copy images to dir
 		for (String filePath : plant.getImages())
@@ -430,7 +357,7 @@ public class ExportHelper
 				imageFolderPath.mkdirs();
 
 				FileInputStream fis = new FileInputStream(currentImage);
-				FileOutputStream fos = new FileOutputStream(new File(imageFolderPath.getAbsolutePath() + "/" + imageFolderPath.list().length + ".jpg"));
+				FileOutputStream fos = new FileOutputStream(new File(imageFolderPath.getAbsolutePath() + "/" + fileDate + ".jpg"));
 
 				byte[] buffer = new byte[8192];
 				int len = 0;
@@ -450,25 +377,135 @@ public class ExportHelper
 			}
 		}
 
-		File finalFile = new File(exportFolder.getAbsolutePath() + "/" + plant.getName().replaceAll("[^a-zA-Z]+", "-") + ".zip");
-
 		try
 		{
-			ZipFile outFile = new ZipFile(finalFile);
-			ZipParameters params = new ZipParameters();
+			// Create stats charts and save images
+			final File finalFile = new File(exportFolder.getAbsolutePath() + "/" + plant.getName().replaceAll("[^a-zA-Z]+", "-") + ".zip");
+
+			if (finalFile.exists())
+			{
+				finalFile.delete();
+			}
+
+			final ZipFile outFile = new ZipFile(finalFile);
+			final ZipParameters params = new ZipParameters();
 			params.setCompressionMethod(Zip4jConstants.COMP_DEFLATE);
 			params.setCompressionLevel(Zip4jConstants.DEFLATE_LEVEL_NORMAL);
 			outFile.addFile(new File(tempFolder.getAbsolutePath() + "/growlog.md"), params);
-			outFile.addFolder(new File(tempFolder.getAbsolutePath() + "/images/"), params);
+
+			if (new File(tempFolder.getAbsolutePath() + "/images/").exists())
+			{
+				outFile.addFolder(new File(tempFolder.getAbsolutePath() + "/images/"), params);
+			}
+
+			final int finalTotalWater = totalWater;
+			final int finalTotalFeed = totalFeed;
+			((Activity)context).runOnUiThread(new Runnable()
+			{
+				@Override public void run()
+				{
+					int width = 512 + (finalTotalWater + finalTotalFeed * 150);
+					int height = 512;
+					int widthMeasureSpec = View.MeasureSpec.makeMeasureSpec(width, View.MeasureSpec.EXACTLY);
+					int heightMeasureSpec = View.MeasureSpec.makeMeasureSpec(height, View.MeasureSpec.EXACTLY);
+
+					LineChart inputPh = new LineChart(context);
+					inputPh.setLayoutParams(new ViewGroup.LayoutParams(width, height));
+					inputPh.setMinimumWidth(width);
+					inputPh.setMinimumHeight(height);
+					inputPh.measure(widthMeasureSpec, heightMeasureSpec);
+					inputPh.requestLayout();
+					inputPh.layout(0, 0, width, height);
+					StatsHelper.setInputData(plant, inputPh, null);
+
+					try
+					{
+						OutputStream stream = new FileOutputStream(tempFolder.getAbsolutePath() + "/input-ph.png");
+						inputPh.getChartBitmap().compress(Bitmap.CompressFormat.PNG, 100, stream);
+
+						stream.close();
+					}
+					catch (Exception e)
+					{
+						e.printStackTrace();
+					}
+
+					LineChart ppm = new LineChart(context);
+					ppm.setLayoutParams(new ViewGroup.LayoutParams(width, height));
+					ppm.setMinimumWidth(width);
+					ppm.setMinimumHeight(height);
+					ppm.measure(widthMeasureSpec, heightMeasureSpec);
+					ppm.requestLayout();
+					ppm.layout(0, 0, width, height);
+					StatsHelper.setPpmData(plant, ppm, null);
+
+					try
+					{
+						OutputStream stream = new FileOutputStream(tempFolder.getAbsolutePath() + "/ppm.png");
+						ppm.getChartBitmap().compress(Bitmap.CompressFormat.PNG, 100, stream);
+
+						stream.close();
+					}
+					catch (Exception e)
+					{
+						e.printStackTrace();
+					}
+
+					if (plant.getMedium() == PlantMedium.HYDRO)
+					{
+						LineChart temp = new LineChart(context);
+						temp.setLayoutParams(new ViewGroup.LayoutParams(width, height));
+						temp.setMinimumWidth(width);
+						temp.setMinimumHeight(height);
+						temp.measure(widthMeasureSpec, heightMeasureSpec);
+						temp.requestLayout();
+						temp.layout(0, 0, width, height);
+						StatsHelper.setTempData(plant, temp, null);
+
+						try
+						{
+							OutputStream stream = new FileOutputStream(tempFolder.getAbsolutePath() + "/temp.png");
+							temp.getChartBitmap().compress(Bitmap.CompressFormat.PNG, 100, stream);
+
+							stream.close();
+						}
+						catch (Exception e)
+						{
+							e.printStackTrace();
+						}
+					}
+
+					try
+					{
+						if (new File(tempFolder.getAbsolutePath() + "/input-ph.png").exists())
+						{
+							outFile.addFile(new File(tempFolder.getAbsolutePath() + "/input-ph.png"), params);
+						}
+
+						if (new File(tempFolder.getAbsolutePath() + "/ppm.png").exists())
+						{
+							outFile.addFile(new File(tempFolder.getAbsolutePath() + "/ppm.png"), params);
+						}
+
+						if (new File(tempFolder.getAbsolutePath() + "/temp.png").exists())
+						{
+							outFile.addFile(new File(tempFolder.getAbsolutePath() + "/temp.png"), params);
+						}
+					}
+					catch (Exception e)
+					{
+						e.printStackTrace();
+					}
+
+					deleteRecursive(tempFolder);
+					callback.onCallback(context, finalFile);
+				}
+			});
 		}
-		catch (Exception e)
+		catch (ZipException e)
 		{
 			e.printStackTrace();
 		}
-
-		deleteRecursive(tempFolder);
-
-		return finalFile;
 	}
 
 	/**
