@@ -127,7 +127,7 @@ public class StatisticsFragment extends Fragment
 		aveInputPh.setText(inputAdditional[2]);
 
 		String[] ppmAdditional = new String[3];
-		StatsHelper.setPpmData(plant, ppm, inputAdditional);
+		StatsHelper.setPpmData(plant, ppm, ppmAdditional);
 		minppm.setText(ppmAdditional[0]);
 		maxppm.setText(ppmAdditional[1]);
 		aveppm.setText(ppmAdditional[2]);
@@ -163,7 +163,7 @@ public class StatisticsFragment extends Fragment
 				}
 			}
 
-			if (action instanceof Feed)
+			if (action.getClass() == Feed.class)
 			{
 				if (lastFeed != 0)
 				{
@@ -174,7 +174,7 @@ public class StatisticsFragment extends Fragment
 				lastFeed = action.getDate();
 
 			}
-			else if (action instanceof Water)
+			else if (action.getClass() == Water.class)
 			{
 				if (lastWater != 0)
 				{
@@ -184,7 +184,8 @@ public class StatisticsFragment extends Fragment
 				totalWater++;
 				lastWater = action.getDate();
 			}
-			else if (action instanceof EmptyAction && ((EmptyAction)action).getAction() == Action.ActionName.FLUSH)
+
+			if (action instanceof EmptyAction && ((EmptyAction)action).getAction() == Action.ActionName.FLUSH)
 			{
 				totalFlush++;
 			}
