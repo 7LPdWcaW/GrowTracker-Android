@@ -122,14 +122,14 @@ public class StatisticsFragment extends Fragment
 
 		String[] inputAdditional = new String[3];
 		StatsHelper.setInputData(plant, inputPh, inputAdditional);
-		minInputPh.setText(inputAdditional[0]);
-		maxInputPh.setText(inputAdditional[1]);
+		minInputPh.setText(inputAdditional[0].equals(String.valueOf(Float.MAX_VALUE)) ? "0" : inputAdditional[0]);
+		maxInputPh.setText(inputAdditional[1].equals(String.valueOf(Float.MIN_VALUE)) ? "0" : inputAdditional[1]);
 		aveInputPh.setText(inputAdditional[2]);
 
 		String[] ppmAdditional = new String[3];
 		StatsHelper.setPpmData(plant, ppm, ppmAdditional);
-		minppm.setText(ppmAdditional[0]);
-		maxppm.setText(ppmAdditional[1]);
+		minppm.setText(ppmAdditional[0].equals(String.valueOf(Long.MAX_VALUE)) ? "0" : ppmAdditional[0]);
+		maxppm.setText(ppmAdditional[1].equals(String.valueOf(Long.MIN_VALUE)) ? "0" : ppmAdditional[1]);
 		aveppm.setText(ppmAdditional[2]);
 
 		if (plant.getMedium() == PlantMedium.HYDRO)
