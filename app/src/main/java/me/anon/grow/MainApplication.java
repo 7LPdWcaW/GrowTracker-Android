@@ -19,6 +19,7 @@ import java.net.URISyntaxException;
 
 import lombok.Getter;
 import lombok.Setter;
+import me.anon.lib.handler.ExceptionHandler;
 import me.anon.lib.manager.PlantManager;
 import me.anon.lib.stream.DecryptInputStream;
 
@@ -38,6 +39,8 @@ public class MainApplication extends Application
 	@Override public void onCreate()
 	{
 		super.onCreate();
+
+		ExceptionHandler.getInstance().register(this);
 
 		encrypted = PreferenceManager.getDefaultSharedPreferences(this).getBoolean("encrypt", false);
 
