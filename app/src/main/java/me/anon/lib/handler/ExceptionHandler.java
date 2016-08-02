@@ -3,6 +3,7 @@ package me.anon.lib.handler;
 import android.content.Context;
 import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
+import android.os.Environment;
 
 import java.io.File;
 import java.io.FilenameFilter;
@@ -54,7 +55,7 @@ public class ExceptionHandler
 			e.printStackTrace();
 		}
 
-		filesPath = context.getFilesDir().getAbsolutePath() + "/files/crashes/";
+		filesPath = Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DCIM).getPath() + "/GrowTracker/crashes/";
 		new File(filesPath).mkdirs();
 
 		new Thread()
