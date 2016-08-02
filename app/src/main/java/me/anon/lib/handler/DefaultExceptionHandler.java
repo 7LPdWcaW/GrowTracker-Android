@@ -2,10 +2,13 @@ package me.anon.lib.handler;
 
 import com.google.gson.Gson;
 
+import java.io.BufferedWriter;
+import java.io.FileWriter;
+import java.io.PrintWriter;
+import java.io.StringWriter;
 import java.lang.Thread.UncaughtExceptionHandler;
 import java.util.Random;
 
-import me.anon.lib.manager.FileManager;
 import me.anon.model.CrashReport;
 
 public class DefaultExceptionHandler implements UncaughtExceptionHandler
@@ -32,9 +35,13 @@ public class DefaultExceptionHandler implements UncaughtExceptionHandler
 	{
 		try
 		{
+			StringWriter strWriter = new StringWriter();
+			PrintWriter writer = new PrintWriter(strWriter);
+			e.printStackTrace(writer);
+
 			CrashReport report = new CrashReport();
 			report.setException(e);
-			report.setAdditionalMessage(optionalMessage);
+			report.setAdditionalMessage(strWriter.toString() + "\r\n" + optionalMessage);
 			report.setModel(android.os.Build.MODEL);
 			report.setManufacturer(android.os.Build.MANUFACTURER);
 			report.setOsVersion(android.os.Build.VERSION.RELEASE);
@@ -47,7 +54,9 @@ public class DefaultExceptionHandler implements UncaughtExceptionHandler
 			int random = generator.nextInt(99999);
 			String filename = Integer.toString(random) + ".stacktrace";
 
-			FileManager.getInstance().writeFile(ExceptionHandler.getInstance().getFilesPath(), filename, new Gson().toJson(report));
+			BufferedWriter bufferedWriter = new BufferedWriter(new FileWriter(ExceptionHandler.getInstance().getFilesPath() + "/" + filename));
+			bufferedWriter.write(new Gson().toJson(report));
+			bufferedWriter.close();
 		}
 		catch (Exception ebos)
 		{
