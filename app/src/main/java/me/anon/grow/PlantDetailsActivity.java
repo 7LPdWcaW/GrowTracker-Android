@@ -3,6 +3,7 @@ package me.anon.grow;
 import android.app.Fragment;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
+import android.support.v7.widget.Toolbar;
 import android.view.MenuItem;
 
 import lombok.experimental.Accessors;
@@ -26,10 +27,10 @@ public class PlantDetailsActivity extends AppCompatActivity
 	{
 		super.onCreate(savedInstanceState);
 
+		setContentView(R.layout.fragment_holder);
+		setSupportActionBar((Toolbar)findViewById(R.id.toolbar));
 		getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 		getSupportActionBar().setHomeAsUpIndicator(R.drawable.ic_done_white_24dp);
-
-		setContentView(R.layout.fragment_holder);
 		Views.inject(this);
 
 		int plantIndex = -1;
