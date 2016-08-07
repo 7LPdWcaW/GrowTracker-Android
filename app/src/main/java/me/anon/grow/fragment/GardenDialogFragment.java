@@ -99,9 +99,10 @@ public class GardenDialogFragment extends DialogFragment
 						if (garden == null)
 						{
 							garden = new Garden();
-							garden.setName(name.getText().toString());
-							garden.setPlantIds(adapter.getSelectedIds());
 						}
+
+						garden.setName(name.getText().toString());
+						garden.setPlantIds(adapter.getSelectedIds());
 
 						if (onEditGardenListener != null)
 						{
