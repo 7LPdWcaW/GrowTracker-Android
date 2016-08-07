@@ -17,6 +17,9 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 
+import com.kenny.snackbar.SnackBar;
+import com.kenny.snackbar.SnackBarListener;
+
 import java.util.ArrayList;
 import java.util.Arrays;
 
@@ -27,6 +30,8 @@ import me.anon.grow.AddPlantActivity;
 import me.anon.grow.MainActivity;
 import me.anon.grow.R;
 import me.anon.lib.Views;
+import me.anon.lib.event.GardenChangeEvent;
+import me.anon.lib.helper.BusHelper;
 import me.anon.lib.manager.GardenManager;
 import me.anon.lib.manager.PlantManager;
 import me.anon.model.Garden;
@@ -142,7 +147,7 @@ public class PlantListFragment extends Fragment
 		{
 			inflater.inflate(R.menu.plant_list_menu, menu);
 		}
-		
+
 		super.onCreateOptionsMenu(menu, inflater);
 	}
 
@@ -180,8 +185,25 @@ public class PlantListFragment extends Fragment
 				{
 					@Override public void onClick(DialogInterface dialogInterface, int i)
 					{
+						final Garden oldGarden = garden;
+						final int oldIndex = GardenManager.getInstance().getGardens().indexOf(garden);
+
 						GardenManager.getInstance().getGardens().remove(garden);
 						GardenManager.getInstance().save();
+
+						SnackBar.show(getActivity(), "Garden deleted", "undo", new SnackBarListener()
+						{
+							@Override public void onSnackBarStarted(Object o){}
+							@Override public void onSnackBarFinished(Object o){}
+
+							@Override public void onSnackBarAction(Object o)
+							{
+								GardenManager.getInstance().getGardens().add(oldIndex, oldGarden);
+								GardenManager.getInstance().save();
+
+								BusHelper.getInstance().post(new GardenChangeEvent());
+							}
+						});
 
 						((MainActivity)getActivity()).setNavigationView();
 						((MainActivity)getActivity()).getNavigation().getMenu().findItem(R.id.all).setChecked(true);
