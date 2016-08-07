@@ -8,14 +8,19 @@ import android.content.DialogInterface;
 import android.os.Bundle;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.text.TextUtils;
 import android.view.View;
 import android.widget.EditText;
+import android.widget.TextView;
+
+import java.util.ArrayList;
 
 import me.anon.controller.adapter.PlantSelectionAdapter;
 import me.anon.grow.R;
 import me.anon.lib.Views;
 import me.anon.lib.manager.PlantManager;
 import me.anon.model.Garden;
+import me.anon.model.Plant;
 
 /**
  * // TODO: Add class description
@@ -52,23 +57,11 @@ public class GardenDialogFragment extends DialogFragment
 		recyclerView.setAdapter(adapter);
 		recyclerView.setLayoutManager(new LinearLayoutManager(getActivity(), LinearLayoutManager.VERTICAL, false));
 
-		return new AlertDialog.Builder(getActivity())
+		final AlertDialog alertDialog = new AlertDialog.Builder(getActivity())
 			.setTitle("Garden")
 			.setView(view)
-			.setPositiveButton("Ok", new DialogInterface.OnClickListener()
-			{
-				public void onClick(DialogInterface dialog, int whichButton)
-				{
-
-				}
-			})
-			.setNeutralButton("Select All", new DialogInterface.OnClickListener()
-			{
-				@Override public void onClick(DialogInterface dialog, int which)
-				{
-
-				}
-			})
+			.setPositiveButton("Ok", null)
+			.setNeutralButton("Select All", null)
 			.setNegativeButton("Cancel", new DialogInterface.OnClickListener()
 			{
 				public void onClick(DialogInterface dialog, int whichButton)
@@ -76,5 +69,56 @@ public class GardenDialogFragment extends DialogFragment
 					dialog.dismiss();
 				}
 			}).create();
+
+		alertDialog.setOnShowListener(new DialogInterface.OnShowListener()
+		{
+			@Override public void onShow(DialogInterface dialogInterface)
+			{
+				alertDialog.getButton(DialogInterface.BUTTON_POSITIVE).setOnClickListener(new View.OnClickListener()
+				{
+					@Override public void onClick(View view)
+					{
+						if (TextUtils.isEmpty(name.getText()))
+						{
+							name.setError("Field is required");
+							return;
+						}
+
+						alertDialog.dismiss();
+					}
+				});
+
+				alertDialog.getButton(DialogInterface.BUTTON_NEUTRAL).setOnClickListener(new View.OnClickListener()
+				{
+					@Override public void onClick(View view)
+					{
+						view.setTag(view.getTag() == null || !(boolean)view.getTag());
+
+						if ((boolean)view.getTag())
+						{
+							ArrayList<String> plantIds = new ArrayList<String>();
+							for (Plant plant : adapter.getPlants())
+							{
+								plantIds.add(plant.getId());
+							}
+
+							adapter.setSelectedIds(plantIds);
+							adapter.notifyDataSetChanged();
+							((TextView)view).setText("Select none");
+						}
+						else
+						{
+							ArrayList<String> plantIds = new ArrayList<String>();
+
+							adapter.setSelectedIds(plantIds);
+							adapter.notifyDataSetChanged();
+							((TextView)view).setText("Select all");
+						}
+					}
+				});
+			}
+		});
+
+		return alertDialog;
 	}
 }
