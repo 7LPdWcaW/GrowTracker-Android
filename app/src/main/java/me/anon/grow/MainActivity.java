@@ -50,11 +50,6 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 		setSupportActionBar(toolbar);
 		setNavigationView();
 		showDrawerToggle();
-
-		if (getFragmentManager().findFragmentByTag(TAG_FRAGMENT) == null)
-		{
-			getFragmentManager().beginTransaction().replace(R.id.fragment_holder, new PlantListFragment(), TAG_FRAGMENT).commit();
-		}
 	}
 
 	public void setNavigationView()
@@ -67,7 +62,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 		for (int index = 0, gardensSize = gardens.size(); index < gardensSize; index++)
 		{
 			Garden garden = gardens.get(index);
-			navigation.getMenu().add(R.id.gardens, 101 + index, 1, garden.getName());
+			navigation.getMenu().add(R.id.gardens, 100 + index, 1, garden.getName()).setCheckable(true);
 		}
 	}
 
@@ -144,6 +139,25 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 			item.setChecked(false);
 
 			return false;
+		}
+		else if (item.getItemId() == R.id.all)
+		{
+			if (getFragmentManager().findFragmentByTag(TAG_FRAGMENT) == null)
+			{
+				getFragmentManager().beginTransaction().replace(R.id.fragment_holder, PlantListFragment.newInstance(null), TAG_FRAGMENT).commit();
+			}
+
+			return true;
+		}
+		else if (item.getItemId() > 100 && item.getItemId() < Integer.MAX_VALUE)
+		{
+			if (getFragmentManager().findFragmentByTag(TAG_FRAGMENT) == null)
+			{
+				int gardenIndex = item.getItemId() - 100;
+				getFragmentManager().beginTransaction().replace(R.id.fragment_holder, PlantListFragment.newInstance(GardenManager.getInstance().getGardens().get(gardenIndex)), TAG_FRAGMENT).commit();
+			}
+
+			return true;
 		}
 
 		return true;
