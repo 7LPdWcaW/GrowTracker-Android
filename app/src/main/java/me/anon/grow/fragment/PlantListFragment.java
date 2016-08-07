@@ -138,7 +138,11 @@ public class PlantListFragment extends Fragment
 
 	@Override public void onCreateOptionsMenu(Menu menu, MenuInflater inflater)
 	{
-		inflater.inflate(R.menu.plant_list_menu, menu);
+		if (garden != null)
+		{
+			inflater.inflate(R.menu.plant_list_menu, menu);
+		}
+		
 		super.onCreateOptionsMenu(menu, inflater);
 	}
 
