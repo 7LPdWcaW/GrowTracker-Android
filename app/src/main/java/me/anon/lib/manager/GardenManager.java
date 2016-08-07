@@ -111,4 +111,10 @@ public class GardenManager
 			}
 		}
 	}
+
+	public void insert(Garden garden)
+	{
+		mGardens.add(garden);
+		save();
+	}
 }
