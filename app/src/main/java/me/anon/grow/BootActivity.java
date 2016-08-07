@@ -61,6 +61,7 @@ public class BootActivity extends Activity
 				{
 					@Override public void onClick(DialogInterface dialogInterface, int i)
 					{
+						renameExceptions();
 						startup();
 					}
 				})
@@ -91,7 +92,7 @@ public class BootActivity extends Activity
 		{
 			for (String file : exceptions)
 			{
-				new File(ExceptionHandler.getInstance().getFilesPath() + "/" + file).renameTo(new File(ExceptionHandler.getInstance().getFilesPath() + "/" + file + ".sent"));
+				new File(ExceptionHandler.getInstance().getFilesPath() + file).renameTo(new File(ExceptionHandler.getInstance().getFilesPath() + file + ".sent"));
 			}
 		}
 	}
