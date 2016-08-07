@@ -15,6 +15,7 @@ import android.widget.TextView;
 
 import java.util.ArrayList;
 
+import lombok.Setter;
 import me.anon.controller.adapter.PlantSelectionAdapter;
 import me.anon.grow.R;
 import me.anon.lib.Views;
@@ -32,10 +33,16 @@ import me.anon.model.Plant;
 @Views.Injectable
 public class GardenDialogFragment extends DialogFragment
 {
+	public interface OnEditGardenListener
+	{
+		public void onGardenEdited(Garden garden);
+	}
+
 	private Garden garden;
 	private PlantSelectionAdapter adapter;
 	@Views.InjectView(R.id.name) private EditText name;
 	@Views.InjectView(R.id.recycler_view) private RecyclerView recyclerView;
+	@Setter private OnEditGardenListener onEditGardenListener;
 
 	@SuppressLint("ValidFragment")
 	public GardenDialogFragment(Garden garden)
@@ -52,6 +59,11 @@ public class GardenDialogFragment extends DialogFragment
 	{
 		View view = getActivity().getLayoutInflater().inflate(R.layout.garden_dialog_view, null, false);
 		Views.inject(this, view);
+
+		if (garden != null)
+		{
+			name.setText(garden.getName());
+		}
 
 		adapter = new PlantSelectionAdapter(PlantManager.getInstance().getSortedPlantList(), garden == null ? null : garden.getPlantIds(), getActivity());
 		recyclerView.setAdapter(adapter);
@@ -82,6 +94,18 @@ public class GardenDialogFragment extends DialogFragment
 						{
 							name.setError("Field is required");
 							return;
+						}
+
+						if (garden == null)
+						{
+							garden = new Garden();
+							garden.setName(name.getText().toString());
+							garden.setPlantIds(adapter.getSelectedIds());
+						}
+
+						if (onEditGardenListener != null)
+						{
+							onEditGardenListener.onGardenEdited(garden);
 						}
 
 						alertDialog.dismiss();

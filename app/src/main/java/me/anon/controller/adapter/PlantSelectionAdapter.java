@@ -13,7 +13,6 @@ import com.nostra13.universalimageloader.core.imageaware.ImageAware;
 import com.nostra13.universalimageloader.core.imageaware.ImageViewAware;
 
 import java.util.ArrayList;
-import java.util.List;
 
 import lombok.Getter;
 import me.anon.grow.MainApplication;
@@ -23,11 +22,11 @@ import me.anon.view.PlantSelectHolder;
 
 public class PlantSelectionAdapter extends RecyclerView.Adapter<PlantSelectHolder>
 {
-	@Getter private List<Plant> plants = new ArrayList<>();
-	@Getter private List<String> selectedIds = new ArrayList<>();
+	@Getter private ArrayList<Plant> plants = new ArrayList<>();
+	@Getter private ArrayList<String> selectedIds = new ArrayList<>();
 	private Context context;
 
-	public PlantSelectionAdapter(@Nullable List<Plant> plants, @Nullable List<String> selectedIds, Context context)
+	public PlantSelectionAdapter(@Nullable ArrayList<Plant> plants, @Nullable ArrayList<String> selectedIds, Context context)
 	{
 		this.plants = plants;
 		this.selectedIds = selectedIds;

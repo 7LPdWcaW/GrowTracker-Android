@@ -14,10 +14,14 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.inputmethod.InputMethodManager;
 
+import java.util.ArrayList;
+
 import lombok.experimental.Accessors;
 import me.anon.grow.fragment.GardenDialogFragment;
 import me.anon.grow.fragment.PlantListFragment;
 import me.anon.lib.Views;
+import me.anon.lib.manager.GardenManager;
+import me.anon.model.Garden;
 
 /**
  * // TODO: Add class description
@@ -44,6 +48,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 		Views.inject(this);
 
 		setSupportActionBar(toolbar);
+		setNavigationView();
 		showDrawerToggle();
 
 		if (getFragmentManager().findFragmentByTag(TAG_FRAGMENT) == null)
@@ -52,14 +57,24 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 		}
 	}
 
+	public void setNavigationView()
+	{
+		navigation.getMenu().clear();
+		navigation.setNavigationItemSelectedListener(this);
+		navigation.inflateMenu(R.menu.navigation_drawer);
+
+		ArrayList<Garden> gardens = GardenManager.getInstance().getGardens();
+		for (int index = 0, gardensSize = gardens.size(); index < gardensSize; index++)
+		{
+			Garden garden = gardens.get(index);
+			navigation.getMenu().add(R.id.gardens, 101 + index, 1, garden.getName());
+		}
+	}
+
 	public void showDrawerToggle()
 	{
 		if (drawer != null)
 		{
-			navigation.setNavigationItemSelectedListener(this);
-			navigation.getMenu()
-				.add(R.id.gardens, Menu.NONE, 0, "Garden #1");
-
 			ActionBarDrawerToggle drawerToggle = new ActionBarDrawerToggle(this, drawer, toolbar, 0, 0)
 			{
 				@Override public void onDrawerSlide(View drawerView, float slideOffset)
@@ -108,6 +123,23 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 		else if (item.getItemId() == R.id.add)
 		{
 			GardenDialogFragment dialogFragment = new GardenDialogFragment();
+			dialogFragment.setOnEditGardenListener(new GardenDialogFragment.OnEditGardenListener()
+			{
+				@Override public void onGardenEdited(Garden garden)
+				{
+					if (!GardenManager.getInstance().getGardens().contains(garden))
+					{
+						GardenManager.getInstance().insert(garden);
+					}
+					else
+					{
+						int index = GardenManager.getInstance().getGardens().indexOf(garden);
+						GardenManager.getInstance().getGardens().set(index, garden);
+					}
+
+					setNavigationView();
+				}
+			});
 			dialogFragment.show(getFragmentManager(), null);
 			item.setChecked(false);
 
