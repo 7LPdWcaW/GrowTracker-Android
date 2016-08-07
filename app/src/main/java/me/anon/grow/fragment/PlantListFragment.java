@@ -1,12 +1,15 @@
 package me.anon.grow.fragment;
 
+import android.app.AlertDialog;
 import android.app.Fragment;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.helper.ItemTouchHelper;
+import android.text.Html;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -163,6 +166,26 @@ public class PlantListFragment extends Fragment
 			dialogFragment.show(getFragmentManager(), null);
 
 			return true;
+		}
+		else if (item.getItemId() == R.id.delete_garden)
+		{
+			new AlertDialog.Builder(getActivity())
+				.setTitle("Are you sure?")
+				.setMessage(Html.fromHtml("Are you sure you want to delete garden <b>" + garden.getName() + "</b>?"))
+				.setPositiveButton("Yes", new DialogInterface.OnClickListener()
+				{
+					@Override public void onClick(DialogInterface dialogInterface, int i)
+					{
+						GardenManager.getInstance().getGardens().remove(garden);
+						GardenManager.getInstance().save();
+
+						((MainActivity)getActivity()).setNavigationView();
+						((MainActivity)getActivity()).getNavigation().getMenu().findItem(R.id.all).setChecked(true);
+						((MainActivity)getActivity()).onNavigationItemSelected(((MainActivity)getActivity()).getNavigation().getMenu().findItem(R.id.all));
+					}
+				})
+				.setNegativeButton("No", null)
+				.show();
 		}
 
 		return super.onOptionsItemSelected(item);
