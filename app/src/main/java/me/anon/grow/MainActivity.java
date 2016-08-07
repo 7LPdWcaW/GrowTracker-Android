@@ -2,7 +2,9 @@ package me.anon.grow;
 
 import android.app.Activity;
 import android.content.Intent;
+import android.net.Uri;
 import android.os.Bundle;
+import android.support.design.widget.NavigationView;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.app.AppCompatActivity;
@@ -25,12 +27,13 @@ import me.anon.lib.Views;
  */
 @Views.Injectable
 @Accessors(prefix = {"m", ""}, chain = true)
-public class MainActivity extends AppCompatActivity
+public class MainActivity extends AppCompatActivity implements NavigationView.OnNavigationItemSelectedListener
 {
 	private static final String TAG_FRAGMENT = "current_fragment";
 
 	@Views.InjectView(R.id.toolbar) private Toolbar toolbar;
 	@Views.InjectView(R.id.drawer_layout) private DrawerLayout drawer;
+	@Views.InjectView(R.id.navigation_view) private NavigationView navigation;
 
 	@Override protected void onCreate(Bundle savedInstanceState)
 	{
@@ -52,6 +55,10 @@ public class MainActivity extends AppCompatActivity
 	{
 		if (drawer != null)
 		{
+			navigation.setNavigationItemSelectedListener(this);
+			navigation.getMenu()
+				.add(R.id.gardens, Menu.NONE, 0, "Garden #1");
+
 			ActionBarDrawerToggle drawerToggle = new ActionBarDrawerToggle(this, drawer, toolbar, 0, 0)
 			{
 				@Override public void onDrawerSlide(View drawerView, float slideOffset)
@@ -87,5 +94,21 @@ public class MainActivity extends AppCompatActivity
 		}
 
 		return super.onOptionsItemSelected(item);
+	}
+
+	@Override public boolean onNavigationItemSelected(MenuItem item)
+	{
+		if (item.getItemId() == R.id.website)
+		{
+			Intent view = new Intent(Intent.ACTION_VIEW);
+			view.setData(Uri.parse("http://github.com/7lpdwcaw/GrowTracker-Android/"));
+			startActivity(view);
+		}
+		else if (item.getItemId() == R.id.add)
+		{
+
+		}
+
+		return true;
 	}
 }
