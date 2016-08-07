@@ -13,6 +13,7 @@ import com.google.gson.reflect.TypeToken;
 
 import java.io.File;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collections;
 
 import lombok.Data;
@@ -55,10 +56,11 @@ public class PlantManager
 
 	public ArrayList<Plant> getSortedPlantList(@Nullable Garden garden)
 	{
-		int plantsSize =  PlantManager.getInstance().getPlants().size();
-		ArrayList<Plant> ordered = new ArrayList<>();
-
 		SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(context);
+
+		int plantsSize =  PlantManager.getInstance().getPlants().size();
+		Plant[] ordered = new Plant[garden == null ? plantsSize : garden.getPlantIds().size()];
+
 		boolean hideHarvested = prefs.getBoolean("hide_harvested", false);
 
 		for (int index = 0; index < plantsSize; index++)
@@ -70,12 +72,14 @@ public class PlantManager
 				continue;
 			}
 
-			ordered.add(plant);
+			ordered[garden == null ? index : garden.getPlantIds().indexOf(plant.getId())] = plant;
 		}
 
-		ordered.removeAll(Collections.singleton(null));
+		ArrayList<Plant> finalList = new ArrayList<>();
+		finalList.addAll(Arrays.asList(ordered));
+		finalList.removeAll(Collections.singleton(null));
 
-		return ordered;
+		return finalList;
 	}
 
 	public void setPlants(ArrayList<Plant> plants)
