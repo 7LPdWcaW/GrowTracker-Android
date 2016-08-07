@@ -40,7 +40,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 	{
 		super.onCreate(savedInstanceState);
 
-		setContentView(R.layout.fragment_holder);
+		setContentView(R.layout.main_view);
 		Views.inject(this);
 
 		setSupportActionBar(toolbar);
