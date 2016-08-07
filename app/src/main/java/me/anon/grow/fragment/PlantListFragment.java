@@ -95,7 +95,9 @@ public class PlantListFragment extends Fragment
 		super.onDestroy();
 
 		ArrayList<Plant> plants = new ArrayList<Plant>();
+		ArrayList<String> plantIds = new ArrayList<>();
 		plants.addAll(new ArrayList(Arrays.asList(new Plant[adapter.getItemCount()])));
+		plantIds.addAll(new ArrayList(Arrays.asList(new String[adapter.getItemCount()])));
 
 		for (Plant plant : PlantManager.getInstance().getPlants())
 		{
@@ -104,15 +106,25 @@ public class PlantListFragment extends Fragment
 			if (adapterIndex > -1)
 			{
 				plants.set(adapterIndex, plant);
+				plantIds.set(adapterIndex, plant.getId());
 			}
 			else
 			{
 				plants.add(plant);
+				plantIds.add(plant.getId());
 			}
 		}
 
-		PlantManager.getInstance().setPlants(plants);
-		PlantManager.getInstance().save();
+		if (garden == null)
+		{
+			PlantManager.getInstance().setPlants(plants);
+			PlantManager.getInstance().save();
+		}
+		else
+		{
+			garden.setPlantIds(plantIds);
+			GardenManager.getInstance().save();
+		}
 	}
 
 	@Views.OnClick public void onFabAddClick(View view)
