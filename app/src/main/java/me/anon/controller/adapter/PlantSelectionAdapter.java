@@ -6,6 +6,7 @@ import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.CheckBox;
 
 import com.nostra13.universalimageloader.core.ImageLoader;
 import com.nostra13.universalimageloader.core.imageaware.ImageAware;
@@ -51,10 +52,27 @@ public class PlantSelectionAdapter extends RecyclerView.Adapter<PlantSelectHolde
 
 	@Override public void onBindViewHolder(PlantSelectHolder holder, int position)
 	{
-		Plant plant = plants.get(position);
+		final Plant plant = plants.get(position);
 		boolean selected = selectedIds.contains(plants.get(position).getId());
 
 		holder.getCheckbox().setChecked(selected);
+		holder.itemView.setOnClickListener(new View.OnClickListener()
+		{
+			@Override public void onClick(View view)
+			{
+				boolean check = !((CheckBox)view.findViewById(R.id.checkbox)).isChecked();
+				((CheckBox)view.findViewById(R.id.checkbox)).setChecked(check);
+
+				if (check)
+				{
+					selectedIds.add(plant.getId());
+				}
+				else
+				{
+					selectedIds.remove(plant.getId());
+				}
+			}
+		});
 		holder.getName().setText(plant.getName());
 
 		ImageLoader.getInstance().cancelDisplayTask(holder.getImage());

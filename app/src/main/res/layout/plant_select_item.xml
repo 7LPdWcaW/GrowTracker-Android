@@ -49,6 +49,7 @@
 					android:id="@+id/checkbox"
 					android:layout_gravity="center"
 					android:buttonTint="#ffffff"
+					android:clickable="false"
 				/>
 
 				<TextView
