@@ -7,7 +7,6 @@ import android.support.annotation.Nullable;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.helper.ItemTouchHelper;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -15,12 +14,14 @@ import android.view.ViewGroup;
 import java.util.ArrayList;
 import java.util.Arrays;
 
+import lombok.Setter;
 import me.anon.controller.adapter.PlantAdapter;
 import me.anon.controller.adapter.SimpleItemTouchHelperCallback;
 import me.anon.grow.AddPlantActivity;
 import me.anon.grow.R;
 import me.anon.lib.Views;
 import me.anon.lib.manager.PlantManager;
+import me.anon.model.Garden;
 import me.anon.model.Plant;
 
 /**
@@ -34,6 +35,15 @@ import me.anon.model.Plant;
 public class PlantListFragment extends Fragment
 {
 	private PlantAdapter adapter;
+	@Setter private Garden garden;
+
+	public static PlantListFragment newInstance(@Nullable Garden garden)
+	{
+		PlantListFragment fragment = new PlantListFragment();
+		fragment.setGarden(garden);
+
+		return fragment;
+	}
 
 	@Views.InjectView(R.id.recycler_view) private RecyclerView recycler;
 
@@ -49,7 +59,7 @@ public class PlantListFragment extends Fragment
 	{
 		super.onActivityCreated(savedInstanceState);
 
-		getActivity().setTitle("Your plants");
+		getActivity().setTitle(garden == null ? "All" : garden.getName() + " plants");
 
 		adapter = new PlantAdapter(getActivity());
 		recycler.setLayoutManager(new LinearLayoutManager(getActivity()));
