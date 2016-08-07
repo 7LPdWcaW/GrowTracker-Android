@@ -65,7 +65,7 @@ public class GardenDialogFragment extends DialogFragment
 			name.setText(garden.getName());
 		}
 
-		adapter = new PlantSelectionAdapter(PlantManager.getInstance().getSortedPlantList(), garden == null ? null : garden.getPlantIds(), getActivity());
+		adapter = new PlantSelectionAdapter(PlantManager.getInstance().getSortedPlantList(null), garden == null ? null : garden.getPlantIds(), getActivity());
 		recyclerView.setAdapter(adapter);
 		recyclerView.setLayoutManager(new LinearLayoutManager(getActivity(), LinearLayoutManager.VERTICAL, false));
 

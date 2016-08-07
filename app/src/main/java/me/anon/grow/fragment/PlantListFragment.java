@@ -74,7 +74,7 @@ public class PlantListFragment extends Fragment
 	{
 		super.onResume();
 
-		adapter.setPlants(PlantManager.getInstance().getSortedPlantList());
+		adapter.setPlants(PlantManager.getInstance().getSortedPlantList(garden));
 		adapter.notifyDataSetChanged();
 	}
 
