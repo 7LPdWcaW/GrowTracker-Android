@@ -347,7 +347,7 @@ public class PlantDetailsFragment extends Fragment
 
 					@Override public void onSnackBarAction(Object o)
 					{
-						final ArrayList<Plant> sortedPlants = PlantManager.getInstance().getSortedPlantList();
+						final ArrayList<Plant> sortedPlants = PlantManager.getInstance().getSortedPlantList(null);
 						CharSequence[] plants = new CharSequence[sortedPlants.size()];
 						for (int index = 0; index < plants.length; index++)
 						{
