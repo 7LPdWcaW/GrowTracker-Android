@@ -39,6 +39,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 	@Views.InjectView(R.id.toolbar) private Toolbar toolbar;
 	@Views.InjectView(R.id.drawer_layout) private DrawerLayout drawer;
 	@Views.InjectView(R.id.navigation_view) private NavigationView navigation;
+	private int selectedItem = 0;
 
 	@Override protected void onCreate(Bundle savedInstanceState)
 	{
@@ -69,6 +70,13 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 		{
 			Garden garden = gardens.get(index);
 			navigation.getMenu().add(R.id.gardens, 100 + index, 1, garden.getName()).setCheckable(true);
+		}
+
+		MenuItem item = navigation.getMenu().findItem(selectedItem);
+
+		if (item != null)
+		{
+			item.setChecked(true);
 		}
 	}
 
@@ -115,6 +123,8 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 
 	@Override public boolean onNavigationItemSelected(MenuItem item)
 	{
+		selectedItem = item.getItemId();
+
 		if (item.getItemId() == R.id.website)
 		{
 			Intent view = new Intent(Intent.ACTION_VIEW);

@@ -8,6 +8,9 @@ import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.helper.ItemTouchHelper;
 import android.view.LayoutInflater;
+import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 
@@ -18,8 +21,10 @@ import lombok.Setter;
 import me.anon.controller.adapter.PlantAdapter;
 import me.anon.controller.adapter.SimpleItemTouchHelperCallback;
 import me.anon.grow.AddPlantActivity;
+import me.anon.grow.MainActivity;
 import me.anon.grow.R;
 import me.anon.lib.Views;
+import me.anon.lib.manager.GardenManager;
 import me.anon.lib.manager.PlantManager;
 import me.anon.model.Garden;
 import me.anon.model.Plant;
@@ -46,6 +51,13 @@ public class PlantListFragment extends Fragment
 	}
 
 	@Views.InjectView(R.id.recycler_view) private RecyclerView recycler;
+
+	@Override public void onCreate(Bundle savedInstanceState)
+	{
+		super.onCreate(savedInstanceState);
+
+		setHasOptionsMenu(true);
+	}
 
 	@Nullable @Override public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState)
 	{
@@ -107,5 +119,40 @@ public class PlantListFragment extends Fragment
 	{
 		Intent addPlant = new Intent(getActivity(), AddPlantActivity.class);
 		startActivity(addPlant);
+	}
+
+	@Override public void onCreateOptionsMenu(Menu menu, MenuInflater inflater)
+	{
+		inflater.inflate(R.menu.plant_list_menu, menu);
+		super.onCreateOptionsMenu(menu, inflater);
+	}
+
+	@Override public boolean onOptionsItemSelected(MenuItem item)
+	{
+		if (item.getItemId() == R.id.edit_garden)
+		{
+			GardenDialogFragment dialogFragment = new GardenDialogFragment(garden);
+			dialogFragment.setOnEditGardenListener(new GardenDialogFragment.OnEditGardenListener()
+			{
+				@Override public void onGardenEdited(Garden garden)
+				{
+					int index = GardenManager.getInstance().getGardens().indexOf(PlantListFragment.this.garden);
+					GardenManager.getInstance().getGardens().set(index, garden);
+					GardenManager.getInstance().save();
+					PlantListFragment.this.garden = garden;
+
+					getActivity().setTitle(garden == null ? "All" : garden.getName() + " plants");
+					adapter.setPlants(PlantManager.getInstance().getSortedPlantList(garden));
+					adapter.notifyDataSetChanged();
+
+					((MainActivity)getActivity()).setNavigationView();
+				}
+			});
+			dialogFragment.show(getFragmentManager(), null);
+
+			return true;
+		}
+
+		return super.onOptionsItemSelected(item);
 	}
 }
