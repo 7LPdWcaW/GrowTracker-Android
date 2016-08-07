@@ -15,6 +15,7 @@ import android.view.View;
 import android.view.inputmethod.InputMethodManager;
 
 import lombok.experimental.Accessors;
+import me.anon.grow.fragment.GardenDialogFragment;
 import me.anon.grow.fragment.PlantListFragment;
 import me.anon.lib.Views;
 
@@ -106,7 +107,11 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 		}
 		else if (item.getItemId() == R.id.add)
 		{
+			GardenDialogFragment dialogFragment = new GardenDialogFragment();
+			dialogFragment.show(getFragmentManager(), null);
+			item.setChecked(false);
 
+			return false;
 		}
 
 		return true;
