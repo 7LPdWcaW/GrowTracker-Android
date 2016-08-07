@@ -44,6 +44,12 @@ public class PlantSelectionAdapter extends RecyclerView.Adapter<PlantSelectHolde
 		}
 	}
 
+	public void setSelectedIds(ArrayList<String> selectedIds)
+	{
+		this.selectedIds.clear();
+		this.selectedIds.addAll(selectedIds);
+	}
+
 	@Override public PlantSelectHolder onCreateViewHolder(ViewGroup parent, int viewType)
 	{
 		View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.plant_select_item, parent, false);
