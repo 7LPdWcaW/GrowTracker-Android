@@ -16,6 +16,7 @@ import android.view.inputmethod.InputMethodManager;
 
 import java.util.ArrayList;
 
+import lombok.Getter;
 import lombok.experimental.Accessors;
 import me.anon.grow.fragment.GardenDialogFragment;
 import me.anon.grow.fragment.PlantListFragment;
@@ -38,7 +39,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 
 	@Views.InjectView(R.id.toolbar) private Toolbar toolbar;
 	@Views.InjectView(R.id.drawer_layout) private DrawerLayout drawer;
-	@Views.InjectView(R.id.navigation_view) private NavigationView navigation;
+	@Getter @Views.InjectView(R.id.navigation_view) private NavigationView navigation;
 	private int selectedItem = 0;
 
 	@Override protected void onCreate(Bundle savedInstanceState)
