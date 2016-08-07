@@ -4,6 +4,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.preference.PreferenceManager;
+import android.support.annotation.Nullable;
 import android.text.TextUtils;
 import android.widget.Toast;
 
@@ -20,6 +21,7 @@ import lombok.experimental.Accessors;
 import me.anon.grow.MainApplication;
 import me.anon.lib.helper.EncryptionHelper;
 import me.anon.lib.helper.GsonHelper;
+import me.anon.model.Garden;
 import me.anon.model.Plant;
 import me.anon.model.PlantStage;
 
@@ -51,7 +53,7 @@ public class PlantManager
 		load();
 	}
 
-	public ArrayList<Plant> getSortedPlantList()
+	public ArrayList<Plant> getSortedPlantList(@Nullable Garden garden)
 	{
 		int plantsSize =  PlantManager.getInstance().getPlants().size();
 		ArrayList<Plant> ordered = new ArrayList<>();
@@ -63,7 +65,7 @@ public class PlantManager
 		{
 			Plant plant = PlantManager.getInstance().getPlants().get(index);
 
-			if (hideHarvested && plant.getStage() == PlantStage.HARVESTED)
+			if (hideHarvested && plant.getStage() == PlantStage.HARVESTED || (garden != null && !garden.getPlantIds().contains(plant.getId())))
 			{
 				continue;
 			}
