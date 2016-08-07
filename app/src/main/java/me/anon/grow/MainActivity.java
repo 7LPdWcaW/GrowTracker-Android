@@ -14,6 +14,8 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.inputmethod.InputMethodManager;
 
+import com.squareup.otto.Subscribe;
+
 import java.util.ArrayList;
 
 import lombok.Getter;
@@ -21,6 +23,8 @@ import lombok.experimental.Accessors;
 import me.anon.grow.fragment.GardenDialogFragment;
 import me.anon.grow.fragment.PlantListFragment;
 import me.anon.lib.Views;
+import me.anon.lib.event.GardenChangeEvent;
+import me.anon.lib.helper.BusHelper;
 import me.anon.lib.manager.GardenManager;
 import me.anon.model.Garden;
 
@@ -58,6 +62,14 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 			navigation.getMenu().findItem(R.id.all).setChecked(true);
 			onNavigationItemSelected(navigation.getMenu().findItem(R.id.all));
 		}
+
+		BusHelper.getInstance().register(this);
+	}
+
+	@Override protected void onDestroy()
+	{
+		super.onDestroy();
+		BusHelper.getInstance().register(this);
 	}
 
 	public void setNavigationView()
@@ -79,6 +91,11 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 		{
 			item.setChecked(true);
 		}
+	}
+
+	@Subscribe public void onGargenChangeEvent(GardenChangeEvent event)
+	{
+		setNavigationView();
 	}
 
 	public void showDrawerToggle()
@@ -139,21 +156,31 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 			{
 				@Override public void onGardenEdited(Garden garden)
 				{
+					int index = 0;
+
 					if (!GardenManager.getInstance().getGardens().contains(garden))
 					{
 						GardenManager.getInstance().insert(garden);
+						index = GardenManager.getInstance().getGardens().size() - 1;
 					}
 					else
 					{
-						int index = GardenManager.getInstance().getGardens().indexOf(garden);
+						index = GardenManager.getInstance().getGardens().indexOf(garden);
 						GardenManager.getInstance().getGardens().set(index, garden);
 					}
 
+					selectedItem = 100 + index;
+
 					setNavigationView();
+					onNavigationItemSelected(navigation.getMenu().findItem(selectedItem));
 				}
 			});
 			dialogFragment.show(getFragmentManager(), null);
 			item.setChecked(false);
+
+			drawer.closeDrawers();
+
+			return false;
 		}
 		else if (item.getItemId() == R.id.all)
 		{
