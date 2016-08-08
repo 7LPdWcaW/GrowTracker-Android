@@ -67,7 +67,7 @@ public class PlantManager
 		{
 			Plant plant = PlantManager.getInstance().getPlants().get(index);
 
-			if (hideHarvested && plant.getStage() == PlantStage.HARVESTED || (garden != null && !garden.getPlantIds().contains(plant.getId())))
+			if ((hideHarvested && plant.getStage() == PlantStage.HARVESTED) || (garden != null && !garden.getPlantIds().contains(plant.getId())))
 			{
 				continue;
 			}

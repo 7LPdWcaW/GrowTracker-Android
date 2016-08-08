@@ -90,17 +90,17 @@ public class PlantListFragment extends Fragment
 		touchHelper.attachToRecyclerView(recycler);
 	}
 
-	@Override public void onResume()
+	@Override public void onStart()
 	{
-		super.onResume();
+		super.onStart();
 
 		adapter.setPlants(PlantManager.getInstance().getSortedPlantList(garden));
 		adapter.notifyDataSetChanged();
 	}
 
-	@Override public void onDestroy()
+	@Override public void onStop()
 	{
-		super.onDestroy();
+		super.onStop();
 
 		ArrayList<Plant> plants = new ArrayList<Plant>();
 		ArrayList<String> plantIds = new ArrayList<>();
@@ -119,7 +119,6 @@ public class PlantListFragment extends Fragment
 			else
 			{
 				plants.add(plant);
-				plantIds.add(plant.getId());
 			}
 		}
 
