@@ -182,6 +182,11 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 
 			return false;
 		}
+		else if (item.getItemId() == R.id.settings)
+		{
+			Intent settings = new Intent(this, SettingsActivity.class);
+			startActivity(settings);
+		}
 		else if (item.getItemId() == R.id.all)
 		{
 			getFragmentManager().beginTransaction().replace(R.id.fragment_holder, PlantListFragment.newInstance(null), TAG_FRAGMENT).commit();
