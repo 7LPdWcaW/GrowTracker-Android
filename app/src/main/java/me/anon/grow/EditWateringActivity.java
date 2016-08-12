@@ -5,7 +5,7 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 
 import lombok.experimental.Accessors;
-import me.anon.grow.fragment.FeedingFragment;
+import me.anon.grow.fragment.WateringFragment;
 import me.anon.lib.Views;
 
 /**
@@ -17,7 +17,7 @@ import me.anon.lib.Views;
  */
 @Views.Injectable
 @Accessors(prefix = {"m", ""}, chain = true)
-public class EditFeedingActivity extends AppCompatActivity
+public class EditWateringActivity extends AppCompatActivity
 {
 	private static final String TAG_FRAGMENT = "current_fragment";
 
@@ -48,7 +48,7 @@ public class EditFeedingActivity extends AppCompatActivity
 
 		if (getFragmentManager().findFragmentByTag(TAG_FRAGMENT) == null)
 		{
-			getFragmentManager().beginTransaction().replace(R.id.fragment_holder, FeedingFragment.newInstance(plantIndex, feedingIndex), TAG_FRAGMENT).commit();
+			getFragmentManager().beginTransaction().replace(R.id.fragment_holder, WateringFragment.newInstance(plantIndex, feedingIndex), TAG_FRAGMENT).commit();
 		}
 	}
 }

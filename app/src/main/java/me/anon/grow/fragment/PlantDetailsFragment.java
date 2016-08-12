@@ -43,8 +43,8 @@ import java.util.Calendar;
 import java.util.Date;
 import java.util.Locale;
 
-import me.anon.grow.AddFeedingActivity;
-import me.anon.grow.EditFeedingActivity;
+import me.anon.grow.AddWateringActivity;
+import me.anon.grow.EditWateringActivity;
 import me.anon.grow.EventsActivity;
 import me.anon.grow.MainApplication;
 import me.anon.grow.R;
@@ -211,7 +211,7 @@ public class PlantDetailsFragment extends Fragment
 
 	@Views.OnClick public void onFeedingClick(final View view)
 	{
-		Intent feeding = new Intent(view.getContext(), AddFeedingActivity.class);
+		Intent feeding = new Intent(view.getContext(), AddWateringActivity.class);
 		feeding.putExtra("plant_index", plantIndex);
 		startActivityForResult(feeding, 2);
 	}
@@ -370,7 +370,7 @@ public class PlantDetailsFragment extends Fragment
 									Water copy = (Water)ModelHelper.copy(water);
 									PlantManager.getInstance().getPlants().get(originalIndex).getActions().add(copy);
 
-									Intent edit = new Intent(getActivity(), EditFeedingActivity.class);
+									Intent edit = new Intent(getActivity(), EditWateringActivity.class);
 									edit.putExtra("plant_index", originalIndex);
 									edit.putExtra("action_index", PlantManager.getInstance().getPlants().get(originalIndex).getActions().indexOf(copy));
 									startActivityForResult(edit, 2);
