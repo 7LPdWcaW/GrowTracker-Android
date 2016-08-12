@@ -55,6 +55,7 @@ import me.anon.lib.Views;
 import me.anon.lib.helper.ExportHelper;
 import me.anon.lib.helper.FabAnimator;
 import me.anon.lib.helper.ModelHelper;
+import me.anon.lib.manager.GardenManager;
 import me.anon.lib.manager.PlantManager;
 import me.anon.lib.task.EncryptTask;
 import me.anon.model.EmptyAction;
@@ -645,6 +646,16 @@ public class PlantDetailsFragment extends Fragment
 
 		plant.setClone(clone.isChecked());
 		PlantManager.getInstance().upsert(plantIndex, plant);
+
+		if (gardenIndex != -1)
+		{
+			if (!GardenManager.getInstance().getGardens().get(gardenIndex).getPlantIds().contains(plant.getId()))
+			{
+				GardenManager.getInstance().getGardens().get(gardenIndex).getPlantIds().add(plant.getId());
+				GardenManager.getInstance().save();
+			}
+		}
+
 		getActivity().finish();
 	}
 
