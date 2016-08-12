@@ -137,6 +137,12 @@ public class PlantListFragment extends Fragment
 	@Views.OnClick public void onFabAddClick(View view)
 	{
 		Intent addPlant = new Intent(getActivity(), AddPlantActivity.class);
+
+		if (garden != null)
+		{
+			addPlant.putExtra("garden_index", GardenManager.getInstance().getGardens().indexOf(garden));
+		}
+
 		startActivity(addPlant);
 	}
 

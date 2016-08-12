@@ -33,10 +33,13 @@ public class PlantDetailsActivity extends AppCompatActivity
 		getSupportActionBar().setHomeAsUpIndicator(R.drawable.ic_done_white_24dp);
 		Views.inject(this);
 
+		int gardenIndex = -1;
 		int plantIndex = -1;
+
 		if (getIntent().getExtras() != null)
 		{
 			plantIndex = getIntent().getExtras().getInt("plant_index", -1);
+			gardenIndex = getIntent().getExtras().getInt("garden_index", -1);
 		}
 
 		if (plantIndex < 0)
@@ -47,7 +50,7 @@ public class PlantDetailsActivity extends AppCompatActivity
 
 		if (getFragmentManager().findFragmentByTag(TAG_FRAGMENT) == null)
 		{
-			getFragmentManager().beginTransaction().replace(R.id.fragment_holder, PlantDetailsFragment.newInstance(plantIndex), TAG_FRAGMENT).commit();
+			getFragmentManager().beginTransaction().replace(R.id.fragment_holder, PlantDetailsFragment.newInstance(plantIndex, gardenIndex), TAG_FRAGMENT).commit();
 		}
 	}
 
