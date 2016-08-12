@@ -43,8 +43,8 @@ import java.util.Calendar;
 import java.util.Date;
 import java.util.Locale;
 
-import me.anon.grow.AddFeedingActivity;
-import me.anon.grow.EditFeedingActivity;
+import me.anon.grow.AddWateringActivity;
+import me.anon.grow.EditWateringActivity;
 import me.anon.grow.EventsActivity;
 import me.anon.grow.MainApplication;
 import me.anon.grow.R;
@@ -55,6 +55,7 @@ import me.anon.lib.Views;
 import me.anon.lib.helper.ExportHelper;
 import me.anon.lib.helper.FabAnimator;
 import me.anon.lib.helper.ModelHelper;
+import me.anon.lib.manager.GardenManager;
 import me.anon.lib.manager.PlantManager;
 import me.anon.lib.task.EncryptTask;
 import me.anon.model.EmptyAction;
@@ -87,16 +88,18 @@ public class PlantDetailsFragment extends Fragment
 	@Views.InjectView(R.id.from_clone) private CheckBox clone;
 
 	private int plantIndex = -1;
+	private int gardenIndex = -1;
 	private Plant plant;
 
 	/**
 	 * @param plantIndex If -1, assume new plant
 	 * @return Instantiated details fragment
 	 */
-	public static PlantDetailsFragment newInstance(int plantIndex)
+	public static PlantDetailsFragment newInstance(int plantIndex, int gardenIndex)
 	{
 		Bundle args = new Bundle();
 		args.putInt("plant_index", plantIndex);
+		args.putInt("garden_index", gardenIndex);
 
 		PlantDetailsFragment fragment = new PlantDetailsFragment();
 		fragment.setArguments(args);
@@ -124,7 +127,8 @@ public class PlantDetailsFragment extends Fragment
 
 		if (getArguments() != null)
 		{
-			plantIndex = getArguments().getInt("plant_index");
+			plantIndex = getArguments().getInt("plant_index", -1);
+			gardenIndex = getArguments().getInt("garden_index", -1);
 
 			if (plantIndex > -1)
 			{
@@ -207,7 +211,7 @@ public class PlantDetailsFragment extends Fragment
 
 	@Views.OnClick public void onFeedingClick(final View view)
 	{
-		Intent feeding = new Intent(view.getContext(), AddFeedingActivity.class);
+		Intent feeding = new Intent(view.getContext(), AddWateringActivity.class);
 		feeding.putExtra("plant_index", plantIndex);
 		startActivityForResult(feeding, 2);
 	}
@@ -347,7 +351,7 @@ public class PlantDetailsFragment extends Fragment
 
 					@Override public void onSnackBarAction(Object o)
 					{
-						final ArrayList<Plant> sortedPlants = PlantManager.getInstance().getSortedPlantList();
+						final ArrayList<Plant> sortedPlants = PlantManager.getInstance().getSortedPlantList(null);
 						CharSequence[] plants = new CharSequence[sortedPlants.size()];
 						for (int index = 0; index < plants.length; index++)
 						{
@@ -366,7 +370,7 @@ public class PlantDetailsFragment extends Fragment
 									Water copy = (Water)ModelHelper.copy(water);
 									PlantManager.getInstance().getPlants().get(originalIndex).getActions().add(copy);
 
-									Intent edit = new Intent(getActivity(), EditFeedingActivity.class);
+									Intent edit = new Intent(getActivity(), EditWateringActivity.class);
 									edit.putExtra("plant_index", originalIndex);
 									edit.putExtra("action_index", PlantManager.getInstance().getPlants().get(originalIndex).getActions().indexOf(copy));
 									startActivityForResult(edit, 2);
@@ -642,6 +646,16 @@ public class PlantDetailsFragment extends Fragment
 
 		plant.setClone(clone.isChecked());
 		PlantManager.getInstance().upsert(plantIndex, plant);
+
+		if (gardenIndex != -1)
+		{
+			if (!GardenManager.getInstance().getGardens().get(gardenIndex).getPlantIds().contains(plant.getId()))
+			{
+				GardenManager.getInstance().getGardens().get(gardenIndex).getPlantIds().add(plant.getId());
+				GardenManager.getInstance().save();
+			}
+		}
+
 		getActivity().finish();
 	}
 
