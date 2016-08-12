@@ -2,6 +2,7 @@ package me.anon.grow.fragment;
 
 import android.app.Activity;
 import android.app.Fragment;
+import android.app.FragmentManager;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.text.TextUtils;
@@ -21,6 +22,7 @@ import me.anon.grow.R;
 import me.anon.lib.Views;
 import me.anon.lib.manager.PlantManager;
 import me.anon.model.Action;
+import me.anon.model.Additive;
 import me.anon.model.Plant;
 import me.anon.model.PlantMedium;
 import me.anon.model.Water;
@@ -43,10 +45,7 @@ public class WateringFragment extends Fragment
 	@Views.InjectView(R.id.temp) private TextView temp;
 	@Views.InjectView(R.id.date_container) private View dateContainer;
 	@Views.InjectView(R.id.date) private TextView date;
-	@Views.InjectView(R.id.nutrient_container) private View nutrientContainer;
-	@Views.InjectView(R.id.nutrient_nutrient_container) private View nutrientNutrientContainer;
-	@Views.InjectView(R.id.nutrient) private TextView nutrient;
-	@Views.InjectView(R.id.nutrient_amount) private TextView nutrientAmount;
+	@Views.InjectView(R.id.additive_container) private ViewGroup additiveContainer;
 	@Views.InjectView(R.id.notes) private EditText notes;
 
 	private int plantIndex = -1;
@@ -72,7 +71,7 @@ public class WateringFragment extends Fragment
 
 	@Nullable @Override public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState)
 	{
-		View view = inflater.inflate(R.layout.add_feeding_view, container, false);
+		View view = inflater.inflate(R.layout.add_watering_view, container, false);
 		Views.inject(this, view);
 
 		return view;
@@ -237,6 +236,81 @@ public class WateringFragment extends Fragment
 		notes.setText(water.getNotes());
 	}
 
+	@Views.OnClick public void onNewAdditiveClick(View view)
+	{
+		final Object currentTag = view.getTag();
+		FragmentManager fm = getFragmentManager();
+		AddAdditiveDialogFragment addAdditiveDialogFragment = new AddAdditiveDialogFragment(view.getTag() instanceof Additive ? (Additive)view.getTag() : null);
+		addAdditiveDialogFragment.setOnAdditiveSelectedListener(new AddAdditiveDialogFragment.OnAdditiveSelectedListener()
+		{
+			@Override public void onAdditiveSelected(Additive additive)
+			{
+				View additiveStub = LayoutInflater.from(getActivity()).inflate(R.layout.additive_stub, additiveContainer, false);
+				((TextView)additiveStub).setText(additive.getDescription() + "   -   " + additive.getAmount() + "ml/l");
+
+				if (currentTag == null)
+				{
+					if (!water.getAdditives().contains(additive))
+					{
+						water.getAdditives().add(additive);
+
+						additiveStub.setTag(additive);
+						additiveStub.setOnClickListener(new View.OnClickListener()
+						{
+							@Override public void onClick(View view)
+							{
+								onNewAdditiveClick(view);
+							}
+						});
+						additiveContainer.addView(additiveStub, additiveContainer.getChildCount() - 1);
+					}
+				}
+				else
+				{
+					for (int childIndex = 0; childIndex < additiveContainer.getChildCount(); childIndex++)
+					{
+						Object tag = additiveContainer.getChildAt(childIndex).getTag();
+
+						if (tag == currentTag)
+						{
+							((TextView)additiveContainer.getChildAt(childIndex)).setText(additive.getDescription() + "   -   " + additive.getAmount() + "ml/l");
+							additiveContainer.getChildAt(childIndex).setTag(additive);
+
+							break;
+						}
+					}
+				}
+
+				additiveStub.requestFocus();
+				additiveStub.requestFocusFromTouch();
+			}
+
+			@Override public void onAdditiveDeleteRequested(Additive additive)
+			{
+				if (water.getAdditives().contains(additive))
+				{
+					water.getAdditives().remove(additive);
+				}
+
+				for (int childIndex = 0; childIndex < additiveContainer.getChildCount(); childIndex++)
+				{
+					Object tag = additiveContainer.getChildAt(childIndex).getTag();
+
+					if (tag == additive)
+					{
+						additiveContainer.removeViewAt(childIndex);
+						break;
+					}
+				}
+
+				additiveContainer.getChildAt(additiveContainer.getChildCount() - 1).requestFocus();
+				additiveContainer.getChildAt(additiveContainer.getChildCount() - 1).requestFocusFromTouch();
+			}
+		});
+
+		addAdditiveDialogFragment.show(fm, "fragment_add_additive");
+	}
+
 	@Views.OnClick public void onFabCompleteClick(final View view)
 	{
 		Double waterPh = TextUtils.isEmpty(this.waterPh.getText()) ? null : Double.valueOf(this.waterPh.getText().toString());
@@ -244,7 +318,6 @@ public class WateringFragment extends Fragment
 		Double runoffPh = TextUtils.isEmpty(this.runoffPh.getText()) ? null : Double.valueOf(this.runoffPh.getText().toString());
 		Integer amount = TextUtils.isEmpty(this.amount.getText()) ? null : Integer.valueOf(this.amount.getText().toString());
 		Integer temp = TextUtils.isEmpty(this.temp.getText()) ? null : Integer.valueOf(this.temp.getText().toString());
-		Double nutrientAmount = TextUtils.isEmpty(this.nutrientAmount.getText()) ? null : Double.valueOf(this.nutrientAmount.getText().toString());
 
 		water.setPh(waterPh);
 		water.setPpm(ppm);
