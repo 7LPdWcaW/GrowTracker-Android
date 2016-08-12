@@ -28,7 +28,7 @@ import java.util.Random;
 
 import me.anon.controller.adapter.ActionAdapter;
 import me.anon.controller.adapter.SimpleItemTouchHelperCallback;
-import me.anon.grow.EditFeedingActivity;
+import me.anon.grow.EditWateringActivity;
 import me.anon.grow.R;
 import me.anon.lib.Views;
 import me.anon.lib.helper.FabAnimator;
@@ -324,7 +324,7 @@ public class EventListFragment extends Fragment implements ActionAdapter.OnActio
 
 		if (action instanceof Water)
 		{
-			Intent edit = new Intent(getActivity(), EditFeedingActivity.class);
+			Intent edit = new Intent(getActivity(), EditWateringActivity.class);
 			edit.putExtra("plant_index", plantIndex);
 			edit.putExtra("action_index", originalIndex);
 			startActivityForResult(edit, 3);

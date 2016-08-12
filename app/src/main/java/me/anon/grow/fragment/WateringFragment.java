@@ -33,7 +33,7 @@ import me.anon.model.Water;
  * @project GrowTracker
  */
 @Views.Injectable
-public class FeedingFragment extends Fragment
+public class WateringFragment extends Fragment
 {
 	@Views.InjectView(R.id.water_ph) private TextView waterPh;
 	@Views.InjectView(R.id.water_ppm) private TextView waterPpm;
@@ -58,13 +58,13 @@ public class FeedingFragment extends Fragment
 	 * @param plantIndex If -1, assume new plant
 	 * @return Instantiated details fragment
 	 */
-	public static FeedingFragment newInstance(int plantIndex, int feedingIndex)
+	public static WateringFragment newInstance(int plantIndex, int feedingIndex)
 	{
 		Bundle args = new Bundle();
 		args.putInt("plant_index", plantIndex);
 		args.putInt("action_index", feedingIndex);
 
-		FeedingFragment fragment = new FeedingFragment();
+		WateringFragment fragment = new WateringFragment();
 		fragment.setArguments(args);
 
 		return fragment;
@@ -97,6 +97,11 @@ public class FeedingFragment extends Fragment
 			{
 				water = (Water)PlantManager.getInstance().getPlants().get(plantIndex).getActions().get(actionIndex);
 			}
+		}
+
+		if (water == null)
+		{
+			water = new Water();
 		}
 
 		if (plant == null)
@@ -184,7 +189,7 @@ public class FeedingFragment extends Fragment
 					@Override public void onDateSelected(Calendar date)
 					{
 						String dateStr = dateFormat.format(date.getTime()) + " " + timeFormat.format(date.getTime());
-						FeedingFragment.this.date.setText(dateStr);
+						WateringFragment.this.date.setText(dateStr);
 
 						water.setDate(date.getTimeInMillis());
 						onCancelled();

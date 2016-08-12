@@ -21,8 +21,8 @@
 
 		<activity android:name=".MainActivity" />
 		<activity android:name=".AddPlantActivity" />
-		<activity android:name=".AddFeedingActivity" />
-		<activity android:name=".EditFeedingActivity" />
+		<activity android:name=".AddWateringActivity" />
+		<activity android:name=".EditWateringActivity" />
 		<activity android:name=".ViewPhotosActivity" />
 		<activity android:name=".EventsActivity" />
 		<activity android:name=".StatisticsActivity" />
