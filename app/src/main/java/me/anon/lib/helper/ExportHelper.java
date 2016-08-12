@@ -30,7 +30,6 @@ import java.util.SortedMap;
 import me.anon.lib.ExportCallback;
 import me.anon.model.Action;
 import me.anon.model.EmptyAction;
-import me.anon.model.Feed;
 import me.anon.model.NoteAction;
 import me.anon.model.Plant;
 import me.anon.model.PlantMedium;
@@ -97,18 +96,7 @@ public class ExportHelper
 				}
 			}
 
-			if (action.getClass() == Feed.class)
-			{
-				if (lastFeed != 0)
-				{
-					feedDifference += Math.abs(action.getDate() - lastFeed);
-				}
-
-				totalFeed++;
-				lastFeed = action.getDate();
-
-			}
-			else if (action.getClass() == Water.class)
+			if (action.getClass() == Water.class)
 			{
 				if (lastWater != 0)
 				{
@@ -210,42 +198,7 @@ public class ExportHelper
 			plantDetails.append("###").append(printableDate(context, action.getDate()));
 			plantDetails.append(NEW_LINE);
 
-			if (action.getClass() == Feed.class)
-			{
-				plantDetails.append("*Type*: Feeding");
-				plantDetails.append(NEW_LINE);
-
-				if (((Feed)action).getNutrient() != null)
-				{
-					plantDetails.append("Fed with ");
-
-					if (((Feed)action).getMlpl() != null)
-					{
-						plantDetails.append(((Feed)action).getMlpl()).append(" ml/l of ");
-					}
-
-					plantDetails.append(((Feed)action).getNutrient().getNpc() == null ? "-" : ((Feed)action).getNutrient().getNpc());
-					plantDetails.append(":");
-					plantDetails.append(((Feed)action).getNutrient().getPpc() == null ? "-" : ((Feed)action).getNutrient().getPpc());
-					plantDetails.append(":");
-					plantDetails.append(((Feed)action).getNutrient().getKpc() == null ? "-" : ((Feed)action).getNutrient().getKpc());
-
-					if (((Feed)action).getNutrient().getMgpc() != null
-					|| ((Feed)action).getNutrient().getSpc() != null
-					|| ((Feed)action).getNutrient().getCapc() != null)
-					{
-						plantDetails.append(" / ");
-						plantDetails.append(((Feed)action).getNutrient().getCapc() == null ? "-" : ((Feed)action).getNutrient().getCapc());
-						plantDetails.append(":");
-						plantDetails.append(((Feed)action).getNutrient().getSpc() == null ? "-" : ((Feed)action).getNutrient().getSpc());
-						plantDetails.append(":");
-						plantDetails.append(((Feed)action).getNutrient().getMgpc() == null ? "-" : ((Feed)action).getNutrient().getMgpc());
-					}
-
-					plantDetails.append(NEW_LINE);
-				}
-			}
-			else if (action.getClass() == Water.class)
+			if (action.getClass() == Water.class)
 			{
 				plantDetails.append("*Type*: Watering");
 				plantDetails.append(NEW_LINE);

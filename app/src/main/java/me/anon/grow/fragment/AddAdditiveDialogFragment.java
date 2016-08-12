@@ -13,7 +13,7 @@ import android.widget.TextView;
 import lombok.Setter;
 import me.anon.grow.R;
 import me.anon.lib.Views;
-import me.anon.model.Nutrient;
+import me.anon.model.Additive;
 
 /**
  * // TODO: Add class description
@@ -25,24 +25,20 @@ import me.anon.model.Nutrient;
 @Views.Injectable
 public class AddAdditiveDialogFragment extends DialogFragment
 {
-	public interface OnAddNutrientListener
+	public interface OnAdditiveSelectedListener
 	{
-		public void onNutrientSelected(Nutrient nutrient);
+		public void onAdditiveSelected(Additive additive);
 	}
 
-	private Nutrient nutrient;
-	@Views.InjectView(R.id.n) private TextView n;
-	@Views.InjectView(R.id.p) private TextView p;
-	@Views.InjectView(R.id.k) private TextView k;
-	@Views.InjectView(R.id.ca) private TextView ca;
-	@Views.InjectView(R.id.s) private TextView s;
-	@Views.InjectView(R.id.mg) private TextView mg;
-	@Setter private OnAddNutrientListener onAddNutrientListener;
+	private Additive additive;
+	@Views.InjectView(R.id.description) private TextView description;
+	@Views.InjectView(R.id.amount) private TextView amount;
+	@Setter private OnAdditiveSelectedListener onAddNutrientListener;
 
 	@SuppressLint("ValidFragment")
-	public AddAdditiveDialogFragment(Nutrient nutrient)
+	public AddAdditiveDialogFragment(Additive additive)
 	{
-		this.nutrient = nutrient;
+		this.additive = additive;
 	}
 
 	@SuppressLint("ValidFragment")
@@ -55,42 +51,30 @@ public class AddAdditiveDialogFragment extends DialogFragment
 		View view = getActivity().getLayoutInflater().inflate(R.layout.nutrient_dialog_view, null, false);
 		Views.inject(this, view);
 
-		if (nutrient != null)
+		if (additive != null)
 		{
-			n.setText(nutrient.getNpc() == null ? "" : String.valueOf(nutrient.getNpc()));
-			p.setText(nutrient.getPpc() == null ? "" : String.valueOf(nutrient.getPpc()));
-			k.setText(nutrient.getKpc() == null ? "" : String.valueOf(nutrient.getKpc()));
-			s.setText(nutrient.getSpc() == null ? "" : String.valueOf(nutrient.getSpc()));
-			ca.setText(nutrient.getCapc() == null ? "" : String.valueOf(nutrient.getCapc()));
-			mg.setText(nutrient.getMgpc() == null ? "" : String.valueOf(nutrient.getMgpc()));
+			description.setText(additive.getDescription());
+			amount.setText(String.valueOf(additive.getAmount()));
 		}
 
 		return new AlertDialog.Builder(getActivity())
-			.setTitle("Nutrient")
+			.setTitle("Additive")
 			.setView(view)
 			.setPositiveButton("Ok", new DialogInterface.OnClickListener()
 			{
 				public void onClick(DialogInterface dialog, int whichButton)
 				{
-					Nutrient nutrient = new Nutrient();
+					Additive additive = new Additive();
 
-					Double npc = TextUtils.isEmpty(n.getText()) ? null : Double.valueOf(n.getText().toString());
-					Double ppc = TextUtils.isEmpty(p.getText()) ? null : Double.valueOf(p.getText().toString());
-					Double kpc = TextUtils.isEmpty(k.getText()) ? null : Double.valueOf(k.getText().toString());
-					Double spc = TextUtils.isEmpty(s.getText()) ? null : Double.valueOf(s.getText().toString());
-					Double capc = TextUtils.isEmpty(ca.getText()) ? null : Double.valueOf(ca.getText().toString());
-					Double mgpc = TextUtils.isEmpty(mg.getText()) ? null : Double.valueOf(mg.getText().toString());
+					String desc = TextUtils.isEmpty(description.getText()) ? null : description.getText().toString();
+					Integer amt = TextUtils.isEmpty(amount.getText()) ? null : Integer.valueOf(amount.getText().toString());
 
-					nutrient.setNpc(npc);
-					nutrient.setPpc(ppc);
-					nutrient.setKpc(kpc);
-					nutrient.setSpc(spc);
-					nutrient.setCapc(capc);
-					nutrient.setMgpc(mgpc);
+					additive.setDescription(desc);
+					additive.setAmount(amt);
 
 					if (onAddNutrientListener != null)
 					{
-						onAddNutrientListener.onNutrientSelected(nutrient);
+						onAddNutrientListener.onAdditiveSelected(additive);
 					}
 				}
 			})
@@ -100,7 +84,7 @@ public class AddAdditiveDialogFragment extends DialogFragment
 				{
 					if (onAddNutrientListener != null)
 					{
-						onAddNutrientListener.onNutrientSelected(null);
+						onAddNutrientListener.onAdditiveSelected(null);
 					}
 				}
 			})
