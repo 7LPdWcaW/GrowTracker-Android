@@ -248,6 +248,22 @@ public class WateringFragment extends Fragment
 			}
 		}
 
+		for (Additive additive : water.getAdditives())
+		{
+			View additiveStub = LayoutInflater.from(getActivity()).inflate(R.layout.additive_stub, additiveContainer, false);
+			((TextView)additiveStub).setText(additive.getDescription() + "   -   " + additive.getAmount() + "ml/l");
+
+			additiveStub.setTag(additive);
+			additiveStub.setOnClickListener(new View.OnClickListener()
+			{
+				@Override public void onClick(View view)
+				{
+					onNewAdditiveClick(view);
+				}
+			});
+			additiveContainer.addView(additiveStub, additiveContainer.getChildCount() - 1);
+		}
+
 		notes.setText(water.getNotes());
 	}
 
