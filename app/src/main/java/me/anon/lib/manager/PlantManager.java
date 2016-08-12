@@ -1,15 +1,19 @@
 package me.anon.lib.manager;
 
 import android.content.Context;
+import android.content.Intent;
 import android.content.SharedPreferences;
 import android.preference.PreferenceManager;
+import android.support.annotation.Nullable;
 import android.text.TextUtils;
+import android.widget.Toast;
 
 import com.google.gson.JsonSyntaxException;
 import com.google.gson.reflect.TypeToken;
 
 import java.io.File;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collections;
 
 import lombok.Data;
@@ -18,6 +22,7 @@ import lombok.experimental.Accessors;
 import me.anon.grow.MainApplication;
 import me.anon.lib.helper.EncryptionHelper;
 import me.anon.lib.helper.GsonHelper;
+import me.anon.model.Garden;
 import me.anon.model.Plant;
 import me.anon.model.PlantStage;
 
@@ -36,7 +41,7 @@ public class PlantManager
 
 	private static String FILES_DIR;
 
-	private ArrayList<Plant> mPlants;
+	private final ArrayList<Plant> mPlants = new ArrayList<>();
 	private Context context;
 
 	private PlantManager(){}
@@ -49,29 +54,38 @@ public class PlantManager
 		load();
 	}
 
-	public ArrayList<Plant> getSortedPlantList()
+	public ArrayList<Plant> getSortedPlantList(@Nullable Garden garden)
 	{
-		int plantsSize =  PlantManager.getInstance().getPlants().size();
-		ArrayList<Plant> ordered = new ArrayList<>();
-
 		SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(context);
+
+		int plantsSize =  PlantManager.getInstance().getPlants().size();
+		Plant[] ordered = new Plant[garden == null ? plantsSize : garden.getPlantIds().size()];
+
 		boolean hideHarvested = prefs.getBoolean("hide_harvested", false);
 
 		for (int index = 0; index < plantsSize; index++)
 		{
 			Plant plant = PlantManager.getInstance().getPlants().get(index);
 
-			if (hideHarvested && plant.getStage() == PlantStage.HARVESTED)
+			if ((hideHarvested && plant.getStage() == PlantStage.HARVESTED) || (garden != null && !garden.getPlantIds().contains(plant.getId())))
 			{
 				continue;
 			}
 
-			ordered.add(plant);
+			ordered[garden == null ? index : garden.getPlantIds().indexOf(plant.getId())] = plant;
 		}
 
-		ordered.removeAll(Collections.singleton(null));
+		ArrayList<Plant> finalList = new ArrayList<>();
+		finalList.addAll(Arrays.asList(ordered));
+		finalList.removeAll(Collections.singleton(null));
 
-		return ordered;
+		return finalList;
+	}
+
+	public void setPlants(ArrayList<Plant> plants)
+	{
+		this.mPlants.clear();
+		this.mPlants.addAll(plants);
 	}
 
 	public void addPlant(Plant plant)
@@ -133,7 +147,8 @@ public class PlantManager
 			{
 				if (!TextUtils.isEmpty(plantData))
 				{
-					mPlants = (ArrayList<Plant>)GsonHelper.parse(plantData, new TypeToken<ArrayList<Plant>>(){}.getType());
+					mPlants.clear();
+					mPlants.addAll((ArrayList<Plant>)GsonHelper.parse(plantData, new TypeToken<ArrayList<Plant>>(){}.getType()));
 				}
 			}
 			catch (JsonSyntaxException e)
@@ -141,27 +156,35 @@ public class PlantManager
 				e.printStackTrace();
 			}
 		}
-
-		if (mPlants == null)
-		{
-			mPlants = new ArrayList<>();
-		}
 	}
 
 	public void save()
 	{
-		if (MainApplication.isEncrypted())
+		synchronized (mPlants)
 		{
-			if (TextUtils.isEmpty(MainApplication.getKey()))
+			if (MainApplication.isEncrypted())
 			{
-				return;
+				if (TextUtils.isEmpty(MainApplication.getKey()))
+				{
+					return;
+				}
+
+				FileManager.getInstance().writeFile(FILES_DIR + "/plants.json", EncryptionHelper.encrypt(MainApplication.getKey(), GsonHelper.parse(mPlants)));
+			}
+			else
+			{
+				FileManager.getInstance().writeFile(FILES_DIR + "/plants.json", GsonHelper.parse(mPlants));
 			}
 
-			FileManager.getInstance().writeFile(FILES_DIR + "/plants.json", EncryptionHelper.encrypt(MainApplication.getKey(), GsonHelper.parse(mPlants)));
-		}
-		else
-		{
-			FileManager.getInstance().writeFile(FILES_DIR + "/plants.json", GsonHelper.parse(mPlants));
+			if (new File(FILES_DIR + "/plants.json").length() == 0 || !new File(FILES_DIR + "/plants.json").exists())
+			{
+				Toast.makeText(context, "There was a fatal problem saving the plant data, please backup this data", Toast.LENGTH_LONG).show();
+				String sendData = GsonHelper.parse(mPlants);
+				Intent share = new Intent(Intent.ACTION_SEND);
+				share.setType("text/plain");
+				share.putExtra(Intent.EXTRA_TEXT, "== WARNING : PLEASE BACK UP THIS DATA == \r\n\r\n " + sendData);
+				context.startActivity(share);
+			}
 		}
 	}
 }

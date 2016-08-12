@@ -3,11 +3,17 @@ package me.anon.grow.fragment;
 import android.app.Activity;
 import android.app.AlertDialog;
 import android.app.Fragment;
+import android.app.Notification;
+import android.app.NotificationManager;
+import android.app.PendingIntent;
+import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.media.MediaScannerConnection;
 import android.net.Uri;
 import android.os.AsyncTask;
+import android.os.Build;
 import android.os.Bundle;
 import android.os.Environment;
 import android.preference.PreferenceManager;
@@ -24,6 +30,7 @@ import android.view.ViewGroup;
 import android.view.WindowManager;
 import android.widget.CheckBox;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.kenny.snackbar.SnackBar;
 import com.kenny.snackbar.SnackBarListener;
@@ -43,9 +50,12 @@ import me.anon.grow.MainApplication;
 import me.anon.grow.R;
 import me.anon.grow.StatisticsActivity;
 import me.anon.grow.ViewPhotosActivity;
+import me.anon.lib.ExportCallback;
 import me.anon.lib.Views;
+import me.anon.lib.helper.ExportHelper;
 import me.anon.lib.helper.FabAnimator;
 import me.anon.lib.helper.ModelHelper;
+import me.anon.lib.manager.GardenManager;
 import me.anon.lib.manager.PlantManager;
 import me.anon.lib.task.EncryptTask;
 import me.anon.model.EmptyAction;
@@ -78,16 +88,18 @@ public class PlantDetailsFragment extends Fragment
 	@Views.InjectView(R.id.from_clone) private CheckBox clone;
 
 	private int plantIndex = -1;
+	private int gardenIndex = -1;
 	private Plant plant;
 
 	/**
 	 * @param plantIndex If -1, assume new plant
 	 * @return Instantiated details fragment
 	 */
-	public static PlantDetailsFragment newInstance(int plantIndex)
+	public static PlantDetailsFragment newInstance(int plantIndex, int gardenIndex)
 	{
 		Bundle args = new Bundle();
 		args.putInt("plant_index", plantIndex);
+		args.putInt("garden_index", gardenIndex);
 
 		PlantDetailsFragment fragment = new PlantDetailsFragment();
 		fragment.setArguments(args);
@@ -115,7 +127,8 @@ public class PlantDetailsFragment extends Fragment
 
 		if (getArguments() != null)
 		{
-			plantIndex = getArguments().getInt("plant_index");
+			plantIndex = getArguments().getInt("plant_index", -1);
+			gardenIndex = getArguments().getInt("garden_index", -1);
 
 			if (plantIndex > -1)
 			{
@@ -338,7 +351,7 @@ public class PlantDetailsFragment extends Fragment
 
 					@Override public void onSnackBarAction(Object o)
 					{
-						final ArrayList<Plant> sortedPlants = PlantManager.getInstance().getSortedPlantList();
+						final ArrayList<Plant> sortedPlants = PlantManager.getInstance().getSortedPlantList(null);
 						CharSequence[] plants = new CharSequence[sortedPlants.size()];
 						for (int index = 0; index < plants.length; index++)
 						{
@@ -400,6 +413,52 @@ public class PlantDetailsFragment extends Fragment
 				})
 				.setNegativeButton("No", null)
 				.show();
+
+			return true;
+		}
+		else if (item.getItemId() == R.id.export)
+		{
+			Toast.makeText(getActivity(), "Exporting grow log...", Toast.LENGTH_SHORT).show();
+			final NotificationManager notificationManager = (NotificationManager)getActivity().getSystemService(Context.NOTIFICATION_SERVICE);
+
+			Notification exportNotification = new Notification.Builder(getActivity())
+				.setContentText("Exporting grow log for " + plant.getName())
+				.setContentTitle("Exporting")
+				.setContentIntent(PendingIntent.getActivity(getActivity(), 0, new Intent(), PendingIntent.FLAG_UPDATE_CURRENT))
+				.setTicker("Exporting grow log for " + plant.getName())
+				.setSmallIcon(R.drawable.ic_stat_name)
+				.getNotification();
+
+			notificationManager.notify(0xec9047, exportNotification);
+
+			new AsyncTask<Plant, Void, File>()
+			{
+				@Override protected File doInBackground(Plant... params)
+				{
+					ExportHelper.exportPlant(getActivity(), plant, new ExportCallback()
+					{
+						@Override public void onCallback(Context context, File file)
+						{
+							if (file != null && file.exists() && getActivity() != null)
+							{
+								Toast.makeText(getActivity(), "Grow log successfully exported to " + file.getAbsolutePath(), Toast.LENGTH_SHORT).show();
+								notificationManager.cancel(0xec9047);
+
+								if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT)
+								{
+									new MediaScannerWrapper(getActivity(), file.getAbsolutePath(), "application/zip").scan();
+								}
+								else
+								{
+									getActivity().sendBroadcast(new Intent(Intent.ACTION_MEDIA_MOUNTED, Uri.fromFile(file)));
+								}
+							}
+						}
+					});
+
+					return null;
+				}
+			}.executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR, plant);
 
 			return true;
 		}
@@ -587,6 +646,61 @@ public class PlantDetailsFragment extends Fragment
 
 		plant.setClone(clone.isChecked());
 		PlantManager.getInstance().upsert(plantIndex, plant);
+
+		if (gardenIndex != -1)
+		{
+			if (!GardenManager.getInstance().getGardens().get(gardenIndex).getPlantIds().contains(plant.getId()))
+			{
+				GardenManager.getInstance().getGardens().get(gardenIndex).getPlantIds().add(plant.getId());
+				GardenManager.getInstance().save();
+			}
+		}
+
 		getActivity().finish();
+	}
+
+	/**
+	 * Media scanner class to tell the OS to pick up the images taken via the app in the gallery
+	 * viewers
+	 */
+	public static class MediaScannerWrapper implements MediaScannerConnection.MediaScannerConnectionClient
+	{
+		private MediaScannerConnection mConnection;
+		private String mPath;
+		private String mMimeType;
+
+		// filePath - where to scan;
+		// mime type of media to scan i.e. "image/jpeg".
+		// use "*/*" for any media
+		public MediaScannerWrapper(Context ctx, String filePath, String mime)
+		{
+			mPath = filePath;
+			mMimeType = mime;
+			mConnection = new MediaScannerConnection(ctx, this);
+		}
+
+		// do the scanning
+		public void scan()
+		{
+			mConnection.connect();
+		}
+
+		// start the scan when scanner is ready
+		public void onMediaScannerConnected()
+		{
+			mConnection.scanFile(mPath, mMimeType);
+		}
+
+		public void onScanCompleted(String path, Uri uri)
+		{
+			try
+			{
+				mConnection.disconnect();
+			}
+			catch (Exception e)
+			{
+				e.printStackTrace();
+			}
+		}
 	}
 }
