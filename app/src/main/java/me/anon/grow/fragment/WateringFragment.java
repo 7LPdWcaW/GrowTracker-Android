@@ -3,6 +3,7 @@ package me.anon.grow.fragment;
 import android.app.Activity;
 import android.app.Fragment;
 import android.app.FragmentManager;
+import android.content.Context;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.text.TextUtils;
@@ -10,6 +11,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.WindowManager;
+import android.view.inputmethod.InputMethodManager;
 import android.widget.EditText;
 import android.widget.TextView;
 
@@ -111,6 +113,19 @@ public class WateringFragment extends Fragment
 
 		setUi();
 		setHints();
+	}
+
+	@Override public void onResume()
+	{
+		super.onResume();
+
+		if (getActivity() != null && getActivity().getCurrentFocus() != null)
+		{
+			InputMethodManager manager = (InputMethodManager)getActivity().getSystemService(Context.INPUT_METHOD_SERVICE);
+			manager.hideSoftInputFromWindow(getActivity().getCurrentFocus().getWindowToken(), InputMethodManager.HIDE_NOT_ALWAYS);
+
+			getActivity().getCurrentFocus().clearFocus();
+		}
 	}
 
 	private void setHints()
@@ -238,6 +253,11 @@ public class WateringFragment extends Fragment
 
 	@Views.OnClick public void onNewAdditiveClick(View view)
 	{
+		if (getActivity().getCurrentFocus() != null)
+		{
+			getActivity().getCurrentFocus().clearFocus();
+		}
+
 		final Object currentTag = view.getTag();
 		FragmentManager fm = getFragmentManager();
 		AddAdditiveDialogFragment addAdditiveDialogFragment = new AddAdditiveDialogFragment(view.getTag() instanceof Additive ? (Additive)view.getTag() : null);
