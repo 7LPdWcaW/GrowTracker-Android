@@ -24,6 +24,7 @@ import me.anon.grow.R;
 import me.anon.lib.DateRenderer;
 import me.anon.lib.helper.ModelHelper;
 import me.anon.model.Action;
+import me.anon.model.Additive;
 import me.anon.model.EmptyAction;
 import me.anon.model.NoteAction;
 import me.anon.model.StageChange;
@@ -127,7 +128,25 @@ public class ActionAdapter extends RecyclerView.Adapter<ActionHolder> implements
 				waterStr.append("ºC, ");
 			}
 
-			summary += waterStr.toString().length() > 0 ? waterStr.toString().substring(0, waterStr.length() - 2) : "";
+			summary += waterStr.toString().length() > 0 ? waterStr.toString().substring(0, waterStr.length() - 2) + "<br />" : "";
+
+			waterStr = new StringBuilder();
+
+			if (((Water)action).getAdditives().size() > 0)
+			{
+				waterStr.append("<b>Additives:</b>");
+
+				for (Additive additive : ((Water)action).getAdditives())
+				{
+					waterStr.append("<br/>&nbsp;&nbsp;&nbsp;&nbsp;• ");
+					waterStr.append(additive.getDescription());
+					waterStr.append("  -  ");
+					waterStr.append(additive.getAmount());
+					waterStr.append("ml/l");
+				}
+			}
+
+			summary += waterStr.toString();
 		}
 		else if (action instanceof EmptyAction && ((EmptyAction)action).getAction() != null)
 		{
