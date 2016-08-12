@@ -29,6 +29,7 @@ import java.util.SortedMap;
 
 import me.anon.lib.ExportCallback;
 import me.anon.model.Action;
+import me.anon.model.Additive;
 import me.anon.model.EmptyAction;
 import me.anon.model.NoteAction;
 import me.anon.model.Plant;
@@ -261,6 +262,23 @@ public class ExportHelper
 					plantDetails.append(((Water)action).getTemp());
 					plantDetails.append("ºC, ");
 					newLine = true;
+				}
+
+				if (((Water)action).getAdditives().size() > 0)
+				{
+					plantDetails.append(NEW_LINE);
+					plantDetails.append("*Additives:*");
+					plantDetails.append("\r\n");
+
+					for (Additive additive : ((Water)action).getAdditives())
+					{
+						plantDetails.append("\r\n");
+						plantDetails.append(" - ");
+						plantDetails.append(additive.getDescription());
+						plantDetails.append("  -  ");
+						plantDetails.append(additive.getAmount());
+						plantDetails.append("ml/l");
+					}
 				}
 
 				if (newLine)
