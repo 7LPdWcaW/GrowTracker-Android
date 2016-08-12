@@ -87,16 +87,18 @@ public class PlantDetailsFragment extends Fragment
 	@Views.InjectView(R.id.from_clone) private CheckBox clone;
 
 	private int plantIndex = -1;
+	private int gardenIndex = -1;
 	private Plant plant;
 
 	/**
 	 * @param plantIndex If -1, assume new plant
 	 * @return Instantiated details fragment
 	 */
-	public static PlantDetailsFragment newInstance(int plantIndex)
+	public static PlantDetailsFragment newInstance(int plantIndex, int gardenIndex)
 	{
 		Bundle args = new Bundle();
 		args.putInt("plant_index", plantIndex);
+		args.putInt("garden_index", gardenIndex);
 
 		PlantDetailsFragment fragment = new PlantDetailsFragment();
 		fragment.setArguments(args);
@@ -124,7 +126,8 @@ public class PlantDetailsFragment extends Fragment
 
 		if (getArguments() != null)
 		{
-			plantIndex = getArguments().getInt("plant_index");
+			plantIndex = getArguments().getInt("plant_index", -1);
+			gardenIndex = getArguments().getInt("garden_index", -1);
 
 			if (plantIndex > -1)
 			{
