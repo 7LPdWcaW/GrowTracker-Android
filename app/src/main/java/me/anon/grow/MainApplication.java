@@ -19,6 +19,8 @@ import java.net.URISyntaxException;
 
 import lombok.Getter;
 import lombok.Setter;
+import me.anon.lib.handler.ExceptionHandler;
+import me.anon.lib.manager.GardenManager;
 import me.anon.lib.manager.PlantManager;
 import me.anon.lib.stream.DecryptInputStream;
 
@@ -39,15 +41,18 @@ public class MainApplication extends Application
 	{
 		super.onCreate();
 
+		ExceptionHandler.getInstance().register(this);
+
 		encrypted = PreferenceManager.getDefaultSharedPreferences(this).getBoolean("encrypt", false);
 
 		PlantManager.getInstance().initialise(this);
+		GardenManager.getInstance().initialise(this);
 
 		displayImageOptions = new DisplayImageOptions.Builder()
 			.cacheInMemory(true)
 			.cacheOnDisk(true)
 			.showImageOnLoading(R.drawable.ic_image)
-			.imageScaleType(ImageScaleType.EXACTLY_STRETCHED)
+			.imageScaleType(ImageScaleType.IN_SAMPLE_POWER_OF_2)
 			.bitmapConfig(Bitmap.Config.RGB_565)
 			.build();
 
