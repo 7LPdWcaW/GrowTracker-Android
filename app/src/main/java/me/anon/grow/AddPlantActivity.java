@@ -33,7 +33,12 @@ public class AddPlantActivity extends AppCompatActivity
 		getSupportActionBar().setHomeAsUpIndicator(R.drawable.ic_done_white_24dp);
 		Views.inject(this);
 
-		int gardenIndex = getIntent().getExtras().getInt("garden_index", -1);
+		int gardenIndex = -1;
+
+		if (getIntent().getExtras() != null)
+		{
+			gardenIndex = getIntent().getExtras().getInt("garden_index", -1);
+		}
 
 		if (getFragmentManager().findFragmentByTag(TAG_FRAGMENT) == null)
 		{
