@@ -28,12 +28,13 @@ public class AddAdditiveDialogFragment extends DialogFragment
 	public interface OnAdditiveSelectedListener
 	{
 		public void onAdditiveSelected(Additive additive);
+		public void onAdditiveDeleteRequested(Additive additive);
 	}
 
 	private Additive additive;
 	@Views.InjectView(R.id.description) private TextView description;
 	@Views.InjectView(R.id.amount) private TextView amount;
-	@Setter private OnAdditiveSelectedListener onAddNutrientListener;
+	@Setter private OnAdditiveSelectedListener onAdditiveSelectedListener;
 
 	@SuppressLint("ValidFragment")
 	public AddAdditiveDialogFragment(Additive additive)
@@ -57,7 +58,7 @@ public class AddAdditiveDialogFragment extends DialogFragment
 			amount.setText(String.valueOf(additive.getAmount()));
 		}
 
-		return new AlertDialog.Builder(getActivity())
+		final AlertDialog dialog = new AlertDialog.Builder(getActivity())
 			.setTitle("Additive")
 			.setView(view)
 			.setPositiveButton("Ok", new DialogInterface.OnClickListener()
@@ -72,19 +73,19 @@ public class AddAdditiveDialogFragment extends DialogFragment
 					additive.setDescription(desc);
 					additive.setAmount(amt);
 
-					if (onAddNutrientListener != null)
+					if (onAdditiveSelectedListener != null)
 					{
-						onAddNutrientListener.onAdditiveSelected(additive);
+						onAdditiveSelectedListener.onAdditiveSelected(additive);
 					}
 				}
 			})
-			.setNeutralButton("Clear", new DialogInterface.OnClickListener()
+			.setNeutralButton("Delete", new DialogInterface.OnClickListener()
 			{
 				@Override public void onClick(DialogInterface dialog, int which)
 				{
-					if (onAddNutrientListener != null)
+					if (onAdditiveSelectedListener != null)
 					{
-						onAddNutrientListener.onAdditiveSelected(null);
+						onAdditiveSelectedListener.onAdditiveDeleteRequested(additive);
 					}
 				}
 			})
@@ -95,5 +96,15 @@ public class AddAdditiveDialogFragment extends DialogFragment
 					dialog.dismiss();
 				}
 			}).create();
+
+		dialog.setOnShowListener(new DialogInterface.OnShowListener()
+		{
+			@Override public void onShow(DialogInterface dialogInterface)
+			{
+				dialog.getButton(Dialog.BUTTON_NEUTRAL).setVisibility(additive == null ? View.GONE : View.VISIBLE);
+			}
+		});
+
+		return dialog;
 	}
 }
