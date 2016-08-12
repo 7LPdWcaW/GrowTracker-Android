@@ -49,7 +49,7 @@ public class AddAdditiveDialogFragment extends DialogFragment
 
 	@Override public Dialog onCreateDialog(Bundle savedInstanceState)
 	{
-		View view = getActivity().getLayoutInflater().inflate(R.layout.nutrient_dialog_view, null, false);
+		View view = getActivity().getLayoutInflater().inflate(R.layout.additives_dialog_view, null, false);
 		Views.inject(this, view);
 
 		if (additive != null)
