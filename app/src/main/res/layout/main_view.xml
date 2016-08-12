@@ -20,8 +20,8 @@
 			android:minHeight="@dimen/abc_action_bar_default_height_material"
 			android:background="?attr/colorPrimary"
 			android:fitsSystemWindows="true"
-			app:titleTextColor="@android:color/white"
 			app:theme="@style/Toolbar"
+			app:popupTheme="@style/ThemeOverlay.AppCompat.Light"
 		/>
 
 		<FrameLayout

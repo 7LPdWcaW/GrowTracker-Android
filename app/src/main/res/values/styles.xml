@@ -13,7 +13,7 @@
 		<item name="android:actionModeStyle">@style/ActionMode</item>
 	</style>
 
-	<style name="Toolbar">
+	<style name="Toolbar" parent="@style/ThemeOverlay.AppCompat.Dark.ActionBar">
 		<item name="drawerArrowStyle">@style/DrawerArrowStyle</item>
 	</style>
 
