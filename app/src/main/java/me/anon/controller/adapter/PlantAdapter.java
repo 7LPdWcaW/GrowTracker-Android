@@ -25,7 +25,6 @@ import me.anon.lib.DateRenderer;
 import me.anon.lib.helper.TimeHelper;
 import me.anon.lib.manager.PlantManager;
 import me.anon.model.Action;
-import me.anon.model.Feed;
 import me.anon.model.Plant;
 import me.anon.model.PlantStage;
 import me.anon.model.Water;
@@ -80,7 +79,6 @@ public class PlantAdapter extends RecyclerView.Adapter<PlantHolder> implements I
 
 			if (plant.getActions() != null && plant.getActions().size() > 0)
 			{
-				Feed lastFeed = null;
 				Water lastWater = null;
 
 				ArrayList<Action> actions = plant.getActions();
@@ -88,11 +86,7 @@ public class PlantAdapter extends RecyclerView.Adapter<PlantHolder> implements I
 				{
 					Action action = actions.get(index);
 
-					if (action.getClass() == Feed.class && lastFeed == null)
-					{
-						lastFeed = (Feed)action;
-					}
-					else if (action.getClass() == Water.class && lastWater == null)
+					if (action.getClass() == Water.class && lastWater == null)
 					{
 						lastWater = (Water)action;
 					}
@@ -124,58 +118,6 @@ public class PlantAdapter extends RecyclerView.Adapter<PlantHolder> implements I
 					if (lastWater.getAmount() != null)
 					{
 						summary += "<b>" + lastWater.getAmount() + "ml</b>";
-					}
-				}
-
-				if (lastFeed != null)
-				{
-					summary += "<br/><br/>";
-					summary += "Last fed: <b>" + new DateRenderer().timeAgo(lastFeed.getDate()).formattedDate + "</b> ago with ";
-
-					if (lastFeed.getMlpl() != null)
-					{
-						summary += "<b>" + lastFeed.getMlpl() + "ml/l</b>";
-					}
-
-					if (lastFeed.getNutrient() != null)
-					{
-						summary += " of <b>";
-						summary += lastFeed.getNutrient().getNpc() == null ? "-" : lastFeed.getNutrient().getNpc();
-						summary += "</b>:<b>";
-						summary += lastFeed.getNutrient().getPpc() == null ? "-" : lastFeed.getNutrient().getPpc();
-						summary += "</b>:<b>";
-						summary += lastFeed.getNutrient().getKpc() == null ? "-" : lastFeed.getNutrient().getKpc();
-						summary += "</b>";
-
-						if (lastFeed.getNutrient().getMgpc() != null
-						|| lastFeed.getNutrient().getSpc() != null
-						|| lastFeed.getNutrient().getCapc() != null)
-						{
-							summary += "/<b>";
-							summary += lastFeed.getNutrient().getCapc() == null ? "-" : lastFeed.getNutrient().getCapc();
-							summary += "</b>:<b>";
-							summary += lastFeed.getNutrient().getSpc() == null ? "-" : lastFeed.getNutrient().getSpc();
-							summary += "</b>:<b>";
-							summary += lastFeed.getNutrient().getMgpc() == null ? "-" : lastFeed.getNutrient().getMgpc();
-							summary += "</b>";
-						}
-
-						summary += "<br/>";
-					}
-
-					if (lastFeed.getPh() != null)
-					{
-						summary += "<b>" + lastFeed.getPh() + " PH</b> ";
-
-						if (lastFeed.getRunoff() != null)
-						{
-							summary += "-> <b>" + lastFeed.getRunoff() + " PH</b> ";
-						}
-					}
-
-					if (lastFeed.getAmount() != null)
-					{
-						summary += "<b>" + lastFeed.getAmount() + "ml</b>";
 					}
 				}
 			}

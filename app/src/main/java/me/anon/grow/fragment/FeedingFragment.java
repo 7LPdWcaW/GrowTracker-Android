@@ -2,7 +2,6 @@ package me.anon.grow.fragment;
 
 import android.app.Activity;
 import android.app.Fragment;
-import android.app.FragmentManager;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.text.TextUtils;
@@ -22,8 +21,6 @@ import me.anon.grow.R;
 import me.anon.lib.Views;
 import me.anon.lib.manager.PlantManager;
 import me.anon.model.Action;
-import me.anon.model.Feed;
-import me.anon.model.Nutrient;
 import me.anon.model.Plant;
 import me.anon.model.PlantMedium;
 import me.anon.model.Water;
@@ -55,7 +52,7 @@ public class FeedingFragment extends Fragment
 	private int plantIndex = -1;
 	private int actionIndex = -1;
 	private Plant plant;
-	private Feed feed;
+	private Water water;
 
 	/**
 	 * @param plantIndex If -1, assume new plant
@@ -98,29 +95,8 @@ public class FeedingFragment extends Fragment
 
 			if (actionIndex > -1)
 			{
-				if (PlantManager.getInstance().getPlants().get(plantIndex).getActions().get(actionIndex) instanceof Feed)
-				{
-					feed = (Feed)PlantManager.getInstance().getPlants().get(plantIndex).getActions().get(actionIndex);
-				}
-				else if (PlantManager.getInstance().getPlants().get(plantIndex).getActions().get(actionIndex) instanceof Water)
-				{
-					Water water = (Water)PlantManager.getInstance().getPlants().get(plantIndex).getActions().get(actionIndex);
-
-					feed = new Feed();
-					feed.setDate(water.getDate());
-					feed.setPh(water.getPh());
-					feed.setPpm(water.getPpm());
-					feed.setRunoff(water.getRunoff());
-					feed.setAmount(water.getAmount());
-					feed.setTemp(water.getTemp());
-					feed.setNotes(water.getNotes());
-				}
+				water = (Water)PlantManager.getInstance().getPlants().get(plantIndex).getActions().get(actionIndex);
 			}
-		}
-
-		if (feed == null)
-		{
-			feed = new Feed();
 		}
 
 		if (plant == null)
@@ -131,102 +107,19 @@ public class FeedingFragment extends Fragment
 
 		setUi();
 		setHints();
-		nutrientNutrientContainer.setOnClickListener(new View.OnClickListener()
-		{
-			@Override public void onClick(View v)
-			{
-				Nutrient nutrient = feed.getNutrient();
-				if (feed.getNutrient() == null)
-				{
-					if (plant.getActions() != null)
-					{
-						ArrayList<Action> actions = plant.getActions();
-						for (int i = actions.size() - 1; i >= 0; i--)
-						{
-							Action action = actions.get(i);
-							if (action instanceof Feed && ((Feed)action).getNutrient() != null)
-							{
-								nutrient = ((Feed)action).getNutrient();
-								break;
-							}
-						}
-					}
-				}
-
-				FragmentManager fm = getFragmentManager();
-				AddNutrientDialogFragment addNutrientDialogFragment = new AddNutrientDialogFragment(nutrient);
-				addNutrientDialogFragment.setOnAddNutrientListener(new AddNutrientDialogFragment.OnAddNutrientListener()
-				{
-					@Override public void onNutrientSelected(Nutrient nutrient)
-					{
-						feed.setNutrient(nutrient);
-
-						if (nutrient == null)
-						{
-							feed.setAmount(null);
-							FeedingFragment.this.nutrientAmount.setText(null);
-							FeedingFragment.this.nutrient.setText("N/A");
-						}
-						else
-						{
-							String nutrientStr = "";
-							nutrientStr += nutrient.getNpc() == null ? "-" : nutrient.getNpc();
-							nutrientStr += " : ";
-							nutrientStr += nutrient.getPpc() == null ? "-" : nutrient.getPpc();
-							nutrientStr += " : ";
-							nutrientStr += nutrient.getKpc() == null ? "-" : nutrient.getKpc();
-							nutrientStr += "/";
-							nutrientStr += nutrient.getCapc() == null ? "-" : nutrient.getCapc();
-							nutrientStr += " : ";
-							nutrientStr += nutrient.getSpc() == null ? "-" : nutrient.getSpc();
-							nutrientStr += " : ";
-							nutrientStr += nutrient.getMgpc() == null ? "-" : nutrient.getMgpc();
-
-							FeedingFragment.this.nutrient.setText(nutrientStr);
-						}
-					}
-				});
-				addNutrientDialogFragment.show(fm, "fragment_add_nutrient");
-			}
-		});
-		nutrient.setOnFocusChangeListener(new View.OnFocusChangeListener()
-		{
-			@Override public void onFocusChange(View v, boolean hasFocus)
-			{
-				if (hasFocus)
-				{
-					nutrientNutrientContainer.performClick();
-					nutrientNutrientContainer.requestFocusFromTouch();
-				}
-			}
-		});
 	}
 
 	private void setHints()
 	{
-		if (feed != null)
+		if (water != null)
 		{
-			Feed hintFeed = null;
+			Water hintFeed = null;
 
 			for (int index = plant.getActions().size() - 1; index >= 0; index--)
 			{
-				if (plant.getActions().get(index).getClass() == Feed.class)
+				if (plant.getActions().get(index).getClass() == Water.class)
 				{
-					hintFeed = (Feed)plant.getActions().get(index);
-					break;
-				}
-				else if (plant.getActions().get(index).getClass() == Water.class)
-				{
-					Water water = (Water)plant.getActions().get(index);
-
-					hintFeed = new Feed();
-					hintFeed.setDate(water.getDate());
-					hintFeed.setPh(water.getPh());
-					hintFeed.setPpm(water.getPpm());
-					hintFeed.setRunoff(water.getRunoff());
-					hintFeed.setAmount(water.getAmount());
-					hintFeed.setTemp(water.getTemp());
-					hintFeed.setNotes(water.getNotes());
+					hintFeed = (Water)plant.getActions().get(index);
 					break;
 				}
 			}
@@ -263,11 +156,6 @@ public class FeedingFragment extends Fragment
 					}
 				}
 
-				if (hintFeed.getMlpl() != null)
-				{
-					nutrientAmount.setHint(String.valueOf(hintFeed.getMlpl()));
-				}
-
 				notes.setHint(hintFeed.getNotes());
 			}
 		}
@@ -278,19 +166,19 @@ public class FeedingFragment extends Fragment
 		getActivity().setTitle("Feeding " + plant.getName());
 
 		Calendar date = Calendar.getInstance();
-		date.setTimeInMillis(feed.getDate());
+		date.setTimeInMillis(water.getDate());
 
 		final DateFormat dateFormat = android.text.format.DateFormat.getDateFormat(getActivity());
 		final DateFormat timeFormat = android.text.format.DateFormat.getTimeFormat(getActivity());
 
-		String dateStr = dateFormat.format(new Date(feed.getDate())) + " " + timeFormat.format(new Date(feed.getDate()));
+		String dateStr = dateFormat.format(new Date(water.getDate())) + " " + timeFormat.format(new Date(water.getDate()));
 		this.date.setText(dateStr);
 
 		this.dateContainer.setOnClickListener(new View.OnClickListener()
 		{
 			@Override public void onClick(View v)
 			{
-				final DateDialogFragment fragment = new DateDialogFragment(feed.getDate());
+				final DateDialogFragment fragment = new DateDialogFragment(water.getDate());
 				fragment.setOnDateSelected(new DateDialogFragment.OnDateSelectedListener()
 				{
 					@Override public void onDateSelected(Calendar date)
@@ -298,7 +186,7 @@ public class FeedingFragment extends Fragment
 						String dateStr = dateFormat.format(date.getTime()) + " " + timeFormat.format(date.getTime());
 						FeedingFragment.this.date.setText(dateStr);
 
-						feed.setDate(date.getTimeInMillis());
+						water.setDate(date.getTimeInMillis());
 						onCancelled();
 					}
 
@@ -311,60 +199,37 @@ public class FeedingFragment extends Fragment
 			}
 		});
 
-		if (feed.getPh() != null)
+		if (water.getPh() != null)
 		{
-			waterPh.setText(String.valueOf(feed.getPh()));
+			waterPh.setText(String.valueOf(water.getPh()));
 		}
 
-		if (feed.getPpm() != null)
+		if (water.getPpm() != null)
 		{
-			waterPpm.setText(String.valueOf(feed.getPpm()));
+			waterPpm.setText(String.valueOf(water.getPpm()));
 		}
 
-		if (feed.getRunoff() != null)
+		if (water.getRunoff() != null)
 		{
-			runoffPh.setText(String.valueOf(feed.getRunoff()));
+			runoffPh.setText(String.valueOf(water.getRunoff()));
 		}
 
-		if (feed.getAmount() != null)
+		if (water.getAmount() != null)
 		{
-			amount.setText(String.valueOf(feed.getAmount()));
+			amount.setText(String.valueOf(water.getAmount()));
 		}
 
 		if (plant.getMedium() == PlantMedium.HYDRO)
 		{
 			tempContainer.setVisibility(View.VISIBLE);
 
-			if (feed.getTemp() != null)
+			if (water.getTemp() != null)
 			{
-				temp.setText(String.valueOf(feed.getTemp()));
+				temp.setText(String.valueOf(water.getTemp()));
 			}
 		}
 
-		if (feed.getNutrient() != null)
-		{
-			String nutrientStr = "";
-			nutrientStr += feed.getNutrient().getNpc() == null ? "-" : feed.getNutrient().getNpc();
-			nutrientStr += " : ";
-			nutrientStr += feed.getNutrient().getPpc() == null ? "-" : feed.getNutrient().getPpc();
-			nutrientStr += " : ";
-			nutrientStr += feed.getNutrient().getKpc() == null ? "-" : feed.getNutrient().getKpc();
-			nutrientStr += "/";
-			nutrientStr += feed.getNutrient().getCapc() == null ? "-" : feed.getNutrient().getCapc();
-			nutrientStr += " : ";
-			nutrientStr += feed.getNutrient().getSpc() == null ? "-" : feed.getNutrient().getSpc();
-			nutrientStr += " : ";
-			nutrientStr += feed.getNutrient().getMgpc() == null ? "-" : feed.getNutrient().getMgpc();
-
-			nutrient.setText(nutrientStr);
-		}
-
-		if (feed.getMlpl() != null)
-		{
-			nutrientAmount.setText(String.valueOf(feed.getMlpl()));
-		}
-
-		notes.setText(feed.getNotes());
+		notes.setText(water.getNotes());
 	}
 
 	@Views.OnClick public void onFabCompleteClick(final View view)
@@ -376,49 +241,25 @@ public class FeedingFragment extends Fragment
 		Integer temp = TextUtils.isEmpty(this.temp.getText()) ? null : Integer.valueOf(this.temp.getText().toString());
 		Double nutrientAmount = TextUtils.isEmpty(this.nutrientAmount.getText()) ? null : Double.valueOf(this.nutrientAmount.getText().toString());
 
-		feed.setPh(waterPh);
-		feed.setPpm(ppm);
-		feed.setRunoff(runoffPh);
-		feed.setAmount(amount);
-		feed.setTemp(temp);
-		feed.setMlpl(nutrientAmount);
-		feed.setNotes(TextUtils.isEmpty(notes.getText().toString()) ? null : notes.getText().toString());
+		water.setPh(waterPh);
+		water.setPpm(ppm);
+		water.setRunoff(runoffPh);
+		water.setAmount(amount);
+		water.setTemp(temp);
+		water.setNotes(TextUtils.isEmpty(notes.getText().toString()) ? null : notes.getText().toString());
 
 		if (plant.getActions() == null)
 		{
 			plant.setActions(new ArrayList<Action>());
 		}
 
-		if (feed.getNutrient() == null)
+		if (actionIndex < 0)
 		{
-			Water water = new Water();
-			water.setPh(feed.getPh());
-			water.setPpm(feed.getPpm());
-			water.setRunoff(feed.getRunoff());
-			water.setAmount(feed.getAmount());
-			water.setTemp(feed.getTemp());
-			water.setDate(feed.getDate());
-			water.setNotes(feed.getNotes());
-
-			if (actionIndex < 0)
-			{
-				plant.getActions().add(water);
-			}
-			else
-			{
-				plant.getActions().set(actionIndex, water);
-			}
+			plant.getActions().add(water);
 		}
 		else
 		{
-			if (actionIndex < 0)
-			{
-				plant.getActions().add(feed);
-			}
-			else
-			{
-				plant.getActions().set(actionIndex, feed);
-			}
+			plant.getActions().set(actionIndex, water);
 		}
 
 		PlantManager.getInstance().upsert(plantIndex, plant);

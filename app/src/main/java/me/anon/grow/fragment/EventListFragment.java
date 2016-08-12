@@ -35,7 +35,6 @@ import me.anon.lib.helper.FabAnimator;
 import me.anon.lib.manager.PlantManager;
 import me.anon.model.Action;
 import me.anon.model.EmptyAction;
-import me.anon.model.Feed;
 import me.anon.model.NoteAction;
 import me.anon.model.Plant;
 import me.anon.model.StageChange;
@@ -585,10 +584,6 @@ public class EventListFragment extends Fragment implements ActionAdapter.OnActio
 				items.set(index, null);
 			}
 			else if (!stages && items.get(index) instanceof StageChange)
-			{
-				items.set(index, null);
-			}
-			else if (!feeding && items.get(index).getClass() == Feed.class)
 			{
 				items.set(index, null);
 			}

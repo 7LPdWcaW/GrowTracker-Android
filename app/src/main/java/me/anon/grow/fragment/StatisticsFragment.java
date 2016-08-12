@@ -20,7 +20,6 @@ import me.anon.lib.helper.TimeHelper;
 import me.anon.lib.manager.PlantManager;
 import me.anon.model.Action;
 import me.anon.model.EmptyAction;
-import me.anon.model.Feed;
 import me.anon.model.Plant;
 import me.anon.model.PlantMedium;
 import me.anon.model.PlantStage;
@@ -163,18 +162,7 @@ public class StatisticsFragment extends Fragment
 				}
 			}
 
-			if (action.getClass() == Feed.class)
-			{
-				if (lastFeed != 0)
-				{
-					feedDifference += Math.abs(action.getDate() - lastFeed);
-				}
-
-				totalFeed++;
-				lastFeed = action.getDate();
-
-			}
-			else if (action.getClass() == Water.class)
+			if (action.getClass() == Water.class)
 			{
 				if (lastWater != 0)
 				{
