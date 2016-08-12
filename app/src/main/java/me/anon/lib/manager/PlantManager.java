@@ -4,6 +4,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.preference.PreferenceManager;
+import android.support.annotation.Nullable;
 import android.text.TextUtils;
 import android.widget.Toast;
 
@@ -12,6 +13,7 @@ import com.google.gson.reflect.TypeToken;
 
 import java.io.File;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collections;
 
 import lombok.Data;
@@ -20,6 +22,7 @@ import lombok.experimental.Accessors;
 import me.anon.grow.MainApplication;
 import me.anon.lib.helper.EncryptionHelper;
 import me.anon.lib.helper.GsonHelper;
+import me.anon.model.Garden;
 import me.anon.model.Plant;
 import me.anon.model.PlantStage;
 
@@ -51,29 +54,32 @@ public class PlantManager
 		load();
 	}
 
-	public ArrayList<Plant> getSortedPlantList()
+	public ArrayList<Plant> getSortedPlantList(@Nullable Garden garden)
 	{
-		int plantsSize =  PlantManager.getInstance().getPlants().size();
-		ArrayList<Plant> ordered = new ArrayList<>();
-
 		SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(context);
+
+		int plantsSize =  PlantManager.getInstance().getPlants().size();
+		Plant[] ordered = new Plant[garden == null ? plantsSize : garden.getPlantIds().size()];
+
 		boolean hideHarvested = prefs.getBoolean("hide_harvested", false);
 
 		for (int index = 0; index < plantsSize; index++)
 		{
 			Plant plant = PlantManager.getInstance().getPlants().get(index);
 
-			if (hideHarvested && plant.getStage() == PlantStage.HARVESTED)
+			if ((hideHarvested && plant.getStage() == PlantStage.HARVESTED) || (garden != null && !garden.getPlantIds().contains(plant.getId())))
 			{
 				continue;
 			}
 
-			ordered.add(plant);
+			ordered[garden == null ? index : garden.getPlantIds().indexOf(plant.getId())] = plant;
 		}
 
-		ordered.removeAll(Collections.singleton(null));
+		ArrayList<Plant> finalList = new ArrayList<>();
+		finalList.addAll(Arrays.asList(ordered));
+		finalList.removeAll(Collections.singleton(null));
 
-		return ordered;
+		return finalList;
 	}
 
 	public void setPlants(ArrayList<Plant> plants)

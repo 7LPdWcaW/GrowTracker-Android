@@ -1,5 +1,8 @@
 package me.anon.model;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import lombok.Getter;
 import lombok.Setter;
 import lombok.experimental.Accessors;
@@ -20,4 +23,5 @@ public class Water extends Action
 	private Double runoff;
 	private Integer amount;
 	private Integer temp;
+	private List<Additive> additives = new ArrayList<>();
 }

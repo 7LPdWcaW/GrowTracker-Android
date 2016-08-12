@@ -24,8 +24,8 @@ import me.anon.grow.R;
 import me.anon.lib.DateRenderer;
 import me.anon.lib.helper.ModelHelper;
 import me.anon.model.Action;
+import me.anon.model.Additive;
 import me.anon.model.EmptyAction;
-import me.anon.model.Feed;
 import me.anon.model.NoteAction;
 import me.anon.model.StageChange;
 import me.anon.model.Water;
@@ -83,84 +83,7 @@ public class ActionAdapter extends RecyclerView.Adapter<ActionHolder> implements
 		viewHolder.getCard().setCardBackgroundColor(0xffffffff);
 
 		String summary = "";
-		if (action.getClass() == Feed.class)
-		{
-			viewHolder.getCard().setCardBackgroundColor(0x9A90CAF9);
-			viewHolder.getName().setText("Feed with nutrients");
-
-			if (((Feed)action).getNutrient() != null)
-			{
-				summary += "<b>";
-				summary += ((Feed)action).getNutrient().getNpc() == null ? "-" : ((Feed)action).getNutrient().getNpc();
-				summary += "</b>:<b>";
-				summary += ((Feed)action).getNutrient().getPpc() == null ? "-" : ((Feed)action).getNutrient().getPpc();
-				summary += "</b>:<b>";
-				summary += ((Feed)action).getNutrient().getKpc() == null ? "-" : ((Feed)action).getNutrient().getKpc();
-				summary += "</b>";
-
-				if (((Feed)action).getNutrient().getMgpc() != null
-				|| ((Feed)action).getNutrient().getSpc() != null
-				|| ((Feed)action).getNutrient().getCapc() != null)
-				{
-					summary += " / <b>";
-					summary += ((Feed)action).getNutrient().getCapc() == null ? "-" : ((Feed)action).getNutrient().getCapc();
-					summary += "</b>:<b>";
-					summary += ((Feed)action).getNutrient().getSpc() == null ? "-" : ((Feed)action).getNutrient().getSpc();
-					summary += "</b>:<b>";
-					summary += ((Feed)action).getNutrient().getMgpc() == null ? "-" : ((Feed)action).getNutrient().getMgpc();
-					summary += "</b>";
-				}
-
-				summary += " (";
-				summary += ((Feed)action).getMlpl() == null ? "n/a" : ((Feed)action).getMlpl() + "ml/l";
-				summary += ")";
-				summary += "<br/>";
-			}
-
-			StringBuilder waterStr = new StringBuilder();
-
-			if (((Feed)action).getPh() != null)
-			{
-				waterStr.append("<b>In pH: </b>");
-				waterStr.append(((Feed)action).getPh());
-				waterStr.append(", ");
-			}
-
-			if (((Feed)action).getRunoff() != null)
-			{
-				waterStr.append("<b>Out pH: </b>");
-				waterStr.append(((Feed)action).getRunoff());
-				waterStr.append(", ");
-			}
-
-			summary += waterStr.toString().length() > 0 ? waterStr.toString().substring(0, waterStr.length() - 2) + "<br/>" : "";
-
-			waterStr = new StringBuilder();
-
-			if (((Feed)action).getPpm() != null)
-			{
-				waterStr.append("<b>PPM: </b>");
-				waterStr.append(((Feed)action).getPpm());
-				waterStr.append(", ");
-			}
-
-			if (((Feed)action).getAmount() != null)
-			{
-				waterStr.append("<b>Amount: </b>");
-				waterStr.append(((Feed)action).getAmount());
-				waterStr.append("ml, ");
-			}
-
-			if (((Feed)action).getTemp() != null)
-			{
-				waterStr.append("<b>Temp: </b>");
-				waterStr.append(((Feed)action).getTemp());
-				waterStr.append("ºC, ");
-			}
-
-			summary += waterStr.toString().length() > 0 ? waterStr.toString().substring(0, waterStr.length() - 2) : "";
-		}
-		else if (action.getClass() == Water.class)
+		if (action.getClass() == Water.class)
 		{
 			viewHolder.getCard().setCardBackgroundColor(0x9ABBDEFB);
 			viewHolder.getName().setText("Watered");
@@ -205,7 +128,25 @@ public class ActionAdapter extends RecyclerView.Adapter<ActionHolder> implements
 				waterStr.append("ºC, ");
 			}
 
-			summary += waterStr.toString().length() > 0 ? waterStr.toString().substring(0, waterStr.length() - 2) : "";
+			summary += waterStr.toString().length() > 0 ? waterStr.toString().substring(0, waterStr.length() - 2) + "<br />" : "";
+
+			waterStr = new StringBuilder();
+
+			if (((Water)action).getAdditives().size() > 0)
+			{
+				waterStr.append("<b>Additives:</b>");
+
+				for (Additive additive : ((Water)action).getAdditives())
+				{
+					waterStr.append("<br/>&nbsp;&nbsp;&nbsp;&nbsp;• ");
+					waterStr.append(additive.getDescription());
+					waterStr.append("  -  ");
+					waterStr.append(additive.getAmount());
+					waterStr.append("ml/l");
+				}
+			}
+
+			summary += waterStr.toString();
 		}
 		else if (action instanceof EmptyAction && ((EmptyAction)action).getAction() != null)
 		{

@@ -13,12 +13,8 @@ import lombok.experimental.Accessors;
  */
 @Getter @Setter
 @Accessors(prefix = {"m", ""}, chain = true)
-public class Nutrient
+public class Additive
 {
-	private Double npc; // nitrogen
-	private Double ppc; // phosphorus
-	private Double kpc; // potassium
-	private Double capc; // calcium
-	private Double spc; // sulfur
-	private Double mgpc; // magnesium
+	private Integer amount;
+	private String description;
 }
