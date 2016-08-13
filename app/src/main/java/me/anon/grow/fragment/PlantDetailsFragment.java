@@ -154,7 +154,11 @@ public class PlantDetailsFragment extends Fragment
 			linkContainer.setVisibility(View.VISIBLE);
 
 			name.setText(plant.getName());
-			mediumDetails.setText(plant.getMediumDetails());
+
+			if (plant.getMediumDetails() != null)
+			{
+				mediumDetails.setText(plant.getMediumDetails());
+			}
 
 			if (plant.getMedium() != null)
 			{
