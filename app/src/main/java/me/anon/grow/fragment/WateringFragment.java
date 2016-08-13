@@ -50,19 +50,19 @@ public class WateringFragment extends Fragment
 	@Views.InjectView(R.id.additive_container) private ViewGroup additiveContainer;
 	@Views.InjectView(R.id.notes) private EditText notes;
 
-	private int plantIndex = -1;
+	private int[] plantIndex = {-1};
 	private int actionIndex = -1;
-	private Plant plant;
+	private ArrayList<Plant> plants = new ArrayList<>();
 	private Water water;
 
 	/**
 	 * @param plantIndex If -1, assume new plant
 	 * @return Instantiated details fragment
 	 */
-	public static WateringFragment newInstance(int plantIndex, int feedingIndex)
+	public static WateringFragment newInstance(int[] plantIndex, int feedingIndex)
 	{
 		Bundle args = new Bundle();
-		args.putInt("plant_index", plantIndex);
+		args.putIntArray("plant_index", plantIndex);
 		args.putInt("action_index", feedingIndex);
 
 		WateringFragment fragment = new WateringFragment();
@@ -85,18 +85,20 @@ public class WateringFragment extends Fragment
 
 		if (getArguments() != null)
 		{
-			plantIndex = getArguments().getInt("plant_index");
+			plantIndex = getArguments().getIntArray("plant_index");
 			actionIndex = getArguments().getInt("action_index");
 
-			if (plantIndex > -1)
+			for (int index : plantIndex)
 			{
-				plant = PlantManager.getInstance().getPlants().get(plantIndex);
+				Plant plant = PlantManager.getInstance().getPlants().get(index);
+				plants.add(plant);
+
 				getActivity().getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_ALWAYS_HIDDEN);
 			}
 
-			if (actionIndex > -1)
+			if (actionIndex > -1 && plantIndex.length == 1)
 			{
-				water = (Water)PlantManager.getInstance().getPlants().get(plantIndex).getActions().get(actionIndex);
+				water = (Water)PlantManager.getInstance().getPlants().get(plantIndex[0]).getActions().get(actionIndex);
 			}
 		}
 
@@ -105,7 +107,7 @@ public class WateringFragment extends Fragment
 			water = new Water();
 		}
 
-		if (plant == null)
+		if (plants.size() < 1)
 		{
 			getActivity().finish();
 			return;
@@ -130,15 +132,15 @@ public class WateringFragment extends Fragment
 
 	private void setHints()
 	{
-		if (water != null)
+		if (water != null && plants.size() == 1)
 		{
 			Water hintFeed = null;
 
-			for (int index = plant.getActions().size() - 1; index >= 0; index--)
+			for (int index = plants.get(0).getActions().size() - 1; index >= 0; index--)
 			{
-				if (plant.getActions().get(index).getClass() == Water.class)
+				if (plants.get(0).getActions().get(index).getClass() == Water.class)
 				{
-					hintFeed = (Water)plant.getActions().get(index);
+					hintFeed = (Water)plants.get(0).getActions().get(index);
 					break;
 				}
 			}
@@ -165,7 +167,7 @@ public class WateringFragment extends Fragment
 					amount.setHint(String.valueOf(hintFeed.getAmount()));
 				}
 
-				if (plant.getMedium() == PlantMedium.HYDRO)
+				if (plants.get(0).getMedium() == PlantMedium.HYDRO)
 				{
 					tempContainer.setVisibility(View.VISIBLE);
 
@@ -182,89 +184,92 @@ public class WateringFragment extends Fragment
 
 	private void setUi()
 	{
-		getActivity().setTitle("Feeding " + plant.getName());
+		getActivity().setTitle("Feeding " + (plants.size() == 1 ? plants.get(0).getName() : "multiple plants"));
 
-		Calendar date = Calendar.getInstance();
-		date.setTimeInMillis(water.getDate());
-
-		final DateFormat dateFormat = android.text.format.DateFormat.getDateFormat(getActivity());
-		final DateFormat timeFormat = android.text.format.DateFormat.getTimeFormat(getActivity());
-
-		String dateStr = dateFormat.format(new Date(water.getDate())) + " " + timeFormat.format(new Date(water.getDate()));
-		this.date.setText(dateStr);
-
-		this.dateContainer.setOnClickListener(new View.OnClickListener()
+		if (plants.size() == 1)
 		{
-			@Override public void onClick(View v)
+			Calendar date = Calendar.getInstance();
+			date.setTimeInMillis(water.getDate());
+
+			final DateFormat dateFormat = android.text.format.DateFormat.getDateFormat(getActivity());
+			final DateFormat timeFormat = android.text.format.DateFormat.getTimeFormat(getActivity());
+
+			String dateStr = dateFormat.format(new Date(water.getDate())) + " " + timeFormat.format(new Date(water.getDate()));
+			this.date.setText(dateStr);
+
+			this.dateContainer.setOnClickListener(new View.OnClickListener()
 			{
-				final DateDialogFragment fragment = new DateDialogFragment(water.getDate());
-				fragment.setOnDateSelected(new DateDialogFragment.OnDateSelectedListener()
+				@Override public void onClick(View v)
 				{
-					@Override public void onDateSelected(Calendar date)
+					final DateDialogFragment fragment = new DateDialogFragment(water.getDate());
+					fragment.setOnDateSelected(new DateDialogFragment.OnDateSelectedListener()
 					{
-						String dateStr = dateFormat.format(date.getTime()) + " " + timeFormat.format(date.getTime());
-						WateringFragment.this.date.setText(dateStr);
+						@Override public void onDateSelected(Calendar date)
+						{
+							String dateStr = dateFormat.format(date.getTime()) + " " + timeFormat.format(date.getTime());
+							WateringFragment.this.date.setText(dateStr);
 
-						water.setDate(date.getTimeInMillis());
-						onCancelled();
-					}
+							water.setDate(date.getTimeInMillis());
+							onCancelled();
+						}
 
-					@Override public void onCancelled()
-					{
-						getFragmentManager().beginTransaction().remove(fragment).commit();
-					}
-				});
-				getFragmentManager().beginTransaction().add(fragment, "date").commit();
-			}
-		});
-
-		if (water.getPh() != null)
-		{
-			waterPh.setText(String.valueOf(water.getPh()));
-		}
-
-		if (water.getPpm() != null)
-		{
-			waterPpm.setText(String.valueOf(water.getPpm()));
-		}
-
-		if (water.getRunoff() != null)
-		{
-			runoffPh.setText(String.valueOf(water.getRunoff()));
-		}
-
-		if (water.getAmount() != null)
-		{
-			amount.setText(String.valueOf(water.getAmount()));
-		}
-
-		if (plant.getMedium() == PlantMedium.HYDRO)
-		{
-			tempContainer.setVisibility(View.VISIBLE);
-
-			if (water.getTemp() != null)
-			{
-				temp.setText(String.valueOf(water.getTemp()));
-			}
-		}
-
-		for (Additive additive : water.getAdditives())
-		{
-			View additiveStub = LayoutInflater.from(getActivity()).inflate(R.layout.additive_stub, additiveContainer, false);
-			((TextView)additiveStub).setText(additive.getDescription() + "   -   " + additive.getAmount() + "ml/l");
-
-			additiveStub.setTag(additive);
-			additiveStub.setOnClickListener(new View.OnClickListener()
-			{
-				@Override public void onClick(View view)
-				{
-					onNewAdditiveClick(view);
+						@Override public void onCancelled()
+						{
+							getFragmentManager().beginTransaction().remove(fragment).commit();
+						}
+					});
+					getFragmentManager().beginTransaction().add(fragment, "date").commit();
 				}
 			});
-			additiveContainer.addView(additiveStub, additiveContainer.getChildCount() - 1);
-		}
 
-		notes.setText(water.getNotes());
+			if (water.getPh() != null)
+			{
+				waterPh.setText(String.valueOf(water.getPh()));
+			}
+
+			if (water.getPpm() != null)
+			{
+				waterPpm.setText(String.valueOf(water.getPpm()));
+			}
+
+			if (water.getRunoff() != null)
+			{
+				runoffPh.setText(String.valueOf(water.getRunoff()));
+			}
+
+			if (water.getAmount() != null)
+			{
+				amount.setText(String.valueOf(water.getAmount()));
+			}
+
+			if (plants.get(0).getMedium() == PlantMedium.HYDRO)
+			{
+				tempContainer.setVisibility(View.VISIBLE);
+
+				if (water.getTemp() != null)
+				{
+					temp.setText(String.valueOf(water.getTemp()));
+				}
+			}
+
+			for (Additive additive : water.getAdditives())
+			{
+				View additiveStub = LayoutInflater.from(getActivity()).inflate(R.layout.additive_stub, additiveContainer, false);
+				((TextView)additiveStub).setText(additive.getDescription() + "   -   " + additive.getAmount() + "ml/l");
+
+				additiveStub.setTag(additive);
+				additiveStub.setOnClickListener(new View.OnClickListener()
+				{
+					@Override public void onClick(View view)
+					{
+						onNewAdditiveClick(view);
+					}
+				});
+				additiveContainer.addView(additiveStub, additiveContainer.getChildCount() - 1);
+			}
+
+			notes.setText(water.getNotes());
+		}
 	}
 
 	@Views.OnClick public void onNewAdditiveClick(View view)
@@ -362,21 +367,39 @@ public class WateringFragment extends Fragment
 		water.setTemp(temp);
 		water.setNotes(TextUtils.isEmpty(notes.getText().toString()) ? null : notes.getText().toString());
 
-		if (plant.getActions() == null)
+		if (plants.size() == 1)
 		{
-			plant.setActions(new ArrayList<Action>());
-		}
+			if (plants.get(0).getActions() == null)
+			{
+				plants.get(0).setActions(new ArrayList<Action>());
+			}
 
-		if (actionIndex < 0)
-		{
-			plant.getActions().add(water);
+			if (actionIndex < 0)
+			{
+				plants.get(0).getActions().add(water);
+			}
+			else
+			{
+				plants.get(0).getActions().set(actionIndex, water);
+			}
+
+			PlantManager.getInstance().upsert(plantIndex[0], plants.get(0));
 		}
 		else
 		{
-			plant.getActions().set(actionIndex, water);
+			int index = 0;
+			for (Plant plant : plants)
+			{
+				if (plant.getActions() == null)
+				{
+					plant.setActions(new ArrayList<Action>());
+				}
+
+				plant.getActions().add(water.clone());
+				PlantManager.getInstance().upsert(plantIndex[index++], plant);
+			}
 		}
 
-		PlantManager.getInstance().upsert(plantIndex, plant);
 		getActivity().setResult(Activity.RESULT_OK);
 		getActivity().finish();
 	}

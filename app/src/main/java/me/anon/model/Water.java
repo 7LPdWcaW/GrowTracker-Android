@@ -24,4 +24,18 @@ public class Water extends Action
 	private Integer amount;
 	private Integer temp;
 	private List<Additive> additives = new ArrayList<>();
+
+	public Water clone()
+	{
+		try
+		{
+			return (Water)super.clone();
+		}
+		catch (CloneNotSupportedException e)
+		{
+			e.printStackTrace();
+		}
+
+		return null;
+	}
 }
