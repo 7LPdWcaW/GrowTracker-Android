@@ -37,6 +37,7 @@ import me.anon.lib.helper.BusHelper;
 import me.anon.lib.helper.FabAnimator;
 import me.anon.lib.manager.GardenManager;
 import me.anon.lib.manager.PlantManager;
+import me.anon.model.EmptyAction;
 import me.anon.model.Garden;
 import me.anon.model.NoteAction;
 import me.anon.model.Plant;
@@ -170,6 +171,46 @@ public class PlantListFragment extends Fragment
 		Intent feed = new Intent(getActivity(), AddWateringActivity.class);
 		feed.putExtra("plant_index", plants);
 		startActivityForResult(feed, 2);
+	}
+
+	@Views.OnClick public void onActionClick(final View view)
+	{
+		ActionDialogFragment dialogFragment = new ActionDialogFragment();
+		dialogFragment.setOnActionSelected(new ActionDialogFragment.OnActionSelected()
+		{
+			@Override public void onActionSelected(final EmptyAction action)
+			{
+				for (Plant plant : adapter.getPlants())
+				{
+					plant.getActions().add(action.clone());
+					PlantManager.getInstance().upsert(PlantManager.getInstance().getPlants().indexOf(plant), plant);
+				}
+
+				SnackBar.show(getActivity(), "Actions added", new SnackBarListener()
+				{
+					@Override public void onSnackBarStarted(Object o)
+					{
+						if (getView() != null)
+						{
+							FabAnimator.animateUp(getView().findViewById(R.id.fab_add));
+						}
+					}
+
+					@Override public void onSnackBarFinished(Object o)
+					{
+						if (getView() != null)
+						{
+							FabAnimator.animateDown(getView().findViewById(R.id.fab_add));
+						}
+					}
+
+					@Override public void onSnackBarAction(Object o)
+					{
+					}
+				});
+			}
+		});
+		dialogFragment.show(getFragmentManager(), null);
 	}
 
 	@Views.OnClick public void onNoteClick(final View view)
