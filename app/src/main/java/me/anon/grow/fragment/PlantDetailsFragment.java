@@ -154,7 +154,11 @@ public class PlantDetailsFragment extends Fragment
 			linkContainer.setVisibility(View.VISIBLE);
 
 			name.setText(plant.getName());
-			mediumDetails.setText(plant.getMediumDetails());
+
+			if (plant.getMediumDetails() != null)
+			{
+				mediumDetails.setText(plant.getMediumDetails());
+			}
 
 			if (plant.getMedium() != null)
 			{
@@ -216,7 +220,7 @@ public class PlantDetailsFragment extends Fragment
 	@Views.OnClick public void onFeedingClick(final View view)
 	{
 		Intent feeding = new Intent(view.getContext(), AddWateringActivity.class);
-		feeding.putExtra("plant_index", plantIndex);
+		feeding.putExtra("plant_index", new int[]{plantIndex});
 		startActivityForResult(feeding, 2);
 	}
 
