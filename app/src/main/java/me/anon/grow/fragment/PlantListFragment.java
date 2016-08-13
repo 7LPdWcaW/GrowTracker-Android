@@ -38,6 +38,7 @@ import me.anon.lib.helper.FabAnimator;
 import me.anon.lib.manager.GardenManager;
 import me.anon.lib.manager.PlantManager;
 import me.anon.model.Garden;
+import me.anon.model.NoteAction;
 import me.anon.model.Plant;
 
 /**
@@ -171,6 +172,47 @@ public class PlantListFragment extends Fragment
 		startActivityForResult(feed, 2);
 	}
 
+	@Views.OnClick public void onNoteClick(final View view)
+	{
+		NoteDialogFragment dialogFragment = new NoteDialogFragment();
+		dialogFragment.setOnDialogConfirmed(new NoteDialogFragment.OnDialogConfirmed()
+		{
+			@Override public void onDialogConfirmed(String notes)
+			{
+				for (Plant plant : adapter.getPlants())
+				{
+					NoteAction action = new NoteAction(notes);
+					plant.getActions().add(action);
+					PlantManager.getInstance().upsert(PlantManager.getInstance().getPlants().indexOf(plant), plant);
+				}
+
+				SnackBar.show(getActivity(), "Notes added", new SnackBarListener()
+				{
+					@Override public void onSnackBarStarted(Object o)
+					{
+						if (getView() != null)
+						{
+							FabAnimator.animateUp(getView().findViewById(R.id.fab_add));
+						}
+					}
+
+					@Override public void onSnackBarFinished(Object o)
+					{
+						if (getView() != null)
+						{
+							FabAnimator.animateDown(getView().findViewById(R.id.fab_add));
+						}
+					}
+
+					@Override public void onSnackBarAction(Object o)
+					{
+					}
+				});
+			}
+		});
+		dialogFragment.show(getFragmentManager(), null);
+	}
+
 	@Override public void onActivityResult(int requestCode, int resultCode, Intent data)
 	{
 		if (requestCode == 2)
@@ -189,7 +231,7 @@ public class PlantListFragment extends Fragment
 
 					@Override public void onSnackBarAction(Object object)
 					{
-						
+
 					}
 
 					@Override public void onSnackBarFinished(Object o)
