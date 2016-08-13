@@ -220,7 +220,7 @@ public class PlantDetailsFragment extends Fragment
 	@Views.OnClick public void onFeedingClick(final View view)
 	{
 		Intent feeding = new Intent(view.getContext(), AddWateringActivity.class);
-		feeding.putExtra("plant_index", plantIndex);
+		feeding.putExtra("plant_index", new int[]{plantIndex});	
 		startActivityForResult(feeding, 2);
 	}
 
