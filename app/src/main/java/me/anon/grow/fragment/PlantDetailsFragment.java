@@ -29,6 +29,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.view.WindowManager;
 import android.widget.CheckBox;
+import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -83,6 +84,7 @@ public class PlantDetailsFragment extends Fragment
 	@Views.InjectView(R.id.plant_strain) private TextView strain;
 	@Views.InjectView(R.id.plant_stage) private TextView stage;
 	@Views.InjectView(R.id.plant_medium) private TextView medium;
+	@Views.InjectView(R.id.plant_medium_details) private EditText mediumDetails;
 	@Views.InjectView(R.id.plant_date) private TextView date;
 	@Views.InjectView(R.id.plant_date_container) private View dateContainer;
 	@Views.InjectView(R.id.from_clone) private CheckBox clone;
@@ -152,7 +154,7 @@ public class PlantDetailsFragment extends Fragment
 			linkContainer.setVisibility(View.VISIBLE);
 
 			name.setText(plant.getName());
-			strain.setText(plant.getStrain());
+			mediumDetails.setText(plant.getMediumDetails());
 
 			if (plant.getMedium() != null)
 			{
@@ -207,6 +209,8 @@ public class PlantDetailsFragment extends Fragment
 				getFragmentManager().beginTransaction().add(fragment, "date").commit();
 			}
 		});
+
+		strain.setText(plant.getStrain());
 	}
 
 	@Views.OnClick public void onFeedingClick(final View view)
@@ -617,6 +621,8 @@ public class PlantDetailsFragment extends Fragment
 			strain.setError("strain can not be empty");
 			return;
 		}
+
+		plant.setMediumDetails(mediumDetails.getText().toString());
 
 		PlantStage newStage = PlantStage.valueOf(stage.getText().toString().toUpperCase(Locale.ENGLISH));
 		if (plant.getStage() != newStage || (plantIndex < 0 && newStage == PlantStage.GERMINATION))
