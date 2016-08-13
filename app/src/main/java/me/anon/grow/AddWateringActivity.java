@@ -29,13 +29,18 @@ public class AddWateringActivity extends AppCompatActivity
 		setSupportActionBar((Toolbar)findViewById(R.id.toolbar));
 		Views.inject(this);
 
-		int plantIndex = -1;
+		int[] plantIndex = null;
 		if (getIntent().getExtras() != null)
 		{
-			plantIndex = getIntent().getExtras().getInt("plant_index", -1);
+			plantIndex = getIntent().getExtras().getIntArray("plant_index");
+
+			if (plantIndex == null)
+			{
+				plantIndex = new int[]{-1};
+			}
 		}
 
-		if (plantIndex < 0)
+		if (plantIndex == null || plantIndex.length == 0)
 		{
 			finish();
 			return;
