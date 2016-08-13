@@ -1,5 +1,6 @@
 package me.anon.grow.fragment;
 
+import android.app.Activity;
 import android.app.AlertDialog;
 import android.app.Fragment;
 import android.content.DialogInterface;
@@ -27,14 +28,18 @@ import lombok.Setter;
 import me.anon.controller.adapter.PlantAdapter;
 import me.anon.controller.adapter.SimpleItemTouchHelperCallback;
 import me.anon.grow.AddPlantActivity;
+import me.anon.grow.AddWateringActivity;
 import me.anon.grow.MainActivity;
 import me.anon.grow.R;
 import me.anon.lib.Views;
 import me.anon.lib.event.GardenChangeEvent;
 import me.anon.lib.helper.BusHelper;
+import me.anon.lib.helper.FabAnimator;
 import me.anon.lib.manager.GardenManager;
 import me.anon.lib.manager.PlantManager;
+import me.anon.model.EmptyAction;
 import me.anon.model.Garden;
+import me.anon.model.NoteAction;
 import me.anon.model.Plant;
 
 /**
@@ -58,6 +63,7 @@ public class PlantListFragment extends Fragment
 		return fragment;
 	}
 
+	@Views.InjectView(R.id.action_container) private View actionContainer;
 	@Views.InjectView(R.id.recycler_view) private RecyclerView recycler;
 
 	@Override public void onCreate(Bundle savedInstanceState)
@@ -88,6 +94,11 @@ public class PlantListFragment extends Fragment
 		ItemTouchHelper.Callback callback = new SimpleItemTouchHelperCallback(adapter);
 		ItemTouchHelper touchHelper = new ItemTouchHelper(callback);
 		touchHelper.attachToRecyclerView(recycler);
+
+		if (garden != null)
+		{
+			actionContainer.setVisibility(View.VISIBLE);
+		}
 	}
 
 	@Override public void onStart()
@@ -144,6 +155,138 @@ public class PlantListFragment extends Fragment
 		}
 
 		startActivity(addPlant);
+	}
+
+	@Views.OnClick public void onFeedingClick(View view)
+	{
+		int[] plants = new int[adapter.getItemCount()];
+
+		int index = 0;
+		for (Plant plant : adapter.getPlants())
+		{
+			plants[index] = PlantManager.getInstance().getPlants().indexOf(plant);
+			index++;
+		}
+
+		Intent feed = new Intent(getActivity(), AddWateringActivity.class);
+		feed.putExtra("plant_index", plants);
+		startActivityForResult(feed, 2);
+	}
+
+	@Views.OnClick public void onActionClick(final View view)
+	{
+		ActionDialogFragment dialogFragment = new ActionDialogFragment();
+		dialogFragment.setOnActionSelected(new ActionDialogFragment.OnActionSelected()
+		{
+			@Override public void onActionSelected(final EmptyAction action)
+			{
+				for (Plant plant : adapter.getPlants())
+				{
+					plant.getActions().add(action.clone());
+					PlantManager.getInstance().upsert(PlantManager.getInstance().getPlants().indexOf(plant), plant);
+				}
+
+				SnackBar.show(getActivity(), "Actions added", new SnackBarListener()
+				{
+					@Override public void onSnackBarStarted(Object o)
+					{
+						if (getView() != null)
+						{
+							FabAnimator.animateUp(getView().findViewById(R.id.fab_add));
+						}
+					}
+
+					@Override public void onSnackBarFinished(Object o)
+					{
+						if (getView() != null)
+						{
+							FabAnimator.animateDown(getView().findViewById(R.id.fab_add));
+						}
+					}
+
+					@Override public void onSnackBarAction(Object o)
+					{
+					}
+				});
+			}
+		});
+		dialogFragment.show(getFragmentManager(), null);
+	}
+
+	@Views.OnClick public void onNoteClick(final View view)
+	{
+		NoteDialogFragment dialogFragment = new NoteDialogFragment();
+		dialogFragment.setOnDialogConfirmed(new NoteDialogFragment.OnDialogConfirmed()
+		{
+			@Override public void onDialogConfirmed(String notes)
+			{
+				for (Plant plant : adapter.getPlants())
+				{
+					NoteAction action = new NoteAction(notes);
+					plant.getActions().add(action);
+					PlantManager.getInstance().upsert(PlantManager.getInstance().getPlants().indexOf(plant), plant);
+				}
+
+				SnackBar.show(getActivity(), "Notes added", new SnackBarListener()
+				{
+					@Override public void onSnackBarStarted(Object o)
+					{
+						if (getView() != null)
+						{
+							FabAnimator.animateUp(getView().findViewById(R.id.fab_add));
+						}
+					}
+
+					@Override public void onSnackBarFinished(Object o)
+					{
+						if (getView() != null)
+						{
+							FabAnimator.animateDown(getView().findViewById(R.id.fab_add));
+						}
+					}
+
+					@Override public void onSnackBarAction(Object o)
+					{
+					}
+				});
+			}
+		});
+		dialogFragment.show(getFragmentManager(), null);
+	}
+
+	@Override public void onActivityResult(int requestCode, int resultCode, Intent data)
+	{
+		if (requestCode == 2)
+		{
+			if (resultCode != Activity.RESULT_CANCELED)
+			{
+				SnackBar.show(getActivity(), "Watering added", new SnackBarListener()
+				{
+					@Override public void onSnackBarStarted(Object o)
+					{
+						if (getView() != null)
+						{
+							FabAnimator.animateUp(getView().findViewById(R.id.fab_add));
+						}
+					}
+
+					@Override public void onSnackBarAction(Object object)
+					{
+
+					}
+
+					@Override public void onSnackBarFinished(Object o)
+					{
+						if (getView() != null)
+						{
+							FabAnimator.animateDown(getView().findViewById(R.id.fab_add));
+						}
+					}
+				});
+			}
+		}
+
+		super.onActivityResult(requestCode, resultCode, data);
 	}
 
 	@Override public void onCreateOptionsMenu(Menu menu, MenuInflater inflater)
