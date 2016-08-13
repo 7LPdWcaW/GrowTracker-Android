@@ -329,9 +329,7 @@ public class PlantDetailsFragment extends Fragment
 		{
 			if (resultCode != Activity.RESULT_CANCELED)
 			{
-				String type = plant.getActions().get(plant.getActions().size() - 1) instanceof Water ? "Watering" : "Feeding";
-
-				SnackBar.show(getActivity(), type + " added", "Apply to another plant", new SnackBarListener()
+				SnackBar.show(getActivity(), "Watering added", "Apply to another plant", new SnackBarListener()
 				{
 					@Override public void onSnackBarStarted(Object o)
 					{

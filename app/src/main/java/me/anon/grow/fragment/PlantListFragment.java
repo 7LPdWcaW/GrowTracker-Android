@@ -1,5 +1,6 @@
 package me.anon.grow.fragment;
 
+import android.app.Activity;
 import android.app.AlertDialog;
 import android.app.Fragment;
 import android.content.DialogInterface;
@@ -33,6 +34,7 @@ import me.anon.grow.R;
 import me.anon.lib.Views;
 import me.anon.lib.event.GardenChangeEvent;
 import me.anon.lib.helper.BusHelper;
+import me.anon.lib.helper.FabAnimator;
 import me.anon.lib.manager.GardenManager;
 import me.anon.lib.manager.PlantManager;
 import me.anon.model.Garden;
@@ -166,7 +168,42 @@ public class PlantListFragment extends Fragment
 
 		Intent feed = new Intent(getActivity(), AddWateringActivity.class);
 		feed.putExtra("plant_index", plants);
-		startActivity(feed);
+		startActivityForResult(feed, 2);
+	}
+
+	@Override public void onActivityResult(int requestCode, int resultCode, Intent data)
+	{
+		if (requestCode == 2)
+		{
+			if (resultCode != Activity.RESULT_CANCELED)
+			{
+				SnackBar.show(getActivity(), "Watering added", new SnackBarListener()
+				{
+					@Override public void onSnackBarStarted(Object o)
+					{
+						if (getView() != null)
+						{
+							FabAnimator.animateUp(getView().findViewById(R.id.fab_add));
+						}
+					}
+
+					@Override public void onSnackBarAction(Object object)
+					{
+						
+					}
+
+					@Override public void onSnackBarFinished(Object o)
+					{
+						if (getView() != null)
+						{
+							FabAnimator.animateDown(getView().findViewById(R.id.fab_add));
+						}
+					}
+				});
+			}
+		}
+
+		super.onActivityResult(requestCode, resultCode, data);
 	}
 
 	@Override public void onCreateOptionsMenu(Menu menu, MenuInflater inflater)
