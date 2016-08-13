@@ -25,7 +25,6 @@ public class EditWateringActivity extends AppCompatActivity
 	{
 		super.onCreate(savedInstanceState);
 
-
 		setContentView(R.layout.fragment_holder);
 		setSupportActionBar((Toolbar)findViewById(R.id.toolbar));
 		setTitle("Edit feeding");
@@ -48,7 +47,7 @@ public class EditWateringActivity extends AppCompatActivity
 
 		if (getFragmentManager().findFragmentByTag(TAG_FRAGMENT) == null)
 		{
-			getFragmentManager().beginTransaction().replace(R.id.fragment_holder, WateringFragment.newInstance(plantIndex, feedingIndex), TAG_FRAGMENT).commit();
+			getFragmentManager().beginTransaction().replace(R.id.fragment_holder, WateringFragment.newInstance(new int[]{plantIndex}, feedingIndex), TAG_FRAGMENT).commit();
 		}
 	}
 }

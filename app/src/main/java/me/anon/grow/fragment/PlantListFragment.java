@@ -27,6 +27,7 @@ import lombok.Setter;
 import me.anon.controller.adapter.PlantAdapter;
 import me.anon.controller.adapter.SimpleItemTouchHelperCallback;
 import me.anon.grow.AddPlantActivity;
+import me.anon.grow.AddWateringActivity;
 import me.anon.grow.MainActivity;
 import me.anon.grow.R;
 import me.anon.lib.Views;
@@ -58,6 +59,7 @@ public class PlantListFragment extends Fragment
 		return fragment;
 	}
 
+	@Views.InjectView(R.id.action_container) private View actionContainer;
 	@Views.InjectView(R.id.recycler_view) private RecyclerView recycler;
 
 	@Override public void onCreate(Bundle savedInstanceState)
@@ -88,6 +90,11 @@ public class PlantListFragment extends Fragment
 		ItemTouchHelper.Callback callback = new SimpleItemTouchHelperCallback(adapter);
 		ItemTouchHelper touchHelper = new ItemTouchHelper(callback);
 		touchHelper.attachToRecyclerView(recycler);
+
+		if (garden != null)
+		{
+			actionContainer.setVisibility(View.VISIBLE);
+		}
 	}
 
 	@Override public void onStart()
@@ -144,6 +151,22 @@ public class PlantListFragment extends Fragment
 		}
 
 		startActivity(addPlant);
+	}
+
+	@Views.OnClick public void onFeedingClick(View view)
+	{
+		int[] plants = new int[adapter.getItemCount()];
+
+		int index = 0;
+		for (Plant plant : adapter.getPlants())
+		{
+			plants[index] = PlantManager.getInstance().getPlants().indexOf(plant);
+			index++;
+		}
+
+		Intent feed = new Intent(getActivity(), AddWateringActivity.class);
+		feed.putExtra("plant_index", plants);
+		startActivity(feed);
 	}
 
 	@Override public void onCreateOptionsMenu(Menu menu, MenuInflater inflater)
