@@ -49,6 +49,7 @@ The structure is very simple. Note: date timestamps are all unix timestamps from
     "strain": "test",
     "clone": <boolean>,
     "medium": <Medium>,
+    "mediumDetails": <String>,
     "plantDate": 1234567890
 }
 ```
@@ -69,37 +70,16 @@ One of,
 
 Temperature measured in ºC
 
-Nutrient object consists of standard percentage of elements in the solution. Ca %, K %, Mg %, N %, P %, S %. usually in the format "1.5:1.0:2.6" for Ca/K/Mg
-
-```
-{
-    "nutrient": {
-        "capc": <Double>,
-        "kpc": <Double>,
-        "mgpc": <Double>,
-        "npc": <Double>,
-        "ppc": <Double>,
-        "spc": <Double>
-    },
-    "mlpl": <Double>,
-    "ph": <Double>,
-    "ppm": <Long>,
-    "runoff": <Double>,
-    "amount": <Integer>,
-    "date": <Long>,
-    "type": "Feed",
-    "temp": <Integer>
-}
-```
 
 ### Action object (water)
 
 Temperature measured in ºC
 
-Water action is the same as a feeding action, sans the "nutrient" object
+Water action for waterings
 
 ```
 {
+    "additives": [<Additive>],
     "ph": <Double>,
     "ppm": <Long>,
     "runoff": <Double>,
@@ -107,6 +87,15 @@ Water action is the same as a feeding action, sans the "nutrient" object
     "date": 1431268453111,
     "type": "Water",
     "temp": <Integer>
+}
+```
+
+### Additive object - used for nutrients
+
+```
+{
+    "description": <String>,
+    "amount": <Integer>
 }
 ```
 
