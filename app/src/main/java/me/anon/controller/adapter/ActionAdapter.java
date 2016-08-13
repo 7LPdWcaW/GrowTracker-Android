@@ -128,7 +128,7 @@ public class ActionAdapter extends RecyclerView.Adapter<ActionHolder> implements
 				waterStr.append("ºC, ");
 			}
 
-			summary += waterStr.toString().length() > 0 ? waterStr.toString().substring(0, waterStr.length() - 2) + "<br />" : "";
+			summary += waterStr.toString().length() > 0 ? waterStr.toString().substring(0, waterStr.length() - 2) + "<br/>" : "";
 
 			waterStr = new StringBuilder();
 
