@@ -95,7 +95,7 @@ Water action for waterings
 ```
 {
     "description": <String>,
-    "amount": <Integer>
+    "amount": <Double>
 }
 ```
 
