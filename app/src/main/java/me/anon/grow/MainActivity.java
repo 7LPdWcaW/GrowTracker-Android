@@ -57,13 +57,25 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 		setNavigationView();
 		showDrawerToggle();
 
-		if (getFragmentManager().findFragmentByTag(TAG_FRAGMENT) == null)
+		if (savedInstanceState == null)
 		{
 			navigation.getMenu().findItem(R.id.all).setChecked(true);
 			onNavigationItemSelected(navigation.getMenu().findItem(R.id.all));
 		}
+		else
+		{
+			selectedItem = savedInstanceState.getInt("index");
+			navigation.getMenu().findItem(selectedItem).setChecked(true);
+			onNavigationItemSelected(navigation.getMenu().findItem(selectedItem));
+		}
 
 		BusHelper.getInstance().register(this);
+	}
+
+	@Override protected void onSaveInstanceState(Bundle outState)
+	{
+		outState.putInt("index", selectedItem);
+		super.onSaveInstanceState(outState);
 	}
 
 	@Override protected void onDestroy()
