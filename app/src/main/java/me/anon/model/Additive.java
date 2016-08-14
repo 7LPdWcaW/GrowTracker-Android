@@ -15,6 +15,6 @@ import lombok.experimental.Accessors;
 @Accessors(prefix = {"m", ""}, chain = true)
 public class Additive
 {
-	private Integer amount;
+	private Double amount;
 	private String description;
 }
