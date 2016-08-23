@@ -54,6 +54,11 @@ public class MigrationHelper
 				}
 			}
 
+			if (versions.size() == 0)
+			{
+				versions.add(0);
+			}
+
 			Collections.sort(versions, new Comparator<Integer>()
 			{
 				@Override public int compare(Integer left, Integer right)
