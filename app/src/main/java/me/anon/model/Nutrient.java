@@ -11,10 +11,15 @@ import lombok.experimental.Accessors;
  * @documentation // TODO Reference flow doc
  * @project GrowTracker
  */
+@Deprecated
 @Getter @Setter
 @Accessors(prefix = {"m", ""}, chain = true)
-public class Additive
+public class Nutrient
 {
-	private Double amount;
-	private String description;
+	private Double npc; // nitrogen
+	private Double ppc; // phosphorus
+	private Double kpc; // potassium
+	private Double capc; // calcium
+	private Double spc; // sulfur
+	private Double mgpc; // magnesium
 }

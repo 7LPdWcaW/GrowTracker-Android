@@ -25,6 +25,9 @@ public class Water extends Action
 	private Integer temp;
 	private List<Additive> additives = new ArrayList<>();
 
+	@Deprecated private Nutrient nutrient;
+	@Deprecated private Double mlpl;
+
 	public Water clone()
 	{
 		try

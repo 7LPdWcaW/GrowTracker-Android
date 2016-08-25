@@ -17,6 +17,7 @@ import java.util.ArrayList;
 import me.anon.grow.fragment.PinDialogFragment;
 import me.anon.lib.handler.ExceptionHandler;
 import me.anon.lib.helper.EncryptionHelper;
+import me.anon.lib.helper.MigrationHelper;
 import me.anon.lib.manager.PlantManager;
 
 public class BootActivity extends Activity
@@ -137,8 +138,16 @@ public class BootActivity extends Activity
 
 	private void start()
 	{
-		Intent main = new Intent(this, MainActivity.class);
-		startActivity(main);
-		finish();
+		if (MigrationHelper.needsMigration(this))
+		{
+			MigrationHelper.performMigration(this);
+			start();
+		}
+		else
+		{
+			Intent main = new Intent(this, MainActivity.class);
+			startActivity(main);
+			finish();
+		}
 	}
 }
