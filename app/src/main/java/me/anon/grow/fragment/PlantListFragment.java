@@ -361,7 +361,7 @@ public class PlantListFragment extends Fragment
 		{
 			new AlertDialog.Builder(getActivity())
 				.setTitle("Are you sure?")
-				.setMessage(Html.fromHtml("Are you sure you want to delete garden <b>" + garden.getName() + "</b>?"))
+				.setMessage(Html.fromHtml("Are you sure you want to delete garden <b>" + garden.getName() + "</b>? This will not delete the plants."))
 				.setPositiveButton("Yes", new DialogInterface.OnClickListener()
 				{
 					@Override public void onClick(DialogInterface dialogInterface, int i)
