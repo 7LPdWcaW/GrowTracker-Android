@@ -65,6 +65,10 @@ public class GsonHelper
 					{
 						action = g.fromJson(jsonObj, Water.class);
 					}
+					else if (json.getAsJsonObject().get("type").getAsString().equals("Feed"))
+					{
+						action = g.fromJson(jsonObj, Water.class);
+					}
 					else if (json.getAsJsonObject().get("type").getAsString().equals("Action"))
 					{
 						action = g.fromJson(jsonObj, EmptyAction.class);
