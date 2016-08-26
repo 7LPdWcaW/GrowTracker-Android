@@ -6,6 +6,7 @@ import android.app.Fragment;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
+import android.preference.PreferenceManager;
 import android.support.annotation.Nullable;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -23,6 +24,7 @@ import com.kenny.snackbar.SnackBarListener;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collections;
 
 import lombok.Setter;
 import me.anon.controller.adapter.PlantAdapter;
@@ -41,6 +43,7 @@ import me.anon.model.EmptyAction;
 import me.anon.model.Garden;
 import me.anon.model.NoteAction;
 import me.anon.model.Plant;
+import me.anon.model.PlantStage;
 
 /**
  * // TODO: Add class description
@@ -65,6 +68,9 @@ public class PlantListFragment extends Fragment
 
 	@Views.InjectView(R.id.action_container) private View actionContainer;
 	@Views.InjectView(R.id.recycler_view) private RecyclerView recycler;
+
+	private ArrayList<PlantStage> filterList = new ArrayList<>();
+	private boolean hideHarvested = false;
 
 	@Override public void onCreate(Bundle savedInstanceState)
 	{
@@ -91,7 +97,13 @@ public class PlantListFragment extends Fragment
 		recycler.setLayoutManager(new LinearLayoutManager(getActivity()));
 		recycler.setAdapter(adapter);
 
-		ItemTouchHelper.Callback callback = new SimpleItemTouchHelperCallback(adapter);
+		ItemTouchHelper.Callback callback = new SimpleItemTouchHelperCallback(adapter)
+		{
+			@Override public boolean isLongPressDragEnabled()
+			{
+				return filterList.size() == PlantStage.values().length - (hideHarvested ? 1 : 0);
+			}
+		};
 		ItemTouchHelper touchHelper = new ItemTouchHelper(callback);
 		touchHelper.attachToRecyclerView(recycler);
 
@@ -99,20 +111,34 @@ public class PlantListFragment extends Fragment
 		{
 			actionContainer.setVisibility(View.VISIBLE);
 		}
+
+		filterList.addAll(Arrays.asList(PlantStage.values()));
+
+		if (hideHarvested = PreferenceManager.getDefaultSharedPreferences(getActivity()).getBoolean("hide_harvested", false))
+		{
+			filterList.remove(PlantStage.HARVESTED);
+		}
 	}
 
 	@Override public void onStart()
 	{
 		super.onStart();
 
-		adapter.setPlants(PlantManager.getInstance().getSortedPlantList(garden));
-		adapter.notifyDataSetChanged();
+		filter();
 	}
 
 	@Override public void onStop()
 	{
 		super.onStop();
 
+		if (filterList.size() == PlantStage.values().length - (hideHarvested ? 1 : 0))
+		{
+			saveCurrentState();
+		}
+	}
+
+	private void saveCurrentState()
+	{
 		ArrayList<Plant> plants = new ArrayList<Plant>();
 		ArrayList<String> plantIds = new ArrayList<>();
 		plants.addAll(new ArrayList(Arrays.asList(new Plant[adapter.getItemCount()])));
@@ -291,9 +317,17 @@ public class PlantListFragment extends Fragment
 
 	@Override public void onCreateOptionsMenu(Menu menu, MenuInflater inflater)
 	{
+		inflater.inflate(R.menu.plant_list_menu, menu);
+
 		if (garden != null)
 		{
-			inflater.inflate(R.menu.plant_list_menu, menu);
+			menu.findItem(R.id.edit_garden).setVisible(true);
+			menu.findItem(R.id.delete_garden).setVisible(true);
+		}
+
+		if (PreferenceManager.getDefaultSharedPreferences(getActivity()).getBoolean("hide_harvested", false))
+		{
+			menu.findItem(R.id.filter_harvested).setVisible(false);
 		}
 
 		super.onCreateOptionsMenu(menu, inflater);
@@ -314,8 +348,7 @@ public class PlantListFragment extends Fragment
 					PlantListFragment.this.garden = garden;
 
 					getActivity().setTitle(garden == null ? "All" : garden.getName() + " plants");
-					adapter.setPlants(PlantManager.getInstance().getSortedPlantList(garden));
-					adapter.notifyDataSetChanged();
+					filter();
 
 					((MainActivity)getActivity()).setNavigationView();
 				}
@@ -361,7 +394,123 @@ public class PlantListFragment extends Fragment
 				.setNegativeButton("No", null)
 				.show();
 		}
+		else
+		{
+			if (item.isCheckable())
+			{
+				item.setChecked(!item.isChecked());
+			}
+
+			boolean filter = false;
+
+			if (filterList.size() == PlantStage.values().length - (hideHarvested ? 1 : 0))
+			{
+				saveCurrentState();
+			}
+
+			if (item.getItemId() == R.id.filter_germination)
+			{
+				if (filterList.contains(PlantStage.GERMINATION))
+				{
+					filterList.remove(PlantStage.GERMINATION);
+				}
+				else
+				{
+					filterList.add(PlantStage.GERMINATION);
+				}
+
+				filter = true;
+			}
+			else if (item.getItemId() == R.id.filter_vegetation)
+			{
+				if (filterList.contains(PlantStage.VEGETATION))
+				{
+					filterList.remove(PlantStage.VEGETATION);
+				}
+				else
+				{
+					filterList.add(PlantStage.VEGETATION);
+				}
+
+				filter = true;
+			}
+			else if (item.getItemId() == R.id.filter_flowering)
+			{
+				if (filterList.contains(PlantStage.FLOWER))
+				{
+					filterList.remove(PlantStage.FLOWER);
+				}
+				else
+				{
+					filterList.add(PlantStage.FLOWER);
+				}
+
+				filter = true;
+			}
+			else if (item.getItemId() == R.id.filter_drying)
+			{
+				if (filterList.contains(PlantStage.DRYING))
+				{
+					filterList.remove(PlantStage.DRYING);
+				}
+				else
+				{
+					filterList.add(PlantStage.DRYING);
+				}
+
+				filter = true;
+			}
+			else if (item.getItemId() == R.id.filter_curing)
+			{
+				if (filterList.contains(PlantStage.CURING))
+				{
+					filterList.remove(PlantStage.CURING);
+				}
+				else
+				{
+					filterList.add(PlantStage.CURING);
+				}
+
+				filter = true;
+			}
+			else if (item.getItemId() == R.id.filter_harvested)
+			{
+				if (filterList.contains(PlantStage.HARVESTED))
+				{
+					filterList.remove(PlantStage.HARVESTED);
+				}
+				else
+				{
+					filterList.add(PlantStage.HARVESTED);
+				}
+
+				filter = true;
+			}
+
+			if (filter)
+			{
+				filter();
+			}
+		}
 
 		return super.onOptionsItemSelected(item);
+	}
+
+	private void filter()
+	{
+		ArrayList<Plant> plants = new ArrayList<>();
+		plants.addAll(PlantManager.getInstance().getSortedPlantList(garden));
+
+		for (int index = 0; index < plants.size(); index++)
+		{
+			if (!filterList.contains(plants.get(index).getStage()))
+			{
+				plants.set(index, null);
+			}
+		}
+
+		plants.removeAll(Collections.singleton(null));
+		adapter.setPlants(plants);
+		adapter.notifyDataSetChanged();
 	}
 }

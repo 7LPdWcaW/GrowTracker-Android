@@ -16,6 +16,7 @@
 		android:fitsSystemWindows="true"
 		app:titleTextColor="@android:color/white"
 		app:theme="@style/Toolbar"
+		app:popupTheme="@style/ThemeOverlay.AppCompat.Light"
 	/>
 
 	<FrameLayout
