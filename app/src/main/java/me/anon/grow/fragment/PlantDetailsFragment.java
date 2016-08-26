@@ -454,6 +454,7 @@ public class PlantDetailsFragment extends Fragment
 			if (out.exists() && out.length() > 0)
 			{
 				plant.getImages().add(out.getAbsolutePath());
+				PlantManager.getInstance().upsert(plantIndex, plant);
 			}
 			else
 			{
