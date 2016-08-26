@@ -11,6 +11,8 @@
 
 		<item name="actionModeStyle">@style/ActionMode</item>
 		<item name="android:actionModeStyle">@style/ActionMode</item>
+
+		<item name="windowActionModeOverlay">true</item>
 	</style>
 
 	<style name="Toolbar" parent="@style/ThemeOverlay.AppCompat.Dark.ActionBar">
