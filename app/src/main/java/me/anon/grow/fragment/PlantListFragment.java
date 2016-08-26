@@ -95,7 +95,13 @@ public class PlantListFragment extends Fragment
 		recycler.setLayoutManager(new LinearLayoutManager(getActivity()));
 		recycler.setAdapter(adapter);
 
-		ItemTouchHelper.Callback callback = new SimpleItemTouchHelperCallback(adapter);
+		ItemTouchHelper.Callback callback = new SimpleItemTouchHelperCallback(adapter)
+		{
+			@Override public boolean isLongPressDragEnabled()
+			{
+				return filterList.size() == PlantStage.values().length;
+			}
+		};
 		ItemTouchHelper touchHelper = new ItemTouchHelper(callback);
 		touchHelper.attachToRecyclerView(recycler);
 
@@ -111,14 +117,21 @@ public class PlantListFragment extends Fragment
 	{
 		super.onStart();
 
-		adapter.setPlants(PlantManager.getInstance().getSortedPlantList(garden));
-		adapter.notifyDataSetChanged();
+		filter();
 	}
 
 	@Override public void onStop()
 	{
 		super.onStop();
 
+		if (filterList.size() == PlantStage.values().length)
+		{
+			saveCurrentState();
+		}
+	}
+
+	private void saveCurrentState()
+	{
 		ArrayList<Plant> plants = new ArrayList<Plant>();
 		ArrayList<String> plantIds = new ArrayList<>();
 		plants.addAll(new ArrayList(Arrays.asList(new Plant[adapter.getItemCount()])));
@@ -320,8 +333,7 @@ public class PlantListFragment extends Fragment
 					PlantListFragment.this.garden = garden;
 
 					getActivity().setTitle(garden == null ? "All" : garden.getName() + " plants");
-					adapter.setPlants(PlantManager.getInstance().getSortedPlantList(garden));
-					adapter.notifyDataSetChanged();
+					filter();
 
 					((MainActivity)getActivity()).setNavigationView();
 				}
@@ -374,6 +386,13 @@ public class PlantListFragment extends Fragment
 				item.setChecked(!item.isChecked());
 			}
 
+			boolean filter = false;
+
+			if (filterList.size() == PlantStage.values().length)
+			{
+				saveCurrentState();
+			}
+
 			if (item.getItemId() == R.id.filter_germination)
 			{
 				if (filterList.contains(PlantStage.GERMINATION))
@@ -384,6 +403,8 @@ public class PlantListFragment extends Fragment
 				{
 					filterList.add(PlantStage.GERMINATION);
 				}
+
+				filter = true;
 			}
 			else if (item.getItemId() == R.id.filter_vegetation)
 			{
@@ -395,6 +416,8 @@ public class PlantListFragment extends Fragment
 				{
 					filterList.add(PlantStage.VEGETATION);
 				}
+
+				filter = true;
 			}
 			else if (item.getItemId() == R.id.filter_flowering)
 			{
@@ -406,6 +429,8 @@ public class PlantListFragment extends Fragment
 				{
 					filterList.add(PlantStage.FLOWER);
 				}
+
+				filter = true;
 			}
 			else if (item.getItemId() == R.id.filter_drying)
 			{
@@ -417,6 +442,8 @@ public class PlantListFragment extends Fragment
 				{
 					filterList.add(PlantStage.DRYING);
 				}
+
+				filter = true;
 			}
 			else if (item.getItemId() == R.id.filter_curing)
 			{
@@ -428,6 +455,8 @@ public class PlantListFragment extends Fragment
 				{
 					filterList.add(PlantStage.CURING);
 				}
+
+				filter = true;
 			}
 			else if (item.getItemId() == R.id.filter_harvested)
 			{
@@ -439,9 +468,14 @@ public class PlantListFragment extends Fragment
 				{
 					filterList.add(PlantStage.HARVESTED);
 				}
+
+				filter = true;
 			}
 
-			filter();
+			if (filter)
+			{
+				filter();
+			}
 		}
 
 		return super.onOptionsItemSelected(item);
