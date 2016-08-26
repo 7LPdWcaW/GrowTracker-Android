@@ -54,12 +54,14 @@
 	<item
 		android:id="@+id/edit_garden"
 		android:title="Edit garden"
-		android:showAsAction="never"
+		app:showAsAction="never"
+		android:visible="false"
 	/>
 
 	<item
 		android:id="@+id/delete_garden"
 		android:title="Delete garden"
-		android:showAsAction="never"
+		app:showAsAction="never"
+		android:visible="false"
 	/>
 </menu>

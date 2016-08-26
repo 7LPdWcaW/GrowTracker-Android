@@ -6,6 +6,7 @@ import android.app.Fragment;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
+import android.preference.PreferenceManager;
 import android.support.annotation.Nullable;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -69,6 +70,7 @@ public class PlantListFragment extends Fragment
 	@Views.InjectView(R.id.recycler_view) private RecyclerView recycler;
 
 	private ArrayList<PlantStage> filterList = new ArrayList<>();
+	private boolean hideHarvested = false;
 
 	@Override public void onCreate(Bundle savedInstanceState)
 	{
@@ -99,7 +101,7 @@ public class PlantListFragment extends Fragment
 		{
 			@Override public boolean isLongPressDragEnabled()
 			{
-				return filterList.size() == PlantStage.values().length;
+				return filterList.size() == PlantStage.values().length - (hideHarvested ? 1 : 0);
 			}
 		};
 		ItemTouchHelper touchHelper = new ItemTouchHelper(callback);
@@ -111,6 +113,11 @@ public class PlantListFragment extends Fragment
 		}
 
 		filterList.addAll(Arrays.asList(PlantStage.values()));
+
+		if (hideHarvested = PreferenceManager.getDefaultSharedPreferences(getActivity()).getBoolean("hide_harvested", false))
+		{
+			filterList.remove(PlantStage.HARVESTED);
+		}
 	}
 
 	@Override public void onStart()
@@ -124,7 +131,7 @@ public class PlantListFragment extends Fragment
 	{
 		super.onStop();
 
-		if (filterList.size() == PlantStage.values().length)
+		if (filterList.size() == PlantStage.values().length - (hideHarvested ? 1 : 0))
 		{
 			saveCurrentState();
 		}
@@ -310,9 +317,17 @@ public class PlantListFragment extends Fragment
 
 	@Override public void onCreateOptionsMenu(Menu menu, MenuInflater inflater)
 	{
+		inflater.inflate(R.menu.plant_list_menu, menu);
+
 		if (garden != null)
 		{
-			inflater.inflate(R.menu.plant_list_menu, menu);
+			menu.findItem(R.id.edit_garden).setVisible(true);
+			menu.findItem(R.id.delete_garden).setVisible(true);
+		}
+
+		if (PreferenceManager.getDefaultSharedPreferences(getActivity()).getBoolean("hide_harvested", false))
+		{
+			menu.findItem(R.id.filter_harvested).setVisible(false);
 		}
 
 		super.onCreateOptionsMenu(menu, inflater);
@@ -388,7 +403,7 @@ public class PlantListFragment extends Fragment
 
 			boolean filter = false;
 
-			if (filterList.size() == PlantStage.values().length)
+			if (filterList.size() == PlantStage.values().length - (hideHarvested ? 1 : 0))
 			{
 				saveCurrentState();
 			}
