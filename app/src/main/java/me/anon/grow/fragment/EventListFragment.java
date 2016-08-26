@@ -57,7 +57,7 @@ public class EventListFragment extends Fragment implements ActionAdapter.OnActio
 	private int plantIndex = -1;
 	private Plant plant;
 
-	private boolean feeding = true, watering = true;
+	private boolean watering = true;
 	private boolean notes = true, stages = true;
 	private ArrayList<Action.ActionName> selected = new ArrayList<>();
 	private boolean beingDragged = false;
@@ -127,7 +127,7 @@ public class EventListFragment extends Fragment implements ActionAdapter.OnActio
 		{
 			@Override public boolean isLongPressDragEnabled()
 			{
-				return selected.size() == Action.ActionName.values().length && feeding && watering && notes && stages;
+				return selected.size() == Action.ActionName.values().length && watering && notes && stages;
 			}
 		};
 		ItemTouchHelper touchHelper = new ItemTouchHelper(callback);
@@ -137,7 +137,7 @@ public class EventListFragment extends Fragment implements ActionAdapter.OnActio
 		{
 			@Override public void onItemRangeMoved(int fromPosition, int toPosition, int itemCount)
 			{
-				if (selected.size() == Action.ActionName.values().length && feeding && watering && notes && stages)
+				if (selected.size() == Action.ActionName.values().length && watering && notes && stages)
 				{
 					ArrayList<Action> actions = new ArrayList<Action>();
 					actions.addAll((ArrayList<Action>)adapter.getActions());
@@ -546,10 +546,6 @@ public class EventListFragment extends Fragment implements ActionAdapter.OnActio
 		{
 			watering = item.isChecked();
 		}
-		else if (item.getItemId() == R.id.filter_feedings)
-		{
-			feeding = item.isChecked();
-		}
 		else if (item.getItemId() == R.id.filter_notes)
 		{
 			notes = item.isChecked();
@@ -587,7 +583,7 @@ public class EventListFragment extends Fragment implements ActionAdapter.OnActio
 			{
 				items.set(index, null);
 			}
-			else if (!watering && items.get(index).getClass() == Water.class)
+			else if (!watering && items.get(index) instanceof Water)
 			{
 				items.set(index, null);
 			}
