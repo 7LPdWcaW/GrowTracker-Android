@@ -13,37 +13,37 @@
 		<menu>
 			<group android:checkableBehavior="all">
 				<item
-					android:id="@+id/germination"
+					android:id="@+id/filter_germination"
 					android:title="Germination"
 					android:checked="true"
 				/>
 
 				<item
-					android:id="@+id/vegetation"
+					android:id="@+id/filter_vegetation"
 					android:title="Vegetation"
 					android:checked="true"
 				/>
 
 				<item
-					android:id="@+id/flowering"
+					android:id="@+id/filter_flowering"
 					android:title="Flowering"
 					android:checked="true"
 				/>
 
 				<item
-					android:id="@+id/drying"
+					android:id="@+id/filter_drying"
 					android:title="Drying"
 					android:checked="true"
 				/>
 
 				<item
-					android:id="@+id/curing"
+					android:id="@+id/filter_curing"
 					android:title="Curing"
 					android:checked="true"
 				/>
 
 				<item
-					android:id="@+id/harvested"
+					android:id="@+id/filter_harvested"
 					android:title="Harvested"
 					android:checked="true"
 				/>
