@@ -480,11 +480,11 @@ public class PlantDetailsFragment extends Fragment
 
 				ParcelFileDescriptor parcelFileDescriptor = getActivity().getContentResolver().openFileDescriptor(imageUri, "r");
 				FileDescriptor fileDescriptor = parcelFileDescriptor.getFileDescriptor();
-				InputStream streamIn = new BufferedInputStream(new FileInputStream(fileDescriptor), 8192);
-				OutputStream streamOut = new BufferedOutputStream(new FileOutputStream(newLocation), 8192);
+				InputStream streamIn = new BufferedInputStream(new FileInputStream(fileDescriptor), 524288);
+				OutputStream streamOut = new BufferedOutputStream(new FileOutputStream(newLocation), 524288);
 
 				int len = 0;
-				byte[] buffer = new byte[8192];
+				byte[] buffer = new byte[524288];
 				while ((len = streamIn.read(buffer)) != -1)
 				{
 					streamOut.write(buffer, 0, len);
@@ -503,11 +503,11 @@ public class PlantDetailsFragment extends Fragment
 
 				String image = imageUri.getPath();
 
-				InputStream streamIn = new BufferedInputStream(new FileInputStream(new File(image)), 8192);
-				OutputStream streamOut = new BufferedOutputStream(new FileOutputStream(newLocation), 8192);
+				InputStream streamIn = new BufferedInputStream(new FileInputStream(new File(image)), 524288);
+				OutputStream streamOut = new BufferedOutputStream(new FileOutputStream(newLocation), 524288);
 
 				int len = 0;
-				byte[] buffer = new byte[8192];
+				byte[] buffer = new byte[524288];
 				while ((len = streamIn.read(buffer)) != -1)
 				{
 					streamOut.write(buffer, 0, len);
