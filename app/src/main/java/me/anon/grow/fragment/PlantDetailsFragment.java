@@ -10,12 +10,16 @@ import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.graphics.BitmapFactory;
+import android.media.ExifInterface;
 import android.media.MediaScannerConnection;
 import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Build;
 import android.os.Bundle;
+import android.os.Debug;
 import android.os.Environment;
+import android.os.ParcelFileDescriptor;
 import android.preference.PreferenceManager;
 import android.provider.MediaStore;
 import android.support.annotation.Nullable;
@@ -36,8 +40,15 @@ import android.widget.Toast;
 import com.kenny.snackbar.SnackBar;
 import com.kenny.snackbar.SnackBarListener;
 
+import java.io.BufferedInputStream;
+import java.io.BufferedOutputStream;
 import java.io.File;
+import java.io.FileDescriptor;
+import java.io.FileInputStream;
+import java.io.FileOutputStream;
 import java.io.IOException;
+import java.io.InputStream;
+import java.io.OutputStream;
 import java.text.DateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
@@ -267,28 +278,59 @@ public class PlantDetailsFragment extends Fragment
 
 	@Views.OnClick public void onPhotoClick(final View view)
 	{
-		Intent intent = new Intent(android.provider.MediaStore.ACTION_IMAGE_CAPTURE);
+		String[] choices = {"From camera", "From gallery"};
 
-		File path = new File(Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DCIM).getPath() + "/GrowTracker/" + plant.getId() + "/");
-		path.mkdirs();
+		new AlertDialog.Builder(getActivity())
+			.setTitle("Select an option")
+			.setItems(choices, new DialogInterface.OnClickListener()
+			{
+				@Override public void onClick(DialogInterface dialogInterface, int index)
+				{
+					if (index == 0)
+					{
+						Intent intent = new Intent(android.provider.MediaStore.ACTION_IMAGE_CAPTURE);
 
-		try
-		{
-			new File(path, ".nomedia").createNewFile();
-		}
-		catch (IOException e){}
+						File path = new File(Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DCIM).getPath() + "/GrowTracker/" + plant.getId() + "/");
+						path.mkdirs();
 
-		File out = new File(path, System.currentTimeMillis() + ".jpg");
+						try
+						{
+							new File(path, ".nomedia").createNewFile();
+						}
+						catch (IOException e){}
 
-		plant.getImages().add(out.getAbsolutePath());
+						File out = new File(path, System.currentTimeMillis() + ".jpg");
 
-		intent.putExtra(MediaStore.EXTRA_OUTPUT, Uri.fromFile(out));
-		startActivityForResult(intent, 1);
+						plant.getImages().add(out.getAbsolutePath());
+
+						intent.putExtra(MediaStore.EXTRA_OUTPUT, Uri.fromFile(out));
+						startActivityForResult(intent, 1);
+					}
+					else
+					{
+						if (Build.VERSION.SDK_INT < 19)
+						{
+							Intent intent = new Intent();
+							intent.setType("image/jpeg");
+							intent.setAction(Intent.ACTION_GET_CONTENT);
+							startActivityForResult(Intent.createChooser(intent, "Select picture"), 3);
+						}
+						else
+						{
+							Intent intent = new Intent(Intent.ACTION_OPEN_DOCUMENT);
+							intent.addCategory(Intent.CATEGORY_OPENABLE);
+							intent.setType("image/jpeg");
+							startActivityForResult(Intent.createChooser(intent, "Select picture"), 3);
+						}
+					}
+				}
+			})
+			.show();
 	}
 
 	@Override public void onActivityResult(int requestCode, int resultCode, Intent data)
 	{
-		if (requestCode == 1)
+		if (requestCode == 1) // take image from camera
 		{
 			if (resultCode == Activity.RESULT_CANCELED)
 			{
@@ -387,8 +429,96 @@ public class PlantDetailsFragment extends Fragment
 				});
 			}
 		}
+		else if (requestCode == 3) // choose image from gallery
+		{
+			Uri selectedUri = data.getData();
+			if (Build.VERSION.SDK_INT >= 19)
+			{
+				final int takeFlags = data.getFlags() & (Intent.FLAG_GRANT_READ_URI_PERMISSION | Intent.FLAG_GRANT_WRITE_URI_PERMISSION);
+				getActivity().getContentResolver().takePersistableUriPermission(selectedUri, takeFlags);
+			}
+
+			File path = new File(Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DCIM).getPath() + "/GrowTracker/" + plant.getId() + "/");
+			path.mkdirs();
+
+			try
+			{
+				new File(path, ".nomedia").createNewFile();
+			}
+			catch (IOException e){}
+
+			File out = new File(path, System.currentTimeMillis() + ".jpg");
+
+			copyImage(selectedUri, out);
+
+			if (out.exists() && out.length() > 0)
+			{
+				plant.getImages().add(out.getAbsolutePath());
+			}
+			else
+			{
+				out.delete();
+			}
+		}
 
 		super.onActivityResult(requestCode, resultCode, data);
+	}
+
+	public void copyImage(Uri imageUri, File newLocation)
+	{
+		try
+		{
+			if (imageUri.getScheme().startsWith("content"))
+			{
+				if (!newLocation.exists())
+				{
+					newLocation.createNewFile();
+				}
+
+				ParcelFileDescriptor parcelFileDescriptor = getActivity().getContentResolver().openFileDescriptor(imageUri, "r");
+				FileDescriptor fileDescriptor = parcelFileDescriptor.getFileDescriptor();
+				InputStream streamIn = new BufferedInputStream(new FileInputStream(fileDescriptor), 8192);
+				OutputStream streamOut = new BufferedOutputStream(new FileOutputStream(newLocation), 8192);
+
+				int len = 0;
+				byte[] buffer = new byte[8192];
+				while ((len = streamIn.read(buffer)) != -1)
+				{
+					streamOut.write(buffer, 0, len);
+				}
+
+				streamIn.close();
+				streamOut.flush();
+				streamOut.close();
+			}
+			else if (imageUri.getScheme().startsWith("file"))
+			{
+				if (!newLocation.exists())
+				{
+					newLocation.createNewFile();
+				}
+
+				String image = imageUri.getPath();
+
+				InputStream streamIn = new BufferedInputStream(new FileInputStream(new File(image)), 8192);
+				OutputStream streamOut = new BufferedOutputStream(new FileOutputStream(newLocation), 8192);
+
+				int len = 0;
+				byte[] buffer = new byte[8192];
+				while ((len = streamIn.read(buffer)) != -1)
+				{
+					streamOut.write(buffer, 0, len);
+				}
+
+				streamIn.close();
+				streamOut.flush();
+				streamOut.close();
+			}
+		}
+		catch (Exception e)
+		{
+			e.printStackTrace();
+		}
 	}
 
 	@Override public void onCreateOptionsMenu(Menu menu, MenuInflater inflater)
