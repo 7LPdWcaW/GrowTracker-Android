@@ -336,42 +336,6 @@ public class PlantDetailsFragment extends Fragment
 			{
 				plant.getImages().remove(plant.getImages().size() - 1);
 			}
-			else
-			{
-				if (getActivity() != null)
-				{
-					if (MainApplication.isEncrypted())
-					{
-						ArrayList<String> image = new ArrayList<>();
-						image.add(plant.getImages().get(plant.getImages().size() - 1));
-						new EncryptTask().executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR, image);
-					}
-
-					SnackBar.show(getActivity(), "Image added", "Take another", new SnackBarListener()
-					{
-						@Override public void onSnackBarStarted(Object o)
-						{
-							if (getView() != null)
-							{
-								FabAnimator.animateUp(getView().findViewById(R.id.fab_complete));
-							}
-						}
-
-						@Override public void onSnackBarFinished(Object o)
-						{
-							if (getView() != null)
-							{
-								FabAnimator.animateDown(getView().findViewById(R.id.fab_complete));
-							}
-						}
-
-						@Override public void onSnackBarAction(Object o)
-						{
-							onPhotoClick(null);
-						}
-					});
-				}
-			}
 
 			PlantManager.getInstance().upsert(plantIndex, plant);
 		}
@@ -459,6 +423,44 @@ public class PlantDetailsFragment extends Fragment
 			else
 			{
 				out.delete();
+			}
+		}
+
+		// both photo options
+		if (requestCode == 1 || requestCode == 3)
+		{
+			if (getActivity() != null)
+			{
+				if (MainApplication.isEncrypted())
+				{
+					ArrayList<String> image = new ArrayList<>();
+					image.add(plant.getImages().get(plant.getImages().size() - 1));
+					new EncryptTask().executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR, image);
+				}
+
+				SnackBar.show(getActivity(), "Image added", "Take another", new SnackBarListener()
+				{
+					@Override public void onSnackBarStarted(Object o)
+					{
+						if (getView() != null)
+						{
+							FabAnimator.animateUp(getView().findViewById(R.id.fab_complete));
+						}
+					}
+
+					@Override public void onSnackBarFinished(Object o)
+					{
+						if (getView() != null)
+						{
+							FabAnimator.animateDown(getView().findViewById(R.id.fab_complete));
+						}
+					}
+
+					@Override public void onSnackBarAction(Object o)
+					{
+						onPhotoClick(null);
+					}
+				});
 			}
 		}
 
