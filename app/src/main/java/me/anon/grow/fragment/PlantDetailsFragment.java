@@ -7,6 +7,7 @@ import android.app.Fragment;
 import android.app.Notification;
 import android.app.NotificationManager;
 import android.app.PendingIntent;
+import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
@@ -69,6 +70,7 @@ import me.anon.lib.helper.ModelHelper;
 import me.anon.lib.helper.PermissionHelper;
 import me.anon.lib.manager.GardenManager;
 import me.anon.lib.manager.PlantManager;
+import me.anon.lib.task.AsyncCallback;
 import me.anon.lib.task.EncryptTask;
 import me.anon.model.EmptyAction;
 import me.anon.model.NoteAction;
@@ -559,9 +561,24 @@ public class PlantDetailsFragment extends Fragment
 				{
 					@Override public void onClick(DialogInterface dialog, int which)
 					{
+						final ProgressDialog progress = new ProgressDialog(getActivity());
+						progress.setMessage("Deleting plant...");
+						progress.setCancelable(false);
+						progress.show();
+
 						PlantManager.getInstance().deletePlant(plantIndex);
-						PlantManager.getInstance().save();
-						getActivity().finish();
+						PlantManager.getInstance().save(new AsyncCallback()
+						{
+							@Override public void callback()
+							{
+								if (progress != null)
+								{
+									progress.dismiss();
+								}
+
+								getActivity().finish();
+							}
+						});
 					}
 				})
 				.setNegativeButton("No", null)

@@ -3,6 +3,7 @@ package me.anon.lib.manager;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.os.AsyncTask;
 import android.preference.PreferenceManager;
 import android.support.annotation.Nullable;
 import android.text.TextUtils;
@@ -22,6 +23,7 @@ import lombok.experimental.Accessors;
 import me.anon.grow.MainApplication;
 import me.anon.lib.helper.EncryptionHelper;
 import me.anon.lib.helper.GsonHelper;
+import me.anon.lib.task.AsyncCallback;
 import me.anon.model.Garden;
 import me.anon.model.Plant;
 import me.anon.model.PlantStage;
@@ -97,7 +99,8 @@ public class PlantManager
 	public void deletePlant(int plantIndex)
 	{
 		// Delete images
-		for (String filePath : mPlants.get(plantIndex).getImages())
+		ArrayList<String> imagePaths = mPlants.get(plantIndex).getImages();
+		for (String filePath : imagePaths)
 		{
 			new File(filePath).delete();
 		}
@@ -158,33 +161,54 @@ public class PlantManager
 		}
 	}
 
-	public void save()
+	public synchronized void save()
+	{
+		save(null);
+	}
+
+	public void save(final AsyncCallback callback)
 	{
 		synchronized (mPlants)
 		{
-			if (MainApplication.isEncrypted())
+			new AsyncTask<Void, Void, Void>()
 			{
-				if (TextUtils.isEmpty(MainApplication.getKey()))
+				@Override protected Void doInBackground(Void... voids)
 				{
-					return;
+					if (MainApplication.isEncrypted())
+					{
+						if (TextUtils.isEmpty(MainApplication.getKey()))
+						{
+							return null;
+						}
+
+						FileManager.getInstance().writeFile(FILES_DIR + "/plants.json", EncryptionHelper.encrypt(MainApplication.getKey(), GsonHelper.parse(mPlants)));
+					}
+					else
+					{
+						FileManager.getInstance().writeFile(FILES_DIR + "/plants.json", GsonHelper.parse(mPlants));
+					}
+
+					return null;
 				}
 
-				FileManager.getInstance().writeFile(FILES_DIR + "/plants.json", EncryptionHelper.encrypt(MainApplication.getKey(), GsonHelper.parse(mPlants)));
-			}
-			else
-			{
-				FileManager.getInstance().writeFile(FILES_DIR + "/plants.json", GsonHelper.parse(mPlants));
-			}
+				@Override protected void onPostExecute(Void aVoid)
+				{
+					if (callback != null)
+					{
+						callback.callback();
+					}
 
-			if (new File(FILES_DIR + "/plants.json").length() == 0 || !new File(FILES_DIR + "/plants.json").exists())
-			{
-				Toast.makeText(context, "There was a fatal problem saving the plant data, please backup this data", Toast.LENGTH_LONG).show();
-				String sendData = GsonHelper.parse(mPlants);
-				Intent share = new Intent(Intent.ACTION_SEND);
-				share.setType("text/plain");
-				share.putExtra(Intent.EXTRA_TEXT, "== WARNING : PLEASE BACK UP THIS DATA == \r\n\r\n " + sendData);
-				context.startActivity(share);
-			}
+					if (new File(FILES_DIR + "/plants.json").length() == 0 || !new File(FILES_DIR + "/plants.json").exists())
+					{
+						Toast.makeText(context, "There was a fatal problem saving the plant data, please backup this data", Toast.LENGTH_LONG).show();
+						String sendData = GsonHelper.parse(mPlants);
+						Intent share = new Intent(Intent.ACTION_SEND);
+						share.setType("text/plain");
+						share.putExtra(Intent.EXTRA_TEXT, "== WARNING : PLEASE BACK UP THIS DATA == \r\n\r\n " + sendData);
+						context.startActivity(share);
+					}
+				}
+			}.executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
 		}
 	}
 }
