@@ -58,59 +58,71 @@ public class PlantManager
 
 	public ArrayList<Plant> getSortedPlantList(@Nullable Garden garden)
 	{
-		SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(context);
-
-		int plantsSize =  PlantManager.getInstance().getPlants().size();
-		Plant[] ordered = new Plant[garden == null ? plantsSize : garden.getPlantIds().size()];
-
-		boolean hideHarvested = prefs.getBoolean("hide_harvested", false);
-
-		for (int index = 0; index < plantsSize; index++)
+		synchronized (this.mPlants)
 		{
-			Plant plant = PlantManager.getInstance().getPlants().get(index);
+			SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(context);
 
-			if ((hideHarvested && plant.getStage() == PlantStage.HARVESTED) || (garden != null && !garden.getPlantIds().contains(plant.getId())))
+			int plantsSize =  PlantManager.getInstance().getPlants().size();
+			Plant[] ordered = new Plant[garden == null ? plantsSize : garden.getPlantIds().size()];
+
+			boolean hideHarvested = prefs.getBoolean("hide_harvested", false);
+
+			for (int index = 0; index < plantsSize; index++)
 			{
-				continue;
+				Plant plant = PlantManager.getInstance().getPlants().get(index);
+
+				if (plant == null || (hideHarvested && plant.getStage() == PlantStage.HARVESTED) || (garden != null && !garden.getPlantIds().contains(plant.getId())))
+				{
+					continue;
+				}
+
+				ordered[garden == null ? index : garden.getPlantIds().indexOf(plant.getId())] = plant;
 			}
 
-			ordered[garden == null ? index : garden.getPlantIds().indexOf(plant.getId())] = plant;
+			ArrayList<Plant> finalList = new ArrayList<>();
+			finalList.addAll(Arrays.asList(ordered));
+			finalList.removeAll(Collections.singleton(null));
+
+			return finalList;
 		}
-
-		ArrayList<Plant> finalList = new ArrayList<>();
-		finalList.addAll(Arrays.asList(ordered));
-		finalList.removeAll(Collections.singleton(null));
-
-		return finalList;
 	}
 
 	public void setPlants(ArrayList<Plant> plants)
 	{
-		this.mPlants.clear();
-		this.mPlants.addAll(plants);
+		synchronized (this.mPlants)
+		{
+			this.mPlants.clear();
+			this.mPlants.addAll(plants);
+		}
 	}
 
 	public void addPlant(Plant plant)
 	{
-		mPlants.add(plant);
-		save();
+		synchronized (this.mPlants)
+		{
+			mPlants.add(plant);
+			save();
+		}
 	}
 
 	public void deletePlant(int plantIndex)
 	{
-		// Delete images
-		ArrayList<String> imagePaths = mPlants.get(plantIndex).getImages();
-		for (String filePath : imagePaths)
+		synchronized (this.mPlants)
 		{
-			new File(filePath).delete();
+			// Delete images
+			ArrayList<String> imagePaths = mPlants.get(plantIndex).getImages();
+			for (String filePath : imagePaths)
+			{
+				new File(filePath).delete();
+			}
+
+			// Remove plant
+			mPlants.remove(plantIndex);
+
+			// Remove from shared prefs
+			SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(context);
+			prefs.edit().remove(String.valueOf(plantIndex)).apply();
 		}
-
-		// Remove plant
-		mPlants.remove(plantIndex);
-
-		// Remove from shared prefs
-		SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(context);
-		prefs.edit().remove(String.valueOf(plantIndex)).apply();
 	}
 
 	public void upsert(int index, Plant plant)
@@ -163,7 +175,10 @@ public class PlantManager
 
 	public synchronized void save()
 	{
-		save(null);
+		synchronized (this.mPlants)
+		{
+			save(null);
+		}
 	}
 
 	public void save(final AsyncCallback callback)
@@ -174,18 +189,21 @@ public class PlantManager
 			{
 				@Override protected Void doInBackground(Void... voids)
 				{
-					if (MainApplication.isEncrypted())
+					synchronized (mPlants)
 					{
-						if (TextUtils.isEmpty(MainApplication.getKey()))
+						if (MainApplication.isEncrypted())
 						{
-							return null;
-						}
+							if (TextUtils.isEmpty(MainApplication.getKey()))
+							{
+								return null;
+							}
 
-						FileManager.getInstance().writeFile(FILES_DIR + "/plants.json", EncryptionHelper.encrypt(MainApplication.getKey(), GsonHelper.parse(mPlants)));
-					}
-					else
-					{
-						FileManager.getInstance().writeFile(FILES_DIR + "/plants.json", GsonHelper.parse(mPlants));
+							FileManager.getInstance().writeFile(FILES_DIR + "/plants.json", EncryptionHelper.encrypt(MainApplication.getKey(), GsonHelper.parse(mPlants)));
+						}
+						else
+						{
+							FileManager.getInstance().writeFile(FILES_DIR + "/plants.json", GsonHelper.parse(mPlants));
+						}
 					}
 
 					return null;
