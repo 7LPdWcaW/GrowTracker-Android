@@ -23,6 +23,7 @@ import com.kenny.snackbar.SnackBarListener;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collections;
 
 import lombok.Setter;
 import me.anon.controller.adapter.PlantAdapter;
@@ -41,6 +42,7 @@ import me.anon.model.EmptyAction;
 import me.anon.model.Garden;
 import me.anon.model.NoteAction;
 import me.anon.model.Plant;
+import me.anon.model.PlantStage;
 
 /**
  * // TODO: Add class description
@@ -65,6 +67,8 @@ public class PlantListFragment extends Fragment
 
 	@Views.InjectView(R.id.action_container) private View actionContainer;
 	@Views.InjectView(R.id.recycler_view) private RecyclerView recycler;
+
+	private ArrayList<PlantStage> filterList = new ArrayList<>();
 
 	@Override public void onCreate(Bundle savedInstanceState)
 	{
@@ -99,6 +103,8 @@ public class PlantListFragment extends Fragment
 		{
 			actionContainer.setVisibility(View.VISIBLE);
 		}
+
+		filterList.addAll(Arrays.asList(PlantStage.values()));
 	}
 
 	@Override public void onStart()
@@ -361,7 +367,101 @@ public class PlantListFragment extends Fragment
 				.setNegativeButton("No", null)
 				.show();
 		}
+		else
+		{
+			if (item.isCheckable())
+			{
+				item.setChecked(!item.isChecked());
+			}
+
+			if (item.getItemId() == R.id.filter_germination)
+			{
+				if (filterList.contains(PlantStage.GERMINATION))
+				{
+					filterList.remove(PlantStage.GERMINATION);
+				}
+				else
+				{
+					filterList.add(PlantStage.GERMINATION);
+				}
+			}
+			else if (item.getItemId() == R.id.filter_vegetation)
+			{
+				if (filterList.contains(PlantStage.VEGETATION))
+				{
+					filterList.remove(PlantStage.VEGETATION);
+				}
+				else
+				{
+					filterList.add(PlantStage.VEGETATION);
+				}
+			}
+			else if (item.getItemId() == R.id.filter_flowering)
+			{
+				if (filterList.contains(PlantStage.FLOWER))
+				{
+					filterList.remove(PlantStage.FLOWER);
+				}
+				else
+				{
+					filterList.add(PlantStage.FLOWER);
+				}
+			}
+			else if (item.getItemId() == R.id.filter_drying)
+			{
+				if (filterList.contains(PlantStage.DRYING))
+				{
+					filterList.remove(PlantStage.DRYING);
+				}
+				else
+				{
+					filterList.add(PlantStage.DRYING);
+				}
+			}
+			else if (item.getItemId() == R.id.filter_curing)
+			{
+				if (filterList.contains(PlantStage.CURING))
+				{
+					filterList.remove(PlantStage.CURING);
+				}
+				else
+				{
+					filterList.add(PlantStage.CURING);
+				}
+			}
+			else if (item.getItemId() == R.id.filter_harvested)
+			{
+				if (filterList.contains(PlantStage.HARVESTED))
+				{
+					filterList.remove(PlantStage.HARVESTED);
+				}
+				else
+				{
+					filterList.add(PlantStage.HARVESTED);
+				}
+			}
+
+			filter();
+		}
 
 		return super.onOptionsItemSelected(item);
+	}
+
+	private void filter()
+	{
+		ArrayList<Plant> plants = new ArrayList<>();
+		plants.addAll(PlantManager.getInstance().getSortedPlantList(garden));
+
+		for (int index = 0; index < plants.size(); index++)
+		{
+			if (!filterList.contains(plants.get(index).getStage()))
+			{
+				plants.set(index, null);
+			}
+		}
+
+		plants.removeAll(Collections.singleton(null));
+		adapter.setPlants(plants);
+		adapter.notifyDataSetChanged();
 	}
 }
