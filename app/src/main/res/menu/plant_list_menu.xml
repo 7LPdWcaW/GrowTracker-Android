@@ -2,7 +2,55 @@
 
 <menu
 	xmlns:android="http://schemas.android.com/apk/res/android"
+	xmlns:app="http://schemas.android.com/apk/res-auto"
 >
+	<item
+		android:id="@+id/filter"
+		android:title="Filter"
+		android:icon="@drawable/ic_filter"
+		app:showAsAction="always"
+	>
+		<menu>
+			<group android:checkableBehavior="all">
+				<item
+					android:id="@+id/germination"
+					android:title="Germination"
+					android:checked="true"
+				/>
+
+				<item
+					android:id="@+id/vegetation"
+					android:title="Vegetation"
+					android:checked="true"
+				/>
+
+				<item
+					android:id="@+id/flowering"
+					android:title="Flowering"
+					android:checked="true"
+				/>
+
+				<item
+					android:id="@+id/drying"
+					android:title="Drying"
+					android:checked="true"
+				/>
+
+				<item
+					android:id="@+id/curing"
+					android:title="Curing"
+					android:checked="true"
+				/>
+
+				<item
+					android:id="@+id/harvested"
+					android:title="Harvested"
+					android:checked="true"
+				/>
+			</group>
+		</menu>
+	</item>
+
 	<item
 		android:id="@+id/edit_garden"
 		android:title="Edit garden"
