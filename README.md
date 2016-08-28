@@ -2,9 +2,9 @@
 
 Welcome to grow tracker. This app was created to help record data about growing plants in order to monitor the growing conditions to help make the plants grow better, and identify potential issues during the grow process.
 
-[Latest APK: (MD5) 734778062cd3ddfe521d104253868ae2 v1.4.1](https://github.com/7LPdWcaW/GrowTracker-Android/raw/master/app/app-production-release.apk)
+[Latest APK: (MD5) de708f0b7905ea193b6f414eedc7b3e4 v2.0](https://github.com/7LPdWcaW/GrowTracker-Android/raw/master/app/app-production-release.apk)
 
-[Latest APK (Discrete): (MD5) 5d47a1c0ef667d227e295ead0349c834 v1.4.1](https://github.com/7LPdWcaW/GrowTracker-Android/raw/master/app/app-discrete-release.apk)
+[Latest APK (Discrete): (MD5) 07fd56b31391b955f6321396d77ef115 v2.0](https://github.com/7LPdWcaW/GrowTracker-Android/raw/master/app/app-discrete-release.apk)
 
 # Installation
 
@@ -21,9 +21,13 @@ The app requires no permissions except for external storage (for caching plant d
 [![install](screenshots/install-thumb.png)](screenshots/install.png)
 [![plant list](screenshots/1-thumb.png)](screenshots/1.png)
 [![discrete plant list](screenshots/1b-thumb.png)](screenshots/1b.png)
+[![discrete plant list](screenshots/1c-thumb.png)](screenshots/1c.png)
+[![discrete plant list](screenshots/1d-thumb.png)](screenshots/1d.png)
+[![discrete plant list](screenshots/1e-thumb.png)](screenshots/1e.png)
 [![plant details](screenshots/2-thumb.png)](screenshots/2.png)
 [![feeding](screenshots/3-thumb.png)](screenshots/3.png)
 [![nutrients](screenshots/4-thumb.png)](screenshots/4.png)
+[![nutrients](screenshots/4b-thumb.png)](screenshots/4b.png)
 [![actions](screenshots/5-thumb.png)](screenshots/5.png)
 [![pictures](screenshots/6-thumb.png)](screenshots/6.png)
 [![statistics](screenshots/7-thumb.png)](screenshots/7.png)
@@ -145,7 +149,7 @@ You can decrypt your files using your passphrase either by writing a script that
 
 #License
 
-Copyright 2011-2015 7LPdWcaW
+Copyright 2014-2016 7LPdWcaW
 
 Licensed under the Apache License, Version 2.0 (the "License");
 you may not use this file except in compliance with the License.

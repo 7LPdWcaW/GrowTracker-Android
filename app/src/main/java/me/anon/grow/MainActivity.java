@@ -1,5 +1,6 @@
 package me.anon.grow;
 
+import android.Manifest;
 import android.app.Activity;
 import android.content.Intent;
 import android.net.Uri;
@@ -25,6 +26,7 @@ import me.anon.grow.fragment.PlantListFragment;
 import me.anon.lib.Views;
 import me.anon.lib.event.GardenChangeEvent;
 import me.anon.lib.helper.BusHelper;
+import me.anon.lib.helper.PermissionHelper;
 import me.anon.lib.manager.GardenManager;
 import me.anon.model.Garden;
 
@@ -49,6 +51,11 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 	@Override protected void onCreate(Bundle savedInstanceState)
 	{
 		super.onCreate(savedInstanceState);
+
+		if (!PermissionHelper.hasPermission(this, Manifest.permission.WRITE_EXTERNAL_STORAGE))
+		{
+			PermissionHelper.doPermissionCheck(this, Manifest.permission.WRITE_EXTERNAL_STORAGE, 1, "Access to external storage is to display photos in the app. No other data is read.");
+		}
 
 		setContentView(R.layout.main_view);
 		Views.inject(this);
