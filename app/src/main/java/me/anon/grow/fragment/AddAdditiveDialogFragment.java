@@ -68,7 +68,7 @@ public class AddAdditiveDialogFragment extends DialogFragment
 					Additive additive = new Additive();
 
 					String desc = TextUtils.isEmpty(description.getText()) ? null : description.getText().toString();
-					Double amt = TextUtils.isEmpty(amount.getText()) ? null : Double.valueOf(amount.getText().toString());
+					Double amt = TextUtils.isEmpty(amount.getText()) ? 0 : Double.valueOf(amount.getText().toString());
 
 					additive.setDescription(desc);
 					additive.setAmount(amt);
