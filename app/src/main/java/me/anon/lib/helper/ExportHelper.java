@@ -29,8 +29,8 @@ import java.util.SortedMap;
 
 import me.anon.lib.ExportCallback;
 import me.anon.model.Action;
+import me.anon.model.Additive;
 import me.anon.model.EmptyAction;
-import me.anon.model.Feed;
 import me.anon.model.NoteAction;
 import me.anon.model.Plant;
 import me.anon.model.PlantMedium;
@@ -97,18 +97,7 @@ public class ExportHelper
 				}
 			}
 
-			if (action.getClass() == Feed.class)
-			{
-				if (lastFeed != 0)
-				{
-					feedDifference += Math.abs(action.getDate() - lastFeed);
-				}
-
-				totalFeed++;
-				lastFeed = action.getDate();
-
-			}
-			else if (action.getClass() == Water.class)
+			if (action.getClass() == Water.class)
 			{
 				if (lastWater != 0)
 				{
@@ -161,13 +150,9 @@ public class ExportHelper
 		plantDetails.append(NEW_LINE);
 		plantDetails.append(" - *Total grow time*: ").append(String.format("%1$,.2f days", days));
 		plantDetails.append(NEW_LINE);
-		plantDetails.append(" - *Total feeds*: ").append(String.valueOf(totalFeed));
-		plantDetails.append(NEW_LINE);
 		plantDetails.append(" - *Total waters*: ").append(String.valueOf(totalWater));
 		plantDetails.append(NEW_LINE);
 		plantDetails.append(" - *Total flushes*: ").append(String.valueOf(totalFlush));
-		plantDetails.append(NEW_LINE);
-		plantDetails.append(" - *Average time between feeds*: ").append(String.format("%1$,.2f days", (TimeHelper.toDays(feedDifference) / (double)totalFeed)));
 		plantDetails.append(NEW_LINE);
 		plantDetails.append(" - *Average time between waterings*: ").append(String.format("%1$,.2f days", (TimeHelper.toDays(waterDifference) / (double)totalWater)));
 		plantDetails.append(NEW_LINE);
@@ -210,42 +195,7 @@ public class ExportHelper
 			plantDetails.append("###").append(printableDate(context, action.getDate()));
 			plantDetails.append(NEW_LINE);
 
-			if (action.getClass() == Feed.class)
-			{
-				plantDetails.append("*Type*: Feeding");
-				plantDetails.append(NEW_LINE);
-
-				if (((Feed)action).getNutrient() != null)
-				{
-					plantDetails.append("Fed with ");
-
-					if (((Feed)action).getMlpl() != null)
-					{
-						plantDetails.append(((Feed)action).getMlpl()).append(" ml/l of ");
-					}
-
-					plantDetails.append(((Feed)action).getNutrient().getNpc() == null ? "-" : ((Feed)action).getNutrient().getNpc());
-					plantDetails.append(":");
-					plantDetails.append(((Feed)action).getNutrient().getPpc() == null ? "-" : ((Feed)action).getNutrient().getPpc());
-					plantDetails.append(":");
-					plantDetails.append(((Feed)action).getNutrient().getKpc() == null ? "-" : ((Feed)action).getNutrient().getKpc());
-
-					if (((Feed)action).getNutrient().getMgpc() != null
-					|| ((Feed)action).getNutrient().getSpc() != null
-					|| ((Feed)action).getNutrient().getCapc() != null)
-					{
-						plantDetails.append(" / ");
-						plantDetails.append(((Feed)action).getNutrient().getCapc() == null ? "-" : ((Feed)action).getNutrient().getCapc());
-						plantDetails.append(":");
-						plantDetails.append(((Feed)action).getNutrient().getSpc() == null ? "-" : ((Feed)action).getNutrient().getSpc());
-						plantDetails.append(":");
-						plantDetails.append(((Feed)action).getNutrient().getMgpc() == null ? "-" : ((Feed)action).getNutrient().getMgpc());
-					}
-
-					plantDetails.append(NEW_LINE);
-				}
-			}
-			else if (action.getClass() == Water.class)
+			if (action.getClass() == Water.class)
 			{
 				plantDetails.append("*Type*: Watering");
 				plantDetails.append(NEW_LINE);
@@ -308,6 +258,23 @@ public class ExportHelper
 					plantDetails.append(((Water)action).getTemp());
 					plantDetails.append("ºC, ");
 					newLine = true;
+				}
+
+				if (((Water)action).getAdditives().size() > 0)
+				{
+					plantDetails.append(NEW_LINE);
+					plantDetails.append("*Additives:*");
+					plantDetails.append("\r\n");
+
+					for (Additive additive : ((Water)action).getAdditives())
+					{
+						plantDetails.append("\r\n");
+						plantDetails.append(" - ");
+						plantDetails.append(additive.getDescription());
+						plantDetails.append("  -  ");
+						plantDetails.append(additive.getAmount());
+						plantDetails.append("ml/l");
+					}
 				}
 
 				if (newLine)
@@ -383,7 +350,7 @@ public class ExportHelper
 		try
 		{
 			// Create stats charts and save images
-			final File finalFile = new File(exportFolder.getAbsolutePath() + "/" + plant.getName().replaceAll("[^a-zA-Z]+", "-") + ".zip");
+			final File finalFile = new File(exportFolder.getAbsolutePath() + "/" + plant.getName().replaceAll("[^a-zA-Z0-9]+", "-") + ".zip");
 
 			if (finalFile.exists())
 			{

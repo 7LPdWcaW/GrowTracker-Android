@@ -1,0 +1,77 @@
+[
+    {
+        "actions": [
+            {
+                "date": 0,
+                "newStage": "GERMINATION",
+                "type": "StageChange"
+            },
+            {
+                "date": 172800000,
+                "newStage": "VEGETATION",
+                "type": "StageChange"
+            },
+            {
+                "date": 432000000,
+                "newStage": "FLOWER",
+                "type": "StageChange"
+            }
+        ],
+        "clone": false,
+        "images": [],
+        "name": "Lemon 1",
+        "plantDate": 0,
+        "stage": "HARVESTED",
+        "strain": "Lemon haze"
+    },
+    {
+        "actions": [
+            {
+                "date": 0,
+                "newStage": "GERMINATION",
+                "type": "StageChange"
+            },
+            {
+                "date": 172800000,
+                "newStage": "VEGETATION",
+                "type": "StageChange"
+            },
+            {
+                "date": 432000000,
+                "newStage": "FLOWER",
+                "type": "StageChange"
+            }
+        ],
+        "clone": false,
+        "images": [],
+        "name": "Lemon 2",
+        "plantDate": 1,
+        "stage": "VEGETATION",
+        "strain": "Lemon haze"
+    },
+    {
+        "actions": [
+            {
+                "date": 0,
+                "newStage": "GERMINATION",
+                "type": "StageChange"
+            },
+            {
+                "date": 172800000,
+                "newStage": "VEGETATION",
+                "type": "StageChange"
+            },
+            {
+                "date": 432000000,
+                "newStage": "FLOWER",
+                "type": "StageChange"
+            }
+        ],
+        "clone": false,
+        "images": [],
+        "name": "Lemon 3",
+        "plantDate": 2,
+        "stage": "VEGETATION",
+        "strain": "Lemon haze"
+    }
+]

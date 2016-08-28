@@ -28,14 +28,13 @@ import java.util.Random;
 
 import me.anon.controller.adapter.ActionAdapter;
 import me.anon.controller.adapter.SimpleItemTouchHelperCallback;
-import me.anon.grow.EditFeedingActivity;
+import me.anon.grow.EditWateringActivity;
 import me.anon.grow.R;
 import me.anon.lib.Views;
 import me.anon.lib.helper.FabAnimator;
 import me.anon.lib.manager.PlantManager;
 import me.anon.model.Action;
 import me.anon.model.EmptyAction;
-import me.anon.model.Feed;
 import me.anon.model.NoteAction;
 import me.anon.model.Plant;
 import me.anon.model.StageChange;
@@ -58,7 +57,7 @@ public class EventListFragment extends Fragment implements ActionAdapter.OnActio
 	private int plantIndex = -1;
 	private Plant plant;
 
-	private boolean feeding = true, watering = true;
+	private boolean watering = true;
 	private boolean notes = true, stages = true;
 	private ArrayList<Action.ActionName> selected = new ArrayList<>();
 	private boolean beingDragged = false;
@@ -128,7 +127,7 @@ public class EventListFragment extends Fragment implements ActionAdapter.OnActio
 		{
 			@Override public boolean isLongPressDragEnabled()
 			{
-				return selected.size() == Action.ActionName.values().length && feeding && watering && notes && stages;
+				return selected.size() == Action.ActionName.values().length && watering && notes && stages;
 			}
 		};
 		ItemTouchHelper touchHelper = new ItemTouchHelper(callback);
@@ -138,7 +137,7 @@ public class EventListFragment extends Fragment implements ActionAdapter.OnActio
 		{
 			@Override public void onItemRangeMoved(int fromPosition, int toPosition, int itemCount)
 			{
-				if (selected.size() == Action.ActionName.values().length && feeding && watering && notes && stages)
+				if (selected.size() == Action.ActionName.values().length && watering && notes && stages)
 				{
 					ArrayList<Action> actions = new ArrayList<Action>();
 					actions.addAll((ArrayList<Action>)adapter.getActions());
@@ -266,7 +265,7 @@ public class EventListFragment extends Fragment implements ActionAdapter.OnActio
 
 	@Override public void onActionCopy(final Action action)
 	{
-		final ArrayList<Plant> sortedPlants = PlantManager.getInstance().getSortedPlantList();
+		final ArrayList<Plant> sortedPlants = PlantManager.getInstance().getSortedPlantList(null);
 		CharSequence[] plants = new CharSequence[sortedPlants.size()];
 		for (int index = 0; index < plants.length; index++)
 		{
@@ -325,7 +324,7 @@ public class EventListFragment extends Fragment implements ActionAdapter.OnActio
 
 		if (action instanceof Water)
 		{
-			Intent edit = new Intent(getActivity(), EditFeedingActivity.class);
+			Intent edit = new Intent(getActivity(), EditWateringActivity.class);
 			edit.putExtra("plant_index", plantIndex);
 			edit.putExtra("action_index", originalIndex);
 			startActivityForResult(edit, 3);
@@ -547,10 +546,6 @@ public class EventListFragment extends Fragment implements ActionAdapter.OnActio
 		{
 			watering = item.isChecked();
 		}
-		else if (item.getItemId() == R.id.filter_feedings)
-		{
-			feeding = item.isChecked();
-		}
 		else if (item.getItemId() == R.id.filter_notes)
 		{
 			notes = item.isChecked();
@@ -588,11 +583,7 @@ public class EventListFragment extends Fragment implements ActionAdapter.OnActio
 			{
 				items.set(index, null);
 			}
-			else if (!feeding && items.get(index).getClass() == Feed.class)
-			{
-				items.set(index, null);
-			}
-			else if (!watering && items.get(index).getClass() == Water.class)
+			else if (!watering && items.get(index) instanceof Water)
 			{
 				items.set(index, null);
 			}

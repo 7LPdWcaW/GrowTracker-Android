@@ -24,6 +24,7 @@
     "strain": "test",
     "clone": &lt;boolean&gt;,
     "medium": &lt;Medium&gt;,
+    "mediumDetails": &lt;String&gt;,
     "plantDate": 1234567890
 }
             </pre>
@@ -36,31 +37,11 @@
 
             <h3>Action object (feeding)</h3>
             <p>Temperature measured in ºC</p>
-            <p>Nutrient object consists of standard percentage of elements in the solution. Ca %, K %, Mg %, N %, P %, S %. usually in the format "1.5:1.0:2.6" for Ca/K/Mg</p>
-            <pre>
-{
-    "nutrient": {
-        "capc": &lt;Double&gt;,
-        "kpc": &lt;Double&gt;,
-        "mgpc": &lt;Double&gt;,
-        "npc": &lt;Double&gt;,
-        "ppc": &lt;Double&gt;,
-        "spc": &lt;Double&gt;
-    },
-    "mlpl": &lt;Double&gt;,
-    "ph": &lt;Double&gt;,
-    "ppm": &lt;Long&gt;,
-    "runoff": &lt;Double&gt;,
-    "amount": &lt;Integer&gt;,
-    "date": &lt;Long&gt;,
-    "type": "Feed",
-    "temp": &lt;Integer&gt;
-}
-            </pre>
             <h3>Action object (water)</h3>
-            <p>Water action is the same as a feeding action, sans the "nutrient" object</p>
+            <p>Water action for waterings</p>
             <pre>
 {
+    "additives": [&lt;Additive&gt;],
     "ph": &lt;Double&gt;,
     "ppm": &lt;Long&gt;,
     "runoff": &lt;Double&gt;,
@@ -69,6 +50,16 @@
     "type": "Water"
 }
             </pre>
+
+            <h3>Additive object</h3>
+            <p>Used for nutrients</p>
+            <pre>
+{
+    "description": &lt;String&gt;,
+    "amount": &lt;Double&gt;
+}
+            </pre>
+
             <h3>Action object (other)</h3>
             <p>Action can be one of, <pre>TRIM, TOP, FIM, LST, LOLLIPOP, FLUSH, FOLIAR_FEED, PESTICIDE_APPLICATION</pre></p>
             <pre>

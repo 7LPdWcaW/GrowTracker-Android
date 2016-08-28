@@ -2,6 +2,7 @@ package me.anon.grow;
 
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
+import android.support.v7.widget.Toolbar;
 
 import lombok.experimental.Accessors;
 import me.anon.grow.fragment.EventListFragment;
@@ -25,6 +26,7 @@ public class EventsActivity extends AppCompatActivity
 		super.onCreate(savedInstanceState);
 
 		setContentView(R.layout.fragment_holder);
+		setSupportActionBar((Toolbar)findViewById(R.id.toolbar));
 		Views.inject(this);
 
 		int plantIndex = -1;

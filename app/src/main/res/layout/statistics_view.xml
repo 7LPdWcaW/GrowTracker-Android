@@ -229,32 +229,6 @@
 						<TextView
 							android:layout_width="wrap_content"
 							android:layout_height="wrap_content"
-							android:text="Total feeds:"
-							android:gravity="center_vertical"
-							style="@style/SubsectionTitle"
-						/>
-
-						<TextView
-							android:layout_width="wrap_content"
-							android:layout_height="wrap_content"
-							android:id="@+id/feed_count"
-							android:textSize="14sp"
-							android:textColor="#666666"
-							android:layout_marginLeft="8dp"
-							android:fontFamily="sans-serif-light"
-							android:gravity="center_vertical"
-						/>
-					</LinearLayout>
-
-					<LinearLayout
-						android:layout_width="0dp"
-						android:layout_height="wrap_content"
-						android:orientation="horizontal"
-						android:layout_weight="1"
-					>
-						<TextView
-							android:layout_width="wrap_content"
-							android:layout_height="wrap_content"
 							android:text="Total waters:"
 							android:gravity="center_vertical"
 							style="@style/SubsectionTitle"
@@ -271,13 +245,7 @@
 							android:gravity="center_vertical"
 						/>
 					</LinearLayout>
-				</LinearLayout>
 
-				<LinearLayout
-					android:layout_width="match_parent"
-					android:layout_height="wrap_content"
-					android:orientation="horizontal"
-				>
 					<LinearLayout
 						android:layout_width="0dp"
 						android:layout_height="wrap_content"
@@ -301,41 +269,6 @@
 							android:layout_marginLeft="8dp"
 							android:fontFamily="sans-serif-light"
 							android:gravity="center_vertical"
-						/>
-					</LinearLayout>
-				</LinearLayout>
-
-				<LinearLayout
-					android:layout_width="match_parent"
-					android:layout_height="wrap_content"
-					android:orientation="horizontal"
-				>
-					<LinearLayout
-						android:layout_width="0dp"
-						android:layout_height="wrap_content"
-						android:orientation="horizontal"
-						android:layout_weight="1"
-					>
-						<TextView
-							android:layout_width="wrap_content"
-							android:layout_height="wrap_content"
-							android:text="Ave. time between feeds:"
-							android:gravity="center"
-							style="@style/SubsectionTitle"
-							android:singleLine="false"
-							android:layout_gravity="center_vertical"
-						/>
-
-						<TextView
-							android:layout_width="wrap_content"
-							android:layout_height="match_parent"
-							android:id="@+id/ave_feed"
-							android:textSize="14sp"
-							android:textColor="#666666"
-							android:layout_marginLeft="8dp"
-							android:fontFamily="sans-serif-light"
-							android:gravity="center"
-							android:layout_gravity="center_vertical"
 						/>
 					</LinearLayout>
 				</LinearLayout>

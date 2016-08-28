@@ -11,6 +11,7 @@ import lombok.experimental.Accessors;
  * @documentation // TODO Reference flow doc
  * @project GrowTracker
  */
+@Deprecated
 @Getter @Setter
 @Accessors(prefix = {"m", ""}, chain = true)
 public class Nutrient

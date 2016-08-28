@@ -11,10 +11,10 @@ import lombok.experimental.Accessors;
  * @documentation // TODO Reference flow doc
  * @project GrowTracker
  */
-@Accessors(prefix = {"m", ""}, chain = true)
 @Getter @Setter
-public class Feed extends Water
+@Accessors(prefix = {"m", ""}, chain = true)
+public class Additive
 {
-	private Nutrient nutrient;
-	private Double mlpl; // ml per litre
+	private Double amount;
+	private String description;
 }
