@@ -104,7 +104,10 @@ public class SettingsFragment extends PreferenceFragment implements Preference.O
 										// Encrypt images
 										for (Plant plant : PlantManager.getInstance().getPlants())
 										{
-											new EncryptTask().executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR, plant.getImages());
+											if (plant != null && plant.getImages() != null)
+											{
+												new EncryptTask().executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR, plant.getImages());
+											}
 										}
 
 										ImageLoader.getInstance().clearMemoryCache();
@@ -151,7 +154,10 @@ public class SettingsFragment extends PreferenceFragment implements Preference.O
 							// Decrypt images
 							for (Plant plant : PlantManager.getInstance().getPlants())
 							{
-								new DecryptTask().executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR, plant.getImages());
+								if (plant != null && plant.getImages() != null)
+								{
+									new DecryptTask().executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR, plant.getImages());
+								}
 							}
 
 							ImageLoader.getInstance().clearMemoryCache();

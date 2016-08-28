@@ -6,6 +6,7 @@ import android.app.Fragment;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
+import android.os.Handler;
 import android.preference.PreferenceManager;
 import android.support.annotation.Nullable;
 import android.support.v7.widget.LinearLayoutManager;
@@ -162,7 +163,14 @@ public class PlantListFragment extends Fragment
 		if (garden == null)
 		{
 			PlantManager.getInstance().setPlants(plants);
-			PlantManager.getInstance().save();
+
+			new Handler().postDelayed(new Runnable()
+			{
+				@Override public void run()
+				{
+					PlantManager.getInstance().save();
+				}
+			}, 150);
 		}
 		else
 		{

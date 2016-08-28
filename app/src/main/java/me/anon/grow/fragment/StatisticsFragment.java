@@ -61,7 +61,6 @@ public class StatisticsFragment extends Fragment
 	@Views.InjectView(R.id.temp) private LineChart temp;
 
 	@Views.InjectView(R.id.grow_time) private TextView growTime;
-	@Views.InjectView(R.id.feed_count) private TextView feedCount;
 	@Views.InjectView(R.id.water_count) private TextView waterCount;
 	@Views.InjectView(R.id.flush_count) private TextView flushCount;
 
@@ -76,7 +75,6 @@ public class StatisticsFragment extends Fragment
 	@Views.InjectView(R.id.cure_time) private TextView cureTime;
 	@Views.InjectView(R.id.cure_time_container) private View cureTimeContainer;
 
-	@Views.InjectView(R.id.ave_feed) private TextView aveFeed;
 	@Views.InjectView(R.id.ave_water) private TextView aveWater;
 
 	@Views.InjectView(R.id.min_input_ph) private TextView minInputPh;
@@ -149,8 +147,8 @@ public class StatisticsFragment extends Fragment
 		long endDate = System.currentTimeMillis();
 		long feedDifference = 0L;
 		long waterDifference = 0L;
-		long lastFeed = 0L, lastWater = 0L;
-		int totalFeed = 0, totalWater = 0, totalFlush = 0;
+		long lastWater = 0L;
+		int totalWater = 0, totalFlush = 0;
 
 		for (Action action : plant.getActions())
 		{
@@ -183,10 +181,8 @@ public class StatisticsFragment extends Fragment
 		double days = (double)seconds * 0.0000115741d;
 
 		growTime.setText(String.format("%1$,.2f", days) + " days");
-		feedCount.setText(String.valueOf(totalFeed));
 		waterCount.setText(String.valueOf(totalWater));
 		flushCount.setText(String.valueOf(totalFlush));
-		aveFeed.setText(String.format("%1$,.2f", (TimeHelper.toDays(feedDifference) / (double)totalFeed)) + " days");
 		aveWater.setText(String.format("%1$,.2f", (TimeHelper.toDays(waterDifference) / (double)totalWater)) + " days");
 
 		SortedMap<PlantStage, Long> stages = plant.calculateStageTime();

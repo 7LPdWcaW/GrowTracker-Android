@@ -18,6 +18,7 @@
 			android:id="@+id/name"
 			android:layout_weight="1"
 			android:hint="Name"
+			android:inputType="text|textCapWords"
 		/>
 	</LinearLayout>
 

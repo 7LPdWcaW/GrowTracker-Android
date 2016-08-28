@@ -1,6 +1,7 @@
 package me.anon.lib.helper;
 
 import android.annotation.TargetApi;
+import android.app.Activity;
 import android.app.AlertDialog;
 import android.app.Fragment;
 import android.content.Context;
@@ -34,6 +35,35 @@ public class PermissionHelper
 			}
 
 			fragment.requestPermissions(new String[]{permission}, requestCode);
+			return false;
+		}
+
+		return true;
+	}
+
+	@TargetApi(Build.VERSION_CODES.M)
+	public static boolean doPermissionCheck(final Activity activity, final String permission, final int requestCode, String dialogMessage)
+	{
+		if (PermissionChecker.checkSelfPermission(activity, permission) != PackageManager.PERMISSION_GRANTED)
+		{
+			if (activity.shouldShowRequestPermissionRationale(permission) && dialogMessage != null)
+			{
+				new AlertDialog.Builder(activity)
+					.setMessage(dialogMessage)
+					.setPositiveButton("OK", new DialogInterface.OnClickListener()
+					{
+						@Override public void onClick(DialogInterface dialog, int which)
+						{
+							activity.requestPermissions(new String[]{permission}, requestCode);
+						}
+					})
+					.setNegativeButton("Cancel", null)
+					.show();
+
+				return false;
+			}
+
+			activity.requestPermissions(new String[]{permission}, requestCode);
 			return false;
 		}
 
