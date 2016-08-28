@@ -286,6 +286,11 @@ public class WateringFragment extends Fragment
 		{
 			@Override public void onAdditiveSelected(Additive additive)
 			{
+				if (TextUtils.isEmpty(additive.getDescription()))
+				{
+					return;
+				}
+
 				View additiveStub = LayoutInflater.from(getActivity()).inflate(R.layout.additive_stub, additiveContainer, false);
 				((TextView)additiveStub).setText(additive.getDescription() + "   -   " + additive.getAmount() + "ml/l");
 
