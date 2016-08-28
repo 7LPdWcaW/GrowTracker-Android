@@ -22,6 +22,7 @@
 		android:id="@+id/notes"
 		android:lines="4"
 		android:gravity="top"
+		android:inputType="textCapSentences"
 		android:layout_marginTop="8dp"
 	/>
 </LinearLayout>
