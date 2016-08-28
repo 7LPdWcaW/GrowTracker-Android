@@ -31,6 +31,7 @@ public class Plant
 	private long plantDate = System.currentTimeMillis();
 	private boolean clone = false;
 	private PlantMedium medium = PlantMedium.SOIL;
+	private String mediumDetails;
 	private ArrayList<String> images = new ArrayList<>();
 	private ArrayList<Action> actions = new ArrayList<>();
 

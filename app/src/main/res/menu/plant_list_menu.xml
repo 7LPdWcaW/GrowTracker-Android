@@ -1,0 +1,67 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<menu
+	xmlns:android="http://schemas.android.com/apk/res/android"
+	xmlns:app="http://schemas.android.com/apk/res-auto"
+>
+	<item
+		android:id="@+id/filter"
+		android:title="Filter"
+		android:icon="@drawable/ic_filter"
+		app:showAsAction="always"
+	>
+		<menu>
+			<group android:checkableBehavior="all">
+				<item
+					android:id="@+id/filter_germination"
+					android:title="Germination"
+					android:checked="true"
+				/>
+
+				<item
+					android:id="@+id/filter_vegetation"
+					android:title="Vegetation"
+					android:checked="true"
+				/>
+
+				<item
+					android:id="@+id/filter_flowering"
+					android:title="Flowering"
+					android:checked="true"
+				/>
+
+				<item
+					android:id="@+id/filter_drying"
+					android:title="Drying"
+					android:checked="true"
+				/>
+
+				<item
+					android:id="@+id/filter_curing"
+					android:title="Curing"
+					android:checked="true"
+				/>
+
+				<item
+					android:id="@+id/filter_harvested"
+					android:title="Harvested"
+					android:checked="true"
+				/>
+			</group>
+		</menu>
+	</item>
+
+	<item
+		android:id="@+id/edit_garden"
+		android:title="Edit garden"
+		app:showAsAction="never"
+		android:visible="false"
+	/>
+
+	<item
+		android:id="@+id/delete_garden"
+		android:title="Delete garden"
+		app:showAsAction="never"
+		android:visible="false"
+	/>
+</menu>

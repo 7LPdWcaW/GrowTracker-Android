@@ -1,21 +1,25 @@
 package me.anon.grow.fragment;
 
+import android.Manifest;
 import android.app.Activity;
 import android.app.AlertDialog;
 import android.app.Fragment;
 import android.app.Notification;
 import android.app.NotificationManager;
 import android.app.PendingIntent;
+import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.content.pm.PackageManager;
 import android.media.MediaScannerConnection;
 import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.Environment;
+import android.os.ParcelFileDescriptor;
 import android.preference.PreferenceManager;
 import android.provider.MediaStore;
 import android.support.annotation.Nullable;
@@ -29,22 +33,30 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.view.WindowManager;
 import android.widget.CheckBox;
+import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import com.kenny.snackbar.SnackBar;
 import com.kenny.snackbar.SnackBarListener;
 
+import java.io.BufferedInputStream;
+import java.io.BufferedOutputStream;
 import java.io.File;
+import java.io.FileDescriptor;
+import java.io.FileInputStream;
+import java.io.FileOutputStream;
 import java.io.IOException;
+import java.io.InputStream;
+import java.io.OutputStream;
 import java.text.DateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.Locale;
 
-import me.anon.grow.AddFeedingActivity;
-import me.anon.grow.EditFeedingActivity;
+import me.anon.grow.AddWateringActivity;
+import me.anon.grow.EditWateringActivity;
 import me.anon.grow.EventsActivity;
 import me.anon.grow.MainApplication;
 import me.anon.grow.R;
@@ -55,7 +67,10 @@ import me.anon.lib.Views;
 import me.anon.lib.helper.ExportHelper;
 import me.anon.lib.helper.FabAnimator;
 import me.anon.lib.helper.ModelHelper;
+import me.anon.lib.helper.PermissionHelper;
+import me.anon.lib.manager.GardenManager;
 import me.anon.lib.manager.PlantManager;
+import me.anon.lib.task.AsyncCallback;
 import me.anon.lib.task.EncryptTask;
 import me.anon.model.EmptyAction;
 import me.anon.model.NoteAction;
@@ -82,21 +97,24 @@ public class PlantDetailsFragment extends Fragment
 	@Views.InjectView(R.id.plant_strain) private TextView strain;
 	@Views.InjectView(R.id.plant_stage) private TextView stage;
 	@Views.InjectView(R.id.plant_medium) private TextView medium;
+	@Views.InjectView(R.id.plant_medium_details) private EditText mediumDetails;
 	@Views.InjectView(R.id.plant_date) private TextView date;
 	@Views.InjectView(R.id.plant_date_container) private View dateContainer;
 	@Views.InjectView(R.id.from_clone) private CheckBox clone;
 
 	private int plantIndex = -1;
+	private int gardenIndex = -1;
 	private Plant plant;
 
 	/**
 	 * @param plantIndex If -1, assume new plant
 	 * @return Instantiated details fragment
 	 */
-	public static PlantDetailsFragment newInstance(int plantIndex)
+	public static PlantDetailsFragment newInstance(int plantIndex, int gardenIndex)
 	{
 		Bundle args = new Bundle();
 		args.putInt("plant_index", plantIndex);
+		args.putInt("garden_index", gardenIndex);
 
 		PlantDetailsFragment fragment = new PlantDetailsFragment();
 		fragment.setArguments(args);
@@ -124,7 +142,8 @@ public class PlantDetailsFragment extends Fragment
 
 		if (getArguments() != null)
 		{
-			plantIndex = getArguments().getInt("plant_index");
+			plantIndex = getArguments().getInt("plant_index", -1);
+			gardenIndex = getArguments().getInt("garden_index", -1);
 
 			if (plantIndex > -1)
 			{
@@ -148,7 +167,11 @@ public class PlantDetailsFragment extends Fragment
 			linkContainer.setVisibility(View.VISIBLE);
 
 			name.setText(plant.getName());
-			strain.setText(plant.getStrain());
+
+			if (plant.getMediumDetails() != null)
+			{
+				mediumDetails.setText(plant.getMediumDetails());
+			}
 
 			if (plant.getMedium() != null)
 			{
@@ -203,12 +226,14 @@ public class PlantDetailsFragment extends Fragment
 				getFragmentManager().beginTransaction().add(fragment, "date").commit();
 			}
 		});
+
+		strain.setText(plant.getStrain());
 	}
 
 	@Views.OnClick public void onFeedingClick(final View view)
 	{
-		Intent feeding = new Intent(view.getContext(), AddFeedingActivity.class);
-		feeding.putExtra("plant_index", plantIndex);
+		Intent feeding = new Intent(view.getContext(), AddWateringActivity.class);
+		feeding.putExtra("plant_index", new int[]{plantIndex});
 		startActivityForResult(feeding, 2);
 	}
 
@@ -253,70 +278,79 @@ public class PlantDetailsFragment extends Fragment
 		dialogFragment.show(getFragmentManager(), null);
 	}
 
+	@Override public void onRequestPermissionsResult(int requestCode, String[] permissions, int[] grantResults)
+	{
+		if (requestCode == 1 && (grantResults != null && grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED))
+		{
+			onPhotoClick(null);
+		}
+	}
+
 	@Views.OnClick public void onPhotoClick(final View view)
 	{
-		Intent intent = new Intent(android.provider.MediaStore.ACTION_IMAGE_CAPTURE);
-
-		File path = new File(Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DCIM).getPath() + "/GrowTracker/" + plant.getId() + "/");
-		path.mkdirs();
-
-		try
+		if (!PermissionHelper.hasPermission(getActivity(), Manifest.permission.WRITE_EXTERNAL_STORAGE))
 		{
-			new File(path, ".nomedia").createNewFile();
+			PermissionHelper.doPermissionCheck(this, Manifest.permission.WRITE_EXTERNAL_STORAGE, 1, "Access to external storage is needed to store photos. No other data is consumed by this app");
+			return;
 		}
-		catch (IOException e){}
 
-		File out = new File(path, System.currentTimeMillis() + ".jpg");
+		String[] choices = {"From camera", "From gallery"};
 
-		plant.getImages().add(out.getAbsolutePath());
+		new AlertDialog.Builder(getActivity())
+			.setTitle("Select an option")
+			.setItems(choices, new DialogInterface.OnClickListener()
+			{
+				@Override public void onClick(DialogInterface dialogInterface, int index)
+				{
+					if (index == 0)
+					{
+						Intent intent = new Intent(android.provider.MediaStore.ACTION_IMAGE_CAPTURE);
 
-		intent.putExtra(MediaStore.EXTRA_OUTPUT, Uri.fromFile(out));
-		startActivityForResult(intent, 1);
+						File path = new File(Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DCIM).getPath() + "/GrowTracker/" + plant.getId() + "/");
+						path.mkdirs();
+
+						try
+						{
+							new File(path, ".nomedia").createNewFile();
+						}
+						catch (IOException e){}
+
+						File out = new File(path, System.currentTimeMillis() + ".jpg");
+
+						plant.getImages().add(out.getAbsolutePath());
+
+						intent.putExtra(MediaStore.EXTRA_OUTPUT, Uri.fromFile(out));
+						startActivityForResult(intent, 1);
+					}
+					else
+					{
+						if (Build.VERSION.SDK_INT < 19)
+						{
+							Intent intent = new Intent();
+							intent.setType("image/jpeg");
+							intent.setAction(Intent.ACTION_GET_CONTENT);
+							startActivityForResult(Intent.createChooser(intent, "Select picture"), 3);
+						}
+						else
+						{
+							Intent intent = new Intent(Intent.ACTION_OPEN_DOCUMENT);
+							intent.addCategory(Intent.CATEGORY_OPENABLE);
+							intent.setType("image/jpeg");
+							startActivityForResult(Intent.createChooser(intent, "Select picture"), 3);
+						}
+					}
+				}
+			})
+			.show();
 	}
 
 	@Override public void onActivityResult(int requestCode, int resultCode, Intent data)
 	{
-		if (requestCode == 1)
+		if (requestCode == 1) // take image from camera
 		{
 			if (resultCode == Activity.RESULT_CANCELED)
 			{
 				plant.getImages().remove(plant.getImages().size() - 1);
-			}
-			else
-			{
-				if (getActivity() != null)
-				{
-					if (MainApplication.isEncrypted())
-					{
-						ArrayList<String> image = new ArrayList<>();
-						image.add(plant.getImages().get(plant.getImages().size() - 1));
-						new EncryptTask().executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR, image);
-					}
-
-					SnackBar.show(getActivity(), "Image added", "Take another", new SnackBarListener()
-					{
-						@Override public void onSnackBarStarted(Object o)
-						{
-							if (getView() != null)
-							{
-								FabAnimator.animateUp(getView().findViewById(R.id.fab_complete));
-							}
-						}
-
-						@Override public void onSnackBarFinished(Object o)
-						{
-							if (getView() != null)
-							{
-								FabAnimator.animateDown(getView().findViewById(R.id.fab_complete));
-							}
-						}
-
-						@Override public void onSnackBarAction(Object o)
-						{
-							onPhotoClick(null);
-						}
-					});
-				}
 			}
 
 			PlantManager.getInstance().upsert(plantIndex, plant);
@@ -325,9 +359,7 @@ public class PlantDetailsFragment extends Fragment
 		{
 			if (resultCode != Activity.RESULT_CANCELED)
 			{
-				String type = plant.getActions().get(plant.getActions().size() - 1) instanceof Water ? "Watering" : "Feeding";
-
-				SnackBar.show(getActivity(), type + " added", "Apply to another plant", new SnackBarListener()
+				SnackBar.show(getActivity(), "Watering added", "Apply to another plant", new SnackBarListener()
 				{
 					@Override public void onSnackBarStarted(Object o)
 					{
@@ -347,7 +379,7 @@ public class PlantDetailsFragment extends Fragment
 
 					@Override public void onSnackBarAction(Object o)
 					{
-						final ArrayList<Plant> sortedPlants = PlantManager.getInstance().getSortedPlantList();
+						final ArrayList<Plant> sortedPlants = PlantManager.getInstance().getSortedPlantList(null);
 						CharSequence[] plants = new CharSequence[sortedPlants.size()];
 						for (int index = 0; index < plants.length; index++)
 						{
@@ -366,7 +398,7 @@ public class PlantDetailsFragment extends Fragment
 									Water copy = (Water)ModelHelper.copy(water);
 									PlantManager.getInstance().getPlants().get(originalIndex).getActions().add(copy);
 
-									Intent edit = new Intent(getActivity(), EditFeedingActivity.class);
+									Intent edit = new Intent(getActivity(), EditWateringActivity.class);
 									edit.putExtra("plant_index", originalIndex);
 									edit.putExtra("action_index", PlantManager.getInstance().getPlants().get(originalIndex).getActions().indexOf(copy));
 									startActivityForResult(edit, 2);
@@ -377,8 +409,135 @@ public class PlantDetailsFragment extends Fragment
 				});
 			}
 		}
+		else if (requestCode == 3) // choose image from gallery
+		{
+			Uri selectedUri = data.getData();
+			if (Build.VERSION.SDK_INT >= 19)
+			{
+				final int takeFlags = data.getFlags() & (Intent.FLAG_GRANT_READ_URI_PERMISSION | Intent.FLAG_GRANT_WRITE_URI_PERMISSION);
+				getActivity().getContentResolver().takePersistableUriPermission(selectedUri, takeFlags);
+			}
+
+			File path = new File(Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DCIM).getPath() + "/GrowTracker/" + plant.getId() + "/");
+			path.mkdirs();
+
+			try
+			{
+				new File(path, ".nomedia").createNewFile();
+			}
+			catch (IOException e){}
+
+			File out = new File(path, System.currentTimeMillis() + ".jpg");
+
+			copyImage(selectedUri, out);
+
+			if (out.exists() && out.length() > 0)
+			{
+				plant.getImages().add(out.getAbsolutePath());
+				PlantManager.getInstance().upsert(plantIndex, plant);
+			}
+			else
+			{
+				out.delete();
+			}
+		}
+
+		// both photo options
+		if (requestCode == 1 || requestCode == 3)
+		{
+			if (getActivity() != null)
+			{
+				if (MainApplication.isEncrypted())
+				{
+					ArrayList<String> image = new ArrayList<>();
+					image.add(plant.getImages().get(plant.getImages().size() - 1));
+					new EncryptTask().executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR, image);
+				}
+
+				SnackBar.show(getActivity(), "Image added", "Take another", new SnackBarListener()
+				{
+					@Override public void onSnackBarStarted(Object o)
+					{
+						if (getView() != null)
+						{
+							FabAnimator.animateUp(getView().findViewById(R.id.fab_complete));
+						}
+					}
+
+					@Override public void onSnackBarFinished(Object o)
+					{
+						if (getView() != null)
+						{
+							FabAnimator.animateDown(getView().findViewById(R.id.fab_complete));
+						}
+					}
+
+					@Override public void onSnackBarAction(Object o)
+					{
+						onPhotoClick(null);
+					}
+				});
+			}
+		}
 
 		super.onActivityResult(requestCode, resultCode, data);
+	}
+
+	public void copyImage(Uri imageUri, File newLocation)
+	{
+		try
+		{
+			if (imageUri.getScheme().startsWith("content"))
+			{
+				if (!newLocation.exists())
+				{
+					newLocation.createNewFile();
+				}
+
+				ParcelFileDescriptor parcelFileDescriptor = getActivity().getContentResolver().openFileDescriptor(imageUri, "r");
+				FileDescriptor fileDescriptor = parcelFileDescriptor.getFileDescriptor();
+				InputStream streamIn = new BufferedInputStream(new FileInputStream(fileDescriptor), 524288);
+				OutputStream streamOut = new BufferedOutputStream(new FileOutputStream(newLocation), 524288);
+
+				int len = 0;
+				byte[] buffer = new byte[524288];
+				while ((len = streamIn.read(buffer)) != -1)
+				{
+					streamOut.write(buffer, 0, len);
+				}
+
+				streamIn.close();
+				streamOut.flush();
+				streamOut.close();
+			}
+			else if (imageUri.getScheme().startsWith("file"))
+			{
+				if (!newLocation.exists())
+				{
+					newLocation.createNewFile();
+				}
+
+				String image = imageUri.getPath();
+
+				InputStream streamIn = new BufferedInputStream(new FileInputStream(new File(image)), 524288);
+				OutputStream streamOut = new BufferedOutputStream(new FileOutputStream(newLocation), 524288);
+
+				int len = 0;
+				byte[] buffer = new byte[524288];
+				while ((len = streamIn.read(buffer)) != -1)
+				{
+					streamOut.write(buffer, 0, len);
+				}
+
+				streamIn.close();
+				streamOut.flush();
+				streamOut.close();
+			}
+		}
+		catch (Exception e)
+		{
+			e.printStackTrace();
+		}
 	}
 
 	@Override public void onCreateOptionsMenu(Menu menu, MenuInflater inflater)
@@ -402,9 +561,24 @@ public class PlantDetailsFragment extends Fragment
 				{
 					@Override public void onClick(DialogInterface dialog, int which)
 					{
+						final ProgressDialog progress = new ProgressDialog(getActivity());
+						progress.setMessage("Deleting plant...");
+						progress.setCancelable(false);
+						progress.show();
+
 						PlantManager.getInstance().deletePlant(plantIndex);
-						PlantManager.getInstance().save();
-						getActivity().finish();
+						PlantManager.getInstance().save(new AsyncCallback()
+						{
+							@Override public void callback()
+							{
+								if (progress != null)
+								{
+									progress.dismiss();
+								}
+
+								getActivity().finish();
+							}
+						});
 					}
 				})
 				.setNegativeButton("No", null)
@@ -616,6 +790,8 @@ public class PlantDetailsFragment extends Fragment
 			return;
 		}
 
+		plant.setMediumDetails(mediumDetails.getText().toString());
+
 		PlantStage newStage = PlantStage.valueOf(stage.getText().toString().toUpperCase(Locale.ENGLISH));
 		if (plant.getStage() != newStage || (plantIndex < 0 && newStage == PlantStage.GERMINATION))
 		{
@@ -642,6 +818,16 @@ public class PlantDetailsFragment extends Fragment
 
 		plant.setClone(clone.isChecked());
 		PlantManager.getInstance().upsert(plantIndex, plant);
+
+		if (gardenIndex != -1)
+		{
+			if (!GardenManager.getInstance().getGardens().get(gardenIndex).getPlantIds().contains(plant.getId()))
+			{
+				GardenManager.getInstance().getGardens().get(gardenIndex).getPlantIds().add(plant.getId());
+				GardenManager.getInstance().save();
+			}
+		}
+
 		getActivity().finish();
 	}
 

@@ -3,7 +3,9 @@ package me.anon.lib.manager;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.os.AsyncTask;
 import android.preference.PreferenceManager;
+import android.support.annotation.Nullable;
 import android.text.TextUtils;
 import android.widget.Toast;
 
@@ -12,6 +14,7 @@ import com.google.gson.reflect.TypeToken;
 
 import java.io.File;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collections;
 
 import lombok.Data;
@@ -20,6 +23,8 @@ import lombok.experimental.Accessors;
 import me.anon.grow.MainApplication;
 import me.anon.lib.helper.EncryptionHelper;
 import me.anon.lib.helper.GsonHelper;
+import me.anon.lib.task.AsyncCallback;
+import me.anon.model.Garden;
 import me.anon.model.Plant;
 import me.anon.model.PlantStage;
 
@@ -51,57 +56,73 @@ public class PlantManager
 		load();
 	}
 
-	public ArrayList<Plant> getSortedPlantList()
+	public ArrayList<Plant> getSortedPlantList(@Nullable Garden garden)
 	{
-		int plantsSize =  PlantManager.getInstance().getPlants().size();
-		ArrayList<Plant> ordered = new ArrayList<>();
-
-		SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(context);
-		boolean hideHarvested = prefs.getBoolean("hide_harvested", false);
-
-		for (int index = 0; index < plantsSize; index++)
+		synchronized (this.mPlants)
 		{
-			Plant plant = PlantManager.getInstance().getPlants().get(index);
+			SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(context);
 
-			if (hideHarvested && plant.getStage() == PlantStage.HARVESTED)
+			int plantsSize =  PlantManager.getInstance().getPlants().size();
+			Plant[] ordered = new Plant[garden == null ? plantsSize : garden.getPlantIds().size()];
+
+			boolean hideHarvested = prefs.getBoolean("hide_harvested", false);
+
+			for (int index = 0; index < plantsSize; index++)
 			{
-				continue;
+				Plant plant = PlantManager.getInstance().getPlants().get(index);
+
+				if (plant == null || (hideHarvested && plant.getStage() == PlantStage.HARVESTED) || (garden != null && !garden.getPlantIds().contains(plant.getId())))
+				{
+					continue;
+				}
+
+				ordered[garden == null ? index : garden.getPlantIds().indexOf(plant.getId())] = plant;
 			}
 
-			ordered.add(plant);
+			ArrayList<Plant> finalList = new ArrayList<>();
+			finalList.addAll(Arrays.asList(ordered));
+			finalList.removeAll(Collections.singleton(null));
+
+			return finalList;
 		}
-
-		ordered.removeAll(Collections.singleton(null));
-
-		return ordered;
 	}
 
 	public void setPlants(ArrayList<Plant> plants)
 	{
-		this.mPlants.clear();
-		this.mPlants.addAll(plants);
+		synchronized (this.mPlants)
+		{
+			this.mPlants.clear();
+			this.mPlants.addAll(plants);
+		}
 	}
 
 	public void addPlant(Plant plant)
 	{
-		mPlants.add(plant);
-		save();
+		synchronized (this.mPlants)
+		{
+			mPlants.add(plant);
+			save();
+		}
 	}
 
 	public void deletePlant(int plantIndex)
 	{
-		// Delete images
-		for (String filePath : mPlants.get(plantIndex).getImages())
+		synchronized (this.mPlants)
 		{
-			new File(filePath).delete();
+			// Delete images
+			ArrayList<String> imagePaths = mPlants.get(plantIndex).getImages();
+			for (String filePath : imagePaths)
+			{
+				new File(filePath).delete();
+			}
+
+			// Remove plant
+			mPlants.remove(plantIndex);
+
+			// Remove from shared prefs
+			SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(context);
+			prefs.edit().remove(String.valueOf(plantIndex)).apply();
 		}
-
-		// Remove plant
-		mPlants.remove(plantIndex);
-
-		// Remove from shared prefs
-		SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(context);
-		prefs.edit().remove(String.valueOf(plantIndex)).apply();
 	}
 
 	public void upsert(int index, Plant plant)
@@ -152,33 +173,60 @@ public class PlantManager
 		}
 	}
 
-	public void save()
+	public synchronized void save()
+	{
+		synchronized (this.mPlants)
+		{
+			save(null);
+		}
+	}
+
+	public void save(final AsyncCallback callback)
 	{
 		synchronized (mPlants)
 		{
-			if (MainApplication.isEncrypted())
+			new AsyncTask<Void, Void, Void>()
 			{
-				if (TextUtils.isEmpty(MainApplication.getKey()))
+				@Override protected Void doInBackground(Void... voids)
 				{
-					return;
+					synchronized (mPlants)
+					{
+						if (MainApplication.isEncrypted())
+						{
+							if (TextUtils.isEmpty(MainApplication.getKey()))
+							{
+								return null;
+							}
+
+							FileManager.getInstance().writeFile(FILES_DIR + "/plants.json", EncryptionHelper.encrypt(MainApplication.getKey(), GsonHelper.parse(mPlants)));
+						}
+						else
+						{
+							FileManager.getInstance().writeFile(FILES_DIR + "/plants.json", GsonHelper.parse(mPlants));
+						}
+					}
+
+					return null;
 				}
 
-				FileManager.getInstance().writeFile(FILES_DIR + "/plants.json", EncryptionHelper.encrypt(MainApplication.getKey(), GsonHelper.parse(mPlants)));
-			}
-			else
-			{
-				FileManager.getInstance().writeFile(FILES_DIR + "/plants.json", GsonHelper.parse(mPlants));
-			}
+				@Override protected void onPostExecute(Void aVoid)
+				{
+					if (callback != null)
+					{
+						callback.callback();
+					}
 
-			if (new File(FILES_DIR + "/plants.json").length() == 0 || !new File(FILES_DIR + "/plants.json").exists())
-			{
-				Toast.makeText(context, "There was a fatal problem saving the plant data, please backup this data", Toast.LENGTH_LONG).show();
-				String sendData = GsonHelper.parse(mPlants);
-				Intent share = new Intent(Intent.ACTION_SEND);
-				share.setType("text/plain");
-				share.putExtra(Intent.EXTRA_TEXT, "== WARNING : PLEASE BACK UP THIS DATA == \r\n\r\n " + sendData);
-				context.startActivity(share);
-			}
+					if (new File(FILES_DIR + "/plants.json").length() == 0 || !new File(FILES_DIR + "/plants.json").exists())
+					{
+						Toast.makeText(context, "There was a fatal problem saving the plant data, please backup this data", Toast.LENGTH_LONG).show();
+						String sendData = GsonHelper.parse(mPlants);
+						Intent share = new Intent(Intent.ACTION_SEND);
+						share.setType("text/plain");
+						share.putExtra(Intent.EXTRA_TEXT, "== WARNING : PLEASE BACK UP THIS DATA == \r\n\r\n " + sendData);
+						context.startActivity(share);
+					}
+				}
+			}.executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
 		}
 	}
 }

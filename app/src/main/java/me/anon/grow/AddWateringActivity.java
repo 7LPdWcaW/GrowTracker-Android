@@ -2,9 +2,10 @@ package me.anon.grow;
 
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
+import android.support.v7.widget.Toolbar;
 
 import lombok.experimental.Accessors;
-import me.anon.grow.fragment.FeedingFragment;
+import me.anon.grow.fragment.WateringFragment;
 import me.anon.lib.Views;
 
 /**
@@ -16,7 +17,7 @@ import me.anon.lib.Views;
  */
 @Views.Injectable
 @Accessors(prefix = {"m", ""}, chain = true)
-public class EditFeedingActivity extends AppCompatActivity
+public class AddWateringActivity extends AppCompatActivity
 {
 	private static final String TAG_FRAGMENT = "current_fragment";
 
@@ -24,21 +25,22 @@ public class EditFeedingActivity extends AppCompatActivity
 	{
 		super.onCreate(savedInstanceState);
 
-		setTitle("Edit feeding");
-
 		setContentView(R.layout.fragment_holder);
+		setSupportActionBar((Toolbar)findViewById(R.id.toolbar));
 		Views.inject(this);
 
-		int plantIndex = -1;
-		int feedingIndex = -1;
-
+		int[] plantIndex = null;
 		if (getIntent().getExtras() != null)
 		{
-			plantIndex = getIntent().getExtras().getInt("plant_index", -1);
-			feedingIndex = getIntent().getExtras().getInt("action_index", -1);
+			plantIndex = getIntent().getExtras().getIntArray("plant_index");
+
+			if (plantIndex == null)
+			{
+				plantIndex = new int[]{-1};
+			}
 		}
 
-		if (plantIndex < 0)
+		if (plantIndex == null || plantIndex.length == 0)
 		{
 			finish();
 			return;
@@ -46,7 +48,7 @@ public class EditFeedingActivity extends AppCompatActivity
 
 		if (getFragmentManager().findFragmentByTag(TAG_FRAGMENT) == null)
 		{
-			getFragmentManager().beginTransaction().replace(R.id.fragment_holder, FeedingFragment.newInstance(plantIndex, feedingIndex), TAG_FRAGMENT).commit();
+			getFragmentManager().beginTransaction().replace(R.id.fragment_holder, WateringFragment.newInstance(plantIndex, -1), TAG_FRAGMENT).commit();
 		}
 	}
 }

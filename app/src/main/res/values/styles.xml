@@ -1,5 +1,5 @@
 <resources>
-	<style name="AppTheme" parent="Theme.AppCompat.Light.DarkActionBar">
+	<style name="AppTheme" parent="Theme.AppCompat.Light.NoActionBar">
 		<item name="android:colorPrimary">#4AA74E</item>
 		<item name="android:colorPrimaryDark">#387E3B</item>
 
@@ -11,6 +11,17 @@
 
 		<item name="actionModeStyle">@style/ActionMode</item>
 		<item name="android:actionModeStyle">@style/ActionMode</item>
+
+		<item name="windowActionModeOverlay">true</item>
+	</style>
+
+	<style name="Toolbar" parent="@style/ThemeOverlay.AppCompat.Dark.ActionBar">
+		<item name="drawerArrowStyle">@style/DrawerArrowStyle</item>
+	</style>
+
+	<style name="DrawerArrowStyle" parent="Widget.AppCompat.DrawerArrowToggle">
+		<item name="spinBars">true</item>
+		<item name="color">@android:color/white</item>
 	</style>
 
 	<style name="ActionMode" parent="@style/Widget.AppCompat.ActionMode">
