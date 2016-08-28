@@ -150,13 +150,9 @@ public class ExportHelper
 		plantDetails.append(NEW_LINE);
 		plantDetails.append(" - *Total grow time*: ").append(String.format("%1$,.2f days", days));
 		plantDetails.append(NEW_LINE);
-		plantDetails.append(" - *Total feeds*: ").append(String.valueOf(totalFeed));
-		plantDetails.append(NEW_LINE);
 		plantDetails.append(" - *Total waters*: ").append(String.valueOf(totalWater));
 		plantDetails.append(NEW_LINE);
 		plantDetails.append(" - *Total flushes*: ").append(String.valueOf(totalFlush));
-		plantDetails.append(NEW_LINE);
-		plantDetails.append(" - *Average time between feeds*: ").append(String.format("%1$,.2f days", (TimeHelper.toDays(feedDifference) / (double)totalFeed)));
 		plantDetails.append(NEW_LINE);
 		plantDetails.append(" - *Average time between waterings*: ").append(String.format("%1$,.2f days", (TimeHelper.toDays(waterDifference) / (double)totalWater)));
 		plantDetails.append(NEW_LINE);
