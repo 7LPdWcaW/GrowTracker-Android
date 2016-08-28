@@ -314,6 +314,8 @@ public class WateringFragment extends Fragment
 
 						if (tag == currentTag)
 						{
+							water.getAdditives().set(childIndex, additive);
+
 							((TextView)additiveContainer.getChildAt(childIndex)).setText(additive.getDescription() + "   -   " + additive.getAmount() + "ml/l");
 							additiveContainer.getChildAt(childIndex).setTag(additive);
 
