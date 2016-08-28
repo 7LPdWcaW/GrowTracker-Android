@@ -354,7 +354,7 @@ public class ExportHelper
 		try
 		{
 			// Create stats charts and save images
-			final File finalFile = new File(exportFolder.getAbsolutePath() + "/" + plant.getName().replaceAll("[^a-zA-Z]+", "-") + ".zip");
+			final File finalFile = new File(exportFolder.getAbsolutePath() + "/" + plant.getName().replaceAll("[^a-zA-Z0-9]+", "-") + ".zip");
 
 			if (finalFile.exists())
 			{
