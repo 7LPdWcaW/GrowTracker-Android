@@ -202,7 +202,7 @@ public class SettingsFragment extends PreferenceFragment implements Preference.O
 			}
 
 			new AlertDialog.Builder(getActivity())
-				.setTitle("Select garden")
+				.setTitle("Select measurement")
 				.setSingleChoiceItems(options, selectedIndex, new DialogInterface.OnClickListener()
 				{
 					@Override public void onClick(DialogInterface dialogInterface, int index)
