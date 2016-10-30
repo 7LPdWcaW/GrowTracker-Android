@@ -12,6 +12,7 @@ import android.widget.TextView;
 
 import lombok.Setter;
 import me.anon.grow.R;
+import me.anon.lib.Unit;
 import me.anon.lib.Views;
 import me.anon.model.Additive;
 
@@ -52,10 +53,13 @@ public class AddAdditiveDialogFragment extends DialogFragment
 		View view = getActivity().getLayoutInflater().inflate(R.layout.additives_dialog_view, null, false);
 		Views.inject(this, view);
 
+		final Unit selectedUnit = Unit.getSelectedUnit(getActivity());
+
 		if (additive != null)
 		{
 			description.setText(additive.getDescription());
-			amount.setText(String.valueOf(additive.getAmount()));
+			amount.setHint(selectedUnit.getLabel());
+			amount.setText(String.valueOf(Unit.MLPL.to(selectedUnit, additive.getAmount())));
 		}
 
 		final AlertDialog dialog = new AlertDialog.Builder(getActivity())
@@ -71,7 +75,7 @@ public class AddAdditiveDialogFragment extends DialogFragment
 					Double amt = TextUtils.isEmpty(amount.getText()) ? 0 : Double.valueOf(amount.getText().toString());
 
 					additive.setDescription(desc);
-					additive.setAmount(amt);
+					additive.setAmount(selectedUnit.to(Unit.MLPL, amt));
 
 					if (onAdditiveSelectedListener != null)
 					{
