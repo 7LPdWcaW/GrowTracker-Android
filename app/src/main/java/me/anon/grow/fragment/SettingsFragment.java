@@ -24,9 +24,11 @@ import me.anon.grow.MainApplication;
 import me.anon.grow.R;
 import me.anon.lib.helper.EncryptionHelper;
 import me.anon.lib.helper.GsonHelper;
+import me.anon.lib.manager.GardenManager;
 import me.anon.lib.manager.PlantManager;
 import me.anon.lib.task.DecryptTask;
 import me.anon.lib.task.EncryptTask;
+import me.anon.model.Garden;
 import me.anon.model.Plant;
 
 /**
@@ -44,6 +46,10 @@ public class SettingsFragment extends PreferenceFragment implements Preference.O
 
 		addPreferencesFromResource(R.xml.preferences);
 
+		int defaultGardenIndex = PreferenceManager.getDefaultSharedPreferences(getActivity()).getInt("default_garden", -1);
+		String defaultGarden = defaultGardenIndex > -1 ? GardenManager.getInstance().getGardens().get(defaultGardenIndex).getName() : "All";
+		findPreference("default_garden").setSummary(Html.fromHtml("Default garden to show on open, currently <b>" + defaultGarden + "</b>"));
+
 		try
 		{
 			findPreference("version").setTitle("Version " + getActivity().getPackageManager().getPackageInfo(getActivity().getPackageName(), 0).versionName);
@@ -56,6 +62,7 @@ public class SettingsFragment extends PreferenceFragment implements Preference.O
 		findPreference("encrypt").setOnPreferenceChangeListener(this);
 		findPreference("readme").setOnPreferenceClickListener(this);
 		findPreference("export").setOnPreferenceClickListener(this);
+		findPreference("default_garden").setOnPreferenceClickListener(this);
 	}
 
 	@Override public boolean onPreferenceChange(final Preference preference, Object newValue)
@@ -182,7 +189,37 @@ public class SettingsFragment extends PreferenceFragment implements Preference.O
 
 	@Override public boolean onPreferenceClick(Preference preference)
 	{
-		if ("readme".equals(preference.getKey()))
+		if ("default_garden".equals(preference.getKey()))
+		{
+			final String[] options = new String[GardenManager.getInstance().getGardens().size() + 1];
+			options[0] = "All";
+			int index = 0, selectedIndex = PreferenceManager.getDefaultSharedPreferences(getActivity()).getInt("default_garden", -1) + 1;
+			for (Garden garden : GardenManager.getInstance().getGardens())
+			{
+				options[++index] = garden.getName();
+			}
+
+			new AlertDialog.Builder(getActivity())
+				.setTitle("Select garden")
+				.setSingleChoiceItems(options, selectedIndex, new DialogInterface.OnClickListener()
+				{
+					@Override public void onClick(DialogInterface dialogInterface, int index)
+					{
+						dialogInterface.dismiss();
+
+						PreferenceManager.getDefaultSharedPreferences(getActivity()).edit()
+							.putInt("default_garden", index - 1)
+							.apply();
+
+						String defaultGarden = index - 1 > -1 ? GardenManager.getInstance().getGardens().get(index - 1).getName() : "All";
+						findPreference("default_garden").setSummary(Html.fromHtml("Default garden to show on open, currently <b>" + defaultGarden + "</b>"));
+					}
+				})
+				.show();
+
+			return true;
+		}
+		else if ("readme".equals(preference.getKey()))
 		{
 			String readme = "";
 
