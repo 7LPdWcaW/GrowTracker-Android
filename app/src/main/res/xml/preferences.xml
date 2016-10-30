@@ -12,6 +12,12 @@
 			android:summary="Default garden to show on open, currently All"
 		/>
 
+		<Preference
+			android:key="measurement_unit"
+			android:title="Measurement unit"
+			android:summary="Default measurement unit to use, currently ml/l"
+		/>
+
 		<CheckBoxPreference
 			android:key="hide_harvested"
 			android:title="Hide harvested"
