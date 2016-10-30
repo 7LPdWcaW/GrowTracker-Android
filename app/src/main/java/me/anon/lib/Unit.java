@@ -11,14 +11,35 @@ import lombok.Getter;
 @AllArgsConstructor
 public enum Unit
 {
-	MLPL("ml/l");
+	MLPL("ml/l")
+	{
+		/**
+		 * Unit to ml/l
+		 * @param from Unit to convert to
+		 * @param fromValue Unit value
+		 * @return converted value
+		 */
+		public double from(Unit from, double fromValue)
+		{
+			return from.to(this, fromValue);
+		}
+
+		/**
+		 * ml/l to given unit
+		 * @param to Unit to convert to
+		 * @param fromValue ml/l value
+		 * @return converted value
+		 */
+		public double to(Unit to, double fromValue)
+		{
+			return fromValue;
+		}
+	};
 
 	@Getter private String label;
 
-	public static double getMlPlForUnit(double inputValue, Unit fromUnit)
-	{
-		return inputValue;
-	}
+	public abstract double to(Unit to, double fromValue);
+	public abstract double from(Unit from, double fromValue);
 
 	public static Unit getSelectedUnit(Context context)
 	{

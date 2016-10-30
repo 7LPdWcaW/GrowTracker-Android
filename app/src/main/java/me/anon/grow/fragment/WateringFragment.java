@@ -21,6 +21,7 @@ import java.util.Calendar;
 import java.util.Date;
 
 import me.anon.grow.R;
+import me.anon.lib.Unit;
 import me.anon.lib.Views;
 import me.anon.lib.manager.PlantManager;
 import me.anon.model.Action;
@@ -54,6 +55,7 @@ public class WateringFragment extends Fragment
 	private int actionIndex = -1;
 	private ArrayList<Plant> plants = new ArrayList<>();
 	private Water water;
+	private Unit selectedUnit;
 
 	/**
 	 * @param plantIndex If -1, assume new plant
@@ -82,6 +84,8 @@ public class WateringFragment extends Fragment
 	@Override public void onActivityCreated(Bundle savedInstanceState)
 	{
 		super.onActivityCreated(savedInstanceState);
+
+		selectedUnit = Unit.getSelectedUnit(getActivity());
 
 		if (getArguments() != null)
 		{
@@ -255,7 +259,7 @@ public class WateringFragment extends Fragment
 			for (Additive additive : water.getAdditives())
 			{
 				View additiveStub = LayoutInflater.from(getActivity()).inflate(R.layout.additive_stub, additiveContainer, false);
-				((TextView)additiveStub).setText(additive.getDescription() + "   -   " + additive.getAmount() + "ml/l");
+				((TextView)additiveStub).setText(additive.getDescription() + "   -   " + Unit.MLPL.from(selectedUnit, additive.getAmount()) + selectedUnit.getLabel());
 
 				additiveStub.setTag(additive);
 				additiveStub.setOnClickListener(new View.OnClickListener()
