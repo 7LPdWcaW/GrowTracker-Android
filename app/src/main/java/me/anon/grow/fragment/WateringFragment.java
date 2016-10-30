@@ -243,7 +243,8 @@ public class WateringFragment extends Fragment
 
 			if (water.getAmount() != null)
 			{
-				amount.setText(String.valueOf(water.getAmount()));
+				amount.setHint("250" + selectedUnit.getUnit());
+				amount.setText(String.valueOf(selectedUnit.from(Unit.MLPL, water.getAmount())));
 			}
 
 			if (plants.get(0).getMedium() == PlantMedium.HYDRO)
@@ -374,7 +375,7 @@ public class WateringFragment extends Fragment
 		water.setPh(waterPh);
 		water.setPpm(ppm);
 		water.setRunoff(runoffPh);
-		water.setAmount(amount);
+		water.setAmount(amount == null ? null : (int)Unit.MLPL.from(selectedUnit, (double)amount));
 		water.setTemp(temp);
 		water.setNotes(TextUtils.isEmpty(notes.getText().toString()) ? null : notes.getText().toString());
 
