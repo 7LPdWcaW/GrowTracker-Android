@@ -22,6 +22,7 @@ import lombok.Getter;
 import lombok.Setter;
 import me.anon.grow.R;
 import me.anon.lib.DateRenderer;
+import me.anon.lib.Unit;
 import me.anon.lib.helper.ModelHelper;
 import me.anon.model.Action;
 import me.anon.model.Additive;
@@ -50,6 +51,7 @@ public class ActionAdapter extends RecyclerView.Adapter<ActionHolder> implements
 
 	@Setter private OnActionSelectListener onActionSelectListener;
 	@Getter @Setter private List<Action> actions = new ArrayList<>();
+	@Getter private Unit selectedUnit;
 
 	@Override public ActionHolder onCreateViewHolder(ViewGroup viewGroup, int i)
 	{
@@ -59,6 +61,11 @@ public class ActionAdapter extends RecyclerView.Adapter<ActionHolder> implements
 	@Override public void onBindViewHolder(final ActionHolder viewHolder, final int i)
 	{
 		final Action action = actions.get(i);
+
+		if (selectedUnit == null)
+		{
+			selectedUnit = Unit.getSelectedUnit(viewHolder.itemView.getContext());
+		}
 
 		if (action == null) return;
 
@@ -117,8 +124,9 @@ public class ActionAdapter extends RecyclerView.Adapter<ActionHolder> implements
 			if (((Water)action).getAmount() != null)
 			{
 				waterStr.append("<b>Amount: </b>");
-				waterStr.append(((Water)action).getAmount());
-				waterStr.append("ml, ");
+				waterStr.append(selectedUnit.from(Unit.MLPL, ((Water)action).getAmount()));
+				waterStr.append(selectedUnit.getUnit());
+				waterStr.append(", ");
 			}
 
 			if (((Water)action).getTemp() != null)
@@ -141,8 +149,8 @@ public class ActionAdapter extends RecyclerView.Adapter<ActionHolder> implements
 					waterStr.append("<br/>&nbsp;&nbsp;&nbsp;&nbsp;• ");
 					waterStr.append(additive.getDescription());
 					waterStr.append("  -  ");
-					waterStr.append(additive.getAmount());
-					waterStr.append("ml/l");
+					waterStr.append(selectedUnit.from(Unit.MLPL, additive.getAmount()));
+					waterStr.append(selectedUnit.getLabel());
 				}
 			}
 
