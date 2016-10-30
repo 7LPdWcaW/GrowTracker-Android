@@ -124,9 +124,8 @@ public class ActionAdapter extends RecyclerView.Adapter<ActionHolder> implements
 			if (((Water)action).getAmount() != null)
 			{
 				waterStr.append("<b>Amount: </b>");
-				waterStr.append(selectedUnit.from(Unit.MLPL, ((Water)action).getAmount()));
-				waterStr.append(selectedUnit.getUnit());
-				waterStr.append(", ");
+				waterStr.append(((Water)action).getAmount());
+				waterStr.append("ml, ");
 			}
 
 			if (((Water)action).getTemp() != null)
