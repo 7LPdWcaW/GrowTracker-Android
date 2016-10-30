@@ -6,6 +6,12 @@
 	<PreferenceCategory
 		android:title="General"
 	>
+		<Preference
+			android:key="default_garden"
+			android:title="Default garden"
+			android:summary="Default garden to show on open, currently All"
+		/>
+
 		<CheckBoxPreference
 			android:key="hide_harvested"
 			android:title="Hide harvested"
