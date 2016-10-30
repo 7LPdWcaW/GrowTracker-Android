@@ -11,7 +11,7 @@ import lombok.Getter;
 @AllArgsConstructor
 public enum Unit
 {
-	MLPL("ml", "ml/l")
+	MLPL("ml/l")
 	{
 		/**
 		 * Unit to ml/l
@@ -36,7 +36,6 @@ public enum Unit
 		}
 	};
 
-	@Getter private String unit;
 	@Getter private String label;
 
 	public abstract double to(Unit to, double fromValue);

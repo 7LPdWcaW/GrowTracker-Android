@@ -22,7 +22,6 @@ import me.anon.grow.MainApplication;
 import me.anon.grow.PlantDetailsActivity;
 import me.anon.grow.R;
 import me.anon.lib.DateRenderer;
-import me.anon.lib.Unit;
 import me.anon.lib.helper.TimeHelper;
 import me.anon.lib.manager.PlantManager;
 import me.anon.model.Action;
@@ -41,7 +40,6 @@ import me.anon.view.PlantHolder;
 public class PlantAdapter extends RecyclerView.Adapter<PlantHolder> implements ItemTouchHelperAdapter
 {
 	@Getter private List<Plant> plants = new ArrayList<>();
-	private Unit selectedUnit;
 	private Context context;
 
 	public PlantAdapter(Context context)
@@ -63,11 +61,6 @@ public class PlantAdapter extends RecyclerView.Adapter<PlantHolder> implements I
 
 	@Override public void onBindViewHolder(PlantHolder viewHolder, final int i)
 	{
-		if (selectedUnit == null)
-		{
-			selectedUnit = Unit.getSelectedUnit(viewHolder.itemView.getContext());
-		}
-
 		final Plant plant = plants.get(i);
 		viewHolder.getName().setText(plant.getName());
 
@@ -124,7 +117,7 @@ public class PlantAdapter extends RecyclerView.Adapter<PlantHolder> implements I
 
 					if (lastWater.getAmount() != null)
 					{
-						summary += "<b>" + selectedUnit.from(Unit.MLPL, lastWater.getAmount()) + selectedUnit.getUnit() + "</b>";
+						summary += "<b>" + lastWater.getAmount() + "ml</b>";
 					}
 				}
 			}
