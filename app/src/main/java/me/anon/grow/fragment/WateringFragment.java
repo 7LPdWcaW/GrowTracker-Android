@@ -55,7 +55,7 @@ public class WateringFragment extends Fragment
 	private int actionIndex = -1;
 	private ArrayList<Plant> plants = new ArrayList<>();
 	private Water water;
-	private Unit selectedUnit;
+	private Unit selectedMeasurementUnit;
 
 	/**
 	 * @param plantIndex If -1, assume new plant
@@ -85,7 +85,7 @@ public class WateringFragment extends Fragment
 	{
 		super.onActivityCreated(savedInstanceState);
 
-		selectedUnit = Unit.getSelectedUnit(getActivity());
+		selectedMeasurementUnit = Unit.getSelectedMeasurementUnit(getActivity());
 
 		if (getArguments() != null)
 		{
@@ -259,7 +259,7 @@ public class WateringFragment extends Fragment
 			for (Additive additive : water.getAdditives())
 			{
 				View additiveStub = LayoutInflater.from(getActivity()).inflate(R.layout.additive_stub, additiveContainer, false);
-				((TextView)additiveStub).setText(additive.getDescription() + "   -   " + Unit.MLPL.from(selectedUnit, additive.getAmount()) + selectedUnit.getLabel());
+				((TextView)additiveStub).setText(additive.getDescription() + "   -   " + Unit.ML.from(selectedMeasurementUnit, additive.getAmount()) + selectedMeasurementUnit.getLabel());
 
 				additiveStub.setTag(additive);
 				additiveStub.setOnClickListener(new View.OnClickListener()

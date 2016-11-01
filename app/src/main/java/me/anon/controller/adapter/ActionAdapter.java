@@ -64,7 +64,7 @@ public class ActionAdapter extends RecyclerView.Adapter<ActionHolder> implements
 
 		if (selectedUnit == null)
 		{
-			selectedUnit = Unit.getSelectedUnit(viewHolder.itemView.getContext());
+			selectedUnit = Unit.getSelectedMeasurementUnit(viewHolder.itemView.getContext());
 		}
 
 		if (action == null) return;
@@ -148,7 +148,7 @@ public class ActionAdapter extends RecyclerView.Adapter<ActionHolder> implements
 					waterStr.append("<br/>&nbsp;&nbsp;&nbsp;&nbsp;• ");
 					waterStr.append(additive.getDescription());
 					waterStr.append("  -  ");
-					waterStr.append(selectedUnit.from(Unit.MLPL, additive.getAmount()));
+					waterStr.append(selectedUnit.from(Unit.ML, additive.getAmount()));
 					waterStr.append(selectedUnit.getLabel());
 				}
 			}

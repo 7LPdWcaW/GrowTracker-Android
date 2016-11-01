@@ -13,9 +13,15 @@
 		/>
 
 		<Preference
+			android:key="delivery_unit"
+			android:title="Delivery unit"
+			android:summary="Default delivery measurement unit to use, currently l"
+		/>
+
+		<Preference
 			android:key="measurement_unit"
 			android:title="Measurement unit"
-			android:summary="Default measurement unit to use, currently ml/l"
+			android:summary="Default additive measurement unit to use, currently ml"
 		/>
 
 		<CheckBoxPreference
