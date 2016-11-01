@@ -53,13 +53,13 @@ public class AddAdditiveDialogFragment extends DialogFragment
 		View view = getActivity().getLayoutInflater().inflate(R.layout.additives_dialog_view, null, false);
 		Views.inject(this, view);
 
-		final Unit selectedUnit = Unit.getSelectedUnit(getActivity());
+		final Unit selectedUnit = Unit.getSelectedMeasurementUnit(getActivity());
 
 		if (additive != null)
 		{
 			description.setText(additive.getDescription());
 			amount.setHint(selectedUnit.getLabel());
-			amount.setText(String.valueOf(Unit.MLPL.to(selectedUnit, additive.getAmount())));
+			amount.setText(String.valueOf(Unit.ML.to(selectedUnit, additive.getAmount())));
 		}
 
 		final AlertDialog dialog = new AlertDialog.Builder(getActivity())
@@ -75,7 +75,7 @@ public class AddAdditiveDialogFragment extends DialogFragment
 					Double amt = TextUtils.isEmpty(amount.getText()) ? 0 : Double.valueOf(amount.getText().toString());
 
 					additive.setDescription(desc);
-					additive.setAmount(selectedUnit.to(Unit.MLPL, amt));
+					additive.setAmount(selectedUnit.to(Unit.ML, amt));
 
 					if (onAdditiveSelectedListener != null)
 					{
