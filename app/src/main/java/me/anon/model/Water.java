@@ -21,7 +21,7 @@ public class Water extends Action
 	private Long ppm;
 	private Double ph;
 	private Double runoff;
-	private Integer amount;
+	private Double amount;
 	private Integer temp;
 	private List<Additive> additives = new ArrayList<>();
 
