@@ -243,7 +243,7 @@ public class SettingsFragment extends PreferenceFragment implements Preference.O
 							.putInt("measurement_unit", index)
 							.apply();
 
-						findPreference("measurement_unit").setSummary(Html.fromHtml("Default measurement unit to use, currently <b>" + Unit.getSelectedMeasurementUnit(getActivity()).getLabel() + "</b>"));
+					findPreference("measurement_unit").setSummary(Html.fromHtml("Default additive measurement unit to use, currently <b>" + Unit.getSelectedMeasurementUnit(getActivity()).getLabel() + "</b>"));
 					}
 				})
 				.show();
