@@ -55,11 +55,15 @@ public class AddAdditiveDialogFragment extends DialogFragment
 
 		final Unit selectedUnit = Unit.getSelectedMeasurementUnit(getActivity());
 
+		amount.setHint(selectedUnit.getLabel());
+
 		if (additive != null)
 		{
+			double converted = Unit.ML.to(selectedUnit, additive.getAmount());
+			String amountStr = converted == Math.floor(converted) ? String.valueOf((int)converted) : String.valueOf(converted);
+
 			description.setText(additive.getDescription());
-			amount.setHint(selectedUnit.getLabel());
-			amount.setText(String.valueOf(Unit.ML.to(selectedUnit, additive.getAmount())));
+			amount.setText(amountStr);
 		}
 
 		final AlertDialog dialog = new AlertDialog.Builder(getActivity())

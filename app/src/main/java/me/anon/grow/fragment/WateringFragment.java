@@ -46,6 +46,7 @@ public class WateringFragment extends Fragment
 	@Views.InjectView(R.id.water_ppm) private TextView waterPpm;
 	@Views.InjectView(R.id.runoff_ph) private TextView runoffPh;
 	@Views.InjectView(R.id.amount) private TextView amount;
+	@Views.InjectView(R.id.amount_label) private TextView amountLabel;
 	@Views.InjectView(R.id.temp_container) private View tempContainer;
 	@Views.InjectView(R.id.temp) private TextView temp;
 	@Views.InjectView(R.id.date_container) private View dateContainer;
@@ -139,6 +140,7 @@ public class WateringFragment extends Fragment
 
 	private void setHints()
 	{
+		amountLabel.setText("Amount (" + selectedDeliveryUnit.getLabel() + ")");
 		amount.setHint("250" + selectedDeliveryUnit.getLabel());
 
 		if (water != null && plants.size() == 1)
@@ -263,8 +265,11 @@ public class WateringFragment extends Fragment
 
 			for (Additive additive : water.getAdditives())
 			{
+				double converted = Unit.ML.to(selectedMeasurementUnit, additive.getAmount());
+				String amountStr = converted == Math.floor(converted) ? String.valueOf((int)converted) : String.valueOf(converted);
+
 				View additiveStub = LayoutInflater.from(getActivity()).inflate(R.layout.additive_stub, additiveContainer, false);
-				((TextView)additiveStub).setText(additive.getDescription() + "   -   " + ML.to(selectedMeasurementUnit, additive.getAmount()) + selectedMeasurementUnit.getLabel());
+				((TextView)additiveStub).setText(additive.getDescription() + "   -   " + amountStr + selectedMeasurementUnit.getLabel());
 
 				additiveStub.setTag(additive);
 				additiveStub.setOnClickListener(new View.OnClickListener()
@@ -300,8 +305,11 @@ public class WateringFragment extends Fragment
 					return;
 				}
 
+				double converted = Unit.ML.to(selectedMeasurementUnit, additive.getAmount());
+				String amountStr = converted == Math.floor(converted) ? String.valueOf((int)converted) : String.valueOf(converted);
+
 				View additiveStub = LayoutInflater.from(getActivity()).inflate(R.layout.additive_stub, additiveContainer, false);
-				((TextView)additiveStub).setText(additive.getDescription() + "   -   " + ML.to(selectedMeasurementUnit, additive.getAmount()) + selectedMeasurementUnit.getLabel() + "/" + selectedDeliveryUnit.getLabel());
+				((TextView)additiveStub).setText(additive.getDescription() + "   -   " + amountStr + selectedMeasurementUnit.getLabel() + "/" + selectedDeliveryUnit.getLabel());
 
 				if (currentTag == null)
 				{
@@ -328,9 +336,12 @@ public class WateringFragment extends Fragment
 
 						if (tag == currentTag)
 						{
+							converted = Unit.ML.to(selectedMeasurementUnit, additive.getAmount());
+							amountStr = converted == Math.floor(converted) ? String.valueOf((int)converted) : String.valueOf(converted);
+
 							water.getAdditives().set(childIndex, additive);
 
-							((TextView)additiveContainer.getChildAt(childIndex)).setText(additive.getDescription() + "   -   " + ML.to(selectedMeasurementUnit, additive.getAmount()) + selectedMeasurementUnit.getLabel() + "/" + selectedDeliveryUnit.getLabel());
+							((TextView)additiveContainer.getChildAt(childIndex)).setText(additive.getDescription() + "   -   " + amountStr + selectedMeasurementUnit.getLabel() + "/" + selectedDeliveryUnit.getLabel());
 							additiveContainer.getChildAt(childIndex).setTag(additive);
 
 							break;
