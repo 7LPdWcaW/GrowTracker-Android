@@ -21,6 +21,7 @@ import java.util.Calendar;
 import java.util.Date;
 
 import me.anon.grow.R;
+import me.anon.lib.Unit;
 import me.anon.lib.Views;
 import me.anon.lib.manager.PlantManager;
 import me.anon.model.Action;
@@ -28,6 +29,8 @@ import me.anon.model.Additive;
 import me.anon.model.Plant;
 import me.anon.model.PlantMedium;
 import me.anon.model.Water;
+
+import static me.anon.lib.Unit.ML;
 
 /**
  * // TODO: Add class description
@@ -43,6 +46,7 @@ public class WateringFragment extends Fragment
 	@Views.InjectView(R.id.water_ppm) private TextView waterPpm;
 	@Views.InjectView(R.id.runoff_ph) private TextView runoffPh;
 	@Views.InjectView(R.id.amount) private TextView amount;
+	@Views.InjectView(R.id.amount_label) private TextView amountLabel;
 	@Views.InjectView(R.id.temp_container) private View tempContainer;
 	@Views.InjectView(R.id.temp) private TextView temp;
 	@Views.InjectView(R.id.date_container) private View dateContainer;
@@ -54,6 +58,7 @@ public class WateringFragment extends Fragment
 	private int actionIndex = -1;
 	private ArrayList<Plant> plants = new ArrayList<>();
 	private Water water;
+	private Unit selectedMeasurementUnit, selectedDeliveryUnit;
 
 	/**
 	 * @param plantIndex If -1, assume new plant
@@ -82,6 +87,9 @@ public class WateringFragment extends Fragment
 	@Override public void onActivityCreated(Bundle savedInstanceState)
 	{
 		super.onActivityCreated(savedInstanceState);
+
+		selectedMeasurementUnit = Unit.getSelectedMeasurementUnit(getActivity());
+		selectedDeliveryUnit = Unit.getSelectedDeliveryUnit(getActivity());
 
 		if (getArguments() != null)
 		{
@@ -132,6 +140,9 @@ public class WateringFragment extends Fragment
 
 	private void setHints()
 	{
+		amountLabel.setText("Amount (" + selectedDeliveryUnit.getLabel() + ")");
+		amount.setHint("250" + selectedDeliveryUnit.getLabel());
+
 		if (water != null && plants.size() == 1)
 		{
 			Water hintFeed = null;
@@ -164,7 +175,7 @@ public class WateringFragment extends Fragment
 
 				if (hintFeed.getAmount() != null)
 				{
-					amount.setHint(String.valueOf(hintFeed.getAmount()));
+					amount.setHint(String.valueOf(ML.to(selectedDeliveryUnit, hintFeed.getAmount()) + selectedDeliveryUnit.getLabel()));
 				}
 
 				if (plants.get(0).getMedium() == PlantMedium.HYDRO)
@@ -239,7 +250,7 @@ public class WateringFragment extends Fragment
 
 			if (water.getAmount() != null)
 			{
-				amount.setText(String.valueOf(water.getAmount()));
+				amount.setText(String.valueOf(ML.to(selectedDeliveryUnit, water.getAmount())));
 			}
 
 			if (plants.get(0).getMedium() == PlantMedium.HYDRO)
@@ -254,8 +265,11 @@ public class WateringFragment extends Fragment
 
 			for (Additive additive : water.getAdditives())
 			{
+				double converted = Unit.ML.to(selectedMeasurementUnit, additive.getAmount());
+				String amountStr = converted == Math.floor(converted) ? String.valueOf((int)converted) : String.valueOf(converted);
+
 				View additiveStub = LayoutInflater.from(getActivity()).inflate(R.layout.additive_stub, additiveContainer, false);
-				((TextView)additiveStub).setText(additive.getDescription() + "   -   " + additive.getAmount() + "ml/l");
+				((TextView)additiveStub).setText(additive.getDescription() + "   -   " + amountStr + selectedMeasurementUnit.getLabel());
 
 				additiveStub.setTag(additive);
 				additiveStub.setOnClickListener(new View.OnClickListener()
@@ -291,8 +305,11 @@ public class WateringFragment extends Fragment
 					return;
 				}
 
+				double converted = Unit.ML.to(selectedMeasurementUnit, additive.getAmount());
+				String amountStr = converted == Math.floor(converted) ? String.valueOf((int)converted) : String.valueOf(converted);
+
 				View additiveStub = LayoutInflater.from(getActivity()).inflate(R.layout.additive_stub, additiveContainer, false);
-				((TextView)additiveStub).setText(additive.getDescription() + "   -   " + additive.getAmount() + "ml/l");
+				((TextView)additiveStub).setText(additive.getDescription() + "   -   " + amountStr + selectedMeasurementUnit.getLabel() + "/" + selectedDeliveryUnit.getLabel());
 
 				if (currentTag == null)
 				{
@@ -319,9 +336,12 @@ public class WateringFragment extends Fragment
 
 						if (tag == currentTag)
 						{
+							converted = Unit.ML.to(selectedMeasurementUnit, additive.getAmount());
+							amountStr = converted == Math.floor(converted) ? String.valueOf((int)converted) : String.valueOf(converted);
+
 							water.getAdditives().set(childIndex, additive);
 
-							((TextView)additiveContainer.getChildAt(childIndex)).setText(additive.getDescription() + "   -   " + additive.getAmount() + "ml/l");
+							((TextView)additiveContainer.getChildAt(childIndex)).setText(additive.getDescription() + "   -   " + amountStr + selectedMeasurementUnit.getLabel() + "/" + selectedDeliveryUnit.getLabel());
 							additiveContainer.getChildAt(childIndex).setTag(additive);
 
 							break;
@@ -364,13 +384,13 @@ public class WateringFragment extends Fragment
 		Double waterPh = TextUtils.isEmpty(this.waterPh.getText()) ? null : Double.valueOf(this.waterPh.getText().toString());
 		Long ppm = TextUtils.isEmpty(this.waterPpm.getText()) ? null : Long.valueOf(this.waterPpm.getText().toString());
 		Double runoffPh = TextUtils.isEmpty(this.runoffPh.getText()) ? null : Double.valueOf(this.runoffPh.getText().toString());
-		Integer amount = TextUtils.isEmpty(this.amount.getText()) ? null : Integer.valueOf(this.amount.getText().toString());
+		Double amount = TextUtils.isEmpty(this.amount.getText()) ? null : Double.valueOf(this.amount.getText().toString());
 		Integer temp = TextUtils.isEmpty(this.temp.getText()) ? null : Integer.valueOf(this.temp.getText().toString());
 
 		water.setPh(waterPh);
 		water.setPpm(ppm);
 		water.setRunoff(runoffPh);
-		water.setAmount(amount);
+		water.setAmount(amount == null ? null : selectedDeliveryUnit.to(ML, amount));
 		water.setTemp(temp);
 		water.setNotes(TextUtils.isEmpty(notes.getText().toString()) ? null : notes.getText().toString());
 

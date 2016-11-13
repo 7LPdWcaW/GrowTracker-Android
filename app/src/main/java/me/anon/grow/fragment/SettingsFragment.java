@@ -22,6 +22,7 @@ import java.io.InputStream;
 
 import me.anon.grow.MainApplication;
 import me.anon.grow.R;
+import me.anon.lib.Unit;
 import me.anon.lib.helper.EncryptionHelper;
 import me.anon.lib.helper.GsonHelper;
 import me.anon.lib.manager.GardenManager;
@@ -49,6 +50,8 @@ public class SettingsFragment extends PreferenceFragment implements Preference.O
 		int defaultGardenIndex = PreferenceManager.getDefaultSharedPreferences(getActivity()).getInt("default_garden", -1);
 		String defaultGarden = defaultGardenIndex > -1 ? GardenManager.getInstance().getGardens().get(defaultGardenIndex).getName() : "All";
 		findPreference("default_garden").setSummary(Html.fromHtml("Default garden to show on open, currently <b>" + defaultGarden + "</b>"));
+		findPreference("delivery_unit").setSummary(Html.fromHtml("Default delivery measurement unit to use, currently <b>" + Unit.getSelectedDeliveryUnit(getActivity()).getLabel() + "</b>"));
+		findPreference("measurement_unit").setSummary(Html.fromHtml("Default additive measurement unit to use, currently <b>" + Unit.getSelectedMeasurementUnit(getActivity()).getLabel() + "</b>"));
 
 		try
 		{
@@ -63,6 +66,8 @@ public class SettingsFragment extends PreferenceFragment implements Preference.O
 		findPreference("readme").setOnPreferenceClickListener(this);
 		findPreference("export").setOnPreferenceClickListener(this);
 		findPreference("default_garden").setOnPreferenceClickListener(this);
+		findPreference("delivery_unit").setOnPreferenceClickListener(this);
+		findPreference("measurement_unit").setOnPreferenceClickListener(this);
 	}
 
 	@Override public boolean onPreferenceChange(final Preference preference, Object newValue)
@@ -189,7 +194,63 @@ public class SettingsFragment extends PreferenceFragment implements Preference.O
 
 	@Override public boolean onPreferenceClick(Preference preference)
 	{
-		if ("default_garden".equals(preference.getKey()))
+		if ("delivery_unit".equals(preference.getKey()))
+		{
+			final String[] options = new String[Unit.values().length];
+			int index = 0, selectedIndex = PreferenceManager.getDefaultSharedPreferences(getActivity()).getInt("delivery_unit", 0);
+			for (Unit unit : Unit.values())
+			{
+				options[index++] = unit.getLabel();
+			}
+
+			new AlertDialog.Builder(getActivity())
+				.setTitle("Select measurement")
+				.setSingleChoiceItems(options, selectedIndex, new DialogInterface.OnClickListener()
+				{
+					@Override public void onClick(DialogInterface dialogInterface, int index)
+					{
+						dialogInterface.dismiss();
+
+						PreferenceManager.getDefaultSharedPreferences(getActivity()).edit()
+							.putInt("delivery_unit", index)
+							.apply();
+
+						findPreference("delivery_unit").setSummary(Html.fromHtml("Default delivery measurement unit to use, currently <b>" + Unit.getSelectedDeliveryUnit(getActivity()).getLabel() + "</b>"));
+					}
+				})
+				.show();
+
+			return true;
+		}
+		else if ("measurement_unit".equals(preference.getKey()))
+		{
+			final String[] options = new String[Unit.values().length];
+			int index = 0, selectedIndex = PreferenceManager.getDefaultSharedPreferences(getActivity()).getInt("measurement_unit", 0);
+			for (Unit unit : Unit.values())
+			{
+				options[index++] = unit.getLabel();
+			}
+
+			new AlertDialog.Builder(getActivity())
+				.setTitle("Select measurement")
+				.setSingleChoiceItems(options, selectedIndex, new DialogInterface.OnClickListener()
+				{
+					@Override public void onClick(DialogInterface dialogInterface, int index)
+					{
+						dialogInterface.dismiss();
+
+						PreferenceManager.getDefaultSharedPreferences(getActivity()).edit()
+							.putInt("measurement_unit", index)
+							.apply();
+
+					findPreference("measurement_unit").setSummary(Html.fromHtml("Default additive measurement unit to use, currently <b>" + Unit.getSelectedMeasurementUnit(getActivity()).getLabel() + "</b>"));
+					}
+				})
+				.show();
+
+			return true;
+		}
+		else if ("default_garden".equals(preference.getKey()))
 		{
 			final String[] options = new String[GardenManager.getInstance().getGardens().size() + 1];
 			options[0] = "All";

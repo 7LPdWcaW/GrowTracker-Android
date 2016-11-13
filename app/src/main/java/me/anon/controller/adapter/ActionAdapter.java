@@ -22,6 +22,7 @@ import lombok.Getter;
 import lombok.Setter;
 import me.anon.grow.R;
 import me.anon.lib.DateRenderer;
+import me.anon.lib.Unit;
 import me.anon.lib.helper.ModelHelper;
 import me.anon.model.Action;
 import me.anon.model.Additive;
@@ -50,6 +51,7 @@ public class ActionAdapter extends RecyclerView.Adapter<ActionHolder> implements
 
 	@Setter private OnActionSelectListener onActionSelectListener;
 	@Getter @Setter private List<Action> actions = new ArrayList<>();
+	@Getter private Unit selectedUnit;
 
 	@Override public ActionHolder onCreateViewHolder(ViewGroup viewGroup, int i)
 	{
@@ -59,6 +61,11 @@ public class ActionAdapter extends RecyclerView.Adapter<ActionHolder> implements
 	@Override public void onBindViewHolder(final ActionHolder viewHolder, final int i)
 	{
 		final Action action = actions.get(i);
+
+		if (selectedUnit == null)
+		{
+			selectedUnit = Unit.getSelectedMeasurementUnit(viewHolder.itemView.getContext());
+		}
 
 		if (action == null) return;
 
@@ -138,11 +145,14 @@ public class ActionAdapter extends RecyclerView.Adapter<ActionHolder> implements
 
 				for (Additive additive : ((Water)action).getAdditives())
 				{
+					double converted = Unit.ML.to(selectedUnit, additive.getAmount());
+					String amountStr = converted == Math.floor(converted) ? String.valueOf((int)converted) : String.valueOf(converted);
+
 					waterStr.append("<br/>&nbsp;&nbsp;&nbsp;&nbsp;• ");
 					waterStr.append(additive.getDescription());
 					waterStr.append("  -  ");
-					waterStr.append(additive.getAmount());
-					waterStr.append("ml/l");
+					waterStr.append(amountStr);
+					waterStr.append(selectedUnit.getLabel());
 				}
 			}
 
