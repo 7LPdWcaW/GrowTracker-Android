@@ -215,7 +215,7 @@ public class SettingsFragment extends PreferenceFragment implements Preference.O
 							.putInt("delivery_unit", index)
 							.apply();
 
-					findPreference("delivery_unit").setSummary(Html.fromHtml("Default delivery measurement unit to use, currently <b>" + Unit.getSelectedDeliveryUnit(getActivity()).getLabel() + "</b>"));
+						findPreference("delivery_unit").setSummary(Html.fromHtml("Default delivery measurement unit to use, currently <b>" + Unit.getSelectedDeliveryUnit(getActivity()).getLabel() + "</b>"));
 					}
 				})
 				.show();
