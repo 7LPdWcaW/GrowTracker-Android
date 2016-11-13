@@ -148,7 +148,7 @@ public class ActionAdapter extends RecyclerView.Adapter<ActionHolder> implements
 					waterStr.append("<br/>&nbsp;&nbsp;&nbsp;&nbsp;• ");
 					waterStr.append(additive.getDescription());
 					waterStr.append("  -  ");
-					waterStr.append(selectedUnit.from(Unit.ML, additive.getAmount()));
+					waterStr.append(Unit.ML.to(selectedUnit, additive.getAmount()));
 					waterStr.append(selectedUnit.getLabel());
 				}
 			}

@@ -1,6 +1,7 @@
 package me.anon.lib;
 
 import android.content.Context;
+import android.preference.PreferenceManager;
 
 import java.math.BigDecimal;
 import java.math.RoundingMode;
@@ -183,11 +184,13 @@ public enum Unit
 
 	public static Unit getSelectedDeliveryUnit(Context context)
 	{
-		return ML;
+		int index;
+		return values()[(index = PreferenceManager.getDefaultSharedPreferences(context).getInt("delivery_unit", -1)) == -1 ? 0 : index];
 	}
 
 	public static Unit getSelectedMeasurementUnit(Context context)
 	{
-		return ML;
+		int index;
+		return values()[(index = PreferenceManager.getDefaultSharedPreferences(context).getInt("measurement_unit", -1)) == -1 ? 0 : index];
 	}
 }
