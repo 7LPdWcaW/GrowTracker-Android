@@ -147,6 +147,7 @@
 							<TextView
 								android:layout_width="match_parent"
 								android:layout_height="wrap_content"
+								android:id="@+id/amount_label"
 								android:text="Amount (ml)"
 								style="@style/SubsectionTitle"
 							/>
@@ -156,7 +157,7 @@
 								android:layout_height="wrap_content"
 								android:id="@+id/amount"
 								android:hint="250ml"
-								android:inputType="numberSigned"
+								android:inputType="numberDecimal"
 								android:nextFocusDown="@+id/date"
 								style="@style/SubsectionSubTitle"
 							/>

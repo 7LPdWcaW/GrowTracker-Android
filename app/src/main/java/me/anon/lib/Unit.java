@@ -171,7 +171,7 @@ public enum Unit
 
 	private static Double toTwoDecimalPlaces(double input)
 	{
-		return new BigDecimal(input).setScale(2, RoundingMode.CEILING).doubleValue();
+		return new BigDecimal(input).setScale(2, RoundingMode.HALF_EVEN).doubleValue();
 	}
 
 	/**

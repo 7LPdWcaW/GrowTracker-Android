@@ -145,10 +145,13 @@ public class ActionAdapter extends RecyclerView.Adapter<ActionHolder> implements
 
 				for (Additive additive : ((Water)action).getAdditives())
 				{
+					double converted = Unit.ML.to(selectedUnit, additive.getAmount());
+					String amountStr = converted == Math.floor(converted) ? String.valueOf((int)converted) : String.valueOf(converted);
+
 					waterStr.append("<br/>&nbsp;&nbsp;&nbsp;&nbsp;• ");
 					waterStr.append(additive.getDescription());
 					waterStr.append("  -  ");
-					waterStr.append(Unit.ML.to(selectedUnit, additive.getAmount()));
+					waterStr.append(amountStr);
 					waterStr.append(selectedUnit.getLabel());
 				}
 			}
