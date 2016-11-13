@@ -185,12 +185,12 @@ public enum Unit
 	public static Unit getSelectedDeliveryUnit(Context context)
 	{
 		int index;
-		return values()[(index = PreferenceManager.getDefaultSharedPreferences(context).getInt("delivery_unit", -1)) == -1 ? 0 : index];
+		return values()[(index = PreferenceManager.getDefaultSharedPreferences(context).getInt("delivery_unit", -1)) == -1 ? L.ordinal() : index];
 	}
 
 	public static Unit getSelectedMeasurementUnit(Context context)
 	{
 		int index;
-		return values()[(index = PreferenceManager.getDefaultSharedPreferences(context).getInt("measurement_unit", -1)) == -1 ? 0 : index];
+		return values()[(index = PreferenceManager.getDefaultSharedPreferences(context).getInt("measurement_unit", -1)) == -1 ? ML.ordinal() : index];
 	}
 }
