@@ -69,24 +69,7 @@ public class AddAdditiveDialogFragment extends DialogFragment
 		final AlertDialog dialog = new AlertDialog.Builder(getActivity())
 			.setTitle("Additive")
 			.setView(view)
-			.setPositiveButton("Ok", new DialogInterface.OnClickListener()
-			{
-				public void onClick(DialogInterface dialog, int whichButton)
-				{
-					Additive additive = new Additive();
-
-					String desc = TextUtils.isEmpty(description.getText()) ? null : description.getText().toString();
-					Double amt = TextUtils.isEmpty(amount.getText()) ? 0 : Double.valueOf(amount.getText().toString());
-
-					additive.setDescription(desc);
-					additive.setAmount(selectedUnit.to(Unit.ML, amt));
-
-					if (onAdditiveSelectedListener != null)
-					{
-						onAdditiveSelectedListener.onAdditiveSelected(additive);
-					}
-				}
-			})
+			.setPositiveButton("Ok", null)
 			.setNeutralButton("Delete", new DialogInterface.OnClickListener()
 			{
 				@Override public void onClick(DialogInterface dialog, int which)
@@ -110,6 +93,34 @@ public class AddAdditiveDialogFragment extends DialogFragment
 			@Override public void onShow(DialogInterface dialogInterface)
 			{
 				dialog.getButton(Dialog.BUTTON_NEUTRAL).setVisibility(additive == null ? View.GONE : View.VISIBLE);
+				dialog.getButton(Dialog.BUTTON_POSITIVE).setOnClickListener(new View.OnClickListener()
+				{
+					@Override public void onClick(View v)
+					{
+						description.setError(null);
+
+						Additive additive = new Additive();
+
+						String desc = TextUtils.isEmpty(description.getText()) ? null : description.getText().toString();
+						Double amt = TextUtils.isEmpty(amount.getText()) ? 0 : Double.valueOf(amount.getText().toString());
+
+						if (desc == null)
+						{
+							description.setError("Field is required");
+							return;
+						}
+
+						additive.setDescription(desc);
+						additive.setAmount(selectedUnit.to(Unit.ML, amt));
+
+						if (onAdditiveSelectedListener != null)
+						{
+							onAdditiveSelectedListener.onAdditiveSelected(additive);
+						}
+
+						dialog.dismiss();
+					}
+				});
 			}
 		});
 
