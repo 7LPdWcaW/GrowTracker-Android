@@ -48,7 +48,6 @@
 					android:layout_centerVertical="true"
 					android:textColor="#666666"
 					android:layout_marginLeft="8dp"
-					android:layout_marginRight="8dp"
 					android:fontFamily="sans-serif-light"
 					android:layout_alignParentTop="true"
 					android:layout_marginTop="12dp"
