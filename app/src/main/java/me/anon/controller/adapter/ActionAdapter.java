@@ -51,7 +51,7 @@ public class ActionAdapter extends RecyclerView.Adapter<ActionHolder> implements
 
 	@Setter private OnActionSelectListener onActionSelectListener;
 	@Getter @Setter private List<Action> actions = new ArrayList<>();
-	@Getter private Unit selectedUnit;
+	@Getter private Unit measureUnit, deliveryUnit;
 
 	@Override public ActionHolder onCreateViewHolder(ViewGroup viewGroup, int i)
 	{
@@ -62,9 +62,14 @@ public class ActionAdapter extends RecyclerView.Adapter<ActionHolder> implements
 	{
 		final Action action = actions.get(i);
 
-		if (selectedUnit == null)
+		if (measureUnit == null)
 		{
-			selectedUnit = Unit.getSelectedMeasurementUnit(viewHolder.itemView.getContext());
+			measureUnit = Unit.getSelectedMeasurementUnit(viewHolder.itemView.getContext());
+		}
+
+		if (deliveryUnit == null)
+		{
+			deliveryUnit = Unit.getSelectedDeliveryUnit(viewHolder.itemView.getContext());
 		}
 
 		if (action == null) return;
@@ -145,14 +150,16 @@ public class ActionAdapter extends RecyclerView.Adapter<ActionHolder> implements
 
 				for (Additive additive : ((Water)action).getAdditives())
 				{
-					double converted = Unit.ML.to(selectedUnit, additive.getAmount());
+					double converted = Unit.ML.to(measureUnit, additive.getAmount());
 					String amountStr = converted == Math.floor(converted) ? String.valueOf((int)converted) : String.valueOf(converted);
 
 					waterStr.append("<br/>&nbsp;&nbsp;&nbsp;&nbsp;• ");
 					waterStr.append(additive.getDescription());
 					waterStr.append("  -  ");
 					waterStr.append(amountStr);
-					waterStr.append(selectedUnit.getLabel());
+					waterStr.append(measureUnit.getLabel());
+					waterStr.append("/");
+					waterStr.append(deliveryUnit.getLabel());
 				}
 			}
 
