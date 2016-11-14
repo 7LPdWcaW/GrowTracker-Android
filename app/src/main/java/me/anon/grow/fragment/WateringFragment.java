@@ -269,7 +269,7 @@ public class WateringFragment extends Fragment
 				String amountStr = converted == Math.floor(converted) ? String.valueOf((int)converted) : String.valueOf(converted);
 
 				View additiveStub = LayoutInflater.from(getActivity()).inflate(R.layout.additive_stub, additiveContainer, false);
-				((TextView)additiveStub).setText(additive.getDescription() + "   -   " + amountStr + selectedMeasurementUnit.getLabel());
+				((TextView)additiveStub).setText(additive.getDescription() + "   -   " + amountStr + selectedMeasurementUnit.getLabel() + "/" + selectedDeliveryUnit.getLabel());
 
 				additiveStub.setTag(additive);
 				additiveStub.setOnClickListener(new View.OnClickListener()
