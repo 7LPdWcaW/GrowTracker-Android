@@ -31,7 +31,8 @@
 
 			<item
 				android:enabled="false"
-				android:title="Version 2.0"
+				android:id="@+id/version"
+				android:title="Version 2.1"
 				android:orderInCategory="3"
 			/>
 		</menu>

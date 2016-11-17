@@ -3,6 +3,7 @@ package me.anon.grow;
 import android.Manifest;
 import android.app.Activity;
 import android.content.Intent;
+import android.content.pm.PackageManager;
 import android.net.Uri;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
@@ -120,6 +121,15 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 		if (item != null)
 		{
 			item.setChecked(true);
+		}
+
+		try
+		{
+			navigation.getMenu().findItem(R.id.version).setTitle("Version " + getPackageManager().getPackageInfo(getPackageName(), 0).versionName);
+		}
+		catch (PackageManager.NameNotFoundException e)
+		{
+			e.printStackTrace();
 		}
 	}
 
