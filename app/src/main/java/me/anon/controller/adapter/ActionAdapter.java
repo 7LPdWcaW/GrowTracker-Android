@@ -32,6 +32,8 @@ import me.anon.model.StageChange;
 import me.anon.model.Water;
 import me.anon.view.ActionHolder;
 
+import static me.anon.lib.Unit.ML;
+
 /**
  * // TODO: Add class description
  *
@@ -129,8 +131,9 @@ public class ActionAdapter extends RecyclerView.Adapter<ActionHolder> implements
 			if (((Water)action).getAmount() != null)
 			{
 				waterStr.append("<b>Amount: </b>");
-				waterStr.append(((Water)action).getAmount());
-				waterStr.append("ml, ");
+				waterStr.append(ML.to(deliveryUnit, ((Water)action).getAmount()));
+				waterStr.append(deliveryUnit.getLabel());
+				waterStr.append(", ");
 			}
 
 			if (((Water)action).getTemp() != null)
@@ -150,7 +153,9 @@ public class ActionAdapter extends RecyclerView.Adapter<ActionHolder> implements
 
 				for (Additive additive : ((Water)action).getAdditives())
 				{
-					double converted = Unit.ML.to(measureUnit, additive.getAmount());
+					if (additive == null || additive.getAmount() == null) continue;
+
+					double converted = ML.to(measureUnit, additive.getAmount());
 					String amountStr = converted == Math.floor(converted) ? String.valueOf((int)converted) : String.valueOf(converted);
 
 					waterStr.append("<br/>&nbsp;&nbsp;&nbsp;&nbsp;• ");
