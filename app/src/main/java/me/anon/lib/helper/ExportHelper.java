@@ -28,6 +28,7 @@ import java.util.Map;
 import java.util.SortedMap;
 
 import me.anon.lib.ExportCallback;
+import me.anon.lib.Unit;
 import me.anon.model.Action;
 import me.anon.model.Additive;
 import me.anon.model.EmptyAction;
@@ -37,6 +38,8 @@ import me.anon.model.PlantMedium;
 import me.anon.model.PlantStage;
 import me.anon.model.StageChange;
 import me.anon.model.Water;
+
+import static me.anon.lib.Unit.ML;
 
 /**
  * Helper class for exporting plant data into a Tarball file
@@ -57,6 +60,8 @@ public class ExportHelper
 	@Nullable public static void exportPlant(final Context context, @NonNull final Plant plant, final ExportCallback callback)
 	{
 		String folderPath = "";
+		Unit measureUnit = Unit.getSelectedMeasurementUnit(context);
+		Unit deliveryUnit = Unit.getSelectedDeliveryUnit(context);
 
 		if (Environment.getExternalStorageDirectory() != null)
 		{
@@ -247,8 +252,9 @@ public class ExportHelper
 				if (((Water)action).getAmount() != null)
 				{
 					plantDetails.append("*Amount*: ");
-					plantDetails.append(((Water)action).getAmount());
-					plantDetails.append("ml, ");
+					plantDetails.append(ML.to(deliveryUnit, ((Water)action).getAmount()));
+					plantDetails.append(deliveryUnit.getLabel());
+					plantDetails.append(", ");
 					newLine = true;
 				}
 
@@ -268,12 +274,19 @@ public class ExportHelper
 
 					for (Additive additive : ((Water)action).getAdditives())
 					{
+						if (additive == null || additive.getAmount() == null) continue;
+
+						double converted = ML.to(measureUnit, additive.getAmount());
+						String amountStr = converted == Math.floor(converted) ? String.valueOf((int)converted) : String.valueOf(converted);
+
 						plantDetails.append("\r\n");
 						plantDetails.append(" - ");
 						plantDetails.append(additive.getDescription());
 						plantDetails.append("  -  ");
-						plantDetails.append(additive.getAmount());
-						plantDetails.append("ml/l");
+						plantDetails.append(amountStr);
+						plantDetails.append(measureUnit.getLabel());
+						plantDetails.append("/");
+						plantDetails.append(deliveryUnit.getLabel());
 					}
 				}
 

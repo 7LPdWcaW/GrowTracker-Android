@@ -3,8 +3,10 @@ package me.anon.grow;
 import android.Manifest;
 import android.app.Activity;
 import android.content.Intent;
+import android.content.pm.PackageManager;
 import android.net.Uri;
 import android.os.Bundle;
+import android.preference.PreferenceManager;
 import android.support.design.widget.NavigationView;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
@@ -66,8 +68,18 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 
 		if (savedInstanceState == null)
 		{
-			navigation.getMenu().findItem(R.id.all).setChecked(true);
-			onNavigationItemSelected(navigation.getMenu().findItem(R.id.all));
+			int defaultGarden = PreferenceManager.getDefaultSharedPreferences(this).getInt("default_garden", -1);
+
+			if (defaultGarden == -1)
+			{
+				navigation.getMenu().findItem(R.id.all).setChecked(true);
+				onNavigationItemSelected(navigation.getMenu().findItem(R.id.all));
+			}
+			else
+			{
+				navigation.getMenu().findItem(100 + defaultGarden).setChecked(true);
+				onNavigationItemSelected(navigation.getMenu().findItem(100 + defaultGarden));
+			}
 		}
 		else
 		{
@@ -109,6 +121,15 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 		if (item != null)
 		{
 			item.setChecked(true);
+		}
+
+		try
+		{
+			navigation.getMenu().findItem(R.id.version).setTitle("Version " + getPackageManager().getPackageInfo(getPackageName(), 0).versionName);
+		}
+		catch (PackageManager.NameNotFoundException e)
+		{
+			e.printStackTrace();
 		}
 	}
 
