@@ -2,13 +2,13 @@
 
 Welcome to grow tracker. This app was created to help record data about growing plants in order to monitor the growing conditions to help make the plants grow better, and identify potential issues during the grow process.
 
-[Latest APK: (MD5) de708f0b7905ea193b6f414eedc7b3e4 v2.0](https://github.com/7LPdWcaW/GrowTracker-Android/raw/master/app/app-production-release.apk)
+[Latest APK: (MD5) 6bdd4b1138d1ce74c11d955a02e66fb4 v2.1](https://github.com/7LPdWcaW/GrowTracker-Android/raw/master/app/app-production-release.apk)
 
-[Latest APK (Discrete): (MD5) 07fd56b31391b955f6321396d77ef115 v2.0](https://github.com/7LPdWcaW/GrowTracker-Android/raw/master/app/app-discrete-release.apk)
+[Latest APK (Discrete): (MD5) 1d81d16ef56d9f963b01ffa5c2ff9656 v2.1](https://github.com/7LPdWcaW/GrowTracker-Android/raw/master/app/app-discrete-release.apk)
 
 # Installation
 
-The app requires no permissions except for external storage (for caching plant data and images) which you can see [here](https://github.com/7LPdWcaW/GrowTracker-Android/blob/develop/app/src/main/AndroidManifest.xml) in order for users to maintain anonymity.
+The app requires no permissions except for external storage (for caching plant data and images) which you can see [here](https://github.com/7LPdWcaW/GrowTracker-Android/blob/develop/app/src/main/AndroidManifest.xml) in order for users to maintain anonymity, and a minimum Android version of `4.0.3` and above
 
 ## How to install
 
@@ -35,6 +35,7 @@ The app requires no permissions except for external storage (for caching plant d
 [![action filters](screenshots/9-thumb.png)](screenshots/9.png)
 [![action options](screenshots/10-thumb.png)](screenshots/10.png)
 [![settings](screenshots/11-thumb.png)](screenshots/11.png)
+[![measurements](screenshots/12-thumb.png)](screenshots/12.png)
 
 # About the app
 
@@ -87,7 +88,7 @@ Water action for waterings
     "ph": <Double>,
     "ppm": <Long>,
     "runoff": <Double>,
-    "amount": <Integer>,
+    "amount": <Double>,
     "date": 1431268453111,
     "type": "Water",
     "temp": <Integer>
