@@ -6,6 +6,24 @@
 	<PreferenceCategory
 		android:title="General"
 	>
+		<Preference
+			android:key="default_garden"
+			android:title="Default garden"
+			android:summary="Default garden to show on open, currently All"
+		/>
+
+		<Preference
+			android:key="delivery_unit"
+			android:title="Delivery unit"
+			android:summary="Default delivery measurement unit to use, currently l"
+		/>
+
+		<Preference
+			android:key="measurement_unit"
+			android:title="Measurement unit"
+			android:summary="Default additive measurement unit to use, currently ml"
+		/>
+
 		<CheckBoxPreference
 			android:key="hide_harvested"
 			android:title="Hide harvested"

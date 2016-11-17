@@ -15,6 +15,7 @@ import android.os.Environment;
 import android.os.ParcelFileDescriptor;
 import android.provider.MediaStore;
 import android.support.annotation.Nullable;
+import android.support.v4.content.FileProvider;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.view.ActionMode;
 import android.support.v7.widget.GridLayoutManager;
@@ -43,6 +44,7 @@ import java.util.List;
 
 import me.anon.controller.adapter.ImageAdapter;
 import me.anon.controller.adapter.SectionedGridRecyclerViewAdapter;
+import me.anon.grow.BuildConfig;
 import me.anon.grow.MainApplication;
 import me.anon.grow.R;
 import me.anon.lib.Views;
@@ -277,28 +279,38 @@ public class ViewPhotosFragment extends Fragment
 						catch (IOException e){}
 
 						File out = new File(path, System.currentTimeMillis() + ".jpg");
+						Uri photoURI = FileProvider.getUriForFile(getActivity(), BuildConfig.APPLICATION_ID + ".provider", out);
 
 						plant.getImages().add(out.getAbsolutePath());
 
-						intent.putExtra(MediaStore.EXTRA_OUTPUT, Uri.fromFile(out));
+						intent.putExtra(MediaStore.EXTRA_OUTPUT, photoURI);
 						startActivityForResult(intent, 1);
 					}
 					else
 					{
-						if (Build.VERSION.SDK_INT < 19)
+						if (!PermissionHelper.hasPermission(getActivity(), Manifest.permission.WRITE_EXTERNAL_STORAGE))
 						{
-							Intent intent = new Intent();
-							intent.setType("image/jpeg");
-							intent.setAction(Intent.ACTION_GET_CONTENT);
-							startActivityForResult(Intent.createChooser(intent, "Select picture"), 3);
+							PermissionHelper.doPermissionCheck(ViewPhotosFragment.this, Manifest.permission.WRITE_EXTERNAL_STORAGE, 1, "Need permission");
+							return;
+						}
+
+						Intent intent;
+						if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT)
+						{
+							intent = new Intent(Intent.ACTION_OPEN_DOCUMENT);
+							intent.putExtra(Intent.EXTRA_ALLOW_MULTIPLE, true);
+							intent.addFlags(Intent.FLAG_GRANT_PERSISTABLE_URI_PERMISSION);
 						}
 						else
 						{
-							Intent intent = new Intent(Intent.ACTION_OPEN_DOCUMENT);
-							intent.addCategory(Intent.CATEGORY_OPENABLE);
-							intent.setType("image/jpeg");
-							startActivityForResult(Intent.createChooser(intent, "Select picture"), 3);
+							intent = new Intent(Intent.ACTION_GET_CONTENT);
 						}
+
+						intent.putExtra(Intent.EXTRA_LOCAL_ONLY, true);
+						intent.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION);
+						intent.setType("image/*");
+
+						startActivityForResult(Intent.createChooser(intent, "Select picture"), 3);
 					}
 				}
 			})
@@ -322,43 +334,51 @@ public class ViewPhotosFragment extends Fragment
 		}
 		else if (requestCode == 3) // choose image from gallery
 		{
-			Uri selectedUri = data.getData();
-			if (Build.VERSION.SDK_INT >= 19)
+			if (resultCode != Activity.RESULT_CANCELED)
 			{
-				final int takeFlags = data.getFlags() & (Intent.FLAG_GRANT_READ_URI_PERMISSION | Intent.FLAG_GRANT_WRITE_URI_PERMISSION);
-				getActivity().getContentResolver().takePersistableUriPermission(selectedUri, takeFlags);
-			}
+				if (data != null && data.getData() != null)
+				{
+					Uri selectedUri = data.getData();
+					if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT)
+					{
+						getActivity().grantUriPermission(getActivity().getPackageName(), selectedUri, Intent.FLAG_GRANT_READ_URI_PERMISSION);
 
-			File path = new File(Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DCIM).getPath() + "/GrowTracker/" + plant.getId() + "/");
-			path.mkdirs();
+						final int takeFlags = data.getFlags() & (Intent.FLAG_GRANT_READ_URI_PERMISSION);
+						getActivity().getContentResolver().takePersistableUriPermission(selectedUri, takeFlags);
+					}
 
-			try
-			{
-				new File(path, ".nomedia").createNewFile();
-			}
-			catch (IOException e){}
+					File path = new File(Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DCIM).getPath() + "/GrowTracker/" + plant.getId() + "/");
+					path.mkdirs();
 
-			File out = new File(path, System.currentTimeMillis() + ".jpg");
+					try
+					{
+						new File(path, ".nomedia").createNewFile();
+					}
+					catch (IOException e){}
 
-			copyImage(selectedUri, out);
+					File out = new File(path, System.currentTimeMillis() + ".jpg");
 
-			if (out.exists() && out.length() > 0)
-			{
-				plant.getImages().add(out.getAbsolutePath());
+					copyImage(selectedUri, out);
 
-				PlantManager.getInstance().upsert(plantIndex, plant);
+					if (out.exists() && out.length() > 0)
+					{
+						plant.getImages().add(out.getAbsolutePath());
 
-				setAdapter();
-				adapter.notifyDataSetChanged();
-			}
-			else
-			{
-				out.delete();
+						PlantManager.getInstance().upsert(plantIndex, plant);
+
+						setAdapter();
+						adapter.notifyDataSetChanged();
+					}
+					else
+					{
+						out.delete();
+					}
+				}
 			}
 		}
 
 		// both photo options
-		if (requestCode == 1 || requestCode == 3)
+		if ((requestCode == 1 || requestCode == 3) && resultCode != Activity.RESULT_CANCELED)
 		{
 			if (getActivity() != null)
 			{

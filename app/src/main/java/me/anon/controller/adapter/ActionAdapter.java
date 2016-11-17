@@ -22,6 +22,7 @@ import lombok.Getter;
 import lombok.Setter;
 import me.anon.grow.R;
 import me.anon.lib.DateRenderer;
+import me.anon.lib.Unit;
 import me.anon.lib.helper.ModelHelper;
 import me.anon.model.Action;
 import me.anon.model.Additive;
@@ -30,6 +31,8 @@ import me.anon.model.NoteAction;
 import me.anon.model.StageChange;
 import me.anon.model.Water;
 import me.anon.view.ActionHolder;
+
+import static me.anon.lib.Unit.ML;
 
 /**
  * // TODO: Add class description
@@ -50,6 +53,7 @@ public class ActionAdapter extends RecyclerView.Adapter<ActionHolder> implements
 
 	@Setter private OnActionSelectListener onActionSelectListener;
 	@Getter @Setter private List<Action> actions = new ArrayList<>();
+	@Getter private Unit measureUnit, deliveryUnit;
 
 	@Override public ActionHolder onCreateViewHolder(ViewGroup viewGroup, int i)
 	{
@@ -59,6 +63,16 @@ public class ActionAdapter extends RecyclerView.Adapter<ActionHolder> implements
 	@Override public void onBindViewHolder(final ActionHolder viewHolder, final int i)
 	{
 		final Action action = actions.get(i);
+
+		if (measureUnit == null)
+		{
+			measureUnit = Unit.getSelectedMeasurementUnit(viewHolder.itemView.getContext());
+		}
+
+		if (deliveryUnit == null)
+		{
+			deliveryUnit = Unit.getSelectedDeliveryUnit(viewHolder.itemView.getContext());
+		}
 
 		if (action == null) return;
 
@@ -117,8 +131,9 @@ public class ActionAdapter extends RecyclerView.Adapter<ActionHolder> implements
 			if (((Water)action).getAmount() != null)
 			{
 				waterStr.append("<b>Amount: </b>");
-				waterStr.append(((Water)action).getAmount());
-				waterStr.append("ml, ");
+				waterStr.append(ML.to(deliveryUnit, ((Water)action).getAmount()));
+				waterStr.append(deliveryUnit.getLabel());
+				waterStr.append(", ");
 			}
 
 			if (((Water)action).getTemp() != null)
@@ -138,11 +153,18 @@ public class ActionAdapter extends RecyclerView.Adapter<ActionHolder> implements
 
 				for (Additive additive : ((Water)action).getAdditives())
 				{
+					if (additive == null || additive.getAmount() == null) continue;
+
+					double converted = ML.to(measureUnit, additive.getAmount());
+					String amountStr = converted == Math.floor(converted) ? String.valueOf((int)converted) : String.valueOf(converted);
+
 					waterStr.append("<br/>&nbsp;&nbsp;&nbsp;&nbsp;• ");
 					waterStr.append(additive.getDescription());
 					waterStr.append("  -  ");
-					waterStr.append(additive.getAmount());
-					waterStr.append("ml/l");
+					waterStr.append(amountStr);
+					waterStr.append(measureUnit.getLabel());
+					waterStr.append("/");
+					waterStr.append(deliveryUnit.getLabel());
 				}
 			}
 
