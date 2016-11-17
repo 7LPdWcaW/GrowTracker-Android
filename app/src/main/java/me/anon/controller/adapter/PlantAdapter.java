@@ -22,6 +22,7 @@ import me.anon.grow.MainApplication;
 import me.anon.grow.PlantDetailsActivity;
 import me.anon.grow.R;
 import me.anon.lib.DateRenderer;
+import me.anon.lib.Unit;
 import me.anon.lib.helper.TimeHelper;
 import me.anon.lib.manager.PlantManager;
 import me.anon.model.Action;
@@ -29,6 +30,8 @@ import me.anon.model.Plant;
 import me.anon.model.PlantStage;
 import me.anon.model.Water;
 import me.anon.view.PlantHolder;
+
+import static me.anon.lib.Unit.ML;
 
 /**
  * // TODO: Add class description
@@ -41,10 +44,14 @@ public class PlantAdapter extends RecyclerView.Adapter<PlantHolder> implements I
 {
 	@Getter private List<Plant> plants = new ArrayList<>();
 	private Context context;
+	@Getter private Unit measureUnit, deliveryUnit;
 
 	public PlantAdapter(Context context)
 	{
 		this.context = context;
+
+		measureUnit = Unit.getSelectedMeasurementUnit(context);
+		deliveryUnit = Unit.getSelectedDeliveryUnit(context);
 	}
 
 	public void setPlants(List<Plant> plants)
@@ -117,7 +124,7 @@ public class PlantAdapter extends RecyclerView.Adapter<PlantHolder> implements I
 
 					if (lastWater.getAmount() != null)
 					{
-						summary += "<b>" + lastWater.getAmount() + "ml</b>";
+						summary += "<b>" + ML.to(deliveryUnit, lastWater.getAmount()) + deliveryUnit.getLabel() + "</b>";
 					}
 				}
 			}
