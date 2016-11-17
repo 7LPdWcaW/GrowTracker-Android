@@ -265,6 +265,8 @@ public class WateringFragment extends Fragment
 
 			for (Additive additive : water.getAdditives())
 			{
+				if (additive == null || additive.getAmount() == null) continue;
+
 				double converted = Unit.ML.to(selectedMeasurementUnit, additive.getAmount());
 				String amountStr = converted == Math.floor(converted) ? String.valueOf((int)converted) : String.valueOf(converted);
 
