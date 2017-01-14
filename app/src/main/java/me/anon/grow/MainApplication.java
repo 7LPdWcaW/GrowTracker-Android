@@ -36,6 +36,7 @@ public class MainApplication extends Application
 	@Getter private static DisplayImageOptions displayImageOptions;
 	@Getter @Setter private static boolean encrypted = false;
 	@Getter @Setter private static String key = "";
+	@Getter @Setter private static boolean failsafe = false;
 
 	@Override public void onCreate()
 	{
