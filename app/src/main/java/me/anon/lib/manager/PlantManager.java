@@ -58,6 +58,11 @@ public class PlantManager
 
 	public ArrayList<Plant> getSortedPlantList(@Nullable Garden garden)
 	{
+		if (MainApplication.isFailsafe())
+		{
+			return new ArrayList<>();
+		}
+
 		synchronized (this.mPlants)
 		{
 			SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(context);
@@ -91,8 +96,11 @@ public class PlantManager
 	{
 		synchronized (this.mPlants)
 		{
-			this.mPlants.clear();
-			this.mPlants.addAll(plants);
+			if (!MainApplication.isFailsafe())
+			{
+				this.mPlants.clear();
+				this.mPlants.addAll(plants);
+			}
 		}
 	}
 
@@ -100,8 +108,11 @@ public class PlantManager
 	{
 		synchronized (this.mPlants)
 		{
-			mPlants.add(plant);
-			save();
+			if (!MainApplication.isFailsafe())
+			{
+				mPlants.add(plant);
+				save();
+			}
 		}
 	}
 
@@ -109,19 +120,22 @@ public class PlantManager
 	{
 		synchronized (this.mPlants)
 		{
-			// Delete images
-			ArrayList<String> imagePaths = mPlants.get(plantIndex).getImages();
-			for (String filePath : imagePaths)
+			if (!MainApplication.isFailsafe())
 			{
-				new File(filePath).delete();
+				// Delete images
+				ArrayList<String> imagePaths = mPlants.get(plantIndex).getImages();
+				for (String filePath : imagePaths)
+				{
+					new File(filePath).delete();
+				}
+
+				// Remove plant
+				mPlants.remove(plantIndex);
+
+				// Remove from shared prefs
+				SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(context);
+				prefs.edit().remove(String.valueOf(plantIndex)).apply();
 			}
-
-			// Remove plant
-			mPlants.remove(plantIndex);
-
-			// Remove from shared prefs
-			SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(context);
-			prefs.edit().remove(String.valueOf(plantIndex)).apply();
 		}
 	}
 
@@ -140,6 +154,11 @@ public class PlantManager
 
 	public void load()
 	{
+		if (MainApplication.isFailsafe())
+		{
+			return;
+		}
+
 		if (FileManager.getInstance().fileExists(FILES_DIR + "/plants.json"))
 		{
 			String plantData;
@@ -177,7 +196,10 @@ public class PlantManager
 	{
 		synchronized (this.mPlants)
 		{
-			save(null);
+			if (!MainApplication.isFailsafe())
+			{
+				save(null);
+			}
 		}
 	}
 
@@ -185,48 +207,51 @@ public class PlantManager
 	{
 		synchronized (mPlants)
 		{
-			new AsyncTask<Void, Void, Void>()
+			if (!MainApplication.isFailsafe())
 			{
-				@Override protected Void doInBackground(Void... voids)
+				new AsyncTask<Void, Void, Void>()
 				{
-					synchronized (mPlants)
+					@Override protected Void doInBackground(Void... voids)
 					{
-						if (MainApplication.isEncrypted())
+						synchronized (mPlants)
 						{
-							if (TextUtils.isEmpty(MainApplication.getKey()))
+							if (MainApplication.isEncrypted())
 							{
-								return null;
+								if (TextUtils.isEmpty(MainApplication.getKey()))
+								{
+									return null;
+								}
+
+								FileManager.getInstance().writeFile(FILES_DIR + "/plants.json", EncryptionHelper.encrypt(MainApplication.getKey(), GsonHelper.parse(mPlants)));
 							}
-
-							FileManager.getInstance().writeFile(FILES_DIR + "/plants.json", EncryptionHelper.encrypt(MainApplication.getKey(), GsonHelper.parse(mPlants)));
+							else
+							{
+								FileManager.getInstance().writeFile(FILES_DIR + "/plants.json", GsonHelper.parse(mPlants));
+							}
 						}
-						else
+
+						return null;
+					}
+
+					@Override protected void onPostExecute(Void aVoid)
+					{
+						if (callback != null)
 						{
-							FileManager.getInstance().writeFile(FILES_DIR + "/plants.json", GsonHelper.parse(mPlants));
+							callback.callback();
+						}
+
+						if (new File(FILES_DIR + "/plants.json").length() == 0 || !new File(FILES_DIR + "/plants.json").exists())
+						{
+							Toast.makeText(context, "There was a fatal problem saving the plant data, please backup this data", Toast.LENGTH_LONG).show();
+							String sendData = GsonHelper.parse(mPlants);
+							Intent share = new Intent(Intent.ACTION_SEND);
+							share.setType("text/plain");
+							share.putExtra(Intent.EXTRA_TEXT, "== WARNING : PLEASE BACK UP THIS DATA == \r\n\r\n " + sendData);
+							context.startActivity(share);
 						}
 					}
-
-					return null;
-				}
-
-				@Override protected void onPostExecute(Void aVoid)
-				{
-					if (callback != null)
-					{
-						callback.callback();
-					}
-
-					if (new File(FILES_DIR + "/plants.json").length() == 0 || !new File(FILES_DIR + "/plants.json").exists())
-					{
-						Toast.makeText(context, "There was a fatal problem saving the plant data, please backup this data", Toast.LENGTH_LONG).show();
-						String sendData = GsonHelper.parse(mPlants);
-						Intent share = new Intent(Intent.ACTION_SEND);
-						share.setType("text/plain");
-						share.putExtra(Intent.EXTRA_TEXT, "== WARNING : PLEASE BACK UP THIS DATA == \r\n\r\n " + sendData);
-						context.startActivity(share);
-					}
-				}
-			}.executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
+				}.executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
+			}
 		}
 	}
 }
