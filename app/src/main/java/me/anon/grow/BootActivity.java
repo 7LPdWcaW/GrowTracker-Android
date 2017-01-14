@@ -119,6 +119,7 @@ public class BootActivity extends Activity
 					}
 					else if (inputCheck.equals(integrityCheck))
 					{
+						MainApplication.setFailsafe(false);
 						MainApplication.setKey(input);
 						PlantManager.getInstance().load();
 
