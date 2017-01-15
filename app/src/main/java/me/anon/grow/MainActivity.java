@@ -7,6 +7,7 @@ import android.content.pm.PackageManager;
 import android.net.Uri;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
+import android.support.annotation.Nullable;
 import android.support.design.widget.NavigationView;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
@@ -46,7 +47,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 	private static final String TAG_FRAGMENT = "current_fragment";
 
 	@Views.InjectView(R.id.toolbar) private Toolbar toolbar;
-	@Views.InjectView(R.id.drawer_layout) private DrawerLayout drawer;
+	@Nullable @Views.InjectView(R.id.drawer_layout) private DrawerLayout drawer;
 	@Getter @Views.InjectView(R.id.navigation_view) private NavigationView navigation;
 	private int selectedItem = 0;
 
@@ -218,7 +219,10 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 			dialogFragment.show(getFragmentManager(), null);
 			item.setChecked(false);
 
-			drawer.closeDrawers();
+			if (drawer != null)
+			{
+				drawer.closeDrawers();
+			}
 
 			return false;
 		}
@@ -237,7 +241,10 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 			getFragmentManager().beginTransaction().replace(R.id.fragment_holder, PlantListFragment.newInstance(GardenManager.getInstance().getGardens().get(gardenIndex)), TAG_FRAGMENT).commit();
 		}
 
-		drawer.closeDrawers();
+		if (drawer != null)
+		{
+			drawer.closeDrawers();
+		}
 
 		return true;
 	}
