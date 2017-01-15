@@ -37,6 +37,7 @@ public class MainApplication extends Application
 	@Getter @Setter private static boolean encrypted = false;
 	@Getter @Setter private static String key = "";
 	@Getter @Setter private static boolean failsafe = false;
+	@Getter @Setter private static boolean isTablet = false;
 
 	@Override public void onCreate()
 	{
@@ -45,6 +46,7 @@ public class MainApplication extends Application
 		ExceptionHandler.getInstance().register(this);
 
 		encrypted = PreferenceManager.getDefaultSharedPreferences(this).getBoolean("encrypt", false);
+		isTablet = getResources().getBoolean(R.bool.is_tablet);
 
 		PlantManager.getInstance().initialise(this);
 		GardenManager.getInstance().initialise(this);
