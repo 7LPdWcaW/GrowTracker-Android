@@ -204,7 +204,15 @@ public class ViewPhotosFragment extends Fragment
 		});
 
 		recycler.setHasFixedSize(true);
-		recycler.setLayoutManager(new GridLayoutManager(getActivity(), 3));
+
+		if (MainApplication.isTablet())
+		{
+			recycler.setLayoutManager(new GridLayoutManager(getActivity(), 6));
+		}
+		else
+		{
+			recycler.setLayoutManager(new GridLayoutManager(getActivity(), 3));
+		}
 
 		setAdapter();
 	}

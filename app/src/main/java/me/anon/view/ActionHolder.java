@@ -24,6 +24,7 @@ public class ActionHolder extends RecyclerView.ViewHolder
 	@Views.InjectView(R.id.card) private CardView card;
 	@Views.InjectView(R.id.date) private TextView date;
 	@Views.InjectView(R.id.full_date) private TextView fullDate;
+	@Views.InjectView(R.id.date_day) private TextView dateDay;
 	@Views.InjectView(R.id.name) private TextView name;
 	@Views.InjectView(R.id.summary) private TextView summary;
 	@Views.InjectView(R.id.overflow) private ImageButton overflow;
