@@ -14,9 +14,12 @@ import android.view.ViewGroup;
 
 import java.text.DateFormat;
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.Collections;
 import java.util.Date;
+import java.util.GregorianCalendar;
 import java.util.List;
+import java.util.Locale;
 
 import lombok.Getter;
 import lombok.Setter;
@@ -52,8 +55,15 @@ public class ActionAdapter extends RecyclerView.Adapter<ActionHolder> implements
 	}
 
 	@Setter private OnActionSelectListener onActionSelectListener;
-	@Getter @Setter private List<Action> actions = new ArrayList<>();
+	@Getter private List<Action> actions = new ArrayList<>();
 	@Getter private Unit measureUnit, deliveryUnit;
+	@Setter private String lastDateStr = "";
+
+	public void setActions(List<Action> actions)
+	{
+		this.actions = actions;
+		lastDateStr = "";
+	}
 
 	@Override public ActionHolder onCreateViewHolder(ViewGroup viewGroup, int i)
 	{
@@ -79,8 +89,26 @@ public class ActionAdapter extends RecyclerView.Adapter<ActionHolder> implements
 		DateFormat dateFormat = android.text.format.DateFormat.getDateFormat(viewHolder.getDate().getContext());
 		DateFormat timeFormat = android.text.format.DateFormat.getTimeFormat(viewHolder.getDate().getContext());
 
-		String fullDateStr = dateFormat.format(new Date(action.getDate())) + " " + timeFormat.format(new Date(action.getDate()));
+		Date actionDate = new Date(action.getDate());
+		Calendar actionCalendar = GregorianCalendar.getInstance();
+		actionCalendar.setTime(actionDate);
+		String fullDateStr = dateFormat.format(actionDate) + " " + timeFormat.format(actionDate);
 		String dateStr = "<b>" + new DateRenderer().timeAgo(action.getDate()).formattedDate + "</b> ago";
+
+		String dateDayStr = actionCalendar.get(Calendar.DAY_OF_MONTH) + "\n" + actionCalendar.getDisplayName(Calendar.MONTH, Calendar.SHORT, Locale.getDefault());
+
+		if (viewHolder.getDateDay() != null)
+		{
+			if (!lastDateStr.equalsIgnoreCase(dateDayStr))
+			{
+				lastDateStr = dateDayStr;
+				viewHolder.getDateDay().setText(lastDateStr);
+			}
+			else
+			{
+				viewHolder.getDateDay().setText("");
+			}
+		}
 
 		if (i > 0)
 		{
