@@ -5,14 +5,17 @@ import android.app.AlertDialog;
 import android.app.Fragment;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.graphics.Rect;
 import android.os.Bundle;
 import android.os.Handler;
 import android.preference.PreferenceManager;
 import android.support.annotation.Nullable;
+import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.helper.ItemTouchHelper;
 import android.text.Html;
+import android.util.TypedValue;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -33,6 +36,7 @@ import me.anon.controller.adapter.SimpleItemTouchHelperCallback;
 import me.anon.grow.AddPlantActivity;
 import me.anon.grow.AddWateringActivity;
 import me.anon.grow.MainActivity;
+import me.anon.grow.MainApplication;
 import me.anon.grow.R;
 import me.anon.lib.Views;
 import me.anon.lib.event.GardenChangeEvent;
@@ -95,7 +99,38 @@ public class PlantListFragment extends Fragment
 		getActivity().setTitle(garden == null ? "All" : garden.getName() + " plants");
 
 		adapter = new PlantAdapter(getActivity());
-		recycler.setLayoutManager(new LinearLayoutManager(getActivity()));
+
+		if (MainApplication.isTablet())
+		{
+			GridLayoutManager layoutManager = new GridLayoutManager(getActivity(), 2);
+			RecyclerView.ItemDecoration spacesItemDecoration = new RecyclerView.ItemDecoration()
+			{
+				private int space = (int)(TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, 12, getResources().getDisplayMetrics()) / 2f);
+
+				@Override
+				public void getItemOffsets(Rect outRect, View view, RecyclerView parent, RecyclerView.State state)
+				{
+					if (parent.getPaddingLeft() != space)
+					{
+						parent.setPadding(space, space, space, space);
+						parent.setClipToPadding(false);
+					}
+
+					outRect.top = space;
+					outRect.bottom = space;
+					outRect.left = space;
+					outRect.right = space;
+				}
+			};
+
+			recycler.setLayoutManager(layoutManager);
+			recycler.addItemDecoration(spacesItemDecoration);
+		}
+		else
+		{
+			recycler.setLayoutManager(new LinearLayoutManager(getActivity()));
+		}
+
 		recycler.setAdapter(adapter);
 
 		ItemTouchHelper.Callback callback = new SimpleItemTouchHelperCallback(adapter)
