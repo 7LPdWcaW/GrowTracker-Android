@@ -19,7 +19,8 @@ import android.os.Bundle;
 import android.preference.PreferenceManager;
 import android.text.Html;
 import android.text.TextUtils;
-import android.util.Log;
+import android.util.TypedValue;
+import android.view.View;
 import android.widget.RemoteViews;
 
 import me.anon.grow.PlantDetailsActivity;
@@ -51,8 +52,6 @@ public class PlantWidgetProvider extends AppWidgetProvider
 		{
 			int widgetId = appWidgetIds[widgetIndex];
 			String plantId = PreferenceManager.getDefaultSharedPreferences(context).getString("widget_" + widgetId, "");
-
-			Log.e("onUpdate", widgetId + " WIDGET, plant " + plantId);
 
 			if (!TextUtils.isEmpty(plantId))
 			{
@@ -94,12 +93,25 @@ public class PlantWidgetProvider extends AppWidgetProvider
 	private void setWidgetUi(int widgetId, RemoteViews view, Plant plant)
 	{
 		view.setTextViewText(R.id.name, plant.getName());
-		view.setTextViewText(R.id.summary, Html.fromHtml(plant.generateLongSummary(context)));
+
+		int[] size = getWidgetSize(widgetId);
+
+		if (size[1] <= 100)
+		{
+			view.setTextViewText(R.id.summary, Html.fromHtml("<b>" + plant.getName() + "</b> " + plant.generateShortSummary(context)));
+			view.setViewVisibility(R.id.name, View.GONE);
+			view.setTextViewTextSize(R.id.summary, TypedValue.COMPLEX_UNIT_DIP, 12);
+		}
+		else
+		{
+			view.setTextViewText(R.id.summary, Html.fromHtml(plant.generateLongSummary(context)));
+			view.setViewVisibility(R.id.name, View.VISIBLE);
+			view.setTextViewTextSize(R.id.name, TypedValue.COMPLEX_UNIT_DIP, 16);
+			view.setTextViewTextSize(R.id.summary, TypedValue.COMPLEX_UNIT_DIP, 14);
+		}
 
 		if (plant.getImages().size() > 0)
 		{
-			int[] size = getWidgetSize(widgetId);
-
 			if (size[0] > 0 && size[1] > 0)
 			{
 				BitmapFactory.Options opts = new BitmapFactory.Options();
@@ -116,6 +128,7 @@ public class PlantWidgetProvider extends AppWidgetProvider
 
 				Paint paint = new Paint();
 				paint.setColor(0xff000000);
+				paint.setAntiAlias(true);
 				canvas.drawRoundRect(rectF, 8, 8, paint);
 
 				paint.setXfermode(new PorterDuffXfermode(PorterDuff.Mode.SRC_IN));
@@ -124,6 +137,7 @@ public class PlantWidgetProvider extends AppWidgetProvider
 				Paint overlay = new Paint();
 				overlay.setColor(0x000000);
 				overlay.setAlpha(0x7F);
+				overlay.setAntiAlias(true);
 				canvas.drawRoundRect(rectF, 8, 8, overlay);
 
 				view.setImageViewBitmap(R.id.image, output);
