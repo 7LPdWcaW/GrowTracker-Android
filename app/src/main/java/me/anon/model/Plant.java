@@ -175,6 +175,17 @@ public class Plant
 					{
 						summary += "<b>" + ML.to(deliveryUnit, lastWater.getAmount()) + deliveryUnit.getLabel() + "</b>";
 					}
+
+					if (lastWater.getAdditives().size() > 0)
+					{
+						double total = 0d;
+						for (Additive additive : lastWater.getAdditives())
+						{
+							total += additive.getAmount();
+						}
+
+						summary += "<br/> + <b>" + ML.to(measureUnit, total) + measureUnit.getLabel() + "</b> additives";
+					}
 				}
 			}
 		}
