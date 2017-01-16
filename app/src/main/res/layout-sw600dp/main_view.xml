@@ -25,7 +25,7 @@
 		android:orientation="horizontal"
 	>
 		<android.support.design.widget.NavigationView
-			android:layout_width="wrap_content"
+			android:layout_width="240dp"
 			android:layout_height="match_parent"
 			android:id="@+id/navigation_view"
 			android:layout_gravity="start"
