@@ -92,6 +92,7 @@ public class PlantWidgetProvider extends AppWidgetProvider
 	 */
 	private void setWidgetUi(int widgetId, RemoteViews view, Plant plant)
 	{
+		boolean allowImage = PreferenceManager.getDefaultSharedPreferences(context).getBoolean("widget_" + widgetId + "_image", false);
 		view.setTextViewText(R.id.name, plant.getName());
 
 		int[] size = getWidgetSize(widgetId);
@@ -110,7 +111,7 @@ public class PlantWidgetProvider extends AppWidgetProvider
 			view.setTextViewTextSize(R.id.summary, TypedValue.COMPLEX_UNIT_DIP, 14);
 		}
 
-		if (plant.getImages().size() > 0)
+		if (plant.getImages().size() > 0 && allowImage)
 		{
 			if (size[0] > 0 && size[1] > 0)
 			{

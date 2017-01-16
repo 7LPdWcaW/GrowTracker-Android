@@ -43,7 +43,7 @@
 			</intent-filter>
 		</activity>
 
-		<activity android:name=".PlantSelectActivity">
+		<activity android:name=".PlantSelectActivity" android:theme="@style/Theme.Transparent">
 			<intent-filter>
 				<action android:name="android.appwidget.action.APPWIDGET_CONFIGURE" />
 			</intent-filter>
