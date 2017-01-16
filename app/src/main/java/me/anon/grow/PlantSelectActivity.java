@@ -1,19 +1,15 @@
 package me.anon.grow;
 
-import android.app.AlertDialog;
 import android.appwidget.AppWidgetManager;
-import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
 import android.support.annotation.Nullable;
 import android.support.v7.app.AppCompatActivity;
 
-import java.util.ArrayList;
-
 import me.anon.controller.provider.PlantWidgetProvider;
+import me.anon.grow.fragment.PlantSelectDialogFragment;
 import me.anon.lib.manager.PlantManager;
-import me.anon.model.Plant;
 
 import static android.appwidget.AppWidgetManager.EXTRA_APPWIDGET_ID;
 import static android.appwidget.AppWidgetManager.INVALID_APPWIDGET_ID;
@@ -21,7 +17,7 @@ import static android.appwidget.AppWidgetManager.INVALID_APPWIDGET_ID;
 /**
  * // TODO: Add class description
  *
- * @author 
+ * @author Callum Taylor
  */
 public class PlantSelectActivity extends AppCompatActivity
 {
@@ -45,48 +41,15 @@ public class PlantSelectActivity extends AppCompatActivity
 			finish();
 		}
 
-		ArrayList<String> plantNames = new ArrayList<>();
-		for (Plant plant : PlantManager.getInstance().getPlants())
+		PlantSelectDialogFragment dialogFragment = new PlantSelectDialogFragment();
+		dialogFragment.setOnDialogActionListener(new PlantSelectDialogFragment.OnDialogActionListener()
 		{
-			plantNames.add(plant.getName());
-		}
-
-		new AlertDialog.Builder(this)
-			.setTitle("Select plant")
-			.setItems(plantNames.toArray(new String[plantNames.size()]), new DialogInterface.OnClickListener()
+			@Override public void onDialogAccept(int plantIndex, boolean showImage)
 			{
-				@Override public void onClick(DialogInterface dialog, int which)
-				{
-					final int plantIndex = which;
-					if (!BuildConfig.DISCRETE)
-					{
-						new AlertDialog.Builder(PlantSelectActivity.this)
-							.setTitle("Allow images?")
-							.setMessage("Allow last taken image to show in widget?")
-							.setPositiveButton("Yes", new DialogInterface.OnClickListener()
-							{
-								@Override public void onClick(DialogInterface dialog, int which)
-								{
-
-									configureAndFinish(plantIndex, true);
-								}
-							})
-							.setNegativeButton("No", new DialogInterface.OnClickListener()
-							{
-								@Override public void onClick(DialogInterface dialog, int which)
-								{
-									configureAndFinish(plantIndex, false);
-								}
-							})
-							.show();
-					}
-					else
-					{
-						configureAndFinish(plantIndex, false);
-					}
-				}
-			})
-			.show();
+				configureAndFinish(plantIndex, showImage);
+			}
+		});
+		dialogFragment.show(getFragmentManager(), null);
 	}
 
 	private void configureAndFinish(int plantIndex, boolean allowImage)

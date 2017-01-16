@@ -28,11 +28,6 @@ import me.anon.grow.R;
 import me.anon.lib.manager.PlantManager;
 import me.anon.model.Plant;
 
-/**
- * // TODO: Add class description
- *
- * @author 
- */
 public class PlantWidgetProvider extends AppWidgetProvider
 {
 	private Context context;
@@ -111,18 +106,15 @@ public class PlantWidgetProvider extends AppWidgetProvider
 			view.setTextViewTextSize(R.id.summary, TypedValue.COMPLEX_UNIT_DIP, 14);
 		}
 
-		if (plant.getImages().size() > 0 && allowImage)
+		if (plant.getImages().size() > 0)
 		{
 			if (size[0] > 0 && size[1] > 0)
 			{
 				BitmapFactory.Options opts = new BitmapFactory.Options();
 				opts.inSampleSize = recursiveSample(plant.getImages().get(plant.getImages().size() - 1), size[0], size[1]);
-				Bitmap lastImage = BitmapFactory.decodeFile(plant.getImages().get(plant.getImages().size() - 1), opts);
 
 				Bitmap output = Bitmap.createBitmap(size[0], size[1], Bitmap.Config.ARGB_8888);
 				Canvas canvas = new Canvas(output);
-
-				lastImage = ThumbnailUtils.extractThumbnail(lastImage, size[0], size[1], 0);
 
 				Rect rect = new Rect(0, 0, output.getWidth(), output.getHeight());
 				RectF rectF = new RectF(rect);
@@ -132,14 +124,20 @@ public class PlantWidgetProvider extends AppWidgetProvider
 				paint.setAntiAlias(true);
 				canvas.drawRoundRect(rectF, 8, 8, paint);
 
-				paint.setXfermode(new PorterDuffXfermode(PorterDuff.Mode.SRC_IN));
-				canvas.drawBitmap(lastImage, rect, rect, paint);
+				if (allowImage)
+				{
+					Bitmap lastImage = BitmapFactory.decodeFile(plant.getImages().get(plant.getImages().size() - 1), opts);
+					lastImage = ThumbnailUtils.extractThumbnail(lastImage, size[0], size[1], 0);
 
-				Paint overlay = new Paint();
-				overlay.setColor(0x000000);
-				overlay.setAlpha(0x7F);
-				overlay.setAntiAlias(true);
-				canvas.drawRoundRect(rectF, 8, 8, overlay);
+					paint.setXfermode(new PorterDuffXfermode(PorterDuff.Mode.SRC_IN));
+					canvas.drawBitmap(lastImage, rect, rect, paint);
+
+					Paint overlay = new Paint();
+					overlay.setColor(0x000000);
+					overlay.setAlpha(0x7F);
+					overlay.setAntiAlias(true);
+					canvas.drawRoundRect(rectF, 8, 8, overlay);
+				}
 
 				view.setImageViewBitmap(R.id.image, output);
 			}
