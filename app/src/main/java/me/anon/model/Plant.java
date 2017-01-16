@@ -46,6 +46,76 @@ public class Plant
 	 */
 	//@Deprecated private PlantStage stage;
 
+	public String generateShortSummary(Context context)
+	{
+		Unit measureUnit = Unit.getSelectedMeasurementUnit(context);
+		Unit deliveryUnit = Unit.getSelectedDeliveryUnit(context);
+
+		String summary = "";
+
+		if (getStage() == PlantStage.HARVESTED)
+		{
+			summary += "Harvested";
+		}
+		else
+		{
+			DateRenderer.TimeAgo planted = new DateRenderer().timeAgo(getPlantDate(), 3);
+			summary += "<b>" + (int)planted.time + " " + planted.unit.type + "</b>";
+
+			if (getActions() != null && getActions().size() > 0)
+			{
+				Water lastWater = null;
+
+				ArrayList<Action> actions = getActions();
+				for (int index = actions.size() - 1; index >= 0; index--)
+				{
+					Action action = actions.get(index);
+
+					if (action.getClass() == Water.class && lastWater == null)
+					{
+						lastWater = (Water)action;
+					}
+				}
+
+				SortedMap<PlantStage, Long> stageTimes = calculateStageTime();
+
+				if (stageTimes.containsKey(getStage()))
+				{
+					summary += " / <b>" + (int)TimeHelper.toDays(stageTimes.get(getStage())) + getStage().getPrintString().substring(0, 1).toLowerCase() + "</b>";
+				}
+
+				if (lastWater != null)
+				{
+					summary += "<br/>";
+					summary += "Watered: <b>" + new DateRenderer().timeAgo(lastWater.getDate()).formattedDate + "</b> ago";
+					summary += "<br/>";
+
+					if (lastWater.getPh() != null)
+					{
+						summary += "<b>" + lastWater.getPh() + " PH</b> ";
+
+						if (lastWater.getRunoff() != null)
+						{
+							summary += "-> <b>" + lastWater.getRunoff() + " PH</b> ";
+						}
+					}
+
+					if (lastWater.getAmount() != null)
+					{
+						summary += "<b>" + ML.to(deliveryUnit, lastWater.getAmount()) + deliveryUnit.getLabel() + "</b>";
+					}
+				}
+			}
+		}
+
+		if (summary.endsWith("<br/>"))
+		{
+			summary = summary.substring(0, summary.length() - "<br/>".length());
+		}
+
+		return summary;
+	}
+
 	public String generateLongSummary(Context context)
 	{
 		Unit measureUnit = Unit.getSelectedMeasurementUnit(context);
