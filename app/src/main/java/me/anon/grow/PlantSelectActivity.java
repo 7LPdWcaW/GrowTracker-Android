@@ -57,23 +57,55 @@ public class PlantSelectActivity extends AppCompatActivity
 			{
 				@Override public void onClick(DialogInterface dialog, int which)
 				{
-					Intent result = new Intent();
-					result.putExtra(EXTRA_APPWIDGET_ID, appWidgetId);
-					setResult(RESULT_OK, result);
+					final int plantIndex = which;
+					if (!BuildConfig.DISCRETE)
+					{
+						new AlertDialog.Builder(PlantSelectActivity.this)
+							.setTitle("Allow images?")
+							.setMessage("Allow last taken image to show in widget?")
+							.setPositiveButton("Yes", new DialogInterface.OnClickListener()
+							{
+								@Override public void onClick(DialogInterface dialog, int which)
+								{
 
-					PreferenceManager.getDefaultSharedPreferences(PlantSelectActivity.this).edit()
-						.putString("widget_" + appWidgetId, PlantManager.getInstance().getPlants().get(which).getId())
-						.apply();
-
-					Intent intent = new Intent(PlantSelectActivity.this, PlantWidgetProvider.class);
-					intent.setAction(AppWidgetManager.ACTION_APPWIDGET_UPDATE);
-					int[] ids = {appWidgetId};
-					intent.putExtra(AppWidgetManager.EXTRA_APPWIDGET_IDS, ids);
-					sendBroadcast(intent);
-
-					finish();
+									configureAndFinish(plantIndex, true);
+								}
+							})
+							.setNegativeButton("No", new DialogInterface.OnClickListener()
+							{
+								@Override public void onClick(DialogInterface dialog, int which)
+								{
+									configureAndFinish(plantIndex, false);
+								}
+							})
+							.show();
+					}
+					else
+					{
+						configureAndFinish(plantIndex, false);
+					}
 				}
 			})
 			.show();
+	}
+
+	private void configureAndFinish(int plantIndex, boolean allowImage)
+	{
+		Intent result = new Intent();
+		result.putExtra(EXTRA_APPWIDGET_ID, appWidgetId);
+		setResult(RESULT_OK, result);
+
+		PreferenceManager.getDefaultSharedPreferences(PlantSelectActivity.this).edit()
+			.putString("widget_" + appWidgetId, PlantManager.getInstance().getPlants().get(plantIndex).getId())
+			.putBoolean("widget_" + appWidgetId + "_image", allowImage)
+			.apply();
+
+		Intent intent = new Intent(PlantSelectActivity.this, PlantWidgetProvider.class);
+		intent.setAction(AppWidgetManager.ACTION_APPWIDGET_UPDATE);
+		int[] ids = {appWidgetId};
+		intent.putExtra(AppWidgetManager.EXTRA_APPWIDGET_IDS, ids);
+		sendBroadcast(intent);
+
+		finish();
 	}
 }
