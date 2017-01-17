@@ -28,6 +28,7 @@ import java.util.Random;
 
 import me.anon.controller.adapter.ActionAdapter;
 import me.anon.controller.adapter.SimpleItemTouchHelperCallback;
+import me.anon.controller.provider.PlantWidgetProvider;
 import me.anon.grow.EditWateringActivity;
 import me.anon.grow.R;
 import me.anon.lib.Views;
@@ -211,6 +212,8 @@ public class EventListFragment extends Fragment implements ActionAdapter.OnActio
 						{
 							FabAnimator.animateDown(getView().findViewById(R.id.fab_add));
 						}
+
+						PlantWidgetProvider.triggerUpdateAll(getActivity());
 					}
 
 					@Override public void onSnackBarAction(Object o)
@@ -251,6 +254,8 @@ public class EventListFragment extends Fragment implements ActionAdapter.OnActio
 				{
 					FabAnimator.animateDown(getView().findViewById(R.id.fab_add));
 				}
+
+				PlantWidgetProvider.triggerUpdateAll(getActivity());
 			}
 
 			@Override public void onSnackBarAction(Object o)
@@ -303,6 +308,8 @@ public class EventListFragment extends Fragment implements ActionAdapter.OnActio
 							{
 								FabAnimator.animateDown(getView().findViewById(R.id.fab_add));
 							}
+
+							PlantWidgetProvider.triggerUpdateAll(getActivity());
 						}
 
 						@Override public void onSnackBarAction(Object o)
@@ -359,6 +366,8 @@ public class EventListFragment extends Fragment implements ActionAdapter.OnActio
 							{
 								FabAnimator.animateDown(getView().findViewById(R.id.fab_add));
 							}
+
+							PlantWidgetProvider.triggerUpdateAll(getActivity());
 						}
 
 						@Override public void onSnackBarAction(Object o)
@@ -443,6 +452,8 @@ public class EventListFragment extends Fragment implements ActionAdapter.OnActio
 							{
 								FabAnimator.animateDown(getView().findViewById(R.id.fab_add));
 							}
+
+							PlantWidgetProvider.triggerUpdateAll(getActivity());
 						}
 
 						@Override public void onSnackBarAction(Object o)
@@ -482,6 +493,8 @@ public class EventListFragment extends Fragment implements ActionAdapter.OnActio
 				{
 					FabAnimator.animateDown(getView().findViewById(R.id.fab_add));
 				}
+
+				PlantWidgetProvider.triggerUpdateAll(getActivity());
 			}
 
 			@Override public void onSnackBarAction(Object o)
