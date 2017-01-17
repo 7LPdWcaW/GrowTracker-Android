@@ -1,6 +1,5 @@
 package me.anon.grow;
 
-import android.appwidget.AppWidgetManager;
 import android.content.Intent;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
@@ -63,11 +62,7 @@ public class PlantSelectActivity extends AppCompatActivity
 			.putBoolean("widget_" + appWidgetId + "_image", allowImage)
 			.apply();
 
-		Intent intent = new Intent(PlantSelectActivity.this, PlantWidgetProvider.class);
-		intent.setAction(AppWidgetManager.ACTION_APPWIDGET_UPDATE);
-		int[] ids = {appWidgetId};
-		intent.putExtra(AppWidgetManager.EXTRA_APPWIDGET_IDS, ids);
-		sendBroadcast(intent);
+		PlantWidgetProvider.triggerUpdate(this, appWidgetId);
 
 		finish();
 	}

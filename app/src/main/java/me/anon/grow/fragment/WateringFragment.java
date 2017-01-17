@@ -20,6 +20,7 @@ import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
 
+import me.anon.controller.provider.PlantWidgetProvider;
 import me.anon.grow.R;
 import me.anon.lib.Unit;
 import me.anon.lib.Views;
@@ -431,5 +432,7 @@ public class WateringFragment extends Fragment
 
 		getActivity().setResult(Activity.RESULT_OK);
 		getActivity().finish();
+
+		PlantWidgetProvider.triggerUpdateAll(getActivity());
 	}
 }

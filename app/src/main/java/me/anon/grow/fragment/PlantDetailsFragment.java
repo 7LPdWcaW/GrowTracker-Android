@@ -57,6 +57,7 @@ import java.util.Calendar;
 import java.util.Date;
 import java.util.Locale;
 
+import me.anon.controller.provider.PlantWidgetProvider;
 import me.anon.grow.AddWateringActivity;
 import me.anon.grow.BuildConfig;
 import me.anon.grow.EditWateringActivity;
@@ -268,6 +269,8 @@ public class PlantDetailsFragment extends Fragment
 						{
 							FabAnimator.animateDown(getView().findViewById(R.id.fab_complete));
 						}
+
+						PlantWidgetProvider.triggerUpdateAll(getActivity());
 					}
 
 					@Override public void onSnackBarAction(Object o)
@@ -367,6 +370,7 @@ public class PlantDetailsFragment extends Fragment
 			}
 
 			PlantManager.getInstance().upsert(plantIndex, plant);
+			PlantWidgetProvider.triggerUpdateAll(getActivity());
 		}
 		else if (requestCode == 2)
 		{
@@ -491,6 +495,8 @@ public class PlantDetailsFragment extends Fragment
 						{
 							FabAnimator.animateDown(getView().findViewById(R.id.fab_complete));
 						}
+
+						PlantWidgetProvider.triggerUpdateAll(getActivity());
 					}
 
 					@Override public void onSnackBarAction(Object o)
@@ -683,6 +689,8 @@ public class PlantDetailsFragment extends Fragment
 						{
 							FabAnimator.animateDown(getView().findViewById(R.id.fab_complete));
 						}
+
+						PlantWidgetProvider.triggerUpdateAll(getActivity());
 					}
 
 					@Override public void onSnackBarAction(Object o)
@@ -850,6 +858,7 @@ public class PlantDetailsFragment extends Fragment
 		}
 
 		getActivity().finish();
+		PlantWidgetProvider.triggerUpdateAll(getActivity());
 	}
 
 	/**
