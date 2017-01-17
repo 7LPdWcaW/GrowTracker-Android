@@ -23,6 +23,9 @@ import android.util.TypedValue;
 import android.view.View;
 import android.widget.RemoteViews;
 
+import java.util.ArrayList;
+import java.util.Map;
+
 import me.anon.grow.PlantDetailsActivity;
 import me.anon.grow.R;
 import me.anon.lib.manager.PlantManager;
@@ -31,6 +34,36 @@ import me.anon.model.Plant;
 public class PlantWidgetProvider extends AppWidgetProvider
 {
 	private Context context;
+
+	/**
+	 * Triggers all widgets to update
+	 * @param context
+	 */
+	public static void triggerUpdateAll(Context context)
+	{
+		ArrayList<Integer> widgetIds = new ArrayList<>();
+		Map<String, ?> all = PreferenceManager.getDefaultSharedPreferences(context).getAll();
+		for (String key : all.keySet())
+		{
+			String[] parts = key.split("_");
+			widgetIds.add(Integer.parseInt(parts[1]));
+		}
+
+		triggerUpdate(context, widgetIds.toArray(new Integer[widgetIds.size()]));
+	}
+
+	/**
+	 * Triggers a widget update
+	 * @param context
+	 * @param appWidgetId
+	 */
+	public static void triggerUpdate(Context context, Integer[] appWidgetId)
+	{
+		Intent intent = new Intent(context, PlantWidgetProvider.class);
+		intent.setAction(AppWidgetManager.ACTION_APPWIDGET_UPDATE);
+		intent.putExtra(AppWidgetManager.EXTRA_APPWIDGET_IDS, appWidgetId);
+		context.sendBroadcast(intent);
+	}
 
 	@Override public void onAppWidgetOptionsChanged(Context context, AppWidgetManager appWidgetManager, int appWidgetId, Bundle newOptions)
 	{
