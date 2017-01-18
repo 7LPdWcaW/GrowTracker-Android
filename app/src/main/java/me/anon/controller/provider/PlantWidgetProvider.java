@@ -6,6 +6,8 @@ import android.appwidget.AppWidgetProvider;
 import android.appwidget.AppWidgetProviderInfo;
 import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
+import android.content.res.Resources;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Canvas;
@@ -26,6 +28,7 @@ import android.widget.RemoteViews;
 import java.util.ArrayList;
 import java.util.Map;
 
+import me.anon.grow.MainApplication;
 import me.anon.grow.PlantDetailsActivity;
 import me.anon.grow.R;
 import me.anon.lib.manager.PlantManager;
@@ -41,15 +44,28 @@ public class PlantWidgetProvider extends AppWidgetProvider
 	 */
 	public static void triggerUpdateAll(Context context)
 	{
-		ArrayList<Integer> widgetIds = new ArrayList<>();
 		Map<String, ?> all = PreferenceManager.getDefaultSharedPreferences(context).getAll();
+		ArrayList<String> widgetIds = new ArrayList<>();
 		for (String key : all.keySet())
 		{
 			String[] parts = key.split("_");
-			widgetIds.add(Integer.parseInt(parts[1]));
+
+			if (parts.length > 0 && parts[0].equalsIgnoreCase("widget"))
+			{
+				if (!widgetIds.contains(parts[1]))
+				{
+					widgetIds.add(parts[1]);
+				}
+			}
 		}
 
-		triggerUpdate(context, widgetIds.toArray(new Integer[widgetIds.size()]));
+		int[] ids = new int[widgetIds.size()];
+		for (int index = 0; index < ids.length; index++)
+		{
+			ids[index] = Integer.parseInt(widgetIds.get(index));
+		}
+
+		triggerUpdate(context, ids);
 	}
 
 	/**
@@ -57,12 +73,26 @@ public class PlantWidgetProvider extends AppWidgetProvider
 	 * @param context
 	 * @param appWidgetId
 	 */
-	public static void triggerUpdate(Context context, Integer[] appWidgetId)
+	public static void triggerUpdate(Context context, int[] appWidgetId)
 	{
 		Intent intent = new Intent(context, PlantWidgetProvider.class);
 		intent.setAction(AppWidgetManager.ACTION_APPWIDGET_UPDATE);
 		intent.putExtra(AppWidgetManager.EXTRA_APPWIDGET_IDS, appWidgetId);
 		context.sendBroadcast(intent);
+	}
+
+	@Override public void onDeleted(Context context, int[] appWidgetIds)
+	{
+		super.onDeleted(context, appWidgetIds);
+		SharedPreferences.Editor edit = PreferenceManager.getDefaultSharedPreferences(context).edit();
+
+		for (int appWidgetId : appWidgetIds)
+		{
+			edit.remove("widget_" + appWidgetId);
+			edit.remove("widget_" + appWidgetId + "_image");
+		}
+
+		edit.apply();
 	}
 
 	@Override public void onAppWidgetOptionsChanged(Context context, AppWidgetManager appWidgetManager, int appWidgetId, Bundle newOptions)
@@ -81,7 +111,7 @@ public class PlantWidgetProvider extends AppWidgetProvider
 			int widgetId = appWidgetIds[widgetIndex];
 			String plantId = PreferenceManager.getDefaultSharedPreferences(context).getString("widget_" + widgetId, "");
 
-			if (!TextUtils.isEmpty(plantId))
+			if (!TextUtils.isEmpty(plantId) && !MainApplication.isEncrypted())
 			{
 				int plantIndex = -1;
 				for (int index = 0, plantsSize = PlantManager.getInstance().getPlants().size(); index < plantsSize; index++)
@@ -139,41 +169,46 @@ public class PlantWidgetProvider extends AppWidgetProvider
 			view.setTextViewTextSize(R.id.summary, TypedValue.COMPLEX_UNIT_DIP, 14);
 		}
 
-		if (plant.getImages().size() > 0)
+		if (size[0] > 0 && size[1] > 0)
 		{
-			if (size[0] > 0 && size[1] > 0)
+			Bitmap output = Bitmap.createBitmap(size[0], size[1], Bitmap.Config.ARGB_8888);
+			Canvas canvas = new Canvas(output);
+
+			Rect rect = new Rect(0, 0, output.getWidth(), output.getHeight());
+			RectF rectF = new RectF(rect);
+
+			Paint paint = new Paint();
+			paint.setColor(0xff000000);
+			paint.setAntiAlias(true);
+			canvas.drawRoundRect(rectF, 8, 8, paint);
+
+			Bitmap lastImage;
+
+			if (allowImage && plant.getImages().size() > 0)
 			{
 				BitmapFactory.Options opts = new BitmapFactory.Options();
 				opts.inSampleSize = recursiveSample(plant.getImages().get(plant.getImages().size() - 1), size[0], size[1]);
-
-				Bitmap output = Bitmap.createBitmap(size[0], size[1], Bitmap.Config.ARGB_8888);
-				Canvas canvas = new Canvas(output);
-
-				Rect rect = new Rect(0, 0, output.getWidth(), output.getHeight());
-				RectF rectF = new RectF(rect);
-
-				Paint paint = new Paint();
-				paint.setColor(0xff000000);
-				paint.setAntiAlias(true);
-				canvas.drawRoundRect(rectF, 8, 8, paint);
-
-				if (allowImage)
-				{
-					Bitmap lastImage = BitmapFactory.decodeFile(plant.getImages().get(plant.getImages().size() - 1), opts);
-					lastImage = ThumbnailUtils.extractThumbnail(lastImage, size[0], size[1], 0);
-
-					paint.setXfermode(new PorterDuffXfermode(PorterDuff.Mode.SRC_IN));
-					canvas.drawBitmap(lastImage, rect, rect, paint);
-
-					Paint overlay = new Paint();
-					overlay.setColor(0x000000);
-					overlay.setAlpha(0x7F);
-					overlay.setAntiAlias(true);
-					canvas.drawRoundRect(rectF, 8, 8, overlay);
-				}
-
-				view.setImageViewBitmap(R.id.image, output);
+				lastImage = BitmapFactory.decodeFile(plant.getImages().get(plant.getImages().size() - 1), opts);
+				lastImage = ThumbnailUtils.extractThumbnail(lastImage, size[0], size[1], 0);
 			}
+			else
+			{
+				BitmapFactory.Options opts = new BitmapFactory.Options();
+				opts.inSampleSize = recursiveSample(context.getResources(), R.drawable.default_plant, size[0], size[1]);
+				lastImage = BitmapFactory.decodeResource(context.getResources(), R.drawable.default_plant, opts);
+				lastImage = ThumbnailUtils.extractThumbnail(lastImage, size[0], size[1], 0);
+			}
+
+			paint.setXfermode(new PorterDuffXfermode(PorterDuff.Mode.SRC_IN));
+			canvas.drawBitmap(lastImage, rect, rect, paint);
+
+			Paint overlay = new Paint();
+			overlay.setColor(0x000000);
+			overlay.setAlpha(0x7F);
+			overlay.setAntiAlias(true);
+			canvas.drawRoundRect(rectF, 8, 8, overlay);
+
+			view.setImageViewBitmap(R.id.image, output);
 		}
 	}
 
@@ -236,6 +271,41 @@ public class PlantWidgetProvider extends AppWidgetProvider
 		BitmapFactory.Options options = new BitmapFactory.Options();
 		options.inJustDecodeBounds = true;
 		BitmapFactory.decodeFile(path, options);
+
+		int scale = 1;
+		int imageWidth = options.outWidth;
+		int imageHeight = options.outHeight;
+		int maxDimension = maxWidth > maxHeight ? maxWidth : maxHeight;
+		boolean isMaxWidth = maxWidth > maxHeight;
+
+		while ((isMaxWidth ? imageWidth : imageHeight) / 2 >= maxDimension)
+		{
+			imageWidth /= 2;
+			imageHeight /= 2;
+			scale *= 2;
+		}
+
+		if (scale < 1)
+		{
+			scale = 1;
+		}
+
+		return scale;
+	}
+
+	/**
+	 * Recursivly samples an image to below or equal the max width/height
+	 * @param res The resource object
+	 * @param resource The resource id
+	 * @param maxWidth The maximum width the image can be
+	 * @param maxHeight The maximum height the image can be
+	 * @return The scale size of the image to use with {@link BitmapFactory.Options()}
+	 */
+	private int recursiveSample(Resources res, int resource, int maxWidth, int maxHeight)
+	{
+		BitmapFactory.Options options = new BitmapFactory.Options();
+		options.inJustDecodeBounds = true;
+		BitmapFactory.decodeResource(res, resource, options);
 
 		int scale = 1;
 		int imageWidth = options.outWidth;

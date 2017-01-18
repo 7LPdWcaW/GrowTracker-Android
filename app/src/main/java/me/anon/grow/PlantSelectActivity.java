@@ -62,7 +62,7 @@ public class PlantSelectActivity extends AppCompatActivity
 			.putBoolean("widget_" + appWidgetId + "_image", allowImage)
 			.apply();
 
-		PlantWidgetProvider.triggerUpdate(this, appWidgetId);
+		PlantWidgetProvider.triggerUpdate(this, new int[]{appWidgetId});
 
 		finish();
 	}
