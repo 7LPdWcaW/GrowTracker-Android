@@ -5,6 +5,7 @@ import android.os.Bundle;
 import android.preference.PreferenceManager;
 import android.support.annotation.Nullable;
 import android.support.v7.app.AppCompatActivity;
+import android.widget.Toast;
 
 import me.anon.controller.provider.PlantWidgetProvider;
 import me.anon.grow.fragment.PlantSelectDialogFragment;
@@ -27,6 +28,13 @@ public class PlantSelectActivity extends AppCompatActivity
 		super.onCreate(savedInstanceState);
 
 		setResult(RESULT_CANCELED);
+
+		if (MainApplication.isEncrypted())
+		{
+			Toast.makeText(this, "Widget is not available when encrypt setting is enabled", Toast.LENGTH_LONG).show();
+			finish();
+			return;
+		}
 
 		Intent intent = getIntent();
 		Bundle extras = intent.getExtras();
