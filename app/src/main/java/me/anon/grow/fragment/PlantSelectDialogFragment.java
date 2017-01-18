@@ -136,6 +136,14 @@ public class PlantSelectDialogFragment extends DialogFragment
 					}
 				});
 
+				alertDialog.getButton(DialogInterface.BUTTON_NEGATIVE).setOnClickListener(new View.OnClickListener()
+				{
+					@Override public void onClick(View v)
+					{
+						getActivity().finish();
+					}
+				});
+
 				alertDialog.getButton(DialogInterface.BUTTON_NEUTRAL).setOnClickListener(new View.OnClickListener()
 				{
 					@Override public void onClick(View view)
