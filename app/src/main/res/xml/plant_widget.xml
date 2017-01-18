@@ -6,7 +6,7 @@
 	android:configure="me.anon.grow.PlantSelectActivity"
 	android:minHeight="40dp"
 	android:minWidth="110dp"
-	android:previewImage="@mipmap/ic_launcher"
+	android:previewImage="@drawable/widget_preview"
 	android:resizeMode="horizontal|vertical"
 	android:updatePeriodMillis="1800000"
 	android:widgetCategory="home_screen|keyguard"
