@@ -24,10 +24,28 @@
 			/>
 		</provider>
 
+		<receiver android:name="me.anon.controller.provider.PlantWidgetProvider">
+			<intent-filter>
+				<action android:name="android.appwidget.action.APPWIDGET_UPDATE" />
+				<action android:name="android.appwidget.action.APPWIDGET_RESIZE" />
+			</intent-filter>
+
+			<meta-data
+				android:name="android.appwidget.provider"
+				android:resource="@xml/plant_widget"
+			/>
+		</receiver>
+
 		<activity android:name=".BootActivity">
 			<intent-filter>
 				<category android:name="android.intent.category.LAUNCHER" />
 				<action android:name="android.intent.action.MAIN" />
+			</intent-filter>
+		</activity>
+
+		<activity android:name=".PlantSelectActivity" android:theme="@style/Theme.Transparent">
+			<intent-filter>
+				<action android:name="android.appwidget.action.APPWIDGET_CONFIGURE" />
 			</intent-filter>
 		</activity>
 
