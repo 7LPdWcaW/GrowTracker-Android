@@ -162,7 +162,7 @@ public class EventListFragment extends Fragment implements ActionAdapter.OnActio
 		actions.addAll(PlantManager.getInstance().getPlants().get(plantIndex).getActions());
 		Collections.reverse(actions);
 		actions.removeAll(Collections.singleton(null));
-		adapter.setActions(actions);
+		adapter.setActions(plant, actions);
 	}
 
 	@Override public void onActivityResult(int requestCode, int resultCode, Intent data)
@@ -603,7 +603,7 @@ public class EventListFragment extends Fragment implements ActionAdapter.OnActio
 		}
 
 		items.removeAll(Collections.singleton(null));
-		adapter.setActions(items);
+		adapter.setActions(plant, items);
 		adapter.notifyDataSetChanged();
 	}
 }

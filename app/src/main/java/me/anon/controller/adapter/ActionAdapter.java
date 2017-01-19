@@ -27,10 +27,12 @@ import me.anon.grow.R;
 import me.anon.lib.DateRenderer;
 import me.anon.lib.Unit;
 import me.anon.lib.helper.ModelHelper;
+import me.anon.lib.helper.TimeHelper;
 import me.anon.model.Action;
 import me.anon.model.Additive;
 import me.anon.model.EmptyAction;
 import me.anon.model.NoteAction;
+import me.anon.model.Plant;
 import me.anon.model.StageChange;
 import me.anon.model.Water;
 import me.anon.view.ActionHolder;
@@ -55,12 +57,14 @@ public class ActionAdapter extends RecyclerView.Adapter<ActionHolder> implements
 	}
 
 	@Setter private OnActionSelectListener onActionSelectListener;
+	@Getter private Plant plant;
 	@Getter private List<Action> actions = new ArrayList<>();
 	@Getter private Unit measureUnit, deliveryUnit;
 	@Setter private String lastDateStr = "";
 
-	public void setActions(List<Action> actions)
+	public void setActions(Plant plant, List<Action> actions)
 	{
+		this.plant = plant;
 		this.actions = actions;
 		lastDateStr = "";
 	}
@@ -95,18 +99,62 @@ public class ActionAdapter extends RecyclerView.Adapter<ActionHolder> implements
 		String fullDateStr = dateFormat.format(actionDate) + " " + timeFormat.format(actionDate);
 		String dateStr = "<b>" + new DateRenderer().timeAgo(action.getDate()).formattedDate + "</b> ago";
 
-		String dateDayStr = actionCalendar.get(Calendar.DAY_OF_MONTH) + "\n" + actionCalendar.getDisplayName(Calendar.MONTH, Calendar.SHORT, Locale.getDefault());
+		String dateDayStr = actionCalendar.get(Calendar.DAY_OF_MONTH) + " " + actionCalendar.getDisplayName(Calendar.MONTH, Calendar.SHORT, Locale.getDefault());
 
 		if (viewHolder.getDateDay() != null)
 		{
 			if (!lastDateStr.equalsIgnoreCase(dateDayStr))
 			{
 				lastDateStr = dateDayStr;
-				viewHolder.getDateDay().setText(lastDateStr);
+
+				String stageDay = "";
+				StageChange current = null;
+				StageChange previous = null;
+
+				for (int actionIndex = i; actionIndex < actions.size(); actionIndex++)
+				{
+					if (actions.get(actionIndex) instanceof StageChange)
+					{
+						if (current == null)
+						{
+							current = (StageChange)actions.get(actionIndex);
+						}
+						else if (previous == null)
+						{
+							previous = (StageChange)actions.get(actionIndex);
+						}
+					}
+				}
+
+				if (previous == null)
+				{
+					previous = current;
+				}
+
+				if (current != null)
+				{
+					int totalDays = (int)TimeHelper.toDays(action.getDate() - plant.getPlantDate());
+					stageDay += totalDays;
+
+					if (action == current)
+					{
+						int currentDays = (int)TimeHelper.toDays(Math.abs(current.getDate() - previous.getDate()));
+						stageDay += "/" + currentDays + previous.getNewStage().getPrintString().substring(0, 1).toLowerCase();
+					}
+					else
+					{
+						int currentDays = (int)TimeHelper.toDays(Math.abs(action.getDate() - current.getDate()));
+						stageDay += "/" + currentDays + current.getNewStage().getPrintString().substring(0, 1).toLowerCase();
+					}
+				}
+
+				viewHolder.getDateDay().setText(Html.fromHtml(lastDateStr));
+				viewHolder.getStageDay().setText(stageDay);
 			}
 			else
 			{
 				viewHolder.getDateDay().setText("");
+				viewHolder.getStageDay().setText("");
 			}
 		}
 
