@@ -9,6 +9,7 @@
 	app:cardCornerRadius="8dp"
 	app:cardUseCompatPadding="false"
 	android:clipChildren="true"
+	android:layout_marginRight="16dp"
 >
 	<me.anon.view.SquareRelativeLayout
 		android:layout_width="wrap_content"
