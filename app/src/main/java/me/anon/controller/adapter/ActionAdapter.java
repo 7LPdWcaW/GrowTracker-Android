@@ -60,13 +60,11 @@ public class ActionAdapter extends RecyclerView.Adapter<ActionHolder> implements
 	@Getter private Plant plant;
 	@Getter private List<Action> actions = new ArrayList<>();
 	@Getter private Unit measureUnit, deliveryUnit;
-	@Setter private String lastDateStr = "";
 
 	public void setActions(Plant plant, List<Action> actions)
 	{
 		this.plant = plant;
 		this.actions = actions;
-		lastDateStr = "";
 	}
 
 	@Override public ActionHolder onCreateViewHolder(ViewGroup viewGroup, int i)
@@ -103,9 +101,19 @@ public class ActionAdapter extends RecyclerView.Adapter<ActionHolder> implements
 
 		if (viewHolder.getDateDay() != null)
 		{
+			String lastDateStr = "";
+
+			if (i - 1 >= 0)
+			{
+				Date lastActionDate = new Date(actions.get(i - 1).getDate());
+				Calendar lastActionCalendar = GregorianCalendar.getInstance();
+				lastActionCalendar.setTime(lastActionDate);
+				lastDateStr = lastActionCalendar.get(Calendar.DAY_OF_MONTH) + " " + lastActionCalendar.getDisplayName(Calendar.MONTH, Calendar.SHORT, Locale.getDefault());
+			}
+
 			if (!lastDateStr.equalsIgnoreCase(dateDayStr))
 			{
-				lastDateStr = dateDayStr;
+				viewHolder.getDateDay().setText(Html.fromHtml(dateDayStr));
 
 				String stageDay = "";
 				StageChange current = null;
@@ -126,6 +134,9 @@ public class ActionAdapter extends RecyclerView.Adapter<ActionHolder> implements
 					}
 				}
 
+				int totalDays = (int)TimeHelper.toDays(Math.abs(action.getDate() - plant.getPlantDate()));
+				stageDay += totalDays;
+
 				if (previous == null)
 				{
 					previous = current;
@@ -133,9 +144,6 @@ public class ActionAdapter extends RecyclerView.Adapter<ActionHolder> implements
 
 				if (current != null)
 				{
-					int totalDays = (int)TimeHelper.toDays(action.getDate() - plant.getPlantDate());
-					stageDay += totalDays;
-
 					if (action == current)
 					{
 						int currentDays = (int)TimeHelper.toDays(Math.abs(current.getDate() - previous.getDate()));
@@ -148,7 +156,6 @@ public class ActionAdapter extends RecyclerView.Adapter<ActionHolder> implements
 					}
 				}
 
-				viewHolder.getDateDay().setText(Html.fromHtml(lastDateStr));
 				viewHolder.getStageDay().setText(stageDay);
 			}
 			else
