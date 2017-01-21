@@ -211,9 +211,8 @@ public class EventListFragment extends Fragment implements ActionAdapter.OnActio
 						if (getView() != null)
 						{
 							FabAnimator.animateDown(getView().findViewById(R.id.fab_add));
+							PlantWidgetProvider.triggerUpdateAll(getView().getContext());
 						}
-
-						PlantWidgetProvider.triggerUpdateAll(getActivity());
 					}
 
 					@Override public void onSnackBarAction(Object o)
@@ -253,9 +252,8 @@ public class EventListFragment extends Fragment implements ActionAdapter.OnActio
 				if (getView() != null)
 				{
 					FabAnimator.animateDown(getView().findViewById(R.id.fab_add));
+					PlantWidgetProvider.triggerUpdateAll(getView().getContext());
 				}
-
-				PlantWidgetProvider.triggerUpdateAll(getActivity());
 			}
 
 			@Override public void onSnackBarAction(Object o)
@@ -307,9 +305,8 @@ public class EventListFragment extends Fragment implements ActionAdapter.OnActio
 							if (getView() != null)
 							{
 								FabAnimator.animateDown(getView().findViewById(R.id.fab_add));
+								PlantWidgetProvider.triggerUpdateAll(getView().getContext());
 							}
-
-							PlantWidgetProvider.triggerUpdateAll(getActivity());
 						}
 
 						@Override public void onSnackBarAction(Object o)
@@ -365,9 +362,8 @@ public class EventListFragment extends Fragment implements ActionAdapter.OnActio
 							if (getView() != null)
 							{
 								FabAnimator.animateDown(getView().findViewById(R.id.fab_add));
+								PlantWidgetProvider.triggerUpdateAll(getView().getContext());
 							}
-
-							PlantWidgetProvider.triggerUpdateAll(getActivity());
 						}
 
 						@Override public void onSnackBarAction(Object o)
@@ -451,9 +447,8 @@ public class EventListFragment extends Fragment implements ActionAdapter.OnActio
 							if (getView() != null)
 							{
 								FabAnimator.animateDown(getView().findViewById(R.id.fab_add));
+								PlantWidgetProvider.triggerUpdateAll(getView().getContext());
 							}
-
-							PlantWidgetProvider.triggerUpdateAll(getActivity());
 						}
 
 						@Override public void onSnackBarAction(Object o)
@@ -492,9 +487,8 @@ public class EventListFragment extends Fragment implements ActionAdapter.OnActio
 				if (getView() != null)
 				{
 					FabAnimator.animateDown(getView().findViewById(R.id.fab_add));
+					PlantWidgetProvider.triggerUpdateAll(getView().getContext());
 				}
-
-				PlantWidgetProvider.triggerUpdateAll(getActivity());
 			}
 
 			@Override public void onSnackBarAction(Object o)
