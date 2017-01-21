@@ -544,15 +544,19 @@ public class PlantListFragment extends Fragment
 		ArrayList<Plant> plants = new ArrayList<>();
 		plants.addAll(PlantManager.getInstance().getSortedPlantList(garden));
 
-		for (int index = 0; index < plants.size(); index++)
+		if (filterList.size() > 0)
 		{
-			if (!filterList.contains(plants.get(index).getStage()))
+			for (int index = 0; index < plants.size(); index++)
 			{
-				plants.set(index, null);
+				if (!filterList.contains(plants.get(index).getStage()))
+				{
+					plants.set(index, null);
+				}
 			}
+
+			plants.removeAll(Collections.singleton(null));
 		}
 
-		plants.removeAll(Collections.singleton(null));
 		adapter.setPlants(plants);
 		adapter.notifyDataSetChanged();
 	}
