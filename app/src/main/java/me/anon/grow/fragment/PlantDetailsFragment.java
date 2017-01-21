@@ -268,9 +268,8 @@ public class PlantDetailsFragment extends Fragment
 						if (getView() != null)
 						{
 							FabAnimator.animateDown(getView().findViewById(R.id.fab_complete));
+							PlantWidgetProvider.triggerUpdateAll(getView().getContext());
 						}
-
-						PlantWidgetProvider.triggerUpdateAll(getActivity());
 					}
 
 					@Override public void onSnackBarAction(Object o)
@@ -494,9 +493,8 @@ public class PlantDetailsFragment extends Fragment
 						if (getView() != null)
 						{
 							FabAnimator.animateDown(getView().findViewById(R.id.fab_complete));
+							PlantWidgetProvider.triggerUpdateAll(getView().getContext());
 						}
-
-						PlantWidgetProvider.triggerUpdateAll(getActivity());
 					}
 
 					@Override public void onSnackBarAction(Object o)
@@ -688,9 +686,8 @@ public class PlantDetailsFragment extends Fragment
 						if (getView() != null)
 						{
 							FabAnimator.animateDown(getView().findViewById(R.id.fab_complete));
+							PlantWidgetProvider.triggerUpdateAll(getView().getContext());
 						}
-
-						PlantWidgetProvider.triggerUpdateAll(getActivity());
 					}
 
 					@Override public void onSnackBarAction(Object o)
@@ -857,8 +854,8 @@ public class PlantDetailsFragment extends Fragment
 			}
 		}
 
-		getActivity().finish();
 		PlantWidgetProvider.triggerUpdateAll(getActivity());
+		getActivity().finish();
 	}
 
 	/**
