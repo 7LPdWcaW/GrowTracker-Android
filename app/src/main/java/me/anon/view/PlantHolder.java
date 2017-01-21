@@ -7,7 +7,6 @@ import android.widget.TextView;
 
 import lombok.Data;
 import me.anon.grow.R;
-import me.anon.lib.Views;
 
 /**
  * // TODO: Add class description
@@ -17,16 +16,18 @@ import me.anon.lib.Views;
  * @project GrowTracker
  */
 @Data
-@Views.Injectable
 public class PlantHolder extends RecyclerView.ViewHolder
 {
-	@Views.InjectView(R.id.image) private ImageView image;
-	@Views.InjectView(R.id.name) private TextView name;
-	@Views.InjectView(R.id.summary) private TextView summary;
+	private ImageView image;
+	private TextView name;
+	private TextView summary;
 
 	public PlantHolder(View itemView)
 	{
 		super(itemView);
-		Views.inject(this, itemView);
+
+		image = (ImageView)itemView.findViewById(R.id.image);
+		name = (TextView)itemView.findViewById(R.id.name);
+		summary = (TextView)itemView.findViewById(R.id.summary);
 	}
 }
