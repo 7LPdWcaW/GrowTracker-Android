@@ -430,9 +430,8 @@ public class WateringFragment extends Fragment
 			}
 		}
 
+		PlantWidgetProvider.triggerUpdateAll(getActivity());
 		getActivity().setResult(Activity.RESULT_OK);
 		getActivity().finish();
-
-		PlantWidgetProvider.triggerUpdateAll(getActivity());
 	}
 }

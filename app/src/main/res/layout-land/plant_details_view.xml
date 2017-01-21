@@ -21,7 +21,7 @@
 				android:orientation="horizontal"
 				android:background="#ffffff"
 				android:elevation="4dp"
-				android:layout_marginBottom="8dp"
+				android:layout_marginBottom="12dp"
 				android:divider="@drawable/vertical_full_divider"
 				android:showDividers="middle"
 				android:dividerPadding="8dp"
@@ -165,7 +165,7 @@
 				android:orientation="vertical"
 				android:background="#ffffff"
 				android:elevation="4dp"
-				android:layout_marginTop="8dp"
+				android:layout_marginTop="12dp"
 				style="@style/PaperCard"
 			>
 				<TextView
@@ -309,7 +309,7 @@
 				android:orientation="vertical"
 				android:background="#ffffff"
 				android:elevation="4dp"
-				android:layout_marginTop="8dp"
+				android:layout_marginTop="12dp"
 				style="@style/PaperCard"
 			>
 				<TextView
@@ -362,7 +362,7 @@
 				android:orientation="vertical"
 				android:background="#ffffff"
 				android:elevation="4dp"
-				android:layout_marginTop="8dp"
+				android:layout_marginTop="12dp"
 				android:divider="@drawable/full_divider"
 				android:showDividers="middle"
 				android:visibility="gone"
