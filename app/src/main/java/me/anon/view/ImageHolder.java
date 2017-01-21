@@ -18,15 +18,16 @@ import me.anon.lib.Views;
  * @project GrowTracker
  */
 @Data
-@Views.Injectable
 public class ImageHolder extends RecyclerView.ViewHolder
 {
-	@Views.InjectView(R.id.image) private ImageView image;
-	@Views.InjectView(R.id.selection) private CheckBox selection;
+	private ImageView image;
+	private CheckBox selection;
 
 	public ImageHolder(View itemView)
 	{
 		super(itemView);
-		Views.inject(this, itemView);
+
+		image = (ImageView)itemView.findViewById(R.id.image);
+		selection = (CheckBox)itemView.findViewById(R.id.selection);
 	}
 }
