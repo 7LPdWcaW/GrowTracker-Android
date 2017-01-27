@@ -21,6 +21,7 @@ import lombok.Data;
 import lombok.Getter;
 import lombok.experimental.Accessors;
 import me.anon.grow.MainApplication;
+import me.anon.lib.helper.AddonHelper;
 import me.anon.lib.helper.EncryptionHelper;
 import me.anon.lib.helper.GsonHelper;
 import me.anon.lib.task.AsyncCallback;
@@ -209,6 +210,8 @@ public class PlantManager
 		{
 			if (!MainApplication.isFailsafe())
 			{
+				AddonHelper.broadcastPlantList(context);
+
 				new AsyncTask<Void, Void, Void>()
 				{
 					@Override protected Void doInBackground(Void... voids)
