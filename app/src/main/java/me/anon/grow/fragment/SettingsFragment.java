@@ -130,7 +130,7 @@ public class SettingsFragment extends PreferenceFragment implements Preference.O
 						Drawable icon = resolveInfo.loadIcon(packageManager);
 						if (icon == null)
 						{
-							icon = getResources().getDrawable(R.drawable.ic_remove);
+							icon = getResources().getDrawable(R.drawable.ic_configure);
 						}
 
 						preference.setIcon(icon);
