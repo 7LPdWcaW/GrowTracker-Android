@@ -48,6 +48,11 @@
 	</PreferenceCategory>
 
 	<PreferenceCategory
+		android:title="Addons"
+		android:key="addon_list"
+	/>
+
+	<PreferenceCategory
 		android:title="About"
 	>
 		<Preference
