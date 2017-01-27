@@ -3,11 +3,14 @@ package me.anon.grow.fragment;
 import android.app.AlertDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.pm.ApplicationInfo;
 import android.content.pm.PackageManager;
+import android.content.pm.ResolveInfo;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.preference.CheckBoxPreference;
 import android.preference.Preference;
+import android.preference.PreferenceCategory;
 import android.preference.PreferenceFragment;
 import android.preference.PreferenceManager;
 import android.text.Html;
@@ -19,6 +22,7 @@ import com.nostra13.universalimageloader.core.ImageLoader;
 import java.io.BufferedInputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.util.List;
 
 import me.anon.grow.MainApplication;
 import me.anon.grow.R;
@@ -78,6 +82,44 @@ public class SettingsFragment extends PreferenceFragment implements Preference.O
 			findPreference("failsafe").setSummary("");
 			findPreference("encrypt").setTitle("");
 			findPreference("encrypt").setSummary("");
+		}
+		else
+		{
+			populateAddons();
+		}
+	}
+
+	/**
+	 * Populates the preference category for installed addons
+	 */
+	private void populateAddons()
+	{
+		PreferenceCategory list = (PreferenceCategory)findPreference("addon_list");
+		list.removeAll();
+
+		Intent configIntents = new Intent("me.anon.grow.ADDON_CONFIGURATION");
+		List<ResolveInfo> resolveInfos = getActivity().getPackageManager().queryIntentActivities(configIntents, PackageManager.GET_META_DATA);
+
+		for (ResolveInfo resolveInfo : resolveInfos)
+		{
+			try
+			{
+				ApplicationInfo ai = getActivity().getPackageManager().getApplicationInfo(resolveInfo.activityInfo.packageName, PackageManager.GET_META_DATA);
+				Bundle bundle = ai.metaData;
+				String name = bundle.getString("ADDON_NAME");
+				String version = bundle.getString("ADDON_VERSION");
+
+				Preference preference = new Preference(getActivity());
+				preference.setIcon(resolveInfo.loadIcon(getActivity().getPackageManager()));
+				preference.setTitle(name);
+				preference.setSummary("Version: " + version + ". Tap to configure.");
+				preference.setKey("activity://" + resolveInfo.activityInfo.name);
+				list.addPreference(preference);
+			}
+			catch (Exception e)
+			{
+				e.printStackTrace();
+			}
 		}
 	}
 
