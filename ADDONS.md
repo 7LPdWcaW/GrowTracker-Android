@@ -2,6 +2,15 @@
 
 Grow tracker has a basic implementation for addons via the use of Broadcast Intents.
 
+## Meta data
+
+You should provide the following meta-data tags for your addon application
+
+|key|type|description|
+|---|---|---|
+|`me.anon.grow.ADDON_NAME`|String|Name of your application addon|
+|`me.anon.grow.ADDON_VERSION`|String|Version of your application addon|
+
 ## Available broadcasts
 
 Currently the available broadcasts you can listen for include
