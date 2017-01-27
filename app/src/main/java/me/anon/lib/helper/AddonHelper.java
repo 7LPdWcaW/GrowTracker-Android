@@ -1,7 +1,14 @@
 package me.anon.lib.helper;
 
+import android.content.Context;
+import android.content.Intent;
+import android.util.Base64;
+
 import java.util.HashMap;
 import java.util.Map;
+
+import me.anon.grow.MainApplication;
+import me.anon.lib.manager.PlantManager;
 
 /**
  * Contains all methods and action types for available addons for Grow Tracker
@@ -28,4 +35,31 @@ public class AddonHelper
 	public static final String[] ADDON_ACTIVITIES = {
 		"me.anon.grow.ADDON_CONFIGURATION"
 	};
+
+	/**
+	 * Sends `me.anon.grow.ACTION_SAVE_PLANTS` broadcast for plant list data
+	 * @param context
+	 */
+	public static void broadcastPlantList(Context context)
+	{
+		final Context applicationContext = context.getApplicationContext();
+
+		new Thread(new Runnable()
+		{
+			@Override public void run()
+			{
+				String plantListData = GsonHelper.parse(PlantManager.getInstance().getPlants());
+
+				if (MainApplication.isEncrypted())
+				{
+					plantListData = Base64.encodeToString(EncryptionHelper.encrypt(MainApplication.getKey(), plantListData), Base64.NO_WRAP);
+				}
+
+				Intent saveRequest = new Intent("me.anon.grow.ACTION_SAVE_PLANTS");
+				saveRequest.addFlags(Intent.FLAG_INCLUDE_STOPPED_PACKAGES);
+				saveRequest.putExtra("me.anon.grow.PLANT_LIST", plantListData);
+				applicationContext.sendBroadcast(saveRequest);
+			}
+		}).start();
+	}
 }
