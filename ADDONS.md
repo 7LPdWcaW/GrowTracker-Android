@@ -14,7 +14,8 @@ Data is provided with the broadcast intent via the bundle
 
 |key|type|description|
 |---|---|---|
-|`me.anon.grow.PLANT_LIST`|String|Full json-encoded array of plants and its data|
+|`me.anon.grow.PLANT_LIST`|String|Full json-encoded array of plants and its data.|
+|`me.anon.grow.ENCRYPTED`|Boolean|If this is true, `me.anon.grow.PLANT_LIST` will be encrypted and base64 encoded, images will be encrypted on disk|
 |`me.anon.grow.IMAGE_ADDED`|String|Path to image added|
 |`me.anon.grow.IMAGE_DELETED`|String|Path to deleted image|
 
