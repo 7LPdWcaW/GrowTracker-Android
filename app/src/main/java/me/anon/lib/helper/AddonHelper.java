@@ -58,8 +58,24 @@ public class AddonHelper
 				Intent saveRequest = new Intent("me.anon.grow.ACTION_SAVE_PLANTS");
 				saveRequest.addFlags(Intent.FLAG_INCLUDE_STOPPED_PACKAGES);
 				saveRequest.putExtra("me.anon.grow.PLANT_LIST", plantListData);
+				saveRequest.putExtra("me.anon.grow.ENCRYPTED", MainApplication.isEncrypted());
 				applicationContext.sendBroadcast(saveRequest);
 			}
 		}).start();
+	}
+
+	/**
+	 * Sends `me.anon.grow.ACTION_SAVE_PLANTS` broadcast for image added/deleted
+	 * @param context
+	 * @param imagePath The path to the image data
+	 * @param deleted True if the image was deleted, false if not
+	 */
+	public static void broadcastImage(Context context, String imagePath, boolean deleted)
+	{
+		Intent saveRequest = new Intent("me.anon.grow.ACTION_SAVE_PLANTS");
+		saveRequest.addFlags(Intent.FLAG_INCLUDE_STOPPED_PACKAGES);
+		saveRequest.putExtra(deleted ? "me.anon.grow.IMAGE_DELETED" : "me.anon.grow.IMAGE_ADDED", imagePath);
+		saveRequest.putExtra("me.anon.grow.ENCRYPTED", MainApplication.isEncrypted());
+		context.sendBroadcast(saveRequest);
 	}
 }
