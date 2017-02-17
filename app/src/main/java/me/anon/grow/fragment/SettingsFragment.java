@@ -1,17 +1,25 @@
 package me.anon.grow.fragment;
 
 import android.app.AlertDialog;
+import android.content.ComponentName;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.pm.ApplicationInfo;
 import android.content.pm.PackageManager;
+import android.content.pm.ResolveInfo;
+import android.graphics.drawable.Drawable;
+import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.preference.CheckBoxPreference;
 import android.preference.Preference;
+import android.preference.PreferenceCategory;
 import android.preference.PreferenceFragment;
 import android.preference.PreferenceManager;
 import android.text.Html;
+import android.text.TextUtils;
 import android.util.Base64;
+import android.view.View;
 import android.widget.Toast;
 
 import com.nostra13.universalimageloader.core.ImageLoader;
@@ -19,10 +27,12 @@ import com.nostra13.universalimageloader.core.ImageLoader;
 import java.io.BufferedInputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.util.List;
 
 import me.anon.grow.MainApplication;
 import me.anon.grow.R;
 import me.anon.lib.Unit;
+import me.anon.lib.helper.AddonHelper;
 import me.anon.lib.helper.EncryptionHelper;
 import me.anon.lib.helper.GsonHelper;
 import me.anon.lib.manager.GardenManager;
@@ -41,6 +51,8 @@ import me.anon.model.Plant;
  */
 public class SettingsFragment extends PreferenceFragment implements Preference.OnPreferenceClickListener, Preference.OnPreferenceChangeListener
 {
+	private static final int REQUEST_UNINSTALL = 0x01;
+
 	@Override public void onActivityCreated(Bundle savedInstanceState)
 	{
 		super.onActivityCreated(savedInstanceState);
@@ -78,6 +90,115 @@ public class SettingsFragment extends PreferenceFragment implements Preference.O
 			findPreference("failsafe").setSummary("");
 			findPreference("encrypt").setTitle("");
 			findPreference("encrypt").setSummary("");
+		}
+		else
+		{
+			populateAddons();
+		}
+	}
+
+	/**
+	 * Populates the preference category for installed addons
+	 */
+	private void populateAddons()
+	{
+		final PackageManager packageManager = getActivity().getPackageManager();
+		final PreferenceCategory list = (PreferenceCategory)findPreference("addon_list");
+		list.removeAll();
+
+		for (final String addonAction : AddonHelper.ADDON_BROADCAST)
+		{
+			Intent otherIntents = new Intent(addonAction);
+			List<ResolveInfo> resolveInfos = packageManager.queryBroadcastReceivers(otherIntents, PackageManager.GET_META_DATA);
+
+			if (resolveInfos.size() > 0)
+			{
+				for (final ResolveInfo resolveInfo : resolveInfos)
+				{
+					try
+					{
+						String appName = (String)resolveInfo.loadLabel(packageManager);
+						appName = TextUtils.isEmpty(appName) ? resolveInfo.activityInfo.packageName : appName;
+
+						ApplicationInfo ai = packageManager.getApplicationInfo(resolveInfo.activityInfo.packageName, PackageManager.GET_META_DATA);
+						Bundle bundle = ai.metaData;
+						final String name = bundle.getString("me.anon.grow.ADDON_NAME", appName);
+						final String version = bundle.getString("me.anon.grow.ADDON_VERSION", "");
+
+						Preference preference = new Preference(getActivity());
+
+						Drawable icon = resolveInfo.loadIcon(packageManager);
+						if (icon == null)
+						{
+							icon = getResources().getDrawable(R.drawable.ic_configure);
+						}
+
+						preference.setIcon(icon);
+						preference.setTitle(name + " " + version);
+						preference.setSummary("Tap for more information");
+						preference.setKey(resolveInfo.activityInfo.packageName);
+						preference.setOnPreferenceClickListener(new Preference.OnPreferenceClickListener()
+						{
+							@Override public boolean onPreferenceClick(Preference preference)
+							{
+								Intent configIntent = new Intent("me.anon.grow.ADDON_CONFIGURATION");
+								configIntent.setPackage(preference.getKey());
+								configIntent.addCategory(addonAction);
+
+								final List<ResolveInfo> configureIntents = packageManager.queryIntentActivities(configIntent, PackageManager.GET_META_DATA);
+
+								final AlertDialog alertDialog = new AlertDialog.Builder(getActivity())
+									.setTitle(name + " " + version)
+									.setMessage(Html.fromHtml(AddonHelper.ADDON_DESCRIPTIONS.get(addonAction)))
+									.setNeutralButton("Configure", new DialogInterface.OnClickListener()
+									{
+										@Override public void onClick(DialogInterface dialog, int which)
+										{
+											Intent intent = new Intent();
+											intent.setComponent(new ComponentName(configureIntents.get(0).activityInfo.packageName, configureIntents.get(0).activityInfo.name));
+											startActivity(intent);
+										}
+									})
+									.setPositiveButton("Close", null)
+									.setNegativeButton("Uninstall", new DialogInterface.OnClickListener()
+									{
+										@Override public void onClick(DialogInterface dialog, int which)
+										{
+											Intent intent = new Intent(Intent.ACTION_DELETE);
+											intent.setData(Uri.parse("package:" + resolveInfo.activityInfo.packageName));
+											intent.putExtra(Intent.EXTRA_RETURN_RESULT, true);
+											startActivityForResult(intent, REQUEST_UNINSTALL);
+										}
+									}).create();
+
+								if (configureIntents.size() == 0)
+								{
+									alertDialog.setOnShowListener(new DialogInterface.OnShowListener()
+									{
+										@Override public void onShow(DialogInterface dialog)
+										{
+											alertDialog.getButton(DialogInterface.BUTTON_NEUTRAL).setVisibility(View.GONE);
+										}
+									});
+								}
+
+								alertDialog.show();
+
+								return true;
+							}
+						});
+						list.addPreference(preference);
+					}
+					catch (Exception e)
+					{
+						e.printStackTrace();
+					}
+				}
+			}
+			else
+			{
+				getPreferenceScreen().removePreference(list);
+			}
 		}
 	}
 
@@ -397,5 +518,17 @@ public class SettingsFragment extends PreferenceFragment implements Preference.O
 		}
 
 		return false;
+	}
+
+	@Override public void onActivityResult(int requestCode, int resultCode, Intent data)
+	{
+		super.onActivityResult(requestCode, resultCode, data);
+
+		if (requestCode == REQUEST_UNINSTALL)
+		{
+			// refresh addons
+			Toast.makeText(getActivity(), "Addon successfully uninstalled", Toast.LENGTH_SHORT).show();
+			populateAddons();
+		}
 	}
 }
