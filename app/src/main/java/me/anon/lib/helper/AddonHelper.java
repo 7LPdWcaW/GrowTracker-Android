@@ -19,6 +19,7 @@ public class AddonHelper
 	 * Array of broadcast actions
 	 */
 	public static final String[] ADDON_BROADCAST = {
+		"me.anon.grow.ACTION_UPDATER",
 		"me.anon.grow.ACTION_SAVE_PLANTS"
 	};
 
@@ -26,7 +27,8 @@ public class AddonHelper
 
 	static
 	{
-		ADDON_DESCRIPTIONS.put(ADDON_BROADCAST[0], "Listens for save events, i.e. when a plant is saved, or a photo taken/deleted.<br />Not triggered for garden edits.");
+		ADDON_DESCRIPTIONS.put(ADDON_BROADCAST[0], "Custom action for Grow Updater application. Triggered when app is opened.");
+		ADDON_DESCRIPTIONS.put(ADDON_BROADCAST[1], "Listens for save events, i.e. when a plant is saved, or a photo taken/deleted.<br />Not triggered for garden edits.");
 	}
 
 	/**
