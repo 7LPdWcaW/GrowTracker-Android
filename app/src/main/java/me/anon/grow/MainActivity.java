@@ -42,7 +42,7 @@ import me.anon.model.Garden;
  */
 @Views.Injectable
 @Accessors(prefix = {"m", ""}, chain = true)
-public class MainActivity extends AppCompatActivity implements NavigationView.OnNavigationItemSelectedListener
+public class MainActivity extends BaseActivity implements NavigationView.OnNavigationItemSelectedListener
 {
 	private static final String TAG_FRAGMENT = "current_fragment";
 
