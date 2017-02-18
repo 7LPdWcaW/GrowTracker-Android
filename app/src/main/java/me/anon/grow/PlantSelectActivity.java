@@ -4,7 +4,6 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
 import android.support.annotation.Nullable;
-import android.support.v7.app.AppCompatActivity;
 import android.widget.Toast;
 
 import me.anon.controller.provider.PlantWidgetProvider;
@@ -16,10 +15,8 @@ import static android.appwidget.AppWidgetManager.INVALID_APPWIDGET_ID;
 
 /**
  * // TODO: Add class description
- *
- * @author Callum Taylor
  */
-public class PlantSelectActivity extends AppCompatActivity
+public class PlantSelectActivity extends BaseActivity
 {
 	private int appWidgetId = INVALID_APPWIDGET_ID;
 
