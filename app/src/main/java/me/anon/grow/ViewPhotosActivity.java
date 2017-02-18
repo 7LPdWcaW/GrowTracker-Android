@@ -1,7 +1,6 @@
 package me.anon.grow;
 
 import android.os.Bundle;
-import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 
 import lombok.experimental.Accessors;
@@ -17,7 +16,7 @@ import me.anon.lib.Views;
  */
 @Views.Injectable
 @Accessors(prefix = {"m", ""}, chain = true)
-public class ViewPhotosActivity extends AppCompatActivity
+public class ViewPhotosActivity extends BaseActivity
 {
 	private static final String TAG_FRAGMENT = "current_fragment";
 

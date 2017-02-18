@@ -59,5 +59,7 @@
 		<activity android:name=".SettingsActivity" />
 		<activity android:name=".fragment.ImageLightboxDialog" android:theme="@style/fullscreen" />
 		<activity android:name=".PlantDetailsActivity" android:windowSoftInputMode="stateAlwaysHidden" />
+
+		<meta-data android:name="me.anon.grow.APP_TYPE" android:value="${appType}" />
 	</application>
 </manifest>

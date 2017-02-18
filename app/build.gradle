@@ -23,10 +23,18 @@ android {
 	productFlavors {
 		production {
 			buildConfigField "Boolean", "DISCRETE", "false"
+
+			manifestPlaceholders = [
+				"appType": "original"
+			]
 		}
 
 		discrete {
 			buildConfigField "Boolean", "DISCRETE", "true"
+
+			manifestPlaceholders = [
+				"appType": "discrete"
+			]
 		}
 	}
 }
