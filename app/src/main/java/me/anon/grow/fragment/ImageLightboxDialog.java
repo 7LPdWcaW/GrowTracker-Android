@@ -1,6 +1,7 @@
 package me.anon.grow.fragment;
 
 import android.app.Activity;
+import android.content.Context;
 import android.graphics.Bitmap;
 import android.os.Bundle;
 import android.os.Parcelable;
@@ -10,11 +11,14 @@ import android.support.v4.view.ViewPager;
 import android.text.Html;
 import android.text.TextUtils;
 import android.view.Gravity;
+import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.Window;
 import android.view.WindowManager;
+import android.view.inputmethod.EditorInfo;
+import android.view.inputmethod.InputMethodManager;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.TextView;
@@ -107,7 +111,6 @@ public class ImageLightboxDialog extends Activity
 
 		@Override public void destroyItem(ViewGroup container, int position, Object object)
 		{
-
 			if (object != null)
 			{
 				try
@@ -123,6 +126,8 @@ public class ImageLightboxDialog extends Activity
 
 				if (container != null)
 				{
+					forceHideKeyboard(container);
+
 					((ViewPager)container).removeView((View)object);
 				}
 			}
@@ -137,8 +142,24 @@ public class ImageLightboxDialog extends Activity
 			return images.length;
 		}
 
+		private void forceHideKeyboard(ViewGroup view)
+		{
+			for (int index = 0; index < view.getChildCount(); index++)
+			{
+				EditText v = (EditText)view.getChildAt(index).findViewById(R.id.comment);
+
+				if (v != null)
+				{
+					InputMethodManager m = (InputMethodManager)v.getContext().getSystemService(Context.INPUT_METHOD_SERVICE);
+					m.hideSoftInputFromWindow(v.getWindowToken(), InputMethodManager.HIDE_NOT_ALWAYS);
+				}
+			}
+		}
+
 		@Override public Object instantiateItem(ViewGroup view, final int position)
 		{
+			forceHideKeyboard(view);
+
 			final View imageLayout = inflater.inflate(R.layout.image_lightbox_image, view, false);
 			imageLayout.setTag(position);
 			loadImage(imageLayout, position);
@@ -160,6 +181,22 @@ public class ImageLightboxDialog extends Activity
 
 					((ImageView)imageLayout.findViewById(R.id.comment_icon)).setImageResource(!TextUtils.isEmpty(comments) ? R.drawable.ic_comment : R.drawable.ic_empty_comment);
 					((EditText)imageLayout.findViewById(R.id.comment)).setText(comments);
+					((EditText)imageLayout.findViewById(R.id.comment)).setOnEditorActionListener(new TextView.OnEditorActionListener()
+					{
+						public boolean onEditorAction(TextView v, int actionId, KeyEvent event)
+						{
+							if (actionId == EditorInfo.IME_ACTION_DONE)
+							{
+								InputMethodManager m = (InputMethodManager)v.getContext().getSystemService(Context.INPUT_METHOD_SERVICE);
+								m.hideSoftInputFromWindow(v.getWindowToken(), InputMethodManager.HIDE_NOT_ALWAYS);
+								imageLayout.findViewById(R.id.comment_icon).callOnClick();
+								return true;
+							}
+
+							return false;
+						}
+					});
+
 					imageLayout.findViewById(R.id.comment_icon).setOnClickListener(new View.OnClickListener()
 					{
 						@Override public void onClick(View v)
