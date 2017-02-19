@@ -26,12 +26,9 @@
 	<RelativeLayout
 		android:layout_width="match_parent"
 		android:layout_height="wrap_content"
-		android:paddingLeft="16dp"
-		android:paddingRight="16dp"
-		android:paddingBottom="16dp"
-		android:paddingTop="32dp"
+		android:padding="16dp"
 		android:layout_gravity="bottom"
-		android:background="@drawable/bottom_fade"
+		android:background="#60000000"
 	>
 		<ImageView
 			android:layout_width="24dp"
@@ -55,11 +52,19 @@
 			android:id="@+id/comment"
 			android:gravity="top"
 			android:layout_below="@id/taken"
-			android:layout_marginTop="4dp"
+			android:layout_marginTop="8dp"
 			android:background="@null"
-			android:textColor="#ffffff"
-			android:padding="4dp"
+			android:maxLines="1"
+			android:singleLine="true"
+			android:imeOptions="actionDone"
+			android:textColor="#Afffffff"
+			android:shadowColor="#000000"
+			android:shadowDx="1"
+			android:shadowDy="1"
+			android:shadowRadius="1"
+			android:textSize="14sp"
 			android:layout_marginBottom="8dp"
+			android:paddingBottom="12dp"
 			android:visibility="gone"
 		/>
 	</RelativeLayout>
