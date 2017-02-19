@@ -56,6 +56,7 @@ import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.Locale;
+import java.util.UUID;
 
 import me.anon.controller.provider.PlantWidgetProvider;
 import me.anon.grow.AddWateringActivity;
@@ -63,6 +64,7 @@ import me.anon.grow.BuildConfig;
 import me.anon.grow.EditWateringActivity;
 import me.anon.grow.EventsActivity;
 import me.anon.grow.MainApplication;
+import me.anon.grow.PlantDetailsActivity;
 import me.anon.grow.R;
 import me.anon.grow.StatisticsActivity;
 import me.anon.grow.ViewPhotosActivity;
@@ -71,6 +73,7 @@ import me.anon.lib.Views;
 import me.anon.lib.helper.AddonHelper;
 import me.anon.lib.helper.ExportHelper;
 import me.anon.lib.helper.FabAnimator;
+import me.anon.lib.helper.GsonHelper;
 import me.anon.lib.helper.ModelHelper;
 import me.anon.lib.helper.PermissionHelper;
 import me.anon.lib.manager.GardenManager;
@@ -614,6 +617,40 @@ public class PlantDetailsFragment extends Fragment
 				.show();
 
 			return true;
+		}
+		else if (item.getItemId() == R.id.duplicate)
+		{
+			final Plant copy = (Plant)ModelHelper.copy(plant);
+			copy.setId(UUID.randomUUID().toString());
+			copy.getImages().clear();
+
+			PlantManager.getInstance().addPlant(copy);
+
+			SnackBar.show(getActivity(), "Plant duplicated", "open", new SnackBarListener()
+				{
+					@Override public void onSnackBarStarted(Object o)
+					{
+						if (getView() != null)
+						{
+							FabAnimator.animateUp(getView().findViewById(R.id.fab_complete));
+						}
+					}
+
+					@Override public void onSnackBarFinished(Object o)
+					{
+						if (getView() != null)
+						{
+							FabAnimator.animateDown(getView().findViewById(R.id.fab_complete));
+						}
+					}
+
+					@Override public void onSnackBarAction(Object o)
+					{
+						Intent plantDetails = new Intent(getActivity(), PlantDetailsActivity.class);
+						plantDetails.putExtra("plant_index", PlantManager.getInstance().getPlants().size() - 1);
+						startActivity(plantDetails);
+					}
+				});
 		}
 		else if (item.getItemId() == R.id.export)
 		{
