@@ -1,18 +1,26 @@
 package me.anon.grow.fragment;
 
 import android.app.Activity;
+import android.content.Context;
 import android.graphics.Bitmap;
 import android.os.Bundle;
 import android.os.Parcelable;
+import android.support.media.ExifInterface;
 import android.support.v4.view.PagerAdapter;
 import android.support.v4.view.ViewPager;
 import android.text.Html;
+import android.text.TextUtils;
 import android.view.Gravity;
+import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.Window;
 import android.view.WindowManager;
+import android.view.inputmethod.EditorInfo;
+import android.view.inputmethod.InputMethodManager;
+import android.widget.EditText;
+import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.davemorrissey.labs.subscaleview.ImageSource;
@@ -20,6 +28,7 @@ import com.davemorrissey.labs.subscaleview.SubsamplingScaleImageView;
 import com.nostra13.universalimageloader.core.ImageLoader;
 import com.nostra13.universalimageloader.core.listener.SimpleImageLoadingListener;
 
+import java.io.IOException;
 import java.text.DateFormat;
 import java.util.Date;
 
@@ -44,7 +53,6 @@ public class ImageLightboxDialog extends Activity
 
 		getWindow().setLayout(WindowManager.LayoutParams.MATCH_PARENT, WindowManager.LayoutParams.WRAP_CONTENT);
 		getWindow().setGravity(Gravity.CENTER);
-//		getWindow().setBackgroundDrawable(getResources().getDrawable(R.drawable.fullscreen_dialog_bg));
 
 		if (getIntent().getExtras() != null)
 		{
@@ -78,6 +86,16 @@ public class ImageLightboxDialog extends Activity
 		super.onSaveInstanceState(outState);
 	}
 
+	@Override protected void onDestroy()
+	{
+		super.onDestroy();
+
+		for (int index = 0; index < pager.getChildCount(); index++)
+		{
+			((ImagePagerAdapter)pager.getAdapter()).destroyItem(null, (int)pager.getChildAt(index).getTag(), (ViewGroup)pager.getChildAt(index));
+		}
+	}
+
 	private class ImagePagerAdapter extends PagerAdapter
 	{
 		private String[] images;
@@ -93,7 +111,26 @@ public class ImageLightboxDialog extends Activity
 
 		@Override public void destroyItem(ViewGroup container, int position, Object object)
 		{
-			((ViewPager)container).removeView((View)object);
+			if (object != null)
+			{
+				try
+				{
+					ExifInterface exifInterface = new ExifInterface(images[position]);
+					exifInterface.setAttribute("UserComment", ((EditText)((View)object).findViewById(R.id.comment)).getText().toString());
+					exifInterface.saveAttributes();
+				}
+				catch (IOException e)
+				{
+					e.printStackTrace();
+				}
+
+				if (container != null)
+				{
+					forceHideKeyboard(container);
+
+					((ViewPager)container).removeView((View)object);
+				}
+			}
 		}
 
 		@Override public void finishUpdate(View container)
@@ -105,9 +142,26 @@ public class ImageLightboxDialog extends Activity
 			return images.length;
 		}
 
-		@Override public Object instantiateItem(ViewGroup view, int position)
+		private void forceHideKeyboard(ViewGroup view)
 		{
+			for (int index = 0; index < view.getChildCount(); index++)
+			{
+				EditText v = (EditText)view.getChildAt(index).findViewById(R.id.comment);
+
+				if (v != null)
+				{
+					InputMethodManager m = (InputMethodManager)v.getContext().getSystemService(Context.INPUT_METHOD_SERVICE);
+					m.hideSoftInputFromWindow(v.getWindowToken(), InputMethodManager.HIDE_NOT_ALWAYS);
+				}
+			}
+		}
+
+		@Override public Object instantiateItem(ViewGroup view, final int position)
+		{
+			forceHideKeyboard(view);
+
 			final View imageLayout = inflater.inflate(R.layout.image_lightbox_image, view, false);
+			imageLayout.setTag(position);
 			loadImage(imageLayout, position);
 
 			try
@@ -119,6 +173,48 @@ public class ImageLightboxDialog extends Activity
 
 				String dateStr = dateFormat.format(new Date(Long.parseLong(date))) + " " + timeFormat.format(new Date(Long.parseLong(date)));
 				((TextView)imageLayout.findViewById(R.id.taken)).setText(Html.fromHtml("<b>Image taken</b>: " + dateStr + " (" + new DateRenderer().timeAgo(Long.parseLong(date)).formattedDate + " ago)"));
+
+				try
+				{
+					ExifInterface exifInterface = new ExifInterface(images[position]);
+					String comments = exifInterface.getAttribute("UserComment");
+
+					((ImageView)imageLayout.findViewById(R.id.comment_icon)).setImageResource(!TextUtils.isEmpty(comments) ? R.drawable.ic_comment : R.drawable.ic_empty_comment);
+					((EditText)imageLayout.findViewById(R.id.comment)).setText(comments);
+					((EditText)imageLayout.findViewById(R.id.comment)).setOnEditorActionListener(new TextView.OnEditorActionListener()
+					{
+						public boolean onEditorAction(TextView v, int actionId, KeyEvent event)
+						{
+							if (actionId == EditorInfo.IME_ACTION_DONE)
+							{
+								InputMethodManager m = (InputMethodManager)v.getContext().getSystemService(Context.INPUT_METHOD_SERVICE);
+								m.hideSoftInputFromWindow(v.getWindowToken(), InputMethodManager.HIDE_NOT_ALWAYS);
+								imageLayout.findViewById(R.id.comment_icon).callOnClick();
+								return true;
+							}
+
+							return false;
+						}
+					});
+
+					imageLayout.findViewById(R.id.comment_icon).setOnClickListener(new View.OnClickListener()
+					{
+						@Override public void onClick(View v)
+						{
+							int visibility = imageLayout.findViewById(R.id.comment).getVisibility();
+							imageLayout.findViewById(R.id.comment).setVisibility(visibility == View.GONE ? View.VISIBLE : View.GONE);
+
+							if (visibility == View.GONE)
+							{
+								imageLayout.findViewById(R.id.comment).requestFocus();
+							}
+						}
+					});
+				}
+				catch (IOException e)
+				{
+					e.printStackTrace();
+				}
 			}
 			catch (Exception e)
 			{
