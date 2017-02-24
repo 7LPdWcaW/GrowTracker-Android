@@ -8,7 +8,7 @@ Welcome to grow tracker. This app was created to help record data about growing 
 
 # Installation
 
-The app requires no permissions except for external storage (for caching plant data and images) which you can see [here](https://github.com/7LPdWcaW/GrowTracker-Android/blob/develop/app/src/main/AndroidManifest.xml) in order for users to maintain anonymity, and a minimum Android version of `4.0.3` and above
+The app requires no permissions except for external storage (for caching plant data and images) which you can see [here](https://github.com/7LPdWcaW/GrowTracker-Android/blob/develop/app/src/main/AndroidManifest.xml) in order for users to maintain anonymity, and a minimum Android version of `4.2` and above
 
 # Addons
 
@@ -17,7 +17,7 @@ On documentation on creating addons, please see [ADDONS.md](ADDONS.md)
 ## How to install
 
 1. Follow [this guide](https://gameolith.uservoice.com/knowledgebase/articles/76902-android-4-0-tablets-allowing-app-installs-from) to enable unknown sources
-2. Download the APK from [here](https://github.com/7LPdWcaW/GrowTracker-Android/raw/master/app/app-release.apk)
+2. Download the APK from [here](https://github.com/7LPdWcaW/GrowTracker-Android/releases)
 3. Click on downloaded app and install
 
 **For updates, do not uninstall first, you will lose your existing plant data**
