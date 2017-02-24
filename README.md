@@ -2,13 +2,13 @@
 
 Welcome to grow tracker. This app was created to help record data about growing plants in order to monitor the growing conditions to help make the plants grow better, and identify potential issues during the grow process.
 
-[Latest APK: (MD5) 794f7342e489c3da59f8f15a08a68d07 v2.2-alpha1](https://github.com/7LPdWcaW/GrowTracker-Android/raw/master/app/app-production-release.apk)
+[Latest APK: (MD5) 494a35112fa7e46403ff169f94fda9ab v2.2](https://github.com/7LPdWcaW/GrowTracker-Android/raw/master/app/app-production-release.apk)
 
-[Latest APK (Discrete): (MD5) c3d301ad8391bda6bb0cbecb7d91496e v2.2-alpha1](https://github.com/7LPdWcaW/GrowTracker-Android/raw/master/app/app-discrete-release.apk)
+[Latest APK (Discrete): (MD5) 3b2e3a2664777b2032ca09da2771241b v2.2](https://github.com/7LPdWcaW/GrowTracker-Android/raw/master/app/app-discrete-release.apk)
 
 # Installation
 
-The app requires no permissions except for external storage (for caching plant data and images) which you can see [here](https://github.com/7LPdWcaW/GrowTracker-Android/blob/develop/app/src/main/AndroidManifest.xml) in order for users to maintain anonymity, and a minimum Android version of `4.0.3` and above
+The app requires no permissions except for external storage (for caching plant data and images) which you can see [here](https://github.com/7LPdWcaW/GrowTracker-Android/blob/develop/app/src/main/AndroidManifest.xml) in order for users to maintain anonymity, and a minimum Android version of `4.2` and above
 
 # Addons
 
@@ -17,7 +17,7 @@ On documentation on creating addons, please see [ADDONS.md](ADDONS.md)
 ## How to install
 
 1. Follow [this guide](https://gameolith.uservoice.com/knowledgebase/articles/76902-android-4-0-tablets-allowing-app-installs-from) to enable unknown sources
-2. Download the APK from [here](https://github.com/7LPdWcaW/GrowTracker-Android/raw/master/app/app-release.apk)
+2. Download the APK from [here](https://github.com/7LPdWcaW/GrowTracker-Android/releases)
 3. Click on downloaded app and install
 
 **For updates, do not uninstall first, you will lose your existing plant data**
@@ -154,7 +154,7 @@ You can decrypt your files using your passphrase either by writing a script that
 
 #License
 
-Copyright 2014-2016 7LPdWcaW
+Copyright 2014-2017 7LPdWcaW
 
 Licensed under the Apache License, Version 2.0 (the "License");
 you may not use this file except in compliance with the License.

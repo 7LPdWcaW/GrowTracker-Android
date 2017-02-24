@@ -42,15 +42,15 @@ Example receiver:
 
 ## Configuring your addon
 
-You can register an activity with the receiver for configuration purposes by using the `me.anon.grow.ADDON_CONFIGURATION` intent-filter action.
+You can register an activity with the receiver for configuration purposes by using the `me.anon.grow.ADDON_CONFIGURATION` intent-filter category.
 
-`Note:` The `category` for the intent-filter must be the action of the intent-filter of the addon (e.g. `me.anon.grow.ACTION_SAVE_PLANTS`)
+`Note:` The `action` for the intent-filter must be the action of the intent-filter of the addon (e.g. `me.anon.grow.ACTION_SAVE_PLANTS`)
 
 ```xml
 <activity android:name=".ConfigureActivity">
     <intent-filter>
-        <action android:name="me.anon.grow.ADDON_CONFIGURATION" />
-        <category android:name="me.anon.grow.ACTION_SAVE_PLANTS" />
+        <action android:name="me.anon.grow.ACTION_SAVE_PLANTS" />
+        <category android:name="me.anon.grow.ADDON_CONFIGURATION" />
     </intent-filter>
 </activity>
 ```
