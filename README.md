@@ -154,7 +154,7 @@ You can decrypt your files using your passphrase either by writing a script that
 
 #License
 
-Copyright 2014-2016 7LPdWcaW
+Copyright 2014-2017 7LPdWcaW
 
 Licensed under the Apache License, Version 2.0 (the "License");
 you may not use this file except in compliance with the License.
