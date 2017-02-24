@@ -2,7 +2,6 @@ package me.anon.grow;
 
 import android.app.Fragment;
 import android.os.Bundle;
-import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.MenuItem;
 
@@ -19,7 +18,7 @@ import me.anon.lib.Views;
  */
 @Views.Injectable
 @Accessors(prefix = {"m", ""}, chain = true)
-public class PlantDetailsActivity extends AppCompatActivity
+public class PlantDetailsActivity extends BaseActivity
 {
 	private static final String TAG_FRAGMENT = "current_fragment";
 

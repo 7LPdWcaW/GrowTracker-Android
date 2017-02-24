@@ -14,9 +14,12 @@ import android.view.ViewGroup;
 
 import java.text.DateFormat;
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.Collections;
 import java.util.Date;
+import java.util.GregorianCalendar;
 import java.util.List;
+import java.util.Locale;
 
 import lombok.Getter;
 import lombok.Setter;
@@ -24,10 +27,12 @@ import me.anon.grow.R;
 import me.anon.lib.DateRenderer;
 import me.anon.lib.Unit;
 import me.anon.lib.helper.ModelHelper;
+import me.anon.lib.helper.TimeHelper;
 import me.anon.model.Action;
 import me.anon.model.Additive;
 import me.anon.model.EmptyAction;
 import me.anon.model.NoteAction;
+import me.anon.model.Plant;
 import me.anon.model.StageChange;
 import me.anon.model.Water;
 import me.anon.view.ActionHolder;
@@ -52,8 +57,15 @@ public class ActionAdapter extends RecyclerView.Adapter<ActionHolder> implements
 	}
 
 	@Setter private OnActionSelectListener onActionSelectListener;
-	@Getter @Setter private List<Action> actions = new ArrayList<>();
+	@Getter private Plant plant;
+	@Getter private List<Action> actions = new ArrayList<>();
 	@Getter private Unit measureUnit, deliveryUnit;
+
+	public void setActions(Plant plant, List<Action> actions)
+	{
+		this.plant = plant;
+		this.actions = actions;
+	}
 
 	@Override public ActionHolder onCreateViewHolder(ViewGroup viewGroup, int i)
 	{
@@ -79,8 +91,79 @@ public class ActionAdapter extends RecyclerView.Adapter<ActionHolder> implements
 		DateFormat dateFormat = android.text.format.DateFormat.getDateFormat(viewHolder.getDate().getContext());
 		DateFormat timeFormat = android.text.format.DateFormat.getTimeFormat(viewHolder.getDate().getContext());
 
-		String fullDateStr = dateFormat.format(new Date(action.getDate())) + " " + timeFormat.format(new Date(action.getDate()));
+		Date actionDate = new Date(action.getDate());
+		Calendar actionCalendar = GregorianCalendar.getInstance();
+		actionCalendar.setTime(actionDate);
+		String fullDateStr = dateFormat.format(actionDate) + " " + timeFormat.format(actionDate);
 		String dateStr = "<b>" + new DateRenderer().timeAgo(action.getDate()).formattedDate + "</b> ago";
+
+		String dateDayStr = actionCalendar.get(Calendar.DAY_OF_MONTH) + " " + actionCalendar.getDisplayName(Calendar.MONTH, Calendar.SHORT, Locale.getDefault());
+
+		if (viewHolder.getDateDay() != null)
+		{
+			String lastDateStr = "";
+
+			if (i - 1 >= 0)
+			{
+				Date lastActionDate = new Date(actions.get(i - 1).getDate());
+				Calendar lastActionCalendar = GregorianCalendar.getInstance();
+				lastActionCalendar.setTime(lastActionDate);
+				lastDateStr = lastActionCalendar.get(Calendar.DAY_OF_MONTH) + " " + lastActionCalendar.getDisplayName(Calendar.MONTH, Calendar.SHORT, Locale.getDefault());
+			}
+
+			if (!lastDateStr.equalsIgnoreCase(dateDayStr))
+			{
+				viewHolder.getDateDay().setText(Html.fromHtml(dateDayStr));
+
+				String stageDay = "";
+				StageChange current = null;
+				StageChange previous = null;
+
+				for (int actionIndex = i; actionIndex < actions.size(); actionIndex++)
+				{
+					if (actions.get(actionIndex) instanceof StageChange)
+					{
+						if (current == null)
+						{
+							current = (StageChange)actions.get(actionIndex);
+						}
+						else if (previous == null)
+						{
+							previous = (StageChange)actions.get(actionIndex);
+						}
+					}
+				}
+
+				int totalDays = (int)TimeHelper.toDays(Math.abs(action.getDate() - plant.getPlantDate()));
+				stageDay += totalDays;
+
+				if (previous == null)
+				{
+					previous = current;
+				}
+
+				if (current != null)
+				{
+					if (action == current)
+					{
+						int currentDays = (int)TimeHelper.toDays(Math.abs(current.getDate() - previous.getDate()));
+						stageDay += "/" + currentDays + previous.getNewStage().getPrintString().substring(0, 1).toLowerCase();
+					}
+					else
+					{
+						int currentDays = (int)TimeHelper.toDays(Math.abs(action.getDate() - current.getDate()));
+						stageDay += "/" + currentDays + current.getNewStage().getPrintString().substring(0, 1).toLowerCase();
+					}
+				}
+
+				viewHolder.getStageDay().setText(stageDay);
+			}
+			else
+			{
+				viewHolder.getDateDay().setText("");
+				viewHolder.getStageDay().setText("");
+			}
+		}
 
 		if (i > 0)
 		{

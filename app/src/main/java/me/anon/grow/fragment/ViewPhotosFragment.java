@@ -48,6 +48,7 @@ import me.anon.grow.BuildConfig;
 import me.anon.grow.MainApplication;
 import me.anon.grow.R;
 import me.anon.lib.Views;
+import me.anon.lib.helper.AddonHelper;
 import me.anon.lib.helper.ExportHelper;
 import me.anon.lib.helper.FabAnimator;
 import me.anon.lib.helper.PermissionHelper;
@@ -154,6 +155,7 @@ public class ViewPhotosFragment extends Fragment
 										{
 											String image = adapter.getImages().get(integer);
 											plant.getImages().remove(image);
+											AddonHelper.broadcastImage(getActivity(), image, true);
 										}
 
 										PlantManager.getInstance().upsert(plantIndex, plant);
@@ -204,7 +206,15 @@ public class ViewPhotosFragment extends Fragment
 		});
 
 		recycler.setHasFixedSize(true);
-		recycler.setLayoutManager(new GridLayoutManager(getActivity(), 3));
+
+		if (MainApplication.isTablet())
+		{
+			recycler.setLayoutManager(new GridLayoutManager(getActivity(), 6));
+		}
+		else
+		{
+			recycler.setLayoutManager(new GridLayoutManager(getActivity(), 3));
+		}
 
 		setAdapter();
 	}
@@ -328,6 +338,7 @@ public class ViewPhotosFragment extends Fragment
 			}
 
 			PlantManager.getInstance().upsert(plantIndex, plant);
+			AddonHelper.broadcastImage(getActivity(), plant.getImages().get(plant.getImages().size() - 1), false);
 
 			setAdapter();
 			adapter.notifyDataSetChanged();
@@ -365,6 +376,7 @@ public class ViewPhotosFragment extends Fragment
 						plant.getImages().add(out.getAbsolutePath());
 
 						PlantManager.getInstance().upsert(plantIndex, plant);
+						AddonHelper.broadcastImage(getActivity(), plant.getImages().get(plant.getImages().size() - 1), false);
 
 						setAdapter();
 						adapter.notifyDataSetChanged();
