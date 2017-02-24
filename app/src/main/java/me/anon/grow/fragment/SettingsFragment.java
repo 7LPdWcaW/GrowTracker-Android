@@ -141,9 +141,9 @@ public class SettingsFragment extends PreferenceFragment implements Preference.O
 						{
 							@Override public boolean onPreferenceClick(Preference preference)
 							{
-								Intent configIntent = new Intent("me.anon.grow.ADDON_CONFIGURATION");
+								Intent configIntent = new Intent(addonAction);
 								configIntent.setPackage(preference.getKey());
-								configIntent.addCategory(addonAction);
+								configIntent.addCategory("me.anon.grow.ADDON_CONFIGURATION");
 
 								final List<ResolveInfo> configureIntents = packageManager.queryIntentActivities(configIntent, PackageManager.GET_META_DATA);
 
