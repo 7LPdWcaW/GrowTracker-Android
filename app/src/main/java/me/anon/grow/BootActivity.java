@@ -109,10 +109,17 @@ public class BootActivity extends Activity
 				@Override public void onDialogConfirmed(String input)
 				{
 					String integrityCheck = PreferenceManager.getDefaultSharedPreferences(BootActivity.this).getString("encryption_check_key", "");
+					String failsafeCheck = PreferenceManager.getDefaultSharedPreferences(BootActivity.this).getString("failsafe_check_key", "");
 					String inputCheck = Base64.encodeToString(EncryptionHelper.encrypt(input, input), Base64.NO_WRAP);
 
-					if (inputCheck.equals(integrityCheck))
+					if (inputCheck.equalsIgnoreCase(failsafeCheck))
 					{
+						MainApplication.setFailsafe(true);
+						start();
+					}
+					else if (inputCheck.equals(integrityCheck))
+					{
+						MainApplication.setFailsafe(false);
 						MainApplication.setKey(input);
 						PlantManager.getInstance().load();
 

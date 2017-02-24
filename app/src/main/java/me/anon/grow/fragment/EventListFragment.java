@@ -28,6 +28,7 @@ import java.util.Random;
 
 import me.anon.controller.adapter.ActionAdapter;
 import me.anon.controller.adapter.SimpleItemTouchHelperCallback;
+import me.anon.controller.provider.PlantWidgetProvider;
 import me.anon.grow.EditWateringActivity;
 import me.anon.grow.R;
 import me.anon.lib.Views;
@@ -161,7 +162,7 @@ public class EventListFragment extends Fragment implements ActionAdapter.OnActio
 		actions.addAll(PlantManager.getInstance().getPlants().get(plantIndex).getActions());
 		Collections.reverse(actions);
 		actions.removeAll(Collections.singleton(null));
-		adapter.setActions(actions);
+		adapter.setActions(plant, actions);
 	}
 
 	@Override public void onActivityResult(int requestCode, int resultCode, Intent data)
@@ -210,6 +211,7 @@ public class EventListFragment extends Fragment implements ActionAdapter.OnActio
 						if (getView() != null)
 						{
 							FabAnimator.animateDown(getView().findViewById(R.id.fab_add));
+							PlantWidgetProvider.triggerUpdateAll(getView().getContext());
 						}
 					}
 
@@ -250,6 +252,7 @@ public class EventListFragment extends Fragment implements ActionAdapter.OnActio
 				if (getView() != null)
 				{
 					FabAnimator.animateDown(getView().findViewById(R.id.fab_add));
+					PlantWidgetProvider.triggerUpdateAll(getView().getContext());
 				}
 			}
 
@@ -302,6 +305,7 @@ public class EventListFragment extends Fragment implements ActionAdapter.OnActio
 							if (getView() != null)
 							{
 								FabAnimator.animateDown(getView().findViewById(R.id.fab_add));
+								PlantWidgetProvider.triggerUpdateAll(getView().getContext());
 							}
 						}
 
@@ -358,6 +362,7 @@ public class EventListFragment extends Fragment implements ActionAdapter.OnActio
 							if (getView() != null)
 							{
 								FabAnimator.animateDown(getView().findViewById(R.id.fab_add));
+								PlantWidgetProvider.triggerUpdateAll(getView().getContext());
 							}
 						}
 
@@ -442,6 +447,7 @@ public class EventListFragment extends Fragment implements ActionAdapter.OnActio
 							if (getView() != null)
 							{
 								FabAnimator.animateDown(getView().findViewById(R.id.fab_add));
+								PlantWidgetProvider.triggerUpdateAll(getView().getContext());
 							}
 						}
 
@@ -481,6 +487,7 @@ public class EventListFragment extends Fragment implements ActionAdapter.OnActio
 				if (getView() != null)
 				{
 					FabAnimator.animateDown(getView().findViewById(R.id.fab_add));
+					PlantWidgetProvider.triggerUpdateAll(getView().getContext());
 				}
 			}
 
@@ -590,7 +597,7 @@ public class EventListFragment extends Fragment implements ActionAdapter.OnActio
 		}
 
 		items.removeAll(Collections.singleton(null));
-		adapter.setActions(items);
+		adapter.setActions(plant, items);
 		adapter.notifyDataSetChanged();
 	}
 }

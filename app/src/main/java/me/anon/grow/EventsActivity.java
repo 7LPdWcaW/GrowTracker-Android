@@ -17,7 +17,7 @@ import me.anon.lib.Views;
  */
 @Views.Injectable
 @Accessors(prefix = {"m", ""}, chain = true)
-public class EventsActivity extends AppCompatActivity
+public class EventsActivity extends BaseActivity
 {
 	private static final String TAG_FRAGMENT = "current_fragment";
 

@@ -20,6 +20,7 @@ import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
 
+import me.anon.controller.provider.PlantWidgetProvider;
 import me.anon.grow.R;
 import me.anon.lib.Unit;
 import me.anon.lib.Views;
@@ -197,42 +198,42 @@ public class WateringFragment extends Fragment
 	{
 		getActivity().setTitle("Feeding " + (plants.size() == 1 ? plants.get(0).getName() : "multiple plants"));
 
+		Calendar date = Calendar.getInstance();
+		date.setTimeInMillis(water.getDate());
+
+		final DateFormat dateFormat = android.text.format.DateFormat.getDateFormat(getActivity());
+		final DateFormat timeFormat = android.text.format.DateFormat.getTimeFormat(getActivity());
+
+		String dateStr = dateFormat.format(new Date(water.getDate())) + " " + timeFormat.format(new Date(water.getDate()));
+		this.date.setText(dateStr);
+
+		this.dateContainer.setOnClickListener(new View.OnClickListener()
+		{
+			@Override public void onClick(View v)
+			{
+				final DateDialogFragment fragment = new DateDialogFragment(water.getDate());
+				fragment.setOnDateSelected(new DateDialogFragment.OnDateSelectedListener()
+				{
+					@Override public void onDateSelected(Calendar date)
+					{
+						String dateStr = dateFormat.format(date.getTime()) + " " + timeFormat.format(date.getTime());
+						WateringFragment.this.date.setText(dateStr);
+
+						water.setDate(date.getTimeInMillis());
+						onCancelled();
+					}
+
+					@Override public void onCancelled()
+					{
+						getFragmentManager().beginTransaction().remove(fragment).commit();
+					}
+				});
+				getFragmentManager().beginTransaction().add(fragment, "date").commit();
+			}
+		});
+
 		if (plants.size() == 1)
 		{
-			Calendar date = Calendar.getInstance();
-			date.setTimeInMillis(water.getDate());
-
-			final DateFormat dateFormat = android.text.format.DateFormat.getDateFormat(getActivity());
-			final DateFormat timeFormat = android.text.format.DateFormat.getTimeFormat(getActivity());
-
-			String dateStr = dateFormat.format(new Date(water.getDate())) + " " + timeFormat.format(new Date(water.getDate()));
-			this.date.setText(dateStr);
-
-			this.dateContainer.setOnClickListener(new View.OnClickListener()
-			{
-				@Override public void onClick(View v)
-				{
-					final DateDialogFragment fragment = new DateDialogFragment(water.getDate());
-					fragment.setOnDateSelected(new DateDialogFragment.OnDateSelectedListener()
-					{
-						@Override public void onDateSelected(Calendar date)
-						{
-							String dateStr = dateFormat.format(date.getTime()) + " " + timeFormat.format(date.getTime());
-							WateringFragment.this.date.setText(dateStr);
-
-							water.setDate(date.getTimeInMillis());
-							onCancelled();
-						}
-
-						@Override public void onCancelled()
-						{
-							getFragmentManager().beginTransaction().remove(fragment).commit();
-						}
-					});
-					getFragmentManager().beginTransaction().add(fragment, "date").commit();
-				}
-			});
-
 			if (water.getPh() != null)
 			{
 				waterPh.setText(String.valueOf(water.getPh()));
@@ -429,6 +430,7 @@ public class WateringFragment extends Fragment
 			}
 		}
 
+		PlantWidgetProvider.triggerUpdateAll(getActivity());
 		getActivity().setResult(Activity.RESULT_OK);
 		getActivity().finish();
 	}

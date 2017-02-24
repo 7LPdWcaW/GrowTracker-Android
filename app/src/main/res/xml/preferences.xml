@@ -37,7 +37,20 @@
 			android:summary="Adds a pin lock to the app and encrypts all data/images"
 			android:defaultValue="false"
 		/>
+
+		<CheckBoxPreference
+			android:key="failsafe"
+			android:title="Fail safe"
+			android:summary="Set failsafe password to use prevent access to data"
+			android:defaultValue="false"
+			android:enabled="false"
+		/>
 	</PreferenceCategory>
+
+	<PreferenceCategory
+		android:title="Addons"
+		android:key="addon_list"
+	/>
 
 	<PreferenceCategory
 		android:title="About"
