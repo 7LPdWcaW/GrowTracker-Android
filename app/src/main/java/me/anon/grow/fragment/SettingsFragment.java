@@ -195,10 +195,11 @@ public class SettingsFragment extends PreferenceFragment implements Preference.O
 					}
 				}
 			}
-			else
-			{
-				getPreferenceScreen().removePreference(list);
-			}
+		}
+
+		if (list.getPreferenceCount() == 0)
+		{
+			getPreferenceScreen().removePreference(list);
 		}
 	}
 
