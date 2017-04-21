@@ -224,39 +224,44 @@ public class PlantWidgetProvider extends AppWidgetProvider
 		boolean isPortraitOrientation = context.getResources().getBoolean(R.bool.is_portrait);
 		AppWidgetProviderInfo providerInfo = AppWidgetManager.getInstance(context).getAppWidgetInfo(appWidgetId);
 
-		int widgetLandWidth = providerInfo.minWidth;
-		int widgetPortHeight = providerInfo.minHeight;
-		int widgetPortWidth = providerInfo.minWidth;
-		int widgetLandHeight = providerInfo.minHeight;
-
-		Bundle appWidgetOptions = AppWidgetManager.getInstance(context).getAppWidgetOptions(appWidgetId);
-		if (appWidgetOptions != null && appWidgetOptions.getInt(AppWidgetManager.OPTION_APPWIDGET_MIN_WIDTH) > 0)
+		if (providerInfo != null)
 		{
-			widgetPortWidth = appWidgetOptions.getInt(AppWidgetManager.OPTION_APPWIDGET_MIN_WIDTH);
-			widgetLandWidth = appWidgetOptions.getInt(AppWidgetManager.OPTION_APPWIDGET_MAX_WIDTH);
-			widgetLandHeight = appWidgetOptions.getInt(AppWidgetManager.OPTION_APPWIDGET_MIN_HEIGHT);
-			widgetPortHeight = appWidgetOptions.getInt(AppWidgetManager.OPTION_APPWIDGET_MAX_HEIGHT);
-		}
-		else
-		{
-			widgetLandWidth = providerInfo.minWidth;
-			widgetPortHeight = providerInfo.minHeight;
-			widgetPortWidth = providerInfo.minWidth;
-			widgetLandHeight = providerInfo.minHeight;
+			int widgetLandWidth = providerInfo.minWidth;
+			int widgetPortHeight = providerInfo.minHeight;
+			int widgetPortWidth = providerInfo.minWidth;
+			int widgetLandHeight = providerInfo.minHeight;
+
+			Bundle appWidgetOptions = AppWidgetManager.getInstance(context).getAppWidgetOptions(appWidgetId);
+			if (appWidgetOptions != null && appWidgetOptions.getInt(AppWidgetManager.OPTION_APPWIDGET_MIN_WIDTH) > 0)
+			{
+				widgetPortWidth = appWidgetOptions.getInt(AppWidgetManager.OPTION_APPWIDGET_MIN_WIDTH);
+				widgetLandWidth = appWidgetOptions.getInt(AppWidgetManager.OPTION_APPWIDGET_MAX_WIDTH);
+				widgetLandHeight = appWidgetOptions.getInt(AppWidgetManager.OPTION_APPWIDGET_MIN_HEIGHT);
+				widgetPortHeight = appWidgetOptions.getInt(AppWidgetManager.OPTION_APPWIDGET_MAX_HEIGHT);
+			}
+			else
+			{
+				widgetLandWidth = providerInfo.minWidth;
+				widgetPortHeight = providerInfo.minHeight;
+				widgetPortWidth = providerInfo.minWidth;
+				widgetLandHeight = providerInfo.minHeight;
+			}
+
+			// If device is in port oriantation, use port sizes
+			int widgetWidthPerOrientation = widgetPortWidth;
+			int widgetHeightPerOrientation = widgetPortHeight;
+
+			if (!isPortraitOrientation)
+			{
+				// Not Portrait, so use landscape sizes
+				widgetWidthPerOrientation = widgetLandWidth;
+				widgetHeightPerOrientation = widgetLandHeight;
+			}
+
+			return new int[]{widgetWidthPerOrientation, widgetHeightPerOrientation};
 		}
 
-		// If device is in port oriantation, use port sizes
-		int widgetWidthPerOrientation = widgetPortWidth;
-		int widgetHeightPerOrientation = widgetPortHeight;
-
-		if (!isPortraitOrientation)
-		{
-			// Not Portrait, so use landscape sizes
-			widgetWidthPerOrientation = widgetLandWidth;
-			widgetHeightPerOrientation = widgetLandHeight;
-		}
-
-		return new int[]{widgetWidthPerOrientation, widgetHeightPerOrientation};
+		return new int[]{0, 0};
 	}
 
 	/**
