@@ -35,7 +35,7 @@ public class BootActivity extends Activity
 				.setTitle("Uh-oh")
 				.setMessage(Html.fromHtml("Looks like there was a crash the last time you used the app. Would you like to send these anonymous reports? " +
 					"These reports will be sent to <a href=\"https://github.com/7LPdWcaW/GrowTracker-Android/issues\">github.com/7LPdWcaW/GrowTracker-Android/issues</a>, no personal information will be included. You can optionally " +
-					"post these reports to <a href=\"https://reddit.com/r/growtracker\">reddit.com/r/growtracker</a> manually if you wish. Reports are stored in <i>" + ExceptionHandler.getInstance().getFilesPath() + "</i>"))
+					"post these reports to <a href=\"https://reddit.com/r/growutils\">reddit.com/r/growutils</a> manually if you wish. Reports are stored in <i>" + ExceptionHandler.getInstance().getFilesPath() + "</i>"))
 				.setPositiveButton("Yes", new DialogInterface.OnClickListener()
 				{
 					@Override public void onClick(DialogInterface dialogInterface, int i)
