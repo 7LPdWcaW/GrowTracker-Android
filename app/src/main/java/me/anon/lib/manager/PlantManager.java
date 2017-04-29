@@ -229,6 +229,8 @@ public class PlantManager
 					{
 						synchronized (mPlants)
 						{
+							FileManager.getInstance().copyFile(FILES_DIR + "/plants.json", FILES_DIR + "/plants.json.bak");
+
 							if (MainApplication.isEncrypted())
 							{
 								if (TextUtils.isEmpty(MainApplication.getKey()))
@@ -236,14 +238,12 @@ public class PlantManager
 									return null;
 								}
 
-								FileManager.getInstance().writeFile(FILES_DIR + "/plants.json.bak", EncryptionHelper.encrypt(MainApplication.getKey(), GsonHelper.parse(mPlants)));
+								FileManager.getInstance().writeFile(FILES_DIR + "/plants.json", EncryptionHelper.encrypt(MainApplication.getKey(), GsonHelper.parse(mPlants)));
 							}
 							else
 							{
-								FileManager.getInstance().writeFile(FILES_DIR + "/plants.json.bak", GsonHelper.parse(mPlants));
+								FileManager.getInstance().writeFile(FILES_DIR + "/plants.json", GsonHelper.parse(mPlants));
 							}
-
-							FileManager.getInstance().copyFile(FILES_DIR + "/plants.json.bak", FILES_DIR + "/plants.json");
 						}
 
 						return null;
