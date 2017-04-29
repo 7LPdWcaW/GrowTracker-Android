@@ -20,6 +20,7 @@ import java.util.Collections;
 import lombok.Data;
 import lombok.Getter;
 import lombok.experimental.Accessors;
+import me.anon.grow.BootActivity;
 import me.anon.grow.MainApplication;
 import me.anon.lib.helper.EncryptionHelper;
 import me.anon.lib.helper.GsonHelper;
@@ -205,9 +206,16 @@ public class PlantManager
 
 	public void save(final AsyncCallback callback)
 	{
+		save(callback, false);
+	}
+
+	public void save(final AsyncCallback callback, boolean ignoreCheck)
+	{
 		synchronized (mPlants)
 		{
-			if (!MainApplication.isFailsafe())
+			if (MainApplication.isFailsafe()) return;
+
+			if (ignoreCheck == false && mPlants.size() > 0)
 			{
 				new AsyncTask<Void, Void, Void>()
 				{
@@ -251,6 +259,13 @@ public class PlantManager
 						}
 					}
 				}.executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
+			}
+			else
+			{
+				load();
+				Intent restart = new Intent(context, BootActivity.class);
+				restart.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_NEW_TASK);
+				context.startActivity(restart);
 			}
 		}
 	}
