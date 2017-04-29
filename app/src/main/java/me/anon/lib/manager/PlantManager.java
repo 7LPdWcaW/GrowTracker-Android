@@ -20,6 +20,7 @@ import java.util.Collections;
 import lombok.Data;
 import lombok.Getter;
 import lombok.experimental.Accessors;
+import me.anon.grow.BootActivity;
 import me.anon.grow.MainApplication;
 import me.anon.lib.helper.AddonHelper;
 import me.anon.lib.helper.EncryptionHelper;
@@ -160,6 +161,12 @@ public class PlantManager
 			return;
 		}
 
+		// redundancy check
+		if (new File(FILES_DIR, "/plants.json").lastModified() < new File(FILES_DIR, "/plants.json.bak").lastModified())
+		{
+			FileManager.getInstance().copyFile(FILES_DIR + "/plants.json.bak", FILES_DIR + "/plants.json");
+		}
+
 		if (FileManager.getInstance().fileExists(FILES_DIR + "/plants.json"))
 		{
 			String plantData;
@@ -206,9 +213,16 @@ public class PlantManager
 
 	public void save(final AsyncCallback callback)
 	{
+		save(callback, false);
+	}
+
+	public void save(final AsyncCallback callback, boolean ignoreCheck)
+	{
 		synchronized (mPlants)
 		{
-			if (!MainApplication.isFailsafe())
+			if (MainApplication.isFailsafe()) return;
+
+			if (ignoreCheck == false && mPlants.size() > 0)
 			{
 				AddonHelper.broadcastPlantList(context);
 
@@ -218,6 +232,8 @@ public class PlantManager
 					{
 						synchronized (mPlants)
 						{
+							FileManager.getInstance().copyFile(FILES_DIR + "/plants.json", FILES_DIR + "/plants.json.bak");
+
 							if (MainApplication.isEncrypted())
 							{
 								if (TextUtils.isEmpty(MainApplication.getKey()))
@@ -254,6 +270,13 @@ public class PlantManager
 						}
 					}
 				}.executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
+			}
+			else
+			{
+				load();
+				Intent restart = new Intent(context, BootActivity.class);
+				restart.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_NEW_TASK);
+				context.startActivity(restart);
 			}
 		}
 	}

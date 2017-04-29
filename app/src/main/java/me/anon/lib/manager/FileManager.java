@@ -10,10 +10,12 @@ import java.io.BufferedInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.FileInputStream;
+import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.ObjectOutputStream;
+import java.io.OutputStream;
 import java.io.OutputStreamWriter;
 import java.io.Serializable;
 import java.security.DigestInputStream;
@@ -230,6 +232,46 @@ public class FileManager
 		}
 
 		return null;
+	}
+
+	/**
+	 * Copies a file from src to dest
+	 * @param src The source input stream
+	 * @param dest The dest output stream
+	 */
+	public void copyFile(String src, String dest)
+	{
+		try
+		{
+			copyFile(new FileInputStream(src), new FileOutputStream(dest));
+		}
+		catch (FileNotFoundException e)
+		{
+			e.printStackTrace();
+		}
+	}
+
+	/**
+	 * Copies a file from src to dest
+	 * @param src The source input stream
+	 * @param dest The dest output stream
+	 */
+	public void copyFile(InputStream src, OutputStream dest)
+	{
+		try
+		{
+			byte[] buffer = new byte[1024];
+			int read;
+
+			while ((read = src.read(buffer)) != -1)
+			{
+				dest.write(buffer, 0, read);
+			}
+		}
+		catch (IOException e)
+		{
+			e.printStackTrace();
+		}
 	}
 
 	/**
