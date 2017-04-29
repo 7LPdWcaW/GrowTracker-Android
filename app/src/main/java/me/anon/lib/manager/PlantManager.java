@@ -160,6 +160,12 @@ public class PlantManager
 			return;
 		}
 
+		// redundancy check
+		if (new File(FILES_DIR, "/plants.json").lastModified() < new File(FILES_DIR, "/plants.json.bak").lastModified())
+		{
+			FileManager.getInstance().copyFile(FILES_DIR + "/plants.json.bak", FILES_DIR + "/plants.json");
+		}
+
 		if (FileManager.getInstance().fileExists(FILES_DIR + "/plants.json"))
 		{
 			String plantData;
@@ -230,12 +236,14 @@ public class PlantManager
 									return null;
 								}
 
-								FileManager.getInstance().writeFile(FILES_DIR + "/plants.json", EncryptionHelper.encrypt(MainApplication.getKey(), GsonHelper.parse(mPlants)));
+								FileManager.getInstance().writeFile(FILES_DIR + "/plants.json.bak", EncryptionHelper.encrypt(MainApplication.getKey(), GsonHelper.parse(mPlants)));
 							}
 							else
 							{
-								FileManager.getInstance().writeFile(FILES_DIR + "/plants.json", GsonHelper.parse(mPlants));
+								FileManager.getInstance().writeFile(FILES_DIR + "/plants.json.bak", GsonHelper.parse(mPlants));
 							}
+
+							FileManager.getInstance().copyFile(FILES_DIR + "/plants.json.bak", FILES_DIR + "/plants.json");
 						}
 
 						return null;
