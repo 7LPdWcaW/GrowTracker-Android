@@ -610,7 +610,7 @@ public class PlantDetailsFragment extends Fragment
 
 								getActivity().finish();
 							}
-						});
+						}, true);
 					}
 				})
 				.setNegativeButton("No", null)
