@@ -44,28 +44,35 @@ public class PlantWidgetProvider extends AppWidgetProvider
 	 */
 	public static void triggerUpdateAll(Context context)
 	{
-		Map<String, ?> all = PreferenceManager.getDefaultSharedPreferences(context).getAll();
-		ArrayList<String> widgetIds = new ArrayList<>();
-		for (String key : all.keySet())
+		try
 		{
-			String[] parts = key.split("_");
-
-			if (parts.length > 0 && parts[0].equalsIgnoreCase("widget"))
+			Map<String, ?> all = PreferenceManager.getDefaultSharedPreferences(context).getAll();
+			ArrayList<String> widgetIds = new ArrayList<>();
+			for (String key : all.keySet())
 			{
-				if (!widgetIds.contains(parts[1]))
+				String[] parts = key.split("_");
+
+				if (parts.length > 0 && parts[0].equalsIgnoreCase("widget"))
 				{
-					widgetIds.add(parts[1]);
+					if (!widgetIds.contains(parts[1]))
+					{
+						widgetIds.add(parts[1]);
+					}
 				}
 			}
-		}
 
-		int[] ids = new int[widgetIds.size()];
-		for (int index = 0; index < ids.length; index++)
+			int[] ids = new int[widgetIds.size()];
+			for (int index = 0; index < ids.length; index++)
+			{
+				ids[index] = Integer.parseInt(widgetIds.get(index));
+			}
+
+			triggerUpdate(context, ids);
+		}
+		catch (Exception e)
 		{
-			ids[index] = Integer.parseInt(widgetIds.get(index));
+			e.printStackTrace();
 		}
-
-		triggerUpdate(context, ids);
 	}
 
 	/**
