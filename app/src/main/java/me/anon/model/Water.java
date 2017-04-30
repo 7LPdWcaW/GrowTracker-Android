@@ -18,7 +18,7 @@ import lombok.experimental.Accessors;
 @Accessors(prefix = {"m", ""}, chain = true)
 public class Water extends Action
 {
-	private Long ppm;
+	private Double ppm;
 	private Double ph;
 	private Double runoff;
 	private Double amount;
