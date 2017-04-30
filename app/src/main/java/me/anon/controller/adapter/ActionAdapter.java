@@ -2,6 +2,7 @@ package me.anon.controller.adapter;
 
 import android.app.AlertDialog;
 import android.content.DialogInterface;
+import android.preference.PreferenceManager;
 import android.support.v7.widget.PopupMenu;
 import android.support.v7.widget.RecyclerView;
 import android.text.Html;
@@ -60,6 +61,7 @@ public class ActionAdapter extends RecyclerView.Adapter<ActionHolder> implements
 	@Getter private Plant plant;
 	@Getter private List<Action> actions = new ArrayList<>();
 	@Getter private Unit measureUnit, deliveryUnit;
+	private boolean usingEc = false;
 
 	public void setActions(Plant plant, List<Action> actions)
 	{
@@ -85,6 +87,8 @@ public class ActionAdapter extends RecyclerView.Adapter<ActionHolder> implements
 		{
 			deliveryUnit = Unit.getSelectedDeliveryUnit(viewHolder.itemView.getContext());
 		}
+
+		usingEc = PreferenceManager.getDefaultSharedPreferences(viewHolder.itemView.getContext()).getBoolean("tds_ec", false);
 
 		if (action == null) return;
 
@@ -206,8 +210,18 @@ public class ActionAdapter extends RecyclerView.Adapter<ActionHolder> implements
 
 			if (((Water)action).getPpm() != null)
 			{
-				waterStr.append("<b>PPM: </b>");
-				waterStr.append(((Water)action).getPpm());
+				String ppm = String.valueOf(((Water)action).getPpm().longValue());
+				if (usingEc)
+				{
+					waterStr.append("<b>EC: </b>");
+					ppm = String.valueOf((((Water)action).getPpm() * 2d) / 1000d);
+				}
+				else
+				{
+					waterStr.append("<b>PPM: </b>");
+				}
+
+				waterStr.append(ppm);
 				waterStr.append(", ");
 			}
 

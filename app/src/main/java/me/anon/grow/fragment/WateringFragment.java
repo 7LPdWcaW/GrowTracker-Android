@@ -5,6 +5,7 @@ import android.app.Fragment;
 import android.app.FragmentManager;
 import android.content.Context;
 import android.os.Bundle;
+import android.preference.PreferenceManager;
 import android.support.annotation.Nullable;
 import android.text.TextUtils;
 import android.view.LayoutInflater;
@@ -60,6 +61,7 @@ public class WateringFragment extends Fragment
 	private ArrayList<Plant> plants = new ArrayList<>();
 	private Water water;
 	private Unit selectedMeasurementUnit, selectedDeliveryUnit;
+	private boolean usingEc = false;
 
 	/**
 	 * @param plantIndex If -1, assume new plant
@@ -91,6 +93,7 @@ public class WateringFragment extends Fragment
 
 		selectedMeasurementUnit = Unit.getSelectedMeasurementUnit(getActivity());
 		selectedDeliveryUnit = Unit.getSelectedDeliveryUnit(getActivity());
+		usingEc = PreferenceManager.getDefaultSharedPreferences(getActivity()).getBoolean("tds_ec", false);
 
 		if (getArguments() != null)
 		{
@@ -143,6 +146,12 @@ public class WateringFragment extends Fragment
 	{
 		amountLabel.setText("Amount (" + selectedDeliveryUnit.getLabel() + ")");
 		amount.setHint("250" + selectedDeliveryUnit.getLabel());
+
+		if (usingEc)
+		{
+			waterPpm.setHint("1.0 EC");
+			((TextView)((ViewGroup)waterPpm.getParent()).findViewById(R.id.ppm_label)).setText("EC");
+		}
 
 		if (water != null && plants.size() == 1)
 		{
@@ -241,7 +250,13 @@ public class WateringFragment extends Fragment
 
 			if (water.getPpm() != null)
 			{
-				waterPpm.setText(String.valueOf(water.getPpm()));
+				String ppm = String.valueOf(water.getPpm().longValue());
+				if (usingEc)
+				{
+					ppm = String.valueOf((water.getPpm() * 2d) / 1000d);
+				}
+
+				waterPpm.setText(ppm);
 			}
 
 			if (water.getRunoff() != null)
@@ -385,10 +400,15 @@ public class WateringFragment extends Fragment
 	@Views.OnClick public void onFabCompleteClick(final View view)
 	{
 		Double waterPh = TextUtils.isEmpty(this.waterPh.getText()) ? null : Double.valueOf(this.waterPh.getText().toString());
-		Long ppm = TextUtils.isEmpty(this.waterPpm.getText()) ? null : Long.valueOf(this.waterPpm.getText().toString());
+		Double ppm = TextUtils.isEmpty(this.waterPpm.getText()) ? null : Double.valueOf(this.waterPpm.getText().toString());
 		Double runoffPh = TextUtils.isEmpty(this.runoffPh.getText()) ? null : Double.valueOf(this.runoffPh.getText().toString());
 		Double amount = TextUtils.isEmpty(this.amount.getText()) ? null : Double.valueOf(this.amount.getText().toString());
 		Integer temp = TextUtils.isEmpty(this.temp.getText()) ? null : Integer.valueOf(this.temp.getText().toString());
+
+		if (usingEc)
+		{
+			ppm = (ppm * 1000d) / 2d;
+		}
 
 		water.setPh(waterPh);
 		water.setPpm(ppm);
