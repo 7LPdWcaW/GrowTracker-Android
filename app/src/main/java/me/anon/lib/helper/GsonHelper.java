@@ -10,6 +10,8 @@ import com.google.gson.JsonParseException;
 import com.google.gson.JsonSerializationContext;
 import com.google.gson.JsonSerializer;
 
+import java.io.InputStream;
+import java.io.InputStreamReader;
 import java.io.Writer;
 import java.lang.reflect.Type;
 
@@ -38,6 +40,11 @@ public class GsonHelper
 	public static <T> T parse(String json, Type object)
 	{
 		return getGson().fromJson(json, object);
+	}
+
+	public static <T> T parse(InputStream json, Type object)
+	{
+		return getGson().fromJson(new InputStreamReader(json), object);
 	}
 
 	public static String parse(Object object)
