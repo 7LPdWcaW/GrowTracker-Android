@@ -1,7 +1,10 @@
 package me.anon.grow.fragment;
 
+import android.app.AlarmManager;
 import android.app.AlertDialog;
+import android.app.PendingIntent;
 import android.content.ComponentName;
+import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.pm.ApplicationInfo;
@@ -29,6 +32,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.util.List;
 
+import me.anon.controller.receiver.BackupService;
 import me.anon.grow.MainApplication;
 import me.anon.grow.R;
 import me.anon.lib.Unit;
@@ -76,6 +80,7 @@ public class SettingsFragment extends PreferenceFragment implements Preference.O
 
 		findPreference("encrypt").setOnPreferenceChangeListener(this);
 		findPreference("failsafe").setOnPreferenceChangeListener(this);
+		findPreference("auto_backup").setOnPreferenceChangeListener(this);
 		findPreference("readme").setOnPreferenceClickListener(this);
 		findPreference("export").setOnPreferenceClickListener(this);
 		findPreference("default_garden").setOnPreferenceClickListener(this);
@@ -123,7 +128,7 @@ public class SettingsFragment extends PreferenceFragment implements Preference.O
 						ApplicationInfo ai = packageManager.getApplicationInfo(resolveInfo.activityInfo.packageName, PackageManager.GET_META_DATA);
 						Bundle bundle = ai.metaData;
 						final String name = bundle.getString("me.anon.grow.ADDON_NAME", appName);
-						final String version = bundle.getString("me.anon.grow.ADDON_VERSION", "");
+						final String version = String.valueOf(bundle.get("me.anon.grow.ADDON_VERSION"));
 
 						Preference preference = new Preference(getActivity());
 
@@ -387,6 +392,19 @@ public class SettingsFragment extends PreferenceFragment implements Preference.O
 			}
 
 			return true;
+		}
+		else if ("auto_backup".equalsIgnoreCase(preference.getKey()))
+		{
+			if ((Boolean)newValue)
+			{
+				((MainApplication)getActivity().getApplication()).registerBackupService();
+			}
+			else
+			{
+				Intent backupIntent = new Intent(getActivity(), BackupService.class);
+				AlarmManager alarmManager = (AlarmManager)getActivity().getSystemService(Context.ALARM_SERVICE);
+				alarmManager.cancel(PendingIntent.getBroadcast(getActivity(), 0, backupIntent, 0));
+			}
 		}
 
 		return false;
