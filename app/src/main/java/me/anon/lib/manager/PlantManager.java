@@ -43,7 +43,7 @@ public class PlantManager
 {
 	@Getter(lazy = true) private static final PlantManager instance = new PlantManager();
 
-	private static String FILES_DIR;
+	public static String FILES_DIR;
 
 	private final ArrayList<Plant> mPlants = new ArrayList<>();
 	private Context context;
@@ -193,18 +193,24 @@ public class PlantManager
 					mPlants.addAll((ArrayList<Plant>)GsonHelper.parse(plantData, new TypeToken<ArrayList<Plant>>(){}.getType()));
 				}
 			}
-			catch (JsonSyntaxException e)
+			catch (final JsonSyntaxException e)
 			{
 				e.printStackTrace();
+
+				FileManager.getInstance().copyFile(FILES_DIR + "/plants.json", FILES_DIR + "/_plants.json");
+				Toast.makeText(context, "There is a syntax error in your app data. Your data has been backed up to '" + FILES_DIR + "/_plants.json'. Please fix before re-opening the app.", Toast.LENGTH_LONG).show();
+
+				// prevent save
+				MainApplication.setFailsafe(true);
 			}
 		}
 	}
 
-	public synchronized void save()
+	public void save()
 	{
-		synchronized (this.mPlants)
+		if (!MainApplication.isFailsafe())
 		{
-			if (!MainApplication.isFailsafe())
+			if (mPlants.size() > 0)
 			{
 				save(null);
 			}
@@ -222,7 +228,7 @@ public class PlantManager
 		{
 			if (MainApplication.isFailsafe()) return;
 
-			if (ignoreCheck == false && mPlants.size() > 0)
+			if (!ignoreCheck && mPlants.size() > 0)
 			{
 				AddonHelper.broadcastPlantList(context);
 
