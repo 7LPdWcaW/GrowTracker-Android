@@ -84,6 +84,7 @@
 							<TextView
 								android:layout_width="match_parent"
 								android:layout_height="wrap_content"
+								android:id="@+id/ppm_label"
 								android:text="PPM"
 								style="@style/SubsectionTitle"
 							/>
@@ -93,7 +94,7 @@
 								android:layout_height="wrap_content"
 								android:id="@+id/water_ppm"
 								android:hint="250"
-								android:inputType="numberSigned"
+								android:inputType="number|numberDecimal"
 								android:layout_gravity="bottom"
 								android:nextFocusDown="@+id/runoff_ph"
 								style="@style/SubsectionSubTitle"
