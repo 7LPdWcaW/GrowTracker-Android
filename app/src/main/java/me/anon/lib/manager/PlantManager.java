@@ -13,6 +13,9 @@ import com.google.gson.JsonSyntaxException;
 import com.google.gson.reflect.TypeToken;
 
 import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileOutputStream;
+import java.io.OutputStreamWriter;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
@@ -23,8 +26,9 @@ import lombok.experimental.Accessors;
 import me.anon.grow.BootActivity;
 import me.anon.grow.MainApplication;
 import me.anon.lib.helper.AddonHelper;
-import me.anon.lib.helper.EncryptionHelper;
 import me.anon.lib.helper.GsonHelper;
+import me.anon.lib.stream.DecryptInputStream;
+import me.anon.lib.stream.EncryptOutputStream;
 import me.anon.lib.task.AsyncCallback;
 import me.anon.model.Garden;
 import me.anon.model.Plant;
@@ -171,34 +175,42 @@ public class PlantManager
 		{
 			String plantData;
 
-			if (MainApplication.isEncrypted())
-			{
-				if (TextUtils.isEmpty(MainApplication.getKey()))
-				{
-					return;
-				}
-
-				plantData = EncryptionHelper.decrypt(MainApplication.getKey(), FileManager.getInstance().readFile(FILES_DIR + "/plants.json"));
-			}
-			else
-			{
-				plantData = FileManager.getInstance().readFileAsString(FILES_DIR + "/plants.json");
-			}
-
 			try
 			{
-				if (!TextUtils.isEmpty(plantData))
+				if (MainApplication.isEncrypted())
+				{
+					if (TextUtils.isEmpty(MainApplication.getKey()))
+					{
+						return;
+					}
+
+					DecryptInputStream stream = new DecryptInputStream(MainApplication.getKey(), new File(FILES_DIR, "/plants.json"));
+
+					mPlants.clear();
+					mPlants.addAll((ArrayList<Plant>)GsonHelper.parse(stream, new TypeToken<ArrayList<Plant>>(){}.getType()));
+				}
+				else
 				{
 					mPlants.clear();
-					mPlants.addAll((ArrayList<Plant>)GsonHelper.parse(plantData, new TypeToken<ArrayList<Plant>>(){}.getType()));
+					mPlants.addAll((ArrayList<Plant>)GsonHelper.parse(new FileInputStream(new File(FILES_DIR, "/plants.json")), new TypeToken<ArrayList<Plant>>(){}.getType()));
 				}
 			}
 			catch (final JsonSyntaxException e)
 			{
 				e.printStackTrace();
 
-				FileManager.getInstance().copyFile(FILES_DIR + "/plants.json", FILES_DIR + "/_plants.json");
-				Toast.makeText(context, "There is a syntax error in your app data. Your data has been backed up to '" + FILES_DIR + "/_plants.json'. Please fix before re-opening the app.", Toast.LENGTH_LONG).show();
+				FileManager.getInstance().copyFile(FILES_DIR + "/plants.json", FILES_DIR + "/plants_" + System.currentTimeMillis() + ".json");
+				Toast.makeText(context, "There is a syntax error in your app data. Your data has been backed up to '" + FILES_DIR + ". Please fix before re-opening the app.", Toast.LENGTH_LONG).show();
+
+				// prevent save
+				MainApplication.setFailsafe(true);
+			}
+			catch (Exception e)
+			{
+				e.printStackTrace();
+
+				FileManager.getInstance().copyFile(FILES_DIR + "/plants.json", FILES_DIR + "/plants_" + System.currentTimeMillis() + ".json");
+				Toast.makeText(context, "There is a problem loading your app data.", Toast.LENGTH_LONG).show();
 
 				// prevent save
 				MainApplication.setFailsafe(true);
@@ -240,18 +252,25 @@ public class PlantManager
 						{
 							FileManager.getInstance().copyFile(FILES_DIR + "/plants.json", FILES_DIR + "/plants.json.bak");
 
-							if (MainApplication.isEncrypted())
+							try
 							{
-								if (TextUtils.isEmpty(MainApplication.getKey()))
+								if (MainApplication.isEncrypted())
 								{
-									return null;
-								}
+									if (TextUtils.isEmpty(MainApplication.getKey()))
+									{
+										return null;
+									}
 
-								FileManager.getInstance().writeFile(FILES_DIR + "/plants.json", EncryptionHelper.encrypt(MainApplication.getKey(), GsonHelper.parse(mPlants)));
+									GsonHelper.getGson().toJson(mPlants, new OutputStreamWriter(new EncryptOutputStream(MainApplication.getKey(), new File(FILES_DIR + "/plants.json"))));
+								}
+								else
+								{
+									GsonHelper.getGson().toJson(mPlants, new OutputStreamWriter(new FileOutputStream(new File(FILES_DIR + "/plants.json"))));
+								}
 							}
-							else
+							catch (Exception e)
 							{
-								FileManager.getInstance().writeFile(FILES_DIR + "/plants.json", GsonHelper.parse(mPlants));
+								e.printStackTrace();
 							}
 						}
 
