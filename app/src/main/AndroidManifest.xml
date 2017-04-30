@@ -24,6 +24,8 @@
 			/>
 		</provider>
 
+		<receiver android:name="me.anon.controller.receiver.BackupService" />
+
 		<receiver android:name="me.anon.controller.provider.PlantWidgetProvider">
 			<intent-filter>
 				<action android:name="android.appwidget.action.APPWIDGET_UPDATE" />
