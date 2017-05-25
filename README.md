@@ -47,6 +47,10 @@ The app uses a simple JSON structure to store all the data about the plants that
 
 The structure is very simple. Note: date timestamps are all unix timestamps from 1/1/1970 in milliseconds. All objects in arrays are in date order, where index 0 is the oldest and index (size - 1) is the newest.
 
+## Prerequisites
+
+Lombok is required for this project before you are able to compile. You can install it by going to `preferences->plugins->browse repositories->lombok plugin`
+
 ### Plant object
 
 ```
