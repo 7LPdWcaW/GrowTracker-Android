@@ -116,7 +116,7 @@ Water action for waterings
 
 Action can be one of,
 
-`TRIM`, `TOP`, `FIM`, `LST`, `LOLLIPOP`, `FLUSH`, `FOLIAR_FEED`, `PESTICIDE_APPLICATION`
+`FIM`, `FLUSH`, `FOLIAR_FEED`, `LST`, `LOLLIPOP`, `PESTICIDE_APPLICATION`, `TOP`, `TRANSPLANTED`, `TRIM`
 
 ```
 {
