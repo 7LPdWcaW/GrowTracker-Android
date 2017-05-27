@@ -25,9 +25,15 @@ public class PinDialogFragment extends DialogFragment
 		public void onDialogConfirmed(String input);
 	}
 
+	public static interface OnDialogCancelled
+	{
+		public void onDialogCancelled();
+	}
+
 	@Views.InjectView(R.id.pin) private EditText input;
 
 	@Setter private OnDialogConfirmed onDialogConfirmed;
+	@Setter private OnDialogCancelled onDialogCancelled;
 	@Setter private String title = "Pin";
 
 	@SuppressLint("ValidFragment")
@@ -54,7 +60,16 @@ public class PinDialogFragment extends DialogFragment
 				}
 			}
 		});
-		dialog.setNegativeButton("Cancel", null);
+		dialog.setNegativeButton("Cancel", new DialogInterface.OnClickListener()
+		{
+			@Override public void onClick(DialogInterface dialog, int which)
+			{
+				if (onDialogCancelled != null)
+				{
+					onDialogCancelled.onDialogCancelled();
+				}
+			}
+		});
 
 		return dialog.create();
 	}
