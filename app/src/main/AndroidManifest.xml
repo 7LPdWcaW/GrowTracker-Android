@@ -38,7 +38,7 @@
 			/>
 		</receiver>
 
-		<activity android:name=".BootActivity">
+		<activity android:name=".BootActivity" android:finishOnTaskLaunch="true">
 			<intent-filter>
 				<category android:name="android.intent.category.LAUNCHER" />
 				<action android:name="android.intent.action.MAIN" />
