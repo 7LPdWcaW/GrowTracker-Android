@@ -134,6 +134,13 @@ public class BootActivity extends Activity
 					}
 				}
 			});
+			check.setOnDialogCancelled(new PinDialogFragment.OnDialogCancelled()
+			{
+				@Override public void onDialogCancelled()
+				{
+					finish();
+				}
+			});
 
 			check.show(getFragmentManager(), null);
 		}
