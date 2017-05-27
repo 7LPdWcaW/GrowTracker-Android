@@ -8,7 +8,6 @@ import android.app.Notification;
 import android.app.NotificationManager;
 import android.app.PendingIntent;
 import android.app.ProgressDialog;
-import android.content.ContentResolver;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
@@ -73,7 +72,6 @@ import me.anon.lib.Views;
 import me.anon.lib.helper.AddonHelper;
 import me.anon.lib.helper.ExportHelper;
 import me.anon.lib.helper.FabAnimator;
-import me.anon.lib.helper.GsonHelper;
 import me.anon.lib.helper.ModelHelper;
 import me.anon.lib.helper.PermissionHelper;
 import me.anon.lib.manager.GardenManager;
@@ -195,7 +193,7 @@ public class PlantDetailsFragment extends Fragment
 		super.onResume();
 
 		// Always re-set stage incase order was changed in event list
-		if (plant.getStage() != null)
+		if (plant != null && plant.getStage() != null)
 		{
 			stage.setText(plant.getStage().getPrintString());
 		}
