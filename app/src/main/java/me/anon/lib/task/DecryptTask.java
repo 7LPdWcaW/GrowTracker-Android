@@ -44,21 +44,33 @@ public class DecryptTask extends AsyncTask<ArrayList<String>, Void, Void>
 
 				fos.flush();
 
-			} catch (IOException e) {
+			}
+			catch (IOException e)
+			{
 				e.printStackTrace();
 			}
-			finally {
-				if (fos != null) {
-					try {
+			finally
+			{
+				if (fos != null)
+				{
+					try
+					{
 						fos.close();
-					} catch (IOException e) {
+					}
+					catch (IOException e)
+					{
 						e.printStackTrace();
 					}
 				}
-				if (dis != null) {
-					try {
+
+				if (dis != null)
+				{
+					try
+					{
 						dis.close();
-					} catch (IOException e) {
+					}
+					catch (IOException e)
+					{
 						e.printStackTrace();
 					}
 				}
