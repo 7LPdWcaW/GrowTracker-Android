@@ -22,7 +22,7 @@ public class Water extends Action
 	private Double ph;
 	private Double runoff;
 	private Double amount;
-	private Integer temp;
+	private Double temp;
 	private List<Additive> additives = new ArrayList<>();
 
 	@Deprecated private Nutrient nutrient;
