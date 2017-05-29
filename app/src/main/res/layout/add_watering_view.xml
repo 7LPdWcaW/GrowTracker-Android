@@ -175,6 +175,7 @@
 							<TextView
 								android:layout_width="match_parent"
 								android:layout_height="wrap_content"
+								android:id="@+id/temp_label"
 								android:text="Temp (ºC)"
 								style="@style/SubsectionTitle"
 							/>
@@ -184,7 +185,7 @@
 								android:layout_height="wrap_content"
 								android:id="@+id/temp"
 								android:hint="24ºC"
-								android:inputType="numberSigned"
+								android:inputType="numberDecimal"
 								android:nextFocusDown="@+id/date"
 								style="@style/SubsectionSubTitle"
 							/>

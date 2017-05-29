@@ -23,6 +23,7 @@ import java.util.Date;
 
 import me.anon.controller.provider.PlantWidgetProvider;
 import me.anon.grow.R;
+import me.anon.lib.TempUnit;
 import me.anon.lib.Unit;
 import me.anon.lib.Views;
 import me.anon.lib.manager.PlantManager;
@@ -32,6 +33,7 @@ import me.anon.model.Plant;
 import me.anon.model.PlantMedium;
 import me.anon.model.Water;
 
+import static me.anon.lib.TempUnit.CELCIUS;
 import static me.anon.lib.Unit.ML;
 
 /**
@@ -51,6 +53,7 @@ public class WateringFragment extends Fragment
 	@Views.InjectView(R.id.amount_label) private TextView amountLabel;
 	@Views.InjectView(R.id.temp_container) private View tempContainer;
 	@Views.InjectView(R.id.temp) private TextView temp;
+	@Views.InjectView(R.id.temp_label) private TextView tempLabel;
 	@Views.InjectView(R.id.date_container) private View dateContainer;
 	@Views.InjectView(R.id.date) private TextView date;
 	@Views.InjectView(R.id.additive_container) private ViewGroup additiveContainer;
@@ -61,6 +64,7 @@ public class WateringFragment extends Fragment
 	private ArrayList<Plant> plants = new ArrayList<>();
 	private Water water;
 	private Unit selectedMeasurementUnit, selectedDeliveryUnit;
+	private TempUnit selectedTemperatureUnit;
 	private boolean usingEc = false;
 
 	/**
@@ -93,6 +97,7 @@ public class WateringFragment extends Fragment
 
 		selectedMeasurementUnit = Unit.getSelectedMeasurementUnit(getActivity());
 		selectedDeliveryUnit = Unit.getSelectedDeliveryUnit(getActivity());
+		selectedTemperatureUnit = TempUnit.getSelectedTemperatureUnit(getActivity());
 		usingEc = PreferenceManager.getDefaultSharedPreferences(getActivity()).getBoolean("tds_ec", false);
 
 		if (getArguments() != null)
@@ -185,16 +190,17 @@ public class WateringFragment extends Fragment
 
 				if (hintFeed.getAmount() != null)
 				{
-					amount.setHint(String.valueOf(ML.to(selectedDeliveryUnit, hintFeed.getAmount()) + selectedDeliveryUnit.getLabel()));
+					amount.setHint(String.valueOf(ML.to(selectedDeliveryUnit, hintFeed.getAmount())) + selectedDeliveryUnit.getLabel());
 				}
 
-				if (plants.get(0).getMedium() == PlantMedium.HYDRO)
+				if (plants.get(0).getMedium() == PlantMedium.HYDRO || plants.get(0).getMedium() == PlantMedium.AERO)
 				{
 					tempContainer.setVisibility(View.VISIBLE);
+					tempLabel.setText("Temp (º" + selectedTemperatureUnit.getLabel() + ")");
 
 					if (hintFeed.getTemp() != null)
 					{
-						temp.setHint(String.valueOf(hintFeed.getTemp()));
+						temp.setHint(String.valueOf(CELCIUS.to(selectedTemperatureUnit, hintFeed.getTemp())) + selectedTemperatureUnit.getLabel());
 					}
 				}
 
@@ -275,7 +281,7 @@ public class WateringFragment extends Fragment
 
 				if (water.getTemp() != null)
 				{
-					temp.setText(String.valueOf(water.getTemp()));
+					temp.setHint(String.valueOf(CELCIUS.to(selectedTemperatureUnit, water.getTemp())) + selectedTemperatureUnit.getLabel());
 				}
 			}
 
@@ -403,9 +409,9 @@ public class WateringFragment extends Fragment
 		Double ppm = TextUtils.isEmpty(this.waterPpm.getText()) ? null : Double.valueOf(this.waterPpm.getText().toString());
 		Double runoffPh = TextUtils.isEmpty(this.runoffPh.getText()) ? null : Double.valueOf(this.runoffPh.getText().toString());
 		Double amount = TextUtils.isEmpty(this.amount.getText()) ? null : Double.valueOf(this.amount.getText().toString());
-		Integer temp = TextUtils.isEmpty(this.temp.getText()) ? null : Integer.valueOf(this.temp.getText().toString());
+		Double temp = TextUtils.isEmpty(this.temp.getText()) ? null : Double.valueOf(this.temp.getText().toString());
 
-		if (usingEc)
+		if (usingEc && ppm != null)
 		{
 			ppm = (ppm * 1000d) / 2d;
 		}
@@ -414,7 +420,7 @@ public class WateringFragment extends Fragment
 		water.setPpm(ppm);
 		water.setRunoff(runoffPh);
 		water.setAmount(amount == null ? null : selectedDeliveryUnit.to(ML, amount));
-		water.setTemp(temp);
+		water.setTemp(selectedTemperatureUnit.to(CELCIUS, temp));
 		water.setNotes(TextUtils.isEmpty(notes.getText().toString()) ? null : notes.getText().toString());
 
 		if (plants.size() == 1)
