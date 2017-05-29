@@ -382,12 +382,11 @@ public class ExportHelper
 			}
 
 			final int finalTotalWater = totalWater;
-			final int finalTotalFeed = totalFeed;
 			((Activity)context).runOnUiThread(new Runnable()
 			{
 				@Override public void run()
 				{
-					int width = 512 + (finalTotalWater + finalTotalFeed * 150);
+					int width = 512 + (finalTotalWater * 10);
 					int height = 512;
 					int widthMeasureSpec = View.MeasureSpec.makeMeasureSpec(width, View.MeasureSpec.EXACTLY);
 					int heightMeasureSpec = View.MeasureSpec.makeMeasureSpec(height, View.MeasureSpec.EXACTLY);
