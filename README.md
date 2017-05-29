@@ -77,7 +77,7 @@ One of,
 
 One of,
 
-`PLANTED`, `GERMINATION`, `VEGETATION`, `FLOWER`, `CURING`, `HARVESTED`
+`PLANTED`, `GERMINATION`, `CUTTING`, `VEGETATION`, `FLOWER`, `CURING`, `HARVESTED`
 
 ### Action object (feeding)
 
