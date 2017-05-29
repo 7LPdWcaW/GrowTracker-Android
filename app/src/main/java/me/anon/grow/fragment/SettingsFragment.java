@@ -35,6 +35,7 @@ import java.util.List;
 import me.anon.controller.receiver.BackupService;
 import me.anon.grow.MainApplication;
 import me.anon.grow.R;
+import me.anon.lib.TempUnit;
 import me.anon.lib.Unit;
 import me.anon.lib.helper.AddonHelper;
 import me.anon.lib.helper.EncryptionHelper;
@@ -68,6 +69,7 @@ public class SettingsFragment extends PreferenceFragment implements Preference.O
 		findPreference("default_garden").setSummary(Html.fromHtml("Default garden to show on open, currently <b>" + defaultGarden + "</b>"));
 		findPreference("delivery_unit").setSummary(Html.fromHtml("Default delivery measurement unit to use, currently <b>" + Unit.getSelectedDeliveryUnit(getActivity()).getLabel() + "</b>"));
 		findPreference("measurement_unit").setSummary(Html.fromHtml("Default additive measurement unit to use, currently <b>" + Unit.getSelectedMeasurementUnit(getActivity()).getLabel() + "</b>"));
+		findPreference("temperature_unit").setSummary(Html.fromHtml("Default temperature unit to use, currently <b>" + TempUnit.getSelectedTemperatureUnit(getActivity()).getLabel() + "</b>"));
 
 		try
 		{
@@ -86,6 +88,7 @@ public class SettingsFragment extends PreferenceFragment implements Preference.O
 		findPreference("default_garden").setOnPreferenceClickListener(this);
 		findPreference("delivery_unit").setOnPreferenceClickListener(this);
 		findPreference("measurement_unit").setOnPreferenceClickListener(this);
+		findPreference("temperature_unit").setOnPreferenceClickListener(this);
 
 		findPreference("failsafe").setEnabled(((CheckBoxPreference)findPreference("encrypt")).isChecked());
 
@@ -415,7 +418,7 @@ public class SettingsFragment extends PreferenceFragment implements Preference.O
 		if ("delivery_unit".equals(preference.getKey()))
 		{
 			final String[] options = new String[Unit.values().length];
-			int index = 0, selectedIndex = PreferenceManager.getDefaultSharedPreferences(getActivity()).getInt("delivery_unit", 0);
+			int index = 0, selectedIndex = Unit.getSelectedDeliveryUnit(getActivity()).ordinal();
 			for (Unit unit : Unit.values())
 			{
 				options[index++] = unit.getLabel();
@@ -443,7 +446,7 @@ public class SettingsFragment extends PreferenceFragment implements Preference.O
 		else if ("measurement_unit".equals(preference.getKey()))
 		{
 			final String[] options = new String[Unit.values().length];
-			int index = 0, selectedIndex = PreferenceManager.getDefaultSharedPreferences(getActivity()).getInt("measurement_unit", 0);
+			int index = 0, selectedIndex = Unit.getSelectedMeasurementUnit(getActivity()).ordinal();
 			for (Unit unit : Unit.values())
 			{
 				options[index++] = unit.getLabel();
@@ -462,6 +465,34 @@ public class SettingsFragment extends PreferenceFragment implements Preference.O
 							.apply();
 
 					findPreference("measurement_unit").setSummary(Html.fromHtml("Default additive measurement unit to use, currently <b>" + Unit.getSelectedMeasurementUnit(getActivity()).getLabel() + "</b>"));
+					}
+				})
+				.show();
+
+			return true;
+		}
+		else if ("temperature_unit".equals(preference.getKey()))
+		{
+			final String[] options = new String[TempUnit.values().length];
+			int index = 0, selectedIndex = TempUnit.getSelectedTemperatureUnit(getActivity()).ordinal();
+			for (TempUnit unit : TempUnit.values())
+			{
+				options[index++] = unit.getLabel();
+			}
+
+			new AlertDialog.Builder(getActivity())
+				.setTitle("Select temperature unit")
+				.setSingleChoiceItems(options, selectedIndex, new DialogInterface.OnClickListener()
+				{
+					@Override public void onClick(DialogInterface dialogInterface, int index)
+					{
+						dialogInterface.dismiss();
+
+						PreferenceManager.getDefaultSharedPreferences(getActivity()).edit()
+							.putInt("temperature_unit", index)
+							.apply();
+
+					findPreference("temperature_unit").setSummary(Html.fromHtml("Default temperature unit to use, currently <b>" + TempUnit.getSelectedTemperatureUnit(getActivity()).getLabel() + "</b>"));
 					}
 				})
 				.show();

@@ -36,6 +36,12 @@
 			android:summary="Default additive measurement unit to use, currently ml"
 		/>
 
+		<Preference
+			android:key="temperature_unit"
+			android:title="Temperature unit"
+			android:summary="Default temperature unit to use, currently C"
+		/>
+
 		<CheckBoxPreference
 			android:key="tds_ec"
 			android:title="Use EC instead of ppm"
