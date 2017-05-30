@@ -47,6 +47,10 @@ The app uses a simple JSON structure to store all the data about the plants that
 
 The structure is very simple. Note: date timestamps are all unix timestamps from 1/1/1970 in milliseconds. All objects in arrays are in date order, where index 0 is the oldest and index (size - 1) is the newest.
 
+## Prerequisites
+
+Lombok is required for this project before you are able to compile. You can install it by going to `preferences->plugins->browse repositories->lombok plugin`
+
 ### Plant object
 
 ```
@@ -73,7 +77,7 @@ One of,
 
 One of,
 
-`PLANTED`, `GERMINATION`, `VEGETATION`, `FLOWER`, `CURING`, `HARVESTED`
+`PLANTED`, `GERMINATION`, `CUTTING`, `VEGETATION`, `FLOWER`, `CURING`, `HARVESTED`
 
 ### Action object (feeding)
 
@@ -112,7 +116,7 @@ Water action for waterings
 
 Action can be one of,
 
-`TRIM`, `TOP`, `FIM`, `LST`, `LOLLIPOP`, `FLUSH`, `FOLIAR_FEED`, `PESTICIDE_APPLICATION`
+`FIM`, `FLUSH`, `FOLIAR_FEED`, `LST`, `LOLLIPOP`, `PESTICIDE_APPLICATION`, `TOP`, `TRANSPLANTED`, `TRIM`
 
 ```
 {

@@ -12,9 +12,11 @@ import android.widget.Toast;
 import com.google.gson.JsonSyntaxException;
 import com.google.gson.reflect.TypeToken;
 
+import java.io.BufferedWriter;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
+import java.io.OutputStream;
 import java.io.OutputStreamWriter;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -254,6 +256,8 @@ public class PlantManager
 
 							try
 							{
+								OutputStream outstream = null;
+
 								if (MainApplication.isEncrypted())
 								{
 									if (TextUtils.isEmpty(MainApplication.getKey()))
@@ -261,12 +265,20 @@ public class PlantManager
 										return null;
 									}
 
-									GsonHelper.getGson().toJson(mPlants, new OutputStreamWriter(new EncryptOutputStream(MainApplication.getKey(), new File(FILES_DIR + "/plants.json"))));
+									outstream = new EncryptOutputStream(MainApplication.getKey(), new File(FILES_DIR + "/plants.json"));
 								}
 								else
 								{
-									GsonHelper.getGson().toJson(mPlants, new OutputStreamWriter(new FileOutputStream(new File(FILES_DIR + "/plants.json"))));
+									outstream = new FileOutputStream(new File(FILES_DIR + "/plants.json"));
 								}
+
+								BufferedWriter writer = new BufferedWriter(new OutputStreamWriter(outstream, "UTF-8"), 8192);
+								GsonHelper.getGson().toJson(mPlants, new TypeToken<ArrayList<Plant>>(){}.getType(), writer);
+
+								writer.flush();
+								outstream.flush();
+								writer.close();
+								outstream.close();
 							}
 							catch (Exception e)
 							{

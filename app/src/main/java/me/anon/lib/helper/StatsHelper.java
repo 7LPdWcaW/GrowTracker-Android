@@ -86,22 +86,22 @@ public class StatsHelper
 		{
 			LineDataSet dataSet = new LineDataSet(inputVals, "Input PH");
 			dataSet.setDrawCubic(true);
-			dataSet.setLineWidth(2.0f);
+			dataSet.setLineWidth(1.0f);
 			dataSet.setDrawCircleHole(false);
 			dataSet.setCircleColor(0xffffffff);
 			dataSet.setValueTextColor(0xffffffff);
-			dataSet.setCircleSize(5.0f);
+			dataSet.setCircleSize(2.0f);
 			dataSet.setValueTextSize(8.0f);
 			dataSet.setValueFormatter(formatter);
 
 			LineDataSet runoffDataSet = new LineDataSet(runoffVals, "Runoff PH");
 			runoffDataSet.setDrawCubic(true);
-			runoffDataSet.setLineWidth(2.0f);
+			runoffDataSet.setLineWidth(1.0f);
 			runoffDataSet.setDrawCircleHole(false);
 			runoffDataSet.setColor(0xffFFF9C4);
 			runoffDataSet.setCircleColor(0xffFFF9C4);
 			runoffDataSet.setValueTextColor(0xffFFF9C4);
-			runoffDataSet.setCircleSize(5.0f);
+			runoffDataSet.setCircleSize(2.0f);
 			runoffDataSet.setValueTextSize(8.0f);
 			runoffDataSet.setValueFormatter(formatter);
 
@@ -183,11 +183,11 @@ public class StatsHelper
 		{
 			LineDataSet dataSet = new LineDataSet(vals, "PPM");
 			dataSet.setDrawCubic(true);
-			dataSet.setLineWidth(2.0f);
+			dataSet.setLineWidth(1.0f);
 			dataSet.setDrawCircleHole(false);
 			dataSet.setCircleColor(0xffffffff);
 			dataSet.setValueTextColor(0xffffffff);
-			dataSet.setCircleSize(5.0f);
+			dataSet.setCircleSize(2.0f);
 			dataSet.setValueTextSize(8.0f);
 			dataSet.setColor(0xffA7FFEB);
 
@@ -248,11 +248,11 @@ public class StatsHelper
 		{
 			LineDataSet dataSet = new LineDataSet(vals, "Temperature");
 			dataSet.setDrawCubic(true);
-			dataSet.setLineWidth(2.0f);
+			dataSet.setLineWidth(1.0f);
 			dataSet.setDrawCircleHole(false);
 			dataSet.setCircleColor(0xffffffff);
 			dataSet.setValueTextColor(0xffffffff);
-			dataSet.setCircleSize(5.0f);
+			dataSet.setCircleSize(2.0f);
 			dataSet.setValueTextSize(8.0f);
 			dataSet.setValueFormatter(formatter);
 

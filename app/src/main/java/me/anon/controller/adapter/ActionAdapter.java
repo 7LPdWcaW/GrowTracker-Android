@@ -26,6 +26,7 @@ import lombok.Getter;
 import lombok.Setter;
 import me.anon.grow.R;
 import me.anon.lib.DateRenderer;
+import me.anon.lib.TempUnit;
 import me.anon.lib.Unit;
 import me.anon.lib.helper.ModelHelper;
 import me.anon.lib.helper.TimeHelper;
@@ -38,6 +39,7 @@ import me.anon.model.StageChange;
 import me.anon.model.Water;
 import me.anon.view.ActionHolder;
 
+import static me.anon.lib.TempUnit.CELCIUS;
 import static me.anon.lib.Unit.ML;
 
 /**
@@ -61,6 +63,7 @@ public class ActionAdapter extends RecyclerView.Adapter<ActionHolder> implements
 	@Getter private Plant plant;
 	@Getter private List<Action> actions = new ArrayList<>();
 	@Getter private Unit measureUnit, deliveryUnit;
+	@Getter private TempUnit tempUnit;
 	private boolean usingEc = false;
 
 	public void setActions(Plant plant, List<Action> actions)
@@ -86,6 +89,11 @@ public class ActionAdapter extends RecyclerView.Adapter<ActionHolder> implements
 		if (deliveryUnit == null)
 		{
 			deliveryUnit = Unit.getSelectedDeliveryUnit(viewHolder.itemView.getContext());
+		}
+
+		if (tempUnit == null)
+		{
+			tempUnit = TempUnit.getSelectedTemperatureUnit(viewHolder.itemView.getContext());
 		}
 
 		usingEc = PreferenceManager.getDefaultSharedPreferences(viewHolder.itemView.getContext()).getBoolean("tds_ec", false);
@@ -236,8 +244,8 @@ public class ActionAdapter extends RecyclerView.Adapter<ActionHolder> implements
 			if (((Water)action).getTemp() != null)
 			{
 				waterStr.append("<b>Temp: </b>");
-				waterStr.append(((Water)action).getTemp());
-				waterStr.append("ºC, ");
+				waterStr.append(CELCIUS.to(tempUnit, ((Water)action).getTemp()));
+				waterStr.append("º").append(tempUnit.getLabel()).append(", ");
 			}
 
 			summary += waterStr.toString().length() > 0 ? waterStr.toString().substring(0, waterStr.length() - 2) + "<br/>" : "";

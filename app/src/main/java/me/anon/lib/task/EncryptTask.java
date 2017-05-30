@@ -48,18 +48,28 @@ public class EncryptTask extends AsyncTask<ArrayList<String>, Void, Void>
 			{
 				e.printStackTrace();
 			}
-			finally {
-				if (fis != null) {
-					try {
+			finally
+			{
+				if (fis != null)
+				{
+					try
+					{
 						fis.close();
-					} catch (IOException e) {
+					}
+					catch (IOException e)
+					{
 						e.printStackTrace();
 					}
 				}
-				if (eos != null) {
-					try {
+				
+				if (eos != null)
+				{
+					try
+					{
 						eos.close();
-					} catch (IOException e) {
+					}
+					catch (IOException e)
+					{
 						e.printStackTrace();
 					}
 				}

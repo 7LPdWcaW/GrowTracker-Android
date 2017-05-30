@@ -12,7 +12,9 @@ import lombok.Getter;
 public enum PlantMedium
 {
 	SOIL("Soil"),
-	HYDRO("Hydroponics");
+	HYDRO("Hydroponics"),
+	COCO("Coco Coir"),
+	AERO("Aeroponics");
 
 	@Getter private String printString;
 
