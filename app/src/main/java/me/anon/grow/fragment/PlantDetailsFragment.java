@@ -24,6 +24,7 @@ import android.os.ParcelFileDescriptor;
 import android.preference.PreferenceManager;
 import android.provider.MediaStore;
 import android.support.annotation.Nullable;
+import android.support.v4.app.NotificationCompat;
 import android.support.v4.content.FileProvider;
 import android.text.Html;
 import android.text.TextUtils;
@@ -655,46 +656,52 @@ public class PlantDetailsFragment extends Fragment
 		else if (item.getItemId() == R.id.export)
 		{
 			Toast.makeText(getActivity(), "Exporting grow log...", Toast.LENGTH_SHORT).show();
-			final NotificationManager notificationManager = (NotificationManager)getActivity().getSystemService(Context.NOTIFICATION_SERVICE);
+			NotificationManager notificationManager = (NotificationManager)getActivity().getSystemService(Context.NOTIFICATION_SERVICE);
 
-			Notification exportNotification = new Notification.Builder(getActivity())
+			Notification exportNotification = new NotificationCompat.Builder(getActivity())
 				.setContentText("Exporting grow log for " + plant.getName())
 				.setContentTitle("Exporting")
 				.setContentIntent(PendingIntent.getActivity(getActivity(), 0, new Intent(), PendingIntent.FLAG_UPDATE_CURRENT))
 				.setTicker("Exporting grow log for " + plant.getName())
+				.setPriority(NotificationCompat.PRIORITY_HIGH)
+				.setVisibility(NotificationCompat.VISIBILITY_PUBLIC)
 				.setSmallIcon(R.drawable.ic_stat_name)
+				.setVibrate(new long[0])
 				.getNotification();
 
-			notificationManager.notify(0xec9047, exportNotification);
+			notificationManager.notify(plantIndex, exportNotification);
 
-			new AsyncTask<Plant, Void, File>()
+			ExportHelper.exportPlant(getActivity(), plant, new ExportCallback()
 			{
-				@Override protected File doInBackground(Plant... params)
+				@Override public void onCallback(Context context, File file)
 				{
-					ExportHelper.exportPlant(getActivity(), plant, new ExportCallback()
+					if (file != null && file.exists() && getActivity() != null)
 					{
-						@Override public void onCallback(Context context, File file)
+						NotificationManager notificationManager = (NotificationManager)context.getSystemService(Context.NOTIFICATION_SERVICE);
+						Notification finishNotification = new NotificationCompat.Builder(getActivity())
+							.setContentText("Exported " + plant.getName() + " to " + file.getAbsolutePath())
+							.setTicker("Export of " + plant.getName() + " complete")
+							.setContentTitle("Export Complete")
+							.setContentIntent(PendingIntent.getActivity(getActivity(), 0, new Intent(), PendingIntent.FLAG_UPDATE_CURRENT))
+							.setSmallIcon(R.drawable.ic_stat_name)
+							.setPriority(NotificationCompat.PRIORITY_HIGH)
+							.setVisibility(NotificationCompat.VISIBILITY_PUBLIC)
+							.setAutoCancel(true)
+							.setVibrate(new long[0])
+							.getNotification();
+						notificationManager.notify(plantIndex, finishNotification);
+
+						if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT)
 						{
-							if (file != null && file.exists() && getActivity() != null)
-							{
-								Toast.makeText(getActivity(), "Grow log successfully exported to " + file.getAbsolutePath(), Toast.LENGTH_SHORT).show();
-								notificationManager.cancel(0xec9047);
-
-								if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT)
-								{
-									new MediaScannerWrapper(getActivity(), file.getAbsolutePath(), "application/zip").scan();
-								}
-								else
-								{
-									getActivity().sendBroadcast(new Intent(Intent.ACTION_MEDIA_MOUNTED, Uri.fromFile(file)));
-								}
-							}
+							new MediaScannerWrapper(getActivity(), file.getAbsolutePath(), "application/zip").scan();
 						}
-					});
-
-					return null;
+						else
+						{
+							getActivity().sendBroadcast(new Intent(Intent.ACTION_MEDIA_MOUNTED, Uri.fromFile(file)));
+						}
+					}
 				}
-			}.executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR, plant);
+			});
 
 			return true;
 		}
