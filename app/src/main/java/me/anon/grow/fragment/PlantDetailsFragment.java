@@ -74,7 +74,6 @@ import me.anon.lib.helper.AddonHelper;
 import me.anon.lib.helper.ExportHelper;
 import me.anon.lib.helper.FabAnimator;
 import me.anon.lib.helper.GsonHelper;
-import me.anon.lib.helper.ModelHelper;
 import me.anon.lib.helper.PermissionHelper;
 import me.anon.lib.manager.GardenManager;
 import me.anon.lib.manager.PlantManager;
@@ -417,7 +416,7 @@ public class PlantDetailsFragment extends Fragment
 									final int originalIndex = PlantManager.getInstance().getPlants().indexOf(sortedPlants.get(which));
 
 									Water water = (Water)plant.getActions().get(plant.getActions().size() - 1);
-									Water copy = (Water)ModelHelper.copy(water);
+									Water copy = water.clone();
 									PlantManager.getInstance().getPlants().get(originalIndex).getActions().add(copy);
 
 									Intent edit = new Intent(getActivity(), EditWateringActivity.class);
@@ -620,7 +619,7 @@ public class PlantDetailsFragment extends Fragment
 		}
 		else if (item.getItemId() == R.id.duplicate)
 		{
-			final Plant copy = (Plant)ModelHelper.copy(plant);
+			final Plant copy = plant.clone();
 			copy.setId(UUID.randomUUID().toString());
 			copy.getImages().clear();
 
