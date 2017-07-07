@@ -25,15 +25,6 @@ public class EmptyAction extends Action
 
 	public EmptyAction clone()
 	{
-		try
-		{
-			return (EmptyAction)super.clone();
-		}
-		catch (CloneNotSupportedException e)
-		{
-			e.printStackTrace();
-		}
-
-		return null;
+		return (EmptyAction)super.clone();
 	}
 }

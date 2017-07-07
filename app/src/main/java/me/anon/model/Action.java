@@ -60,4 +60,18 @@ public abstract class Action implements Cloneable
 
 		return true;
 	}
+
+	@Override public Action clone()
+	{
+		try
+		{
+			return (Action)super.clone();
+		}
+		catch (CloneNotSupportedException e)
+		{
+			e.printStackTrace();
+		}
+
+		return this;
+	}
 }
