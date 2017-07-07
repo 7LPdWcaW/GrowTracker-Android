@@ -30,15 +30,6 @@ public class Water extends Action
 
 	public Water clone()
 	{
-		try
-		{
-			return (Water)super.clone();
-		}
-		catch (CloneNotSupportedException e)
-		{
-			e.printStackTrace();
-		}
-
-		return null;
+		return (Water)super.clone();
 	}
 }
