@@ -420,7 +420,12 @@ public class WateringFragment extends Fragment
 		water.setPpm(ppm);
 		water.setRunoff(runoffPh);
 		water.setAmount(amount == null ? null : selectedDeliveryUnit.to(ML, amount));
-		water.setTemp(selectedTemperatureUnit.to(CELCIUS, temp));
+
+		if (temp != null)
+		{
+			water.setTemp(selectedTemperatureUnit.to(CELCIUS, temp));
+		}
+
 		water.setNotes(TextUtils.isEmpty(notes.getText().toString()) ? null : notes.getText().toString());
 
 		if (plants.size() == 1)
