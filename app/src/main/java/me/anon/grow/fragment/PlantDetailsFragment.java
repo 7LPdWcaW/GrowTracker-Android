@@ -658,6 +658,8 @@ public class PlantDetailsFragment extends Fragment
 			Toast.makeText(getActivity(), "Exporting grow log...", Toast.LENGTH_SHORT).show();
 			NotificationManager notificationManager = (NotificationManager)getActivity().getSystemService(Context.NOTIFICATION_SERVICE);
 
+			notificationManager.cancel(plantIndex);
+
 			Notification exportNotification = new NotificationCompat.Builder(getActivity())
 				.setContentText("Exporting grow log for " + plant.getName())
 				.setContentTitle("Exporting")
@@ -683,7 +685,7 @@ public class PlantDetailsFragment extends Fragment
 							.setTicker("Export of " + plant.getName() + " complete")
 							.setContentTitle("Export Complete")
 							.setContentIntent(PendingIntent.getActivity(getActivity(), 0, new Intent(), PendingIntent.FLAG_UPDATE_CURRENT))
-							.setSmallIcon(R.drawable.ic_stat_name)
+							.setSmallIcon(R.drawable.ic_stat_done)
 							.setPriority(NotificationCompat.PRIORITY_HIGH)
 							.setVisibility(NotificationCompat.VISIBILITY_PUBLIC)
 							.setAutoCancel(true)
