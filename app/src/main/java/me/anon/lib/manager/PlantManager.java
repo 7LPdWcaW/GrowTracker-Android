@@ -250,7 +250,7 @@ public class PlantManager
 				{
 					@Override protected Void doInBackground(Void... voids)
 					{
-						synchronized (mPlants)
+//						synchronized (mPlants)
 						{
 							FileManager.getInstance().copyFile(FILES_DIR + "/plants.json", FILES_DIR + "/plants.json.bak");
 
