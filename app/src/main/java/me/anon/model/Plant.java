@@ -29,7 +29,7 @@ import static me.anon.lib.Unit.ML;
  */
 @Getter @Setter
 @Accessors(prefix = {"m", ""}, chain = true)
-public class Plant
+public class Plant implements Cloneable
 {
 	private String id = UUID.randomUUID().toString();
 	private String name;
@@ -294,5 +294,19 @@ public class Plant
 		}
 
 		return stages;
+	}
+
+	@Override public Plant clone()
+	{
+		try
+		{
+			return (Plant)super.clone();
+		}
+		catch (CloneNotSupportedException e)
+		{
+			e.printStackTrace();
+		}
+
+		return this;
 	}
 }

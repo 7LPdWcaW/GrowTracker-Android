@@ -28,7 +28,6 @@ import me.anon.grow.R;
 import me.anon.lib.DateRenderer;
 import me.anon.lib.TempUnit;
 import me.anon.lib.Unit;
-import me.anon.lib.helper.ModelHelper;
 import me.anon.lib.helper.TimeHelper;
 import me.anon.model.Action;
 import me.anon.model.Additive;
@@ -322,7 +321,7 @@ public class ActionAdapter extends RecyclerView.Adapter<ActionHolder> implements
 						{
 							if (onActionSelectListener != null)
 							{
-								onActionSelectListener.onActionDuplicate((Action)ModelHelper.copy(action));
+								onActionSelectListener.onActionDuplicate(action.clone());
 							}
 
 							return true;
@@ -331,7 +330,7 @@ public class ActionAdapter extends RecyclerView.Adapter<ActionHolder> implements
 						{
 							if (onActionSelectListener != null)
 							{
-								onActionSelectListener.onActionCopy((Action)ModelHelper.copy(action));
+								onActionSelectListener.onActionCopy(action.clone());
 							}
 
 							return true;
