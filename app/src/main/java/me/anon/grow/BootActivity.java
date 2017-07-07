@@ -66,6 +66,7 @@ public class BootActivity extends Activity
 						startup();
 					}
 				})
+				.setCancelable(false)
 				.show();
 		}
 		else
