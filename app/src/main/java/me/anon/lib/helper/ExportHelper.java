@@ -1,11 +1,15 @@
 package me.anon.lib.helper;
 
+import android.app.NotificationManager;
+import android.app.PendingIntent;
 import android.content.Context;
+import android.content.Intent;
 import android.graphics.Bitmap;
 import android.os.AsyncTask;
 import android.os.Environment;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
+import android.support.v4.app.NotificationCompat;
 import android.text.TextUtils;
 import android.view.View;
 import android.view.ViewGroup;
@@ -27,8 +31,10 @@ import java.util.Date;
 import java.util.Map;
 import java.util.SortedMap;
 
+import me.anon.grow.R;
 import me.anon.lib.ExportCallback;
 import me.anon.lib.Unit;
+import me.anon.lib.manager.PlantManager;
 import me.anon.model.Action;
 import me.anon.model.Additive;
 import me.anon.model.EmptyAction;
@@ -445,16 +451,44 @@ public class ExportHelper
 		}
 	}
 
-	protected static void copyImagesAndFinish(Context context, Plant plant, final File tempFolder, final File finalFile, final ExportCallback callback)
+	protected static void copyImagesAndFinish(Context context, final Plant plant, final File tempFolder, final File finalFile, final ExportCallback callback)
 	{
 		final Context appContext = context.getApplicationContext();
-		new AsyncTask<Plant, Void, File>()
+		new AsyncTask<Plant, Integer, File>()
 		{
+			protected NotificationCompat.Builder exportNotification;
+			protected NotificationManager notificationManager;
+			protected int plantIndex;
+
+			@Override protected void onPreExecute()
+			{
+				plantIndex = PlantManager.getInstance().getPlants().indexOf(plant);
+				notificationManager = (NotificationManager)appContext.getSystemService(Context.NOTIFICATION_SERVICE);
+
+				exportNotification = new NotificationCompat.Builder(appContext)
+					.setContentText("Exporting grow log for " + plant.getName())
+					.setContentTitle("Exporting")
+					.setContentIntent(PendingIntent.getActivity(appContext, 0, new Intent(), PendingIntent.FLAG_UPDATE_CURRENT))
+					.setTicker("Exporting grow log for " + plant.getName())
+					.setPriority(NotificationCompat.PRIORITY_DEFAULT)
+					.setVisibility(NotificationCompat.VISIBILITY_PUBLIC)
+					.setSmallIcon(R.drawable.ic_stat_name);
+
+				notificationManager.notify(plantIndex, exportNotification.build());
+			}
+
+			@Override protected void onProgressUpdate(Integer... values)
+			{
+				exportNotification.setProgress(values[1], values[0], false);
+				notificationManager.notify(plantIndex, exportNotification.build());
+			}
+
 			@Override protected File doInBackground(Plant... params)
 			{
 				Plant plant = params[0];
 
 				// Copy images to dir
+				int count = 0, total = plant.getImages().size();
 				for (String filePath : plant.getImages())
 				{
 					try
@@ -480,6 +514,8 @@ public class ExportHelper
 						{
 							fos.write(buffer, 0, len);
 						}
+
+						publishProgress(++count, total);
 
 						fis.close();
 						fos.flush();
