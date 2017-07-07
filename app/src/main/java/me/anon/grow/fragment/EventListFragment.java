@@ -308,7 +308,8 @@ public class EventListFragment extends Fragment implements ActionAdapter.OnActio
 					{
 						for (int plantIndex = 0; plantIndex < indexes.size(); plantIndex++)
 						{
-							PlantManager.getInstance().getPlants().get(indexes.get(plantIndex)).getActions().remove(PlantManager.getInstance().getPlants().get(plantIndex).getActions().size() - 1);
+							Plant plant = PlantManager.getInstance().getPlants().get(indexes.get(plantIndex));
+							plant.getActions().remove(plant.getActions().size() - 1);
 						}
 
 						PlantManager.getInstance().save();
