@@ -30,7 +30,7 @@ public enum Unit
 				case USTSP: return toTwoDecimalPlaces(fromValue * 0.202884d);
 			}
 
-			return fromValue;
+			return toTwoDecimalPlaces(fromValue);
 		}
 	},
 
@@ -49,7 +49,7 @@ public enum Unit
 				case USTSP: return toTwoDecimalPlaces(fromValue * 202.884d);
 			}
 
-			return fromValue;
+			return toTwoDecimalPlaces(fromValue);
 		}
 	},
 
@@ -68,7 +68,7 @@ public enum Unit
 				case USTSP: return toTwoDecimalPlaces(fromValue * 922.33d);
 			}
 
-			return fromValue;
+			return toTwoDecimalPlaces(fromValue);
 		}
 	},
 
@@ -87,7 +87,7 @@ public enum Unit
 				case USTSP: return toTwoDecimalPlaces(fromValue * 230.582d);
 			}
 
-			return fromValue;
+			return toTwoDecimalPlaces(fromValue);
 		}
 	},
 
@@ -106,7 +106,7 @@ public enum Unit
 				case USTSP: return toTwoDecimalPlaces(fromValue * 1.20095d);
 			}
 
-			return fromValue;
+			return toTwoDecimalPlaces(fromValue);
 		}
 	},
 
@@ -125,7 +125,7 @@ public enum Unit
 				case USTSP: return toTwoDecimalPlaces(fromValue * 0.00130208d);
 			}
 
-			return fromValue;
+			return toTwoDecimalPlaces(fromValue);
 		}
 	},
 
@@ -144,7 +144,7 @@ public enum Unit
 				case USTSP: return toTwoDecimalPlaces(fromValue * 192d);
 			}
 
-			return fromValue;
+			return toTwoDecimalPlaces(fromValue);
 		}
 	},
 
@@ -163,7 +163,7 @@ public enum Unit
 				case USQUART: return toTwoDecimalPlaces(fromValue * 0.00520833d);
 			}
 
-			return fromValue;
+			return toTwoDecimalPlaces(fromValue);
 		}
 	};
 
