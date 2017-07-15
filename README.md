@@ -148,7 +148,7 @@ Action can be one of,
 
 Image object is a simple string path to an image. Each image is named by the timestamp when it was taken, in milliseconds.
 
-#Encryption
+# Encryption
 
 Note that this is **not** a guarantee form of encryption from law enforcement agencies.
 
@@ -156,7 +156,7 @@ Encryption in the app uses basic AES for encryption using the provided passphras
 
 You can decrypt your files using your passphrase either by writing a script that uses AES decryption, or an online tool such as [Online-Domain-Tools](http://aes.online-domain-tools.com/).
 
-#License
+# License
 
 Copyright 2014-2017 7LPdWcaW
 
