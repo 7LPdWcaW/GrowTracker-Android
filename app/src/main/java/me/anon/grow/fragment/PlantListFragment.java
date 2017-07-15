@@ -14,6 +14,7 @@ import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.helper.ItemTouchHelper;
 import android.text.Html;
+import android.util.Log;
 import android.util.TypedValue;
 import android.view.LayoutInflater;
 import android.view.Menu;
@@ -172,18 +173,19 @@ public class PlantListFragment extends Fragment
 		}
 	}
 
-	private void saveCurrentState()
+	private synchronized void saveCurrentState()
 	{
 		ArrayList<Plant> plants = (ArrayList<Plant>)adapter.getPlants();
 		ArrayList<String> plantIds = new ArrayList<>();
 
-		for (Plant plant : PlantManager.getInstance().getPlants())
+		for (Plant plant : plants)
 		{
 			plantIds.add(plant.getId());
 		}
 
 		if (garden == null)
 		{
+			Log.e("save", "saving plant list");
 			PlantManager.getInstance().setPlants(plants);
 			PlantManager.getInstance().save();
 		}
