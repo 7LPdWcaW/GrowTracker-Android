@@ -8,7 +8,6 @@ import android.app.Notification;
 import android.app.NotificationManager;
 import android.app.PendingIntent;
 import android.app.ProgressDialog;
-import android.content.ContentResolver;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
@@ -195,7 +194,7 @@ public class PlantDetailsFragment extends Fragment
 		super.onResume();
 
 		// Always re-set stage incase order was changed in event list
-		if (plant.getStage() != null)
+		if (plant != null && plant.getStage() != null)
 		{
 			stage.setText(plant.getStage().getPrintString());
 		}
