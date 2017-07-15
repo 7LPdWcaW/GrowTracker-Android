@@ -56,7 +56,7 @@ public class PinDialogFragment extends DialogFragment
 			{
 				if (onDialogConfirmed != null)
 				{
-					onDialogConfirmed.onDialogConfirmed(TextUtils.isEmpty(input.getText()) ? null : input.getText().toString());
+					onDialogConfirmed.onDialogConfirmed(TextUtils.isEmpty(input.getText()) ? "" : input.getText().toString());
 				}
 			}
 		});
