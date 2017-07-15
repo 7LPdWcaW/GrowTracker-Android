@@ -7,6 +7,7 @@ import android.os.AsyncTask;
 import android.preference.PreferenceManager;
 import android.support.annotation.Nullable;
 import android.text.TextUtils;
+import android.util.Log;
 import android.widget.Toast;
 
 import com.google.gson.JsonSyntaxException;
@@ -21,6 +22,10 @@ import java.io.OutputStreamWriter;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
+import java.util.List;
+import java.util.Queue;
+import java.util.concurrent.ConcurrentLinkedQueue;
+import java.util.concurrent.atomic.AtomicBoolean;
 
 import lombok.Data;
 import lombok.Getter;
@@ -236,9 +241,12 @@ public class PlantManager
 		save(callback, false);
 	}
 
+	private Queue<SaveAsyncTask> saveTask = new ConcurrentLinkedQueue<>();
+	private AtomicBoolean isSaving = new AtomicBoolean(false);
+
 	public void save(final AsyncCallback callback, boolean ignoreCheck)
 	{
-		synchronized (mPlants)
+//		synchronized (mPlants)
 		{
 			if (MainApplication.isFailsafe()) return;
 
@@ -246,44 +254,41 @@ public class PlantManager
 			{
 				AddonHelper.broadcastPlantList(context);
 
-				new AsyncTask<Void, Void, Void>()
+				saveTask.add(new SaveAsyncTask(mPlants)
 				{
-					@Override protected Void doInBackground(Void... voids)
+					@Override protected Void doInBackground(Void... params)
 					{
-//						synchronized (mPlants)
+						FileManager.getInstance().copyFile(FILES_DIR + "/plants.json", FILES_DIR + "/plants.json.bak");
+
+						try
 						{
-							FileManager.getInstance().copyFile(FILES_DIR + "/plants.json", FILES_DIR + "/plants.json.bak");
+							OutputStream outstream = null;
 
-							try
+							if (MainApplication.isEncrypted())
 							{
-								OutputStream outstream = null;
-
-								if (MainApplication.isEncrypted())
+								if (TextUtils.isEmpty(MainApplication.getKey()))
 								{
-									if (TextUtils.isEmpty(MainApplication.getKey()))
-									{
-										return null;
-									}
-
-									outstream = new EncryptOutputStream(MainApplication.getKey(), new File(FILES_DIR + "/plants.json"));
-								}
-								else
-								{
-									outstream = new FileOutputStream(new File(FILES_DIR + "/plants.json"));
+									return null;
 								}
 
-								BufferedWriter writer = new BufferedWriter(new OutputStreamWriter(outstream, "UTF-8"), 8192);
-								GsonHelper.getGson().toJson(mPlants, new TypeToken<ArrayList<Plant>>(){}.getType(), writer);
-
-								writer.flush();
-								outstream.flush();
-								writer.close();
-								outstream.close();
+								outstream = new EncryptOutputStream(MainApplication.getKey(), new File(FILES_DIR + "/plants.json"));
 							}
-							catch (Exception e)
+							else
 							{
-								e.printStackTrace();
+								outstream = new FileOutputStream(new File(FILES_DIR + "/plants.json"));
 							}
+
+							BufferedWriter writer = new BufferedWriter(new OutputStreamWriter(outstream, "UTF-8"), 8192);
+							GsonHelper.getGson().toJson(plants, new TypeToken<ArrayList<Plant>>(){}.getType(), writer);
+
+							writer.flush();
+							outstream.flush();
+							writer.close();
+							outstream.close();
+						}
+						catch (Exception e)
+						{
+							e.printStackTrace();
 						}
 
 						return null;
@@ -305,8 +310,23 @@ public class PlantManager
 							share.putExtra(Intent.EXTRA_TEXT, "== WARNING : PLEASE BACK UP THIS DATA == \r\n\r\n " + sendData);
 							context.startActivity(share);
 						}
+
+						if (saveTask.size() > 0)
+						{
+							saveTask.poll().executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
+						}
+						else
+						{
+							isSaving.set(false);
+						}
 					}
-				}.executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
+				});
+
+				if (!isSaving.get())
+				{
+					isSaving.set(true);
+					saveTask.poll().executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
+				}
 			}
 			else
 			{
@@ -315,6 +335,16 @@ public class PlantManager
 				restart.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_NEW_TASK);
 				context.startActivity(restart);
 			}
+		}
+	}
+
+	public abstract static class SaveAsyncTask extends AsyncTask<Void, Void, Void>
+	{
+		protected List<Plant> plants;
+
+		public SaveAsyncTask(List<Plant> plants)
+		{
+			this.plants = plants;
 		}
 	}
 }
