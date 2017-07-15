@@ -407,7 +407,9 @@ public class SettingsFragment extends PreferenceFragment implements Preference.O
 		{
 			if ((Boolean)newValue)
 			{
+				PreferenceManager.getDefaultSharedPreferences(getActivity()).edit().putBoolean("auto_backup", true).apply();
 				((MainApplication)getActivity().getApplication()).registerBackupService();
+				Toast.makeText(getActivity(), "Backup enabled, backups will be stored in /sdcard/backups/GrowTracker/", Toast.LENGTH_LONG).show();
 			}
 			else
 			{
@@ -415,6 +417,8 @@ public class SettingsFragment extends PreferenceFragment implements Preference.O
 				AlarmManager alarmManager = (AlarmManager)getActivity().getSystemService(Context.ALARM_SERVICE);
 				alarmManager.cancel(PendingIntent.getBroadcast(getActivity(), 0, backupIntent, 0));
 			}
+
+			return true;
 		}
 
 		return false;
