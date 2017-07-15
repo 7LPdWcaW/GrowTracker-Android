@@ -283,6 +283,13 @@ public class SettingsFragment extends PreferenceFragment implements Preference.O
 							((CheckBoxPreference)preference).setChecked(false);
 						}
 					})
+					.setOnDismissListener(new DialogInterface.OnDismissListener()
+					{
+						@Override public void onDismiss(DialogInterface dialog)
+						{
+							((CheckBoxPreference)preference).setChecked(false);
+						}
+					})
 					.show();
 			}
 			else
