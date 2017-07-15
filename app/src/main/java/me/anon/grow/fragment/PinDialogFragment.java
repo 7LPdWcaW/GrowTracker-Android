@@ -74,6 +74,16 @@ public class PinDialogFragment extends DialogFragment
 		return dialog.create();
 	}
 
+	@Override public void onCancel(DialogInterface dialog)
+	{
+		super.onCancel(dialog);
+
+		if (onDialogCancelled != null)
+		{
+			onDialogCancelled.onDialogCancelled();
+		}
+	}
+
 	@Override public void onActivityCreated(Bundle savedInstanceState)
 	{
 		super.onActivityCreated(savedInstanceState);
