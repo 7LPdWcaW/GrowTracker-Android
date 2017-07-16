@@ -2,9 +2,9 @@
 
 Welcome to grow tracker. This app was created to help record data about growing plants in order to monitor the growing conditions to help make the plants grow better, and identify potential issues during the grow process.
 
-[Latest APK: (MD5) ac8b85b210187f25a5d332be624fcf5a v2.3-alpha2](https://github.com/7LPdWcaW/GrowTracker-Android/releases/download/v2.3-alpha2/v2.3-alpha2-production.apk)
+[Latest APK: (MD5) 10001b717b1965c8f7e4340c1b6448f1 v2.3-alpha3](https://github.com/7LPdWcaW/GrowTracker-Android/releases/download/v2.3-alpha3/v2.3-alpha3-production.apk)
 
-[Latest APK (Discrete): (MD5) 387698c6c2cbbe7ca133ce34dde1fa77 v2.3-alpha2](https://github.com/7LPdWcaW/GrowTracker-Android/releases/download/v2.3-alpha2/v2.3-alpha2-discrete.apk)
+[Latest APK (Discrete): (MD5) 799b03ba7002e5d3c123061165af4106 v2.3-alpha3](https://github.com/7LPdWcaW/GrowTracker-Android/releases/download/v2.3-alpha3/v2.3-alpha3-discrete.apk)
 
 # Installation
 
