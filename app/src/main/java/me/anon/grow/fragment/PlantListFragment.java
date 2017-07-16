@@ -14,7 +14,6 @@ import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.helper.ItemTouchHelper;
 import android.text.Html;
-import android.util.Log;
 import android.util.TypedValue;
 import android.view.LayoutInflater;
 import android.view.Menu;
@@ -28,7 +27,6 @@ import com.kenny.snackbar.SnackBarListener;
 
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Collections;
 
 import lombok.Setter;
 import me.anon.controller.adapter.PlantAdapter;
@@ -92,7 +90,7 @@ public class PlantListFragment extends Fragment
 		return view;
 	}
 
-	@Override public void onActivityCreated(Bundle savedInstanceState)
+	@Override public void onActivityCreated(final Bundle savedInstanceState)
 	{
 		super.onActivityCreated(savedInstanceState);
 
@@ -137,7 +135,7 @@ public class PlantListFragment extends Fragment
 		{
 			@Override public boolean isLongPressDragEnabled()
 			{
-				return filterList.size() == PlantStage.values().length - (hideHarvested ? 1 : 0);
+				return !beingFiltered();
 			}
 		};
 		ItemTouchHelper touchHelper = new ItemTouchHelper(callback);
@@ -153,6 +151,7 @@ public class PlantListFragment extends Fragment
 		if (hideHarvested = PreferenceManager.getDefaultSharedPreferences(getActivity()).getBoolean("hide_harvested", false))
 		{
 			filterList.remove(PlantStage.HARVESTED);
+			hideHarvested = true;
 		}
 	}
 
@@ -167,32 +166,36 @@ public class PlantListFragment extends Fragment
 	{
 		super.onStop();
 
-		if (filterList.size() == PlantStage.values().length - (hideHarvested ? 1 : 0))
-		{
-			saveCurrentState();
-		}
+		saveCurrentState();
+	}
+
+	private boolean beingFiltered()
+	{
+		return !(filterList.size() == PlantStage.values().length - (hideHarvested ? 1 : 0));
 	}
 
 	private synchronized void saveCurrentState()
 	{
 		ArrayList<Plant> plants = (ArrayList<Plant>)adapter.getPlants();
-		ArrayList<String> plantIds = new ArrayList<>();
-
-		for (Plant plant : plants)
-		{
-			plantIds.add(plant.getId());
-		}
 
 		if (garden == null)
 		{
-			Log.e("save", "saving plant list");
 			PlantManager.getInstance().setPlants(plants);
 			PlantManager.getInstance().save();
 		}
 		else
 		{
-			garden.setPlantIds(plantIds);
-			GardenManager.getInstance().save();
+			if (!beingFiltered())
+			{
+				ArrayList<String> orderedPlantIds = new ArrayList<>();
+				for (Plant plant : plants)
+				{
+					orderedPlantIds.add(plant.getId());
+				}
+
+				garden.setPlantIds(orderedPlantIds);
+				GardenManager.getInstance().save();
+			}
 		}
 	}
 
@@ -428,7 +431,7 @@ public class PlantListFragment extends Fragment
 
 			boolean filter = false;
 
-			if (filterList.size() == PlantStage.values().length - (hideHarvested ? 1 : 0))
+			if (!beingFiltered())
 			{
 				saveCurrentState();
 			}
@@ -465,23 +468,27 @@ public class PlantListFragment extends Fragment
 
 	private void filter()
 	{
-		ArrayList<Plant> plants = new ArrayList<>();
-		plants.addAll(PlantManager.getInstance().getSortedPlantList(garden));
+		ArrayList<Plant> plantList = PlantManager.getInstance().getSortedPlantList(garden);
+		adapter.setPlants(plantList);
 
-		if (filterList.size() > 0)
+		ArrayList<String> plants = new ArrayList<>();
+		for (Plant plant : plantList)
 		{
-			for (int index = 0; index < plants.size(); index++)
+			if (filterList.contains(plant.getStage()))
 			{
-				if (!filterList.contains(plants.get(index).getStage()))
-				{
-					plants.set(index, null);
-				}
+				plants.add(plant.getId());
 			}
-
-			plants.removeAll(Collections.singleton(null));
 		}
 
-		adapter.setPlants(plants);
+		if ((garden == null && plants.size() < plantList.size()) || garden != null)
+		{
+			adapter.setShowOnly(plants);
+		}
+		else
+		{
+			adapter.setShowOnly(null);
+		}
+
 		adapter.notifyDataSetChanged();
 	}
 }

@@ -7,7 +7,6 @@ import android.os.AsyncTask;
 import android.preference.PreferenceManager;
 import android.support.annotation.Nullable;
 import android.text.TextUtils;
-import android.util.Log;
 import android.widget.Toast;
 
 import com.google.gson.JsonSyntaxException;
@@ -39,7 +38,6 @@ import me.anon.lib.stream.EncryptOutputStream;
 import me.anon.lib.task.AsyncCallback;
 import me.anon.model.Garden;
 import me.anon.model.Plant;
-import me.anon.model.PlantStage;
 
 /**
  * // TODO: Add class description
@@ -83,13 +81,11 @@ public class PlantManager
 			int plantsSize =  PlantManager.getInstance().getPlants().size();
 			Plant[] ordered = new Plant[garden == null ? plantsSize : garden.getPlantIds().size()];
 
-			boolean hideHarvested = prefs.getBoolean("hide_harvested", false);
-
 			for (int index = 0; index < plantsSize; index++)
 			{
 				Plant plant = PlantManager.getInstance().getPlants().get(index);
 
-				if (plant == null || (hideHarvested && plant.getStage() == PlantStage.HARVESTED) || (garden != null && !garden.getPlantIds().contains(plant.getId())))
+				if (plant == null || (garden != null && !garden.getPlantIds().contains(plant.getId())))
 				{
 					continue;
 				}
