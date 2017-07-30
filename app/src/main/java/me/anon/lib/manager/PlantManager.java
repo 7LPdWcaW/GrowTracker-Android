@@ -125,26 +125,41 @@ public class PlantManager
 		}
 	}
 
-	public void deletePlant(int plantIndex)
+	public void deletePlant(final int plantIndex, final AsyncCallback callback)
 	{
-		synchronized (this.mPlants)
+//		synchronized (this.mPlants)
 		{
-			if (!MainApplication.isFailsafe())
+			if (MainApplication.isFailsafe()) return;
+
+			new AsyncTask<Void, Void, Void>()
 			{
-				// Delete images
-				ArrayList<String> imagePaths = mPlants.get(plantIndex).getImages();
-				for (String filePath : imagePaths)
+				@Override protected Void doInBackground(Void... params)
 				{
-					new File(filePath).delete();
+					// Delete images
+					ArrayList<String> imagePaths = mPlants.get(plantIndex).getImages();
+					for (String filePath : imagePaths)
+					{
+						new File(filePath).delete();
+					}
+
+					// Remove plant
+					mPlants.remove(plantIndex);
+
+					// Remove from shared prefs
+					SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(context);
+					prefs.edit().remove(String.valueOf(plantIndex)).apply();
+
+					return null;
 				}
 
-				// Remove plant
-				mPlants.remove(plantIndex);
-
-				// Remove from shared prefs
-				SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(context);
-				prefs.edit().remove(String.valueOf(plantIndex)).apply();
-			}
+				@Override protected void onPostExecute(Void aVoid)
+				{
+					if (callback != null)
+					{
+						callback.callback();
+					}
+				}
+			}.executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
 		}
 	}
 
@@ -246,7 +261,7 @@ public class PlantManager
 		{
 			if (MainApplication.isFailsafe()) return;
 
-			if (!ignoreCheck && mPlants.size() > 0)
+			if ((!ignoreCheck && mPlants.size() > 0) || ignoreCheck)
 			{
 				AddonHelper.broadcastPlantList(context);
 
