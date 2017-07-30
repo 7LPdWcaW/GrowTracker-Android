@@ -12,8 +12,8 @@ android {
 		applicationId "me.anon.grow"
 		minSdkVersion 17
 		targetSdkVersion 25
-		versionCode 12
-		versionName "2.3-alpha3"
+		versionCode 13
+		versionName "2.3-alpha4"
 	}
 
 	lintOptions {
