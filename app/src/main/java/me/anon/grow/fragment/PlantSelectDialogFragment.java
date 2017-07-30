@@ -68,7 +68,7 @@ public class PlantSelectDialogFragment extends DialogFragment
 
 		adapter = new PlantSelectionAdapter(PlantManager.getInstance().getSortedPlantList(null), null, getActivity())
 		{
-			@Override public void onBindViewHolder(PlantSelectHolder holder, int position)
+			@Override public void onBindViewHolder(PlantSelectHolder holder, final int position)
 			{
 				super.onBindViewHolder(holder, position);
 
@@ -100,7 +100,7 @@ public class PlantSelectDialogFragment extends DialogFragment
 							getSelectedIds().remove(plant.getId());
 						}
 
-						adapter.notifyDataSetChanged();
+						adapter.notifyItemChanged(position);
 					}
 				});
 			}

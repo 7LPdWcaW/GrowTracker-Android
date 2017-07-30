@@ -90,9 +90,17 @@ public class PlantAdapter extends RecyclerView.Adapter implements ItemTouchHelpe
 			String summary = plant.generateLongSummary(((PlantHolder)viewHolder).itemView.getContext());
 			((PlantHolder)viewHolder).getSummary().setText(Html.fromHtml(summary));
 
-			ImageLoader.getInstance().cancelDisplayTask(((PlantHolder)viewHolder).getImage());
 			if (plant.getImages() != null && plant.getImages().size() > 0)
 			{
+				String imagePath = "file://" + plant.getImages().get(plant.getImages().size() - 1);
+
+				if (((PlantHolder)viewHolder).getImage().getTag() == null || !((PlantHolder)viewHolder).getImage().getTag().toString().equalsIgnoreCase(imagePath))
+				{
+					ImageLoader.getInstance().cancelDisplayTask(((PlantHolder)viewHolder).getImage());
+				}
+
+				((PlantHolder)viewHolder).getImage().setTag(imagePath);
+
 				ImageAware imageAware = new ImageViewAware(((PlantHolder)viewHolder).getImage(), true);
 				ImageLoader.getInstance().displayImage("file://" + plant.getImages().get(plant.getImages().size() - 1), imageAware, MainApplication.getDisplayImageOptions());
 			}
