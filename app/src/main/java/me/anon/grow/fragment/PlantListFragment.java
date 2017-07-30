@@ -237,8 +237,9 @@ public class PlantListFragment extends Fragment
 				for (Plant plant : adapter.getPlants())
 				{
 					plant.getActions().add(action.clone());
-					PlantManager.getInstance().upsert(PlantManager.getInstance().getPlants().indexOf(plant), plant);
 				}
+
+				PlantManager.getInstance().save();
 
 				SnackBar.show(getActivity(), "Actions added", new SnackBarListener()
 				{
@@ -278,8 +279,9 @@ public class PlantListFragment extends Fragment
 				{
 					NoteAction action = new NoteAction(notes);
 					plant.getActions().add(action);
-					PlantManager.getInstance().upsert(PlantManager.getInstance().getPlants().indexOf(plant), plant);
 				}
+
+				PlantManager.getInstance().save();
 
 				SnackBar.show(getActivity(), "Notes added", new SnackBarListener()
 				{
