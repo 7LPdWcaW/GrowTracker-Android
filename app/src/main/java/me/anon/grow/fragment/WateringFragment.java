@@ -457,8 +457,9 @@ public class WateringFragment extends Fragment
 				}
 
 				plant.getActions().add(water.clone());
-				PlantManager.getInstance().upsert(plantIndex[index++], plant);
 			}
+
+			PlantManager.getInstance().save();
 		}
 
 		PlantWidgetProvider.triggerUpdateAll(getActivity());
