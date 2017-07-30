@@ -597,19 +597,28 @@ public class PlantDetailsFragment extends Fragment
 						progress.setCancelable(false);
 						progress.show();
 
-						PlantManager.getInstance().deletePlant(plantIndex);
-						PlantManager.getInstance().save(new AsyncCallback()
+						final Plant toDelete = PlantManager.getInstance().getPlants().get(plantIndex);
+						PlantManager.getInstance().deletePlant(plantIndex, new AsyncCallback()
 						{
 							@Override public void callback()
 							{
-								if (progress != null)
+								PlantManager.getInstance().save(new AsyncCallback()
 								{
-									progress.dismiss();
-								}
+									@Override public void callback()
+									{
+										if (progress != null)
+										{
+											progress.dismiss();
+										}
 
-								getActivity().finish();
+										if (getActivity() != null)
+										{
+											getActivity().finish();
+										}
+									}
+								}, true);
 							}
-						}, true);
+						});
 					}
 				})
 				.setNegativeButton("No", null)
