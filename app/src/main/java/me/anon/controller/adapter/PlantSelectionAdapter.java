@@ -80,11 +80,18 @@ public class PlantSelectionAdapter extends RecyclerView.Adapter<PlantSelectHolde
 		});
 		holder.getName().setText(plant.getName());
 
-		ImageLoader.getInstance().cancelDisplayTask(holder.getImage());
 		if (plant.getImages() != null && plant.getImages().size() > 0)
 		{
+			String imagePath = "file://" + plant.getImages().get(plant.getImages().size() - 1);
+
+			if (holder.getImage().getTag() == null || !holder.getImage().getTag().toString().equalsIgnoreCase(imagePath))
+			{
+				ImageLoader.getInstance().cancelDisplayTask(holder.getImage());
+			}
+
+			holder.getImage().setTag(imagePath);
 			ImageAware imageAware = new ImageViewAware(holder.getImage(), true);
-			ImageLoader.getInstance().displayImage("file://" + plant.getImages().get(plant.getImages().size() - 1), imageAware, MainApplication.getDisplayImageOptions());
+			ImageLoader.getInstance().displayImage(imagePath, imageAware, MainApplication.getDisplayImageOptions());
 		}
 		else
 		{

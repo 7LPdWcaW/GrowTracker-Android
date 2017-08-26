@@ -22,18 +22,4 @@ public class EmptyAction extends Action
 		this.setDate(System.currentTimeMillis());
 		this.setAction(action);
 	}
-
-	public EmptyAction clone()
-	{
-		try
-		{
-			return (EmptyAction)super.clone();
-		}
-		catch (CloneNotSupportedException e)
-		{
-			e.printStackTrace();
-		}
-
-		return null;
-	}
 }

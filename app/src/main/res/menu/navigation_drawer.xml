@@ -20,6 +20,7 @@
 			<item
 				android:id="@+id/settings"
 				android:title="Settings"
+				android:checkable="false"
 				android:orderInCategory="3"
 			/>
 

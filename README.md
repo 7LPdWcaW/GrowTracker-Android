@@ -2,9 +2,9 @@
 
 Welcome to grow tracker. This app was created to help record data about growing plants in order to monitor the growing conditions to help make the plants grow better, and identify potential issues during the grow process.
 
-[Latest APK: (MD5) cbdf6ad0cfd4d87159fd0c2f762d142c v2.2.1](https://github.com/7LPdWcaW/GrowTracker-Android/raw/master/app/app-production-release.apk)
+[Latest APK: (MD5) bc9a631d80af4ac0d5ff6b49292219dd v2.3](https://github.com/7LPdWcaW/GrowTracker-Android/releases/download/v2.3/v2.3-production.apk)
 
-[Latest APK (Discrete): (MD5) 1099cc60eb90568074d6ca3ee230f0da v2.2.1](https://github.com/7LPdWcaW/GrowTracker-Android/raw/master/app/app-discrete-release.apk)
+[Latest APK (Discrete): (MD5) f7ccf060a0ddc7356e67a7e6f23bbfbb v2.3](https://github.com/7LPdWcaW/GrowTracker-Android/releases/download/v2.3/v2.3-discrete.apk)
 
 # Installation
 
@@ -47,6 +47,10 @@ The app uses a simple JSON structure to store all the data about the plants that
 
 The structure is very simple. Note: date timestamps are all unix timestamps from 1/1/1970 in milliseconds. All objects in arrays are in date order, where index 0 is the oldest and index (size - 1) is the newest.
 
+## Prerequisites
+
+Lombok is required for this project before you are able to compile. You can install it by going to `preferences->plugins->browse repositories->lombok plugin`
+
 ### Plant object
 
 ```
@@ -67,13 +71,13 @@ The structure is very simple. Note: date timestamps are all unix timestamps from
 
 One of,
 
-`SOIL`, `HYDRO`
+`SOIL`, `HYDRO`, `COCO`, `AERO`
 
 ### Plant Stage (ENUM)
 
 One of,
 
-`PLANTED`, `GERMINATION`, `VEGETATION`, `FLOWER`, `CURING`, `HARVESTED`
+`PLANTED`, `GERMINATION`, `CUTTING`, `VEGETATION`, `FLOWER`, `DRYING`, `CURING`, `HARVESTED`
 
 ### Action object (feeding)
 
@@ -112,7 +116,7 @@ Water action for waterings
 
 Action can be one of,
 
-`TRIM`, `TOP`, `FIM`, `LST`, `LOLLIPOP`, `FLUSH`, `FOLIAR_FEED`, `PESTICIDE_APPLICATION`
+`FIM`, `FLUSH`, `FOLIAR_FEED`, `LST`, `LOLLIPOP`, `PESTICIDE_APPLICATION`, `TOP`, `TRANSPLANTED`, `TRIM`
 
 ```
 {
@@ -144,7 +148,7 @@ Action can be one of,
 
 Image object is a simple string path to an image. Each image is named by the timestamp when it was taken, in milliseconds.
 
-#Encryption
+# Encryption
 
 Note that this is **not** a guarantee form of encryption from law enforcement agencies.
 
@@ -152,7 +156,7 @@ Encryption in the app uses basic AES for encryption using the provided passphras
 
 You can decrypt your files using your passphrase either by writing a script that uses AES decryption, or an online tool such as [Online-Domain-Tools](http://aes.online-domain-tools.com/).
 
-#License
+# License
 
 Copyright 2014-2017 7LPdWcaW
 

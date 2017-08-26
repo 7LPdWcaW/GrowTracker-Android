@@ -4,6 +4,7 @@ import android.os.AsyncTask;
 
 import java.io.File;
 import java.io.FileInputStream;
+import java.io.IOException;
 import java.util.ArrayList;
 
 import me.anon.grow.MainApplication;
@@ -22,12 +23,14 @@ public class EncryptTask extends AsyncTask<ArrayList<String>, Void, Void>
 	{
 		for (String filePath : params[0])
 		{
+			FileInputStream fis = null;
+			EncryptOutputStream eos = null;
 			try
 			{
 				new File(filePath).renameTo(new File(filePath + ".temp"));
 
-				FileInputStream fis = new FileInputStream(new File(filePath + ".temp"));
-				EncryptOutputStream eos = new EncryptOutputStream(MainApplication.getKey(), new File(filePath));
+				fis = new FileInputStream(new File(filePath + ".temp"));
+				eos = new EncryptOutputStream(MainApplication.getKey(), new File(filePath));
 
 				byte[] buffer = new byte[8192];
 				int len = 0;
@@ -39,13 +42,37 @@ public class EncryptTask extends AsyncTask<ArrayList<String>, Void, Void>
 
 				new File(filePath + ".temp").delete();
 
-				fis.close();
 				eos.flush();
-				eos.close();
 			}
-			catch (Exception e)
+			catch (IOException e)
 			{
 				e.printStackTrace();
+			}
+			finally
+			{
+				if (fis != null)
+				{
+					try
+					{
+						fis.close();
+					}
+					catch (IOException e)
+					{
+						e.printStackTrace();
+					}
+				}
+				
+				if (eos != null)
+				{
+					try
+					{
+						eos.close();
+					}
+					catch (IOException e)
+					{
+						e.printStackTrace();
+					}
+				}
 			}
 		}
 

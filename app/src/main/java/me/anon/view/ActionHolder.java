@@ -18,21 +18,28 @@ import me.anon.lib.Views;
  * @project GrowTracker
  */
 @Data
-@Views.Injectable
 public class ActionHolder extends RecyclerView.ViewHolder
 {
-	@Views.InjectView(R.id.card) private CardView card;
-	@Views.InjectView(R.id.date) private TextView date;
-	@Views.InjectView(R.id.full_date) private TextView fullDate;
-	@Views.InjectView(R.id.date_day) private TextView dateDay;
-	@Views.InjectView(R.id.stage_day) private TextView stageDay;
-	@Views.InjectView(R.id.name) private TextView name;
-	@Views.InjectView(R.id.summary) private TextView summary;
-	@Views.InjectView(R.id.overflow) private ImageButton overflow;
+	private CardView card;
+	private TextView date;
+	private TextView fullDate;
+	private TextView dateDay;
+	private TextView stageDay;
+	private TextView name;
+	private TextView summary;
+	private ImageButton overflow;
 
 	public ActionHolder(View itemView)
 	{
 		super(itemView);
-		Views.inject(this, itemView);
+
+		card = (CardView)itemView.findViewById(R.id.card);
+		date = (TextView)itemView.findViewById(R.id.date);
+		fullDate = (TextView)itemView.findViewById(R.id.full_date);
+		dateDay = (TextView)itemView.findViewById(R.id.date_day);
+		stageDay = (TextView)itemView.findViewById(R.id.stage_day);
+		name = (TextView)itemView.findViewById(R.id.name);
+		summary = (TextView)itemView.findViewById(R.id.summary);
+		overflow = (ImageButton)itemView.findViewById(R.id.overflow);
 	}
 }

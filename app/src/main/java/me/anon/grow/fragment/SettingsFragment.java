@@ -1,7 +1,10 @@
 package me.anon.grow.fragment;
 
+import android.app.AlarmManager;
 import android.app.AlertDialog;
+import android.app.PendingIntent;
 import android.content.ComponentName;
+import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.pm.ApplicationInfo;
@@ -16,6 +19,7 @@ import android.preference.Preference;
 import android.preference.PreferenceCategory;
 import android.preference.PreferenceFragment;
 import android.preference.PreferenceManager;
+import android.support.v4.content.FileProvider;
 import android.text.Html;
 import android.text.TextUtils;
 import android.util.Base64;
@@ -25,16 +29,18 @@ import android.widget.Toast;
 import com.nostra13.universalimageloader.core.ImageLoader;
 
 import java.io.BufferedInputStream;
+import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.List;
 
+import me.anon.controller.receiver.BackupService;
 import me.anon.grow.MainApplication;
 import me.anon.grow.R;
+import me.anon.lib.TempUnit;
 import me.anon.lib.Unit;
 import me.anon.lib.helper.AddonHelper;
 import me.anon.lib.helper.EncryptionHelper;
-import me.anon.lib.helper.GsonHelper;
 import me.anon.lib.manager.GardenManager;
 import me.anon.lib.manager.PlantManager;
 import me.anon.lib.task.DecryptTask;
@@ -64,6 +70,7 @@ public class SettingsFragment extends PreferenceFragment implements Preference.O
 		findPreference("default_garden").setSummary(Html.fromHtml("Default garden to show on open, currently <b>" + defaultGarden + "</b>"));
 		findPreference("delivery_unit").setSummary(Html.fromHtml("Default delivery measurement unit to use, currently <b>" + Unit.getSelectedDeliveryUnit(getActivity()).getLabel() + "</b>"));
 		findPreference("measurement_unit").setSummary(Html.fromHtml("Default additive measurement unit to use, currently <b>" + Unit.getSelectedMeasurementUnit(getActivity()).getLabel() + "</b>"));
+		findPreference("temperature_unit").setSummary(Html.fromHtml("Default temperature unit to use, currently <b>" + TempUnit.getSelectedTemperatureUnit(getActivity()).getLabel() + "</b>"));
 
 		try
 		{
@@ -76,11 +83,13 @@ public class SettingsFragment extends PreferenceFragment implements Preference.O
 
 		findPreference("encrypt").setOnPreferenceChangeListener(this);
 		findPreference("failsafe").setOnPreferenceChangeListener(this);
+		findPreference("auto_backup").setOnPreferenceChangeListener(this);
 		findPreference("readme").setOnPreferenceClickListener(this);
 		findPreference("export").setOnPreferenceClickListener(this);
 		findPreference("default_garden").setOnPreferenceClickListener(this);
 		findPreference("delivery_unit").setOnPreferenceClickListener(this);
 		findPreference("measurement_unit").setOnPreferenceClickListener(this);
+		findPreference("temperature_unit").setOnPreferenceClickListener(this);
 
 		findPreference("failsafe").setEnabled(((CheckBoxPreference)findPreference("encrypt")).isChecked());
 
@@ -123,7 +132,7 @@ public class SettingsFragment extends PreferenceFragment implements Preference.O
 						ApplicationInfo ai = packageManager.getApplicationInfo(resolveInfo.activityInfo.packageName, PackageManager.GET_META_DATA);
 						Bundle bundle = ai.metaData;
 						final String name = bundle.getString("me.anon.grow.ADDON_NAME", appName);
-						final String version = bundle.getString("me.anon.grow.ADDON_VERSION", "");
+						final String version = String.valueOf(bundle.get("me.anon.grow.ADDON_VERSION"));
 
 						Preference preference = new Preference(getActivity());
 
@@ -278,6 +287,13 @@ public class SettingsFragment extends PreferenceFragment implements Preference.O
 							((CheckBoxPreference)preference).setChecked(false);
 						}
 					})
+					.setOnDismissListener(new DialogInterface.OnDismissListener()
+					{
+						@Override public void onDismiss(DialogInterface dialog)
+						{
+							((CheckBoxPreference)preference).setChecked(false);
+						}
+					})
 					.show();
 			}
 			else
@@ -388,6 +404,23 @@ public class SettingsFragment extends PreferenceFragment implements Preference.O
 
 			return true;
 		}
+		else if ("auto_backup".equalsIgnoreCase(preference.getKey()))
+		{
+			if ((Boolean)newValue)
+			{
+				PreferenceManager.getDefaultSharedPreferences(getActivity()).edit().putBoolean("auto_backup", true).apply();
+				((MainApplication)getActivity().getApplication()).registerBackupService();
+				Toast.makeText(getActivity(), "Backup enabled, backups will be stored in /sdcard/backups/GrowTracker/", Toast.LENGTH_LONG).show();
+			}
+			else
+			{
+				Intent backupIntent = new Intent(getActivity(), BackupService.class);
+				AlarmManager alarmManager = (AlarmManager)getActivity().getSystemService(Context.ALARM_SERVICE);
+				alarmManager.cancel(PendingIntent.getBroadcast(getActivity(), 0, backupIntent, 0));
+			}
+
+			return true;
+		}
 
 		return false;
 	}
@@ -397,7 +430,7 @@ public class SettingsFragment extends PreferenceFragment implements Preference.O
 		if ("delivery_unit".equals(preference.getKey()))
 		{
 			final String[] options = new String[Unit.values().length];
-			int index = 0, selectedIndex = PreferenceManager.getDefaultSharedPreferences(getActivity()).getInt("delivery_unit", 0);
+			int index = 0, selectedIndex = Unit.getSelectedDeliveryUnit(getActivity()).ordinal();
 			for (Unit unit : Unit.values())
 			{
 				options[index++] = unit.getLabel();
@@ -425,7 +458,7 @@ public class SettingsFragment extends PreferenceFragment implements Preference.O
 		else if ("measurement_unit".equals(preference.getKey()))
 		{
 			final String[] options = new String[Unit.values().length];
-			int index = 0, selectedIndex = PreferenceManager.getDefaultSharedPreferences(getActivity()).getInt("measurement_unit", 0);
+			int index = 0, selectedIndex = Unit.getSelectedMeasurementUnit(getActivity()).ordinal();
 			for (Unit unit : Unit.values())
 			{
 				options[index++] = unit.getLabel();
@@ -444,6 +477,34 @@ public class SettingsFragment extends PreferenceFragment implements Preference.O
 							.apply();
 
 					findPreference("measurement_unit").setSummary(Html.fromHtml("Default additive measurement unit to use, currently <b>" + Unit.getSelectedMeasurementUnit(getActivity()).getLabel() + "</b>"));
+					}
+				})
+				.show();
+
+			return true;
+		}
+		else if ("temperature_unit".equals(preference.getKey()))
+		{
+			final String[] options = new String[TempUnit.values().length];
+			int index = 0, selectedIndex = TempUnit.getSelectedTemperatureUnit(getActivity()).ordinal();
+			for (TempUnit unit : TempUnit.values())
+			{
+				options[index++] = unit.getLabel();
+			}
+
+			new AlertDialog.Builder(getActivity())
+				.setTitle("Select temperature unit")
+				.setSingleChoiceItems(options, selectedIndex, new DialogInterface.OnClickListener()
+				{
+					@Override public void onClick(DialogInterface dialogInterface, int index)
+					{
+						dialogInterface.dismiss();
+
+						PreferenceManager.getDefaultSharedPreferences(getActivity()).edit()
+							.putInt("temperature_unit", index)
+							.apply();
+
+					findPreference("temperature_unit").setSummary(Html.fromHtml("Default temperature unit to use, currently <b>" + TempUnit.getSelectedTemperatureUnit(getActivity()).getLabel() + "</b>"));
 					}
 				})
 				.show();
@@ -508,12 +569,14 @@ public class SettingsFragment extends PreferenceFragment implements Preference.O
 		}
 		else if ("export".equals(preference.getKey()))
 		{
-			String json = GsonHelper.parse(PlantManager.getInstance().getPlants());
+			Uri contentUri = FileProvider.getUriForFile(getActivity(), getActivity().getPackageName() + ".provider", new File(PlantManager.FILES_DIR, "plants.json"));
 
-			Intent share = new Intent(Intent.ACTION_SEND);
-			share.putExtra(Intent.EXTRA_TEXT, json);
-			share.setType("text/plain");
-			startActivity(share);
+			Intent shareIntent = new Intent();
+			shareIntent.setAction(Intent.ACTION_SEND);
+			shareIntent.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION);
+			shareIntent.setDataAndType(contentUri, getActivity().getContentResolver().getType(contentUri));
+			shareIntent.putExtra(Intent.EXTRA_STREAM, contentUri);
+			startActivity(Intent.createChooser(shareIntent, "Share with"));
 
 			return true;
 		}

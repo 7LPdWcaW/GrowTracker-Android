@@ -8,7 +8,6 @@ import android.app.Notification;
 import android.app.NotificationManager;
 import android.app.PendingIntent;
 import android.app.ProgressDialog;
-import android.content.ContentResolver;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
@@ -24,6 +23,7 @@ import android.os.ParcelFileDescriptor;
 import android.preference.PreferenceManager;
 import android.provider.MediaStore;
 import android.support.annotation.Nullable;
+import android.support.v4.app.NotificationCompat;
 import android.support.v4.content.FileProvider;
 import android.text.Html;
 import android.text.TextUtils;
@@ -39,6 +39,7 @@ import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.esotericsoftware.kryo.Kryo;
 import com.kenny.snackbar.SnackBar;
 import com.kenny.snackbar.SnackBarListener;
 
@@ -74,7 +75,6 @@ import me.anon.lib.helper.AddonHelper;
 import me.anon.lib.helper.ExportHelper;
 import me.anon.lib.helper.FabAnimator;
 import me.anon.lib.helper.GsonHelper;
-import me.anon.lib.helper.ModelHelper;
 import me.anon.lib.helper.PermissionHelper;
 import me.anon.lib.manager.GardenManager;
 import me.anon.lib.manager.PlantManager;
@@ -195,7 +195,7 @@ public class PlantDetailsFragment extends Fragment
 		super.onResume();
 
 		// Always re-set stage incase order was changed in event list
-		if (plant.getStage() != null)
+		if (plant != null && plant.getStage() != null)
 		{
 			stage.setText(plant.getStage().getPrintString());
 		}
@@ -417,7 +417,7 @@ public class PlantDetailsFragment extends Fragment
 									final int originalIndex = PlantManager.getInstance().getPlants().indexOf(sortedPlants.get(which));
 
 									Water water = (Water)plant.getActions().get(plant.getActions().size() - 1);
-									Water copy = (Water)ModelHelper.copy(water);
+									Water copy = new Kryo().copy(water);
 									PlantManager.getInstance().getPlants().get(originalIndex).getActions().add(copy);
 
 									Intent edit = new Intent(getActivity(), EditWateringActivity.class);
@@ -598,17 +598,26 @@ public class PlantDetailsFragment extends Fragment
 						progress.setCancelable(false);
 						progress.show();
 
-						PlantManager.getInstance().deletePlant(plantIndex);
-						PlantManager.getInstance().save(new AsyncCallback()
+						final Plant toDelete = PlantManager.getInstance().getPlants().get(plantIndex);
+						PlantManager.getInstance().deletePlant(plantIndex, new AsyncCallback()
 						{
 							@Override public void callback()
 							{
-								if (progress != null)
+								PlantManager.getInstance().save(new AsyncCallback()
 								{
-									progress.dismiss();
-								}
+									@Override public void callback()
+									{
+										if (progress != null)
+										{
+											progress.dismiss();
+										}
 
-								getActivity().finish();
+										if (getActivity() != null)
+										{
+											getActivity().finish();
+										}
+									}
+								}, true);
 							}
 						});
 					}
@@ -620,7 +629,7 @@ public class PlantDetailsFragment extends Fragment
 		}
 		else if (item.getItemId() == R.id.duplicate)
 		{
-			final Plant copy = (Plant)ModelHelper.copy(plant);
+			final Plant copy = new Kryo().copy(plant);
 			copy.setId(UUID.randomUUID().toString());
 			copy.getImages().clear();
 
@@ -655,46 +664,54 @@ public class PlantDetailsFragment extends Fragment
 		else if (item.getItemId() == R.id.export)
 		{
 			Toast.makeText(getActivity(), "Exporting grow log...", Toast.LENGTH_SHORT).show();
-			final NotificationManager notificationManager = (NotificationManager)getActivity().getSystemService(Context.NOTIFICATION_SERVICE);
+			NotificationManager notificationManager = (NotificationManager)getActivity().getSystemService(Context.NOTIFICATION_SERVICE);
 
-			Notification exportNotification = new Notification.Builder(getActivity())
+			notificationManager.cancel(plantIndex);
+
+			Notification exportNotification = new NotificationCompat.Builder(getActivity())
 				.setContentText("Exporting grow log for " + plant.getName())
 				.setContentTitle("Exporting")
 				.setContentIntent(PendingIntent.getActivity(getActivity(), 0, new Intent(), PendingIntent.FLAG_UPDATE_CURRENT))
 				.setTicker("Exporting grow log for " + plant.getName())
+				.setPriority(NotificationCompat.PRIORITY_HIGH)
+				.setVisibility(NotificationCompat.VISIBILITY_PUBLIC)
 				.setSmallIcon(R.drawable.ic_stat_name)
+				.setVibrate(new long[0])
 				.getNotification();
 
-			notificationManager.notify(0xec9047, exportNotification);
+			notificationManager.notify(plantIndex, exportNotification);
 
-			new AsyncTask<Plant, Void, File>()
+			ExportHelper.exportPlant(getActivity(), plant, new ExportCallback()
 			{
-				@Override protected File doInBackground(Plant... params)
+				@Override public void onCallback(Context context, File file)
 				{
-					ExportHelper.exportPlant(getActivity(), plant, new ExportCallback()
+					if (file != null && file.exists() && getActivity() != null)
 					{
-						@Override public void onCallback(Context context, File file)
+						NotificationManager notificationManager = (NotificationManager)context.getSystemService(Context.NOTIFICATION_SERVICE);
+						Notification finishNotification = new NotificationCompat.Builder(getActivity())
+							.setContentText("Exported " + plant.getName() + " to " + file.getAbsolutePath())
+							.setTicker("Export of " + plant.getName() + " complete")
+							.setContentTitle("Export Complete")
+							.setContentIntent(PendingIntent.getActivity(getActivity(), 0, new Intent(), PendingIntent.FLAG_UPDATE_CURRENT))
+							.setSmallIcon(R.drawable.ic_stat_done)
+							.setPriority(NotificationCompat.PRIORITY_HIGH)
+							.setVisibility(NotificationCompat.VISIBILITY_PUBLIC)
+							.setAutoCancel(true)
+							.setVibrate(new long[0])
+							.getNotification();
+						notificationManager.notify(plantIndex, finishNotification);
+
+						if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT)
 						{
-							if (file != null && file.exists() && getActivity() != null)
-							{
-								Toast.makeText(getActivity(), "Grow log successfully exported to " + file.getAbsolutePath(), Toast.LENGTH_SHORT).show();
-								notificationManager.cancel(0xec9047);
-
-								if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT)
-								{
-									new MediaScannerWrapper(getActivity(), file.getAbsolutePath(), "application/zip").scan();
-								}
-								else
-								{
-									getActivity().sendBroadcast(new Intent(Intent.ACTION_MEDIA_MOUNTED, Uri.fromFile(file)));
-								}
-							}
+							new MediaScannerWrapper(getActivity(), file.getAbsolutePath(), "application/zip").scan();
 						}
-					});
-
-					return null;
+						else
+						{
+							getActivity().sendBroadcast(new Intent(Intent.ACTION_MEDIA_MOUNTED, Uri.fromFile(file)));
+						}
+					}
 				}
-			}.executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR, plant);
+			});
 
 			return true;
 		}

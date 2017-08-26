@@ -54,3 +54,19 @@ You can register an activity with the receiver for configuration purposes by usi
     </intent-filter>
 </activity>
 ```
+
+## Available intent providers
+
+You can request all the data from the app using the request intent as follows
+
+```
+    <action android:name="me.anon.grow.ACTION_REQUEST_PLANTS" />
+    <category android:name="android.intent.category.DEFAULT" />
+```
+
+The activity will return a bundle with the apps data as a JSON string
+
+|key|type|description|
+|---|---|---|
+|`me.anon.grow.PLANT_LIST`|String|Full json-encoded array of plants and its data.|
+|`me.anon.grow.ENCRYPTED`|Boolean|If this is true, `me.anon.grow.PLANT_LIST` will be encrypted and base64 encoded, images will be encrypted on disk|

@@ -2,6 +2,7 @@ package me.anon.controller.adapter;
 
 import android.app.AlertDialog;
 import android.content.DialogInterface;
+import android.preference.PreferenceManager;
 import android.support.v7.widget.PopupMenu;
 import android.support.v7.widget.RecyclerView;
 import android.text.Html;
@@ -11,6 +12,8 @@ import android.view.LayoutInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+
+import com.esotericsoftware.kryo.Kryo;
 
 import java.text.DateFormat;
 import java.util.ArrayList;
@@ -25,8 +28,8 @@ import lombok.Getter;
 import lombok.Setter;
 import me.anon.grow.R;
 import me.anon.lib.DateRenderer;
+import me.anon.lib.TempUnit;
 import me.anon.lib.Unit;
-import me.anon.lib.helper.ModelHelper;
 import me.anon.lib.helper.TimeHelper;
 import me.anon.model.Action;
 import me.anon.model.Additive;
@@ -37,6 +40,7 @@ import me.anon.model.StageChange;
 import me.anon.model.Water;
 import me.anon.view.ActionHolder;
 
+import static me.anon.lib.TempUnit.CELCIUS;
 import static me.anon.lib.Unit.ML;
 
 /**
@@ -60,6 +64,8 @@ public class ActionAdapter extends RecyclerView.Adapter<ActionHolder> implements
 	@Getter private Plant plant;
 	@Getter private List<Action> actions = new ArrayList<>();
 	@Getter private Unit measureUnit, deliveryUnit;
+	@Getter private TempUnit tempUnit;
+	private boolean usingEc = false;
 
 	public void setActions(Plant plant, List<Action> actions)
 	{
@@ -85,6 +91,13 @@ public class ActionAdapter extends RecyclerView.Adapter<ActionHolder> implements
 		{
 			deliveryUnit = Unit.getSelectedDeliveryUnit(viewHolder.itemView.getContext());
 		}
+
+		if (tempUnit == null)
+		{
+			tempUnit = TempUnit.getSelectedTemperatureUnit(viewHolder.itemView.getContext());
+		}
+
+		usingEc = PreferenceManager.getDefaultSharedPreferences(viewHolder.itemView.getContext()).getBoolean("tds_ec", false);
 
 		if (action == null) return;
 
@@ -206,8 +219,18 @@ public class ActionAdapter extends RecyclerView.Adapter<ActionHolder> implements
 
 			if (((Water)action).getPpm() != null)
 			{
-				waterStr.append("<b>PPM: </b>");
-				waterStr.append(((Water)action).getPpm());
+				String ppm = String.valueOf(((Water)action).getPpm().longValue());
+				if (usingEc)
+				{
+					waterStr.append("<b>EC: </b>");
+					ppm = String.valueOf((((Water)action).getPpm() * 2d) / 1000d);
+				}
+				else
+				{
+					waterStr.append("<b>PPM: </b>");
+				}
+
+				waterStr.append(ppm);
 				waterStr.append(", ");
 			}
 
@@ -222,8 +245,8 @@ public class ActionAdapter extends RecyclerView.Adapter<ActionHolder> implements
 			if (((Water)action).getTemp() != null)
 			{
 				waterStr.append("<b>Temp: </b>");
-				waterStr.append(((Water)action).getTemp());
-				waterStr.append("ºC, ");
+				waterStr.append(CELCIUS.to(tempUnit, ((Water)action).getTemp()));
+				waterStr.append("º").append(tempUnit.getLabel()).append(", ");
 			}
 
 			summary += waterStr.toString().length() > 0 ? waterStr.toString().substring(0, waterStr.length() - 2) + "<br/>" : "";
@@ -300,7 +323,8 @@ public class ActionAdapter extends RecyclerView.Adapter<ActionHolder> implements
 						{
 							if (onActionSelectListener != null)
 							{
-								onActionSelectListener.onActionDuplicate((Action)ModelHelper.copy(action));
+								Kryo kryo = new Kryo();
+								onActionSelectListener.onActionDuplicate(kryo.copy(action));
 							}
 
 							return true;
@@ -309,7 +333,8 @@ public class ActionAdapter extends RecyclerView.Adapter<ActionHolder> implements
 						{
 							if (onActionSelectListener != null)
 							{
-								onActionSelectListener.onActionCopy((Action)ModelHelper.copy(action));
+								Kryo kryo = new Kryo();
+								onActionSelectListener.onActionCopy(kryo.copy(action));
 							}
 
 							return true;
