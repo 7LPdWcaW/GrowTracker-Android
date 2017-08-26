@@ -18,6 +18,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.view.WindowManager;
 
+import com.esotericsoftware.kryo.Kryo;
 import com.kenny.snackbar.SnackBar;
 import com.kenny.snackbar.SnackBarListener;
 
@@ -268,58 +269,59 @@ public class EventListFragment extends Fragment implements ActionAdapter.OnActio
 
 	@Override public void onActionCopy(final Action action)
 	{
-		final ArrayList<Plant> sortedPlants = PlantManager.getInstance().getSortedPlantList(null);
-		CharSequence[] plants = new CharSequence[sortedPlants.size()];
-		for (int index = 0; index < plants.length; index++)
+		PlantSelectDialogFragment dialogFragment = new PlantSelectDialogFragment(true);
+		dialogFragment.setOnDialogActionListener(new PlantSelectDialogFragment.OnDialogActionListener()
 		{
-			plants[index] = sortedPlants.get(index).getName();
-		}
-
-		new AlertDialog.Builder(getActivity())
-			.setTitle("Select plant")
-			.setItems(plants, new DialogInterface.OnClickListener()
+			@Override public void onDialogAccept(final ArrayList<Integer> indexes, boolean showImage)
 			{
-				@Override public void onClick(DialogInterface dialog, final int which)
+				for (int plantIndex = 0; plantIndex < indexes.size(); plantIndex++)
 				{
-					final int originalIndex = PlantManager.getInstance().getPlants().indexOf(sortedPlants.get(which));
-
-					action.setDate(action.getDate() + new Random().nextInt(1000));
-
-					PlantManager.getInstance().getPlants().get(originalIndex).getActions().add(action);
-					PlantManager.getInstance().save();
-					setActions();
-					adapter.notifyDataSetChanged();
-
-					SnackBar.show(getActivity(), "Action added to " + PlantManager.getInstance().getPlants().get(originalIndex).getName(), "Undo", new SnackBarListener()
-					{
-						@Override public void onSnackBarStarted(Object o)
-						{
-							if (getView() != null)
-							{
-								FabAnimator.animateUp(getView().findViewById(R.id.fab_add));
-							}
-						}
-
-						@Override public void onSnackBarFinished(Object o)
-						{
-							if (getView() != null)
-							{
-								FabAnimator.animateDown(getView().findViewById(R.id.fab_add));
-								PlantWidgetProvider.triggerUpdateAll(getView().getContext());
-							}
-						}
-
-						@Override public void onSnackBarAction(Object o)
-						{
-							PlantManager.getInstance().getPlants().get(originalIndex).getActions().remove(PlantManager.getInstance().getPlants().get(originalIndex).getActions().size() - 1);
-							PlantManager.getInstance().save();
-							setActions();
-							adapter.notifyDataSetChanged();
-						}
-					});
+					PlantManager.getInstance().getPlants().get(indexes.get(plantIndex)).getActions().add(new Kryo().copy(action));
 				}
-			})
-			.show();
+
+				PlantManager.getInstance().save();
+				setActions();
+				adapter.notifyDataSetChanged();
+
+				String plantName = "multiple plants";
+				plantName = indexes.size() == 0 ? PlantManager.getInstance().getPlants().get(indexes.get(0)).getName() : plantName;
+
+				SnackBar.show(getActivity(), "Action added to " + plantName, "Undo", new SnackBarListener()
+				{
+					@Override public void onSnackBarStarted(Object o)
+					{
+						if (getView() != null)
+						{
+							FabAnimator.animateUp(getView().findViewById(R.id.fab_add));
+						}
+					}
+
+					@Override public void onSnackBarFinished(Object o)
+					{
+						if (getView() != null)
+						{
+							FabAnimator.animateDown(getView().findViewById(R.id.fab_add));
+							PlantWidgetProvider.triggerUpdateAll(getView().getContext());
+						}
+					}
+
+					@Override public void onSnackBarAction(Object o)
+					{
+						for (int plantIndex = 0; plantIndex < indexes.size(); plantIndex++)
+						{
+							Plant plant = PlantManager.getInstance().getPlants().get(indexes.get(plantIndex));
+							plant.getActions().remove(plant.getActions().size() - 1);
+						}
+
+						PlantManager.getInstance().save();
+						setActions();
+						adapter.notifyDataSetChanged();
+					}
+				});
+			}
+		});
+
+		dialogFragment.show(getFragmentManager(), null);
 	}
 
 	@Override public void onActionEdit(final Action action)

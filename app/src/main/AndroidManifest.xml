@@ -24,6 +24,8 @@
 			/>
 		</provider>
 
+		<receiver android:name="me.anon.controller.receiver.BackupService" />
+
 		<receiver android:name="me.anon.controller.provider.PlantWidgetProvider">
 			<intent-filter>
 				<action android:name="android.appwidget.action.APPWIDGET_UPDATE" />
@@ -36,7 +38,7 @@
 			/>
 		</receiver>
 
-		<activity android:name=".BootActivity">
+		<activity android:name=".BootActivity" android:finishOnTaskLaunch="true">
 			<intent-filter>
 				<category android:name="android.intent.category.LAUNCHER" />
 				<action android:name="android.intent.action.MAIN" />
@@ -59,6 +61,12 @@
 		<activity android:name=".SettingsActivity" />
 		<activity android:name=".fragment.ImageLightboxDialog" android:theme="@style/fullscreen" android:windowSoftInputMode="stateHidden|adjustResize" />
 		<activity android:name=".PlantDetailsActivity" android:windowSoftInputMode="stateAlwaysHidden" />
+		<activity android:name=".RequestActivity" android:windowSoftInputMode="stateAlwaysHidden" android:theme="@style/Theme.Transparent" android:exported="true">
+			<intent-filter>
+				<action android:name="me.anon.grow.ACTION_REQUEST_PLANTS" />
+				<category android:name="android.intent.category.DEFAULT" />
+			</intent-filter>
+		</activity>
 
 		<meta-data android:name="me.anon.grow.APP_TYPE" android:value="${appType}" />
 	</application>

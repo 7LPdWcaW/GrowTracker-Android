@@ -13,6 +13,7 @@ public enum PlantStage
 {
 	PLANTED("Planted"),
 	GERMINATION("Germination"),
+	CUTTING("Cutting"),
 	VEGETATION("Vegetation"),
 	FLOWER("Flower"),
 	DRYING("Drying"),

@@ -28,6 +28,7 @@ public class EncryptionHelper
 	{
 		try
 		{
+			key = key == null ? "" : key;
 			int keyLength = 128;
 			byte[] keyBytes = new byte[keyLength / 8];
 			Arrays.fill(keyBytes, (byte)0x0);
@@ -51,6 +52,7 @@ public class EncryptionHelper
 		try
 		{
 			SecretKey secretKey = generateKey(key);
+			input = input == null ? "" : input;
 
 			if (secretKey != null)
 			{

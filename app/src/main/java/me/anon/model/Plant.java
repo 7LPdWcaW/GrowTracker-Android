@@ -1,6 +1,7 @@
 package me.anon.model;
 
 import android.content.Context;
+import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 
 import java.util.ArrayList;
@@ -40,6 +41,20 @@ public class Plant
 	private String mediumDetails;
 	private ArrayList<String> images = new ArrayList<>();
 	private ArrayList<Action> actions = new ArrayList<>();
+
+	/**
+	 * @return Gets the ID. If ID is null, a new ID will be generated for the model
+	 */
+	@NonNull
+	public String getId()
+	{
+		if (id == null)
+		{
+			id = UUID.randomUUID().toString();
+		}
+
+		return id;
+	}
 
 	/**
 	 * Stage is now calculated via latest {@link StageChange} action

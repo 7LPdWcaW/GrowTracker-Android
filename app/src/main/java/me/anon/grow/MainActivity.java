@@ -11,7 +11,6 @@ import android.support.annotation.Nullable;
 import android.support.design.widget.NavigationView;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
-import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -85,8 +84,12 @@ public class MainActivity extends BaseActivity implements NavigationView.OnNavig
 		else
 		{
 			selectedItem = savedInstanceState.getInt("index");
-			navigation.getMenu().findItem(selectedItem).setChecked(true);
-			onNavigationItemSelected(navigation.getMenu().findItem(selectedItem));
+
+			if (navigation.getMenu().findItem(selectedItem).isCheckable())
+			{
+				navigation.getMenu().findItem(selectedItem).setChecked(true);
+				onNavigationItemSelected(navigation.getMenu().findItem(selectedItem));
+			}
 		}
 
 		BusHelper.getInstance().register(this);
@@ -182,12 +185,10 @@ public class MainActivity extends BaseActivity implements NavigationView.OnNavig
 
 	@Override public boolean onNavigationItemSelected(MenuItem item)
 	{
-		selectedItem = item.getItemId();
-
 		if (item.getItemId() == R.id.website)
 		{
 			Intent view = new Intent(Intent.ACTION_VIEW);
-			view.setData(Uri.parse("http://github.com/7lpdwcaw/GrowTracker-Android/"));
+			view.setData(Uri.parse("http://github.com/7lpdwcaw/"));
 			startActivity(view);
 		}
 		else if (item.getItemId() == R.id.add)
@@ -228,15 +229,19 @@ public class MainActivity extends BaseActivity implements NavigationView.OnNavig
 		}
 		else if (item.getItemId() == R.id.settings)
 		{
+			item.setChecked(false);
+
 			Intent settings = new Intent(this, SettingsActivity.class);
 			startActivity(settings);
 		}
 		else if (item.getItemId() == R.id.all)
 		{
+			selectedItem = item.getItemId();
 			getFragmentManager().beginTransaction().replace(R.id.fragment_holder, PlantListFragment.newInstance(null), TAG_FRAGMENT).commit();
 		}
 		else if (item.getItemId() >= 100 && item.getItemId() < Integer.MAX_VALUE)
 		{
+			selectedItem = item.getItemId();
 			int gardenIndex = item.getItemId() - 100;
 			getFragmentManager().beginTransaction().replace(R.id.fragment_holder, PlantListFragment.newInstance(GardenManager.getInstance().getGardens().get(gardenIndex)), TAG_FRAGMENT).commit();
 		}

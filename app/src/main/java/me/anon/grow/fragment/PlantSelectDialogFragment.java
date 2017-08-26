@@ -14,6 +14,8 @@ import android.widget.TextView;
 
 import com.nostra13.universalimageloader.core.ImageLoader;
 
+import java.util.ArrayList;
+
 import lombok.Setter;
 import me.anon.controller.adapter.PlantSelectionAdapter;
 import me.anon.grow.R;
@@ -34,9 +36,14 @@ public class PlantSelectDialogFragment extends DialogFragment
 {
 	public interface OnDialogActionListener
 	{
-		public void onDialogAccept(int plantIndex, boolean showImage);
+		/**
+		 * @param plantIndex Indexes are indexes of plants defined in the {@link PlantManager#getPlants()} array
+		 * @param showImage
+		 */
+		public void onDialogAccept(ArrayList<Integer> plantIndex, boolean showImage);
 	}
 
+	private boolean allowMultiple = false;
 	private PlantSelectionAdapter adapter;
 	@Views.InjectView(R.id.recycler_view) private RecyclerView recyclerView;
 	private boolean showImages = true;
@@ -45,6 +52,13 @@ public class PlantSelectDialogFragment extends DialogFragment
 	@SuppressLint("ValidFragment")
 	public PlantSelectDialogFragment()
 	{
+		this(false);
+	}
+
+	@SuppressLint("ValidFragment")
+	public PlantSelectDialogFragment(boolean multiSelect)
+	{
+		this.allowMultiple = multiSelect;
 	}
 
 	@Override public Dialog onCreateDialog(Bundle savedInstanceState)
@@ -54,7 +68,7 @@ public class PlantSelectDialogFragment extends DialogFragment
 
 		adapter = new PlantSelectionAdapter(PlantManager.getInstance().getSortedPlantList(null), null, getActivity())
 		{
-			@Override public void onBindViewHolder(PlantSelectHolder holder, int position)
+			@Override public void onBindViewHolder(PlantSelectHolder holder, final int position)
 			{
 				super.onBindViewHolder(holder, position);
 
@@ -74,7 +88,11 @@ public class PlantSelectDialogFragment extends DialogFragment
 
 						if (check)
 						{
-							getSelectedIds().clear();
+							if (!allowMultiple)
+							{
+								getSelectedIds().clear();
+							}
+
 							getSelectedIds().add(plant.getId());
 						}
 						else
@@ -82,7 +100,7 @@ public class PlantSelectDialogFragment extends DialogFragment
 							getSelectedIds().remove(plant.getId());
 						}
 
-						adapter.notifyDataSetChanged();
+						adapter.notifyItemChanged(position);
 					}
 				});
 			}
@@ -116,20 +134,21 @@ public class PlantSelectDialogFragment extends DialogFragment
 						{
 							if (adapter.getSelectedIds().size() == 0) return;
 
-							int plantIndex = -1;
+							ArrayList<Integer> plantIndex = new ArrayList<Integer>();
+
 							for (int index = 0; index < PlantManager.getInstance().getPlants().size(); index++)
 							{
-								if (PlantManager.getInstance().getPlants().get(index).getId().equalsIgnoreCase(adapter.getSelectedIds().get(0)))
+								for (int adapterIndex = 0; adapterIndex < adapter.getSelectedIds().size(); adapterIndex++)
 								{
-									plantIndex = index;
-									break;
+									if (PlantManager.getInstance().getPlants().get(index).getId().equalsIgnoreCase(adapter.getSelectedIds().get(adapterIndex)))
+									{
+										plantIndex.add(index);
+										break;
+									}
 								}
 							}
 
-							if (plantIndex > -1)
-							{
-								onDialogActionListener.onDialogAccept(plantIndex, showImages);
-							}
+							onDialogActionListener.onDialogAccept(plantIndex, showImages);
 						}
 
 						alertDialog.dismiss();

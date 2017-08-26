@@ -5,6 +5,7 @@ import android.app.Fragment;
 import android.app.FragmentManager;
 import android.content.Context;
 import android.os.Bundle;
+import android.preference.PreferenceManager;
 import android.support.annotation.Nullable;
 import android.text.TextUtils;
 import android.view.LayoutInflater;
@@ -15,6 +16,8 @@ import android.view.inputmethod.InputMethodManager;
 import android.widget.EditText;
 import android.widget.TextView;
 
+import com.esotericsoftware.kryo.Kryo;
+
 import java.text.DateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
@@ -22,6 +25,7 @@ import java.util.Date;
 
 import me.anon.controller.provider.PlantWidgetProvider;
 import me.anon.grow.R;
+import me.anon.lib.TempUnit;
 import me.anon.lib.Unit;
 import me.anon.lib.Views;
 import me.anon.lib.manager.PlantManager;
@@ -31,6 +35,7 @@ import me.anon.model.Plant;
 import me.anon.model.PlantMedium;
 import me.anon.model.Water;
 
+import static me.anon.lib.TempUnit.CELCIUS;
 import static me.anon.lib.Unit.ML;
 
 /**
@@ -50,6 +55,7 @@ public class WateringFragment extends Fragment
 	@Views.InjectView(R.id.amount_label) private TextView amountLabel;
 	@Views.InjectView(R.id.temp_container) private View tempContainer;
 	@Views.InjectView(R.id.temp) private TextView temp;
+	@Views.InjectView(R.id.temp_label) private TextView tempLabel;
 	@Views.InjectView(R.id.date_container) private View dateContainer;
 	@Views.InjectView(R.id.date) private TextView date;
 	@Views.InjectView(R.id.additive_container) private ViewGroup additiveContainer;
@@ -60,6 +66,8 @@ public class WateringFragment extends Fragment
 	private ArrayList<Plant> plants = new ArrayList<>();
 	private Water water;
 	private Unit selectedMeasurementUnit, selectedDeliveryUnit;
+	private TempUnit selectedTemperatureUnit;
+	private boolean usingEc = false;
 
 	/**
 	 * @param plantIndex If -1, assume new plant
@@ -91,6 +99,8 @@ public class WateringFragment extends Fragment
 
 		selectedMeasurementUnit = Unit.getSelectedMeasurementUnit(getActivity());
 		selectedDeliveryUnit = Unit.getSelectedDeliveryUnit(getActivity());
+		selectedTemperatureUnit = TempUnit.getSelectedTemperatureUnit(getActivity());
+		usingEc = PreferenceManager.getDefaultSharedPreferences(getActivity()).getBoolean("tds_ec", false);
 
 		if (getArguments() != null)
 		{
@@ -144,6 +154,12 @@ public class WateringFragment extends Fragment
 		amountLabel.setText("Amount (" + selectedDeliveryUnit.getLabel() + ")");
 		amount.setHint("250" + selectedDeliveryUnit.getLabel());
 
+		if (usingEc)
+		{
+			waterPpm.setHint("1.0 EC");
+			((TextView)((ViewGroup)waterPpm.getParent()).findViewById(R.id.ppm_label)).setText("EC");
+		}
+
 		if (water != null && plants.size() == 1)
 		{
 			Water hintFeed = null;
@@ -176,16 +192,17 @@ public class WateringFragment extends Fragment
 
 				if (hintFeed.getAmount() != null)
 				{
-					amount.setHint(String.valueOf(ML.to(selectedDeliveryUnit, hintFeed.getAmount()) + selectedDeliveryUnit.getLabel()));
+					amount.setHint(String.valueOf(ML.to(selectedDeliveryUnit, hintFeed.getAmount())) + selectedDeliveryUnit.getLabel());
 				}
 
-				if (plants.get(0).getMedium() == PlantMedium.HYDRO)
+				if (plants.get(0).getMedium() == PlantMedium.HYDRO || plants.get(0).getMedium() == PlantMedium.AERO)
 				{
 					tempContainer.setVisibility(View.VISIBLE);
+					tempLabel.setText("Temp (º" + selectedTemperatureUnit.getLabel() + ")");
 
 					if (hintFeed.getTemp() != null)
 					{
-						temp.setHint(String.valueOf(hintFeed.getTemp()));
+						temp.setHint(String.valueOf(CELCIUS.to(selectedTemperatureUnit, hintFeed.getTemp())) + selectedTemperatureUnit.getLabel());
 					}
 				}
 
@@ -241,7 +258,13 @@ public class WateringFragment extends Fragment
 
 			if (water.getPpm() != null)
 			{
-				waterPpm.setText(String.valueOf(water.getPpm()));
+				String ppm = String.valueOf(water.getPpm().longValue());
+				if (usingEc)
+				{
+					ppm = String.valueOf((water.getPpm() * 2d) / 1000d);
+				}
+
+				waterPpm.setText(ppm);
 			}
 
 			if (water.getRunoff() != null)
@@ -260,7 +283,7 @@ public class WateringFragment extends Fragment
 
 				if (water.getTemp() != null)
 				{
-					temp.setText(String.valueOf(water.getTemp()));
+					temp.setHint(String.valueOf(CELCIUS.to(selectedTemperatureUnit, water.getTemp())) + selectedTemperatureUnit.getLabel());
 				}
 			}
 
@@ -385,16 +408,26 @@ public class WateringFragment extends Fragment
 	@Views.OnClick public void onFabCompleteClick(final View view)
 	{
 		Double waterPh = TextUtils.isEmpty(this.waterPh.getText()) ? null : Double.valueOf(this.waterPh.getText().toString());
-		Long ppm = TextUtils.isEmpty(this.waterPpm.getText()) ? null : Long.valueOf(this.waterPpm.getText().toString());
+		Double ppm = TextUtils.isEmpty(this.waterPpm.getText()) ? null : Double.valueOf(this.waterPpm.getText().toString());
 		Double runoffPh = TextUtils.isEmpty(this.runoffPh.getText()) ? null : Double.valueOf(this.runoffPh.getText().toString());
 		Double amount = TextUtils.isEmpty(this.amount.getText()) ? null : Double.valueOf(this.amount.getText().toString());
-		Integer temp = TextUtils.isEmpty(this.temp.getText()) ? null : Integer.valueOf(this.temp.getText().toString());
+		Double temp = TextUtils.isEmpty(this.temp.getText()) ? null : Double.valueOf(this.temp.getText().toString());
+
+		if (usingEc && ppm != null)
+		{
+			ppm = (ppm * 1000d) / 2d;
+		}
 
 		water.setPh(waterPh);
 		water.setPpm(ppm);
 		water.setRunoff(runoffPh);
 		water.setAmount(amount == null ? null : selectedDeliveryUnit.to(ML, amount));
-		water.setTemp(temp);
+
+		if (temp != null)
+		{
+			water.setTemp(selectedTemperatureUnit.to(CELCIUS, temp));
+		}
+
 		water.setNotes(TextUtils.isEmpty(notes.getText().toString()) ? null : notes.getText().toString());
 
 		if (plants.size() == 1)
@@ -425,9 +458,10 @@ public class WateringFragment extends Fragment
 					plant.setActions(new ArrayList<Action>());
 				}
 
-				plant.getActions().add(water.clone());
-				PlantManager.getInstance().upsert(plantIndex[index++], plant);
+				plant.getActions().add(new Kryo().copy(water));
 			}
+
+			PlantManager.getInstance().save();
 		}
 
 		PlantWidgetProvider.triggerUpdateAll(getActivity());

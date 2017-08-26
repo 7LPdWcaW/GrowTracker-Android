@@ -13,8 +13,20 @@
 		<menu>
 			<group android:checkableBehavior="all">
 				<item
+					android:id="@+id/filter_planted"
+					android:title="Planted"
+					android:checked="true"
+				/>
+
+				<item
 					android:id="@+id/filter_germination"
 					android:title="Germination"
+					android:checked="true"
+				/>
+
+				<item
+					android:id="@+id/filter_cutting"
+					android:title="Cutting"
 					android:checked="true"
 				/>
 

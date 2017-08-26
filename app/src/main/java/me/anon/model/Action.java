@@ -12,7 +12,7 @@ import lombok.experimental.Accessors;
  * @project GrowTracker
  */
 @Accessors(prefix = {"m", ""}, chain = true)
-public abstract class Action implements Cloneable
+public abstract class Action
 {
 	@Getter @Setter private long date = System.currentTimeMillis();
 	@Getter @Setter private String notes;

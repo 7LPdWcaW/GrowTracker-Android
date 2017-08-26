@@ -12,22 +12,32 @@ import android.widget.Toast;
 import com.google.gson.JsonSyntaxException;
 import com.google.gson.reflect.TypeToken;
 
+import java.io.BufferedWriter;
 import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileOutputStream;
+import java.io.OutputStream;
+import java.io.OutputStreamWriter;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
+import java.util.List;
+import java.util.Queue;
+import java.util.concurrent.ConcurrentLinkedQueue;
+import java.util.concurrent.atomic.AtomicBoolean;
 
 import lombok.Data;
 import lombok.Getter;
 import lombok.experimental.Accessors;
+import me.anon.grow.BootActivity;
 import me.anon.grow.MainApplication;
 import me.anon.lib.helper.AddonHelper;
-import me.anon.lib.helper.EncryptionHelper;
 import me.anon.lib.helper.GsonHelper;
+import me.anon.lib.stream.DecryptInputStream;
+import me.anon.lib.stream.EncryptOutputStream;
 import me.anon.lib.task.AsyncCallback;
 import me.anon.model.Garden;
 import me.anon.model.Plant;
-import me.anon.model.PlantStage;
 
 /**
  * // TODO: Add class description
@@ -42,7 +52,7 @@ public class PlantManager
 {
 	@Getter(lazy = true) private static final PlantManager instance = new PlantManager();
 
-	private static String FILES_DIR;
+	public static String FILES_DIR;
 
 	private final ArrayList<Plant> mPlants = new ArrayList<>();
 	private Context context;
@@ -71,13 +81,11 @@ public class PlantManager
 			int plantsSize =  PlantManager.getInstance().getPlants().size();
 			Plant[] ordered = new Plant[garden == null ? plantsSize : garden.getPlantIds().size()];
 
-			boolean hideHarvested = prefs.getBoolean("hide_harvested", false);
-
 			for (int index = 0; index < plantsSize; index++)
 			{
 				Plant plant = PlantManager.getInstance().getPlants().get(index);
 
-				if (plant == null || (hideHarvested && plant.getStage() == PlantStage.HARVESTED) || (garden != null && !garden.getPlantIds().contains(plant.getId())))
+				if (plant == null || (garden != null && !garden.getPlantIds().contains(plant.getId())))
 				{
 					continue;
 				}
@@ -117,26 +125,41 @@ public class PlantManager
 		}
 	}
 
-	public void deletePlant(int plantIndex)
+	public void deletePlant(final int plantIndex, final AsyncCallback callback)
 	{
-		synchronized (this.mPlants)
+//		synchronized (this.mPlants)
 		{
-			if (!MainApplication.isFailsafe())
+			if (MainApplication.isFailsafe()) return;
+
+			new AsyncTask<Void, Void, Void>()
 			{
-				// Delete images
-				ArrayList<String> imagePaths = mPlants.get(plantIndex).getImages();
-				for (String filePath : imagePaths)
+				@Override protected Void doInBackground(Void... params)
 				{
-					new File(filePath).delete();
+					// Delete images
+					ArrayList<String> imagePaths = mPlants.get(plantIndex).getImages();
+					for (String filePath : imagePaths)
+					{
+						new File(filePath).delete();
+					}
+
+					// Remove plant
+					mPlants.remove(plantIndex);
+
+					// Remove from shared prefs
+					SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(context);
+					prefs.edit().remove(String.valueOf(plantIndex)).apply();
+
+					return null;
 				}
 
-				// Remove plant
-				mPlants.remove(plantIndex);
-
-				// Remove from shared prefs
-				SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(context);
-				prefs.edit().remove(String.valueOf(plantIndex)).apply();
-			}
+				@Override protected void onPostExecute(Void aVoid)
+				{
+					if (callback != null)
+					{
+						callback.callback();
+					}
+				}
+			}.executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
 		}
 	}
 
@@ -160,44 +183,64 @@ public class PlantManager
 			return;
 		}
 
+		// redundancy check
+		if (new File(FILES_DIR, "/plants.json").lastModified() < new File(FILES_DIR, "/plants.json.bak").lastModified())
+		{
+			FileManager.getInstance().copyFile(FILES_DIR + "/plants.json.bak", FILES_DIR + "/plants.json");
+		}
+
 		if (FileManager.getInstance().fileExists(FILES_DIR + "/plants.json"))
 		{
 			String plantData;
 
-			if (MainApplication.isEncrypted())
-			{
-				if (TextUtils.isEmpty(MainApplication.getKey()))
-				{
-					return;
-				}
-
-				plantData = EncryptionHelper.decrypt(MainApplication.getKey(), FileManager.getInstance().readFile(FILES_DIR + "/plants.json"));
-			}
-			else
-			{
-				plantData = FileManager.getInstance().readFileAsString(FILES_DIR + "/plants.json");
-			}
-
 			try
 			{
-				if (!TextUtils.isEmpty(plantData))
+				if (MainApplication.isEncrypted())
+				{
+					if (TextUtils.isEmpty(MainApplication.getKey()))
+					{
+						return;
+					}
+
+					DecryptInputStream stream = new DecryptInputStream(MainApplication.getKey(), new File(FILES_DIR, "/plants.json"));
+
+					mPlants.clear();
+					mPlants.addAll((ArrayList<Plant>)GsonHelper.parse(stream, new TypeToken<ArrayList<Plant>>(){}.getType()));
+				}
+				else
 				{
 					mPlants.clear();
-					mPlants.addAll((ArrayList<Plant>)GsonHelper.parse(plantData, new TypeToken<ArrayList<Plant>>(){}.getType()));
+					mPlants.addAll((ArrayList<Plant>)GsonHelper.parse(new FileInputStream(new File(FILES_DIR, "/plants.json")), new TypeToken<ArrayList<Plant>>(){}.getType()));
 				}
 			}
-			catch (JsonSyntaxException e)
+			catch (final JsonSyntaxException e)
 			{
 				e.printStackTrace();
+
+				FileManager.getInstance().copyFile(FILES_DIR + "/plants.json", FILES_DIR + "/plants_" + System.currentTimeMillis() + ".json");
+				Toast.makeText(context, "There is a syntax error in your app data. Your data has been backed up to '" + FILES_DIR + ". Please fix before re-opening the app.", Toast.LENGTH_LONG).show();
+
+				// prevent save
+				MainApplication.setFailsafe(true);
+			}
+			catch (Exception e)
+			{
+				e.printStackTrace();
+
+				FileManager.getInstance().copyFile(FILES_DIR + "/plants.json", FILES_DIR + "/plants_" + System.currentTimeMillis() + ".json");
+				Toast.makeText(context, "There is a problem loading your app data.", Toast.LENGTH_LONG).show();
+
+				// prevent save
+				MainApplication.setFailsafe(true);
 			}
 		}
 	}
 
-	public synchronized void save()
+	public void save()
 	{
-		synchronized (this.mPlants)
+		if (!MainApplication.isFailsafe())
 		{
-			if (!MainApplication.isFailsafe())
+			if (mPlants.size() > 0)
 			{
 				save(null);
 			}
@@ -206,18 +249,32 @@ public class PlantManager
 
 	public void save(final AsyncCallback callback)
 	{
-		synchronized (mPlants)
+		save(callback, false);
+	}
+
+	private Queue<SaveAsyncTask> saveTask = new ConcurrentLinkedQueue<>();
+	private AtomicBoolean isSaving = new AtomicBoolean(false);
+
+	public void save(final AsyncCallback callback, boolean ignoreCheck)
+	{
+//		synchronized (mPlants)
 		{
-			if (!MainApplication.isFailsafe())
+			if (MainApplication.isFailsafe()) return;
+
+			if ((!ignoreCheck && mPlants.size() > 0) || ignoreCheck)
 			{
 				AddonHelper.broadcastPlantList(context);
 
-				new AsyncTask<Void, Void, Void>()
+				saveTask.add(new SaveAsyncTask(mPlants)
 				{
-					@Override protected Void doInBackground(Void... voids)
+					@Override protected Void doInBackground(Void... params)
 					{
-						synchronized (mPlants)
+						FileManager.getInstance().copyFile(FILES_DIR + "/plants.json", FILES_DIR + "/plants.json.bak");
+
+						try
 						{
+							OutputStream outstream = null;
+
 							if (MainApplication.isEncrypted())
 							{
 								if (TextUtils.isEmpty(MainApplication.getKey()))
@@ -225,12 +282,24 @@ public class PlantManager
 									return null;
 								}
 
-								FileManager.getInstance().writeFile(FILES_DIR + "/plants.json", EncryptionHelper.encrypt(MainApplication.getKey(), GsonHelper.parse(mPlants)));
+								outstream = new EncryptOutputStream(MainApplication.getKey(), new File(FILES_DIR + "/plants.json"));
 							}
 							else
 							{
-								FileManager.getInstance().writeFile(FILES_DIR + "/plants.json", GsonHelper.parse(mPlants));
+								outstream = new FileOutputStream(new File(FILES_DIR + "/plants.json"));
 							}
+
+							BufferedWriter writer = new BufferedWriter(new OutputStreamWriter(outstream, "UTF-8"), 8192);
+							GsonHelper.getGson().toJson(plants, new TypeToken<ArrayList<Plant>>(){}.getType(), writer);
+
+							writer.flush();
+							outstream.flush();
+							writer.close();
+							outstream.close();
+						}
+						catch (Exception e)
+						{
+							e.printStackTrace();
 						}
 
 						return null;
@@ -252,9 +321,41 @@ public class PlantManager
 							share.putExtra(Intent.EXTRA_TEXT, "== WARNING : PLEASE BACK UP THIS DATA == \r\n\r\n " + sendData);
 							context.startActivity(share);
 						}
+
+						if (saveTask.size() > 0)
+						{
+							saveTask.poll().executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
+						}
+						else
+						{
+							isSaving.set(false);
+						}
 					}
-				}.executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
+				});
+
+				if (!isSaving.get())
+				{
+					isSaving.set(true);
+					saveTask.poll().executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
+				}
 			}
+			else
+			{
+				load();
+				Intent restart = new Intent(context, BootActivity.class);
+				restart.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_NEW_TASK);
+				context.startActivity(restart);
+			}
+		}
+	}
+
+	public abstract static class SaveAsyncTask extends AsyncTask<Void, Void, Void>
+	{
+		protected List<Plant> plants;
+
+		public SaveAsyncTask(List<Plant> plants)
+		{
+			this.plants = plants;
 		}
 	}
 }

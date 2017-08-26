@@ -6,6 +6,8 @@ import android.preference.PreferenceManager;
 import android.support.annotation.Nullable;
 import android.widget.Toast;
 
+import java.util.ArrayList;
+
 import me.anon.controller.provider.PlantWidgetProvider;
 import me.anon.grow.fragment.PlantSelectDialogFragment;
 import me.anon.lib.manager.PlantManager;
@@ -48,9 +50,9 @@ public class PlantSelectActivity extends BaseActivity
 		PlantSelectDialogFragment dialogFragment = new PlantSelectDialogFragment();
 		dialogFragment.setOnDialogActionListener(new PlantSelectDialogFragment.OnDialogActionListener()
 		{
-			@Override public void onDialogAccept(int plantIndex, boolean showImage)
+			@Override public void onDialogAccept(ArrayList<Integer> plantIndex, boolean showImage)
 			{
-				configureAndFinish(plantIndex, showImage);
+				configureAndFinish(plantIndex.get(0), showImage);
 			}
 		});
 		dialogFragment.show(getFragmentManager(), null);

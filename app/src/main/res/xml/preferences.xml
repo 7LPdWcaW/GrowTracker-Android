@@ -12,6 +12,18 @@
 			android:summary="Default garden to show on open, currently All"
 		/>
 
+		<CheckBoxPreference
+			android:key="hide_harvested"
+			android:title="Hide harvested"
+			android:summary="Hide all plants that have been harvested"
+			android:defaultValue="false"
+		/>
+
+	</PreferenceCategory>
+
+	<PreferenceCategory
+		android:title="Units"
+	>
 		<Preference
 			android:key="delivery_unit"
 			android:title="Delivery unit"
@@ -24,10 +36,27 @@
 			android:summary="Default additive measurement unit to use, currently ml"
 		/>
 
+		<Preference
+			android:key="temperature_unit"
+			android:title="Temperature unit"
+			android:summary="Default temperature unit to use, currently C"
+		/>
+
 		<CheckBoxPreference
-			android:key="hide_harvested"
-			android:title="Hide harvested"
-			android:summary="Hide all plants that have been harvested"
+			android:key="tds_ec"
+			android:title="Use EC instead of ppm"
+			android:summary="Uses basic EC conversion ((ppm * 2) / 1000) instead"
+			android:defaultValue="false"
+		/>
+	</PreferenceCategory>
+
+	<PreferenceCategory
+		android:title="Data management"
+	>
+		<CheckBoxPreference
+			android:key="auto_backup"
+			android:title="Auto backup"
+			android:summary="Auto backup your plant data every 24 hours"
 			android:defaultValue="false"
 		/>
 

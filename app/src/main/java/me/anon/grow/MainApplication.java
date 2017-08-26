@@ -1,6 +1,11 @@
 package me.anon.grow;
 
+import android.app.AlarmManager;
 import android.app.Application;
+import android.app.PendingIntent;
+import android.content.Context;
+import android.content.Intent;
+import android.content.SharedPreferences;
 import android.graphics.Bitmap;
 import android.preference.PreferenceManager;
 
@@ -16,9 +21,11 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.net.URI;
 import java.net.URISyntaxException;
+import java.util.concurrent.TimeUnit;
 
 import lombok.Getter;
 import lombok.Setter;
+import me.anon.controller.receiver.BackupService;
 import me.anon.lib.handler.ExceptionHandler;
 import me.anon.lib.manager.GardenManager;
 import me.anon.lib.manager.PlantManager;
@@ -50,11 +57,13 @@ public class MainApplication extends Application
 
 		PlantManager.getInstance().initialise(this);
 		GardenManager.getInstance().initialise(this);
+		registerBackupService();
 
 		displayImageOptions = new DisplayImageOptions.Builder()
 			.cacheInMemory(true)
 			.cacheOnDisk(true)
 			.showImageOnLoading(R.drawable.ic_image)
+			.showImageOnFail(R.drawable.default_plant)
 			.imageScaleType(ImageScaleType.IN_SAMPLE_POWER_OF_2)
 			.bitmapConfig(Bitmap.Config.RGB_565)
 			.build();
@@ -81,5 +90,19 @@ public class MainApplication extends Application
 				}
 			})
 			.build());
+	}
+
+	public void registerBackupService()
+	{
+		SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(this);
+
+		if (prefs.getBoolean("auto_backup", false))
+		{
+			Intent backupIntent = new Intent(this, BackupService.class);
+
+			AlarmManager alarmManager = (AlarmManager)getSystemService(Context.ALARM_SERVICE);
+			alarmManager.cancel(PendingIntent.getBroadcast(this, 0, backupIntent, 0));
+			alarmManager.setRepeating(AlarmManager.RTC, System.currentTimeMillis(), TimeUnit.DAYS.toMillis(1), PendingIntent.getBroadcast(this, 0, backupIntent, 0));
+		}
 	}
 }
