@@ -18,6 +18,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.view.WindowManager;
 
+import com.esotericsoftware.kryo.Kryo;
 import com.kenny.snackbar.SnackBar;
 import com.kenny.snackbar.SnackBarListener;
 
@@ -275,7 +276,7 @@ public class EventListFragment extends Fragment implements ActionAdapter.OnActio
 			{
 				for (int plantIndex = 0; plantIndex < indexes.size(); plantIndex++)
 				{
-					PlantManager.getInstance().getPlants().get(indexes.get(plantIndex)).getActions().add(action.clone());
+					PlantManager.getInstance().getPlants().get(indexes.get(plantIndex)).getActions().add(new Kryo().copy(action));
 				}
 
 				PlantManager.getInstance().save();

@@ -16,6 +16,8 @@ import android.view.inputmethod.InputMethodManager;
 import android.widget.EditText;
 import android.widget.TextView;
 
+import com.esotericsoftware.kryo.Kryo;
+
 import java.text.DateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
@@ -456,7 +458,7 @@ public class WateringFragment extends Fragment
 					plant.setActions(new ArrayList<Action>());
 				}
 
-				plant.getActions().add(water.clone());
+				plant.getActions().add(new Kryo().copy(water));
 			}
 
 			PlantManager.getInstance().save();
