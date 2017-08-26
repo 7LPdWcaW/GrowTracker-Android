@@ -12,7 +12,7 @@ import lombok.experimental.Accessors;
  * @project GrowTracker
  */
 @Accessors(prefix = {"m", ""}, chain = true)
-public abstract class Action implements Cloneable
+public abstract class Action
 {
 	@Getter @Setter private long date = System.currentTimeMillis();
 	@Getter @Setter private String notes;
@@ -59,19 +59,5 @@ public abstract class Action implements Cloneable
 		if (this.date != other.getDate()) return false;
 
 		return true;
-	}
-
-	@Override public Action clone()
-	{
-		try
-		{
-			return (Action)super.clone();
-		}
-		catch (CloneNotSupportedException e)
-		{
-			e.printStackTrace();
-		}
-
-		return this;
 	}
 }

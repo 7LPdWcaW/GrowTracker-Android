@@ -13,6 +13,8 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 
+import com.esotericsoftware.kryo.Kryo;
+
 import java.text.DateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
@@ -321,7 +323,8 @@ public class ActionAdapter extends RecyclerView.Adapter<ActionHolder> implements
 						{
 							if (onActionSelectListener != null)
 							{
-								onActionSelectListener.onActionDuplicate(action.clone());
+								Kryo kryo = new Kryo();
+								onActionSelectListener.onActionDuplicate(kryo.copy(action));
 							}
 
 							return true;
@@ -330,7 +333,8 @@ public class ActionAdapter extends RecyclerView.Adapter<ActionHolder> implements
 						{
 							if (onActionSelectListener != null)
 							{
-								onActionSelectListener.onActionCopy(action.clone());
+								Kryo kryo = new Kryo();
+								onActionSelectListener.onActionCopy(kryo.copy(action));
 							}
 
 							return true;

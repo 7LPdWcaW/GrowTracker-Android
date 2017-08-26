@@ -22,6 +22,7 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 
+import com.esotericsoftware.kryo.Kryo;
 import com.kenny.snackbar.SnackBar;
 import com.kenny.snackbar.SnackBarListener;
 
@@ -236,7 +237,7 @@ public class PlantListFragment extends Fragment
 			{
 				for (Plant plant : adapter.getPlants())
 				{
-					plant.getActions().add(action.clone());
+					plant.getActions().add(new Kryo().copy(action));
 				}
 
 				PlantManager.getInstance().save();

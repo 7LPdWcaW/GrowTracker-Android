@@ -39,6 +39,7 @@ import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.esotericsoftware.kryo.Kryo;
 import com.kenny.snackbar.SnackBar;
 import com.kenny.snackbar.SnackBarListener;
 
@@ -416,7 +417,7 @@ public class PlantDetailsFragment extends Fragment
 									final int originalIndex = PlantManager.getInstance().getPlants().indexOf(sortedPlants.get(which));
 
 									Water water = (Water)plant.getActions().get(plant.getActions().size() - 1);
-									Water copy = water.clone();
+									Water copy = new Kryo().copy(water);
 									PlantManager.getInstance().getPlants().get(originalIndex).getActions().add(copy);
 
 									Intent edit = new Intent(getActivity(), EditWateringActivity.class);
@@ -628,7 +629,7 @@ public class PlantDetailsFragment extends Fragment
 		}
 		else if (item.getItemId() == R.id.duplicate)
 		{
-			final Plant copy = plant.clone();
+			final Plant copy = new Kryo().copy(plant);
 			copy.setId(UUID.randomUUID().toString());
 			copy.getImages().clear();
 
