@@ -2,9 +2,9 @@
 
 Welcome to grow tracker. This app was created to help record data about growing plants in order to monitor the growing conditions to help make the plants grow better, and identify potential issues during the grow process.
 
-[Latest APK: (MD5) 9b7cd8b0c1f8521f6360d5aa6cca00dd v2.3-alpha4](https://github.com/7LPdWcaW/GrowTracker-Android/releases/download/v2.3-alpha4/v2.3-alpha4-production.apk)
+[Latest APK: (MD5) bc9a631d80af4ac0d5ff6b49292219dd v2.3](https://github.com/7LPdWcaW/GrowTracker-Android/releases/download/v2.3/v2.3-production.apk)
 
-[Latest APK (Discrete): (MD5) cb18d4135d548e1e2bf9c284946df4b8 v2.3-alpha4](https://github.com/7LPdWcaW/GrowTracker-Android/releases/download/v2.3-alpha4/v2.3-alpha4-discrete.apk)
+[Latest APK (Discrete): (MD5) f7ccf060a0ddc7356e67a7e6f23bbfbb v2.3](https://github.com/7LPdWcaW/GrowTracker-Android/releases/download/v2.3/v2.3-discrete.apk)
 
 # Installation
 
@@ -71,13 +71,13 @@ Lombok is required for this project before you are able to compile. You can inst
 
 One of,
 
-`SOIL`, `HYDRO`
+`SOIL`, `HYDRO`, `COCO`, `AERO`
 
 ### Plant Stage (ENUM)
 
 One of,
 
-`PLANTED`, `GERMINATION`, `CUTTING`, `VEGETATION`, `FLOWER`, `CURING`, `HARVESTED`
+`PLANTED`, `GERMINATION`, `CUTTING`, `VEGETATION`, `FLOWER`, `DRYING`, `CURING`, `HARVESTED`
 
 ### Action object (feeding)
 
