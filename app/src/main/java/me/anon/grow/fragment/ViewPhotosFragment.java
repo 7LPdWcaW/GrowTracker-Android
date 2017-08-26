@@ -181,12 +181,13 @@ public class ViewPhotosFragment extends Fragment
 							{
 								String image = adapter.getImages().get(integer);
 								File file = new File(image);
-								Uri uri = Uri.fromFile(file);
+								Uri uri = FileProvider.getUriForFile(getActivity(), getActivity().getPackageName() + ".provider", file);
 								files.add(uri);
 							}
 
+							intent.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION);
 							intent.putParcelableArrayListExtra(Intent.EXTRA_STREAM, files);
-							startActivity(intent);
+							startActivity(Intent.createChooser(intent, "Share with"));
 
 							return true;
 						}

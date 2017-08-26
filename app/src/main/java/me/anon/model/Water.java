@@ -27,9 +27,4 @@ public class Water extends Action
 
 	@Deprecated private Nutrient nutrient;
 	@Deprecated private Double mlpl;
-
-	public Water clone()
-	{
-		return (Water)super.clone();
-	}
 }

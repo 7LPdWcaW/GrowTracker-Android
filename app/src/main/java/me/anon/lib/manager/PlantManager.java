@@ -21,6 +21,10 @@ import java.io.OutputStreamWriter;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
+import java.util.List;
+import java.util.Queue;
+import java.util.concurrent.ConcurrentLinkedQueue;
+import java.util.concurrent.atomic.AtomicBoolean;
 
 import lombok.Data;
 import lombok.Getter;
@@ -34,7 +38,6 @@ import me.anon.lib.stream.EncryptOutputStream;
 import me.anon.lib.task.AsyncCallback;
 import me.anon.model.Garden;
 import me.anon.model.Plant;
-import me.anon.model.PlantStage;
 
 /**
  * // TODO: Add class description
@@ -78,13 +81,11 @@ public class PlantManager
 			int plantsSize =  PlantManager.getInstance().getPlants().size();
 			Plant[] ordered = new Plant[garden == null ? plantsSize : garden.getPlantIds().size()];
 
-			boolean hideHarvested = prefs.getBoolean("hide_harvested", false);
-
 			for (int index = 0; index < plantsSize; index++)
 			{
 				Plant plant = PlantManager.getInstance().getPlants().get(index);
 
-				if (plant == null || (hideHarvested && plant.getStage() == PlantStage.HARVESTED) || (garden != null && !garden.getPlantIds().contains(plant.getId())))
+				if (plant == null || (garden != null && !garden.getPlantIds().contains(plant.getId())))
 				{
 					continue;
 				}
@@ -124,26 +125,41 @@ public class PlantManager
 		}
 	}
 
-	public void deletePlant(int plantIndex)
+	public void deletePlant(final int plantIndex, final AsyncCallback callback)
 	{
-		synchronized (this.mPlants)
+//		synchronized (this.mPlants)
 		{
-			if (!MainApplication.isFailsafe())
+			if (MainApplication.isFailsafe()) return;
+
+			new AsyncTask<Void, Void, Void>()
 			{
-				// Delete images
-				ArrayList<String> imagePaths = mPlants.get(plantIndex).getImages();
-				for (String filePath : imagePaths)
+				@Override protected Void doInBackground(Void... params)
 				{
-					new File(filePath).delete();
+					// Delete images
+					ArrayList<String> imagePaths = mPlants.get(plantIndex).getImages();
+					for (String filePath : imagePaths)
+					{
+						new File(filePath).delete();
+					}
+
+					// Remove plant
+					mPlants.remove(plantIndex);
+
+					// Remove from shared prefs
+					SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(context);
+					prefs.edit().remove(String.valueOf(plantIndex)).apply();
+
+					return null;
 				}
 
-				// Remove plant
-				mPlants.remove(plantIndex);
-
-				// Remove from shared prefs
-				SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(context);
-				prefs.edit().remove(String.valueOf(plantIndex)).apply();
-			}
+				@Override protected void onPostExecute(Void aVoid)
+				{
+					if (callback != null)
+					{
+						callback.callback();
+					}
+				}
+			}.executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
 		}
 	}
 
@@ -236,54 +252,54 @@ public class PlantManager
 		save(callback, false);
 	}
 
+	private Queue<SaveAsyncTask> saveTask = new ConcurrentLinkedQueue<>();
+	private AtomicBoolean isSaving = new AtomicBoolean(false);
+
 	public void save(final AsyncCallback callback, boolean ignoreCheck)
 	{
-		synchronized (mPlants)
+//		synchronized (mPlants)
 		{
 			if (MainApplication.isFailsafe()) return;
 
-			if (!ignoreCheck && mPlants.size() > 0)
+			if ((!ignoreCheck && mPlants.size() > 0) || ignoreCheck)
 			{
 				AddonHelper.broadcastPlantList(context);
 
-				new AsyncTask<Void, Void, Void>()
+				saveTask.add(new SaveAsyncTask(mPlants)
 				{
-					@Override protected Void doInBackground(Void... voids)
+					@Override protected Void doInBackground(Void... params)
 					{
-//						synchronized (mPlants)
+						FileManager.getInstance().copyFile(FILES_DIR + "/plants.json", FILES_DIR + "/plants.json.bak");
+
+						try
 						{
-							FileManager.getInstance().copyFile(FILES_DIR + "/plants.json", FILES_DIR + "/plants.json.bak");
+							OutputStream outstream = null;
 
-							try
+							if (MainApplication.isEncrypted())
 							{
-								OutputStream outstream = null;
-
-								if (MainApplication.isEncrypted())
+								if (TextUtils.isEmpty(MainApplication.getKey()))
 								{
-									if (TextUtils.isEmpty(MainApplication.getKey()))
-									{
-										return null;
-									}
-
-									outstream = new EncryptOutputStream(MainApplication.getKey(), new File(FILES_DIR + "/plants.json"));
-								}
-								else
-								{
-									outstream = new FileOutputStream(new File(FILES_DIR + "/plants.json"));
+									return null;
 								}
 
-								BufferedWriter writer = new BufferedWriter(new OutputStreamWriter(outstream, "UTF-8"), 8192);
-								GsonHelper.getGson().toJson(mPlants, new TypeToken<ArrayList<Plant>>(){}.getType(), writer);
-
-								writer.flush();
-								outstream.flush();
-								writer.close();
-								outstream.close();
+								outstream = new EncryptOutputStream(MainApplication.getKey(), new File(FILES_DIR + "/plants.json"));
 							}
-							catch (Exception e)
+							else
 							{
-								e.printStackTrace();
+								outstream = new FileOutputStream(new File(FILES_DIR + "/plants.json"));
 							}
+
+							BufferedWriter writer = new BufferedWriter(new OutputStreamWriter(outstream, "UTF-8"), 8192);
+							GsonHelper.getGson().toJson(plants, new TypeToken<ArrayList<Plant>>(){}.getType(), writer);
+
+							writer.flush();
+							outstream.flush();
+							writer.close();
+							outstream.close();
+						}
+						catch (Exception e)
+						{
+							e.printStackTrace();
 						}
 
 						return null;
@@ -305,8 +321,23 @@ public class PlantManager
 							share.putExtra(Intent.EXTRA_TEXT, "== WARNING : PLEASE BACK UP THIS DATA == \r\n\r\n " + sendData);
 							context.startActivity(share);
 						}
+
+						if (saveTask.size() > 0)
+						{
+							saveTask.poll().executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
+						}
+						else
+						{
+							isSaving.set(false);
+						}
 					}
-				}.executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
+				});
+
+				if (!isSaving.get())
+				{
+					isSaving.set(true);
+					saveTask.poll().executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
+				}
 			}
 			else
 			{
@@ -315,6 +346,16 @@ public class PlantManager
 				restart.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_NEW_TASK);
 				context.startActivity(restart);
 			}
+		}
+	}
+
+	public abstract static class SaveAsyncTask extends AsyncTask<Void, Void, Void>
+	{
+		protected List<Plant> plants;
+
+		public SaveAsyncTask(List<Plant> plants)
+		{
+			this.plants = plants;
 		}
 	}
 }

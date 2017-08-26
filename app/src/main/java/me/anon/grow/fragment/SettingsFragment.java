@@ -19,6 +19,7 @@ import android.preference.Preference;
 import android.preference.PreferenceCategory;
 import android.preference.PreferenceFragment;
 import android.preference.PreferenceManager;
+import android.support.v4.content.FileProvider;
 import android.text.Html;
 import android.text.TextUtils;
 import android.util.Base64;
@@ -28,6 +29,7 @@ import android.widget.Toast;
 import com.nostra13.universalimageloader.core.ImageLoader;
 
 import java.io.BufferedInputStream;
+import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.List;
@@ -39,7 +41,6 @@ import me.anon.lib.TempUnit;
 import me.anon.lib.Unit;
 import me.anon.lib.helper.AddonHelper;
 import me.anon.lib.helper.EncryptionHelper;
-import me.anon.lib.helper.GsonHelper;
 import me.anon.lib.manager.GardenManager;
 import me.anon.lib.manager.PlantManager;
 import me.anon.lib.task.DecryptTask;
@@ -407,7 +408,9 @@ public class SettingsFragment extends PreferenceFragment implements Preference.O
 		{
 			if ((Boolean)newValue)
 			{
+				PreferenceManager.getDefaultSharedPreferences(getActivity()).edit().putBoolean("auto_backup", true).apply();
 				((MainApplication)getActivity().getApplication()).registerBackupService();
+				Toast.makeText(getActivity(), "Backup enabled, backups will be stored in /sdcard/backups/GrowTracker/", Toast.LENGTH_LONG).show();
 			}
 			else
 			{
@@ -415,6 +418,8 @@ public class SettingsFragment extends PreferenceFragment implements Preference.O
 				AlarmManager alarmManager = (AlarmManager)getActivity().getSystemService(Context.ALARM_SERVICE);
 				alarmManager.cancel(PendingIntent.getBroadcast(getActivity(), 0, backupIntent, 0));
 			}
+
+			return true;
 		}
 
 		return false;
@@ -564,12 +569,14 @@ public class SettingsFragment extends PreferenceFragment implements Preference.O
 		}
 		else if ("export".equals(preference.getKey()))
 		{
-			String json = GsonHelper.parse(PlantManager.getInstance().getPlants());
+			Uri contentUri = FileProvider.getUriForFile(getActivity(), getActivity().getPackageName() + ".provider", new File(PlantManager.FILES_DIR, "plants.json"));
 
-			Intent share = new Intent(Intent.ACTION_SEND);
-			share.putExtra(Intent.EXTRA_TEXT, json);
-			share.setType("text/plain");
-			startActivity(share);
+			Intent shareIntent = new Intent();
+			shareIntent.setAction(Intent.ACTION_SEND);
+			shareIntent.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION);
+			shareIntent.setDataAndType(contentUri, getActivity().getContentResolver().getType(contentUri));
+			shareIntent.putExtra(Intent.EXTRA_STREAM, contentUri);
+			startActivity(Intent.createChooser(shareIntent, "Share with"));
 
 			return true;
 		}
