@@ -17,6 +17,7 @@ import java.util.Collections;
 import java.util.List;
 
 import lombok.Getter;
+import lombok.Setter;
 import me.anon.grow.MainApplication;
 import me.anon.grow.PlantDetailsActivity;
 import me.anon.grow.R;
@@ -32,9 +33,10 @@ import me.anon.view.PlantHolder;
  * @documentation // TODO Reference flow doc
  * @project GrowTracker
  */
-public class PlantAdapter extends RecyclerView.Adapter<PlantHolder> implements ItemTouchHelperAdapter
+public class PlantAdapter extends RecyclerView.Adapter implements ItemTouchHelperAdapter
 {
 	@Getter private List<Plant> plants = new ArrayList<>();
+	@Getter @Setter private List<String> showOnly = null;
 	private Context context;
 	@Getter private Unit measureUnit, deliveryUnit;
 
@@ -53,39 +55,70 @@ public class PlantAdapter extends RecyclerView.Adapter<PlantHolder> implements I
 		this.plants.removeAll(Collections.singleton(null));
 	}
 
-	@Override public PlantHolder onCreateViewHolder(ViewGroup viewGroup, int i)
+	@Override public int getItemViewType(int position)
 	{
-		return new PlantHolder(LayoutInflater.from(viewGroup.getContext()).inflate(R.layout.plant_item, viewGroup, false));
+		Plant plant = plants.get(position);
+		if (showOnly != null && !showOnly.contains(plant.getId()))
+		{
+			return 0;
+		}
+
+		return 1;
 	}
 
-	@Override public void onBindViewHolder(PlantHolder viewHolder, final int i)
+	@Override public RecyclerView.ViewHolder onCreateViewHolder(ViewGroup viewGroup, int typeView)
 	{
-		final Plant plant = plants.get(i);
-		viewHolder.getName().setText(plant.getName());
-
-		String summary = plant.generateLongSummary(viewHolder.itemView.getContext());
-		viewHolder.getSummary().setText(Html.fromHtml(summary));
-
-		ImageLoader.getInstance().cancelDisplayTask(viewHolder.getImage());
-		if (plant.getImages() != null && plant.getImages().size() > 0)
+		switch (typeView)
 		{
-			ImageAware imageAware = new ImageViewAware(viewHolder.getImage(), true);
-			ImageLoader.getInstance().displayImage("file://" + plant.getImages().get(plant.getImages().size() - 1), imageAware, MainApplication.getDisplayImageOptions());
+			case 0:
+				return new RecyclerView.ViewHolder(LayoutInflater.from(viewGroup.getContext()).inflate(R.layout.empty, viewGroup, false)){};
+
+			default:
+			case 1:
+				return new PlantHolder(LayoutInflater.from(viewGroup.getContext()).inflate(R.layout.plant_item, viewGroup, false));
 		}
-		else
-		{
-			viewHolder.getImage().setImageResource(R.drawable.default_plant);
-		}
+	}
 
-		viewHolder.itemView.setOnClickListener(new View.OnClickListener()
+	@Override public void onBindViewHolder(RecyclerView.ViewHolder viewHolder, final int position)
+	{
+		final Plant plant = plants.get(position);
+
+		if (getItemViewType(position) == 1)
 		{
-			@Override public void onClick(View v)
+			((PlantHolder)viewHolder).getName().setText(plant.getName());
+
+			String summary = plant.generateLongSummary(((PlantHolder)viewHolder).itemView.getContext());
+			((PlantHolder)viewHolder).getSummary().setText(Html.fromHtml(summary));
+
+			if (plant.getImages() != null && plant.getImages().size() > 0)
 			{
-				Intent details = new Intent(v.getContext(), PlantDetailsActivity.class);
-				details.putExtra("plant_index", PlantManager.getInstance().getPlants().indexOf(plant));
-				v.getContext().startActivity(details);
+				String imagePath = "file://" + plant.getImages().get(plant.getImages().size() - 1);
+
+				if (((PlantHolder)viewHolder).getImage().getTag() == null || !((PlantHolder)viewHolder).getImage().getTag().toString().equalsIgnoreCase(imagePath))
+				{
+					ImageLoader.getInstance().cancelDisplayTask(((PlantHolder)viewHolder).getImage());
+				}
+
+				((PlantHolder)viewHolder).getImage().setTag(imagePath);
+
+				ImageAware imageAware = new ImageViewAware(((PlantHolder)viewHolder).getImage(), true);
+				ImageLoader.getInstance().displayImage("file://" + plant.getImages().get(plant.getImages().size() - 1), imageAware, MainApplication.getDisplayImageOptions());
 			}
-		});
+			else
+			{
+				((PlantHolder)viewHolder).getImage().setImageResource(R.drawable.default_plant);
+			}
+
+			viewHolder.itemView.setOnClickListener(new View.OnClickListener()
+			{
+				@Override public void onClick(View v)
+				{
+					Intent details = new Intent(v.getContext(), PlantDetailsActivity.class);
+					details.putExtra("plant_index", PlantManager.getInstance().getPlants().indexOf(plant));
+					v.getContext().startActivity(details);
+				}
+			});
+		}
 	}
 
 	@Override public int getItemCount()

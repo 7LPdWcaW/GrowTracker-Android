@@ -39,6 +39,7 @@ import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.esotericsoftware.kryo.Kryo;
 import com.kenny.snackbar.SnackBar;
 import com.kenny.snackbar.SnackBarListener;
 
@@ -416,7 +417,7 @@ public class PlantDetailsFragment extends Fragment
 									final int originalIndex = PlantManager.getInstance().getPlants().indexOf(sortedPlants.get(which));
 
 									Water water = (Water)plant.getActions().get(plant.getActions().size() - 1);
-									Water copy = water.clone();
+									Water copy = new Kryo().copy(water);
 									PlantManager.getInstance().getPlants().get(originalIndex).getActions().add(copy);
 
 									Intent edit = new Intent(getActivity(), EditWateringActivity.class);
@@ -597,19 +598,28 @@ public class PlantDetailsFragment extends Fragment
 						progress.setCancelable(false);
 						progress.show();
 
-						PlantManager.getInstance().deletePlant(plantIndex);
-						PlantManager.getInstance().save(new AsyncCallback()
+						final Plant toDelete = PlantManager.getInstance().getPlants().get(plantIndex);
+						PlantManager.getInstance().deletePlant(plantIndex, new AsyncCallback()
 						{
 							@Override public void callback()
 							{
-								if (progress != null)
+								PlantManager.getInstance().save(new AsyncCallback()
 								{
-									progress.dismiss();
-								}
+									@Override public void callback()
+									{
+										if (progress != null)
+										{
+											progress.dismiss();
+										}
 
-								getActivity().finish();
+										if (getActivity() != null)
+										{
+											getActivity().finish();
+										}
+									}
+								}, true);
 							}
-						}, true);
+						});
 					}
 				})
 				.setNegativeButton("No", null)
@@ -619,7 +629,7 @@ public class PlantDetailsFragment extends Fragment
 		}
 		else if (item.getItemId() == R.id.duplicate)
 		{
-			final Plant copy = plant.clone();
+			final Plant copy = new Kryo().copy(plant);
 			copy.setId(UUID.randomUUID().toString());
 			copy.getImages().clear();
 

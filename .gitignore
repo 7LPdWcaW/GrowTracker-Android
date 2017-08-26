@@ -98,3 +98,5 @@ gradle-app.setting
 # Avoid ignoring Gradle wrapper jar file (.jar files are usually ignored)
 !gradle-wrapper.jar
 
+app/app-discrete-release.apk
+app/app-production-release.apk

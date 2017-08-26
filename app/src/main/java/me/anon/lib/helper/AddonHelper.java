@@ -4,11 +4,13 @@ import android.content.Context;
 import android.content.Intent;
 import android.util.Base64;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
 
 import me.anon.grow.MainApplication;
 import me.anon.lib.manager.PlantManager;
+import me.anon.model.Plant;
 
 /**
  * Contains all methods and action types for available addons for Grow Tracker
@@ -50,7 +52,8 @@ public class AddonHelper
 		{
 			@Override public void run()
 			{
-				String plantListData = GsonHelper.parse(PlantManager.getInstance().getPlants());
+				ArrayList<Plant> plants = new ArrayList<Plant>(PlantManager.getInstance().getPlants());
+				String plantListData = GsonHelper.parse(plants);
 
 				if (MainApplication.isEncrypted())
 				{

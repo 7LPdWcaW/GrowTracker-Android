@@ -1,6 +1,7 @@
 package me.anon.model;
 
 import android.content.Context;
+import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 
 import java.util.ArrayList;
@@ -29,7 +30,7 @@ import static me.anon.lib.Unit.ML;
  */
 @Getter @Setter
 @Accessors(prefix = {"m", ""}, chain = true)
-public class Plant implements Cloneable
+public class Plant
 {
 	private String id = UUID.randomUUID().toString();
 	private String name;
@@ -40,6 +41,20 @@ public class Plant implements Cloneable
 	private String mediumDetails;
 	private ArrayList<String> images = new ArrayList<>();
 	private ArrayList<Action> actions = new ArrayList<>();
+
+	/**
+	 * @return Gets the ID. If ID is null, a new ID will be generated for the model
+	 */
+	@NonNull
+	public String getId()
+	{
+		if (id == null)
+		{
+			id = UUID.randomUUID().toString();
+		}
+
+		return id;
+	}
 
 	/**
 	 * Stage is now calculated via latest {@link StageChange} action
@@ -294,19 +309,5 @@ public class Plant implements Cloneable
 		}
 
 		return stages;
-	}
-
-	@Override public Plant clone()
-	{
-		try
-		{
-			return (Plant)super.clone();
-		}
-		catch (CloneNotSupportedException e)
-		{
-			e.printStackTrace();
-		}
-
-		return this;
 	}
 }
