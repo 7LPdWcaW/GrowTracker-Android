@@ -191,7 +191,7 @@ public class PlantWidgetProvider extends AppWidgetProvider
 			paint.setAntiAlias(true);
 			canvas.drawRoundRect(rectF, 8, 8, paint);
 
-			Bitmap lastImage;
+			Bitmap lastImage = null;
 
 			if (allowImage && plant.getImages().size() > 0)
 			{
@@ -200,7 +200,8 @@ public class PlantWidgetProvider extends AppWidgetProvider
 				lastImage = BitmapFactory.decodeFile(plant.getImages().get(plant.getImages().size() - 1), opts);
 				lastImage = ThumbnailUtils.extractThumbnail(lastImage, size[0], size[1], 0);
 			}
-			else
+
+			if (lastImage == null)
 			{
 				BitmapFactory.Options opts = new BitmapFactory.Options();
 				opts.inSampleSize = recursiveSample(context.getResources(), R.drawable.default_plant, size[0], size[1]);
@@ -209,7 +210,11 @@ public class PlantWidgetProvider extends AppWidgetProvider
 			}
 
 			paint.setXfermode(new PorterDuffXfermode(PorterDuff.Mode.SRC_IN));
-			canvas.drawBitmap(lastImage, rect, rect, paint);
+
+			if (lastImage != null)
+			{
+				canvas.drawBitmap(lastImage, rect, rect, paint);
+			}
 
 			Paint overlay = new Paint();
 			overlay.setColor(0x000000);
