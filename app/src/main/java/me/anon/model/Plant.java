@@ -13,6 +13,7 @@ import java.util.TreeMap;
 import java.util.UUID;
 
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 import lombok.Setter;
 import lombok.experimental.Accessors;
 import me.anon.lib.DateRenderer;
@@ -30,6 +31,7 @@ import static me.anon.lib.Unit.ML;
  */
 @Getter @Setter
 @Accessors(prefix = {"m", ""}, chain = true)
+@NoArgsConstructor
 public class Plant
 {
 	private String id = UUID.randomUUID().toString();

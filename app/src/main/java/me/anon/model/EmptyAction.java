@@ -3,6 +3,7 @@ package me.anon.model;
 import android.support.annotation.Nullable;
 
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 /**
@@ -13,6 +14,7 @@ import lombok.Setter;
  * @project GrowTracker
  */
 @Getter @Setter
+@NoArgsConstructor
 public class EmptyAction extends Action
 {
 	@Nullable private ActionName action;

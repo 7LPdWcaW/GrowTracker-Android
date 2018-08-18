@@ -1,6 +1,7 @@
 package me.anon.model;
 
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 import lombok.Setter;
 import lombok.experimental.Accessors;
 
@@ -13,6 +14,7 @@ import lombok.experimental.Accessors;
  */
 @Getter @Setter
 @Accessors(prefix = {"m", ""}, chain = true)
+@NoArgsConstructor
 public class Additive
 {
 	private Double amount;
