@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 import lombok.Setter;
 import lombok.experimental.Accessors;
 
@@ -16,6 +17,7 @@ import lombok.experimental.Accessors;
  */
 @Getter @Setter
 @Accessors(prefix = {"m", ""}, chain = true)
+@NoArgsConstructor
 public class Water extends Action
 {
 	private Double ppm;
