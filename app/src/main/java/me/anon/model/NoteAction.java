@@ -1,6 +1,7 @@
 package me.anon.model;
 
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 /**
@@ -11,6 +12,7 @@ import lombok.Setter;
  * @project GrowTracker
  */
 @Getter @Setter
+@NoArgsConstructor
 public class NoteAction extends Action
 {
 	public NoteAction(String note)
