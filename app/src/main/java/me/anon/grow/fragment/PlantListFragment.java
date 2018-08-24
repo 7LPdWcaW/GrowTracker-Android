@@ -95,7 +95,7 @@ public class PlantListFragment extends Fragment
 	{
 		super.onActivityCreated(savedInstanceState);
 
-		getActivity().setTitle(garden == null ? "All" : garden.getName() + " plants");
+		getActivity().setTitle(getString(R.string.list_title, (garden == null ? getString(R.string.all) : garden.getName())));
 
 		adapter = new PlantAdapter(getActivity());
 
@@ -242,7 +242,7 @@ public class PlantListFragment extends Fragment
 
 				PlantManager.getInstance().save();
 
-				SnackBar.show(getActivity(), "Actions added", new SnackBarListener()
+				SnackBar.show(getActivity(), R.string.snackbar_action_add, new SnackBarListener()
 				{
 					@Override public void onSnackBarStarted(Object o)
 					{
@@ -284,7 +284,7 @@ public class PlantListFragment extends Fragment
 
 				PlantManager.getInstance().save();
 
-				SnackBar.show(getActivity(), "Notes added", new SnackBarListener()
+				SnackBar.show(getActivity(), R.string.snackbar_note_add, new SnackBarListener()
 				{
 					@Override public void onSnackBarStarted(Object o)
 					{
@@ -317,7 +317,7 @@ public class PlantListFragment extends Fragment
 		{
 			if (resultCode != Activity.RESULT_CANCELED)
 			{
-				SnackBar.show(getActivity(), "Watering added", new SnackBarListener()
+				SnackBar.show(getActivity(), R.string.snackbar_watering_add, new SnackBarListener()
 				{
 					@Override public void onSnackBarStarted(Object o)
 					{
@@ -378,7 +378,7 @@ public class PlantListFragment extends Fragment
 					GardenManager.getInstance().save();
 					PlantListFragment.this.garden = garden;
 
-					getActivity().setTitle(garden == null ? "All" : garden.getName() + " plants");
+					getActivity().setTitle(getString(R.string.list_title, (garden == null ? getString(R.string.all) : garden.getName())));
 					filter();
 
 					((MainActivity)getActivity()).setNavigationView();
@@ -391,9 +391,9 @@ public class PlantListFragment extends Fragment
 		else if (item.getItemId() == R.id.delete_garden)
 		{
 			new AlertDialog.Builder(getActivity())
-				.setTitle("Are you sure?")
-				.setMessage(Html.fromHtml("Are you sure you want to delete garden <b>" + garden.getName() + "</b>? This will not delete the plants."))
-				.setPositiveButton("Yes", new DialogInterface.OnClickListener()
+				.setTitle(R.string.dialog_garden_delete_title)
+				.setMessage(Html.fromHtml(getString(R.string.dialog_garden_delete_body)))
+				.setPositiveButton(R.string.dialog_garden_delete_positive, new DialogInterface.OnClickListener()
 				{
 					@Override public void onClick(DialogInterface dialogInterface, int i)
 					{
@@ -403,7 +403,7 @@ public class PlantListFragment extends Fragment
 						GardenManager.getInstance().getGardens().remove(garden);
 						GardenManager.getInstance().save();
 
-						SnackBar.show(getActivity(), "Garden deleted", "undo", new SnackBarListener()
+						SnackBar.show(getActivity(), R.string.snackbar_garden_deleted, R.string.snackbar_undo, new SnackBarListener()
 						{
 							@Override public void onSnackBarStarted(Object o){}
 							@Override public void onSnackBarFinished(Object o){}
@@ -422,7 +422,7 @@ public class PlantListFragment extends Fragment
 						((MainActivity)getActivity()).onNavigationItemSelected(((MainActivity)getActivity()).getNavigation().getMenu().findItem(R.id.all));
 					}
 				})
-				.setNegativeButton("No", null)
+				.setNegativeButton(R.string.dialog_garden_delete_negative, null)
 				.show();
 		}
 		else
