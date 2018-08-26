@@ -30,7 +30,7 @@ public class PlantSelectActivity extends BaseActivity
 
 		if (MainApplication.isEncrypted())
 		{
-			Toast.makeText(this, "Widget is not available when encrypt setting is enabled", Toast.LENGTH_LONG).show();
+			Toast.makeText(this, R.string.widget_encrypt_error, Toast.LENGTH_LONG).show();
 			finish();
 			return;
 		}

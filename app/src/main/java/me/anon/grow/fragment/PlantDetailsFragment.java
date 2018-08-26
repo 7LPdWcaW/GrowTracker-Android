@@ -74,7 +74,6 @@ import me.anon.lib.Views;
 import me.anon.lib.helper.AddonHelper;
 import me.anon.lib.helper.ExportHelper;
 import me.anon.lib.helper.FabAnimator;
-import me.anon.lib.helper.GsonHelper;
 import me.anon.lib.helper.PermissionHelper;
 import me.anon.lib.manager.GardenManager;
 import me.anon.lib.manager.PlantManager;
@@ -163,13 +162,13 @@ public class PlantDetailsFragment extends Fragment
 		if (plant == null)
 		{
 			plant = new Plant();
-			getActivity().setTitle("Add new plant");
+			getActivity().setTitle(getString(R.string.new_plant_title));
 
 			plant.getActions().add(new StageChange(PlantStage.PLANTED));
 		}
 		else
 		{
-			getActivity().setTitle("Plant details");
+			getActivity().setTitle(getString(R.string.plant_details_title));
 
 			actionContainer.setVisibility(View.VISIBLE);
 			linkContainer.setVisibility(View.VISIBLE);
@@ -257,7 +256,7 @@ public class PlantDetailsFragment extends Fragment
 				plant.getActions().add(action);
 				PlantManager.getInstance().upsert(plantIndex, plant);
 
-				SnackBar.show(getActivity(), "Note added", "undo", new SnackBarListener()
+				SnackBar.show(getActivity(), R.string.snackbar_note_add, R.string.snackbar_undo, new SnackBarListener()
 				{
 					@Override public void onSnackBarStarted(Object o)
 					{
@@ -303,17 +302,17 @@ public class PlantDetailsFragment extends Fragment
 			return;
 		}
 
-		String[] choices = {"From camera", "From gallery"};
+		String[] choices = {getString(R.string.photo_option_camera), getString(R.string.photo_option_gallery)};
 
 		new AlertDialog.Builder(getActivity())
-			.setTitle("Select an option")
+			.setTitle(R.string.dialog_option_title)
 			.setItems(choices, new DialogInterface.OnClickListener()
 			{
 				@Override public void onClick(DialogInterface dialogInterface, int index)
 				{
 					if (index == 0)
 					{
-						Intent intent = new Intent(android.provider.MediaStore.ACTION_IMAGE_CAPTURE);
+						Intent intent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
 
 						File path = new File(Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DCIM).getPath() + "/GrowTracker/" + plant.getId() + "/");
 						path.mkdirs();
@@ -356,7 +355,7 @@ public class PlantDetailsFragment extends Fragment
 						intent.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION);
 						intent.setType("image/*");
 
-						startActivityForResult(Intent.createChooser(intent, "Select picture"), 3);
+						startActivityForResult(Intent.createChooser(intent, getString(R.string.dialog_select_picture_title)), 3);
 					}
 				}
 			})
@@ -381,7 +380,7 @@ public class PlantDetailsFragment extends Fragment
 		{
 			if (resultCode != Activity.RESULT_CANCELED)
 			{
-				SnackBar.show(getActivity(), "Watering added", "Apply to another plant", new SnackBarListener()
+				SnackBar.show(getActivity(), R.string.snackbar_watering_add, R.string.snackbar_action_apply, new SnackBarListener()
 				{
 					@Override public void onSnackBarStarted(Object o)
 					{
@@ -409,7 +408,7 @@ public class PlantDetailsFragment extends Fragment
 						}
 
 						new AlertDialog.Builder(getActivity())
-							.setTitle("Select plant")
+							.setTitle(R.string.dialog_select_plant_title)
 							.setItems(plants, new DialogInterface.OnClickListener()
 							{
 								@Override public void onClick(DialogInterface dialog, int which)
@@ -485,7 +484,7 @@ public class PlantDetailsFragment extends Fragment
 					new EncryptTask().executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR, image);
 				}
 
-				SnackBar.show(getActivity(), "Image added", "Take another", new SnackBarListener()
+				SnackBar.show(getActivity(), R.string.snackbar_image_added, R.string.snackbar_action_take_another, new SnackBarListener()
 				{
 					@Override public void onSnackBarStarted(Object o)
 					{
@@ -587,7 +586,7 @@ public class PlantDetailsFragment extends Fragment
 		if (item.getItemId() == R.id.delete)
 		{
 			new AlertDialog.Builder(getActivity())
-				.setTitle("Are you sure?")
+				.setTitle(R.string.dialog_sure_title)
 				.setMessage(Html.fromHtml("You are about to delete <b>" + plant.getName() + "</b> and all of the images associated with it, are you sure? This can not be undone."))
 				.setPositiveButton("Yes", new DialogInterface.OnClickListener()
 				{
