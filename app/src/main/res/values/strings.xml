@@ -1,3 +1,5 @@
+<?xml version="1.0" encoding="utf-8"?>
+
 <resources>
 	<string name="permission_storage">Access to external storage is to display photos in the app. No other data is read.</string>
 	<string name="version">Version %s</string>
@@ -16,4 +18,16 @@
 	<string name="action_feed">Feed</string>
 	<string name="action_action">Action</string>
 	<string name="action_note">Note</string>
+	<string name="widget_encrypt_error">Widget is not available when encrypt setting is enabled</string>
+	<string name="new_plant_title">Add new plant</string>
+	<string name="plant_details_title">Plant details</string>
+	<string name="photo_option_camera">From camera</string>
+	<string name="photo_option_gallery">From gallery</string>
+	<string name="dialog_option_title">Select an option</string>
+	<string name="dialog_select_picture_title">Select picture</string>
+	<string name="snackbar_action_apply">Apply to another plant</string>
+	<string name="dialog_select_plant_title">Select plant</string>
+	<string name="snackbar_image_added">Image added</string>
+	<string name="snackbar_action_take_another">Take another</string>
+	<string name="dialog_sure_title">Are you sure?</string>
 </resources>
