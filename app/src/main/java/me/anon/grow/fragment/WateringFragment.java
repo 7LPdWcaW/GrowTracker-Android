@@ -22,6 +22,7 @@ import java.text.DateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
+import java.util.GregorianCalendar;
 
 import me.anon.controller.provider.PlantWidgetProvider;
 import me.anon.grow.R;
@@ -467,5 +468,17 @@ public class WateringFragment extends Fragment
 		PlantWidgetProvider.triggerUpdateAll(getActivity());
 		getActivity().setResult(Activity.RESULT_OK);
 		getActivity().finish();
+	}
+
+	@Views.OnClick(R.id.date_now) public void onDateNowClick(View view)
+	{
+		final DateFormat dateFormat = android.text.format.DateFormat.getDateFormat(getActivity());
+		final DateFormat timeFormat = android.text.format.DateFormat.getTimeFormat(getActivity());
+
+		Calendar date = GregorianCalendar.getInstance();
+		String dateStr = dateFormat.format(date.getTime()) + " " + timeFormat.format(date.getTime());
+		WateringFragment.this.date.setText(dateStr);
+
+		water.setDate(date.getTimeInMillis());
 	}
 }

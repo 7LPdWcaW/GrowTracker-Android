@@ -7,6 +7,7 @@ import android.app.DialogFragment;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.os.Bundle;
+import android.support.annotation.Nullable;
 import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -22,7 +23,7 @@ public class PinDialogFragment extends DialogFragment
 {
 	public static interface OnDialogConfirmed
 	{
-		public void onDialogConfirmed(String input);
+		public void onDialogConfirmed(@Nullable String input);
 	}
 
 	public static interface OnDialogCancelled

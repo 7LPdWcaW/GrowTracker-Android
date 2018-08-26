@@ -244,7 +244,7 @@ public class SettingsFragment extends PreferenceFragment implements Preference.O
 							{
 								@Override public void onDialogConfirmed(String input)
 								{
-									if (input.equals(pin.toString()))
+									if (pin.toString().equals(String.valueOf(input)))
 									{
 										// Encrypt plant data
 										PreferenceManager.getDefaultSharedPreferences(getActivity()).edit()
