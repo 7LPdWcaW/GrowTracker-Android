@@ -22,6 +22,13 @@
 	<item android:title="Additional" android:orderInCategory="3">
 		<menu>
 			<item
+				android:id="@+id/feeding_schedule"
+				android:title="@string/menu_feeding_schedule"
+				android:checkable="false"
+				android:orderInCategory="3"
+			/>
+
+			<item
 				android:id="@+id/settings"
 				android:title="Settings"
 				android:checkable="false"

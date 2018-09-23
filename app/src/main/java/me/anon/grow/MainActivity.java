@@ -234,6 +234,11 @@ public class MainActivity extends BaseActivity implements NavigationView.OnNavig
 			Intent settings = new Intent(this, SettingsActivity.class);
 			startActivity(settings);
 		}
+		else if (item.getItemId() == R.id.feeding_schedule)
+		{
+			Intent schedule = new Intent(this, FeedingSchedule.class);
+			startActivity(schedule);
+		}
 		else if (item.getItemId() == R.id.all)
 		{
 			selectedItem = item.getItemId();
