@@ -117,7 +117,7 @@ public class MainActivity extends BaseActivity implements NavigationView.OnNavig
 		for (int index = 0, gardensSize = gardens.size(); index < gardensSize; index++)
 		{
 			Garden garden = gardens.get(index);
-			navigation.getMenu().add(R.id.gardens, 100 + index, 1, garden.getName()).setCheckable(true);
+			navigation.getMenu().findItem(R.id.garden_menu).getSubMenu().add(R.id.garden_menu, 100 + index, 1, garden.getName()).setCheckable(true);
 		}
 
 		MenuItem item = navigation.getMenu().findItem(selectedItem);
@@ -241,6 +241,8 @@ public class MainActivity extends BaseActivity implements NavigationView.OnNavig
 		}
 		else if (item.getItemId() >= 100 && item.getItemId() < Integer.MAX_VALUE)
 		{
+			navigation.getMenu().findItem(R.id.garden_menu).getSubMenu().findItem(R.id.all).setChecked(false);
+
 			selectedItem = item.getItemId();
 			int gardenIndex = item.getItemId() - 100;
 			getFragmentManager().beginTransaction().replace(R.id.fragment_holder, PlantListFragment.newInstance(GardenManager.getInstance().getGardens().get(gardenIndex)), TAG_FRAGMENT).commit();
