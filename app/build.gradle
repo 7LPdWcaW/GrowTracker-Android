@@ -1,8 +1,9 @@
 apply plugin: 'com.android.application'
 apply plugin: 'kotlin-android'
+apply plugin: 'kotlin-android-extensions'
 
 repositories {
-   maven { url 'https://dl.bintray.com/kennyc1012/maven' }
+	maven { url 'https://dl.bintray.com/kennyc1012/maven' }
 	mavenCentral()
 }
 
@@ -36,7 +37,7 @@ android {
 			buildConfigField "Boolean", "DISCRETE", "false"
 
 			manifestPlaceholders = [
-				"appType": "original"
+					"appType": "original"
 			]
 
 			resValue "string", "app_name", "GrowTracker"
@@ -47,7 +48,7 @@ android {
 			buildConfigField "Boolean", "DISCRETE", "true"
 
 			manifestPlaceholders = [
-				"appType": "discrete"
+					"appType": "discrete"
 			]
 
 			resValue "string", "app_name", "Tracker"
@@ -82,5 +83,9 @@ dependencies {
 	implementation 'com.davemorrissey.labs:subsampling-scale-image-view:3.6.0'
 	implementation 'net.lingala.zip4j:zip4j:1.3.2'
 
-	api "org.jetbrains.kotlin:kotlin-stdlib-jre7:$kotlin_version"
+	api "org.jetbrains.kotlin:kotlin-stdlib-jdk7:$kotlin_version"
+}
+
+androidExtensions {
+	experimental = true
 }
