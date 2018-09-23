@@ -6,9 +6,9 @@ import kotlinx.android.synthetic.main.fragment_holder.*
 import me.anon.grow.fragment.FeedingScheduleListFragment
 
 /**
- * // TODO: Add class description
+ * Activity holder for feeding schedule list
  */
-class FeedingSchedule : AppCompatActivity()
+class FeedingScheduleActivity : AppCompatActivity()
 {
 	companion object
 	{

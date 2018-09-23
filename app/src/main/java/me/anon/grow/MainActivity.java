@@ -236,7 +236,7 @@ public class MainActivity extends BaseActivity implements NavigationView.OnNavig
 		}
 		else if (item.getItemId() == R.id.feeding_schedule)
 		{
-			Intent schedule = new Intent(this, FeedingSchedule.class);
+			Intent schedule = new Intent(this, FeedingScheduleActivity.class);
 			startActivity(schedule);
 		}
 		else if (item.getItemId() == R.id.all)

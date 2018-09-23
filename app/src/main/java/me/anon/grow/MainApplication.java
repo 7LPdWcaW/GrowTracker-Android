@@ -29,6 +29,7 @@ import me.anon.controller.receiver.BackupService;
 import me.anon.lib.handler.ExceptionHandler;
 import me.anon.lib.manager.GardenManager;
 import me.anon.lib.manager.PlantManager;
+import me.anon.lib.manager.ScheduleManager;
 import me.anon.lib.stream.DecryptInputStream;
 
 /**
@@ -57,6 +58,7 @@ public class MainApplication extends Application
 
 		PlantManager.getInstance().initialise(this);
 		GardenManager.getInstance().initialise(this);
+		ScheduleManager.instance.initialise(this);
 		registerBackupService();
 
 		displayImageOptions = new DisplayImageOptions.Builder()
