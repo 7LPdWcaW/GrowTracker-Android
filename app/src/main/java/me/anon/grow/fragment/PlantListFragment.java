@@ -29,7 +29,6 @@ import com.kenny.snackbar.SnackBarListener;
 import java.util.ArrayList;
 import java.util.Arrays;
 
-import lombok.Setter;
 import me.anon.controller.adapter.PlantAdapter;
 import me.anon.controller.adapter.SimpleItemTouchHelperCallback;
 import me.anon.grow.AddPlantActivity;
@@ -60,7 +59,12 @@ import me.anon.model.PlantStage;
 public class PlantListFragment extends Fragment
 {
 	private PlantAdapter adapter;
-	@Setter private Garden garden;
+	private Garden garden;
+
+	public void setGarden(Garden garden)
+	{
+		this.garden = garden;
+	}
 
 	public static PlantListFragment newInstance(@Nullable Garden garden)
 	{

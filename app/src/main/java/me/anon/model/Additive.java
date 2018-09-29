@@ -1,10 +1,5 @@
 package me.anon.model;
 
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
-import lombok.experimental.Accessors;
-
 /**
  * // TODO: Add class description
  *
@@ -12,11 +7,28 @@ import lombok.experimental.Accessors;
  * @documentation // TODO Reference flow doc
  * @project GrowTracker
  */
-@Getter @Setter
-@Accessors(prefix = {"m", ""}, chain = true)
-@NoArgsConstructor
 public class Additive
 {
 	private Double amount;
 	private String description;
+
+	public Double getAmount()
+	{
+		return amount;
+	}
+
+	public void setAmount(Double amount)
+	{
+		this.amount = amount;
+	}
+
+	public String getDescription()
+	{
+		return description;
+	}
+
+	public void setDescription(String description)
+	{
+		this.description = description;
+	}
 }

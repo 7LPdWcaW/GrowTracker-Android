@@ -64,10 +64,6 @@ android {
 }
 
 dependencies {
-	annotationProcessor 'org.projectlombok:lombok:1.16.20'
-	compileOnly 'org.projectlombok:lombok:1.16.20'
-	compileOnly 'org.glassfish:javax.annotation:10.0-b28'
-
 	implementation 'com.android.support:appcompat-v7:27.1.1'
 	implementation 'com.android.support:recyclerview-v7:27.1.1'
 	implementation 'com.android.support:cardview-v7:27.1.1'

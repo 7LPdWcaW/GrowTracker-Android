@@ -1,10 +1,8 @@
 package me.anon.grow;
 
 import android.os.Bundle;
-import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 
-import lombok.experimental.Accessors;
 import me.anon.grow.fragment.StatisticsFragment;
 import me.anon.lib.Views;
 
@@ -16,7 +14,6 @@ import me.anon.lib.Views;
  * @project GrowTracker
  */
 @Views.Injectable
-@Accessors(prefix = {"m", ""}, chain = true)
 public class StatisticsActivity extends BaseActivity
 {
 	private static final String TAG_FRAGMENT = "current_fragment";

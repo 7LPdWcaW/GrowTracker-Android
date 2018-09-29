@@ -8,15 +8,13 @@ import android.os.Environment;
 import java.io.File;
 import java.io.FilenameFilter;
 
-import lombok.Getter;
-
 public class ExceptionHandler
 {
 	public static String VERSION = "";
 	public static String VERSION_CODE = "";
 	public static String PACKAGE_NAME = "";
 
-	@Getter private String filesPath = "/";
+	private String filesPath = "/";
 	private String[] stackTraceFileList = null;
 
 	private static ExceptionHandler instance;
@@ -36,6 +34,12 @@ public class ExceptionHandler
 
 		return instance;
 	}
+
+	public String getFilesPath()
+	{
+		return filesPath;
+	}
+
 	/**
 	 * @param context
 	 */

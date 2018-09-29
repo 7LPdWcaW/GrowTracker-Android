@@ -10,7 +10,6 @@ import android.text.TextUtils;
 import android.view.View;
 import android.widget.TextView;
 
-import lombok.Setter;
 import me.anon.grow.R;
 import me.anon.lib.Unit;
 import me.anon.lib.Views;
@@ -35,7 +34,12 @@ public class AddAdditiveDialogFragment extends DialogFragment
 	private Additive additive;
 	@Views.InjectView(R.id.description) private TextView description;
 	@Views.InjectView(R.id.amount) private TextView amount;
-	@Setter private OnAdditiveSelectedListener onAdditiveSelectedListener;
+	private OnAdditiveSelectedListener onAdditiveSelectedListener;
+
+	public void setOnAdditiveSelectedListener(OnAdditiveSelectedListener onAdditiveSelectedListener)
+	{
+		this.onAdditiveSelectedListener = onAdditiveSelectedListener;
+	}
 
 	@SuppressLint("ValidFragment")
 	public AddAdditiveDialogFragment(Additive additive)

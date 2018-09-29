@@ -14,7 +14,6 @@ import android.view.View;
 import android.view.WindowManager;
 import android.widget.EditText;
 
-import lombok.Setter;
 import me.anon.grow.R;
 import me.anon.lib.Views;
 
@@ -33,9 +32,24 @@ public class PinDialogFragment extends DialogFragment
 
 	@Views.InjectView(R.id.pin) private EditText input;
 
-	@Setter private OnDialogConfirmed onDialogConfirmed;
-	@Setter private OnDialogCancelled onDialogCancelled;
-	@Setter private String title = "Pin";
+	private OnDialogConfirmed onDialogConfirmed;
+	private OnDialogCancelled onDialogCancelled;
+	private String title = "Pin";
+
+	public void setOnDialogConfirmed(OnDialogConfirmed onDialogConfirmed)
+	{
+		this.onDialogConfirmed = onDialogConfirmed;
+	}
+
+	public void setOnDialogCancelled(OnDialogCancelled onDialogCancelled)
+	{
+		this.onDialogCancelled = onDialogCancelled;
+	}
+
+	public void setTitle(String title)
+	{
+		this.title = title;
+	}
 
 	@SuppressLint("ValidFragment")
 	public PinDialogFragment(){}

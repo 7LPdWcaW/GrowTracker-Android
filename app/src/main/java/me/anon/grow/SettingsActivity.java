@@ -3,7 +3,6 @@ package me.anon.grow;
 import android.os.Bundle;
 import android.support.v7.widget.Toolbar;
 
-import lombok.experimental.Accessors;
 import me.anon.grow.fragment.SettingsFragment;
 import me.anon.lib.Views;
 
@@ -14,7 +13,6 @@ import me.anon.lib.Views;
  * @documentation // TODO Reference flow doc
  * @project GrowTracker
  */
-@Accessors(prefix = {"m", ""}, chain = true)
 public class SettingsActivity extends BaseActivity
 {
 	private static final String TAG_FRAGMENT = "current_fragment";
