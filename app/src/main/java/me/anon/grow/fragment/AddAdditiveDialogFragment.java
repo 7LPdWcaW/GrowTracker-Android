@@ -8,6 +8,8 @@ import android.content.DialogInterface;
 import android.os.Bundle;
 import android.text.TextUtils;
 import android.view.View;
+import android.view.Window;
+import android.view.WindowManager;
 import android.widget.TextView;
 
 import me.anon.grow.R;
@@ -91,6 +93,9 @@ public class AddAdditiveDialogFragment extends DialogFragment
 					dialog.dismiss();
 				}
 			}).create();
+
+		dialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
+		dialog.getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_ADJUST_RESIZE);
 
 		dialog.setOnShowListener(new DialogInterface.OnShowListener()
 		{

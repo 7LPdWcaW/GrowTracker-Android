@@ -1,5 +1,7 @@
 package me.anon.model;
 
+import android.support.annotation.Nullable;
+
 /**
  * // TODO: Add class description
  *
@@ -39,5 +41,19 @@ public enum PlantStage
 		}
 
 		return names;
+	}
+
+	@Nullable
+	public static PlantStage valueOfPrintString(String printString)
+	{
+		for (PlantStage plantStage : values())
+		{
+			if (plantStage.printString.equals(printString))
+			{
+				return plantStage;
+			}
+		}
+
+		return null;
 	}
 }

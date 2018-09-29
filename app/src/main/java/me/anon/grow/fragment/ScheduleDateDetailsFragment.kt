@@ -6,6 +6,7 @@ import android.text.TextUtils
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.AdapterView
 import android.widget.ArrayAdapter
 import android.widget.TextView
 import kotlinx.android.synthetic.main.schedule_date_details_view.*
@@ -45,14 +46,34 @@ class ScheduleDateDetailsFragment : Fragment()
 	{
 		super.onActivityCreated(savedInstanceState)
 
-		if (scheduleIndex < 0 || scheduleIndex >= ScheduleManager.instance.schedules.size)
-		{
-			activity.finish()
-			return
-		}
-
 		to_stage.adapter = ArrayAdapter<String>(activity, android.R.layout.simple_list_item_1, PlantStage.values().map { it.printString }.toTypedArray())
 		from_stage.adapter = ArrayAdapter<String>(activity, android.R.layout.simple_list_item_1, PlantStage.values().map { it.printString }.toTypedArray())
+
+		from_stage.onItemSelectedListener = object: AdapterView.OnItemSelectedListener
+		{
+			override fun onNothingSelected(parent: AdapterView<*>?){}
+
+			override fun onItemSelected(parent: AdapterView<*>?, view: View?, position: Int, id: Long)
+			{
+				if (to_stage.selectedItemPosition < position)
+				{
+					to_stage.setSelection(position)
+				}
+			}
+		}
+
+		to_stage.onItemSelectedListener = object: AdapterView.OnItemSelectedListener
+		{
+			override fun onNothingSelected(parent: AdapterView<*>?){}
+
+			override fun onItemSelected(parent: AdapterView<*>?, view: View?, position: Int, id: Long)
+			{
+				if (from_stage.selectedItemPosition > position)
+				{
+					from_stage.setSelection(position)
+				}
+			}
+		}
 
 		if (dateIndex > -1)
 		{
@@ -61,17 +82,29 @@ class ScheduleDateDetailsFragment : Fragment()
 				from_stage.setSelection(this.stageRange[1].ordinal)
 				to_date.setText(this.dateRange[0].toString())
 				from_date.setText(this.dateRange[1].toString())
-				populateAdditives()
 			}
 		}
 
+		populateAdditives()
+
 		fab_complete.setOnClickListener {
+			val fromDate = from_date.text.toString().toInt()
+			val toDate = to_date.text.toString().toInt()
+			val fromStage = PlantStage.valueOfPrintString(to_stage.selectedItem as String)!!
+			val toStage = PlantStage.valueOfPrintString(from_stage.selectedItem as String)!!
+
+			if (fromDate > toDate && fromStage.ordinal ?: -1 <= toStage.ordinal ?: -1)
+			{
+				to_date.error = "Date can not be before from date"
+				return@setOnClickListener
+			}
+
 			when (dateIndex)
 			{
 				-1 -> {
 					val date: FeedingScheduleDate = FeedingScheduleDate(
-						dateRange = arrayOf<Int>(from_date.text.toString().toInt(), if (to_date.text.isEmpty()) from_date.text.toString().toInt() else to_date.text.toString().toInt()),
-						stageRange = arrayOf<PlantStage>(PlantStage.valueOf(to_stage.selectedItem as String), PlantStage.valueOf(from_stage.selectedItem as String)),
+						dateRange = arrayOf<Int>(fromDate, if (to_date.text.isEmpty()) fromDate else toDate),
+						stageRange = arrayOf<PlantStage>(fromStage, toStage),
 						additives = additives
 					)
 
@@ -79,8 +112,8 @@ class ScheduleDateDetailsFragment : Fragment()
 				}
 				else -> {
 					ScheduleManager.instance.schedules[scheduleIndex].schedules[dateIndex].apply {
-						this.dateRange = arrayOf<Int>(from_date.text.toString().toInt(), if (to_date.text.isEmpty()) from_date.text.toString().toInt() else to_date.text.toString().toInt())
-						this.stageRange = arrayOf<PlantStage>(PlantStage.valueOf(to_stage.selectedItem as String), PlantStage.valueOf(from_stage.selectedItem as String))
+						this.dateRange = arrayOf<Int>(fromDate, if (to_date.text.isEmpty()) fromDate else toDate)
+						this.stageRange = arrayOf<PlantStage>(fromStage, toStage)
 						this.additives = this@ScheduleDateDetailsFragment.additives
 					}
 				}
@@ -106,12 +139,12 @@ class ScheduleDateDetailsFragment : Fragment()
 			additiveStub.setOnClickListener { view -> onNewAdditiveClick(view) }
 			additive_container.addView(additiveStub, additive_container.childCount - 1)
 		}
+
+		new_additive.setOnClickListener { onNewAdditiveClick(it) }
 	}
 
 	private fun onNewAdditiveClick(view: View)
 	{
-		activity.currentFocus.clearFocus()
-
 		val currentTag = view.tag
 		val fm = fragmentManager
 		val addAdditiveDialogFragment = AddAdditiveDialogFragment(if (view.tag is Additive) view.tag as Additive else null)
@@ -162,8 +195,8 @@ class ScheduleDateDetailsFragment : Fragment()
 					}
 				}
 
-				additiveStub.requestFocus()
-				additiveStub.requestFocusFromTouch()
+				(additiveStub.parent as View).requestFocus()
+				(additiveStub.parent as View).requestFocusFromTouch()
 			}
 
 			override fun onAdditiveDeleteRequested(additive: Additive)

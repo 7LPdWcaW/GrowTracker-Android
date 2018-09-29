@@ -16,7 +16,7 @@ class FeedingScheduleAdapter : RecyclerView.Adapter<ScheduleHolder>()
 		set(value)
 		{
 			items.clear()
-			items.addAll(field)
+			items.addAll(value)
 			notifyDataSetChanged()
 		}
 
