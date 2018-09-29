@@ -9,6 +9,7 @@ import java.util.*
 class FeedingSchedule(
 	val id: String = UUID.randomUUID().toString(),
 	var name: String = "",
+	var description: String = "",
 	var schedules: ArrayList<FeedingScheduleDate> = arrayListOf()
 )
 
