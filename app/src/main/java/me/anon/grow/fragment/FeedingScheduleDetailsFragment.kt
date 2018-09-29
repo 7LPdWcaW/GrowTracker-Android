@@ -1,12 +1,14 @@
 package me.anon.grow.fragment
 
 import android.app.Fragment
+import android.content.Intent
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import kotlinx.android.synthetic.main.schedule_details_view.*
 import me.anon.grow.R
+import me.anon.grow.ScheduleDateDetailsActivity
 import me.anon.lib.manager.ScheduleManager
 import me.anon.model.FeedingSchedule
 import me.anon.model.FeedingScheduleDate
@@ -41,8 +43,9 @@ class FeedingScheduleDetailsFragment : Fragment()
 			schedules = ScheduleManager.instance.schedules[scheduleIndex].schedules
 			name.setText(ScheduleManager.instance.schedules[scheduleIndex].name)
 			description.setText(ScheduleManager.instance.schedules[scheduleIndex].description)
-			populateSchedules()
 		}
+
+		populateSchedules()
 
 		fab_complete.setOnClickListener {
 			when (scheduleIndex)
@@ -54,7 +57,7 @@ class FeedingScheduleDetailsFragment : Fragment()
 						schedules = schedules
 					)
 
-					ScheduleManager.instance.schedules.add(schedule)
+					ScheduleManager.instance.insert(schedule)
 				}
 				else -> {
 					ScheduleManager.instance.schedules[scheduleIndex].apply {
@@ -64,7 +67,26 @@ class FeedingScheduleDetailsFragment : Fragment()
 					}
 				}
 			}
+
+			activity.finish()
 		}
+	}
+
+	public fun onBackPressed(): Boolean
+	{
+		if (scheduleIndex > -1)
+		{
+			with (ScheduleManager.instance.schedules[scheduleIndex])
+			{
+				if (name.isEmpty() && schedules.isEmpty())
+				{
+					ScheduleManager.instance.schedules.removeAt(scheduleIndex)
+					return true
+				}
+			}
+		}
+
+		return true
 	}
 
 	/**
@@ -72,6 +94,17 @@ class FeedingScheduleDetailsFragment : Fragment()
 	 */
 	private fun populateSchedules()
 	{
+		new_schedule.setOnClickListener {
+			if (scheduleIndex < 0)
+			{
+				ScheduleManager.instance.insert(FeedingSchedule())
+				scheduleIndex = ScheduleManager.instance.schedules.size - 1
+			}
 
+			startActivity(Intent(it.context, ScheduleDateDetailsActivity::class.java).also {
+				it.putExtra("schedule_index", scheduleIndex)
+				it.putExtra("date_index", -1)
+			})
+		}
 	}
 }

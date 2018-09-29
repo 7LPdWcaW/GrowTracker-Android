@@ -24,7 +24,13 @@ class ScheduleDateDetailsActivity : AppCompatActivity()
 
 		if (fragmentManager.findFragmentByTag(TAG_FRAGMENT) == null)
 		{
-			fragmentManager.beginTransaction().replace(R.id.fragment_holder, ScheduleDateDetailsFragment.newInstance(intent.extras.getInt("feeding_index", -1), intent.extras.getInt("date_index", -1)), TAG_FRAGMENT).commit()
+			fragmentManager.beginTransaction().replace(
+				R.id.fragment_holder,
+				ScheduleDateDetailsFragment.newInstance(
+					intent.extras?.getInt("schedule_index", -1) ?: -1,
+					intent.extras?.getInt("date_index", -1) ?: -1),
+				TAG_FRAGMENT
+			).commit()
 		}
 	}
 }

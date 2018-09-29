@@ -23,7 +23,7 @@ class ScheduleHolder(itemView: View) : RecyclerView.ViewHolder(itemView)
 
 		itemView.setOnClickListener {
 			it.context.startActivity(Intent(it.context, FeedingScheduleDetailsActivity::class.java).also {
-				it.putExtra("feeding_index", ScheduleManager.instance.schedules.indexOf(feedingSchedule))
+				it.putExtra("schedule_index", ScheduleManager.instance.schedules.indexOf(feedingSchedule))
 			})
 		}
 	}

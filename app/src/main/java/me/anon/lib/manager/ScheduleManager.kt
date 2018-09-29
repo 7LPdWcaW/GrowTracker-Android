@@ -10,7 +10,6 @@ import me.anon.grow.MainApplication
 import me.anon.lib.helper.EncryptionHelper
 import me.anon.lib.helper.GsonHelper
 import me.anon.model.FeedingSchedule
-import me.anon.model.Garden
 import java.io.File
 import java.util.*
 
@@ -50,7 +49,7 @@ class ScheduleManager private constructor()
 				if (!TextUtils.isEmpty(scheduleData))
 				{
 					schedules.clear()
-					schedules.addAll(GsonHelper.parse<Any>(scheduleData, object : TypeToken<ArrayList<Garden>>(){}.type) as ArrayList<FeedingSchedule>)
+					schedules.addAll(GsonHelper.parse<Any>(scheduleData, object : TypeToken<ArrayList<FeedingSchedule>>(){}.type) as ArrayList<FeedingSchedule>)
 				}
 			}
 			catch (e: JsonSyntaxException)
@@ -80,7 +79,7 @@ class ScheduleManager private constructor()
 
 			if (File("$FILES_DIR/schedules.json").length() == 0L || !File("$FILES_DIR/schedules.json").exists())
 			{
-				Toast.makeText(context, "There was a fatal problem saving the garden data, please backup this data", Toast.LENGTH_LONG).show()
+				Toast.makeText(context, "There was a fatal problem saving the schedule data, please backup this data", Toast.LENGTH_LONG).show()
 				val sendData = GsonHelper.parse(schedules)
 				val share = Intent(Intent.ACTION_SEND)
 				share.type = "text/plain"

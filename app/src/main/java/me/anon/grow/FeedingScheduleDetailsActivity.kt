@@ -24,7 +24,15 @@ class FeedingScheduleDetailsActivity : AppCompatActivity()
 
 		if (fragmentManager.findFragmentByTag(TAG_FRAGMENT) == null)
 		{
-			fragmentManager.beginTransaction().replace(R.id.fragment_holder, FeedingScheduleDetailsFragment.newInstance(intent.extras.getInt("feeding_index", -1)), TAG_FRAGMENT).commit()
+			fragmentManager.beginTransaction().replace(R.id.fragment_holder, FeedingScheduleDetailsFragment.newInstance(intent.extras?.getInt("schedule_index", -1) ?: -1), TAG_FRAGMENT).commit()
+		}
+	}
+
+	override fun onBackPressed()
+	{
+		if ((fragmentManager.findFragmentByTag(TAG_FRAGMENT) as FeedingScheduleDetailsFragment).onBackPressed())
+		{
+			super.onBackPressed()
 		}
 	}
 }
