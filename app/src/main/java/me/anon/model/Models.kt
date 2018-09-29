@@ -1,6 +1,5 @@
 package me.anon.model
 
-import android.util.Range
 import java.util.*
 
 /**
@@ -18,7 +17,7 @@ class FeedingSchedule(
  */
 class FeedingScheduleDate(
 	val id: String = UUID.randomUUID().toString(),
-	var dateRange: Range<Long>,
-	var stageRange: Range<PlantStage>,
+	var dateRange: Array<Int>,
+	var stageRange: Array<PlantStage>,
 	var additives: ArrayList<Additive> = arrayListOf()
 )
