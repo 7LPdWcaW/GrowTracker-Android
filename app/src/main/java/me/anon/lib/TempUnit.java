@@ -6,13 +6,9 @@ import android.preference.PreferenceManager;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
 
-import lombok.AllArgsConstructor;
-import lombok.Getter;
-
 /**
  * Unit class used for measurement input
  */
-@AllArgsConstructor
 public enum TempUnit
 {
 	KELVIN("K")
@@ -55,7 +51,17 @@ public enum TempUnit
 		}
 	};
 
-	@Getter private String label;
+	private String label;
+
+	private TempUnit(String label)
+	{
+		this.label = label;
+	}
+
+	public String getLabel()
+	{
+		return label;
+	}
 
 	private static Double toTwoDecimalPlaces(double input)
 	{

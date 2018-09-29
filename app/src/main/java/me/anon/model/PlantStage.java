@@ -1,7 +1,5 @@
 package me.anon.model;
 
-import lombok.Getter;
-
 /**
  * // TODO: Add class description
  *
@@ -20,7 +18,12 @@ public enum PlantStage
 	CURING("Curing"),
 	HARVESTED("Harvested");
 
-	@Getter private String printString;
+	private String printString;
+
+	public String getPrintString()
+	{
+		return printString;
+	}
 
 	private PlantStage(String name)
 	{

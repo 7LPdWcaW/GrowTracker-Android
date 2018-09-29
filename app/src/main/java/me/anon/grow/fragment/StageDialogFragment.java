@@ -17,7 +17,6 @@ import java.text.DateFormat;
 import java.util.Calendar;
 import java.util.Date;
 
-import lombok.Setter;
 import me.anon.grow.R;
 import me.anon.lib.Views;
 import me.anon.model.PlantStage;
@@ -34,7 +33,12 @@ public class StageDialogFragment extends DialogFragment
 	@Views.InjectView(R.id.actions) private Spinner actionsSpinner;
 	@Views.InjectView(R.id.date) private TextView date;
 
-	@Setter private OnStageUpdated onStageUpdated;
+	private OnStageUpdated onStageUpdated;
+
+	public void setOnStageUpdated(OnStageUpdated onStageUpdated)
+	{
+		this.onStageUpdated = onStageUpdated;
+	}
 
 	private StageChange action;
 	private boolean edit = false;

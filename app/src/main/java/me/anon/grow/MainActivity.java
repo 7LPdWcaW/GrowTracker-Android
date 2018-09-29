@@ -21,8 +21,6 @@ import com.squareup.otto.Subscribe;
 
 import java.util.ArrayList;
 
-import lombok.Getter;
-import lombok.experimental.Accessors;
 import me.anon.grow.fragment.GardenDialogFragment;
 import me.anon.grow.fragment.PlantListFragment;
 import me.anon.lib.Views;
@@ -40,15 +38,19 @@ import me.anon.model.Garden;
  * @project GrowTracker
  */
 @Views.Injectable
-@Accessors(prefix = {"m", ""}, chain = true)
 public class MainActivity extends BaseActivity implements NavigationView.OnNavigationItemSelectedListener
 {
 	private static final String TAG_FRAGMENT = "current_fragment";
 
 	@Views.InjectView(R.id.toolbar) private Toolbar toolbar;
 	@Nullable @Views.InjectView(R.id.drawer_layout) private DrawerLayout drawer;
-	@Getter @Views.InjectView(R.id.navigation_view) private NavigationView navigation;
+	@Views.InjectView(R.id.navigation_view) private NavigationView navigation;
 	private int selectedItem = 0;
+
+	public NavigationView getNavigation()
+	{
+		return navigation;
+	}
 
 	@Override protected void onCreate(Bundle savedInstanceState)
 	{

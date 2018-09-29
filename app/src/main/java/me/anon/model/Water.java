@@ -3,11 +3,6 @@ package me.anon.model;
 import java.util.ArrayList;
 import java.util.List;
 
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
-import lombok.experimental.Accessors;
-
 /**
  * // TODO: Add class description
  *
@@ -15,9 +10,6 @@ import lombok.experimental.Accessors;
  * @documentation // TODO Reference flow doc
  * @project GrowTracker
  */
-@Getter @Setter
-@Accessors(prefix = {"m", ""}, chain = true)
-@NoArgsConstructor
 public class Water extends Action
 {
 	private Double ppm;
@@ -29,4 +21,84 @@ public class Water extends Action
 
 	@Deprecated private Nutrient nutrient;
 	@Deprecated private Double mlpl;
+
+	public void setNutrient(Nutrient nutrient)
+	{
+		this.nutrient = nutrient;
+	}
+
+	public void setMlpl(Double mlpl)
+	{
+		this.mlpl = mlpl;
+	}
+
+	public Nutrient getNutrient()
+	{
+		return nutrient;
+	}
+
+	public Double getMlpl()
+	{
+		return mlpl;
+	}
+
+	public Double getPpm()
+	{
+		return ppm;
+	}
+
+	public void setPpm(Double ppm)
+	{
+		this.ppm = ppm;
+	}
+
+	public Double getPh()
+	{
+		return ph;
+	}
+
+	public void setPh(Double ph)
+	{
+		this.ph = ph;
+	}
+
+	public Double getRunoff()
+	{
+		return runoff;
+	}
+
+	public void setRunoff(Double runoff)
+	{
+		this.runoff = runoff;
+	}
+
+	public Double getAmount()
+	{
+		return amount;
+	}
+
+	public void setAmount(Double amount)
+	{
+		this.amount = amount;
+	}
+
+	public Double getTemp()
+	{
+		return temp;
+	}
+
+	public void setTemp(Double temp)
+	{
+		this.temp = temp;
+	}
+
+	public List<Additive> getAdditives()
+	{
+		return additives;
+	}
+
+	public void setAdditives(List<Additive> additives)
+	{
+		this.additives = additives;
+	}
 }
