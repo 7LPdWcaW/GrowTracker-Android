@@ -72,6 +72,6 @@ class FeedingScheduleDetailsFragment : Fragment()
 	 */
 	private fun populateSchedules()
 	{
-		
+
 	}
 }
