@@ -2,7 +2,9 @@ package me.anon.grow.fragment
 
 import android.app.Fragment
 import android.os.Bundle
+import android.text.Editable
 import android.text.TextUtils
+import android.text.TextWatcher
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -75,21 +77,40 @@ class ScheduleDateDetailsFragment : Fragment()
 			}
 		}
 
+		from_date.addTextChangedListener(object: TextWatcher
+		{
+			override fun afterTextChanged(s: Editable?){}
+			override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int){}
+
+			override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int)
+			{
+				if (to_date.text.isEmpty()) to_date.setText(s)
+			}
+		})
+
 		if (dateIndex > -1)
 		{
 			ScheduleManager.instance.schedules[scheduleIndex].schedules[dateIndex].apply {
-				to_stage.setSelection(this.stageRange[0].ordinal)
-				from_stage.setSelection(this.stageRange[1].ordinal)
-				to_date.setText(this.dateRange[0].toString())
-				from_date.setText(this.dateRange[1].toString())
+				from_stage.setSelection(this.stageRange[0].ordinal)
+				to_stage.setSelection(this.stageRange[1].ordinal)
+				from_date.setText(this.dateRange[0].toString())
+				to_date.setText(this.dateRange[1].toString())
+
+				this@ScheduleDateDetailsFragment.additives = additives
 			}
 		}
 
 		populateAdditives()
 
 		fab_complete.setOnClickListener {
+			if (from_date.text.isEmpty())
+			{
+				from_date.error = "From date is required"
+				return@setOnClickListener
+			}
+
 			val fromDate = from_date.text.toString().toInt()
-			val toDate = to_date.text.toString().toInt()
+			val toDate = if (to_date.text.isEmpty()) fromDate else to_date.text.toString().toInt()
 			val fromStage = PlantStage.valueOfPrintString(to_stage.selectedItem as String)!!
 			val toStage = PlantStage.valueOfPrintString(from_stage.selectedItem as String)!!
 
@@ -195,8 +216,8 @@ class ScheduleDateDetailsFragment : Fragment()
 					}
 				}
 
-				(additiveStub.parent as View).requestFocus()
-				(additiveStub.parent as View).requestFocusFromTouch()
+				additiveStub.requestFocus()
+				additiveStub.requestFocusFromTouch()
 			}
 
 			override fun onAdditiveDeleteRequested(additive: Additive)
