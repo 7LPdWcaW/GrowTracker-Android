@@ -8,7 +8,7 @@ import android.support.v7.widget.LinearLayoutManager
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.LinearLayout.HORIZONTAL
+import android.widget.LinearLayout.VERTICAL
 import kotlinx.android.synthetic.main.schedule_list_view.*
 import me.anon.controller.adapter.FeedingScheduleAdapter
 import me.anon.grow.FeedingScheduleDetailsActivity
@@ -32,7 +32,14 @@ class FeedingScheduleListFragment : Fragment()
 		adapter.items = ScheduleManager.instance.schedules
 		recycler_view.adapter = adapter
 		recycler_view.layoutManager = LinearLayoutManager(activity)
-		recycler_view.addItemDecoration(DividerItemDecoration(activity, HORIZONTAL))
+		recycler_view.addItemDecoration(DividerItemDecoration(activity, VERTICAL))
+
+		adapter.onDeleteCallback = { schedule ->
+			ScheduleManager.instance.schedules.remove(schedule)
+			ScheduleManager.instance.save()
+			adapter.items = ScheduleManager.instance.schedules
+			adapter.notifyDataSetChanged()
+		}
 
 		fab_add.setOnClickListener {
 			startActivity(Intent(activity, FeedingScheduleDetailsActivity::class.java))

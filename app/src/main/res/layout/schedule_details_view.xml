@@ -65,7 +65,7 @@
 							<EditText
 								android:layout_width="match_parent"
 								android:layout_height="wrap_content"
-								android:id="@+id/name"
+								android:id="@+id/title"
 								android:hint="@string/schedule_name_hint"
 								android:inputType="textCapWords"
 								android:layout_gravity="bottom"

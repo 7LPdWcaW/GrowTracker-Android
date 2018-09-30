@@ -47,7 +47,7 @@ class FeedingScheduleDetailsFragment : Fragment()
 		if (scheduleIndex > -1)
 		{
 			schedules = ScheduleManager.instance.schedules[scheduleIndex].schedules
-			name.setText(ScheduleManager.instance.schedules[scheduleIndex].name)
+			title.setText(ScheduleManager.instance.schedules[scheduleIndex].name)
 			description.setText(ScheduleManager.instance.schedules[scheduleIndex].description)
 		}
 
@@ -58,7 +58,7 @@ class FeedingScheduleDetailsFragment : Fragment()
 			{
 				-1 -> {
 					val schedule: FeedingSchedule = FeedingSchedule(
-						name = name.text.toString(),
+						name = title.text.toString(),
 						description = description.text.toString(),
 						schedules = schedules
 					)
@@ -67,10 +67,12 @@ class FeedingScheduleDetailsFragment : Fragment()
 				}
 				else -> {
 					ScheduleManager.instance.schedules[scheduleIndex].apply {
-						name = this@FeedingScheduleDetailsFragment.name.text.toString()
+						name = this@FeedingScheduleDetailsFragment.title.text.toString()
 						description = this@FeedingScheduleDetailsFragment.description.text.toString()
 						schedules = this@FeedingScheduleDetailsFragment.schedules
 					}
+
+					ScheduleManager.instance.save()
 				}
 			}
 
@@ -100,6 +102,12 @@ class FeedingScheduleDetailsFragment : Fragment()
 	 */
 	private fun populateSchedules()
 	{
+		schedules.sortWith(Comparator { a, b ->
+			if (a.dateRange[0] < b.dateRange[0] && a.stageRange[0].ordinal < b.stageRange[0].ordinal) -1
+			else if (a.dateRange[0] > b.dateRange[0] && a.stageRange[0].ordinal > b.stageRange[0].ordinal) 1
+			else 0
+		})
+
 		schedules_container.removeViews(0, schedules_container.indexOfChild(new_schedule))
 		schedules.forEachIndexed { index, schedule ->
 			val feedingView = LayoutInflater.from(activity).inflate(R.layout.feeding_date_stub, schedules_container, false)
