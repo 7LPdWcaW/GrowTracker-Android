@@ -12,9 +12,11 @@ import android.view.LayoutInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.TextView;
 
 import com.esotericsoftware.kryo.Kryo;
 
+import java.io.File;
 import java.text.DateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
@@ -37,6 +39,7 @@ import me.anon.model.Plant;
 import me.anon.model.StageChange;
 import me.anon.model.Water;
 import me.anon.view.ActionHolder;
+import me.anon.view.ImageActionHolder;
 
 import static me.anon.lib.TempUnit.CELCIUS;
 import static me.anon.lib.Unit.ML;
@@ -48,7 +51,7 @@ import static me.anon.lib.Unit.ML;
  * @documentation // TODO Reference flow doc
  * @project GrowTracker
  */
-public class ActionAdapter extends RecyclerView.Adapter<ActionHolder> implements ItemTouchHelperAdapter
+public class ActionAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> implements ItemTouchHelperAdapter
 {
 	public interface OnActionSelectListener
 	{
@@ -65,6 +68,19 @@ public class ActionAdapter extends RecyclerView.Adapter<ActionHolder> implements
 	private TempUnit tempUnit;
 	private boolean usingEc = false;
 
+	/**
+	 * Dummy image action placeholder class
+	 */
+	private static class ImageAction extends Action
+	{
+		public ArrayList<String> images = new ArrayList<>();
+
+		@Override public long getDate()
+		{
+			return getImageDate(images.get(images.size() - 1));
+		}
+	}
+
 	public void setOnActionSelectListener(OnActionSelectListener onActionSelectListener)
 	{
 		this.onActionSelectListener = onActionSelectListener;
@@ -77,6 +93,12 @@ public class ActionAdapter extends RecyclerView.Adapter<ActionHolder> implements
 
 	public List<Action> getActions()
 	{
+		ArrayList<Action> actions = new ArrayList<>();
+		for (Object item : this.actions)
+		{
+			if (item.getClass() != ImageAction.class) actions.add((Action)item);
+		}
+
 		return actions;
 	}
 
@@ -98,55 +120,340 @@ public class ActionAdapter extends RecyclerView.Adapter<ActionHolder> implements
 	public void setActions(Plant plant, List<Action> actions)
 	{
 		this.plant = plant;
-		this.actions = actions;
+		this.actions = new ArrayList<>();
+
+		ArrayList<String> addedImages = new ArrayList<>();
+		Collections.reverse(actions);
+		for (Action item : actions)
+		{
+			ArrayList<String> groupedImages = new ArrayList<>();
+			for (String image : plant.getImages())
+			{
+				long imageDate = getImageDate(image);
+
+				if (imageDate <= item.getDate() && !addedImages.contains(image))
+				{
+					groupedImages.add(image);
+					addedImages.add(image);
+				}
+			}
+
+			if (!groupedImages.isEmpty())
+			{
+				ImageAction imageAction = new ImageAction();
+				imageAction.images = groupedImages;
+				this.actions.add(imageAction);
+			}
+
+			this.actions.add(item);
+		}
+
+		if (addedImages.size() != plant.getImages().size())
+		{
+			ArrayList<String> remainingImages = new ArrayList<>(plant.getImages());
+			remainingImages.removeAll(addedImages);
+
+			ImageAction imageAction = new ImageAction();
+			imageAction.images = remainingImages;
+			this.actions.add(imageAction);
+		}
+
+		Collections.reverse(this.actions);
 	}
 
-	@Override public ActionHolder onCreateViewHolder(ViewGroup viewGroup, int i)
+	private static long getImageDate(String image)
 	{
+		File currentImage = new File(image);
+		long fileDate = Long.parseLong(currentImage.getName().replaceAll("[^0-9]", ""));
+
+		if (fileDate == 0)
+		{
+			fileDate = currentImage.lastModified();
+		}
+
+		return fileDate;
+	}
+
+	@Override public int getItemViewType(int position)
+	{
+		if (actions.get(position).getClass() == ImageAction.class)
+		{
+			return 2;
+		}
+
+		return 1;
+	}
+
+	@Override public RecyclerView.ViewHolder onCreateViewHolder(ViewGroup viewGroup, int viewType)
+	{
+		if (viewType == 2)
+		{
+			return new ImageActionHolder(this, LayoutInflater.from(viewGroup.getContext()).inflate(R.layout.action_image, viewGroup, false));
+		}
+
 		return new ActionHolder(LayoutInflater.from(viewGroup.getContext()).inflate(R.layout.action_item, viewGroup, false));
 	}
 
-	@Override public void onBindViewHolder(final ActionHolder viewHolder, final int i)
+	@Override public void onBindViewHolder(final RecyclerView.ViewHolder vh, final int index)
 	{
-		final Action action = actions.get(i);
+		final Action action = actions.get(index);
+		DateFormat dateFormat = android.text.format.DateFormat.getDateFormat(vh.itemView.getContext());
+		DateFormat timeFormat = android.text.format.DateFormat.getTimeFormat(vh.itemView.getContext());
+		TextView dateDay = null;
+		TextView stageDay = null;
 
-		if (measureUnit == null)
+		if (vh instanceof ImageActionHolder)
 		{
-			measureUnit = Unit.getSelectedMeasurementUnit(viewHolder.itemView.getContext());
+			final ImageActionHolder viewHolder = (ImageActionHolder)vh;
+			viewHolder.bind(((ImageAction)action).images);
+			dateDay = viewHolder.getDateDay();
+			stageDay = viewHolder.getStageDay();
+		}
+		else if (vh instanceof ActionHolder)
+		{
+			final ActionHolder viewHolder = (ActionHolder)vh;
+
+			if (measureUnit == null)
+			{
+				measureUnit = Unit.getSelectedMeasurementUnit(viewHolder.itemView.getContext());
+			}
+
+			if (deliveryUnit == null)
+			{
+				deliveryUnit = Unit.getSelectedDeliveryUnit(viewHolder.itemView.getContext());
+			}
+
+			if (tempUnit == null)
+			{
+				tempUnit = TempUnit.getSelectedTemperatureUnit(viewHolder.itemView.getContext());
+			}
+
+			usingEc = PreferenceManager.getDefaultSharedPreferences(viewHolder.itemView.getContext()).getBoolean("tds_ec", false);
+
+			if (action == null) return;
+
+			dateDay = viewHolder.getDateDay();
+			stageDay = viewHolder.getStageDay();
+
+			Date actionDate = new Date(action.getDate());
+			Calendar actionCalendar = GregorianCalendar.getInstance();
+			actionCalendar.setTime(actionDate);
+			String fullDateStr = dateFormat.format(actionDate) + " " + timeFormat.format(actionDate);
+			String dateStr = "<b>" + new DateRenderer().timeAgo(action.getDate()).formattedDate + "</b> ago";
+
+			if (index > 0)
+			{
+				long difference = actions.get(index - 1).getDate() - action.getDate();
+				int days = (int)Math.round(((double)difference / 60d / 60d / 24d / 1000d));
+
+				dateStr += " (-" + days + "d)";
+			}
+
+			viewHolder.getFullDate().setText(Html.fromHtml(fullDateStr));
+			viewHolder.getDate().setText(Html.fromHtml(dateStr));
+			viewHolder.getSummary().setVisibility(View.GONE);
+			viewHolder.getCard().setCardBackgroundColor(0xffffffff);
+
+			String summary = "";
+			if (action.getClass() == Water.class)
+			{
+				viewHolder.getCard().setCardBackgroundColor(0x9ABBDEFB);
+				viewHolder.getName().setText("Watered");
+				StringBuilder waterStr = new StringBuilder();
+
+				if (((Water)action).getPh() != null)
+				{
+					waterStr.append("<b>In pH: </b>");
+					waterStr.append(((Water)action).getPh());
+					waterStr.append(", ");
+				}
+
+				if (((Water)action).getRunoff() != null)
+				{
+					waterStr.append("<b>Out pH: </b>");
+					waterStr.append(((Water)action).getRunoff());
+					waterStr.append(", ");
+				}
+
+				summary += waterStr.toString().length() > 0 ? waterStr.toString().substring(0, waterStr.length() - 2) + "<br/>" : "";
+
+				waterStr = new StringBuilder();
+
+				if (((Water)action).getPpm() != null)
+				{
+					String ppm = String.valueOf(((Water)action).getPpm().longValue());
+					if (usingEc)
+					{
+						waterStr.append("<b>EC: </b>");
+						ppm = String.valueOf((((Water)action).getPpm() * 2d) / 1000d);
+					}
+					else
+					{
+						waterStr.append("<b>PPM: </b>");
+					}
+
+					waterStr.append(ppm);
+					waterStr.append(", ");
+				}
+
+				if (((Water)action).getAmount() != null)
+				{
+					waterStr.append("<b>Amount: </b>");
+					waterStr.append(ML.to(deliveryUnit, ((Water)action).getAmount()));
+					waterStr.append(deliveryUnit.getLabel());
+					waterStr.append(", ");
+				}
+
+				if (((Water)action).getTemp() != null)
+				{
+					waterStr.append("<b>Temp: </b>");
+					waterStr.append(CELCIUS.to(tempUnit, ((Water)action).getTemp()));
+					waterStr.append("º").append(tempUnit.getLabel()).append(", ");
+				}
+
+				summary += waterStr.toString().length() > 0 ? waterStr.toString().substring(0, waterStr.length() - 2) + "<br/>" : "";
+
+				waterStr = new StringBuilder();
+
+				if (((Water)action).getAdditives().size() > 0)
+				{
+					waterStr.append("<b>Additives:</b>");
+
+					for (Additive additive : ((Water)action).getAdditives())
+					{
+						if (additive == null || additive.getAmount() == null) continue;
+
+						double converted = ML.to(measureUnit, additive.getAmount());
+						String amountStr = converted == Math.floor(converted) ? String.valueOf((int)converted) : String.valueOf(converted);
+
+						waterStr.append("<br/>&nbsp;&nbsp;&nbsp;&nbsp;• ");
+						waterStr.append(additive.getDescription());
+						waterStr.append("  -  ");
+						waterStr.append(amountStr);
+						waterStr.append(measureUnit.getLabel());
+						waterStr.append("/");
+						waterStr.append(deliveryUnit.getLabel());
+					}
+				}
+
+				summary += waterStr.toString();
+			}
+			else if (action instanceof EmptyAction && ((EmptyAction)action).getAction() != null)
+			{
+				viewHolder.getName().setText(((EmptyAction)action).getAction().getPrintString());
+				viewHolder.getCard().setCardBackgroundColor(((EmptyAction)action).getAction().getColour());
+			}
+			else if (action instanceof NoteAction)
+			{
+				viewHolder.getName().setText("Note");
+				viewHolder.getCard().setCardBackgroundColor(0xffffffff);
+			}
+			else if (action instanceof StageChange)
+			{
+				viewHolder.getName().setText(((StageChange)action).getNewStage().getPrintString());
+				viewHolder.getCard().setCardBackgroundColor(0x9AB39DDB);
+			}
+
+			if (!TextUtils.isEmpty(action.getNotes()))
+			{
+				summary += summary.length() > 0 ? "<br/><br/>" : "";
+				summary += action.getNotes();
+			}
+
+			if (summary.endsWith("<br/>"))
+			{
+				summary = summary.substring(0, summary.length() - "<br/>".length());
+			}
+
+			if (!TextUtils.isEmpty(summary))
+			{
+				viewHolder.getSummary().setText(Html.fromHtml(summary));
+				viewHolder.getSummary().setVisibility(View.VISIBLE);
+			}
+
+			viewHolder.getOverflow().setOnClickListener(new View.OnClickListener()
+			{
+				@Override public void onClick(final View v)
+				{
+					PopupMenu menu = new PopupMenu(v.getContext(), v, Gravity.BOTTOM);
+					menu.inflate(R.menu.event_overflow);
+					menu.setOnMenuItemClickListener(new PopupMenu.OnMenuItemClickListener()
+					{
+						@Override public boolean onMenuItemClick(MenuItem item)
+						{
+							if (item.getItemId() == R.id.duplicate)
+							{
+								if (onActionSelectListener != null)
+								{
+									Kryo kryo = new Kryo();
+									onActionSelectListener.onActionDuplicate(kryo.copy(action));
+								}
+
+								return true;
+							}
+							else if (item.getItemId() == R.id.copy)
+							{
+								if (onActionSelectListener != null)
+								{
+									Kryo kryo = new Kryo();
+									onActionSelectListener.onActionCopy(kryo.copy(action));
+								}
+
+								return true;
+							}
+							else if (item.getItemId() == R.id.edit)
+							{
+								if (onActionSelectListener != null)
+								{
+									onActionSelectListener.onActionEdit(action);
+								}
+
+								return true;
+							}
+							else if (item.getItemId() == R.id.delete)
+							{
+								new AlertDialog.Builder(v.getContext())
+									.setTitle("Delete this event?")
+									.setMessage("Are you sure you want to delete " + viewHolder.getName().getText())
+									.setPositiveButton("Yes", new DialogInterface.OnClickListener()
+									{
+										@Override public void onClick(DialogInterface dialog, int which)
+										{
+											if (onActionSelectListener != null)
+											{
+												onActionSelectListener.onActionDeleted(action);
+											}
+										}
+									})
+									.setNegativeButton("No", null)
+									.show();
+
+								return true;
+							}
+
+							return false;
+						}
+					});
+
+					menu.show();
+				}
+			});
 		}
 
-		if (deliveryUnit == null)
-		{
-			deliveryUnit = Unit.getSelectedDeliveryUnit(viewHolder.itemView.getContext());
-		}
-
-		if (tempUnit == null)
-		{
-			tempUnit = TempUnit.getSelectedTemperatureUnit(viewHolder.itemView.getContext());
-		}
-
-		usingEc = PreferenceManager.getDefaultSharedPreferences(viewHolder.itemView.getContext()).getBoolean("tds_ec", false);
-
-		if (action == null) return;
-
-		DateFormat dateFormat = android.text.format.DateFormat.getDateFormat(viewHolder.getDate().getContext());
-		DateFormat timeFormat = android.text.format.DateFormat.getTimeFormat(viewHolder.getDate().getContext());
-
+		// plant date & stage
 		Date actionDate = new Date(action.getDate());
 		Calendar actionCalendar = GregorianCalendar.getInstance();
 		actionCalendar.setTime(actionDate);
-		String fullDateStr = dateFormat.format(actionDate) + " " + timeFormat.format(actionDate);
-		String dateStr = "<b>" + new DateRenderer().timeAgo(action.getDate()).formattedDate + "</b> ago";
 
 		String dateDayStr = actionCalendar.get(Calendar.DAY_OF_MONTH) + " " + actionCalendar.getDisplayName(Calendar.MONTH, Calendar.SHORT, Locale.getDefault());
 
-		if (viewHolder.getDateDay() != null)
+		if (dateDay != null)
 		{
 			String lastDateStr = "";
 
-			if (i - 1 >= 0)
+			if (index - 1 >= 0)
 			{
-				Date lastActionDate = new Date(actions.get(i - 1).getDate());
+				Date lastActionDate = new Date(actions.get(index - 1).getDate());
 				Calendar lastActionCalendar = GregorianCalendar.getInstance();
 				lastActionCalendar.setTime(lastActionDate);
 				lastDateStr = lastActionCalendar.get(Calendar.DAY_OF_MONTH) + " " + lastActionCalendar.getDisplayName(Calendar.MONTH, Calendar.SHORT, Locale.getDefault());
@@ -154,13 +461,13 @@ public class ActionAdapter extends RecyclerView.Adapter<ActionHolder> implements
 
 			if (!lastDateStr.equalsIgnoreCase(dateDayStr))
 			{
-				viewHolder.getDateDay().setText(Html.fromHtml(dateDayStr));
+				dateDay.setText(Html.fromHtml(dateDayStr));
 
-				String stageDay = "";
+				String stageDayStr = "";
 				StageChange current = null;
 				StageChange previous = null;
 
-				for (int actionIndex = i; actionIndex < actions.size(); actionIndex++)
+				for (int actionIndex = index; actionIndex < actions.size(); actionIndex++)
 				{
 					if (actions.get(actionIndex) instanceof StageChange)
 					{
@@ -176,7 +483,7 @@ public class ActionAdapter extends RecyclerView.Adapter<ActionHolder> implements
 				}
 
 				int totalDays = (int)TimeHelper.toDays(Math.abs(action.getDate() - plant.getPlantDate()));
-				stageDay += totalDays;
+				stageDayStr += totalDays;
 
 				if (previous == null)
 				{
@@ -188,222 +495,23 @@ public class ActionAdapter extends RecyclerView.Adapter<ActionHolder> implements
 					if (action == current)
 					{
 						int currentDays = (int)TimeHelper.toDays(Math.abs(current.getDate() - previous.getDate()));
-						stageDay += "/" + currentDays + previous.getNewStage().getPrintString().substring(0, 1).toLowerCase();
+						stageDayStr += "/" + currentDays + previous.getNewStage().getPrintString().substring(0, 1).toLowerCase();
 					}
 					else
 					{
 						int currentDays = (int)TimeHelper.toDays(Math.abs(action.getDate() - current.getDate()));
-						stageDay += "/" + currentDays + current.getNewStage().getPrintString().substring(0, 1).toLowerCase();
+						stageDayStr += "/" + currentDays + current.getNewStage().getPrintString().substring(0, 1).toLowerCase();
 					}
 				}
 
-				viewHolder.getStageDay().setText(stageDay);
+				stageDay.setText(stageDayStr);
 			}
 			else
 			{
-				viewHolder.getDateDay().setText("");
-				viewHolder.getStageDay().setText("");
+				dateDay.setText("");
+				stageDay.setText("");
 			}
 		}
-
-		if (i > 0)
-		{
-			long difference = actions.get(i - 1).getDate() - action.getDate();
-			int days = (int)Math.round(((double)difference / 60d / 60d / 24d / 1000d));
-
-			dateStr += " (-" + days + "d)";
-		}
-
-		viewHolder.getFullDate().setText(Html.fromHtml(fullDateStr));
-		viewHolder.getDate().setText(Html.fromHtml(dateStr));
-		viewHolder.getSummary().setVisibility(View.GONE);
-
-		viewHolder.getCard().setCardBackgroundColor(0xffffffff);
-
-		String summary = "";
-		if (action.getClass() == Water.class)
-		{
-			viewHolder.getCard().setCardBackgroundColor(0x9ABBDEFB);
-			viewHolder.getName().setText("Watered");
-			StringBuilder waterStr = new StringBuilder();
-
-			if (((Water)action).getPh() != null)
-			{
-				waterStr.append("<b>In pH: </b>");
-				waterStr.append(((Water)action).getPh());
-				waterStr.append(", ");
-			}
-
-			if (((Water)action).getRunoff() != null)
-			{
-				waterStr.append("<b>Out pH: </b>");
-				waterStr.append(((Water)action).getRunoff());
-				waterStr.append(", ");
-			}
-
-			summary += waterStr.toString().length() > 0 ? waterStr.toString().substring(0, waterStr.length() - 2) + "<br/>" : "";
-
-			waterStr = new StringBuilder();
-
-			if (((Water)action).getPpm() != null)
-			{
-				String ppm = String.valueOf(((Water)action).getPpm().longValue());
-				if (usingEc)
-				{
-					waterStr.append("<b>EC: </b>");
-					ppm = String.valueOf((((Water)action).getPpm() * 2d) / 1000d);
-				}
-				else
-				{
-					waterStr.append("<b>PPM: </b>");
-				}
-
-				waterStr.append(ppm);
-				waterStr.append(", ");
-			}
-
-			if (((Water)action).getAmount() != null)
-			{
-				waterStr.append("<b>Amount: </b>");
-				waterStr.append(ML.to(deliveryUnit, ((Water)action).getAmount()));
-				waterStr.append(deliveryUnit.getLabel());
-				waterStr.append(", ");
-			}
-
-			if (((Water)action).getTemp() != null)
-			{
-				waterStr.append("<b>Temp: </b>");
-				waterStr.append(CELCIUS.to(tempUnit, ((Water)action).getTemp()));
-				waterStr.append("º").append(tempUnit.getLabel()).append(", ");
-			}
-
-			summary += waterStr.toString().length() > 0 ? waterStr.toString().substring(0, waterStr.length() - 2) + "<br/>" : "";
-
-			waterStr = new StringBuilder();
-
-			if (((Water)action).getAdditives().size() > 0)
-			{
-				waterStr.append("<b>Additives:</b>");
-
-				for (Additive additive : ((Water)action).getAdditives())
-				{
-					if (additive == null || additive.getAmount() == null) continue;
-
-					double converted = ML.to(measureUnit, additive.getAmount());
-					String amountStr = converted == Math.floor(converted) ? String.valueOf((int)converted) : String.valueOf(converted);
-
-					waterStr.append("<br/>&nbsp;&nbsp;&nbsp;&nbsp;• ");
-					waterStr.append(additive.getDescription());
-					waterStr.append("  -  ");
-					waterStr.append(amountStr);
-					waterStr.append(measureUnit.getLabel());
-					waterStr.append("/");
-					waterStr.append(deliveryUnit.getLabel());
-				}
-			}
-
-			summary += waterStr.toString();
-		}
-		else if (action instanceof EmptyAction && ((EmptyAction)action).getAction() != null)
-		{
-			viewHolder.getName().setText(((EmptyAction)action).getAction().getPrintString());
-			viewHolder.getCard().setCardBackgroundColor(((EmptyAction)action).getAction().getColour());
-		}
-		else if (action instanceof NoteAction)
-		{
-			viewHolder.getName().setText("Note");
-			viewHolder.getCard().setCardBackgroundColor(0xffffffff);
-		}
-		else if (action instanceof StageChange)
-		{
-			viewHolder.getName().setText(((StageChange)action).getNewStage().getPrintString());
-			viewHolder.getCard().setCardBackgroundColor(0x9AB39DDB);
-		}
-
-		if (!TextUtils.isEmpty(action.getNotes()))
-		{
-			summary += summary.length() > 0 ? "<br/><br/>" : "";
-			summary += action.getNotes();
-		}
-
-		if (summary.endsWith("<br/>"))
-		{
-			summary = summary.substring(0, summary.length() - "<br/>".length());
-		}
-
-		if (!TextUtils.isEmpty(summary))
-		{
-			viewHolder.getSummary().setText(Html.fromHtml(summary));
-			viewHolder.getSummary().setVisibility(View.VISIBLE);
-		}
-
-		viewHolder.getOverflow().setOnClickListener(new View.OnClickListener()
-		{
-			@Override public void onClick(final View v)
-			{
-				PopupMenu menu = new PopupMenu(v.getContext(), v, Gravity.BOTTOM);
-				menu.inflate(R.menu.event_overflow);
-				menu.setOnMenuItemClickListener(new PopupMenu.OnMenuItemClickListener()
-				{
-					@Override public boolean onMenuItemClick(MenuItem item)
-					{
-						if (item.getItemId() == R.id.duplicate)
-						{
-							if (onActionSelectListener != null)
-							{
-								Kryo kryo = new Kryo();
-								onActionSelectListener.onActionDuplicate(kryo.copy(action));
-							}
-
-							return true;
-						}
-						else if (item.getItemId() == R.id.copy)
-						{
-							if (onActionSelectListener != null)
-							{
-								Kryo kryo = new Kryo();
-								onActionSelectListener.onActionCopy(kryo.copy(action));
-							}
-
-							return true;
-						}
-						else if (item.getItemId() == R.id.edit)
-						{
-							if (onActionSelectListener != null)
-							{
-								onActionSelectListener.onActionEdit(action);
-							}
-
-							return true;
-						}
-						else if (item.getItemId() == R.id.delete)
-						{
-							new AlertDialog.Builder(v.getContext())
-								.setTitle("Delete this event?")
-								.setMessage("Are you sure you want to delete " + viewHolder.getName().getText())
-								.setPositiveButton("Yes", new DialogInterface.OnClickListener()
-								{
-									@Override public void onClick(DialogInterface dialog, int which)
-									{
-										if (onActionSelectListener != null)
-										{
-											onActionSelectListener.onActionDeleted(action);
-										}
-									}
-								})
-								.setNegativeButton("No", null)
-								.show();
-
-							return true;
-						}
-
-						return false;
-					}
-				});
-
-				menu.show();
-			}
-		});
 	}
 
 	@Override public int getItemCount()
