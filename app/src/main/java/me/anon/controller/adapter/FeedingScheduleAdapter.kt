@@ -12,6 +12,7 @@ import me.anon.view.ScheduleHolder
  */
 class FeedingScheduleAdapter : RecyclerView.Adapter<ScheduleHolder>()
 {
+	public var onDeleteCallback: (schedule: FeedingSchedule) -> Unit = {}
 	public var items: ArrayList<FeedingSchedule> = arrayListOf()
 		set(value)
 		{
@@ -21,7 +22,7 @@ class FeedingScheduleAdapter : RecyclerView.Adapter<ScheduleHolder>()
 		}
 
 	override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ScheduleHolder
-		= ScheduleHolder(LayoutInflater.from(parent.context).inflate(R.layout.schedule_item, parent, false))
+		= ScheduleHolder(this, LayoutInflater.from(parent.context).inflate(R.layout.schedule_item, parent, false))
 
 	override fun getItemCount(): Int = items.size
 
