@@ -11,9 +11,6 @@ import com.google.gson.reflect.TypeToken;
 import java.io.File;
 import java.util.ArrayList;
 
-import lombok.Data;
-import lombok.Getter;
-import lombok.experimental.Accessors;
 import me.anon.grow.MainApplication;
 import me.anon.lib.helper.EncryptionHelper;
 import me.anon.lib.helper.GsonHelper;
@@ -26,11 +23,14 @@ import me.anon.model.Garden;
  * @documentation // TODO Reference flow doc
  * @project GrowTracker
  */
-@Data
-@Accessors(prefix = {"m", ""}, chain = true)
 public class GardenManager
 {
-	@Getter(lazy = true) private static final GardenManager instance = new GardenManager();
+	private static final GardenManager instance = new GardenManager();
+
+	public static GardenManager getInstance()
+	{
+		return instance;
+	}
 
 	private static String FILES_DIR;
 
@@ -38,6 +38,11 @@ public class GardenManager
 	private Context context;
 
 	private GardenManager(){}
+
+	public ArrayList<Garden> getGardens()
+	{
+		return mGardens;
+	}
 
 	public void initialise(Context context)
 	{

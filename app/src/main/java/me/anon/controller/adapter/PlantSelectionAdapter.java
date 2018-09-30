@@ -14,7 +14,6 @@ import com.nostra13.universalimageloader.core.imageaware.ImageViewAware;
 
 import java.util.ArrayList;
 
-import lombok.Getter;
 import me.anon.grow.MainApplication;
 import me.anon.grow.R;
 import me.anon.model.Plant;
@@ -22,9 +21,19 @@ import me.anon.view.PlantSelectHolder;
 
 public class PlantSelectionAdapter extends RecyclerView.Adapter<PlantSelectHolder>
 {
-	@Getter private ArrayList<Plant> plants = new ArrayList<>();
-	@Getter private ArrayList<String> selectedIds = new ArrayList<>();
+	private ArrayList<Plant> plants = new ArrayList<>();
+	private ArrayList<String> selectedIds = new ArrayList<>();
 	private Context context;
+
+	public ArrayList<Plant> getPlants()
+	{
+		return plants;
+	}
+
+	public ArrayList<String> getSelectedIds()
+	{
+		return selectedIds;
+	}
 
 	public PlantSelectionAdapter(@Nullable ArrayList<Plant> plants, @Nullable ArrayList<String> selectedIds, Context context)
 	{

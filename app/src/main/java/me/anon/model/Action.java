@@ -1,9 +1,5 @@
 package me.anon.model;
 
-import lombok.Getter;
-import lombok.Setter;
-import lombok.experimental.Accessors;
-
 /**
  * // TODO: Add class description
  *
@@ -11,11 +7,30 @@ import lombok.experimental.Accessors;
  * @documentation // TODO Reference flow doc
  * @project GrowTracker
  */
-@Accessors(prefix = {"m", ""}, chain = true)
 public abstract class Action
 {
-	@Getter @Setter private long date = System.currentTimeMillis();
-	@Getter @Setter private String notes;
+	private long date = System.currentTimeMillis();
+	private String notes;
+
+	public long getDate()
+	{
+		return date;
+	}
+
+	public void setDate(long date)
+	{
+		this.date = date;
+	}
+
+	public String getNotes()
+	{
+		return notes;
+	}
+
+	public void setNotes(String notes)
+	{
+		this.notes = notes;
+	}
 
 	public enum ActionName
 	{
@@ -29,8 +44,8 @@ public abstract class Action
 		TRANSPLANTED("Transplanted", 0x9AFFFF8D),
 		TRIM("Trim", 0x9AFFAB91);
 
-		@Getter private String printString;
-		@Getter private int colour;
+		private String printString;
+		private int colour;
 
 		private ActionName(String name, int colour)
 		{
@@ -47,6 +62,16 @@ public abstract class Action
 			}
 
 			return names;
+		}
+
+		public String getPrintString()
+		{
+			return printString;
+		}
+
+		public int getColour()
+		{
+			return colour;
 		}
 	}
 

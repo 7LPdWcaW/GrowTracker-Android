@@ -1,3 +1,17 @@
 <resources>
-
+	<string name="menu_feeding_schedule">Schedules</string>
+	<string name="schedule_details_title">Schedule Details</string>
+	<string name="schedule_name">Name</string>
+	<string name="schedule_name_hint">Light feeding</string>
+	<string name="schedule_description">Description</string>
+	<string name="schedule_description_hint">Light feeding with 2 week flush</string>
+	<string name="schedules_title">Schedules</string>
+	<string name="schedules_new_feeding">+ New Feeding</string>
+	<string name="new_additive">+ New Feeding</string>
+	<string name="additives">Additives</string>
+	<string name="from_date">From date</string>
+	<string name="from_stage">From stage</string>
+	<string name="to_date">To date</string>
+	<string name="to_stage">To stage</string>
+	<string name="populate_from_schedule">Populate from schedule</string>
 </resources>

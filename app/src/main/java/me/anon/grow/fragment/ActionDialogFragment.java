@@ -19,7 +19,6 @@ import java.text.DateFormat;
 import java.util.Calendar;
 import java.util.Date;
 
-import lombok.Setter;
 import me.anon.grow.R;
 import me.anon.lib.Views;
 import me.anon.model.Action;
@@ -37,7 +36,12 @@ public class ActionDialogFragment extends DialogFragment
 	@Views.InjectView(R.id.notes) private EditText notes;
 	@Views.InjectView(R.id.date) private TextView date;
 
-	@Setter private OnActionSelected onActionSelected;
+	private OnActionSelected onActionSelected;
+
+	public void setOnActionSelected(OnActionSelected onActionSelected)
+	{
+		this.onActionSelected = onActionSelected;
+	}
 
 	private EmptyAction action;
 	private boolean edit = false;

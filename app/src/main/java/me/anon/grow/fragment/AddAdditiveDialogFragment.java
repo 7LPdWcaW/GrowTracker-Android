@@ -8,9 +8,10 @@ import android.content.DialogInterface;
 import android.os.Bundle;
 import android.text.TextUtils;
 import android.view.View;
+import android.view.Window;
+import android.view.WindowManager;
 import android.widget.TextView;
 
-import lombok.Setter;
 import me.anon.grow.R;
 import me.anon.lib.Unit;
 import me.anon.lib.Views;
@@ -35,7 +36,12 @@ public class AddAdditiveDialogFragment extends DialogFragment
 	private Additive additive;
 	@Views.InjectView(R.id.description) private TextView description;
 	@Views.InjectView(R.id.amount) private TextView amount;
-	@Setter private OnAdditiveSelectedListener onAdditiveSelectedListener;
+	private OnAdditiveSelectedListener onAdditiveSelectedListener;
+
+	public void setOnAdditiveSelectedListener(OnAdditiveSelectedListener onAdditiveSelectedListener)
+	{
+		this.onAdditiveSelectedListener = onAdditiveSelectedListener;
+	}
 
 	@SuppressLint("ValidFragment")
 	public AddAdditiveDialogFragment(Additive additive)
@@ -87,6 +93,9 @@ public class AddAdditiveDialogFragment extends DialogFragment
 					dialog.dismiss();
 				}
 			}).create();
+
+		dialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
+		dialog.getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_ADJUST_RESIZE);
 
 		dialog.setOnShowListener(new DialogInterface.OnShowListener()
 		{

@@ -23,12 +23,11 @@ import java.net.URI;
 import java.net.URISyntaxException;
 import java.util.concurrent.TimeUnit;
 
-import lombok.Getter;
-import lombok.Setter;
 import me.anon.controller.receiver.BackupService;
 import me.anon.lib.handler.ExceptionHandler;
 import me.anon.lib.manager.GardenManager;
 import me.anon.lib.manager.PlantManager;
+import me.anon.lib.manager.ScheduleManager;
 import me.anon.lib.stream.DecryptInputStream;
 
 /**
@@ -40,11 +39,56 @@ import me.anon.lib.stream.DecryptInputStream;
  */
 public class MainApplication extends Application
 {
-	@Getter private static DisplayImageOptions displayImageOptions;
-	@Getter @Setter private static boolean encrypted = false;
-	@Getter @Setter private static String key = "";
-	@Getter @Setter private static boolean failsafe = false;
-	@Getter @Setter private static boolean isTablet = false;
+	private static DisplayImageOptions displayImageOptions;
+	private static boolean encrypted = false;
+	private static String key = "";
+	private static boolean failsafe = false;
+	private static boolean isTablet = false;
+
+	public static void setEncrypted(boolean encrypted)
+	{
+		MainApplication.encrypted = encrypted;
+	}
+
+	public static void setKey(String key)
+	{
+		MainApplication.key = key;
+	}
+
+	public static void setFailsafe(boolean failsafe)
+	{
+		MainApplication.failsafe = failsafe;
+	}
+
+	public static void setIsTablet(boolean isTablet)
+	{
+		MainApplication.isTablet = isTablet;
+	}
+
+	public static DisplayImageOptions getDisplayImageOptions()
+	{
+		return displayImageOptions;
+	}
+
+	public static boolean isEncrypted()
+	{
+		return encrypted;
+	}
+
+	public static String getKey()
+	{
+		return key;
+	}
+
+	public static boolean isFailsafe()
+	{
+		return failsafe;
+	}
+
+	public static boolean isTablet()
+	{
+		return isTablet;
+	}
 
 	@Override public void onCreate()
 	{
@@ -57,6 +101,7 @@ public class MainApplication extends Application
 
 		PlantManager.getInstance().initialise(this);
 		GardenManager.getInstance().initialise(this);
+		ScheduleManager.instance.initialise(this);
 		registerBackupService();
 
 		displayImageOptions = new DisplayImageOptions.Builder()
