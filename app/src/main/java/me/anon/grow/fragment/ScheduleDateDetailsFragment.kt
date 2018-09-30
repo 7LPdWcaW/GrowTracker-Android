@@ -1,5 +1,6 @@
 package me.anon.grow.fragment
 
+import android.app.Activity
 import android.app.Fragment
 import android.os.Bundle
 import android.text.Editable
@@ -140,6 +141,7 @@ class ScheduleDateDetailsFragment : Fragment()
 				}
 			}
 
+			activity.setResult(Activity.RESULT_OK)
 			activity.finish()
 		}
 	}
