@@ -12,7 +12,7 @@
 
 				<item
 					android:id="@+id/add"
-					android:title="New garden"
+					android:title="+ New garden"
 					android:orderInCategory="2"
 				/>
 			</group>
