@@ -45,4 +45,11 @@ class FeedingScheduleListFragment : Fragment()
 			startActivity(Intent(activity, FeedingScheduleDetailsActivity::class.java))
 		}
 	}
+
+	override fun onResume()
+	{
+		super.onResume()
+		adapter.items = ScheduleManager.instance.schedules
+		adapter.notifyDataSetChanged()
+	}
 }
