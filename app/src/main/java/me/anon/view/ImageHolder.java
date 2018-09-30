@@ -5,10 +5,7 @@ import android.view.View;
 import android.widget.CheckBox;
 import android.widget.ImageView;
 
-import lombok.Data;
-import lombok.Getter;
 import me.anon.grow.R;
-import me.anon.lib.Views;
 
 /**
  * // TODO: Add class description
@@ -17,11 +14,20 @@ import me.anon.lib.Views;
  * @documentation // TODO Reference flow doc
  * @project GrowTracker
  */
-@Data
 public class ImageHolder extends RecyclerView.ViewHolder
 {
 	private ImageView image;
 	private CheckBox selection;
+
+	public ImageView getImage()
+	{
+		return image;
+	}
+
+	public CheckBox getSelection()
+	{
+		return selection;
+	}
 
 	public ImageHolder(View itemView)
 	{

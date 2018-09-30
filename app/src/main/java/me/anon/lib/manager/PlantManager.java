@@ -26,9 +26,6 @@ import java.util.Queue;
 import java.util.concurrent.ConcurrentLinkedQueue;
 import java.util.concurrent.atomic.AtomicBoolean;
 
-import lombok.Data;
-import lombok.Getter;
-import lombok.experimental.Accessors;
 import me.anon.grow.BootActivity;
 import me.anon.grow.MainApplication;
 import me.anon.lib.helper.AddonHelper;
@@ -46,11 +43,14 @@ import me.anon.model.Plant;
  * @documentation // TODO Reference flow doc
  * @project GrowTracker
  */
-@Data
-@Accessors(prefix = {"m", ""}, chain = true)
 public class PlantManager
 {
-	@Getter(lazy = true) private static final PlantManager instance = new PlantManager();
+	private static final PlantManager instance = new PlantManager();
+
+	public static PlantManager getInstance()
+	{
+		return instance;
+	}
 
 	public static String FILES_DIR;
 
@@ -58,6 +58,11 @@ public class PlantManager
 	private Context context;
 
 	private PlantManager(){}
+
+	public ArrayList<Plant> getPlants()
+	{
+		return mPlants;
+	}
 
 	public void initialise(Context context)
 	{

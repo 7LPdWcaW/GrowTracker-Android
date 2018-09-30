@@ -16,8 +16,6 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
-import lombok.Getter;
-import lombok.Setter;
 import me.anon.grow.MainApplication;
 import me.anon.grow.PlantDetailsActivity;
 import me.anon.grow.R;
@@ -35,10 +33,35 @@ import me.anon.view.PlantHolder;
  */
 public class PlantAdapter extends RecyclerView.Adapter implements ItemTouchHelperAdapter
 {
-	@Getter private List<Plant> plants = new ArrayList<>();
-	@Getter @Setter private List<String> showOnly = null;
+	private List<Plant> plants = new ArrayList<>();
+	private List<String> showOnly = null;
 	private Context context;
-	@Getter private Unit measureUnit, deliveryUnit;
+	private Unit measureUnit, deliveryUnit;
+
+	public void setShowOnly(List<String> showOnly)
+	{
+		this.showOnly = showOnly;
+	}
+
+	public List<Plant> getPlants()
+	{
+		return plants;
+	}
+
+	public List<String> getShowOnly()
+	{
+		return showOnly;
+	}
+
+	public Unit getMeasureUnit()
+	{
+		return measureUnit;
+	}
+
+	public Unit getDeliveryUnit()
+	{
+		return deliveryUnit;
+	}
 
 	public PlantAdapter(Context context)
 	{

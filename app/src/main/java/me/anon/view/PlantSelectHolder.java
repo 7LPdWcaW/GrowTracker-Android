@@ -6,7 +6,6 @@ import android.widget.CheckBox;
 import android.widget.ImageView;
 import android.widget.TextView;
 
-import lombok.Data;
 import me.anon.grow.R;
 
 /**
@@ -16,12 +15,26 @@ import me.anon.grow.R;
  * @documentation // TODO Reference flow doc
  * @project GrowTracker
  */
-@Data
 public class PlantSelectHolder extends RecyclerView.ViewHolder
 {
 	private ImageView image;
 	private CheckBox checkbox;
 	private TextView name;
+
+	public ImageView getImage()
+	{
+		return image;
+	}
+
+	public CheckBox getCheckbox()
+	{
+		return checkbox;
+	}
+
+	public TextView getName()
+	{
+		return name;
+	}
 
 	public PlantSelectHolder(View itemView)
 	{

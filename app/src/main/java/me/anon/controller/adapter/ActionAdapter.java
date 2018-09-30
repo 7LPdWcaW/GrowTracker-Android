@@ -24,8 +24,6 @@ import java.util.GregorianCalendar;
 import java.util.List;
 import java.util.Locale;
 
-import lombok.Getter;
-import lombok.Setter;
 import me.anon.grow.R;
 import me.anon.lib.DateRenderer;
 import me.anon.lib.TempUnit;
@@ -60,12 +58,42 @@ public class ActionAdapter extends RecyclerView.Adapter<ActionHolder> implements
 		public void onActionDuplicate(Action action);
 	}
 
-	@Setter private OnActionSelectListener onActionSelectListener;
-	@Getter private Plant plant;
-	@Getter private List<Action> actions = new ArrayList<>();
-	@Getter private Unit measureUnit, deliveryUnit;
-	@Getter private TempUnit tempUnit;
+	private OnActionSelectListener onActionSelectListener;
+	private Plant plant;
+	private List<Action> actions = new ArrayList<>();
+	private Unit measureUnit, deliveryUnit;
+	private TempUnit tempUnit;
 	private boolean usingEc = false;
+
+	public void setOnActionSelectListener(OnActionSelectListener onActionSelectListener)
+	{
+		this.onActionSelectListener = onActionSelectListener;
+	}
+
+	public Plant getPlant()
+	{
+		return plant;
+	}
+
+	public List<Action> getActions()
+	{
+		return actions;
+	}
+
+	public Unit getMeasureUnit()
+	{
+		return measureUnit;
+	}
+
+	public Unit getDeliveryUnit()
+	{
+		return deliveryUnit;
+	}
+
+	public TempUnit getTempUnit()
+	{
+		return tempUnit;
+	}
 
 	public void setActions(Plant plant, List<Action> actions)
 	{

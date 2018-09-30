@@ -1,10 +1,5 @@
 package me.anon.model;
 
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
-import lombok.experimental.Accessors;
-
 /**
  * // TODO: Add class description
  *
@@ -13,9 +8,6 @@ import lombok.experimental.Accessors;
  * @project GrowTracker
  */
 @Deprecated
-@Getter @Setter
-@Accessors(prefix = {"m", ""}, chain = true)
-@NoArgsConstructor
 public class Nutrient
 {
 	private Double npc; // nitrogen
@@ -24,4 +16,64 @@ public class Nutrient
 	private Double capc; // calcium
 	private Double spc; // sulfur
 	private Double mgpc; // magnesium
+
+	public Double getNpc()
+	{
+		return npc;
+	}
+
+	public void setNpc(Double npc)
+	{
+		this.npc = npc;
+	}
+
+	public Double getPpc()
+	{
+		return ppc;
+	}
+
+	public void setPpc(Double ppc)
+	{
+		this.ppc = ppc;
+	}
+
+	public Double getKpc()
+	{
+		return kpc;
+	}
+
+	public void setKpc(Double kpc)
+	{
+		this.kpc = kpc;
+	}
+
+	public Double getCapc()
+	{
+		return capc;
+	}
+
+	public void setCapc(Double capc)
+	{
+		this.capc = capc;
+	}
+
+	public Double getSpc()
+	{
+		return spc;
+	}
+
+	public void setSpc(Double spc)
+	{
+		this.spc = spc;
+	}
+
+	public Double getMgpc()
+	{
+		return mgpc;
+	}
+
+	public void setMgpc(Double mgpc)
+	{
+		this.mgpc = mgpc;
+	}
 }
