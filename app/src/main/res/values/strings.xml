@@ -13,4 +13,5 @@
 	<string name="from_stage">From stage</string>
 	<string name="to_date">To date</string>
 	<string name="to_stage">To stage</string>
+	<string name="populate_from_schedule">Populate from schedule</string>
 </resources>

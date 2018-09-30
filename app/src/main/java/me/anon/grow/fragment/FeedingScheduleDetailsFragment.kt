@@ -112,7 +112,7 @@ class FeedingScheduleDetailsFragment : Fragment()
 		schedules.forEachIndexed { index, schedule ->
 			val feedingView = LayoutInflater.from(activity).inflate(R.layout.feeding_date_stub, schedules_container, false)
 			feedingView.title.text = "${schedule.dateRange[0]}${schedule.stageRange[0].printString[0]}"
-			if (schedule.dateRange[0] != schedule.dateRange[1] && schedule.stageRange[0] != schedule.stageRange[1])
+			if (schedule.dateRange[0] != schedule.dateRange[1])
 			{
 				feedingView.title.text = "${feedingView.title.text} - ${schedule.dateRange[1]}${schedule.stageRange[1].printString[0]}"
 			}
