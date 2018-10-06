@@ -7,17 +7,19 @@ import android.view.View
 import kotlinx.android.synthetic.main.schedule_item.view.*
 import me.anon.controller.adapter.FeedingScheduleAdapter
 import me.anon.grow.FeedingScheduleDetailsActivity
+import me.anon.grow.R
 import me.anon.lib.manager.ScheduleManager
 import me.anon.model.FeedingSchedule
 
 /**
- * // TODO: Add class description
+ * Feeding schedule view holder class
  */
 class ScheduleHolder(val adapter: FeedingScheduleAdapter, itemView: View) : RecyclerView.ViewHolder(itemView)
 {
 	private val title = itemView.title
 	private val summary = itemView.summary
 	private val delete = itemView.delete
+	private val copy = itemView.copy
 
 	public fun bind(feedingSchedule: FeedingSchedule)
 	{
@@ -31,12 +33,23 @@ class ScheduleHolder(val adapter: FeedingScheduleAdapter, itemView: View) : Recy
 
 		delete.setOnClickListener {
 			AlertDialog.Builder(it.context)
-				.setTitle("Are you sure?")
-				.setMessage("Delete selected schedule?")
-				.setPositiveButton("Yes") { _, _ ->
+				.setTitle(R.string.confirm_title)
+				.setMessage(R.string.confirm_delete_schedule)
+				.setPositiveButton(R.string.confirm_positive) { _, _ ->
 					adapter.onDeleteCallback.invoke(feedingSchedule)
 				}
-				.setNegativeButton("No", null)
+				.setNegativeButton(R.string.confirm_negative, null)
+				.show()
+		}
+
+		copy.setOnClickListener {
+			AlertDialog.Builder(it.context)
+				.setTitle(R.string.confirm_title)
+				.setMessage(R.string.confirm_copy_schedule)
+				.setPositiveButton(R.string.confirm_positive) { _, _ ->
+					adapter.onCopyCallback.invoke(feedingSchedule)
+				}
+				.setNegativeButton(R.string.confirm_negative, null)
 				.show()
 		}
 

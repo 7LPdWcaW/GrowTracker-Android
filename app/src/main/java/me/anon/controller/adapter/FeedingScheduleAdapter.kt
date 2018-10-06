@@ -8,11 +8,12 @@ import me.anon.model.FeedingSchedule
 import me.anon.view.ScheduleHolder
 
 /**
- * // TODO: Add class description
+ * Adapter for feeding schedule list
  */
 class FeedingScheduleAdapter : RecyclerView.Adapter<ScheduleHolder>()
 {
 	public var onDeleteCallback: (schedule: FeedingSchedule) -> Unit = {}
+	public var onCopyCallback: (schedule: FeedingSchedule) -> Unit = {}
 	public var items: ArrayList<FeedingSchedule> = arrayListOf()
 		set(value)
 		{

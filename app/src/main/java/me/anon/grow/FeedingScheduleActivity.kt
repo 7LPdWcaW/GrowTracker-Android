@@ -21,6 +21,7 @@ class FeedingScheduleActivity : AppCompatActivity()
 
 		setContentView(R.layout.fragment_holder)
 		setSupportActionBar(toolbar)
+		setTitle(R.string.feeding_schedules_title)
 
 		if (fragmentManager.findFragmentByTag(TAG_FRAGMENT) == null)
 		{
