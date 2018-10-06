@@ -9,11 +9,15 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.LinearLayout.VERTICAL
+import com.esotericsoftware.kryo.Kryo
+import com.kenny.snackbar.SnackBar
 import kotlinx.android.synthetic.main.schedule_list_view.*
 import me.anon.controller.adapter.FeedingScheduleAdapter
 import me.anon.grow.FeedingScheduleDetailsActivity
 import me.anon.grow.R
+import me.anon.lib.helper.FabAnimator
 import me.anon.lib.manager.ScheduleManager
+import me.anon.lib.show
 
 /**
  * Fragment for displaying list of feeding schedules
@@ -35,10 +39,40 @@ class FeedingScheduleListFragment : Fragment()
 		recycler_view.addItemDecoration(DividerItemDecoration(activity, VERTICAL))
 
 		adapter.onDeleteCallback = { schedule ->
+			val index = ScheduleManager.instance.schedules.indexOf(schedule)
 			ScheduleManager.instance.schedules.remove(schedule)
 			ScheduleManager.instance.save()
 			adapter.items = ScheduleManager.instance.schedules
 			adapter.notifyDataSetChanged()
+
+			SnackBar().show(activity, R.string.schedule_deleted, R.string.undo, {
+				FabAnimator.animateUp(fab_add)
+			}, {
+				FabAnimator.animateDown(fab_add)
+			}, {
+				ScheduleManager.instance.schedules.add(index, schedule)
+				ScheduleManager.instance.save()
+				adapter.items = ScheduleManager.instance.schedules
+				adapter.notifyDataSetChanged()
+			})
+		}
+
+		adapter.onCopyCallback = { schedule ->
+			val newSchedule = Kryo().copy(schedule)
+			ScheduleManager.instance.insert(newSchedule)
+			adapter.items = ScheduleManager.instance.schedules
+			adapter.notifyDataSetChanged()
+
+			SnackBar().show(activity, R.string.schedule_copied, R.string.undo, {
+				FabAnimator.animateUp(fab_add)
+			}, {
+				FabAnimator.animateDown(fab_add)
+			}, {
+				ScheduleManager.instance.schedules.remove(newSchedule)
+				ScheduleManager.instance.save()
+				adapter.items = ScheduleManager.instance.schedules
+				adapter.notifyDataSetChanged()
+			})
 		}
 
 		fab_add.setOnClickListener {
