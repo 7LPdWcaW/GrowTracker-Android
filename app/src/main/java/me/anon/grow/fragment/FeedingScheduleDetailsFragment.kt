@@ -8,6 +8,8 @@ import android.text.Html
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import com.esotericsoftware.kryo.Kryo
+import com.kenny.snackbar.SnackBar
 import kotlinx.android.synthetic.main.feeding_date_stub.view.*
 import kotlinx.android.synthetic.main.schedule_details_view.*
 import me.anon.grow.R
@@ -130,16 +132,33 @@ class FeedingScheduleDetailsFragment : Fragment()
 			feedingView.additives.text = Html.fromHtml(waterStr)
 			if (feedingView.additives.text.isEmpty()) feedingView.additives.visibility = View.GONE
 
-			feedingView.delete.setOnClickListener {
-				AlertDialog.Builder(it.context)
-					.setTitle("Are you sure?")
-					.setMessage("Delete selected schedule?")
-					.setPositiveButton("Yes") { dialog, which ->
+			feedingView.delete.setOnClickListener { view ->
+				AlertDialog.Builder(view.context)
+					.setTitle(R.string.confirm_title)
+					.setMessage(R.string.confirm_delete_schedule)
+					.setPositiveButton(R.string.confirm_positive) { dialog, which ->
+						val index = schedules.indexOf(schedule)
 						schedules.remove(schedule)
 						populateSchedules()
+
+						SnackBar.show(activity, R.string.schedule_deleted, R.string.undo) {
+							schedules.add(index, schedule)
+							populateSchedules()
+						}
 					}
-					.setNegativeButton("No", null)
+					.setNegativeButton(R.string.confirm_negative, null)
 					.show()
+			}
+
+			feedingView.copy.setOnClickListener { view ->
+				val newSchedule = Kryo().copy(schedule)
+				schedules.add(newSchedule)
+				populateSchedules()
+
+				SnackBar.show(activity, R.string.schedule_copied, R.string.undo) {
+					schedules.remove(newSchedule)
+					populateSchedules()
+				}
 			}
 
 			feedingView.setOnClickListener {
