@@ -2,6 +2,7 @@
 
 <RelativeLayout
 	xmlns:android="http://schemas.android.com/apk/res/android"
+	xmlns:app="http://schemas.android.com/apk/res-auto"
 	android:layout_width="match_parent"
 	android:layout_height="wrap_content"
 	android:paddingLeft="16dp"
@@ -15,16 +16,27 @@
 		android:id="@+id/delete"
 		android:src="@drawable/ic_delete"
 		android:padding="12dp"
-		android:layout_centerVertical="true"
 		android:layout_alignParentEnd="true"
+		android:layout_centerVertical="true"
 		android:tint="#666666"
+	/>
+
+	<ImageView
+		android:layout_width="wrap_content"
+		android:layout_height="wrap_content"
+		android:id="@+id/copy"
+		android:padding="12dp"
+		android:layout_toStartOf="@id/delete"
+		android:layout_centerVertical="true"
+		android:tint="#666666"
+		app:srcCompat="@drawable/ic_content_copy_black_24dp"
 	/>
 
 	<LinearLayout
 		android:layout_width="match_parent"
 		android:layout_height="wrap_content"
 		android:orientation="vertical"
-		android:layout_toStartOf="@id/delete"
+		android:layout_toStartOf="@id/copy"
 	>
 		<TextView
 			android:layout_width="wrap_content"
