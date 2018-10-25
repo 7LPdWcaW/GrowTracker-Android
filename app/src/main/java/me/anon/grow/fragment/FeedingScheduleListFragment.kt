@@ -36,7 +36,9 @@ class FeedingScheduleListFragment : Fragment()
 		adapter.items = ScheduleManager.instance.schedules
 		recycler_view.adapter = adapter
 		recycler_view.layoutManager = LinearLayoutManager(activity)
-		recycler_view.addItemDecoration(DividerItemDecoration(activity, VERTICAL))
+		recycler_view.addItemDecoration(DividerItemDecoration(activity, VERTICAL).also {
+			it.setDrawable(resources.getDrawable(R.drawable.left_inset_divider))
+		})
 
 		adapter.onDeleteCallback = { schedule ->
 			val index = ScheduleManager.instance.schedules.indexOf(schedule)
