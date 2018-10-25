@@ -23,6 +23,8 @@ android {
 				includeCompileClasspath false
 			}
 		}
+
+		vectorDrawables.useSupportLibrary = true
 	}
 
 	lintOptions {
