@@ -39,7 +39,6 @@ import me.anon.model.Action;
 import me.anon.model.Additive;
 import me.anon.model.EmptyAction;
 import me.anon.model.Plant;
-import me.anon.model.PlantMedium;
 import me.anon.model.PlantStage;
 import me.anon.model.StageChange;
 import me.anon.model.Water;
@@ -150,16 +149,13 @@ public class StatisticsFragment extends Fragment
 
 		setAdditiveStats();
 
-		if (plant.getMedium() == PlantMedium.HYDRO)
-		{
-			tempContainer.setVisibility(View.VISIBLE);
+		tempContainer.setVisibility(View.VISIBLE);
 
-			String[] tempAdditional = new String[3];
-			StatsHelper.setTempData(plant, temp, tempAdditional);
-			minppm.setText(tempAdditional[0]);
-			maxppm.setText(tempAdditional[1]);
-			aveppm.setText(tempAdditional[2]);
-		}
+		String[] tempAdditional = new String[3];
+		StatsHelper.setTempData(plant, temp, tempAdditional);
+		minppm.setText(tempAdditional[0]);
+		maxppm.setText(tempAdditional[1]);
+		aveppm.setText(tempAdditional[2]);
 	}
 
 	private void setAdditiveStats()
