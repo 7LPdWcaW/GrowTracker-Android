@@ -6,9 +6,11 @@ import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.util.Pair;
 import android.view.LayoutInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.WindowManager;
+import android.widget.PopupMenu;
 import android.widget.TextView;
 
 import com.github.mikephil.charting.charts.LineChart;
@@ -68,6 +70,7 @@ public class StatisticsFragment extends Fragment
 	}
 
 	@Views.InjectView(R.id.additives) private LineChart additives;
+	@Views.InjectView(R.id.additive_selector) private TextView additivesSpinner;
 	@Views.InjectView(R.id.input_ph) private LineChart inputPh;
 	@Views.InjectView(R.id.ppm) private LineChart ppm;
 	@Views.InjectView(R.id.temp) private LineChart temp;
@@ -103,6 +106,8 @@ public class StatisticsFragment extends Fragment
 	@Views.InjectView(R.id.min_temp) private TextView mintemp;
 	@Views.InjectView(R.id.max_temp) private TextView maxtemp;
 	@Views.InjectView(R.id.ave_temp) private TextView avetemp;
+
+	private Set<String> checkedAdditives = null;
 
 	@Nullable @Override public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState)
 	{
@@ -162,9 +167,11 @@ public class StatisticsFragment extends Fragment
 		ArrayList<Action> actions = plant.getActions();
 		ArrayList<Pair<String, ArrayList<Entry>>> vals = new ArrayList<>();
 		ArrayList<String> xVals = new ArrayList<>();
-		Set<String> additiveNames = new HashSet<>();
+		final Set<String> additiveNames = new HashSet<>();
 		LineData data = new LineData();
 		LinkedHashMap<PlantStage, Action> stageTimes = plant.getStages();
+		double min = Double.MAX_VALUE;
+		double max = Double.MIN_VALUE;
 
 		for (Action action : actions)
 		{
@@ -174,6 +181,8 @@ public class StatisticsFragment extends Fragment
 				for (Additive additive : actionAdditives)
 				{
 					additiveNames.add(additive.getDescription());
+					min = Math.min(min, additive.getAmount());
+					max = Math.max(max, additive.getAmount());
 				}
 
 				PlantStage stage = null;
@@ -202,8 +211,14 @@ public class StatisticsFragment extends Fragment
 			}
 		}
 
+		if (checkedAdditives == null)
+		{
+			checkedAdditives = new HashSet<>();
+			checkedAdditives.addAll(additiveNames);
+		}
+
 		ArrayList<LineDataSet> dataSets = new ArrayList<>();
-		for (String additiveName : additiveNames)
+		for (String additiveName : checkedAdditives)
 		{
 			int index = 0;
 			ArrayList<Entry> additiveValues = new ArrayList<>();
@@ -220,9 +235,9 @@ public class StatisticsFragment extends Fragment
 							additiveValues.add(new Entry(additive.getAmount().floatValue(), index));
 						}
 					}
-				}
 
-				index++;
+					index++;
+				}
 			}
 
 			LineDataSet dataSet = new LineDataSet(additiveValues, additiveName);
@@ -231,7 +246,8 @@ public class StatisticsFragment extends Fragment
 			dataSet.setDrawCircleHole(false);
 
 			String[] colours = getResources().getStringArray(R.array.stats_colours);
-			dataSet.setColor(dataSets.size() < colours.length ? Color.parseColor(colours[dataSets.size()]) : (additiveName.hashCode() + new Random().nextInt(0xffffff)));
+			ArrayList<String> namesList = new ArrayList<>(additiveNames);
+			dataSet.setColor(dataSets.size() < colours.length ? Color.parseColor(colours[namesList.indexOf(additiveName)]) : (additiveName.hashCode() + new Random().nextInt(0xffffff)));
 
 			dataSet.setValueTextColor(0xffffffff);
 			dataSet.setCircleSize(2.0f);
@@ -256,6 +272,8 @@ public class StatisticsFragment extends Fragment
 		additives.getXAxis().setTextColor(0xffffffff);
 		additives.getXAxis().setTextSize(14f);
 		additives.getAxisRight().setEnabled(false);
+		additives.getAxisLeft().setAxisMinValue((float)(min - 2.0f));
+		additives.getAxisLeft().setAxisMaxValue((float)(max + 2.0f));
 		additives.getAxisLeft().setTextColor(0xffffffff);
 		additives.getAxisLeft().setValueFormatter(new YAxisValueFormatter()
 		{
@@ -270,6 +288,56 @@ public class StatisticsFragment extends Fragment
 		additives.setPinchZoom(true);
 		additives.setDoubleTapToZoomEnabled(true);
 		additives.setData(lineData);
+		additives.notifyDataSetChanged();
+		additives.postInvalidate();
+
+		additivesSpinner.setOnClickListener(new View.OnClickListener()
+		{
+			@Override public void onClick(View v)
+			{
+				PopupMenu menu = new PopupMenu(v.getContext(), v);
+				menu.getMenu().add("All/None").setCheckable(false);
+				for (String additiveName : additiveNames)
+				{
+					menu.getMenu().add(additiveName).setCheckable(true).setChecked(checkedAdditives.contains(additiveName));
+				}
+
+				menu.setOnMenuItemClickListener(new PopupMenu.OnMenuItemClickListener()
+				{
+					@Override public boolean onMenuItemClick(MenuItem item)
+					{
+						if (!item.isCheckable())
+						{
+							if (checkedAdditives.size() != additiveNames.size())
+							{
+								checkedAdditives.clear();
+								checkedAdditives.addAll(additiveNames);
+							}
+							else
+							{
+								checkedAdditives.clear();
+							}
+						}
+						else
+						{
+							if (item.isChecked())
+							{
+								checkedAdditives.remove(item.getTitle().toString());
+							}
+							else
+							{
+								checkedAdditives.add(item.getTitle().toString());
+							}
+						}
+
+						setAdditiveStats();
+						return true;
+					}
+				});
+
+				menu.show();
+			}
+		});
 	}
 
 	private void setStatistics()
