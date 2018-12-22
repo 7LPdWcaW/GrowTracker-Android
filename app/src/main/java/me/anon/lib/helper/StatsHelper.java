@@ -1,6 +1,7 @@
 package me.anon.lib.helper;
 
 import com.github.mikephil.charting.charts.LineChart;
+import com.github.mikephil.charting.components.XAxis;
 import com.github.mikephil.charting.components.YAxis;
 import com.github.mikephil.charting.data.Entry;
 import com.github.mikephil.charting.data.LineData;
@@ -10,9 +11,12 @@ import com.github.mikephil.charting.formatter.YAxisValueFormatter;
 import com.github.mikephil.charting.utils.ViewPortHandler;
 
 import java.util.ArrayList;
+import java.util.LinkedHashMap;
+import java.util.ListIterator;
 
 import me.anon.model.Action;
 import me.anon.model.Plant;
+import me.anon.model.PlantStage;
 import me.anon.model.Water;
 
 /**
@@ -42,6 +46,7 @@ public class StatsHelper
 		ArrayList<Entry> averageVals = new ArrayList<>();
 		ArrayList<String> xVals = new ArrayList<>();
 		LineData data = new LineData();
+		LinkedHashMap<PlantStage, Action> stageTimes = plant.getStages();
 		float min = Float.MAX_VALUE;
 		float max = Float.MIN_VALUE;
 		float totalIn = 0;
@@ -71,7 +76,30 @@ public class StatsHelper
 					totalOut += ((Water)action).getRunoff().floatValue();
 				}
 
-				xVals.add("");
+				PlantStage stage = null;
+				long changeDate = 0;
+				ListIterator<PlantStage> iterator = new ArrayList(stageTimes.keySet()).listIterator(stageTimes.size());
+				while (iterator.hasPrevious())
+				{
+					PlantStage key = iterator.previous();
+					Action changeAction = stageTimes.get(key);
+					if (action.getDate() > changeAction.getDate())
+					{
+						stage = key;
+						changeDate = changeAction.getDate();
+					}
+				}
+
+				long difference = action.getDate() - changeDate;
+				if (stage != null)
+				{
+					xVals.add(((int)TimeHelper.toDays(difference) + "" + stage.getPrintString().charAt(0)).toLowerCase());
+				}
+				else
+				{
+					xVals.add("");
+				}
+
 				index++;
 			}
 		}
@@ -120,6 +148,9 @@ public class StatsHelper
 			chart.setDrawGridBackground(false);
 //			chart.setHighlightEnabled(false);
 			chart.getLegend().setTextColor(0xffffffff);
+			chart.getXAxis().setPosition(XAxis.XAxisPosition.BOTTOM);
+			chart.getXAxis().setTextColor(0xffffffff);
+			chart.getXAxis().setTextSize(14f);
 			chart.getAxisLeft().setTextColor(0xffffffff);
 			chart.getAxisRight().setEnabled(false);
 			chart.getAxisLeft().setValueFormatter(new YAxisValueFormatter()
@@ -160,6 +191,7 @@ public class StatsHelper
 		ArrayList<Entry> vals = new ArrayList<>();
 		ArrayList<String> xVals = new ArrayList<>();
 		LineData data = new LineData();
+		LinkedHashMap<PlantStage, Action> stageTimes = plant.getStages();
 
 		long min = Long.MAX_VALUE;
 		long max = Long.MIN_VALUE;
@@ -171,7 +203,29 @@ public class StatsHelper
 			if (action instanceof Water && ((Water)action).getPpm() != null)
 			{
 				vals.add(new Entry(((Water)action).getPpm().floatValue(), index++));
-				xVals.add("");
+				PlantStage stage = null;
+				long changeDate = 0;
+				ListIterator<PlantStage> iterator = new ArrayList(stageTimes.keySet()).listIterator(stageTimes.size());
+				while (iterator.hasPrevious())
+				{
+					PlantStage key = iterator.previous();
+					Action changeAction = stageTimes.get(key);
+					if (action.getDate() > changeAction.getDate())
+					{
+						stage = key;
+						changeDate = changeAction.getDate();
+					}
+				}
+
+				long difference = action.getDate() - changeDate;
+				if (stage != null)
+				{
+					xVals.add(((int)TimeHelper.toDays(difference) + "" + stage.getPrintString().charAt(0)).toLowerCase());
+				}
+				else
+				{
+					xVals.add("");
+				}
 
 				min = Math.min(min, ((Water)action).getPpm().longValue());
 				max = Math.max(max, ((Water)action).getPpm().longValue());
@@ -197,6 +251,9 @@ public class StatsHelper
 //			chart.setHighlightEnabled(false);
 			chart.getLegend().setEnabled(false);
 			chart.getAxisLeft().setTextColor(0xffffffff);
+			chart.getXAxis().setPosition(XAxis.XAxisPosition.BOTTOM);
+			chart.getXAxis().setTextColor(0xffffffff);
+			chart.getXAxis().setTextSize(14f);
 			chart.getAxisRight().setEnabled(false);
 			chart.getAxisLeft().setXOffset(8.0f);
 			chart.setScaleYEnabled(false);
@@ -226,6 +283,7 @@ public class StatsHelper
 		ArrayList<Entry> vals = new ArrayList<>();
 		ArrayList<String> xVals = new ArrayList<>();
 		LineData data = new LineData();
+		LinkedHashMap<PlantStage, Action> stageTimes = plant.getStages();
 		float min = -100f;
 		float max = 100f;
 		float total = 0;
@@ -236,7 +294,29 @@ public class StatsHelper
 			if (action instanceof Water && ((Water)action).getTemp() != null)
 			{
 				vals.add(new Entry(((Water)action).getTemp().floatValue(), index++));
-				xVals.add("");
+				PlantStage stage = null;
+				long changeDate = 0;
+				ListIterator<PlantStage> iterator = new ArrayList(stageTimes.keySet()).listIterator(stageTimes.size());
+				while (iterator.hasPrevious())
+				{
+					PlantStage key = iterator.previous();
+					Action changeAction = stageTimes.get(key);
+					if (action.getDate() > changeAction.getDate())
+					{
+						stage = key;
+						changeDate = changeAction.getDate();
+					}
+				}
+
+				long difference = action.getDate() - changeDate;
+				if (stage != null)
+				{
+					xVals.add(((int)TimeHelper.toDays(difference) + "" + stage.getPrintString().charAt(0)).toLowerCase());
+				}
+				else
+				{
+					xVals.add("");
+				}
 
 				min = Math.min(min, ((Water)action).getTemp().floatValue());
 				max = Math.max(max, ((Water)action).getTemp().floatValue());
@@ -276,6 +356,9 @@ public class StatsHelper
 			chart.getAxisLeft().setXOffset(8.0f);
 			chart.getAxisLeft().setAxisMinValue(min - 5f);
 			chart.getAxisLeft().setAxisMaxValue(max + 5f);
+			chart.getXAxis().setPosition(XAxis.XAxisPosition.BOTTOM);
+			chart.getXAxis().setTextColor(0xffffffff);
+			chart.getXAxis().setTextSize(14f);
 			chart.getAxisLeft().setStartAtZero(false);
 			chart.setScaleYEnabled(false);
 			chart.setDescription("");
