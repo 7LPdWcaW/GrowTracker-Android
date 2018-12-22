@@ -255,15 +255,12 @@ public class WateringFragment extends Fragment
 					amount.setHint(String.valueOf(ML.to(selectedDeliveryUnit, hintFeed.getAmount())) + selectedDeliveryUnit.getLabel());
 				}
 
-				if (plants.get(0).getMedium() == PlantMedium.HYDRO || plants.get(0).getMedium() == PlantMedium.AERO)
-				{
-					tempContainer.setVisibility(View.VISIBLE);
-					tempLabel.setText("Temp (º" + selectedTemperatureUnit.getLabel() + ")");
+				tempContainer.setVisibility(View.VISIBLE);
+				tempLabel.setText("Temp (º" + selectedTemperatureUnit.getLabel() + ")");
 
-					if (hintFeed.getTemp() != null)
-					{
-						temp.setHint(String.valueOf(CELCIUS.to(selectedTemperatureUnit, hintFeed.getTemp())) + selectedTemperatureUnit.getLabel());
-					}
+				if (hintFeed.getTemp() != null)
+				{
+					temp.setHint(String.valueOf(CELCIUS.to(selectedTemperatureUnit, hintFeed.getTemp())) + selectedTemperatureUnit.getLabel());
 				}
 
 				notes.setHint(hintFeed.getNotes());
@@ -337,14 +334,11 @@ public class WateringFragment extends Fragment
 				amount.setText(String.valueOf(ML.to(selectedDeliveryUnit, water.getAmount())));
 			}
 
-			if (plants.get(0).getMedium() == PlantMedium.HYDRO)
-			{
-				tempContainer.setVisibility(View.VISIBLE);
+			tempContainer.setVisibility(View.VISIBLE);
 
-				if (water.getTemp() != null)
-				{
-					temp.setHint(String.valueOf(CELCIUS.to(selectedTemperatureUnit, water.getTemp())) + selectedTemperatureUnit.getLabel());
-				}
+			if (water.getTemp() != null)
+			{
+				temp.setHint(String.valueOf(CELCIUS.to(selectedTemperatureUnit, water.getTemp())) + selectedTemperatureUnit.getLabel());
 			}
 
 			populateAdditives();
