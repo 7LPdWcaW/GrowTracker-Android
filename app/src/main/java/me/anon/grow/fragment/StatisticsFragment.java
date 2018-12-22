@@ -27,12 +27,7 @@ import me.anon.model.StageChange;
 import me.anon.model.Water;
 
 /**
- * // TODO: Add class description
- *
- * TODO: Average time between feeds
- *
  * @author 7LPdWcaW
- * @documentation // TODO Reference flow doc
  * @project GrowTracker
  */
 @Views.Injectable
