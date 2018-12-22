@@ -1,10 +1,13 @@
 package me.anon.lib.helper;
 
 import com.github.mikephil.charting.charts.LineChart;
+import com.github.mikephil.charting.components.YAxis;
 import com.github.mikephil.charting.data.Entry;
 import com.github.mikephil.charting.data.LineData;
 import com.github.mikephil.charting.data.LineDataSet;
-import com.github.mikephil.charting.utils.ValueFormatter;
+import com.github.mikephil.charting.formatter.ValueFormatter;
+import com.github.mikephil.charting.formatter.YAxisValueFormatter;
+import com.github.mikephil.charting.utils.ViewPortHandler;
 
 import java.util.ArrayList;
 
@@ -17,9 +20,9 @@ import me.anon.model.Water;
  */
 public class StatsHelper
 {
-	private static ValueFormatter formatter = new ValueFormatter()
+	public static ValueFormatter formatter = new ValueFormatter()
 	{
-		@Override public String getFormattedValue(float value)
+		@Override public String getFormattedValue(float value, Entry entry, int dataSetIndex, ViewPortHandler viewPortHandler)
 		{
 			return String.format("%.2f", value);
 		}
@@ -115,11 +118,17 @@ public class StatsHelper
 			chart.setBackgroundColor(0xff006064);
 			chart.setGridBackgroundColor(0xff006064);
 			chart.setDrawGridBackground(false);
-			chart.setHighlightEnabled(false);
+//			chart.setHighlightEnabled(false);
 			chart.getLegend().setTextColor(0xffffffff);
 			chart.getAxisLeft().setTextColor(0xffffffff);
 			chart.getAxisRight().setEnabled(false);
-			chart.getAxisLeft().setValueFormatter(formatter);
+			chart.getAxisLeft().setValueFormatter(new YAxisValueFormatter()
+			{
+				@Override public String getFormattedValue(float value, YAxis yAxis)
+				{
+					return String.format("%.2f", value);
+				}
+			});
 			chart.getAxisLeft().setAxisMinValue(min - 0.5f);
 			chart.getAxisLeft().setAxisMaxValue(max + 0.5f);
 			chart.getAxisLeft().setStartAtZero(false);
@@ -185,7 +194,7 @@ public class StatsHelper
 			chart.setBackgroundColor(0xff1B5E20);
 			chart.setGridBackgroundColor(0xff1B5E20);
 			chart.setDrawGridBackground(false);
-			chart.setHighlightEnabled(false);
+//			chart.setHighlightEnabled(false);
 			chart.getLegend().setEnabled(false);
 			chart.getAxisLeft().setTextColor(0xffffffff);
 			chart.getAxisRight().setEnabled(false);
@@ -253,11 +262,17 @@ public class StatsHelper
 			chart.setBackgroundColor(0xff311B92);
 			chart.setGridBackgroundColor(0xff311B92);
 			chart.setDrawGridBackground(false);
-			chart.setHighlightEnabled(false);
+//			chart.setHighlightEnabled(false);
 			chart.getLegend().setEnabled(false);
 			chart.getAxisLeft().setTextColor(0xffffffff);
 			chart.getAxisRight().setEnabled(false);
-			chart.getAxisLeft().setValueFormatter(formatter);
+			chart.getAxisLeft().setValueFormatter(new YAxisValueFormatter()
+			{
+				@Override public String getFormattedValue(float value, YAxis yAxis)
+				{
+					return String.format("%.2f", value);
+				}
+			});
 			chart.getAxisLeft().setXOffset(8.0f);
 			chart.getAxisLeft().setAxisMinValue(min - 5f);
 			chart.getAxisLeft().setAxisMaxValue(max + 5f);
