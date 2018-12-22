@@ -352,16 +352,22 @@
 				android:layout_height="wrap_content"
 				android:id="@+id/additive_title"
 				android:text="@string/additives"
+				android:paddingBottom="8dp"
 				style="@style/SectionTitle"
 				android:textColor="#ffffffff"
 			/>
 
-			<android.support.v7.widget.AppCompatSpinner
+			<TextView
 				android:layout_width="wrap_content"
 				android:layout_height="wrap_content"
 				android:id="@+id/additive_selector"
+				android:text="Filter additives"
+				android:textColor="#ffffff"
 				chart:layout_constraintTop_toTopOf="parent"
 				chart:layout_constraintEnd_toEndOf="parent"
+				android:drawableEnd="@drawable/ic_dropdown"
+				android:drawablePadding="8dp"
+				android:paddingBottom="8dp"
 			/>
 
 			<com.github.mikephil.charting.charts.LineChart
@@ -369,7 +375,6 @@
 				android:layout_height="250dp"
 				android:id="@+id/additives"
 				android:padding="16dp"
-				android:layout_marginTop="8dp"
 				chart:layout_constraintTop_toBottomOf="@id/additive_title"
 				chart:layout_constraintStart_toStartOf="parent"
 				chart:layout_constraintEnd_toEndOf="parent"
