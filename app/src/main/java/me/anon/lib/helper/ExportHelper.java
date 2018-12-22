@@ -186,17 +186,14 @@ public class ExportHelper
 		plantDetails.append(" - *Average input ppm*: ").append(avePpm[2]);
 		plantDetails.append(NEW_LINE);
 
-		if (plant.getMedium() == PlantMedium.HYDRO)
-		{
-			String[] aveTemp = new String[3];
-			StatsHelper.setTempData(plant, null, aveTemp);
-			plantDetails.append(" - *Minimum input temperature*: ").append(aveTemp[0]);
-			plantDetails.append(NEW_LINE);
-			plantDetails.append(" - *Maximum input temperature*: ").append(aveTemp[1]);
-			plantDetails.append(NEW_LINE);
-			plantDetails.append(" - *Average input temperature*: ").append(aveTemp[2]);
-			plantDetails.append(NEW_LINE);
-		}
+		String[] aveTemp = new String[3];
+		StatsHelper.setTempData(plant, null, aveTemp);
+		plantDetails.append(" - *Minimum input temperature*: ").append(aveTemp[0]);
+		plantDetails.append(NEW_LINE);
+		plantDetails.append(" - *Maximum input temperature*: ").append(aveTemp[1]);
+		plantDetails.append(NEW_LINE);
+		plantDetails.append(" - *Average input temperature*: ").append(aveTemp[2]);
+		plantDetails.append(NEW_LINE);
 
 		plantDetails.append("##Timeline");
 		plantDetails.append(NEW_LINE);

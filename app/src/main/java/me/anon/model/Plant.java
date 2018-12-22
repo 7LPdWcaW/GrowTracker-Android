@@ -6,8 +6,7 @@ import android.support.annotation.Nullable;
 
 import java.util.ArrayList;
 import java.util.Comparator;
-import java.util.HashMap;
-import java.util.Map;
+import java.util.LinkedHashMap;
 import java.util.SortedMap;
 import java.util.TreeMap;
 import java.util.UUID;
@@ -140,8 +139,6 @@ public class Plant
 	 * Stage is now calculated via latest {@link StageChange} action
 	 */
 	//@Deprecated private PlantStage stage;
-
-
 
 	public String generateShortSummary(Context context)
 	{
@@ -314,9 +311,9 @@ public class Plant
 	 * Returns a map of plant stages
 	 * @return
 	 */
-	public Map<PlantStage, Action> getStages()
+	public LinkedHashMap<PlantStage, Action> getStages()
 	{
-		HashMap<PlantStage, Action> stages = new HashMap<>();
+		LinkedHashMap<PlantStage, Action> stages = new LinkedHashMap<>();
 
 		for (int index = actions.size() - 1; index >= 0; index--)
 		{
