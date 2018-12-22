@@ -183,7 +183,12 @@ class FeedingScheduleDetailsFragment : Fragment()
 		new_schedule.setOnClickListener {
 			if (scheduleIndex < 0)
 			{
-				ScheduleManager.instance.insert(FeedingSchedule())
+				schedules = arrayListOf()
+				ScheduleManager.instance.insert(FeedingSchedule(
+					name = title.text.toString(),
+					description = description.text.toString(),
+					schedules = schedules
+				))
 				scheduleIndex = ScheduleManager.instance.schedules.size - 1
 			}
 
