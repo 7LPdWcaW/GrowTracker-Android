@@ -69,15 +69,6 @@ public class StatsHelper
 				}
 
 				xVals.add("");
-
-				float aveIn = totalIn;
-				float aveOut = totalOut;
-				if (index > 0)
-				{
-					aveIn /= (float)index;
-					aveOut /= (float)index;
-				}
-
 				index++;
 			}
 		}
@@ -144,7 +135,7 @@ public class StatsHelper
 		{
 			additionalRef[0] = String.valueOf(min);
 			additionalRef[1] = String.valueOf(max);
-			additionalRef[2] = String.format("%1$,.2f", (totalIn / (double)index));
+			additionalRef[2] = String.format("%1$,.2f", (totalIn / (double)inputVals.size()));
 		}
 	}
 
@@ -163,7 +154,7 @@ public class StatsHelper
 
 		long min = Long.MAX_VALUE;
 		long max = Long.MIN_VALUE;
-		long ave = 0;
+		long total = 0;
 
 		int index = 0;
 		for (Action action : plant.getActions())
@@ -175,7 +166,7 @@ public class StatsHelper
 
 				min = Math.min(min, ((Water)action).getPpm().longValue());
 				max = Math.max(max, ((Water)action).getPpm().longValue());
-				ave += ((Water)action).getPpm();
+				total += ((Water)action).getPpm();
 			}
 		}
 
@@ -210,7 +201,7 @@ public class StatsHelper
 		{
 			additionalRef[0] = String.valueOf(min);
 			additionalRef[1] = String.valueOf(max);
-			additionalRef[2] = String.format("%1$,.2f", (ave / (double)index));
+			additionalRef[2] = String.format("%1$,.2f", (total / (double)vals.size()));
 		}
 	}
 
@@ -228,7 +219,7 @@ public class StatsHelper
 		LineData data = new LineData();
 		float min = -100f;
 		float max = 100f;
-		float ave = 0;
+		float total = 0;
 
 		int index = 0;
 		for (Action action : plant.getActions())
@@ -240,7 +231,7 @@ public class StatsHelper
 
 				min = Math.min(min, ((Water)action).getTemp().floatValue());
 				max = Math.max(max, ((Water)action).getTemp().floatValue());
-				ave += ((Water)action).getTemp().floatValue();
+				total += ((Water)action).getTemp().floatValue();
 			}
 		}
 
@@ -282,7 +273,7 @@ public class StatsHelper
 		{
 			additionalRef[0] = String.valueOf(min);
 			additionalRef[1] = String.valueOf(max);
-			additionalRef[2] = String.format("%1$,.2f", (ave / (double)index));
+			additionalRef[2] = String.format("%1$,.2f", (total / (double)vals.size()));
 		}
 	}
 }
