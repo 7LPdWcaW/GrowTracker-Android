@@ -26,15 +26,16 @@ class FeedingDateHolder(val adapter: FeedingDateAdapter, itemView: View) : Recyc
 	{
 		delete.visibility = View.GONE
 		copy.visibility = View.GONE
+		itemView.setBackgroundColor(0x00FFFFFF.toInt())
 
 		val lastStage = adapter.plantStages.toSortedMap().lastKey()
 		val days = TimeHelper.toDays(adapter.plantStages[lastStage] ?: 0).toInt()
 
-		itemView.setBackgroundColor(0x00FFFFFF.toInt())
-
 		if (lastStage.ordinal >= feedingSchedule.stageRange[0].ordinal)
 		{
-			if (days >= feedingSchedule.dateRange[0] && days <= feedingSchedule.dateRange[1])
+			if (days >= feedingSchedule.dateRange[0]
+			&& ((days <= feedingSchedule.dateRange[1] && lastStage.ordinal == feedingSchedule.stageRange[0].ordinal)
+				|| (lastStage.ordinal < feedingSchedule.stageRange[1].ordinal)))
 			{
 				itemView.setBackgroundColor(0x70BBDEFB.toInt())
 			}
