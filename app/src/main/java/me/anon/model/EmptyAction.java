@@ -13,6 +13,10 @@ public class EmptyAction extends Action
 {
 	@Nullable private ActionName action;
 
+	public EmptyAction()
+	{
+	}
+
 	public EmptyAction(Action.ActionName action)
 	{
 		this.setDate(System.currentTimeMillis());

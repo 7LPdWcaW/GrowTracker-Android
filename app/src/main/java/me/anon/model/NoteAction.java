@@ -9,6 +9,10 @@ package me.anon.model;
  */
 public class NoteAction extends Action
 {
+	public NoteAction()
+	{
+	}
+
 	public NoteAction(String note)
 	{
 		this.setDate(System.currentTimeMillis());
