@@ -1,6 +1,7 @@
 package me.anon.lib.helper;
 
 import android.graphics.Color;
+import android.support.v4.util.Pair;
 import android.widget.TextView;
 
 import com.github.mikephil.charting.charts.LineChart;
@@ -16,11 +17,16 @@ import com.github.mikephil.charting.highlight.Highlight;
 import com.github.mikephil.charting.utils.ViewPortHandler;
 
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.LinkedHashMap;
+import java.util.List;
 import java.util.ListIterator;
+import java.util.Random;
+import java.util.Set;
 
 import me.anon.grow.R;
 import me.anon.model.Action;
+import me.anon.model.Additive;
 import me.anon.model.Plant;
 import me.anon.model.PlantStage;
 import me.anon.model.Water;
@@ -104,6 +110,104 @@ public class StatsHelper
 		data.setHighlightLineWidth(2f);
 		data.setHighLightColor(colour);
 		data.setDrawValues(false);
+		data.setValueFormatter(formatter);
+	}
+
+	public static void setAdditiveData(Plant plant, LineChart chart, Set<String> checkedAdditives)
+	{
+		ArrayList<Action> actions = plant.getActions();
+		ArrayList<Pair<String, ArrayList<Entry>>> vals = new ArrayList<>();
+		ArrayList<String> xVals = new ArrayList<>();
+		final Set<String> additiveNames = new HashSet<>();
+		LineData data = new LineData();
+		LinkedHashMap<PlantStage, Action> stageTimes = plant.getStages();
+		double min = Double.MAX_VALUE;
+		double max = Double.MIN_VALUE;
+
+		for (Action action : actions)
+		{
+			if (action instanceof Water)
+			{
+				List<Additive> actionAdditives = ((Water)action).getAdditives();
+				for (Additive additive : actionAdditives)
+				{
+					additiveNames.add(additive.getDescription());
+					min = Math.min(min, additive.getAmount());
+					max = Math.max(max, additive.getAmount());
+				}
+
+				PlantStage stage = null;
+				long changeDate = 0;
+				ListIterator<PlantStage> iterator = new ArrayList(stageTimes.keySet()).listIterator(stageTimes.size());
+				while (iterator.hasPrevious())
+				{
+					PlantStage key = iterator.previous();
+					Action changeAction = stageTimes.get(key);
+					if (action.getDate() > changeAction.getDate())
+					{
+						stage = key;
+						changeDate = changeAction.getDate();
+					}
+				}
+
+				long difference = action.getDate() - changeDate;
+				if (stage != null)
+				{
+					xVals.add(((int)TimeHelper.toDays(difference) + "" + stage.getPrintString().charAt(0)).toLowerCase());
+				}
+				else
+				{
+					xVals.add("");
+				}
+			}
+		}
+
+		if (checkedAdditives == null)
+		{
+			checkedAdditives = new HashSet<>();
+			checkedAdditives.addAll(additiveNames);
+		}
+
+		ArrayList<LineDataSet> dataSets = new ArrayList<>();
+		for (String additiveName : checkedAdditives)
+		{
+			int index = 0;
+			ArrayList<Entry> additiveValues = new ArrayList<>();
+			for (Action action : actions)
+			{
+				if (action instanceof Water)
+				{
+					boolean found = false;
+					for (Additive additive : ((Water)action).getAdditives())
+					{
+						if (additiveName.equals(additive.getDescription()))
+						{
+							found = true;
+							additiveValues.add(new Entry(additive.getAmount().floatValue(), index));
+						}
+					}
+
+					index++;
+				}
+			}
+
+			LineDataSet dataSet = new LineDataSet(additiveValues, additiveName);
+
+			String[] colours = chart.getResources().getStringArray(R.array.stats_colours);
+			ArrayList<String> namesList = new ArrayList<>(additiveNames);
+			StatsHelper.styleDataset(dataSet, dataSets.size() < colours.length ? Color.parseColor(colours[namesList.indexOf(additiveName)]) : (additiveName.hashCode() + new Random().nextInt(0xffffff)));
+
+			dataSet.setValueFormatter(StatsHelper.formatter);
+			dataSets.add(dataSet);
+		}
+
+		LineData lineData = new LineData(xVals, dataSets);
+		lineData.setValueFormatter(StatsHelper.formatter);
+		lineData.setValueTextColor(0xff666666);
+
+		styleGraph(chart);
+
+		chart.setData(lineData);
 	}
 
 	/**

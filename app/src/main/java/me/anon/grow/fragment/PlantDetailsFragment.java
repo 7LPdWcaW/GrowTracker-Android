@@ -5,6 +5,7 @@ import android.app.Activity;
 import android.app.AlertDialog;
 import android.app.Fragment;
 import android.app.Notification;
+import android.app.NotificationChannel;
 import android.app.NotificationManager;
 import android.app.PendingIntent;
 import android.app.ProgressDialog;
@@ -74,7 +75,6 @@ import me.anon.lib.Views;
 import me.anon.lib.helper.AddonHelper;
 import me.anon.lib.helper.ExportHelper;
 import me.anon.lib.helper.FabAnimator;
-import me.anon.lib.helper.GsonHelper;
 import me.anon.lib.helper.PermissionHelper;
 import me.anon.lib.manager.GardenManager;
 import me.anon.lib.manager.PlantManager;
@@ -666,18 +666,22 @@ public class PlantDetailsFragment extends Fragment
 			Toast.makeText(getActivity(), "Exporting grow log...", Toast.LENGTH_SHORT).show();
 			NotificationManager notificationManager = (NotificationManager)getActivity().getSystemService(Context.NOTIFICATION_SERVICE);
 
+			if (Build.VERSION.SDK_INT >= 26)
+			{
+				NotificationChannel channel = new NotificationChannel("export", "Export status", NotificationManager.IMPORTANCE_DEFAULT);
+				notificationManager.createNotificationChannel(channel);
+			}
+
 			notificationManager.cancel(plantIndex);
 
-			Notification exportNotification = new NotificationCompat.Builder(getActivity())
+			Notification exportNotification = new NotificationCompat.Builder(getActivity(), "export")
 				.setContentText("Exporting grow log for " + plant.getName())
 				.setContentTitle("Exporting")
 				.setContentIntent(PendingIntent.getActivity(getActivity(), 0, new Intent(), PendingIntent.FLAG_UPDATE_CURRENT))
 				.setTicker("Exporting grow log for " + plant.getName())
-				.setPriority(NotificationCompat.PRIORITY_HIGH)
 				.setVisibility(NotificationCompat.VISIBILITY_PUBLIC)
 				.setSmallIcon(R.drawable.ic_stat_name)
-				.setVibrate(new long[0])
-				.getNotification();
+				.build();
 
 			notificationManager.notify(plantIndex, exportNotification);
 
@@ -687,18 +691,24 @@ public class PlantDetailsFragment extends Fragment
 				{
 					if (file != null && file.exists() && getActivity() != null)
 					{
-						NotificationManager notificationManager = (NotificationManager)context.getSystemService(Context.NOTIFICATION_SERVICE);
-						Notification finishNotification = new NotificationCompat.Builder(getActivity())
+						NotificationManager notificationManager = (NotificationManager)getActivity().getSystemService(Context.NOTIFICATION_SERVICE);
+						notificationManager.cancel(plantIndex);
+
+						Intent openIntent = new Intent(Intent.ACTION_VIEW);
+						Uri apkURI = FileProvider.getUriForFile(getActivity(), getActivity().getApplicationContext().getPackageName() + ".provider", file);
+						openIntent.setDataAndType(apkURI, "application/zip");
+						openIntent.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION);
+
+						Notification finishNotification = new NotificationCompat.Builder(getActivity(), "export")
 							.setContentText("Exported " + plant.getName() + " to " + file.getAbsolutePath())
 							.setTicker("Export of " + plant.getName() + " complete")
 							.setContentTitle("Export Complete")
-							.setContentIntent(PendingIntent.getActivity(getActivity(), 0, new Intent(), PendingIntent.FLAG_UPDATE_CURRENT))
+							.setContentIntent(PendingIntent.getActivity(getActivity(), 0, openIntent, PendingIntent.FLAG_UPDATE_CURRENT))
 							.setSmallIcon(R.drawable.ic_stat_done)
 							.setPriority(NotificationCompat.PRIORITY_HIGH)
 							.setVisibility(NotificationCompat.VISIBILITY_PUBLIC)
 							.setAutoCancel(true)
-							.setVibrate(new long[0])
-							.getNotification();
+							.build();
 						notificationManager.notify(plantIndex, finishNotification);
 
 						if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT)
