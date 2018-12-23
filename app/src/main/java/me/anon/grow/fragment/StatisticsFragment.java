@@ -117,6 +117,11 @@ public class StatisticsFragment extends Fragment
 	{
 		super.onActivityCreated(savedInstanceState);
 
+		if (savedInstanceState != null)
+		{
+			checkedAdditives = new HashSet<>(savedInstanceState.getStringArrayList("checked_additives"));
+		}
+
 		getActivity().setTitle("Plant statistics");
 
 		if (getArguments() != null)
@@ -153,6 +158,12 @@ public class StatisticsFragment extends Fragment
 		minppm.setText(tempAdditional[0]);
 		maxppm.setText(tempAdditional[1]);
 		aveppm.setText(tempAdditional[2]);
+	}
+
+	@Override public void onSaveInstanceState(Bundle outState)
+	{
+		super.onSaveInstanceState(outState);
+		outState.putStringArrayList("checked_additives", new ArrayList<String>(checkedAdditives));
 	}
 
 	private void setAdditiveStats()
