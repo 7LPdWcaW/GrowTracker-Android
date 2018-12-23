@@ -1,6 +1,10 @@
 package me.anon.lib.helper;
 
+import android.graphics.Color;
+import android.widget.TextView;
+
 import com.github.mikephil.charting.charts.LineChart;
+import com.github.mikephil.charting.components.MarkerView;
 import com.github.mikephil.charting.components.XAxis;
 import com.github.mikephil.charting.components.YAxis;
 import com.github.mikephil.charting.data.Entry;
@@ -8,12 +12,14 @@ import com.github.mikephil.charting.data.LineData;
 import com.github.mikephil.charting.data.LineDataSet;
 import com.github.mikephil.charting.formatter.ValueFormatter;
 import com.github.mikephil.charting.formatter.YAxisValueFormatter;
+import com.github.mikephil.charting.highlight.Highlight;
 import com.github.mikephil.charting.utils.ViewPortHandler;
 
 import java.util.ArrayList;
 import java.util.LinkedHashMap;
 import java.util.ListIterator;
 
+import me.anon.grow.R;
 import me.anon.model.Action;
 import me.anon.model.Plant;
 import me.anon.model.PlantStage;
@@ -31,6 +37,74 @@ public class StatsHelper
 			return String.format("%.2f", value);
 		}
 	};
+
+	public static void styleGraph(LineChart chart)
+	{
+		chart.setDrawGridBackground(false);
+		chart.setGridBackgroundColor(0x00ffffff);
+		chart.getAxisLeft().setDrawGridLines(false);
+		chart.getXAxis().setDrawGridLines(false);
+		chart.getLegend().setTextColor(0xff666666);
+		chart.getLegend().setTextSize(12f);
+		chart.getXAxis().setPosition(XAxis.XAxisPosition.BOTTOM);
+		chart.getXAxis().setTextColor(0xff666666);
+		chart.getXAxis().setTextSize(12f);
+		chart.getAxisRight().setEnabled(false);
+		chart.getAxisLeft().setTextColor(0xff666666);
+		chart.getAxisLeft().setTextSize(12f);
+		chart.getAxisLeft().setValueFormatter(new YAxisValueFormatter()
+		{
+			@Override public String getFormattedValue(float value, YAxis yAxis)
+			{
+				if (value == (int)value)
+				{
+					return String.format("%s", value);
+				}
+
+				return String.format("%.2f", value);
+			}
+		});
+		chart.getAxisLeft().setStartAtZero(false);
+		chart.setScaleYEnabled(false);
+		chart.setDescription("");
+		chart.getAxisLeft().setXOffset(8.0f);
+		chart.getLegend().setWordWrapEnabled(true);
+		chart.setTouchEnabled(true);
+		chart.setHighlightPerTapEnabled(true);
+		chart.setMarkerView(new MarkerView(chart.getContext(), R.layout.chart_marker)
+		{
+			@Override
+			public void refreshContent(Entry e, Highlight highlight)
+			{
+				((TextView)findViewById(R.id.content)).setText("" + e.getVal());
+			}
+
+			@Override public int getXOffset(float xpos)
+			{
+				return -(getWidth() / 2);
+			}
+
+			@Override public int getYOffset(float ypos)
+			{
+				return -getHeight();
+			}
+		});
+	}
+
+	public static void styleDataset(LineDataSet data, int colour)
+	{
+		data.setDrawCubic(true);
+		data.setLineWidth(2.0f);
+		data.setDrawCircleHole(true);
+		data.setColor(colour);
+		data.setCircleColor(colour);
+		data.setCircleSize(4.0f);
+		data.setDrawHighlightIndicators(true);
+		data.setHighlightEnabled(true);
+		data.setHighlightLineWidth(2f);
+		data.setHighLightColor(colour);
+		data.setDrawValues(false);
+	}
 
 	/**
 	 * Generates and sets the input watering data from the given plant
@@ -107,33 +181,13 @@ public class StatsHelper
 		if (chart != null)
 		{
 			LineDataSet dataSet = new LineDataSet(inputVals, "Input PH");
-			dataSet.setDrawCubic(true);
-			dataSet.setLineWidth(1.0f);
-			dataSet.setDrawCircleHole(false);
-			dataSet.setCircleColor(0xffffffff);
-			dataSet.setValueTextColor(0xffffffff);
-			dataSet.setCircleSize(2.0f);
-			dataSet.setValueTextSize(8.0f);
-			dataSet.setValueFormatter(formatter);
+			styleDataset(dataSet, Color.parseColor(chart.getContext().getResources().getStringArray(R.array.stats_colours)[0]));
 
 			LineDataSet runoffDataSet = new LineDataSet(runoffVals, "Runoff PH");
-			runoffDataSet.setDrawCubic(true);
-			runoffDataSet.setLineWidth(1.0f);
-			runoffDataSet.setDrawCircleHole(false);
-			runoffDataSet.setColor(0xffFFF9C4);
-			runoffDataSet.setCircleColor(0xffFFF9C4);
-			runoffDataSet.setValueTextColor(0xffFFF9C4);
-			runoffDataSet.setCircleSize(2.0f);
-			runoffDataSet.setValueTextSize(8.0f);
-			runoffDataSet.setValueFormatter(formatter);
+			styleDataset(dataSet, Color.parseColor(chart.getContext().getResources().getStringArray(R.array.stats_colours)[1]));
 
 			LineDataSet averageDataSet = new LineDataSet(averageVals, "Average PH");
-			averageDataSet.setDrawCubic(true);
-			averageDataSet.setLineWidth(1.0f);
-			averageDataSet.setDrawCircleHole(false);
-			averageDataSet.setColor(0xffffffff);
-			averageDataSet.setCircleSize(0.0f);
-			averageDataSet.setValueTextSize(0.0f);
+			styleDataset(dataSet, Color.parseColor(chart.getContext().getResources().getStringArray(R.array.stats_colours)[2]));
 			averageDataSet.setValueFormatter(null);
 
 			ArrayList<LineDataSet> dataSets = new ArrayList<LineDataSet>();
@@ -143,30 +197,9 @@ public class StatsHelper
 			LineData lineData = new LineData(xVals, dataSets);
 			lineData.setValueFormatter(formatter);
 
-			chart.setBackgroundColor(0xff006064);
-			chart.setGridBackgroundColor(0xff006064);
-			chart.setDrawGridBackground(false);
-//			chart.setHighlightEnabled(false);
-			chart.getLegend().setTextColor(0xffffffff);
-			chart.getXAxis().setPosition(XAxis.XAxisPosition.BOTTOM);
-			chart.getXAxis().setTextColor(0xffffffff);
-			chart.getXAxis().setTextSize(14f);
-			chart.getAxisLeft().setTextColor(0xffffffff);
-			chart.getAxisRight().setEnabled(false);
-			chart.getAxisLeft().setValueFormatter(new YAxisValueFormatter()
-			{
-				@Override public String getFormattedValue(float value, YAxis yAxis)
-				{
-					return String.format("%.2f", value);
-				}
-			});
+			styleGraph(chart);
 			chart.getAxisLeft().setAxisMinValue(min - 0.5f);
 			chart.getAxisLeft().setAxisMaxValue(max + 0.5f);
-			chart.getAxisLeft().setStartAtZero(false);
-			chart.setScaleYEnabled(false);
-			chart.setDescription("");
-			chart.setPinchZoom(false);
-			chart.setDoubleTapToZoomEnabled(false);
 
 			chart.setData(lineData);
 		}
@@ -236,30 +269,57 @@ public class StatsHelper
 		if (chart != null)
 		{
 			LineDataSet dataSet = new LineDataSet(vals, "PPM");
-			dataSet.setDrawCubic(true);
-			dataSet.setLineWidth(1.0f);
-			dataSet.setDrawCircleHole(false);
-			dataSet.setCircleColor(0xffffffff);
-			dataSet.setValueTextColor(0xffffffff);
-			dataSet.setCircleSize(2.0f);
-			dataSet.setValueTextSize(8.0f);
-			dataSet.setColor(0xffA7FFEB);
+			styleDataset(dataSet, Color.parseColor(chart.getContext().getResources().getStringArray(R.array.stats_colours)[0]));
+			styleGraph(chart);
+			chart.setMarkerView(new MarkerView(chart.getContext(), R.layout.chart_marker)
+			{
+				@Override
+				public void refreshContent(Entry e, Highlight highlight)
+				{
+					String val = String.format("%.2f", e.getVal());
+					if (e.getVal() == (int)e.getVal())
+					{
+						val = String.format("%s", (int)e.getVal());
+					}
 
-			chart.setBackgroundColor(0xff1B5E20);
-			chart.setGridBackgroundColor(0xff1B5E20);
-			chart.setDrawGridBackground(false);
-//			chart.setHighlightEnabled(false);
-			chart.getLegend().setEnabled(false);
-			chart.getAxisLeft().setTextColor(0xffffffff);
-			chart.getXAxis().setPosition(XAxis.XAxisPosition.BOTTOM);
-			chart.getXAxis().setTextColor(0xffffffff);
-			chart.getXAxis().setTextSize(14f);
-			chart.getAxisRight().setEnabled(false);
-			chart.getAxisLeft().setXOffset(8.0f);
-			chart.setScaleYEnabled(false);
-			chart.setDescription("");
-			chart.setPinchZoom(false);
-			chart.setDoubleTapToZoomEnabled(false);
+					((TextView)findViewById(R.id.content)).setText(val);
+				}
+
+				@Override public int getXOffset(float xpos)
+				{
+					return -(getWidth() / 2);
+				}
+
+				@Override public int getYOffset(float ypos)
+				{
+					return -getHeight();
+				}
+			});
+			chart.getAxisLeft().setValueFormatter(new YAxisValueFormatter()
+			{
+				@Override public String getFormattedValue(float value, YAxis yAxis)
+				{
+					if (value == (int)value)
+					{
+						return String.format("%s", (int)value);
+					}
+
+					return String.format("%.2f", value);
+				}
+			});
+			dataSet.setValueFormatter(new ValueFormatter()
+			{
+				@Override public String getFormattedValue(float value, Entry entry, int dataSetIndex, ViewPortHandler viewPortHandler)
+				{
+					if (value == (int)value)
+					{
+						return String.format("%s", (int)value);
+					}
+
+					return String.format("%.2f", value);
+				}
+			});
+
 			chart.setData(new LineData(xVals, dataSet));
 		}
 
@@ -327,43 +387,14 @@ public class StatsHelper
 		if (chart != null)
 		{
 			LineDataSet dataSet = new LineDataSet(vals, "Temperature");
-			dataSet.setDrawCubic(true);
-			dataSet.setLineWidth(1.0f);
-			dataSet.setDrawCircleHole(false);
-			dataSet.setCircleColor(0xffffffff);
-			dataSet.setValueTextColor(0xffffffff);
-			dataSet.setCircleSize(2.0f);
-			dataSet.setValueTextSize(8.0f);
-			dataSet.setValueFormatter(formatter);
+			styleDataset(dataSet, Color.parseColor(chart.getContext().getResources().getStringArray(R.array.stats_colours)[0]));
 
 			LineData lineData = new LineData(xVals, dataSet);
 			lineData.setValueFormatter(formatter);
 
-			chart.setBackgroundColor(0xff311B92);
-			chart.setGridBackgroundColor(0xff311B92);
-			chart.setDrawGridBackground(false);
-//			chart.setHighlightEnabled(false);
-			chart.getLegend().setEnabled(false);
-			chart.getAxisLeft().setTextColor(0xffffffff);
-			chart.getAxisRight().setEnabled(false);
-			chart.getAxisLeft().setValueFormatter(new YAxisValueFormatter()
-			{
-				@Override public String getFormattedValue(float value, YAxis yAxis)
-				{
-					return String.format("%.2f", value);
-				}
-			});
-			chart.getAxisLeft().setXOffset(8.0f);
 			chart.getAxisLeft().setAxisMinValue(min - 5f);
 			chart.getAxisLeft().setAxisMaxValue(max + 5f);
-			chart.getXAxis().setPosition(XAxis.XAxisPosition.BOTTOM);
-			chart.getXAxis().setTextColor(0xffffffff);
-			chart.getXAxis().setTextSize(14f);
-			chart.getAxisLeft().setStartAtZero(false);
-			chart.setScaleYEnabled(false);
-			chart.setDescription("");
-			chart.setPinchZoom(false);
-			chart.setDoubleTapToZoomEnabled(false);
+			styleGraph(chart);
 			chart.setData(lineData);
 		}
 

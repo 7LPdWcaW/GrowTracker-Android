@@ -14,12 +14,9 @@ import android.widget.PopupMenu;
 import android.widget.TextView;
 
 import com.github.mikephil.charting.charts.LineChart;
-import com.github.mikephil.charting.components.XAxis;
-import com.github.mikephil.charting.components.YAxis;
 import com.github.mikephil.charting.data.Entry;
 import com.github.mikephil.charting.data.LineData;
 import com.github.mikephil.charting.data.LineDataSet;
-import com.github.mikephil.charting.formatter.YAxisValueFormatter;
 
 import java.util.ArrayList;
 import java.util.HashSet;
@@ -237,52 +234,21 @@ public class StatisticsFragment extends Fragment
 			}
 
 			LineDataSet dataSet = new LineDataSet(additiveValues, additiveName);
-			dataSet.setDrawCubic(true);
-			dataSet.setLineWidth(1.5f);
-			dataSet.setDrawCircleHole(false);
 
 			String[] colours = getResources().getStringArray(R.array.stats_colours);
 			ArrayList<String> namesList = new ArrayList<>(additiveNames);
-			dataSet.setColor(dataSets.size() < colours.length ? Color.parseColor(colours[namesList.indexOf(additiveName)]) : (additiveName.hashCode() + new Random().nextInt(0xffffff)));
+			StatsHelper.styleDataset(dataSet, dataSets.size() < colours.length ? Color.parseColor(colours[namesList.indexOf(additiveName)]) : (additiveName.hashCode() + new Random().nextInt(0xffffff)));
 
-			dataSet.setValueTextColor(0xffffffff);
-			dataSet.setCircleSize(2.0f);
-			dataSet.setValueTextSize(8.0f);
 			dataSet.setValueFormatter(StatsHelper.formatter);
 			dataSets.add(dataSet);
 		}
 
 		LineData lineData = new LineData(xVals, dataSets);
 		lineData.setValueFormatter(StatsHelper.formatter);
-		lineData.setValueTextColor(0xffffffff);
+		lineData.setValueTextColor(0xff666666);
 
-		additives.getLegend().setTextSize(14.0f);
-		additives.getLegend().setTextColor(0xffffffff);
-		additives.getLegend().setWordWrapEnabled(true);
-		additives.setBackgroundColor(0xFF0F364D);
-		additives.setGridBackgroundColor(0xFF0F364D);
-		additives.setDrawGridBackground(false);
-		additives.setHighlightPerTapEnabled(false);
-		additives.setHighlightPerDragEnabled(false);
-		additives.getXAxis().setPosition(XAxis.XAxisPosition.BOTTOM);
-		additives.getXAxis().setTextColor(0xffffffff);
-		additives.getXAxis().setTextSize(14f);
-		additives.getAxisRight().setEnabled(false);
-		additives.getAxisLeft().setAxisMinValue((float)(min - 2.0f));
-		additives.getAxisLeft().setAxisMaxValue((float)(max + 2.0f));
-		additives.getAxisLeft().setTextColor(0xffffffff);
-		additives.getAxisLeft().setValueFormatter(new YAxisValueFormatter()
-		{
-			@Override public String getFormattedValue(float value, YAxis yAxis)
-			{
-				return String.format("%.2f", value);
-			}
-		});
-		additives.getAxisLeft().setStartAtZero(false);
-		additives.setScaleYEnabled(false);
-		additives.setDescription("");
-		additives.setPinchZoom(true);
-		additives.setDoubleTapToZoomEnabled(true);
+		StatsHelper.styleGraph(additives);
+
 		additives.setData(lineData);
 		additives.notifyDataSetChanged();
 		additives.postInvalidate();
