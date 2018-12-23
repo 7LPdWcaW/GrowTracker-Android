@@ -162,12 +162,6 @@ public class StatsHelper
 			}
 		}
 
-		if (checkedAdditives == null)
-		{
-			checkedAdditives = new HashSet<>();
-			checkedAdditives.addAll(additiveNames);
-		}
-
 		ArrayList<LineDataSet> dataSets = new ArrayList<>();
 		for (String additiveName : checkedAdditives)
 		{

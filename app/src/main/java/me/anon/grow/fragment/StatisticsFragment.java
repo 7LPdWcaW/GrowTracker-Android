@@ -173,6 +173,12 @@ public class StatisticsFragment extends Fragment
 			}
 		}
 
+		if (checkedAdditives == null)
+		{
+			checkedAdditives = new HashSet<>();
+			checkedAdditives.addAll(additiveNames);
+		}
+
 		StatsHelper.setAdditiveData(plant, additives, checkedAdditives);
 		additives.notifyDataSetChanged();
 		additives.postInvalidate();
