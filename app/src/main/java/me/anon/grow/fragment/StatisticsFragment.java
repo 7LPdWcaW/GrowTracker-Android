@@ -1,10 +1,8 @@
 package me.anon.grow.fragment;
 
 import android.app.Fragment;
-import android.graphics.Color;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
-import android.support.v4.util.Pair;
 import android.view.LayoutInflater;
 import android.view.MenuItem;
 import android.view.View;
@@ -14,19 +12,10 @@ import android.widget.PopupMenu;
 import android.widget.TextView;
 
 import com.github.mikephil.charting.charts.LineChart;
-import com.github.mikephil.charting.components.XAxis;
-import com.github.mikephil.charting.components.YAxis;
-import com.github.mikephil.charting.data.Entry;
-import com.github.mikephil.charting.data.LineData;
-import com.github.mikephil.charting.data.LineDataSet;
-import com.github.mikephil.charting.formatter.YAxisValueFormatter;
 
 import java.util.ArrayList;
 import java.util.HashSet;
-import java.util.LinkedHashMap;
 import java.util.List;
-import java.util.ListIterator;
-import java.util.Random;
 import java.util.Set;
 import java.util.SortedMap;
 
@@ -120,6 +109,11 @@ public class StatisticsFragment extends Fragment
 	{
 		super.onActivityCreated(savedInstanceState);
 
+		if (savedInstanceState != null)
+		{
+			checkedAdditives = new HashSet<>(savedInstanceState.getStringArrayList("checked_additives"));
+		}
+
 		getActivity().setTitle("Plant statistics");
 
 		if (getArguments() != null)
@@ -158,18 +152,16 @@ public class StatisticsFragment extends Fragment
 		aveppm.setText(tempAdditional[2]);
 	}
 
+	@Override public void onSaveInstanceState(Bundle outState)
+	{
+		super.onSaveInstanceState(outState);
+		outState.putStringArrayList("checked_additives", new ArrayList<String>(checkedAdditives));
+	}
+
 	private void setAdditiveStats()
 	{
-		ArrayList<Action> actions = plant.getActions();
-		ArrayList<Pair<String, ArrayList<Entry>>> vals = new ArrayList<>();
-		ArrayList<String> xVals = new ArrayList<>();
 		final Set<String> additiveNames = new HashSet<>();
-		LineData data = new LineData();
-		LinkedHashMap<PlantStage, Action> stageTimes = plant.getStages();
-		double min = Double.MAX_VALUE;
-		double max = Double.MIN_VALUE;
-
-		for (Action action : actions)
+		for (Action action : plant.getActions())
 		{
 			if (action instanceof Water)
 			{
@@ -177,113 +169,11 @@ public class StatisticsFragment extends Fragment
 				for (Additive additive : actionAdditives)
 				{
 					additiveNames.add(additive.getDescription());
-					min = Math.min(min, additive.getAmount());
-					max = Math.max(max, additive.getAmount());
-				}
-
-				PlantStage stage = null;
-				long changeDate = 0;
-				ListIterator<PlantStage> iterator = new ArrayList(stageTimes.keySet()).listIterator(stageTimes.size());
-				while (iterator.hasPrevious())
-				{
-					PlantStage key = iterator.previous();
-					Action changeAction = stageTimes.get(key);
-					if (action.getDate() > changeAction.getDate())
-					{
-						stage = key;
-						changeDate = changeAction.getDate();
-					}
-				}
-
-				long difference = action.getDate() - changeDate;
-				if (stage != null)
-				{
-					xVals.add(((int)TimeHelper.toDays(difference) + "" + stage.getPrintString().charAt(0)).toLowerCase());
-				}
-				else
-				{
-					xVals.add("");
 				}
 			}
 		}
 
-		if (checkedAdditives == null)
-		{
-			checkedAdditives = new HashSet<>();
-			checkedAdditives.addAll(additiveNames);
-		}
-
-		ArrayList<LineDataSet> dataSets = new ArrayList<>();
-		for (String additiveName : checkedAdditives)
-		{
-			int index = 0;
-			ArrayList<Entry> additiveValues = new ArrayList<>();
-			for (Action action : actions)
-			{
-				if (action instanceof Water)
-				{
-					boolean found = false;
-					for (Additive additive : ((Water)action).getAdditives())
-					{
-						if (additiveName.equals(additive.getDescription()))
-						{
-							found = true;
-							additiveValues.add(new Entry(additive.getAmount().floatValue(), index));
-						}
-					}
-
-					index++;
-				}
-			}
-
-			LineDataSet dataSet = new LineDataSet(additiveValues, additiveName);
-			dataSet.setDrawCubic(true);
-			dataSet.setLineWidth(1.5f);
-			dataSet.setDrawCircleHole(false);
-
-			String[] colours = getResources().getStringArray(R.array.stats_colours);
-			ArrayList<String> namesList = new ArrayList<>(additiveNames);
-			dataSet.setColor(dataSets.size() < colours.length ? Color.parseColor(colours[namesList.indexOf(additiveName)]) : (additiveName.hashCode() + new Random().nextInt(0xffffff)));
-
-			dataSet.setValueTextColor(0xffffffff);
-			dataSet.setCircleSize(2.0f);
-			dataSet.setValueTextSize(8.0f);
-			dataSet.setValueFormatter(StatsHelper.formatter);
-			dataSets.add(dataSet);
-		}
-
-		LineData lineData = new LineData(xVals, dataSets);
-		lineData.setValueFormatter(StatsHelper.formatter);
-		lineData.setValueTextColor(0xffffffff);
-
-		additives.getLegend().setTextSize(14.0f);
-		additives.getLegend().setTextColor(0xffffffff);
-		additives.getLegend().setWordWrapEnabled(true);
-		additives.setBackgroundColor(0xFF0F364D);
-		additives.setGridBackgroundColor(0xFF0F364D);
-		additives.setDrawGridBackground(false);
-		additives.setHighlightPerTapEnabled(false);
-		additives.setHighlightPerDragEnabled(false);
-		additives.getXAxis().setPosition(XAxis.XAxisPosition.BOTTOM);
-		additives.getXAxis().setTextColor(0xffffffff);
-		additives.getXAxis().setTextSize(14f);
-		additives.getAxisRight().setEnabled(false);
-		additives.getAxisLeft().setAxisMinValue((float)(min - 2.0f));
-		additives.getAxisLeft().setAxisMaxValue((float)(max + 2.0f));
-		additives.getAxisLeft().setTextColor(0xffffffff);
-		additives.getAxisLeft().setValueFormatter(new YAxisValueFormatter()
-		{
-			@Override public String getFormattedValue(float value, YAxis yAxis)
-			{
-				return String.format("%.2f", value);
-			}
-		});
-		additives.getAxisLeft().setStartAtZero(false);
-		additives.setScaleYEnabled(false);
-		additives.setDescription("");
-		additives.setPinchZoom(true);
-		additives.setDoubleTapToZoomEnabled(true);
-		additives.setData(lineData);
+		StatsHelper.setAdditiveData(plant, additives, checkedAdditives);
 		additives.notifyDataSetChanged();
 		additives.postInvalidate();
 
