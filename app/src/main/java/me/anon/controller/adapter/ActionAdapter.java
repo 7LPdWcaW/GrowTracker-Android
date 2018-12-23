@@ -21,6 +21,7 @@ import java.text.DateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Collections;
+import java.util.Comparator;
 import java.util.Date;
 import java.util.GregorianCalendar;
 import java.util.List;
@@ -140,6 +141,18 @@ public class ActionAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>
 
 			if (!groupedImages.isEmpty())
 			{
+				Collections.sort(groupedImages, new Comparator<String>()
+				{
+					@Override public int compare(String o1, String o2)
+					{
+						long o1Date = getImageDate(o1);
+						long o2Date = getImageDate(o2);
+
+						if (o2Date < o1Date) return -1;
+						if (o2Date > o1Date) return 1;
+						return 0;
+					}
+				});
 				ImageAction imageAction = new ImageAction();
 				imageAction.images = groupedImages;
 				this.actions.add(imageAction);
@@ -152,6 +165,19 @@ public class ActionAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>
 		{
 			ArrayList<String> remainingImages = new ArrayList<>(plant.getImages());
 			remainingImages.removeAll(addedImages);
+
+			Collections.sort(remainingImages, new Comparator<String>()
+			{
+				@Override public int compare(String o1, String o2)
+				{
+					long o1Date = getImageDate(o1);
+					long o2Date = getImageDate(o2);
+
+					if (o2Date < o1Date) return -1;
+					if (o2Date > o1Date) return 1;
+					return 0;
+				}
+			});
 
 			ImageAction imageAction = new ImageAction();
 			imageAction.images = remainingImages;
