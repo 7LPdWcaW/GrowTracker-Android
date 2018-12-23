@@ -17,6 +17,7 @@ class FeedingDateHolder(val adapter: FeedingDateAdapter, itemView: View) : Recyc
 	private val title = itemView.title
 	private val additives = itemView.additives
 	private val delete = itemView.delete
+	private val copy = itemView.copy
 
 	private val measureUnit: Unit by lazy { Unit.getSelectedMeasurementUnit(itemView.context); }
 	private val deliveryUnit: Unit by lazy { Unit.getSelectedDeliveryUnit(itemView.context); }
@@ -24,6 +25,7 @@ class FeedingDateHolder(val adapter: FeedingDateAdapter, itemView: View) : Recyc
 	public fun bind(feedingSchedule: FeedingScheduleDate)
 	{
 		delete.visibility = View.GONE
+		copy.visibility = View.GONE
 
 		val lastStage = adapter.plantStages.toSortedMap().lastKey()
 		val days = TimeHelper.toDays(adapter.plantStages[lastStage] ?: 0).toInt()
