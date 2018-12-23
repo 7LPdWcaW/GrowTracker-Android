@@ -26,6 +26,8 @@ class FeedingDateAdapter : RecyclerView.Adapter<FeedingDateHolder>()
 	public var plant: Plant = Plant()
 	public val plantStages: SortedMap<PlantStage, Long> by lazy { plant.calculateStageTime() }
 
+	public fun getLastStage(): PlantStage = plantStages.toSortedMap().lastKey()
+
 	override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): FeedingDateHolder
 		= FeedingDateHolder(this, LayoutInflater.from(parent.context).inflate(R.layout.feeding_date_stub, parent, false))
 
