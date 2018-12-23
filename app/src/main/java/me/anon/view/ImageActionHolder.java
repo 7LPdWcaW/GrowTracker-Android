@@ -15,6 +15,7 @@ import com.nostra13.universalimageloader.core.imageaware.ImageAware;
 import com.nostra13.universalimageloader.core.imageaware.ImageViewAware;
 
 import java.util.ArrayList;
+import java.util.Collections;
 
 import me.anon.controller.adapter.ActionAdapter;
 import me.anon.grow.MainApplication;
@@ -83,9 +84,13 @@ public class ImageActionHolder extends RecyclerView.ViewHolder
 			{
 				@Override public void onClick(View v)
 				{
+					ArrayList<String> images = new ArrayList<>();
+					images.addAll(adapter.getPlant().getImages());
+					Collections.reverse(images);
+
 					Intent details = new Intent(v.getContext(), ImageLightboxDialog.class);
-					details.putExtra("images", (String[])adapter.getPlant().getImages().toArray(new String[adapter.getPlant().getImages().size()]));
-					details.putExtra("image_position", adapter.getPlant().getImages().indexOf(imageUrl));
+					details.putExtra("images", (String[])images.toArray(new String[images.size()]));
+					details.putExtra("image_position", images.indexOf(imageUrl));
 					v.getContext().startActivity(details);
 				}
 			});
