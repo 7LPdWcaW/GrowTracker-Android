@@ -15,8 +15,8 @@ android {
 		applicationId "me.anon.grow"
 		minSdkVersion 17
 		targetSdkVersion 28
-		versionCode 17
-		versionName "2.4-alpha1"
+		versionCode 18
+		versionName "2.4-alpha2"
 
 		javaCompileOptions {
 			annotationProcessorOptions {
