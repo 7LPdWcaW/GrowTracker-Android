@@ -4,6 +4,7 @@ import android.annotation.SuppressLint;
 import android.app.AlertDialog;
 import android.app.Dialog;
 import android.app.DialogFragment;
+import android.content.DialogInterface;
 import android.os.Bundle;
 import android.support.v7.widget.DividerItemDecoration;
 import android.support.v7.widget.LinearLayoutManager;
@@ -18,9 +19,11 @@ import kotlin.jvm.functions.Function1;
 import me.anon.controller.adapter.FeedingDateAdapter;
 import me.anon.grow.R;
 import me.anon.lib.Views;
+import me.anon.lib.helper.TimeHelper;
 import me.anon.model.FeedingSchedule;
 import me.anon.model.FeedingScheduleDate;
 import me.anon.model.Plant;
+import me.anon.model.PlantStage;
 
 /**
  * // TODO: Add class description
@@ -94,6 +97,31 @@ public class FeedingSelectDialogFragment extends DialogFragment
 
 		dialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
 		dialog.getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_ADJUST_RESIZE);
+		dialog.setOnShowListener(new DialogInterface.OnShowListener()
+		{
+			@Override public void onShow(DialogInterface dialog)
+			{
+				PlantStage lastStage = adapter.getLastStage();
+				int days = (int)TimeHelper.toDays(adapter.getPlantStages().get(lastStage));
+				int suggestedIndex = 0;
+				for (FeedingScheduleDate feedingScheduleDate : adapter.getItems())
+				{
+					if (lastStage.ordinal() >= feedingScheduleDate.getStageRange()[0].ordinal())
+					{
+						if (days >= feedingScheduleDate.getDateRange()[0]
+						&& ((days <= feedingScheduleDate.getDateRange()[1] && lastStage.ordinal() == feedingScheduleDate.getStageRange()[0].ordinal())
+							|| (lastStage.ordinal() < feedingScheduleDate.getStageRange()[1].ordinal())))
+						{
+							break;
+						}
+					}
+
+					suggestedIndex++;
+				}
+
+				recyclerView.scrollToPosition(suggestedIndex);
+			}
+		});
 
 		return dialog;
 	}

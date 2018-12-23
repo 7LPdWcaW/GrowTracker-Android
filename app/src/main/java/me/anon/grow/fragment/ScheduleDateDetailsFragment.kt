@@ -112,10 +112,10 @@ class ScheduleDateDetailsFragment : Fragment()
 
 			val fromDate = from_date.text.toString().toInt()
 			val toDate = if (to_date.text.isEmpty()) fromDate else to_date.text.toString().toInt()
-			val fromStage = PlantStage.valueOfPrintString(to_stage.selectedItem as String)!!
-			val toStage = PlantStage.valueOfPrintString(from_stage.selectedItem as String)!!
+			val fromStage = PlantStage.valueOfPrintString(from_stage.selectedItem as String)!!
+			val toStage = PlantStage.valueOfPrintString(to_stage.selectedItem as String)!!
 
-			if (fromDate > toDate && fromStage.ordinal ?: -1 <= toStage.ordinal ?: -1)
+			if (toDate < fromDate && fromStage.ordinal ?: -1 == toStage.ordinal ?: -1)
 			{
 				to_date.error = "Date can not be before from date"
 				return@setOnClickListener

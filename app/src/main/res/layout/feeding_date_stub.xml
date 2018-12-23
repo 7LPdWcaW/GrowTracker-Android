@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 
-<RelativeLayout
+<android.support.constraint.ConstraintLayout
 	xmlns:android="http://schemas.android.com/apk/res/android"
 	xmlns:app="http://schemas.android.com/apk/res-auto"
 	android:layout_width="match_parent"
@@ -17,9 +17,10 @@
 		android:id="@+id/delete"
 		android:src="@drawable/ic_delete"
 		android:padding="12dp"
-		android:layout_alignParentEnd="true"
-		android:layout_centerVertical="true"
 		android:tint="#666666"
+		app:layout_constraintTop_toTopOf="parent"
+		app:layout_constraintBottom_toBottomOf="parent"
+		app:layout_constraintEnd_toEndOf="parent"
 	/>
 
 	<ImageView
@@ -27,17 +28,21 @@
 		android:layout_height="wrap_content"
 		android:id="@+id/copy"
 		android:padding="12dp"
-		android:layout_toStartOf="@id/delete"
-		android:layout_centerVertical="true"
 		android:tint="#666666"
 		app:srcCompat="@drawable/ic_content_copy_black_24dp"
+		app:layout_constraintTop_toTopOf="parent"
+		app:layout_constraintBottom_toBottomOf="parent"
+		app:layout_constraintEnd_toStartOf="@id/delete"
 	/>
 
 	<LinearLayout
-		android:layout_width="match_parent"
+		android:layout_width="0dp"
 		android:layout_height="wrap_content"
 		android:orientation="vertical"
-		android:layout_toStartOf="@id/copy"
+		app:layout_constraintStart_toStartOf="parent"
+		app:layout_constraintTop_toTopOf="parent"
+		app:layout_constraintBottom_toBottomOf="parent"
+		app:layout_constraintEnd_toStartOf="@id/copy"
 	>
 		<TextView
 			android:layout_width="wrap_content"
@@ -53,4 +58,4 @@
 			android:layout_marginTop="2dp"
 		/>
 	</LinearLayout>
-</RelativeLayout>
+</android.support.constraint.ConstraintLayout>
