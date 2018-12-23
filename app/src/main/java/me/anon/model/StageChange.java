@@ -11,6 +11,10 @@ public class StageChange extends Action
 {
 	private PlantStage newStage;
 
+	public StageChange()
+	{
+	}
+
 	public StageChange(PlantStage stage)
 	{
 		this.setDate(System.currentTimeMillis());

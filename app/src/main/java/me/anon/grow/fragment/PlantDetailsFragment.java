@@ -633,6 +633,7 @@ public class PlantDetailsFragment extends Fragment
 			copy.setId(UUID.randomUUID().toString());
 			copy.getImages().clear();
 
+			copy.setName(copy.getName() + " (copy)");
 			PlantManager.getInstance().addPlant(copy);
 
 			SnackBar.show(getActivity(), "Plant duplicated", "open", new SnackBarListener()
