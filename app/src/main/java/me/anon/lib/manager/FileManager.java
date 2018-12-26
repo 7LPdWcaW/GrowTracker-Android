@@ -1,5 +1,6 @@
 package me.anon.lib.manager;
 
+import android.os.Environment;
 import android.support.annotation.Nullable;
 import android.text.TextUtils;
 
@@ -23,6 +24,7 @@ import java.security.MessageDigest;
 
 public class FileManager
 {
+	public static String IMAGE_PATH = Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DCIM).getPath() + "/GrowTracker/";
 	private static FileManager instance;
 
 	/**

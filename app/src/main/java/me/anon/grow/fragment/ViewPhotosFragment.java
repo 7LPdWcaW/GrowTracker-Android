@@ -11,7 +11,6 @@ import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Build;
 import android.os.Bundle;
-import android.os.Environment;
 import android.os.ParcelFileDescriptor;
 import android.provider.MediaStore;
 import android.support.annotation.Nullable;
@@ -52,6 +51,7 @@ import me.anon.lib.helper.AddonHelper;
 import me.anon.lib.helper.ExportHelper;
 import me.anon.lib.helper.FabAnimator;
 import me.anon.lib.helper.PermissionHelper;
+import me.anon.lib.manager.FileManager;
 import me.anon.lib.manager.PlantManager;
 import me.anon.lib.task.EncryptTask;
 import me.anon.model.Plant;
@@ -280,7 +280,7 @@ public class ViewPhotosFragment extends Fragment
 					{
 						Intent intent = new Intent(android.provider.MediaStore.ACTION_IMAGE_CAPTURE);
 
-						File path = new File(Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DCIM).getPath() + "/GrowTracker/" + plant.getId() + "/");
+						File path = new File(FileManager.IMAGE_PATH + plant.getId() + "/");
 						path.mkdirs();
 
 						try
@@ -359,7 +359,7 @@ public class ViewPhotosFragment extends Fragment
 						getActivity().getContentResolver().takePersistableUriPermission(selectedUri, takeFlags);
 					}
 
-					File path = new File(Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DCIM).getPath() + "/GrowTracker/" + plant.getId() + "/");
+					File path = new File(FileManager.IMAGE_PATH + plant.getId() + "/");
 					path.mkdirs();
 
 					try

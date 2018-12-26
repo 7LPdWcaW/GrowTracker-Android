@@ -53,6 +53,12 @@
 	<PreferenceCategory
 		android:title="Data management"
 	>
+		<Preference
+			android:key="image_location"
+			android:title="Image storage location"
+			android:summary="Currently /var/"
+		/>
+
 		<CheckBoxPreference
 			android:key="auto_backup"
 			android:title="Auto backup"

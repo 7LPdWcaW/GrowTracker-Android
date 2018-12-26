@@ -1,5 +1,6 @@
 package me.anon.grow.fragment;
 
+import android.app.Activity;
 import android.app.AlarmManager;
 import android.app.AlertDialog;
 import android.app.PendingIntent;
@@ -13,13 +14,16 @@ import android.content.pm.ResolveInfo;
 import android.graphics.drawable.Drawable;
 import android.net.Uri;
 import android.os.AsyncTask;
+import android.os.Build;
 import android.os.Bundle;
+import android.os.Environment;
 import android.preference.CheckBoxPreference;
 import android.preference.Preference;
 import android.preference.PreferenceCategory;
 import android.preference.PreferenceFragment;
 import android.preference.PreferenceManager;
 import android.support.v4.content.FileProvider;
+import android.support.v4.provider.DocumentFile;
 import android.text.Html;
 import android.text.TextUtils;
 import android.util.Base64;
@@ -32,6 +36,7 @@ import java.io.BufferedInputStream;
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
+import java.net.URISyntaxException;
 import java.util.List;
 
 import me.anon.controller.receiver.BackupService;
@@ -42,6 +47,7 @@ import me.anon.lib.Unit;
 import me.anon.lib.helper.AddonHelper;
 import me.anon.lib.helper.BackupHelper;
 import me.anon.lib.helper.EncryptionHelper;
+import me.anon.lib.helper.PathHelper;
 import me.anon.lib.manager.GardenManager;
 import me.anon.lib.manager.PlantManager;
 import me.anon.lib.task.DecryptTask;
@@ -59,6 +65,7 @@ import me.anon.model.Plant;
 public class SettingsFragment extends PreferenceFragment implements Preference.OnPreferenceClickListener, Preference.OnPreferenceChangeListener
 {
 	private static final int REQUEST_UNINSTALL = 0x01;
+	private static final int REQUEST_PICK_DOCUMENT = 0x02;
 
 	@Override public void onActivityCreated(Bundle savedInstanceState)
 	{
@@ -72,6 +79,7 @@ public class SettingsFragment extends PreferenceFragment implements Preference.O
 		findPreference("delivery_unit").setSummary(Html.fromHtml("Default delivery measurement unit to use, currently <b>" + Unit.getSelectedDeliveryUnit(getActivity()).getLabel() + "</b>"));
 		findPreference("measurement_unit").setSummary(Html.fromHtml("Default additive measurement unit to use, currently <b>" + Unit.getSelectedMeasurementUnit(getActivity()).getLabel() + "</b>"));
 		findPreference("temperature_unit").setSummary(Html.fromHtml("Default temperature unit to use, currently <b>" + TempUnit.getSelectedTemperatureUnit(getActivity()).getLabel() + "</b>"));
+		findPreference("image_location").setSummary(Html.fromHtml("Image storage location, currently <b>" + Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DCIM).getPath() + "/GrowTracker/</b>"));
 
 		try
 		{
@@ -92,6 +100,7 @@ public class SettingsFragment extends PreferenceFragment implements Preference.O
 		findPreference("measurement_unit").setOnPreferenceClickListener(this);
 		findPreference("temperature_unit").setOnPreferenceClickListener(this);
 		findPreference("backup_now").setOnPreferenceClickListener(this);
+		findPreference("image_location").setOnPreferenceClickListener(this);
 
 		findPreference("failsafe").setEnabled(((CheckBoxPreference)findPreference("encrypt")).isChecked());
 
@@ -586,6 +595,14 @@ public class SettingsFragment extends PreferenceFragment implements Preference.O
 		{
 			Toast.makeText(getActivity(), "Backed up to " + BackupHelper.backupJson().getPath(), Toast.LENGTH_SHORT).show();
 		}
+		else if ("image_location".equals(preference.getKey()))
+		{
+			if (Build.VERSION.SDK_INT >= 21)
+			{
+				Intent intent = new Intent(Intent.ACTION_OPEN_DOCUMENT_TREE);
+				startActivityForResult(intent, REQUEST_PICK_DOCUMENT);
+			}
+		}
 
 		return false;
 	}
@@ -599,6 +616,29 @@ public class SettingsFragment extends PreferenceFragment implements Preference.O
 			// refresh addons
 			Toast.makeText(getActivity(), "Addon successfully uninstalled", Toast.LENGTH_SHORT).show();
 			populateAddons();
+		}
+		else if (requestCode == REQUEST_PICK_DOCUMENT && Build.VERSION.SDK_INT >= 19)
+		{
+			if (resultCode == Activity.RESULT_OK)
+			{
+				Uri treeUri = data.getData();
+				DocumentFile pickedDir = DocumentFile.fromTreeUri(getActivity(), treeUri);
+
+				if (pickedDir != null)
+				{
+					String filePath;
+
+					if (!TextUtils.isEmpty(filePath))
+					{
+						findPreference("image_location").getEditor().putString("image_location", filePath).apply();
+						findPreference("image_location").setSummary(Html.fromHtml("Image storage location, currently <b>" + filePath + "</b>"));
+					}
+
+					return;
+				}
+			}
+
+			Toast.makeText(getActivity(), "There was a problem with the selected location", Toast.LENGTH_SHORT).show();
 		}
 	}
 }
