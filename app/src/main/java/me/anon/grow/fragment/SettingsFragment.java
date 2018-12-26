@@ -40,6 +40,7 @@ import me.anon.grow.R;
 import me.anon.lib.TempUnit;
 import me.anon.lib.Unit;
 import me.anon.lib.helper.AddonHelper;
+import me.anon.lib.helper.BackupHelper;
 import me.anon.lib.helper.EncryptionHelper;
 import me.anon.lib.manager.GardenManager;
 import me.anon.lib.manager.PlantManager;
@@ -90,6 +91,7 @@ public class SettingsFragment extends PreferenceFragment implements Preference.O
 		findPreference("delivery_unit").setOnPreferenceClickListener(this);
 		findPreference("measurement_unit").setOnPreferenceClickListener(this);
 		findPreference("temperature_unit").setOnPreferenceClickListener(this);
+		findPreference("backup_now").setOnPreferenceClickListener(this);
 
 		findPreference("failsafe").setEnabled(((CheckBoxPreference)findPreference("encrypt")).isChecked());
 
@@ -579,6 +581,10 @@ public class SettingsFragment extends PreferenceFragment implements Preference.O
 			startActivity(Intent.createChooser(shareIntent, "Share with"));
 
 			return true;
+		}
+		else if ("backup_now".equals(preference.getKey()))
+		{
+			Toast.makeText(getActivity(), "Backed up to " + BackupHelper.backupJson().getPath(), Toast.LENGTH_SHORT).show();
 		}
 
 		return false;
