@@ -60,6 +60,11 @@
 			android:defaultValue="false"
 		/>
 
+		<Preference
+			android:key="backup_now"
+			android:title="Backup now"
+		/>
+
 		<CheckBoxPreference
 			android:key="encrypt"
 			android:title="Encrypt data"
