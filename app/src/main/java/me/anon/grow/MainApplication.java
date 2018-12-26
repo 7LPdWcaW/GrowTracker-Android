@@ -7,6 +7,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.graphics.Bitmap;
+import android.os.Environment;
 import android.preference.PreferenceManager;
 
 import com.nostra13.universalimageloader.core.DisplayImageOptions;
@@ -26,6 +27,7 @@ import java.util.concurrent.atomic.AtomicBoolean;
 
 import me.anon.controller.receiver.BackupService;
 import me.anon.lib.handler.ExceptionHandler;
+import me.anon.lib.manager.FileManager;
 import me.anon.lib.manager.GardenManager;
 import me.anon.lib.manager.PlantManager;
 import me.anon.lib.manager.ScheduleManager;
@@ -106,7 +108,10 @@ public class MainApplication extends Application
 		context = this;
 		ExceptionHandler.getInstance().register(this);
 
-		encrypted = PreferenceManager.getDefaultSharedPreferences(this).getBoolean("encrypt", false); //|| PlantManager.isFileEncrypted();
+		encrypted = PreferenceManager.getDefaultSharedPreferences(this).getBoolean("encrypt", false) || PlantManager.isFileEncrypted();
+		FileManager.IMAGE_PATH = PreferenceManager.getDefaultSharedPreferences(this).getString("image_location", Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DCIM).getPath() + "/GrowTracker/");
+		new File(FileManager.IMAGE_PATH).mkdir();
+
 		isTablet = getResources().getBoolean(R.bool.is_tablet);
 
 		PlantManager.getInstance().initialise(this);

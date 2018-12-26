@@ -13,6 +13,7 @@ import android.content.pm.ResolveInfo;
 import android.graphics.drawable.Drawable;
 import android.net.Uri;
 import android.os.AsyncTask;
+import android.os.Build;
 import android.os.Bundle;
 import android.os.Environment;
 import android.text.Html;
@@ -40,6 +41,7 @@ import java.util.List;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatDelegate;
 import androidx.core.content.FileProvider;
+import androidx.documentfile.provider.DocumentFile;
 import androidx.fragment.app.FragmentActivity;
 import androidx.preference.EditTextPreference;
 import androidx.preference.Preference;
@@ -71,6 +73,7 @@ import me.anon.model.Plant;
 public class SettingsFragment extends PreferenceFragmentCompat implements Preference.OnPreferenceClickListener, Preference.OnPreferenceChangeListener
 {
 	private static final int REQUEST_UNINSTALL = 0x01;
+	private static final int REQUEST_PICK_DOCUMENT = 0x02;
 
 	@Override public void onCreatePreferences(Bundle savedInstanceState, String rootKey)
 	{
@@ -98,6 +101,8 @@ public class SettingsFragment extends PreferenceFragmentCompat implements Prefer
 		findPreference("temperature_unit").setSummary(Html.fromHtml(getString(R.string.settings_temperature, TempUnit.getSelectedTemperatureUnit(getActivity()).getLabel())));
 		findPreference("tds_unit").setSummary(Html.fromHtml(getString(R.string.settings_tds_summary, getString(TdsUnit.getSelectedTdsUnit(getActivity()).getStrRes()))));
 		findPreference("backup_now").setSummary(Html.fromHtml(getString(R.string.settings_lastbackup_summary, BackupHelper.getLastBackup())));
+
+		findPreference("image_location").setSummary(Html.fromHtml("Image storage location, currently <b>" + Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DCIM).getPath() + "/GrowTracker/</b>"));
 
 		try
 		{
@@ -127,6 +132,7 @@ public class SettingsFragment extends PreferenceFragmentCompat implements Prefer
 		findPreference("tds_unit").setOnPreferenceClickListener(this);
 		findPreference("backup_now").setOnPreferenceClickListener(this);
 		findPreference("restore").setOnPreferenceClickListener(this);
+		findPreference("image_location").setOnPreferenceClickListener(this);
 
 		findPreference("failsafe").setEnabled(((SwitchPreferenceCompat)findPreference("encrypt")).isChecked());
 
@@ -974,6 +980,14 @@ public class SettingsFragment extends PreferenceFragmentCompat implements Prefer
 				})
 				.show();
 		}
+		else if ("image_location".equals(preference.getKey()))
+		{
+			if (Build.VERSION.SDK_INT >= 21)
+			{
+				Intent intent = new Intent(Intent.ACTION_OPEN_DOCUMENT_TREE);
+				startActivityForResult(intent, REQUEST_PICK_DOCUMENT);
+			}
+		}
 
 		return false;
 	}
@@ -1029,6 +1043,29 @@ public class SettingsFragment extends PreferenceFragmentCompat implements Prefer
 			// refresh addons
 			Toast.makeText(getActivity(), "Addon successfully uninstalled", Toast.LENGTH_SHORT).show();
 			populateAddons();
+		}
+		else if (requestCode == REQUEST_PICK_DOCUMENT && Build.VERSION.SDK_INT >= 19)
+		{
+			if (resultCode == Activity.RESULT_OK)
+			{
+				Uri treeUri = data.getData();
+				DocumentFile pickedDir = DocumentFile.fromTreeUri(getActivity(), treeUri);
+
+				if (pickedDir != null)
+				{
+					String filePath;
+
+					if (!TextUtils.isEmpty(filePath))
+					{
+						findPreference("image_location").getSharedPreferences().edit().putString("image_location", filePath).apply();
+						findPreference("image_location").setSummary(Html.fromHtml("Image storage location, currently <b>" + filePath + "</b>"));
+					}
+
+					return;
+				}
+			}
+
+			Toast.makeText(getActivity(), "There was a problem with the selected location", Toast.LENGTH_SHORT).show();
 		}
 	}
 
