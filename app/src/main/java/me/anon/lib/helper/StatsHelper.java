@@ -442,8 +442,8 @@ public class StatsHelper
 		ArrayList<String> xVals = new ArrayList<>();
 		LineData data = new LineData();
 		LinkedHashMap<PlantStage, Action> stageTimes = plant.getStages();
-		float min = -100f;
-		float max = 100f;
+		float min = 100f;
+		float max = -100f;
 		float total = 0;
 
 		int index = 0;
