@@ -1,7 +1,16 @@
 package me.anon.model;
 
+import android.content.Context;
+import android.preference.PreferenceManager;
+
 import java.util.ArrayList;
 import java.util.List;
+
+import me.anon.lib.TempUnit;
+import me.anon.lib.Unit;
+
+import static me.anon.lib.TempUnit.CELCIUS;
+import static me.anon.lib.Unit.ML;
 
 /**
  * // TODO: Add class description
@@ -100,5 +109,95 @@ public class Water extends Action
 	public void setAdditives(List<Additive> additives)
 	{
 		this.additives = additives;
+	}
+
+	public String getSummary(Context context)
+	{
+		Unit measureUnit = Unit.getSelectedMeasurementUnit(context);
+		Unit deliveryUnit = Unit.getSelectedDeliveryUnit(context);
+		TempUnit tempUnit = TempUnit.getSelectedTemperatureUnit(context);
+		boolean usingEc = PreferenceManager.getDefaultSharedPreferences(context).getBoolean("tds_ec", false);
+
+		String summary = "";
+		StringBuilder waterStr = new StringBuilder();
+
+		if (getPh() != null)
+		{
+			waterStr.append("<b>In pH: </b>");
+			waterStr.append(getPh());
+			waterStr.append(", ");
+		}
+
+		if (getRunoff() != null)
+		{
+			waterStr.append("<b>Out pH: </b>");
+			waterStr.append(getRunoff());
+			waterStr.append(", ");
+		}
+
+		summary += waterStr.toString().length() > 0 ? waterStr.toString().substring(0, waterStr.length() - 2) + "<br/>" : "";
+
+		waterStr = new StringBuilder();
+
+		if (getPpm() != null)
+		{
+			String ppm = String.valueOf(getPpm().longValue());
+			if (usingEc)
+			{
+				waterStr.append("<b>EC: </b>");
+				ppm = String.valueOf((getPpm() * 2d) / 1000d);
+			}
+			else
+			{
+				waterStr.append("<b>PPM: </b>");
+			}
+
+			waterStr.append(ppm);
+			waterStr.append(", ");
+		}
+
+		if (getAmount() != null)
+		{
+			waterStr.append("<b>Amount: </b>");
+			waterStr.append(ML.to(deliveryUnit, getAmount()));
+			waterStr.append(deliveryUnit.getLabel());
+			waterStr.append(", ");
+		}
+
+		if (getTemp() != null)
+		{
+			waterStr.append("<b>Temp: </b>");
+			waterStr.append(CELCIUS.to(tempUnit, getTemp()));
+			waterStr.append("º").append(tempUnit.getLabel()).append(", ");
+		}
+
+		summary += waterStr.toString().length() > 0 ? waterStr.toString().substring(0, waterStr.length() - 2) + "<br/>" : "";
+
+		waterStr = new StringBuilder();
+
+		if (getAdditives().size() > 0)
+		{
+			waterStr.append("<b>Additives:</b>");
+
+			for (Additive additive : getAdditives())
+			{
+				if (additive == null || additive.getAmount() == null) continue;
+
+				double converted = ML.to(measureUnit, additive.getAmount());
+				String amountStr = converted == Math.floor(converted) ? String.valueOf((int)converted) : String.valueOf(converted);
+
+				waterStr.append("<br/>&nbsp;&nbsp;&nbsp;&nbsp;• ");
+				waterStr.append(additive.getDescription());
+				waterStr.append("  -  ");
+				waterStr.append(amountStr);
+				waterStr.append(measureUnit.getLabel());
+				waterStr.append("/");
+				waterStr.append(deliveryUnit.getLabel());
+			}
+		}
+
+		summary += waterStr.toString();
+
+		return summary;
 	}
 }
