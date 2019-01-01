@@ -41,7 +41,6 @@ import me.anon.model.Additive;
 import me.anon.model.FeedingSchedule;
 import me.anon.model.FeedingScheduleDate;
 import me.anon.model.Plant;
-import me.anon.model.PlantMedium;
 import me.anon.model.Water;
 
 import static me.anon.lib.TempUnit.CELCIUS;
@@ -378,6 +377,7 @@ public class WateringFragment extends Fragment
 			getActivity().getCurrentFocus().clearFocus();
 		}
 
+		final View focus = getActivity().getCurrentFocus();
 		final Object currentTag = view.getTag();
 		FragmentManager fm = getFragmentManager();
 		AddAdditiveDialogFragment addAdditiveDialogFragment = new AddAdditiveDialogFragment(view.getTag() instanceof Additive ? (Additive)view.getTag() : null);
@@ -434,8 +434,11 @@ public class WateringFragment extends Fragment
 					}
 				}
 
-				additiveStub.requestFocus();
-				additiveStub.requestFocusFromTouch();
+				if (focus != null)
+				{
+					focus.requestFocus();
+					focus.requestFocusFromTouch();
+				}
 			}
 
 			@Override public void onAdditiveDeleteRequested(Additive additive)
@@ -456,8 +459,11 @@ public class WateringFragment extends Fragment
 					}
 				}
 
-				additiveContainer.getChildAt(additiveContainer.getChildCount() - 1).requestFocus();
-				additiveContainer.getChildAt(additiveContainer.getChildCount() - 1).requestFocusFromTouch();
+				if (focus != null)
+				{
+					focus.requestFocus();
+					focus.requestFocusFromTouch();
+				}
 			}
 		});
 

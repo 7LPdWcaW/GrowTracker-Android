@@ -168,6 +168,7 @@ class ScheduleDateDetailsFragment : Fragment()
 
 	private fun onNewAdditiveClick(view: View)
 	{
+		val currentFocus = activity.currentFocus
 		val currentTag = view.tag
 		val fm = fragmentManager
 		val addAdditiveDialogFragment = AddAdditiveDialogFragment(if (view.tag is Additive) view.tag as Additive else null)
@@ -218,8 +219,10 @@ class ScheduleDateDetailsFragment : Fragment()
 					}
 				}
 
-				additiveStub.requestFocus()
-				additiveStub.requestFocusFromTouch()
+				currentFocus?.let {
+					it.requestFocus()
+					it.requestFocusFromTouch()
+				}
 			}
 
 			override fun onAdditiveDeleteRequested(additive: Additive)
@@ -240,8 +243,10 @@ class ScheduleDateDetailsFragment : Fragment()
 					}
 				}
 
-				additive_container.getChildAt(additive_container.childCount - 1).requestFocus()
-				additive_container.getChildAt(additive_container.childCount - 1).requestFocusFromTouch()
+				currentFocus?.let {
+					it.requestFocus()
+					it.requestFocusFromTouch()
+				}
 			}
 		})
 
