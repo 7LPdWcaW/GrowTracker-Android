@@ -33,7 +33,6 @@ import me.anon.lib.TempUnit;
 import me.anon.lib.Unit;
 import me.anon.lib.helper.TimeHelper;
 import me.anon.model.Action;
-import me.anon.model.Additive;
 import me.anon.model.EmptyAction;
 import me.anon.model.NoteAction;
 import me.anon.model.Plant;
@@ -41,9 +40,6 @@ import me.anon.model.StageChange;
 import me.anon.model.Water;
 import me.anon.view.ActionHolder;
 import me.anon.view.ImageActionHolder;
-
-import static me.anon.lib.TempUnit.CELCIUS;
-import static me.anon.lib.Unit.ML;
 
 /**
  * // TODO: Add class description
@@ -283,86 +279,9 @@ public class ActionAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>
 			String summary = "";
 			if (action.getClass() == Water.class)
 			{
+				summary += ((Water)action).getSummary(viewHolder.itemView.getContext());
 				viewHolder.getCard().setCardBackgroundColor(0x9ABBDEFB);
 				viewHolder.getName().setText("Watered");
-				StringBuilder waterStr = new StringBuilder();
-
-				if (((Water)action).getPh() != null)
-				{
-					waterStr.append("<b>In pH: </b>");
-					waterStr.append(((Water)action).getPh());
-					waterStr.append(", ");
-				}
-
-				if (((Water)action).getRunoff() != null)
-				{
-					waterStr.append("<b>Out pH: </b>");
-					waterStr.append(((Water)action).getRunoff());
-					waterStr.append(", ");
-				}
-
-				summary += waterStr.toString().length() > 0 ? waterStr.toString().substring(0, waterStr.length() - 2) + "<br/>" : "";
-
-				waterStr = new StringBuilder();
-
-				if (((Water)action).getPpm() != null)
-				{
-					String ppm = String.valueOf(((Water)action).getPpm().longValue());
-					if (usingEc)
-					{
-						waterStr.append("<b>EC: </b>");
-						ppm = String.valueOf((((Water)action).getPpm() * 2d) / 1000d);
-					}
-					else
-					{
-						waterStr.append("<b>PPM: </b>");
-					}
-
-					waterStr.append(ppm);
-					waterStr.append(", ");
-				}
-
-				if (((Water)action).getAmount() != null)
-				{
-					waterStr.append("<b>Amount: </b>");
-					waterStr.append(ML.to(deliveryUnit, ((Water)action).getAmount()));
-					waterStr.append(deliveryUnit.getLabel());
-					waterStr.append(", ");
-				}
-
-				if (((Water)action).getTemp() != null)
-				{
-					waterStr.append("<b>Temp: </b>");
-					waterStr.append(CELCIUS.to(tempUnit, ((Water)action).getTemp()));
-					waterStr.append("º").append(tempUnit.getLabel()).append(", ");
-				}
-
-				summary += waterStr.toString().length() > 0 ? waterStr.toString().substring(0, waterStr.length() - 2) + "<br/>" : "";
-
-				waterStr = new StringBuilder();
-
-				if (((Water)action).getAdditives().size() > 0)
-				{
-					waterStr.append("<b>Additives:</b>");
-
-					for (Additive additive : ((Water)action).getAdditives())
-					{
-						if (additive == null || additive.getAmount() == null) continue;
-
-						double converted = ML.to(measureUnit, additive.getAmount());
-						String amountStr = converted == Math.floor(converted) ? String.valueOf((int)converted) : String.valueOf(converted);
-
-						waterStr.append("<br/>&nbsp;&nbsp;&nbsp;&nbsp;• ");
-						waterStr.append(additive.getDescription());
-						waterStr.append("  -  ");
-						waterStr.append(amountStr);
-						waterStr.append(measureUnit.getLabel());
-						waterStr.append("/");
-						waterStr.append(deliveryUnit.getLabel());
-					}
-				}
-
-				summary += waterStr.toString();
 			}
 			else if (action instanceof EmptyAction && ((EmptyAction)action).getAction() != null)
 			{
