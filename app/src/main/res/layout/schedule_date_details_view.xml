@@ -46,7 +46,7 @@
 						android:paddingLeft="16dp"
 						android:paddingRight="16dp"
 						android:paddingTop="8dp"
-						android:paddingBottom="8dp"
+						android:paddingBottom="16dp"
 						android:divider="@drawable/vertical_full_divider"
 						android:showDividers="middle"
 					>
@@ -55,6 +55,7 @@
 							android:layout_height="match_parent"
 							android:orientation="vertical"
 							android:layout_weight="1"
+							android:paddingEnd="8dp"
 						>
 							<TextView
 								android:layout_width="match_parent"
@@ -79,6 +80,7 @@
 							android:layout_width="0dp"
 							android:layout_height="match_parent"
 							android:layout_weight="1"
+							android:paddingStart="8dp"
 						>
 							<TextView
 								android:layout_width="match_parent"
@@ -103,8 +105,8 @@
 						android:orientation="horizontal"
 						android:paddingLeft="16dp"
 						android:paddingRight="16dp"
-						android:paddingTop="8dp"
-						android:paddingBottom="8dp"
+						android:paddingTop="16dp"
+						android:paddingBottom="16dp"
 						android:divider="@drawable/vertical_full_divider"
 						android:showDividers="middle"
 					>
@@ -113,6 +115,7 @@
 							android:layout_height="match_parent"
 							android:orientation="vertical"
 							android:layout_weight="1"
+							android:paddingEnd="8dp"
 						>
 							<TextView
 								android:layout_width="match_parent"
@@ -137,6 +140,7 @@
 							android:layout_width="0dp"
 							android:layout_height="match_parent"
 							android:layout_weight="1"
+							android:paddingStart="8dp"
 						>
 							<TextView
 								android:layout_width="match_parent"

@@ -61,6 +61,7 @@ class FeedingScheduleListFragment : Fragment()
 
 		adapter.onCopyCallback = { schedule ->
 			val newSchedule = Kryo().copy(schedule)
+			newSchedule.name += " (copy)"
 			ScheduleManager.instance.insert(newSchedule)
 			adapter.items = ScheduleManager.instance.schedules
 			adapter.notifyDataSetChanged()

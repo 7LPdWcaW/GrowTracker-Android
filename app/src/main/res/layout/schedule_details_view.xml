@@ -46,7 +46,7 @@
 						android:paddingLeft="16dp"
 						android:paddingRight="16dp"
 						android:paddingTop="8dp"
-						android:paddingBottom="8dp"
+						android:paddingBottom="16dp"
 						android:divider="@drawable/vertical_full_divider"
 						android:showDividers="middle"
 					>
@@ -83,8 +83,8 @@
 						android:orientation="horizontal"
 						android:paddingLeft="16dp"
 						android:paddingRight="16dp"
-						android:paddingTop="8dp"
-						android:paddingBottom="8dp"
+						android:paddingTop="16dp"
+						android:paddingBottom="16dp"
 						android:divider="@drawable/vertical_full_divider"
 						android:showDividers="middle"
 					>
