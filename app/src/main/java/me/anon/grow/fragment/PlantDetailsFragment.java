@@ -26,6 +26,7 @@ import android.provider.MediaStore;
 import android.support.annotation.Nullable;
 import android.support.v4.app.NotificationCompat;
 import android.support.v4.content.FileProvider;
+import android.support.v7.widget.CardView;
 import android.text.Html;
 import android.text.TextUtils;
 import android.view.LayoutInflater;
@@ -35,6 +36,7 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.WindowManager;
+import android.widget.Button;
 import android.widget.CheckBox;
 import android.widget.EditText;
 import android.widget.TextView;
@@ -70,6 +72,7 @@ import me.anon.grow.PlantDetailsActivity;
 import me.anon.grow.R;
 import me.anon.grow.StatisticsActivity;
 import me.anon.grow.ViewPhotosActivity;
+import me.anon.lib.DateRenderer;
 import me.anon.lib.ExportCallback;
 import me.anon.lib.Views;
 import me.anon.lib.helper.AddonHelper;
@@ -109,6 +112,13 @@ public class PlantDetailsFragment extends Fragment
 	@Views.InjectView(R.id.plant_date) private TextView date;
 	@Views.InjectView(R.id.plant_date_container) private View dateContainer;
 	@Views.InjectView(R.id.from_clone) private CheckBox clone;
+
+	@Views.InjectView(R.id.last_feeding) private CardView lastFeeding;
+	@Views.InjectView(R.id.last_feeding_date) private TextView lastFeedingDate;
+	@Views.InjectView(R.id.last_feeding_full_date) private TextView lastFeedingFullDate;
+	@Views.InjectView(R.id.last_feeding_name) private TextView lastFeedingName;
+	@Views.InjectView(R.id.last_feeding_summary) private TextView lastFeedingSummary;
+	@Views.InjectView(R.id.duplicate_feeding) private Button duplicateFeeding;
 
 	private int plantIndex = -1;
 	private int gardenIndex = -1;
@@ -166,6 +176,7 @@ public class PlantDetailsFragment extends Fragment
 			getActivity().setTitle("Add new plant");
 
 			plant.getActions().add(new StageChange(PlantStage.PLANTED));
+			lastFeeding.setVisibility(View.GONE);
 		}
 		else
 		{
@@ -185,6 +196,8 @@ public class PlantDetailsFragment extends Fragment
 			{
 				medium.setText(plant.getMedium().getPrintString());
 			}
+
+			setLastFeeding();
 		}
 
 		setUi();
@@ -198,6 +211,53 @@ public class PlantDetailsFragment extends Fragment
 		if (plant != null && plant.getStage() != null)
 		{
 			stage.setText(plant.getStage().getPrintString());
+		}
+	}
+
+	private void setLastFeeding()
+	{
+		Water lastWater = null;
+		for (int index = plant.getActions().size() - 1; index >= 0; index--)
+		{
+			if (plant.getActions().get(index) instanceof Water)
+			{
+				lastWater = (Water)plant.getActions().get(index);
+				break;
+			}
+		}
+
+		lastFeeding.setVisibility(View.GONE);
+		if (lastWater != null)
+		{
+			lastFeeding.setVisibility(View.VISIBLE);
+			lastFeeding.setCardBackgroundColor(0x9ABBDEFB);
+
+			lastFeedingSummary.setText(Html.fromHtml(lastWater.getSummary(getActivity())));
+
+			DateFormat dateFormat = android.text.format.DateFormat.getDateFormat(getActivity());
+			DateFormat timeFormat = android.text.format.DateFormat.getTimeFormat(getActivity());
+			Date actionDate = new Date(lastWater.getDate());
+			lastFeedingFullDate.setText(dateFormat.format(actionDate) + " " + timeFormat.format(actionDate));
+			lastFeedingDate.setText(Html.fromHtml("<b>" + new DateRenderer().timeAgo(lastWater.getDate()).formattedDate + "</b> ago"));
+
+			final Water finalLastWater = lastWater;
+			duplicateFeeding.setOnClickListener(new View.OnClickListener()
+			{
+				@Override public void onClick(View v)
+				{
+					Kryo kryo = new Kryo();
+					Water action = kryo.copy(finalLastWater);
+
+					action.setDate(System.currentTimeMillis());
+					PlantManager.getInstance().getPlants().get(plantIndex).getActions().add(action);
+					PlantManager.getInstance().save();
+
+					Intent editWater = new Intent(v.getContext(), EditWateringActivity.class);
+					editWater.putExtra("plant_index", plantIndex);
+					editWater.putExtra("action_index", PlantManager.getInstance().getPlants().get(plantIndex).getActions().size() - 1);
+					startActivityForResult(editWater, 4);
+				}
+			});
 		}
 	}
 
@@ -471,6 +531,10 @@ public class PlantDetailsFragment extends Fragment
 					}
 				}
 			}
+		}
+		else if (requestCode == 4)
+		{
+			setLastFeeding();
 		}
 
 		// both photo options
