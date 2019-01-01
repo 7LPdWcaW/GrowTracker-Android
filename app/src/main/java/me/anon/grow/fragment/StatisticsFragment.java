@@ -147,9 +147,9 @@ public class StatisticsFragment extends Fragment
 
 		String[] tempAdditional = new String[3];
 		StatsHelper.setTempData(plant, temp, tempAdditional);
-		minppm.setText(tempAdditional[0]);
-		maxppm.setText(tempAdditional[1]);
-		aveppm.setText(tempAdditional[2]);
+		mintemp.setText(tempAdditional[0].equals("100.0") ? "-" : tempAdditional[0]);
+		maxtemp.setText(tempAdditional[1].equals("-100.0") ? "-" : tempAdditional[1]);
+		avetemp.setText(tempAdditional[2]);
 	}
 
 	@Override public void onSaveInstanceState(Bundle outState)

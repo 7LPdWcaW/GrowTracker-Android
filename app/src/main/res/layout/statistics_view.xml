@@ -656,7 +656,7 @@
 						android:text="Min:"
 						android:gravity="center_vertical"
 						style="@style/SubsectionTitle"
-						android:textColor="#ffffff"
+						android:textColor="#000000"
 					/>
 
 					<TextView
@@ -667,7 +667,7 @@
 						android:layout_marginLeft="8dp"
 						android:fontFamily="sans-serif-light"
 						android:gravity="center_vertical"
-						android:textColor="#ffffff"
+						android:textColor="#000000"
 					/>
 				</LinearLayout>
 
@@ -683,7 +683,7 @@
 						android:text="Max:"
 						android:gravity="center_vertical"
 						style="@style/SubsectionTitle"
-						android:textColor="#ffffff"
+						android:textColor="#000000"
 					/>
 
 					<TextView
