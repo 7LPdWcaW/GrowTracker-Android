@@ -1,6 +1,7 @@
 package me.anon.lib.helper;
 
 import android.graphics.Color;
+import android.support.v4.graphics.ColorUtils;
 import android.support.v4.util.Pair;
 import android.widget.TextView;
 
@@ -108,7 +109,7 @@ public class StatsHelper
 		data.setDrawHighlightIndicators(true);
 		data.setHighlightEnabled(true);
 		data.setHighlightLineWidth(2f);
-		data.setHighLightColor(colour);
+		data.setHighLightColor(ColorUtils.setAlphaComponent(colour, 96));
 		data.setDrawValues(false);
 		data.setValueFormatter(formatter);
 	}
