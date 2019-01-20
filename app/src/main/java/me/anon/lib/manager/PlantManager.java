@@ -29,6 +29,7 @@ import java.util.concurrent.atomic.AtomicBoolean;
 import me.anon.grow.BootActivity;
 import me.anon.grow.MainApplication;
 import me.anon.lib.helper.AddonHelper;
+import me.anon.lib.helper.BackupHelper;
 import me.anon.lib.helper.GsonHelper;
 import me.anon.lib.stream.DecryptInputStream;
 import me.anon.lib.stream.EncryptOutputStream;
@@ -181,11 +182,11 @@ public class PlantManager
 		}
 	}
 
-	public void load()
+	public boolean load()
 	{
 		if (MainApplication.isFailsafe())
 		{
-			return;
+			return false;
 		}
 
 		// redundancy check
@@ -204,26 +205,30 @@ public class PlantManager
 				{
 					if (TextUtils.isEmpty(MainApplication.getKey()))
 					{
-						return;
+						return false;
 					}
 
 					DecryptInputStream stream = new DecryptInputStream(MainApplication.getKey(), new File(FILES_DIR, "/plants.json"));
 
 					mPlants.clear();
 					mPlants.addAll((ArrayList<Plant>)GsonHelper.parse(stream, new TypeToken<ArrayList<Plant>>(){}.getType()));
+					MainApplication.setFailsafe(false);
 				}
 				else
 				{
 					mPlants.clear();
 					mPlants.addAll((ArrayList<Plant>)GsonHelper.parse(new FileInputStream(new File(FILES_DIR, "/plants.json")), new TypeToken<ArrayList<Plant>>(){}.getType()));
+					MainApplication.setFailsafe(false);
 				}
+
+				return true;
 			}
 			catch (final JsonSyntaxException e)
 			{
 				e.printStackTrace();
 
-				FileManager.getInstance().copyFile(FILES_DIR + "/plants.json", FILES_DIR + "/plants_" + System.currentTimeMillis() + ".json");
-				Toast.makeText(context, "There is a syntax error in your app data. Your data has been backed up to '" + FILES_DIR + ". Please fix before re-opening the app.", Toast.LENGTH_LONG).show();
+				File backupPath = BackupHelper.backupJson();
+				Toast.makeText(context, "There is a syntax error in your app data. Your data has been backed up to " + backupPath.getPath() + ". Please fix before re-opening the app.\n" + e.getMessage(), Toast.LENGTH_LONG).show();
 
 				// prevent save
 				MainApplication.setFailsafe(true);
@@ -232,13 +237,15 @@ public class PlantManager
 			{
 				e.printStackTrace();
 
-				FileManager.getInstance().copyFile(FILES_DIR + "/plants.json", FILES_DIR + "/plants_" + System.currentTimeMillis() + ".json");
-				Toast.makeText(context, "There is a problem loading your app data.", Toast.LENGTH_LONG).show();
+				File backupPath = BackupHelper.backupJson();
+				Toast.makeText(context, "There is a problem loading your app data. Your data has been backed up to " + backupPath.getPath(), Toast.LENGTH_LONG).show();
 
 				// prevent save
 				MainApplication.setFailsafe(true);
 			}
 		}
+
+		return false;
 	}
 
 	public void save()
