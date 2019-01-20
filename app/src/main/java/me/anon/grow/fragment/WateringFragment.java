@@ -388,7 +388,14 @@ public class WateringFragment extends Fragment
 			{
 				if (totalDelivery == null || totalDelivery != Double.parseDouble(amount.getText().toString()))
 				{
-					totalDelivery = selectedDeliveryUnit.to(Unit.ML, Double.parseDouble(amount.getText().toString()));
+					try
+					{
+						totalDelivery = selectedDeliveryUnit.to(Unit.ML, Double.parseDouble(amount.getText().toString()));
+					}
+					catch (NumberFormatException e)
+					{
+						totalDelivery = 0.0d;
+					}
 				}
 			}
 
