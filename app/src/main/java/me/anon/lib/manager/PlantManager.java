@@ -360,7 +360,7 @@ public class PlantManager
 
 		public SaveAsyncTask(List<Plant> plants)
 		{
-			this.plants = plants;
+			this.plants = new ArrayList(plants);
 		}
 	}
 }
