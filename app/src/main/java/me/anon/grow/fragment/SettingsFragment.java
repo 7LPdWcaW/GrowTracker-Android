@@ -27,6 +27,7 @@ import android.util.Base64;
 import android.view.View;
 import android.widget.Toast;
 
+import com.kenny.snackbar.SnackBar;
 import com.nostra13.universalimageloader.core.ImageLoader;
 
 import java.io.BufferedInputStream;
@@ -714,7 +715,7 @@ public class SettingsFragment extends PreferenceFragment implements Preference.O
 						}
 
 						FileManager.getInstance().copyFile(selectedBackup.plantsPath, PlantManager.FILES_DIR + "/plants.json");
-						PlantManager.getInstance().load();
+						boolean loaded = PlantManager.getInstance().load();
 
 						if (selectedBackup.gardenPath != null)
 						{
@@ -728,7 +729,14 @@ public class SettingsFragment extends PreferenceFragment implements Preference.O
 							ScheduleManager.instance.load();
 						}
 
-						Toast.makeText(getActivity(), "Restore to " + selectedBackup + " completed", Toast.LENGTH_LONG).show();
+						if (!loaded)
+						{
+							SnackBar.show(getActivity(), "Could not restore from backup " + selectedBackup, null);
+						}
+						else
+						{
+							Toast.makeText(getActivity(), "Restore to " + selectedBackup + " completed", Toast.LENGTH_LONG).show();
+						}
 					}
 				})
 				.show();
