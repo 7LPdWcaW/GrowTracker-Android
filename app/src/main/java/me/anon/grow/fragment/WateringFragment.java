@@ -394,15 +394,19 @@ public class WateringFragment extends Fragment
 					}
 					catch (NumberFormatException e)
 					{
-						totalDelivery = 0.0d;
+						totalDelivery = null;
 					}
 				}
 			}
 
-			totalDelivery = ML.to(selectedDeliveryUnit, totalDelivery);
-			Double additiveAmount = ML.to(selectedMeasurementUnit, additive.getAmount());
+			if (totalDelivery != null)
+			{
+				totalDelivery = ML.to(selectedDeliveryUnit, totalDelivery);
+				Double additiveAmount = ML.to(selectedMeasurementUnit, additive.getAmount());
+
+				amountStr = amountStr + "&nbsp;&nbsp;<b>(" + Unit.toTwoDecimalPlaces(additiveAmount * totalDelivery) + selectedMeasurementUnit.getLabel() + " total)</b>";
+			}
 			
-			amountStr = amountStr + "&nbsp;&nbsp;<b>(" + Unit.toTwoDecimalPlaces(additiveAmount * totalDelivery) + selectedMeasurementUnit.getLabel() + " total)</b>";
 			((TextView)additiveStub).setText(Html.fromHtml(amountStr));
 
 			additiveStub.setTag(additive);
