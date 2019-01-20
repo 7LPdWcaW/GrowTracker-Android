@@ -65,6 +65,11 @@
 			android:title="Backup now"
 		/>
 
+		<Preference
+			android:key="restore"
+			android:title="Restore from backup"
+		/>
+
 		<CheckBoxPreference
 			android:key="encrypt"
 			android:title="Encrypt data"
