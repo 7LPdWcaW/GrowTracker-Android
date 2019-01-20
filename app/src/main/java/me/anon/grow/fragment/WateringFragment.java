@@ -9,7 +9,10 @@ import android.content.DialogInterface;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
 import android.support.annotation.Nullable;
+import android.text.Editable;
+import android.text.Html;
 import android.text.TextUtils;
+import android.text.TextWatcher;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -76,6 +79,16 @@ public class WateringFragment extends Fragment
 	private Unit selectedMeasurementUnit, selectedDeliveryUnit;
 	private TempUnit selectedTemperatureUnit;
 	private boolean usingEc = false;
+	private TextWatcher deliveryTextChangeListener = new TextWatcher()
+	{
+		@Override public void beforeTextChanged(CharSequence s, int start, int count, int after){}
+		@Override public void onTextChanged(CharSequence s, int start, int before, int count){}
+
+		@Override public void afterTextChanged(Editable s)
+		{
+			populateAdditives();
+		}
+	};
 
 	/**
 	 * @param plantIndex If -1, assume new plant
@@ -348,6 +361,18 @@ public class WateringFragment extends Fragment
 	private void populateAdditives()
 	{
 		additiveContainer.removeViews(0, additiveContainer.getChildCount() - 1);
+		int maxChars = 0;
+
+		for (Additive additive : water.getAdditives())
+		{
+			if (additive == null || additive.getAmount() == null) continue;
+
+			double converted = Unit.ML.to(selectedMeasurementUnit, additive.getAmount());
+			String amountStr = converted == Math.floor(converted) ? String.valueOf((int)converted) : String.valueOf(converted);
+			amountStr = additive.getDescription() + "   -   " + amountStr + selectedMeasurementUnit.getLabel() + "/" + selectedDeliveryUnit.getLabel();
+			maxChars = Math.max(maxChars, amountStr.length());
+		}
+
 		for (Additive additive : water.getAdditives())
 		{
 			if (additive == null || additive.getAmount() == null) continue;
@@ -356,7 +381,22 @@ public class WateringFragment extends Fragment
 			String amountStr = converted == Math.floor(converted) ? String.valueOf((int)converted) : String.valueOf(converted);
 
 			View additiveStub = LayoutInflater.from(getActivity()).inflate(R.layout.additive_stub, additiveContainer, false);
-			((TextView)additiveStub).setText(additive.getDescription() + "   -   " + amountStr + selectedMeasurementUnit.getLabel() + "/" + selectedDeliveryUnit.getLabel());
+			amountStr = additive.getDescription() + "   -   " + amountStr + selectedMeasurementUnit.getLabel() + "/" + selectedDeliveryUnit.getLabel();
+
+			Double totalDelivery = water.getAmount();
+			if (totalDelivery == null || !TextUtils.isEmpty(amount.getText().toString()))
+			{
+				if (totalDelivery == null || totalDelivery != Double.parseDouble(amount.getText().toString()))
+				{
+					totalDelivery = selectedDeliveryUnit.to(Unit.ML, Double.parseDouble(amount.getText().toString()));
+				}
+			}
+
+			totalDelivery = ML.to(selectedDeliveryUnit, totalDelivery);
+			Double additiveAmount = ML.to(selectedMeasurementUnit, additive.getAmount());
+			
+			amountStr = amountStr + "&nbsp;&nbsp;<b>(" + Unit.toTwoDecimalPlaces(additiveAmount * totalDelivery) + selectedMeasurementUnit.getLabel() + " total)</b>";
+			((TextView)additiveStub).setText(Html.fromHtml(amountStr));
 
 			additiveStub.setTag(additive);
 			additiveStub.setOnClickListener(new View.OnClickListener()
@@ -368,6 +408,9 @@ public class WateringFragment extends Fragment
 			});
 			additiveContainer.addView(additiveStub, additiveContainer.getChildCount() - 1);
 		}
+
+		amount.removeTextChangedListener(deliveryTextChangeListener);
+		amount.addTextChangedListener(deliveryTextChangeListener);
 	}
 
 	@Views.OnClick public void onNewAdditiveClick(View view)
