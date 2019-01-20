@@ -98,6 +98,6 @@ class ScheduleManager private constructor()
 	companion object
 	{
 		@JvmField public val instance = ScheduleManager()
-		private var FILES_DIR: String? = null
+		@JvmField public var FILES_DIR: String? = null
 	}
 }
