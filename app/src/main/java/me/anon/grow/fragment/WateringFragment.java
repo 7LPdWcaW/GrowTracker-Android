@@ -394,7 +394,7 @@ public class WateringFragment extends Fragment
 
 			totalDelivery = ML.to(selectedDeliveryUnit, totalDelivery);
 			Double additiveAmount = ML.to(selectedMeasurementUnit, additive.getAmount());
-			
+
 			amountStr = amountStr + "&nbsp;&nbsp;<b>(" + Unit.toTwoDecimalPlaces(additiveAmount * totalDelivery) + selectedMeasurementUnit.getLabel() + " total)</b>";
 			((TextView)additiveStub).setText(Html.fromHtml(amountStr));
 
