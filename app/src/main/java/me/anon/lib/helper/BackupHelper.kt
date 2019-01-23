@@ -10,15 +10,18 @@ import java.io.File
  */
 object BackupHelper
 {
+	@JvmField
+	public var FILES_PATH = Environment.getExternalStorageDirectory().absolutePath + "/backups/GrowTracker"
+
 	@JvmStatic
 	public fun backupJson(): File
 	{
 		val time = System.currentTimeMillis()
-		val backupPath = File(Environment.getExternalStorageDirectory(), "/backups/GrowTracker/")
+		val backupPath = File(FILES_PATH)
 		backupPath.mkdirs()
-		FileManager.getInstance().copyFile("${PlantManager.FILES_DIR}/plants.json", Environment.getExternalStorageDirectory().absolutePath + "/backups/GrowTracker/$time.plants.json.bak")
-		FileManager.getInstance().copyFile("${PlantManager.FILES_DIR}/schedules.json", Environment.getExternalStorageDirectory().absolutePath + "/backups/GrowTracker/$time.schedules.json.bak")
-		FileManager.getInstance().copyFile("${PlantManager.FILES_DIR}/gardens.json", Environment.getExternalStorageDirectory().absolutePath + "/backups/GrowTracker/$time.gardens.json.bak")
+		FileManager.getInstance().copyFile("${PlantManager.FILES_DIR}/plants.json", "$FILES_PATH/$time.plants.json.bak")
+		FileManager.getInstance().copyFile("${PlantManager.FILES_DIR}/schedules.json", "$FILES_PATH/$time.schedules.json.bak")
+		FileManager.getInstance().copyFile("${PlantManager.FILES_DIR}/gardens.json", "$FILES_PATH/$time.gardens.json.bak")
 
 		return backupPath
 	}

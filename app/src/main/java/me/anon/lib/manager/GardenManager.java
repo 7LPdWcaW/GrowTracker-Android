@@ -32,7 +32,7 @@ public class GardenManager
 		return instance;
 	}
 
-	private static String FILES_DIR;
+	public static String FILES_DIR;
 
 	private final ArrayList<Garden> mGardens = new ArrayList<>();
 	private Context context;
