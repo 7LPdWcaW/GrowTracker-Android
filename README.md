@@ -2,9 +2,9 @@
 
 Welcome to grow tracker. This app was created to help record data about growing plants in order to monitor the growing conditions to help make the plants grow better, and identify potential issues during the grow process.
 
-[Latest APK: (MD5) a7ddb62f96c2e31a226e372563cc8552 v2.4-alpha2](https://github.com/7LPdWcaW/GrowTracker-Android/releases/download/v2.4-alpha2/v2.4-alpha2-production.apk)
+[Latest APK: (MD5) accc43f8dfff1fb51fc15c1ff54cfc6c v2.4-beta1](https://github.com/7LPdWcaW/GrowTracker-Android/releases/download/v2.4-alpha2/v2.4-alpha2-production.apk)
 
-[Latest APK (Discrete): (MD5) aab44d0a1b2dcf02740d1c893bf1f5b5 v2.4-alpha2](https://github.com/7LPdWcaW/GrowTracker-Android/releases/download/v2.4-alpha2/v2.4-alpha2-discrete.apk)
+[Latest APK (Discrete): (MD5) 03b931b602f1619e12021292a854342c v2.4-beta1](https://github.com/7LPdWcaW/GrowTracker-Android/releases/download/v2.4-alpha2/v2.4-alpha2-discrete.apk)
 
 # Installation
 
@@ -53,6 +53,8 @@ Lombok is required for this project before you are able to compile. You can inst
 
 ### Plant object
 
+- Plant date in milliseconds
+
 ```
 {
     "id": <String>,
@@ -86,7 +88,9 @@ Temperature measured in ºC
 
 ### Action object (water)
 
-Temperature measured in ºC
+- Temperature measured in ºC
+- Amount measured in ml
+- Date is milliseconds
 
 Water action for waterings
 
@@ -99,11 +103,13 @@ Water action for waterings
     "amount": <Double>,
     "date": 1431268453111,
     "type": "Water",
-    "temp": <Integer>
+    "temp": <Double>
 }
 ```
 
 ### Additive object - used for nutrients
+
+- Amount is measured in ml
 
 ```
 {
@@ -118,6 +124,8 @@ Action can be one of,
 
 `FIM`, `FLUSH`, `FOLIAR_FEED`, `LST`, `LOLLIPOP`, `PESTICIDE_APPLICATION`, `TOP`, `TRANSPLANTED`, `TRIM`
 
+- Date in milliseconds
+
 ```
 {
     "action": <Action>,
@@ -128,6 +136,8 @@ Action can be one of,
 
 ### Stage change
 
+- Date in milliseconds
+
 ```
 {
     "newStage": <Plant Stage>,
@@ -137,6 +147,8 @@ Action can be one of,
 ```
 
 ### Note
+
+- Date in milliseconds
 
 ```
 {

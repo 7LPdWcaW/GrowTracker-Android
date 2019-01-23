@@ -74,7 +74,7 @@ public class ActionAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>
 
 		@Override public long getDate()
 		{
-			return getImageDate(images.get(images.size() - 1));
+			return getImageDate(images.get(0));
 		}
 	}
 
