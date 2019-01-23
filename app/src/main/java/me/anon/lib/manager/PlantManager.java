@@ -262,14 +262,12 @@ public class PlantManager
 
 	public void save(final AsyncCallback callback, boolean ignoreCheck)
 	{
-//		synchronized (mPlants)
+		synchronized (mPlants)
 		{
 			if (MainApplication.isFailsafe()) return;
 
 			if ((!ignoreCheck && mPlants.size() > 0) || ignoreCheck)
 			{
-				AddonHelper.broadcastPlantList(context);
-
 				saveTask.add(new SaveAsyncTask(mPlants)
 				{
 					@Override protected Void doInBackground(Void... params)
@@ -335,6 +333,8 @@ public class PlantManager
 						{
 							isSaving.set(false);
 						}
+
+						AddonHelper.broadcastPlantList(context);
 					}
 				});
 
