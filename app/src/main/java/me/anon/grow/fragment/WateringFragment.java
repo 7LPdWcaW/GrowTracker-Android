@@ -232,50 +232,103 @@ public class WateringFragment extends Fragment
 			((TextView)((ViewGroup)waterPpm.getParent()).findViewById(R.id.ppm_label)).setText("EC");
 		}
 
-		if (water != null && plants.size() == 1)
+		if (water != null)
 		{
-			Water hintFeed = null;
+			ArrayList<Water> hintFeed = new ArrayList<>();
 
-			for (int index = plants.get(0).getActions().size() - 1; index >= 0; index--)
+			for (Plant plant : plants)
 			{
-				if (plants.get(0).getActions().get(index).getClass() == Water.class)
+				for (int index = plant.getActions().size() - 1; index >= 0; index--)
 				{
-					hintFeed = (Water)plants.get(0).getActions().get(index);
-					break;
+					if (plant.getActions().get(index).getClass() == Water.class)
+					{
+						hintFeed.add((Water)plant.getActions().get(index));
+						break;
+					}
 				}
 			}
 
-			if (hintFeed != null)
+			if (hintFeed.size() > 0)
 			{
-				if (hintFeed.getPh() != null)
+				Double averagePh = 0.0;
+				int phCount = 0;
+				Double averagePpm = 0.0;
+				int ppmCount = 0;
+				Double averageRunoff = 0.0;
+				int runoffCount = 0;
+				Double averageAmount = 0.0;
+				int amountCount = 0;
+				Double averageTemp = 0.0;
+				int tempCount = 0;
+
+				for (Water hint : hintFeed)
 				{
-					waterPh.setHint(String.valueOf(hintFeed.getPh()));
+					if (hint.getPh() != null)
+					{
+						averagePh += hint.getPh();
+						phCount++;
+					}
+
+					if (hint.getPpm() != null)
+					{
+						averagePpm += hint.getPpm();
+						ppmCount++;
+					}
+
+					if (hint.getRunoff() != null)
+					{
+						averageRunoff += hint.getRunoff();
+						runoffCount++;
+					}
+
+					if (hint.getAmount() != null)
+					{
+						averageAmount += hint.getAmount();
+						amountCount++;
+					}
+
+					if (hint.getTemp() != null)
+					{
+						averageTemp += hint.getTemp();
+						tempCount++;
+					}
 				}
 
-				if (hintFeed.getPpm() != null)
+				averagePh = averagePh / phCount;
+				averagePpm = averagePpm / ppmCount;
+				averageRunoff = averageRunoff / runoffCount;
+				averageAmount = averageAmount / amountCount;
+				averageTemp = averageTemp / tempCount;
+
+				if (!averagePh.isNaN())
 				{
-					waterPpm.setHint(String.valueOf(hintFeed.getPpm()));
+					waterPh.setHint(String.valueOf(averagePh));
 				}
 
-				if (hintFeed.getRunoff() != null)
+				if (!averagePpm.isNaN())
 				{
-					runoffPh.setHint(String.valueOf(hintFeed.getRunoff()));
+					waterPpm.setHint(String.valueOf(averagePpm));
 				}
 
-				if (hintFeed.getAmount() != null)
+				if (!averageRunoff.isNaN())
 				{
-					amount.setHint(String.valueOf(ML.to(selectedDeliveryUnit, hintFeed.getAmount())) + selectedDeliveryUnit.getLabel());
+					runoffPh.setHint(String.valueOf(averageRunoff));
+				}
+
+				if (!averageAmount.isNaN())
+				{
+					amount.setHint(String.valueOf(ML.to(selectedDeliveryUnit, averageAmount)) + selectedDeliveryUnit.getLabel());
 				}
 
 				tempContainer.setVisibility(View.VISIBLE);
 				tempLabel.setText("Temp (º" + selectedTemperatureUnit.getLabel() + ")");
 
-				if (hintFeed.getTemp() != null)
+				if (!averageTemp.isNaN())
 				{
-					temp.setHint(String.valueOf(CELCIUS.to(selectedTemperatureUnit, hintFeed.getTemp())) + selectedTemperatureUnit.getLabel());
+					temp.setHint(String.valueOf(CELCIUS.to(selectedTemperatureUnit, averageTemp)) + selectedTemperatureUnit.getLabel());
 				}
 
-				notes.setHint(hintFeed.getNotes());
+				notes.setHint(hintFeed.get(0).getNotes());
 			}
 		}
 	}
