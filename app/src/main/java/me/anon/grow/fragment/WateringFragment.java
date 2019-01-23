@@ -9,7 +9,10 @@ import android.content.DialogInterface;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
 import android.support.annotation.Nullable;
+import android.text.Editable;
+import android.text.Html;
 import android.text.TextUtils;
+import android.text.TextWatcher;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -76,6 +79,16 @@ public class WateringFragment extends Fragment
 	private Unit selectedMeasurementUnit, selectedDeliveryUnit;
 	private TempUnit selectedTemperatureUnit;
 	private boolean usingEc = false;
+	private TextWatcher deliveryTextChangeListener = new TextWatcher()
+	{
+		@Override public void beforeTextChanged(CharSequence s, int start, int count, int after){}
+		@Override public void onTextChanged(CharSequence s, int start, int before, int count){}
+
+		@Override public void afterTextChanged(Editable s)
+		{
+			populateAdditives();
+		}
+	};
 
 	/**
 	 * @param plantIndex If -1, assume new plant
@@ -219,50 +232,103 @@ public class WateringFragment extends Fragment
 			((TextView)((ViewGroup)waterPpm.getParent()).findViewById(R.id.ppm_label)).setText("EC");
 		}
 
-		if (water != null && plants.size() == 1)
+		if (water != null)
 		{
-			Water hintFeed = null;
+			ArrayList<Water> hintFeed = new ArrayList<>();
 
-			for (int index = plants.get(0).getActions().size() - 1; index >= 0; index--)
+			for (Plant plant : plants)
 			{
-				if (plants.get(0).getActions().get(index).getClass() == Water.class)
+				for (int index = plant.getActions().size() - 1; index >= 0; index--)
 				{
-					hintFeed = (Water)plants.get(0).getActions().get(index);
-					break;
+					if (plant.getActions().get(index).getClass() == Water.class)
+					{
+						hintFeed.add((Water)plant.getActions().get(index));
+						break;
+					}
 				}
 			}
 
-			if (hintFeed != null)
+			if (hintFeed.size() > 0)
 			{
-				if (hintFeed.getPh() != null)
+				Double averagePh = 0.0;
+				int phCount = 0;
+				Double averagePpm = 0.0;
+				int ppmCount = 0;
+				Double averageRunoff = 0.0;
+				int runoffCount = 0;
+				Double averageAmount = 0.0;
+				int amountCount = 0;
+				Double averageTemp = 0.0;
+				int tempCount = 0;
+
+				for (Water hint : hintFeed)
 				{
-					waterPh.setHint(String.valueOf(hintFeed.getPh()));
+					if (hint.getPh() != null)
+					{
+						averagePh += hint.getPh();
+						phCount++;
+					}
+
+					if (hint.getPpm() != null)
+					{
+						averagePpm += hint.getPpm();
+						ppmCount++;
+					}
+
+					if (hint.getRunoff() != null)
+					{
+						averageRunoff += hint.getRunoff();
+						runoffCount++;
+					}
+
+					if (hint.getAmount() != null)
+					{
+						averageAmount += hint.getAmount();
+						amountCount++;
+					}
+
+					if (hint.getTemp() != null)
+					{
+						averageTemp += hint.getTemp();
+						tempCount++;
+					}
 				}
 
-				if (hintFeed.getPpm() != null)
+				averagePh = averagePh / phCount;
+				averagePpm = averagePpm / ppmCount;
+				averageRunoff = averageRunoff / runoffCount;
+				averageAmount = averageAmount / amountCount;
+				averageTemp = averageTemp / tempCount;
+
+				if (!averagePh.isNaN())
 				{
-					waterPpm.setHint(String.valueOf(hintFeed.getPpm()));
+					waterPh.setHint(String.valueOf(averagePh));
 				}
 
-				if (hintFeed.getRunoff() != null)
+				if (!averagePpm.isNaN())
 				{
-					runoffPh.setHint(String.valueOf(hintFeed.getRunoff()));
+					waterPpm.setHint(String.valueOf(averagePpm));
 				}
 
-				if (hintFeed.getAmount() != null)
+				if (!averageRunoff.isNaN())
 				{
-					amount.setHint(String.valueOf(ML.to(selectedDeliveryUnit, hintFeed.getAmount())) + selectedDeliveryUnit.getLabel());
+					runoffPh.setHint(String.valueOf(averageRunoff));
+				}
+
+				if (!averageAmount.isNaN())
+				{
+					amount.setHint(String.valueOf(ML.to(selectedDeliveryUnit, averageAmount)) + selectedDeliveryUnit.getLabel());
 				}
 
 				tempContainer.setVisibility(View.VISIBLE);
 				tempLabel.setText("Temp (º" + selectedTemperatureUnit.getLabel() + ")");
 
-				if (hintFeed.getTemp() != null)
+				if (!averageTemp.isNaN())
 				{
-					temp.setHint(String.valueOf(CELCIUS.to(selectedTemperatureUnit, hintFeed.getTemp())) + selectedTemperatureUnit.getLabel());
+					temp.setHint(String.valueOf(CELCIUS.to(selectedTemperatureUnit, averageTemp)) + selectedTemperatureUnit.getLabel());
 				}
 
-				notes.setHint(hintFeed.getNotes());
+				notes.setHint(hintFeed.get(0).getNotes());
 			}
 		}
 	}
@@ -348,6 +414,18 @@ public class WateringFragment extends Fragment
 	private void populateAdditives()
 	{
 		additiveContainer.removeViews(0, additiveContainer.getChildCount() - 1);
+		int maxChars = 0;
+
+		for (Additive additive : water.getAdditives())
+		{
+			if (additive == null || additive.getAmount() == null) continue;
+
+			double converted = Unit.ML.to(selectedMeasurementUnit, additive.getAmount());
+			String amountStr = converted == Math.floor(converted) ? String.valueOf((int)converted) : String.valueOf(converted);
+			amountStr = additive.getDescription() + "   -   " + amountStr + selectedMeasurementUnit.getLabel() + "/" + selectedDeliveryUnit.getLabel();
+			maxChars = Math.max(maxChars, amountStr.length());
+		}
+
 		for (Additive additive : water.getAdditives())
 		{
 			if (additive == null || additive.getAmount() == null) continue;
@@ -356,7 +434,33 @@ public class WateringFragment extends Fragment
 			String amountStr = converted == Math.floor(converted) ? String.valueOf((int)converted) : String.valueOf(converted);
 
 			View additiveStub = LayoutInflater.from(getActivity()).inflate(R.layout.additive_stub, additiveContainer, false);
-			((TextView)additiveStub).setText(additive.getDescription() + "   -   " + amountStr + selectedMeasurementUnit.getLabel() + "/" + selectedDeliveryUnit.getLabel());
+			amountStr = additive.getDescription() + "&nbsp;&nbsp;&nbsp;-&nbsp;&nbsp;&nbsp;" + amountStr + selectedMeasurementUnit.getLabel() + "/" + selectedDeliveryUnit.getLabel();
+
+			Double totalDelivery = water.getAmount();
+			if (totalDelivery == null || !TextUtils.isEmpty(amount.getText().toString()))
+			{
+				if (totalDelivery == null || totalDelivery != Double.parseDouble(amount.getText().toString()))
+				{
+					try
+					{
+						totalDelivery = selectedDeliveryUnit.to(Unit.ML, Double.parseDouble(amount.getText().toString()));
+					}
+					catch (NumberFormatException e)
+					{
+						totalDelivery = null;
+					}
+				}
+			}
+
+			if (totalDelivery != null)
+			{
+				totalDelivery = ML.to(selectedDeliveryUnit, totalDelivery);
+				Double additiveAmount = ML.to(selectedMeasurementUnit, additive.getAmount());
+
+				amountStr = amountStr + "&nbsp;&nbsp;<b>(" + Unit.toTwoDecimalPlaces(additiveAmount * totalDelivery) + selectedMeasurementUnit.getLabel() + " total)</b>";
+			}
+
+			((TextView)additiveStub).setText(Html.fromHtml(amountStr));
 
 			additiveStub.setTag(additive);
 			additiveStub.setOnClickListener(new View.OnClickListener()
@@ -368,6 +472,9 @@ public class WateringFragment extends Fragment
 			});
 			additiveContainer.addView(additiveStub, additiveContainer.getChildCount() - 1);
 		}
+
+		amount.removeTextChangedListener(deliveryTextChangeListener);
+		amount.addTextChangedListener(deliveryTextChangeListener);
 	}
 
 	@Views.OnClick public void onNewAdditiveClick(View view)
@@ -390,28 +497,9 @@ public class WateringFragment extends Fragment
 					return;
 				}
 
-				double converted = Unit.ML.to(selectedMeasurementUnit, additive.getAmount());
-				String amountStr = converted == Math.floor(converted) ? String.valueOf((int)converted) : String.valueOf(converted);
-
-				View additiveStub = LayoutInflater.from(getActivity()).inflate(R.layout.additive_stub, additiveContainer, false);
-				((TextView)additiveStub).setText(additive.getDescription() + "   -   " + amountStr + selectedMeasurementUnit.getLabel() + "/" + selectedDeliveryUnit.getLabel());
-
-				if (currentTag == null)
+				if (!water.getAdditives().contains(additive))
 				{
-					if (!water.getAdditives().contains(additive))
-					{
-						water.getAdditives().add(additive);
-
-						additiveStub.setTag(additive);
-						additiveStub.setOnClickListener(new View.OnClickListener()
-						{
-							@Override public void onClick(View view)
-							{
-								onNewAdditiveClick(view);
-							}
-						});
-						additiveContainer.addView(additiveStub, additiveContainer.getChildCount() - 1);
-					}
+					water.getAdditives().add(additive);
 				}
 				else
 				{
@@ -421,18 +509,13 @@ public class WateringFragment extends Fragment
 
 						if (tag == currentTag)
 						{
-							converted = Unit.ML.to(selectedMeasurementUnit, additive.getAmount());
-							amountStr = converted == Math.floor(converted) ? String.valueOf((int)converted) : String.valueOf(converted);
-
 							water.getAdditives().set(childIndex, additive);
-
-							((TextView)additiveContainer.getChildAt(childIndex)).setText(additive.getDescription() + "   -   " + amountStr + selectedMeasurementUnit.getLabel() + "/" + selectedDeliveryUnit.getLabel());
-							additiveContainer.getChildAt(childIndex).setTag(additive);
-
 							break;
 						}
 					}
 				}
+
+				populateAdditives();
 
 				if (focus != null)
 				{
@@ -443,10 +526,7 @@ public class WateringFragment extends Fragment
 
 			@Override public void onAdditiveDeleteRequested(Additive additive)
 			{
-				if (water.getAdditives().contains(additive))
-				{
-					water.getAdditives().remove(additive);
-				}
+				water.getAdditives().remove(additive);
 
 				for (int childIndex = 0; childIndex < additiveContainer.getChildCount(); childIndex++)
 				{
