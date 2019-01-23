@@ -213,6 +213,13 @@ public class MainActivity extends BaseActivity implements NavigationView.OnNavig
 						GardenManager.getInstance().getGardens().set(index, garden);
 					}
 
+					MenuItem item = navigation.getMenu().findItem(selectedItem);
+
+					if (item != null)
+					{
+						item.setChecked(false);
+					}
+
 					selectedItem = 100 + index;
 
 					setNavigationView();
@@ -250,7 +257,14 @@ public class MainActivity extends BaseActivity implements NavigationView.OnNavig
 		{
 			navigation.getMenu().findItem(R.id.garden_menu).getSubMenu().findItem(R.id.all).setChecked(false);
 
+			MenuItem selected = navigation.getMenu().findItem(selectedItem);
+			if (selected != null)
+			{
+				selected.setChecked(false);
+			}
+
 			selectedItem = item.getItemId();
+			item.setChecked(true);
 			int gardenIndex = item.getItemId() - 100;
 			getFragmentManager().beginTransaction().replace(R.id.fragment_holder, PlantListFragment.newInstance(GardenManager.getInstance().getGardens().get(gardenIndex)), TAG_FRAGMENT).commit();
 		}
