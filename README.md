@@ -6,6 +6,8 @@ Welcome to grow tracker. This app was created to help record data about growing 
 
 [Latest APK (Discrete): (MD5) 03b931b602f1619e12021292a854342c v2.4-beta1](https://github.com/7LPdWcaW/GrowTracker-Android/releases/download/v2.4-alpha2/v2.4-alpha2-discrete.apk)
 
+You can follow development, post questions, or grow logs in the [Subreddit](https://reddit.com/r/growutils)
+
 # Installation
 
 The app requires no permissions except for external storage (for caching plant data and images) which you can see [here](https://github.com/7LPdWcaW/GrowTracker-Android/blob/develop/app/src/main/AndroidManifest.xml) in order for users to maintain anonymity, and a minimum Android version of `4.2` and above
@@ -20,7 +22,13 @@ On documentation on creating addons, please see [ADDONS.md](ADDONS.md)
 2. Download the APK from [here](https://github.com/7LPdWcaW/GrowTracker-Android/releases)
 3. Click on downloaded app and install
 
+# Updating
+
+You can either elect to update manually, or get notified on releases by installing the [Update plugin](https://github.com/7LPdWcaW/GrowUpdater-Android/releases)
+
 **For updates, do not uninstall first, you will lose your existing plant data**
+
+# Screenshots
 
 [![install](screenshots/install-thumb.png)](screenshots/install.png)
 [![plant list](screenshots/1-thumb.png)](screenshots/1.png)
@@ -46,10 +54,6 @@ On documentation on creating addons, please see [ADDONS.md](ADDONS.md)
 The app uses a simple JSON structure to store all the data about the plants that can be found in `/sdcard/Android/data/me.anon.grow/files/plants.json`. All photos taken in the app are stored in `/sdcard/DCIM/GrowTracker/` in the corresponding plant id folder. `NOTE`: Photos will **not** show in any gallery app and will only be accessible through GrowTracker, or other **file** browser apps such as `ESFile Explorer`
 
 The structure is very simple. Note: date timestamps are all unix timestamps from 1/1/1970 in milliseconds. All objects in arrays are in date order, where index 0 is the oldest and index (size - 1) is the newest.
-
-## Prerequisites
-
-Lombok is required for this project before you are able to compile. You can install it by going to `preferences->plugins->browse repositories->lombok plugin`
 
 ### Plant object
 
@@ -170,7 +174,7 @@ You can decrypt your files using your passphrase either by writing a script that
 
 # License
 
-Copyright 2014-2018 7LPdWcaW
+Copyright 2014-2019 7LPdWcaW
 
 Licensed under the Apache License, Version 2.0 (the "License");
 you may not use this file except in compliance with the License.
