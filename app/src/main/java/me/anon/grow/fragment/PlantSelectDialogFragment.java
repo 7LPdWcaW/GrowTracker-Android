@@ -16,7 +16,6 @@ import com.nostra13.universalimageloader.core.ImageLoader;
 
 import java.util.ArrayList;
 
-import lombok.Setter;
 import me.anon.controller.adapter.PlantSelectionAdapter;
 import me.anon.grow.R;
 import me.anon.lib.Views;
@@ -47,7 +46,12 @@ public class PlantSelectDialogFragment extends DialogFragment
 	private PlantSelectionAdapter adapter;
 	@Views.InjectView(R.id.recycler_view) private RecyclerView recyclerView;
 	private boolean showImages = true;
-	@Setter private OnDialogActionListener onDialogActionListener;
+	private OnDialogActionListener onDialogActionListener;
+
+	public void setOnDialogActionListener(OnDialogActionListener onDialogActionListener)
+	{
+		this.onDialogActionListener = onDialogActionListener;
+	}
 
 	@SuppressLint("ValidFragment")
 	public PlantSelectDialogFragment()

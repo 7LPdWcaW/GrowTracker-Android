@@ -2,10 +2,6 @@ package me.anon.model;
 
 import android.support.annotation.Nullable;
 
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
-
 /**
  * // TODO: Add class description
  *
@@ -13,15 +9,27 @@ import lombok.Setter;
  * @documentation // TODO Reference flow doc
  * @project GrowTracker
  */
-@Getter @Setter
-@NoArgsConstructor
 public class EmptyAction extends Action
 {
 	@Nullable private ActionName action;
+
+	public EmptyAction()
+	{
+	}
 
 	public EmptyAction(Action.ActionName action)
 	{
 		this.setDate(System.currentTimeMillis());
 		this.setAction(action);
+	}
+
+	public void setAction(@Nullable ActionName action)
+	{
+		this.action = action;
+	}
+
+	@Nullable public ActionName getAction()
+	{
+		return action;
 	}
 }

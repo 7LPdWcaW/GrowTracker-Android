@@ -12,7 +12,6 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.EditText;
 
-import lombok.Setter;
 import me.anon.grow.R;
 import me.anon.lib.Views;
 import me.anon.model.NoteAction;
@@ -28,7 +27,12 @@ public class NoteDialogFragment extends DialogFragment
 	@Views.InjectView(R.id.notes) private EditText notes;
 	private NoteAction action;
 
-	@Setter private OnDialogConfirmed onDialogConfirmed;
+	private OnDialogConfirmed onDialogConfirmed;
+
+	public void setOnDialogConfirmed(OnDialogConfirmed onDialogConfirmed)
+	{
+		this.onDialogConfirmed = onDialogConfirmed;
+	}
 
 	@SuppressLint("ValidFragment")
 	public NoteDialogFragment(){}

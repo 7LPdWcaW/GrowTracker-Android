@@ -5,7 +5,6 @@ import android.os.Bundle;
 import android.support.v7.widget.Toolbar;
 import android.view.MenuItem;
 
-import lombok.experimental.Accessors;
 import me.anon.grow.fragment.PlantDetailsFragment;
 import me.anon.lib.Views;
 
@@ -17,7 +16,6 @@ import me.anon.lib.Views;
  * @project GrowTracker
  */
 @Views.Injectable
-@Accessors(prefix = {"m", ""}, chain = true)
 public class PlantDetailsActivity extends BaseActivity
 {
 	private static final String TAG_FRAGMENT = "current_fragment";

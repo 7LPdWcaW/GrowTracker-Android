@@ -6,16 +6,11 @@ import android.support.annotation.Nullable;
 
 import java.util.ArrayList;
 import java.util.Comparator;
-import java.util.HashMap;
-import java.util.Map;
+import java.util.LinkedHashMap;
 import java.util.SortedMap;
 import java.util.TreeMap;
 import java.util.UUID;
 
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
-import lombok.experimental.Accessors;
 import me.anon.lib.DateRenderer;
 import me.anon.lib.Unit;
 import me.anon.lib.helper.TimeHelper;
@@ -29,9 +24,6 @@ import static me.anon.lib.Unit.ML;
  * @documentation // TODO Reference flow doc
  * @project GrowTracker
  */
-@Getter @Setter
-@Accessors(prefix = {"m", ""}, chain = true)
-@NoArgsConstructor
 public class Plant
 {
 	private String id = UUID.randomUUID().toString();
@@ -56,6 +48,91 @@ public class Plant
 		}
 
 		return id;
+	}
+
+	public void setId(String id)
+	{
+		this.id = id;
+	}
+
+	public String getName()
+	{
+		return name;
+	}
+
+	public void setName(String name)
+	{
+		this.name = name;
+	}
+
+	public String getStrain()
+	{
+		return strain;
+	}
+
+	public void setStrain(String strain)
+	{
+		this.strain = strain;
+	}
+
+	public long getPlantDate()
+	{
+		return plantDate;
+	}
+
+	public void setPlantDate(long plantDate)
+	{
+		this.plantDate = plantDate;
+	}
+
+	public boolean isClone()
+	{
+		return clone;
+	}
+
+	public void setClone(boolean clone)
+	{
+		this.clone = clone;
+	}
+
+	public PlantMedium getMedium()
+	{
+		return medium;
+	}
+
+	public void setMedium(PlantMedium medium)
+	{
+		this.medium = medium;
+	}
+
+	public String getMediumDetails()
+	{
+		return mediumDetails;
+	}
+
+	public void setMediumDetails(String mediumDetails)
+	{
+		this.mediumDetails = mediumDetails;
+	}
+
+	public ArrayList<String> getImages()
+	{
+		return images;
+	}
+
+	public void setImages(ArrayList<String> images)
+	{
+		this.images = images;
+	}
+
+	public ArrayList<Action> getActions()
+	{
+		return actions;
+	}
+
+	public void setActions(ArrayList<Action> actions)
+	{
+		this.actions = actions;
 	}
 
 	/**
@@ -234,9 +311,9 @@ public class Plant
 	 * Returns a map of plant stages
 	 * @return
 	 */
-	public Map<PlantStage, Action> getStages()
+	public LinkedHashMap<PlantStage, Action> getStages()
 	{
-		HashMap<PlantStage, Action> stages = new HashMap<>();
+		LinkedHashMap<PlantStage, Action> stages = new LinkedHashMap<>();
 
 		for (int index = actions.size() - 1; index >= 0; index--)
 		{

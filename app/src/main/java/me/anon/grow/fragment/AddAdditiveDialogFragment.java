@@ -4,13 +4,15 @@ import android.annotation.SuppressLint;
 import android.app.AlertDialog;
 import android.app.Dialog;
 import android.app.DialogFragment;
+import android.content.Context;
 import android.content.DialogInterface;
 import android.os.Bundle;
 import android.text.TextUtils;
 import android.view.View;
+import android.view.Window;
+import android.view.inputmethod.InputMethodManager;
 import android.widget.TextView;
 
-import lombok.Setter;
 import me.anon.grow.R;
 import me.anon.lib.Unit;
 import me.anon.lib.Views;
@@ -35,7 +37,12 @@ public class AddAdditiveDialogFragment extends DialogFragment
 	private Additive additive;
 	@Views.InjectView(R.id.description) private TextView description;
 	@Views.InjectView(R.id.amount) private TextView amount;
-	@Setter private OnAdditiveSelectedListener onAdditiveSelectedListener;
+	private OnAdditiveSelectedListener onAdditiveSelectedListener;
+
+	public void setOnAdditiveSelectedListener(OnAdditiveSelectedListener onAdditiveSelectedListener)
+	{
+		this.onAdditiveSelectedListener = onAdditiveSelectedListener;
+	}
 
 	@SuppressLint("ValidFragment")
 	public AddAdditiveDialogFragment(Additive additive)
@@ -88,10 +95,19 @@ public class AddAdditiveDialogFragment extends DialogFragment
 				}
 			}).create();
 
+		dialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
+
 		dialog.setOnShowListener(new DialogInterface.OnShowListener()
 		{
 			@Override public void onShow(DialogInterface dialogInterface)
 			{
+				if (additive == null)
+				{
+					InputMethodManager systemService = (InputMethodManager)getActivity().getSystemService(Context.INPUT_METHOD_SERVICE);
+					systemService.toggleSoftInput(InputMethodManager.SHOW_FORCED, 0);
+					description.requestFocus();
+				}
+
 				dialog.getButton(Dialog.BUTTON_NEUTRAL).setVisibility(additive == null ? View.GONE : View.VISIBLE);
 				dialog.getButton(Dialog.BUTTON_POSITIVE).setOnClickListener(new View.OnClickListener()
 				{

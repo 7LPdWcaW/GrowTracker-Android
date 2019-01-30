@@ -4,13 +4,19 @@ import android.app.Fragment;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.view.LayoutInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.WindowManager;
+import android.widget.PopupMenu;
 import android.widget.TextView;
 
 import com.github.mikephil.charting.charts.LineChart;
 
+import java.util.ArrayList;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Set;
 import java.util.SortedMap;
 
 import me.anon.grow.R;
@@ -19,20 +25,15 @@ import me.anon.lib.helper.StatsHelper;
 import me.anon.lib.helper.TimeHelper;
 import me.anon.lib.manager.PlantManager;
 import me.anon.model.Action;
+import me.anon.model.Additive;
 import me.anon.model.EmptyAction;
 import me.anon.model.Plant;
-import me.anon.model.PlantMedium;
 import me.anon.model.PlantStage;
 import me.anon.model.StageChange;
 import me.anon.model.Water;
 
 /**
- * // TODO: Add class description
- *
- * TODO: Average time between feeds
- *
  * @author 7LPdWcaW
- * @documentation // TODO Reference flow doc
  * @project GrowTracker
  */
 @Views.Injectable
@@ -56,6 +57,8 @@ public class StatisticsFragment extends Fragment
 		return fragment;
 	}
 
+	@Views.InjectView(R.id.additives) private LineChart additives;
+	@Views.InjectView(R.id.additive_selector) private TextView additivesSpinner;
 	@Views.InjectView(R.id.input_ph) private LineChart inputPh;
 	@Views.InjectView(R.id.ppm) private LineChart ppm;
 	@Views.InjectView(R.id.temp) private LineChart temp;
@@ -92,6 +95,8 @@ public class StatisticsFragment extends Fragment
 	@Views.InjectView(R.id.max_temp) private TextView maxtemp;
 	@Views.InjectView(R.id.ave_temp) private TextView avetemp;
 
+	private Set<String> checkedAdditives = null;
+
 	@Nullable @Override public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState)
 	{
 		View view = inflater.inflate(R.layout.statistics_view, container, false);
@@ -103,6 +108,11 @@ public class StatisticsFragment extends Fragment
 	@Override public void onActivityCreated(Bundle savedInstanceState)
 	{
 		super.onActivityCreated(savedInstanceState);
+
+		if (savedInstanceState != null)
+		{
+			checkedAdditives = new HashSet<>(savedInstanceState.getStringArrayList("checked_additives"));
+		}
 
 		getActivity().setTitle("Plant statistics");
 
@@ -131,16 +141,95 @@ public class StatisticsFragment extends Fragment
 		maxppm.setText(ppmAdditional[1].equals(String.valueOf(Long.MIN_VALUE)) ? "0" : ppmAdditional[1]);
 		aveppm.setText(ppmAdditional[2]);
 
-		if (plant.getMedium() == PlantMedium.HYDRO)
-		{
-			tempContainer.setVisibility(View.VISIBLE);
+		setAdditiveStats();
 
-			String[] tempAdditional = new String[3];
-			StatsHelper.setTempData(plant, temp, tempAdditional);
-			minppm.setText(tempAdditional[0]);
-			maxppm.setText(tempAdditional[1]);
-			aveppm.setText(tempAdditional[2]);
+		tempContainer.setVisibility(View.VISIBLE);
+
+		String[] tempAdditional = new String[3];
+		StatsHelper.setTempData(plant, temp, tempAdditional);
+		mintemp.setText(tempAdditional[0].equals("100.0") ? "-" : tempAdditional[0]);
+		maxtemp.setText(tempAdditional[1].equals("-100.0") ? "-" : tempAdditional[1]);
+		avetemp.setText(tempAdditional[2]);
+	}
+
+	@Override public void onSaveInstanceState(Bundle outState)
+	{
+		super.onSaveInstanceState(outState);
+		outState.putStringArrayList("checked_additives", new ArrayList<String>(checkedAdditives));
+	}
+
+	private void setAdditiveStats()
+	{
+		final Set<String> additiveNames = new HashSet<>();
+		for (Action action : plant.getActions())
+		{
+			if (action instanceof Water)
+			{
+				List<Additive> actionAdditives = ((Water)action).getAdditives();
+				for (Additive additive : actionAdditives)
+				{
+					additiveNames.add(additive.getDescription());
+				}
+			}
 		}
+
+		if (checkedAdditives == null)
+		{
+			checkedAdditives = new HashSet<>();
+			checkedAdditives.addAll(additiveNames);
+		}
+
+		StatsHelper.setAdditiveData(plant, additives, checkedAdditives);
+		additives.notifyDataSetChanged();
+		additives.postInvalidate();
+
+		additivesSpinner.setOnClickListener(new View.OnClickListener()
+		{
+			@Override public void onClick(View v)
+			{
+				PopupMenu menu = new PopupMenu(v.getContext(), v);
+				menu.getMenu().add("All/None").setCheckable(false);
+				for (String additiveName : additiveNames)
+				{
+					menu.getMenu().add(additiveName).setCheckable(true).setChecked(checkedAdditives.contains(additiveName));
+				}
+
+				menu.setOnMenuItemClickListener(new PopupMenu.OnMenuItemClickListener()
+				{
+					@Override public boolean onMenuItemClick(MenuItem item)
+					{
+						if (!item.isCheckable())
+						{
+							if (checkedAdditives.size() != additiveNames.size())
+							{
+								checkedAdditives.clear();
+								checkedAdditives.addAll(additiveNames);
+							}
+							else
+							{
+								checkedAdditives.clear();
+							}
+						}
+						else
+						{
+							if (item.isChecked())
+							{
+								checkedAdditives.remove(item.getTitle().toString());
+							}
+							else
+							{
+								checkedAdditives.add(item.getTitle().toString());
+							}
+						}
+
+						setAdditiveStats();
+						return true;
+					}
+				});
+
+				menu.show();
+			}
+		});
 	}
 
 	private void setStatistics()
