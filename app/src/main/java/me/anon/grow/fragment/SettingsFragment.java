@@ -14,6 +14,7 @@ import android.graphics.drawable.Drawable;
 import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Bundle;
+import android.os.Environment;
 import android.preference.CheckBoxPreference;
 import android.preference.Preference;
 import android.preference.PreferenceCategory;
@@ -26,12 +27,19 @@ import android.util.Base64;
 import android.view.View;
 import android.widget.Toast;
 
+import com.kenny.snackbar.SnackBar;
 import com.nostra13.universalimageloader.core.ImageLoader;
 
 import java.io.BufferedInputStream;
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
+import java.text.DateFormat;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collections;
+import java.util.Comparator;
+import java.util.Date;
 import java.util.List;
 
 import me.anon.controller.receiver.BackupService;
@@ -40,13 +48,18 @@ import me.anon.grow.R;
 import me.anon.lib.TempUnit;
 import me.anon.lib.Unit;
 import me.anon.lib.helper.AddonHelper;
+import me.anon.lib.helper.BackupHelper;
 import me.anon.lib.helper.EncryptionHelper;
+import me.anon.lib.manager.FileManager;
 import me.anon.lib.manager.GardenManager;
 import me.anon.lib.manager.PlantManager;
+import me.anon.lib.manager.ScheduleManager;
 import me.anon.lib.task.DecryptTask;
 import me.anon.lib.task.EncryptTask;
 import me.anon.model.Garden;
 import me.anon.model.Plant;
+
+import static me.anon.lib.manager.PlantManager.FILES_DIR;
 
 /**
  * // TODO: Add class description
@@ -90,6 +103,8 @@ public class SettingsFragment extends PreferenceFragment implements Preference.O
 		findPreference("delivery_unit").setOnPreferenceClickListener(this);
 		findPreference("measurement_unit").setOnPreferenceClickListener(this);
 		findPreference("temperature_unit").setOnPreferenceClickListener(this);
+		findPreference("backup_now").setOnPreferenceClickListener(this);
+		findPreference("restore").setOnPreferenceClickListener(this);
 
 		findPreference("failsafe").setEnabled(((CheckBoxPreference)findPreference("encrypt")).isChecked());
 
@@ -569,7 +584,7 @@ public class SettingsFragment extends PreferenceFragment implements Preference.O
 		}
 		else if ("export".equals(preference.getKey()))
 		{
-			Uri contentUri = FileProvider.getUriForFile(getActivity(), getActivity().getPackageName() + ".provider", new File(PlantManager.FILES_DIR, "plants.json"));
+			Uri contentUri = FileProvider.getUriForFile(getActivity(), getActivity().getPackageName() + ".provider", new File(FILES_DIR, "plants.json"));
 
 			Intent shareIntent = new Intent();
 			shareIntent.setAction(Intent.ACTION_SEND);
@@ -579,6 +594,152 @@ public class SettingsFragment extends PreferenceFragment implements Preference.O
 			startActivity(Intent.createChooser(shareIntent, "Share with"));
 
 			return true;
+		}
+		else if ("backup_now".equals(preference.getKey()))
+		{
+			Toast.makeText(getActivity(), "Backed up to " + BackupHelper.backupJson().getPath(), Toast.LENGTH_SHORT).show();
+		}
+		else if ("restore".equals(preference.getKey()))
+		{
+			class BackupData
+			{
+				Date date;
+				String plantsPath;
+				String gardenPath;
+				String schedulePath;
+
+				@Override public String toString()
+				{
+					DateFormat dateFormat = android.text.format.DateFormat.getDateFormat(getActivity());
+					DateFormat timeFormat = android.text.format.DateFormat.getTimeFormat(getActivity());
+					return dateFormat.format(date) + " " + timeFormat.format(date);
+				}
+			}
+
+			// get list of backups
+			File backupPath = new File(Environment.getExternalStorageDirectory(), "/backups/GrowTracker/");
+			String[] backupFiles = backupPath.list();
+			Arrays.sort(backupFiles);
+			final ArrayList<BackupData> backups = new ArrayList();
+
+			BackupData current = null;
+			Date lastDate = new Date();
+			for (String backup : backupFiles)
+			{
+				if (current == null)
+				{
+					current = new BackupData();
+				}
+
+				File backupFile = new File(backup);
+				String[] parts = backupFile.getName().split("\\.");
+				Date date = new Date();
+				if (parts.length > 1)
+				{
+					try
+					{
+						date = new Date(Long.parseLong(parts[0]));
+					}
+					catch (NumberFormatException e)
+					{
+						date = new Date(backupFile.lastModified());
+					}
+
+					if (parts.length == 2)
+					{
+						BackupData backupData = new BackupData();
+						backupData.plantsPath = backupPath.getPath() + "/" + backup;
+						backupData.date = date;
+						backups.add(backupData);
+						continue;
+					}
+					else
+					{
+						current.date = date;
+					}
+				}
+				else
+				{
+					continue;
+				}
+
+				if (!current.date.equals(lastDate))
+				{
+					lastDate = current.date;
+					backups.add(current);
+					current = new BackupData();
+				}
+
+				if (backup.contains("plants"))
+				{
+					current.plantsPath = backupPath.getPath() + "/" + backup;
+				}
+
+				if (backup.contains("gardens"))
+				{
+					current.gardenPath = backupPath.getPath() + "/" + backup;
+				}
+
+				if (backup.contains("schedules"))
+				{
+					current.schedulePath = backupPath.getPath() + "/" + backup;
+				}
+			}
+
+			Collections.sort(backups, new Comparator<BackupData>()
+			{
+				@Override public int compare(BackupData o1, BackupData o2)
+				{
+					if (o1.date.before(o2.date)) return 1;
+					if (o1.date.after(o2.date)) return -1;
+					else return 0;
+				}
+			});
+			CharSequence[] items = new CharSequence[backups.size()];
+			for (int index = 0, count = backups.size(); index < count; index++)
+			{
+				items[index] = backups.get(index).toString();
+			}
+
+			new AlertDialog.Builder(getActivity())
+				.setTitle("Select backup")
+				.setItems(items, new DialogInterface.OnClickListener()
+				{
+					@Override public void onClick(DialogInterface dialog, int which)
+					{
+						BackupData selectedBackup = backups.get(which);
+
+						if ((MainApplication.isFailsafe()))
+						{
+							MainApplication.setFailsafe(false);
+						}
+
+						FileManager.getInstance().copyFile(selectedBackup.plantsPath, PlantManager.FILES_DIR + "/plants.json");
+						boolean loaded = PlantManager.getInstance().load();
+
+						if (selectedBackup.gardenPath != null)
+						{
+							FileManager.getInstance().copyFile(selectedBackup.gardenPath, GardenManager.FILES_DIR + "/gardens.json");
+							GardenManager.getInstance().load();
+						}
+
+						if (selectedBackup.schedulePath != null)
+						{
+							FileManager.getInstance().copyFile(selectedBackup.schedulePath, ScheduleManager.FILES_DIR + "/schedules.json");
+							ScheduleManager.instance.load();
+						}
+
+						if (!loaded)
+						{
+							SnackBar.show(getActivity(), "Could not restore from backup " + selectedBackup, null);
+						}
+						else
+						{
+							Toast.makeText(getActivity(), "Restore to " + selectedBackup + " completed", Toast.LENGTH_LONG).show();
+						}
+					}
+				})
+				.show();
 		}
 
 		return false;

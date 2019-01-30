@@ -1,49 +1,59 @@
 apply plugin: 'com.android.application'
+apply plugin: 'kotlin-android'
+apply plugin: 'kotlin-android-extensions'
 
 repositories {
-   maven { url 'https://dl.bintray.com/kennyc1012/maven' }
+	maven { url 'https://dl.bintray.com/kennyc1012/maven' }
+	mavenCentral()
 }
 
 android {
-	compileSdkVersion 27
-	buildToolsVersion "27.0.3"
+	compileSdkVersion 28
+	buildToolsVersion "28.0.3"
 
 	defaultConfig {
 		applicationId "me.anon.grow"
 		minSdkVersion 17
-		targetSdkVersion 27
-		versionCode 16
-		versionName "2.3.2"
+		targetSdkVersion 28
+		versionCode 19
+		versionName "2.4"
+
+		javaCompileOptions {
+			annotationProcessorOptions {
+				includeCompileClasspath false
+			}
+		}
+
+		vectorDrawables.useSupportLibrary = true
 	}
 
 	lintOptions {
 		abortOnError false
 	}
 
-	flavorDimensions "type"
+	flavorDimensions "default"
+
 	productFlavors {
 		production {
+			dimension "default"
 			buildConfigField "Boolean", "DISCRETE", "false"
 
 			manifestPlaceholders = [
-				"appType": "original"
+					"appType": "original"
 			]
 
 			resValue "string", "app_name", "GrowTracker"
-
-			dimension "type"
 		}
 
 		discrete {
+			dimension "default"
 			buildConfigField "Boolean", "DISCRETE", "true"
 
 			manifestPlaceholders = [
-				"appType": "discrete"
+					"appType": "discrete"
 			]
 
 			resValue "string", "app_name", "Tracker"
-
-			dimension "type"
 		}
 	}
 
@@ -56,22 +66,27 @@ android {
 }
 
 dependencies {
-	annotationProcessor 'org.projectlombok:lombok:1.16.20'
-	compileOnly 'org.projectlombok:lombok:1.16.20'
-	compileOnly 'org.glassfish:javax.annotation:10.0-b28'
-
-	implementation 'com.android.support:appcompat-v7:27.1.1'
-	implementation 'com.android.support:recyclerview-v7:27.1.1'
-	implementation 'com.android.support:cardview-v7:27.1.1'
-	implementation 'com.android.support:design:27.1.1'
-	implementation "com.android.support:exifinterface:27.1.1"
+	implementation 'com.android.support:support-compat:28.0.0'
+	implementation 'com.android.support:appcompat-v7:28.0.0'
+	implementation 'com.android.support:recyclerview-v7:28.0.0'
+	implementation 'com.android.support.constraint:constraint-layout:1.1.3'
+	implementation 'com.android.support:cardview-v7:28.0.0'
+	implementation 'com.android.support:design:28.0.0'
+	implementation "com.android.support:exifinterface:28.0.0"
 
 	implementation 'com.esotericsoftware:kryo:3.0.3'
-	implementation 'com.google.code.gson:gson:2.8.1'
+	implementation 'com.google.code.gson:gson:2.8.5'
 	implementation 'com.squareup:otto:1.3.8'
 	implementation 'com.kennyc:snackbar:2.0.2'
-	implementation 'com.github.PhilJay:MPAndroidChart:v2.1.0'
+	implementation 'com.github.PhilJay:MPAndroidChart:v2.1.6'
 	implementation 'com.nostra13.universalimageloader:universal-image-loader:1.9.5'
 	implementation 'com.davemorrissey.labs:subsampling-scale-image-view:3.6.0'
 	implementation 'net.lingala.zip4j:zip4j:1.3.2'
+	implementation 'com.google.android:flexbox:1.0.0'
+
+	api "org.jetbrains.kotlin:kotlin-stdlib-jdk7:$kotlin_version"
+}
+
+androidExtensions {
+	experimental = true
 }

@@ -1,22 +1,33 @@
 <?xml version="1.0" encoding="utf-8"?>
 
 <menu xmlns:android="http://schemas.android.com/apk/res/android">
-	<group android:id="@+id/gardens" android:checkableBehavior="single">
-		<item
-			android:id="@+id/all"
-			android:title="All plants"
-			android:orderInCategory="0"
-		/>
+	<item android:id="@+id/garden_menu" android:title="Gardens">
+		<menu>
+			<group android:checkableBehavior="single">
+				<item
+					android:id="@+id/all"
+					android:title="All plants"
+					android:orderInCategory="0"
+				/>
 
-		<item
-			android:id="@+id/add"
-			android:title="New garden"
-			android:orderInCategory="2"
-		/>
-	</group>
+				<item
+					android:id="@+id/add"
+					android:title="+ New garden"
+					android:orderInCategory="2"
+				/>
+			</group>
+		</menu>
+	</item>
 
 	<item android:title="Additional" android:orderInCategory="3">
 		<menu>
+			<item
+				android:id="@+id/feeding_schedule"
+				android:title="@string/menu_feeding_schedule"
+				android:checkable="false"
+				android:orderInCategory="3"
+			/>
+
 			<item
 				android:id="@+id/settings"
 				android:title="Settings"

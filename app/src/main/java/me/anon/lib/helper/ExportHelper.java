@@ -1,11 +1,13 @@
 package me.anon.lib.helper;
 
+import android.app.NotificationChannel;
 import android.app.NotificationManager;
 import android.app.PendingIntent;
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.os.AsyncTask;
+import android.os.Build;
 import android.os.Environment;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
@@ -40,7 +42,6 @@ import me.anon.model.Additive;
 import me.anon.model.EmptyAction;
 import me.anon.model.NoteAction;
 import me.anon.model.Plant;
-import me.anon.model.PlantMedium;
 import me.anon.model.PlantStage;
 import me.anon.model.StageChange;
 import me.anon.model.Water;
@@ -186,17 +187,14 @@ public class ExportHelper
 		plantDetails.append(" - *Average input ppm*: ").append(avePpm[2]);
 		plantDetails.append(NEW_LINE);
 
-		if (plant.getMedium() == PlantMedium.HYDRO)
-		{
-			String[] aveTemp = new String[3];
-			StatsHelper.setTempData(plant, null, aveTemp);
-			plantDetails.append(" - *Minimum input temperature*: ").append(aveTemp[0]);
-			plantDetails.append(NEW_LINE);
-			plantDetails.append(" - *Maximum input temperature*: ").append(aveTemp[1]);
-			plantDetails.append(NEW_LINE);
-			plantDetails.append(" - *Average input temperature*: ").append(aveTemp[2]);
-			plantDetails.append(NEW_LINE);
-		}
+		String[] aveTemp = new String[3];
+		StatsHelper.setTempData(plant, null, aveTemp);
+		plantDetails.append(" - *Minimum input temperature*: ").append(aveTemp[0]);
+		plantDetails.append(NEW_LINE);
+		plantDetails.append(" - *Maximum input temperature*: ").append(aveTemp[1]);
+		plantDetails.append(NEW_LINE);
+		plantDetails.append(" - *Average input temperature*: ").append(aveTemp[2]);
+		plantDetails.append(NEW_LINE);
 
 		plantDetails.append("##Timeline");
 		plantDetails.append(NEW_LINE);
@@ -355,6 +353,28 @@ public class ExportHelper
 			int widthMeasureSpec = View.MeasureSpec.makeMeasureSpec(width, View.MeasureSpec.EXACTLY);
 			int heightMeasureSpec = View.MeasureSpec.makeMeasureSpec(height, View.MeasureSpec.EXACTLY);
 
+			LineChart additives = new LineChart(context);
+			additives.setLayoutParams(new ViewGroup.LayoutParams(width, height));
+			additives.setMinimumWidth(width);
+			additives.setMinimumHeight(height);
+			additives.measure(widthMeasureSpec, heightMeasureSpec);
+			additives.requestLayout();
+			additives.layout(0, 0, width, height);
+			StatsHelper.setAdditiveData(plant, additives, null);
+			additives.getData().setDrawValues(true);
+
+			try
+			{
+				OutputStream stream = new FileOutputStream(tempFolder.getAbsolutePath() + "/additives.png");
+				additives.getChartBitmap().compress(Bitmap.CompressFormat.PNG, 100, stream);
+
+				stream.close();
+			}
+			catch (Exception e)
+			{
+				e.printStackTrace();
+			}
+
 			LineChart inputPh = new LineChart(context);
 			inputPh.setLayoutParams(new ViewGroup.LayoutParams(width, height));
 			inputPh.setMinimumWidth(width);
@@ -363,6 +383,7 @@ public class ExportHelper
 			inputPh.requestLayout();
 			inputPh.layout(0, 0, width, height);
 			StatsHelper.setInputData(plant, inputPh, null);
+			inputPh.getData().setDrawValues(true);
 
 			try
 			{
@@ -384,6 +405,7 @@ public class ExportHelper
 			ppm.requestLayout();
 			ppm.layout(0, 0, width, height);
 			StatsHelper.setPpmData(plant, ppm, null);
+			ppm.getData().setDrawValues(true);
 
 			try
 			{
@@ -397,32 +419,35 @@ public class ExportHelper
 				e.printStackTrace();
 			}
 
-			if (plant.getMedium() == PlantMedium.HYDRO)
+			LineChart temp = new LineChart(context);
+			temp.setLayoutParams(new ViewGroup.LayoutParams(width, height));
+			temp.setMinimumWidth(width);
+			temp.setMinimumHeight(height);
+			temp.measure(widthMeasureSpec, heightMeasureSpec);
+			temp.requestLayout();
+			temp.layout(0, 0, width, height);
+			StatsHelper.setTempData(plant, temp, null);
+			temp.getData().setDrawValues(true);
+
+			try
 			{
-				LineChart temp = new LineChart(context);
-				temp.setLayoutParams(new ViewGroup.LayoutParams(width, height));
-				temp.setMinimumWidth(width);
-				temp.setMinimumHeight(height);
-				temp.measure(widthMeasureSpec, heightMeasureSpec);
-				temp.requestLayout();
-				temp.layout(0, 0, width, height);
-				StatsHelper.setTempData(plant, temp, null);
+				OutputStream stream = new FileOutputStream(tempFolder.getAbsolutePath() + "/temp.png");
+				temp.getChartBitmap().compress(Bitmap.CompressFormat.PNG, 100, stream);
 
-				try
-				{
-					OutputStream stream = new FileOutputStream(tempFolder.getAbsolutePath() + "/temp.png");
-					temp.getChartBitmap().compress(Bitmap.CompressFormat.PNG, 100, stream);
-
-					stream.close();
-				}
-				catch (Exception e)
-				{
-					e.printStackTrace();
-				}
+				stream.close();
+			}
+			catch (Exception e)
+			{
+				e.printStackTrace();
 			}
 
 			try
 			{
+				if (new File(tempFolder.getAbsolutePath() + "/additives.png").exists())
+				{
+					outFile.addFile(new File(tempFolder.getAbsolutePath() + "/additives.png"), params);
+				}
+
 				if (new File(tempFolder.getAbsolutePath() + "/input-ph.png").exists())
 				{
 					outFile.addFile(new File(tempFolder.getAbsolutePath() + "/input-ph.png"), params);
@@ -465,7 +490,15 @@ public class ExportHelper
 				plantIndex = PlantManager.getInstance().getPlants().indexOf(plant);
 				notificationManager = (NotificationManager)appContext.getSystemService(Context.NOTIFICATION_SERVICE);
 
-				exportNotification = new NotificationCompat.Builder(appContext)
+				if (Build.VERSION.SDK_INT >= 26)
+				{
+					NotificationChannel channel = new NotificationChannel("export", "Export status", NotificationManager.IMPORTANCE_DEFAULT);
+					notificationManager.createNotificationChannel(channel);
+				}
+
+				notificationManager = (NotificationManager)appContext.getSystemService(Context.NOTIFICATION_SERVICE);
+
+				exportNotification = new NotificationCompat.Builder(appContext, "export")
 					.setContentText("Exporting grow log for " + plant.getName())
 					.setContentTitle("Exporting")
 					.setContentIntent(PendingIntent.getActivity(appContext, 0, new Intent(), PendingIntent.FLAG_UPDATE_CURRENT))
@@ -515,8 +548,6 @@ public class ExportHelper
 							fos.write(buffer, 0, len);
 						}
 
-						publishProgress(++count, total);
-
 						fis.close();
 						fos.flush();
 						fos.close();
@@ -525,6 +556,8 @@ public class ExportHelper
 					{
 						e.printStackTrace();
 					}
+
+					publishProgress(++count, total);
 				}
 
 				deleteRecursive(tempFolder);

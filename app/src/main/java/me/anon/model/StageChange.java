@@ -1,10 +1,5 @@
 package me.anon.model;
 
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
-import lombok.experimental.Accessors;
-
 /**
  * // TODO: Add class description
  *
@@ -12,16 +7,27 @@ import lombok.experimental.Accessors;
  * @documentation // TODO Reference flow doc
  * @project GrowTracker
  */
-@Getter @Setter
-@Accessors(prefix = {"m", ""}, chain = true)
-@NoArgsConstructor
 public class StageChange extends Action
 {
 	private PlantStage newStage;
+
+	public StageChange()
+	{
+	}
 
 	public StageChange(PlantStage stage)
 	{
 		this.setDate(System.currentTimeMillis());
 		this.setNewStage(stage);
+	}
+
+	public PlantStage getNewStage()
+	{
+		return newStage;
+	}
+
+	public void setNewStage(PlantStage newStage)
+	{
+		this.newStage = newStage;
 	}
 }
