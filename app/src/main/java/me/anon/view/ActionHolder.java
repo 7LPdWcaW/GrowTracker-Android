@@ -6,9 +6,7 @@ import android.view.View;
 import android.widget.ImageButton;
 import android.widget.TextView;
 
-import lombok.Data;
 import me.anon.grow.R;
-import me.anon.lib.Views;
 
 /**
  * // TODO: Add class description
@@ -17,7 +15,6 @@ import me.anon.lib.Views;
  * @documentation // TODO Reference flow doc
  * @project GrowTracker
  */
-@Data
 public class ActionHolder extends RecyclerView.ViewHolder
 {
 	private CardView card;
@@ -28,6 +25,46 @@ public class ActionHolder extends RecyclerView.ViewHolder
 	private TextView name;
 	private TextView summary;
 	private ImageButton overflow;
+
+	public CardView getCard()
+	{
+		return card;
+	}
+
+	public TextView getDate()
+	{
+		return date;
+	}
+
+	public TextView getFullDate()
+	{
+		return fullDate;
+	}
+
+	public TextView getDateDay()
+	{
+		return dateDay;
+	}
+
+	public TextView getStageDay()
+	{
+		return stageDay;
+	}
+
+	public TextView getName()
+	{
+		return name;
+	}
+
+	public TextView getSummary()
+	{
+		return summary;
+	}
+
+	public ImageButton getOverflow()
+	{
+		return overflow;
+	}
 
 	public ActionHolder(View itemView)
 	{

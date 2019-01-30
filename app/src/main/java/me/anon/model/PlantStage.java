@@ -1,6 +1,6 @@
 package me.anon.model;
 
-import lombok.Getter;
+import android.support.annotation.Nullable;
 
 /**
  * // TODO: Add class description
@@ -20,7 +20,12 @@ public enum PlantStage
 	CURING("Curing"),
 	HARVESTED("Harvested");
 
-	@Getter private String printString;
+	private String printString;
+
+	public String getPrintString()
+	{
+		return printString;
+	}
 
 	private PlantStage(String name)
 	{
@@ -36,5 +41,19 @@ public enum PlantStage
 		}
 
 		return names;
+	}
+
+	@Nullable
+	public static PlantStage valueOfPrintString(String printString)
+	{
+		for (PlantStage plantStage : values())
+		{
+			if (plantStage.printString.equals(printString))
+			{
+				return plantStage;
+			}
+		}
+
+		return null;
 	}
 }

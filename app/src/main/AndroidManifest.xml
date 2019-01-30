@@ -61,6 +61,9 @@
 		<activity android:name=".SettingsActivity" />
 		<activity android:name=".fragment.ImageLightboxDialog" android:theme="@style/fullscreen" android:windowSoftInputMode="stateHidden|adjustResize" />
 		<activity android:name=".PlantDetailsActivity" android:windowSoftInputMode="stateAlwaysHidden" />
+		<activity android:name=".FeedingScheduleActivity" android:windowSoftInputMode="stateAlwaysHidden" />
+		<activity android:name=".FeedingScheduleDetailsActivity" android:windowSoftInputMode="stateAlwaysHidden" />
+		<activity android:name=".ScheduleDateDetailsActivity" android:windowSoftInputMode="stateAlwaysHidden" />
 		<activity android:name=".RequestActivity" android:windowSoftInputMode="stateAlwaysHidden" android:theme="@style/Theme.Transparent" android:exported="true">
 			<intent-filter>
 				<action android:name="me.anon.grow.ACTION_REQUEST_PLANTS" />

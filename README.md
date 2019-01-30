@@ -2,9 +2,11 @@
 
 Welcome to grow tracker. This app was created to help record data about growing plants in order to monitor the growing conditions to help make the plants grow better, and identify potential issues during the grow process.
 
-[Latest APK: (MD5) 83771de33b2f23c5157996e68abd8532 v2.3.2](https://github.com/7LPdWcaW/GrowTracker-Android/releases/download/v2.3.2/v2.3.2-production.apk)
+[Latest APK: (MD5) 45ed03e8b120c6be233a30e743f61e92 v2.4](https://github.com/7LPdWcaW/GrowTracker-Android/releases/download/v2.4/v2.4-production.apk)
 
-[Latest APK (Discrete): (MD5) aade560ad850ca6c6996cfa8524dbecb v2.3.2](https://github.com/7LPdWcaW/GrowTracker-Android/releases/download/v2.3.2/v2.3.2-discrete.apk)
+[Latest APK (Discrete): (MD5) e154652199c8598c2457f5b606237e1b v2.4](https://github.com/7LPdWcaW/GrowTracker-Android/releases/download/v2.4/v2.4-discrete.apk)
+
+You can follow development, post questions, or grow logs in the [Subreddit](https://reddit.com/r/growutils)
 
 # Installation
 
@@ -20,7 +22,13 @@ On documentation on creating addons, please see [ADDONS.md](ADDONS.md)
 2. Download the APK from [here](https://github.com/7LPdWcaW/GrowTracker-Android/releases)
 3. Click on downloaded app and install
 
+# Updating
+
+You can either elect to update manually, or get notified on releases by installing the [Update plugin](https://github.com/7LPdWcaW/GrowUpdater-Android/releases)
+
 **For updates, do not uninstall first, you will lose your existing plant data**
+
+# Screenshots
 
 [![install](screenshots/install-thumb.png)](screenshots/install.png)
 [![plant list](screenshots/1-thumb.png)](screenshots/1.png)
@@ -40,6 +48,9 @@ On documentation on creating addons, please see [ADDONS.md](ADDONS.md)
 [![action options](screenshots/10-thumb.png)](screenshots/10.png)
 [![settings](screenshots/11-thumb.png)](screenshots/11.png)
 [![measurements](screenshots/12-thumb.png)](screenshots/12.png)
+[![schedules](screenshots/13-thumb.png)](screenshots/13.png)
+[![schedule details](screenshots/14-thumb.png)](screenshots/14.png)
+[![schedule date](screenshots/15-thumb.png)](screenshots/15.png)
 
 # About the app
 
@@ -47,11 +58,9 @@ The app uses a simple JSON structure to store all the data about the plants that
 
 The structure is very simple. Note: date timestamps are all unix timestamps from 1/1/1970 in milliseconds. All objects in arrays are in date order, where index 0 is the oldest and index (size - 1) is the newest.
 
-## Prerequisites
-
-Lombok is required for this project before you are able to compile. You can install it by going to `preferences->plugins->browse repositories->lombok plugin`
-
 ### Plant object
+
+- Plant date in milliseconds
 
 ```
 {
@@ -86,7 +95,9 @@ Temperature measured in ºC
 
 ### Action object (water)
 
-Temperature measured in ºC
+- Temperature measured in ºC
+- Amount measured in ml
+- Date is milliseconds
 
 Water action for waterings
 
@@ -99,11 +110,13 @@ Water action for waterings
     "amount": <Double>,
     "date": 1431268453111,
     "type": "Water",
-    "temp": <Integer>
+    "temp": <Double>
 }
 ```
 
 ### Additive object - used for nutrients
+
+- Amount is measured in ml
 
 ```
 {
@@ -118,6 +131,8 @@ Action can be one of,
 
 `FIM`, `FLUSH`, `FOLIAR_FEED`, `LST`, `LOLLIPOP`, `PESTICIDE_APPLICATION`, `TOP`, `TRANSPLANTED`, `TRIM`
 
+- Date in milliseconds
+
 ```
 {
     "action": <Action>,
@@ -128,6 +143,8 @@ Action can be one of,
 
 ### Stage change
 
+- Date in milliseconds
+
 ```
 {
     "newStage": <Plant Stage>,
@@ -137,6 +154,8 @@ Action can be one of,
 ```
 
 ### Note
+
+- Date in milliseconds
 
 ```
 {
@@ -158,7 +177,7 @@ You can decrypt your files using your passphrase either by writing a script that
 
 # License
 
-Copyright 2014-2018 7LPdWcaW
+Copyright 2014-2019 7LPdWcaW
 
 Licensed under the Apache License, Version 2.0 (the "License");
 you may not use this file except in compliance with the License.

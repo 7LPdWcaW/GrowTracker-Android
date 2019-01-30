@@ -6,13 +6,9 @@ import android.preference.PreferenceManager;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
 
-import lombok.AllArgsConstructor;
-import lombok.Getter;
-
 /**
  * Unit class used for measurement input
  */
-@AllArgsConstructor
 public enum Unit
 {
 	ML("ml")
@@ -167,9 +163,19 @@ public enum Unit
 		}
 	};
 
-	@Getter private String label;
+	private String label;
 
-	private static Double toTwoDecimalPlaces(double input)
+	private Unit(String label)
+	{
+		this.label = label;
+	}
+
+	public String getLabel()
+	{
+		return label;
+	}
+
+	public static Double toTwoDecimalPlaces(double input)
 	{
 		return new BigDecimal(input).setScale(2, RoundingMode.HALF_EVEN).doubleValue();
 	}

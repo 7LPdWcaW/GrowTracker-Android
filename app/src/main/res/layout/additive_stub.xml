@@ -9,4 +9,5 @@
 	android:paddingRight="16dp"
 	android:paddingTop="18dp"
 	android:paddingBottom="18dp"
+	android:background="?attr/selectableItemBackground"
 />
