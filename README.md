@@ -2,9 +2,9 @@
 
 Welcome to grow tracker. This app was created to help record data about growing plants in order to monitor the growing conditions to help make the plants grow better, and identify potential issues during the grow process.
 
-[Latest APK: (MD5) accc43f8dfff1fb51fc15c1ff54cfc6c v2.4-beta1](https://github.com/7LPdWcaW/GrowTracker-Android/releases/download/v2.4-alpha2/v2.4-alpha2-production.apk)
+[Latest APK: (MD5) 45ed03e8b120c6be233a30e743f61e92 v2.4](https://github.com/7LPdWcaW/GrowTracker-Android/releases/download/v2.4/v2.4-production.apk)
 
-[Latest APK (Discrete): (MD5) 03b931b602f1619e12021292a854342c v2.4-beta1](https://github.com/7LPdWcaW/GrowTracker-Android/releases/download/v2.4-alpha2/v2.4-alpha2-discrete.apk)
+[Latest APK (Discrete): (MD5) e154652199c8598c2457f5b606237e1b v2.4](https://github.com/7LPdWcaW/GrowTracker-Android/releases/download/v2.4/v2.4-discrete.apk)
 
 You can follow development, post questions, or grow logs in the [Subreddit](https://reddit.com/r/growutils)
 
@@ -48,6 +48,9 @@ You can either elect to update manually, or get notified on releases by installi
 [![action options](screenshots/10-thumb.png)](screenshots/10.png)
 [![settings](screenshots/11-thumb.png)](screenshots/11.png)
 [![measurements](screenshots/12-thumb.png)](screenshots/12.png)
+[![schedules](screenshots/13-thumb.png)](screenshots/13.png)
+[![schedule details](screenshots/14-thumb.png)](screenshots/14.png)
+[![schedule date](screenshots/15-thumb.png)](screenshots/15.png)
 
 # About the app
 
