@@ -10,14 +10,13 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.LinearLayout.VERTICAL
 import com.esotericsoftware.kryo.Kryo
-import com.kenny.snackbar.SnackBar
 import kotlinx.android.synthetic.main.schedule_list_view.*
 import me.anon.controller.adapter.FeedingScheduleAdapter
 import me.anon.grow.FeedingScheduleDetailsActivity
 import me.anon.grow.R
+import me.anon.lib.SnackBar
 import me.anon.lib.helper.FabAnimator
 import me.anon.lib.manager.ScheduleManager
-import me.anon.lib.show
 
 /**
  * Fragment for displaying list of feeding schedules

@@ -23,8 +23,6 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import com.esotericsoftware.kryo.Kryo;
-import com.kenny.snackbar.SnackBar;
-import com.kenny.snackbar.SnackBarListener;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -36,6 +34,8 @@ import me.anon.grow.AddWateringActivity;
 import me.anon.grow.MainActivity;
 import me.anon.grow.MainApplication;
 import me.anon.grow.R;
+import me.anon.lib.SnackBar;
+import me.anon.lib.SnackBarListener;
 import me.anon.lib.Views;
 import me.anon.lib.event.GardenChangeEvent;
 import me.anon.lib.helper.BusHelper;
