@@ -9,15 +9,14 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import com.esotericsoftware.kryo.Kryo
-import com.kenny.snackbar.SnackBar
 import kotlinx.android.synthetic.main.feeding_date_stub.view.*
 import kotlinx.android.synthetic.main.schedule_details_view.*
 import me.anon.grow.R
 import me.anon.grow.ScheduleDateDetailsActivity
+import me.anon.lib.SnackBar
 import me.anon.lib.Unit
 import me.anon.lib.helper.FabAnimator
 import me.anon.lib.manager.ScheduleManager
-import me.anon.lib.show
 import me.anon.model.FeedingSchedule
 import me.anon.model.FeedingScheduleDate
 
