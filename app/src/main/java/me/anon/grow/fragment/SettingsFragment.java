@@ -27,7 +27,6 @@ import android.util.Base64;
 import android.view.View;
 import android.widget.Toast;
 
-import com.kenny.snackbar.SnackBar;
 import com.nostra13.universalimageloader.core.ImageLoader;
 
 import java.io.BufferedInputStream;
@@ -45,6 +44,7 @@ import java.util.List;
 import me.anon.controller.receiver.BackupService;
 import me.anon.grow.MainApplication;
 import me.anon.grow.R;
+import me.anon.lib.SnackBar;
 import me.anon.lib.TempUnit;
 import me.anon.lib.Unit;
 import me.anon.lib.helper.AddonHelper;
