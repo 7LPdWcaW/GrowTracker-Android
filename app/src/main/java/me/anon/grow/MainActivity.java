@@ -115,7 +115,7 @@ public class MainActivity extends BaseActivity implements NavigationView.OnNavig
 		navigation.setNavigationItemSelectedListener(this);
 		navigation.inflateMenu(R.menu.navigation_drawer);
 
-		ArrayList<Garden> gardens = GardenManager.getInstance().getGardens();
+		ArrayList<Garden> gardens = GardenManager.getInstance().getGardens(Garden.GardenType.GARDEN);
 		for (int index = 0, gardensSize = gardens.size(); index < gardensSize; index++)
 		{
 			Garden garden = gardens.get(index);

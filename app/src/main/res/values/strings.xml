@@ -24,4 +24,5 @@
 	<string name="schedule_deleted">Schedule deleted</string>
 	<string name="undo">Undo</string>
 	<string name="feeding_schedules_title">Feeding schedules</string>
+	<string name="menu_link">Link</string>
 </resources>

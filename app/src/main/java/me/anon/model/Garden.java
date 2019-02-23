@@ -6,6 +6,7 @@ public class Garden
 {
 	protected String name;
 	protected ArrayList<String> plantIds;
+	protected GardenType type = GardenType.GARDEN;
 
 	public String getName()
 	{
@@ -25,5 +26,21 @@ public class Garden
 	public void setPlantIds(ArrayList<String> plantIds)
 	{
 		this.plantIds = plantIds;
+	}
+
+	public GardenType getType()
+	{
+		return type;
+	}
+
+	public void setType(GardenType type)
+	{
+		this.type = type;
+	}
+
+	public static enum GardenType
+	{
+		GARDEN,
+		LINKED_PLANTS
 	}
 }

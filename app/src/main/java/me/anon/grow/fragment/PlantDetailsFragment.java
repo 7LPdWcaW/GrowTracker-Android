@@ -84,6 +84,7 @@ import me.anon.lib.manager.PlantManager;
 import me.anon.lib.task.AsyncCallback;
 import me.anon.lib.task.EncryptTask;
 import me.anon.model.EmptyAction;
+import me.anon.model.Garden;
 import me.anon.model.NoteAction;
 import me.anon.model.Plant;
 import me.anon.model.PlantMedium;
@@ -701,30 +702,30 @@ public class PlantDetailsFragment extends Fragment
 			PlantManager.getInstance().addPlant(copy);
 
 			SnackBar.show(getActivity(), "Plant duplicated", "open", new SnackBarListener()
+			{
+				@Override public void onSnackBarStarted(Object o)
 				{
-					@Override public void onSnackBarStarted(Object o)
+					if (getView() != null)
 					{
-						if (getView() != null)
-						{
-							FabAnimator.animateUp(getView().findViewById(R.id.fab_complete));
-						}
+						FabAnimator.animateUp(getView().findViewById(R.id.fab_complete));
 					}
+				}
 
-					@Override public void onSnackBarFinished(Object o)
+				@Override public void onSnackBarFinished(Object o)
+				{
+					if (getView() != null)
 					{
-						if (getView() != null)
-						{
-							FabAnimator.animateDown(getView().findViewById(R.id.fab_complete));
-						}
+						FabAnimator.animateDown(getView().findViewById(R.id.fab_complete));
 					}
+				}
 
-					@Override public void onSnackBarAction(Object o)
-					{
-						Intent plantDetails = new Intent(getActivity(), PlantDetailsActivity.class);
-						plantDetails.putExtra("plant_index", PlantManager.getInstance().getPlants().size() - 1);
-						startActivity(plantDetails);
-					}
-				});
+				@Override public void onSnackBarAction(Object o)
+				{
+					Intent plantDetails = new Intent(getActivity(), PlantDetailsActivity.class);
+					plantDetails.putExtra("plant_index", PlantManager.getInstance().getPlants().size() - 1);
+					startActivity(plantDetails);
+				}
+			});
 		}
 		else if (item.getItemId() == R.id.export)
 		{
@@ -789,6 +790,32 @@ public class PlantDetailsFragment extends Fragment
 			});
 
 			return true;
+		}
+		else if (item.getItemId() == R.id.link)
+		{
+			PlantSelectDialogFragment dialog = new PlantSelectDialogFragment(true);
+			dialog.setOnDialogActionListener(new PlantSelectDialogFragment.OnDialogActionListener()
+			{
+				@Override public void onDialogAccept(ArrayList<Integer> plantIndex, boolean showImage)
+				{
+					ArrayList<String> plantIds = new ArrayList<>();
+					for (Integer index : plantIndex)
+					{
+						Plant plant = PlantManager.getInstance().getPlants().get(index);
+						if (plant != null)
+						{
+							plantIds.add(plant.getId());
+						}
+					}
+
+					Garden linked = new Garden();
+					linked.setPlantIds(plantIds);
+					linked.setType(Garden.GardenType.LINKED_PLANTS);
+					linked.setName("Linked plants");
+					GardenManager.getInstance().insert(linked);
+				}
+			});
+			dialog.show(getFragmentManager(), "link_plants");
 		}
 
 		return super.onOptionsItemSelected(item);

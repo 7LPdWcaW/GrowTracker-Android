@@ -4,6 +4,12 @@
 	xmlns:android="http://schemas.android.com/apk/res/android"
 >
 	<item
+		android:id="@+id/link"
+		android:title="@string/menu_link"
+		android:showAsAction="never"
+	/>
+
+	<item
 		android:id="@+id/export"
 		android:title="Export"
 		android:showAsAction="never"

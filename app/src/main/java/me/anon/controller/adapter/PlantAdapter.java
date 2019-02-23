@@ -20,7 +20,9 @@ import me.anon.grow.MainApplication;
 import me.anon.grow.PlantDetailsActivity;
 import me.anon.grow.R;
 import me.anon.lib.Unit;
+import me.anon.lib.manager.GardenManager;
 import me.anon.lib.manager.PlantManager;
+import me.anon.model.Garden;
 import me.anon.model.Plant;
 import me.anon.view.PlantHolder;
 
@@ -74,7 +76,26 @@ public class PlantAdapter extends RecyclerView.Adapter implements ItemTouchHelpe
 	public void setPlants(List<Plant> plants)
 	{
 		this.plants.clear();
-		this.plants.addAll(plants);
+
+		// merge plants that are linked, together
+		ArrayList<Garden> gardens = GardenManager.getInstance().getGardens(Garden.GardenType.LINKED_PLANTS);
+		ArrayList<Garden> toAdd = GardenManager.getInstance().getGardens(Garden.GardenType.LINKED_PLANTS);
+		for (Plant plant : plants)
+		{
+			boolean found = false;
+			for (Garden garden : gardens)
+			{
+				if (garden.getPlantIds().contains(plant.getId()))
+				{
+					found = true;
+					break;
+				}
+			}
+
+			if (found) continue;
+			this.plants.add(plant);
+		}
+
 		this.plants.removeAll(Collections.singleton(null));
 	}
 

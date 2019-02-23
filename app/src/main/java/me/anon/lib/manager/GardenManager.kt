@@ -11,7 +11,6 @@ import me.anon.lib.helper.EncryptionHelper
 import me.anon.lib.helper.GsonHelper
 import me.anon.model.Garden
 import java.io.File
-import java.util.*
 
 class GardenManager private constructor()
 {
@@ -25,6 +24,8 @@ class GardenManager private constructor()
 
 		load()
 	}
+
+	public fun getGardens(type: Garden.GardenType) = gardens.filter { it.type == type } as ArrayList<Garden>
 
 	fun load()
 	{
