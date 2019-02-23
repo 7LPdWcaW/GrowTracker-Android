@@ -317,8 +317,9 @@ public class StatsHelper
 	 * @param plant The plant
 	 * @param chart The chart to set the data
 	 * @param additionalRef Pass-by-reference value for min/max/ave for the generated values. Must be length of 3 if not null
+	 * @param usingEc If using EC measurements = (ppm * 1000d) / 2d
 	 */
-	public static void setPpmData(Plant plant, LineChart chart, String[] additionalRef)
+	public static void setPpmData(Plant plant, LineChart chart, String[] additionalRef, boolean usingEc)
 	{
 		ArrayList<Entry> vals = new ArrayList<>();
 		ArrayList<String> xVals = new ArrayList<>();
@@ -334,7 +335,15 @@ public class StatsHelper
 		{
 			if (action instanceof Water && ((Water)action).getPpm() != null)
 			{
-				vals.add(new Entry(((Water)action).getPpm().floatValue(), index++));
+				float value = ((Water)action).getPpm().floatValue();
+
+				if (usingEc)
+				{
+					// PPM -> EC
+					value = (value * 2.0f) / 1000.0f;
+				}
+
+				vals.add(new Entry(value, index++));
 				PlantStage stage = null;
 				long changeDate = 0;
 				ListIterator<PlantStage> iterator = new ArrayList(stageTimes.keySet()).listIterator(stageTimes.size());
@@ -359,15 +368,15 @@ public class StatsHelper
 					xVals.add("");
 				}
 
-				min = Math.min(min, ((Water)action).getPpm().longValue());
-				max = Math.max(max, ((Water)action).getPpm().longValue());
-				total += ((Water)action).getPpm();
+				min = Math.min(min, (long)value);
+				max = Math.max(max, (long)value);
+				total += value;
 			}
 		}
 
 		if (chart != null)
 		{
-			LineDataSet dataSet = new LineDataSet(vals, "PPM");
+			LineDataSet dataSet = new LineDataSet(vals, usingEc ? "EC" : "PPM");
 			styleDataset(dataSet, Color.parseColor(chart.getContext().getResources().getStringArray(R.array.stats_colours)[0]));
 			styleGraph(chart);
 			chart.setMarkerView(new MarkerView(chart.getContext(), R.layout.chart_marker)

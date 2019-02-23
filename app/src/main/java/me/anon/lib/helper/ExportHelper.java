@@ -9,6 +9,7 @@ import android.graphics.Bitmap;
 import android.os.AsyncTask;
 import android.os.Build;
 import android.os.Environment;
+import android.preference.PreferenceManager;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.app.NotificationCompat;
@@ -69,6 +70,7 @@ public class ExportHelper
 		String folderPath = "";
 		Unit measureUnit = Unit.getSelectedMeasurementUnit(context);
 		Unit deliveryUnit = Unit.getSelectedDeliveryUnit(context);
+		boolean usingEc = PreferenceManager.getDefaultSharedPreferences(context).getBoolean("tds_ec", false);
 
 		if (Environment.getExternalStorageDirectory() != null)
 		{
@@ -179,12 +181,12 @@ public class ExportHelper
 		plantDetails.append(NEW_LINE);
 
 		String[] avePpm = new String[3];
-		StatsHelper.setPpmData(plant, null, avePpm);
-		plantDetails.append(" - *Minimum input ppm*: ").append(avePpm[0]);
+		StatsHelper.setPpmData(plant, null, avePpm, usingEc);
+		plantDetails.append(" - *Minimum input " + (usingEc ? "EC" : "ppm") + "*: ").append(avePpm[0]);
 		plantDetails.append(NEW_LINE);
-		plantDetails.append(" - *Maximum input ppm*: ").append(avePpm[1]);
+		plantDetails.append(" - *Maximum input " + (usingEc ? "EC" : "ppm") + "*: ").append(avePpm[1]);
 		plantDetails.append(NEW_LINE);
-		plantDetails.append(" - *Average input ppm*: ").append(avePpm[2]);
+		plantDetails.append(" - *Average input " + (usingEc ? "EC" : "ppm") + "*: ").append(avePpm[2]);
 		plantDetails.append(NEW_LINE);
 
 		String[] aveTemp = new String[3];
@@ -404,12 +406,12 @@ public class ExportHelper
 			ppm.measure(widthMeasureSpec, heightMeasureSpec);
 			ppm.requestLayout();
 			ppm.layout(0, 0, width, height);
-			StatsHelper.setPpmData(plant, ppm, null);
+			StatsHelper.setPpmData(plant, ppm, null, usingEc);
 			ppm.getData().setDrawValues(true);
 
 			try
 			{
-				OutputStream stream = new FileOutputStream(tempFolder.getAbsolutePath() + "/ppm.png");
+				OutputStream stream = new FileOutputStream(tempFolder.getAbsolutePath() + "/" + (usingEc ? "ec" : "ppm") + ".png");
 				ppm.getChartBitmap().compress(Bitmap.CompressFormat.PNG, 100, stream);
 
 				stream.close();
@@ -456,6 +458,11 @@ public class ExportHelper
 				if (new File(tempFolder.getAbsolutePath() + "/ppm.png").exists())
 				{
 					outFile.addFile(new File(tempFolder.getAbsolutePath() + "/ppm.png"), params);
+				}
+
+				if (new File(tempFolder.getAbsolutePath() + "/ec.png").exists())
+				{
+					outFile.addFile(new File(tempFolder.getAbsolutePath() + "/ec.png"), params);
 				}
 
 				if (new File(tempFolder.getAbsolutePath() + "/temp.png").exists())
