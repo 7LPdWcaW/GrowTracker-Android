@@ -228,8 +228,8 @@ public class WateringFragment extends Fragment
 
 		if (usingEc)
 		{
-			waterPpm.setHint("1.0 EC");
-			((TextView)((ViewGroup)waterPpm.getParent()).findViewById(R.id.ppm_label)).setText("EC");
+			waterPpm.setHint("1.0 " + (usingEc ? "EC" : "PPM"));
+			((TextView)((ViewGroup)waterPpm.getParent()).findViewById(R.id.ppm_label)).setText(usingEc ? "EC" : "PPM");
 		}
 
 		if (water != null)
@@ -294,11 +294,11 @@ public class WateringFragment extends Fragment
 					}
 				}
 
-				averagePh = averagePh / phCount;
-				averagePpm = averagePpm / ppmCount;
-				averageRunoff = averageRunoff / runoffCount;
-				averageAmount = averageAmount / amountCount;
-				averageTemp = averageTemp / tempCount;
+				averagePh = Unit.toTwoDecimalPlaces(averagePh / phCount);
+				averagePpm = Unit.toTwoDecimalPlaces(averagePpm / ppmCount);
+				averageRunoff = Unit.toTwoDecimalPlaces(averageRunoff / runoffCount);
+				averageAmount = Unit.toTwoDecimalPlaces(averageAmount / amountCount);
+				averageTemp = Unit.toTwoDecimalPlaces(averageTemp / tempCount);
 
 				if (!averagePh.isNaN())
 				{
@@ -307,7 +307,7 @@ public class WateringFragment extends Fragment
 
 				if (!averagePpm.isNaN())
 				{
-					waterPpm.setHint(String.valueOf(averagePpm));
+					waterPpm.setHint(String.valueOf(averagePpm) + " " + (usingEc ? "EC" : "PPM"));
 				}
 
 				if (!averageRunoff.isNaN())
