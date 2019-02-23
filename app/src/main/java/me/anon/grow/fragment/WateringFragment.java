@@ -485,9 +485,9 @@ public class WateringFragment extends Fragment
 		}
 
 		final View focus = getActivity().getCurrentFocus();
-		final Object currentTag = view.getTag();
 		FragmentManager fm = getFragmentManager();
-		AddAdditiveDialogFragment addAdditiveDialogFragment = new AddAdditiveDialogFragment(view.getTag() instanceof Additive ? (Additive)view.getTag() : null);
+		final Additive current = view.getTag() instanceof Additive ? (Additive)view.getTag() : null;
+		AddAdditiveDialogFragment addAdditiveDialogFragment = new AddAdditiveDialogFragment(current);
 		addAdditiveDialogFragment.setOnAdditiveSelectedListener(new AddAdditiveDialogFragment.OnAdditiveSelectedListener()
 		{
 			@Override public void onAdditiveSelected(Additive additive)
@@ -497,7 +497,7 @@ public class WateringFragment extends Fragment
 					return;
 				}
 
-				if (!water.getAdditives().contains(additive))
+				if (!water.getAdditives().contains(current))
 				{
 					water.getAdditives().add(additive);
 				}
@@ -507,7 +507,7 @@ public class WateringFragment extends Fragment
 					{
 						Object tag = additiveContainer.getChildAt(childIndex).getTag();
 
-						if (tag == currentTag)
+						if (tag == current)
 						{
 							water.getAdditives().set(childIndex, additive);
 							break;
@@ -526,13 +526,13 @@ public class WateringFragment extends Fragment
 
 			@Override public void onAdditiveDeleteRequested(Additive additive)
 			{
-				water.getAdditives().remove(additive);
+				water.getAdditives().remove(current);
 
 				for (int childIndex = 0; childIndex < additiveContainer.getChildCount(); childIndex++)
 				{
 					Object tag = additiveContainer.getChildAt(childIndex).getTag();
 
-					if (tag == additive)
+					if (tag == current)
 					{
 						additiveContainer.removeViewAt(childIndex);
 						break;
