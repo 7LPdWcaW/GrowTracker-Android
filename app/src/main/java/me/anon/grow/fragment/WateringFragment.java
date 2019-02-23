@@ -307,6 +307,11 @@ public class WateringFragment extends Fragment
 
 				if (!averagePpm.isNaN())
 				{
+					if (usingEc)
+					{
+						averagePpm = Unit.toTwoDecimalPlaces((averagePpm * 2d) / 1000d);
+					}
+
 					waterPpm.setHint(String.valueOf(averagePpm) + " " + (usingEc ? "EC" : "PPM"));
 				}
 

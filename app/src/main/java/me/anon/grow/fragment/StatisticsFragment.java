@@ -2,6 +2,7 @@ package me.anon.grow.fragment;
 
 import android.app.Fragment;
 import android.os.Bundle;
+import android.preference.PreferenceManager;
 import android.support.annotation.Nullable;
 import android.view.LayoutInflater;
 import android.view.MenuItem;
@@ -86,6 +87,7 @@ public class StatisticsFragment extends Fragment
 	@Views.InjectView(R.id.max_input_ph) private TextView maxInputPh;
 	@Views.InjectView(R.id.ave_input_ph) private TextView aveInputPh;
 
+	@Views.InjectView(R.id.ppm_title) private TextView ppmTitle;
 	@Views.InjectView(R.id.min_ppm) private TextView minppm;
 	@Views.InjectView(R.id.max_ppm) private TextView maxppm;
 	@Views.InjectView(R.id.ave_ppm) private TextView aveppm;
@@ -96,6 +98,7 @@ public class StatisticsFragment extends Fragment
 	@Views.InjectView(R.id.ave_temp) private TextView avetemp;
 
 	private Set<String> checkedAdditives = null;
+	private boolean usingEc = false;
 
 	@Nullable @Override public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState)
 	{
@@ -114,6 +117,7 @@ public class StatisticsFragment extends Fragment
 			checkedAdditives = new HashSet<>(savedInstanceState.getStringArrayList("checked_additives"));
 		}
 
+		usingEc = PreferenceManager.getDefaultSharedPreferences(getActivity()).getBoolean("tds_ec", false);
 		getActivity().setTitle("Plant statistics");
 
 		if (getArguments() != null)
@@ -136,10 +140,15 @@ public class StatisticsFragment extends Fragment
 		aveInputPh.setText(inputAdditional[2]);
 
 		String[] ppmAdditional = new String[3];
-		StatsHelper.setPpmData(plant, ppm, ppmAdditional);
+		StatsHelper.setPpmData(plant, ppm, ppmAdditional, usingEc);
 		minppm.setText(ppmAdditional[0].equals(String.valueOf(Long.MAX_VALUE)) ? "0" : ppmAdditional[0]);
 		maxppm.setText(ppmAdditional[1].equals(String.valueOf(Long.MIN_VALUE)) ? "0" : ppmAdditional[1]);
 		aveppm.setText(ppmAdditional[2]);
+
+		if (usingEc)
+		{
+			ppmTitle.setText("EC");
+		}
 
 		setAdditiveStats();
 
