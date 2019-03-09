@@ -3,6 +3,7 @@ package me.anon.controller.adapter;
 import android.app.AlertDialog;
 import android.content.DialogInterface;
 import android.preference.PreferenceManager;
+import android.support.annotation.Nullable;
 import android.support.v7.widget.PopupMenu;
 import android.support.v7.widget.RecyclerView;
 import android.text.Html;
@@ -58,12 +59,20 @@ public class ActionAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>
 		public void onActionDuplicate(Action action);
 	}
 
+	public interface OnItemSelectCallback
+	{
+		public void onItemSelected(Action action);
+	}
+
+	private OnItemSelectCallback onItemSelectCallback;
 	private OnActionSelectListener onActionSelectListener;
-	private Plant plant;
+	@Nullable private Plant plant;
 	private List<Action> actions = new ArrayList<>();
 	private Unit measureUnit, deliveryUnit;
 	private TempUnit tempUnit;
 	private boolean usingEc = false;
+	private boolean showDate = true;
+	private boolean showActions = true;
 
 	/**
 	 * Dummy image action placeholder class
@@ -81,6 +90,21 @@ public class ActionAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>
 	public void setOnActionSelectListener(OnActionSelectListener onActionSelectListener)
 	{
 		this.onActionSelectListener = onActionSelectListener;
+	}
+
+	public void setOnItemSelectCallback(OnItemSelectCallback onItemSelectCallback)
+	{
+		this.onItemSelectCallback = onItemSelectCallback;
+	}
+
+	public void setShowDate(boolean showDate)
+	{
+		this.showDate = showDate;
+	}
+
+	public void setShowActions(boolean showActions)
+	{
+		this.showActions = showActions;
 	}
 
 	public Plant getPlant()
@@ -114,7 +138,12 @@ public class ActionAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>
 		return tempUnit;
 	}
 
-	public void setActions(Plant plant, List<Action> actions)
+	public void setActions(@Nullable Plant plant, ArrayList<Action> actions)
+	{
+		setActions(plant, actions, new ArrayList<Class>());
+	}
+
+	public void setActions(@Nullable Plant plant, ArrayList<Action> actions, ArrayList<Class> exclude)
 	{
 		this.plant = plant;
 		this.actions = new ArrayList<>();
@@ -123,41 +152,44 @@ public class ActionAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>
 		Collections.reverse(actions);
 		for (Action item : actions)
 		{
-			ArrayList<String> groupedImages = new ArrayList<>();
-			for (String image : plant.getImages())
+			if (plant != null)
 			{
-				long imageDate = getImageDate(image);
-
-				if (imageDate <= item.getDate() && !addedImages.contains(image))
+				ArrayList<String> groupedImages = new ArrayList<>();
+				for (String image : plant.getImages())
 				{
-					groupedImages.add(image);
-					addedImages.add(image);
-				}
-			}
+					long imageDate = getImageDate(image);
 
-			if (!groupedImages.isEmpty())
-			{
-				Collections.sort(groupedImages, new Comparator<String>()
-				{
-					@Override public int compare(String o1, String o2)
+					if (imageDate <= item.getDate() && !addedImages.contains(image))
 					{
-						long o1Date = getImageDate(o1);
-						long o2Date = getImageDate(o2);
-
-						if (o2Date < o1Date) return -1;
-						if (o2Date > o1Date) return 1;
-						return 0;
+						groupedImages.add(image);
+						addedImages.add(image);
 					}
-				});
-				ImageAction imageAction = new ImageAction();
-				imageAction.images = groupedImages;
-				this.actions.add(imageAction);
+				}
+
+				if (!groupedImages.isEmpty())
+				{
+					Collections.sort(groupedImages, new Comparator<String>()
+					{
+						@Override public int compare(String o1, String o2)
+						{
+							long o1Date = getImageDate(o1);
+							long o2Date = getImageDate(o2);
+
+							if (o2Date < o1Date) return -1;
+							if (o2Date > o1Date) return 1;
+							return 0;
+						}
+					});
+					ImageAction imageAction = new ImageAction();
+					imageAction.images = groupedImages;
+					this.actions.add(imageAction);
+				}
 			}
 
 			this.actions.add(item);
 		}
 
-		if (addedImages.size() != plant.getImages().size())
+		if (plant != null && addedImages.size() != plant.getImages().size())
 		{
 			ArrayList<String> remainingImages = new ArrayList<>(plant.getImages());
 			remainingImages.removeAll(addedImages);
@@ -316,146 +348,180 @@ public class ActionAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>
 				viewHolder.getSummary().setVisibility(View.VISIBLE);
 			}
 
-			viewHolder.getOverflow().setOnClickListener(new View.OnClickListener()
+			if (showActions)
 			{
-				@Override public void onClick(final View v)
+				viewHolder.getOverflow().setVisibility(View.VISIBLE);
+				viewHolder.getOverflow().setOnClickListener(new View.OnClickListener()
 				{
-					PopupMenu menu = new PopupMenu(v.getContext(), v, Gravity.BOTTOM);
-					menu.inflate(R.menu.event_overflow);
-					menu.setOnMenuItemClickListener(new PopupMenu.OnMenuItemClickListener()
+					@Override public void onClick(final View v)
 					{
-						@Override public boolean onMenuItemClick(MenuItem item)
+						PopupMenu menu = new PopupMenu(v.getContext(), v, Gravity.BOTTOM);
+						menu.inflate(R.menu.event_overflow);
+						menu.setOnMenuItemClickListener(new PopupMenu.OnMenuItemClickListener()
 						{
-							if (item.getItemId() == R.id.duplicate)
+							@Override public boolean onMenuItemClick(MenuItem item)
 							{
-								if (onActionSelectListener != null)
+								if (item.getItemId() == R.id.duplicate)
 								{
-									Kryo kryo = new Kryo();
-									onActionSelectListener.onActionDuplicate(kryo.copy(action));
-								}
-
-								return true;
-							}
-							else if (item.getItemId() == R.id.copy)
-							{
-								if (onActionSelectListener != null)
-								{
-									Kryo kryo = new Kryo();
-									onActionSelectListener.onActionCopy(kryo.copy(action));
-								}
-
-								return true;
-							}
-							else if (item.getItemId() == R.id.edit)
-							{
-								if (onActionSelectListener != null)
-								{
-									onActionSelectListener.onActionEdit(action);
-								}
-
-								return true;
-							}
-							else if (item.getItemId() == R.id.delete)
-							{
-								new AlertDialog.Builder(v.getContext())
-									.setTitle("Delete this event?")
-									.setMessage("Are you sure you want to delete " + viewHolder.getName().getText())
-									.setPositiveButton("Yes", new DialogInterface.OnClickListener()
+									if (onActionSelectListener != null)
 									{
-										@Override public void onClick(DialogInterface dialog, int which)
+										Kryo kryo = new Kryo();
+										onActionSelectListener.onActionDuplicate(kryo.copy(action));
+									}
+
+									return true;
+								}
+								else if (item.getItemId() == R.id.copy)
+								{
+									if (onActionSelectListener != null)
+									{
+										Kryo kryo = new Kryo();
+										onActionSelectListener.onActionCopy(kryo.copy(action));
+									}
+
+									return true;
+								}
+								else if (item.getItemId() == R.id.edit)
+								{
+									if (onActionSelectListener != null)
+									{
+										onActionSelectListener.onActionEdit(action);
+									}
+
+									return true;
+								}
+								else if (item.getItemId() == R.id.delete)
+								{
+									new AlertDialog.Builder(v.getContext())
+										.setTitle("Delete this event?")
+										.setMessage("Are you sure you want to delete " + viewHolder.getName().getText())
+										.setPositiveButton("Yes", new DialogInterface.OnClickListener()
 										{
-											if (onActionSelectListener != null)
+											@Override public void onClick(DialogInterface dialog, int which)
 											{
-												onActionSelectListener.onActionDeleted(action);
+												if (onActionSelectListener != null)
+												{
+													onActionSelectListener.onActionDeleted(action);
+												}
 											}
-										}
-									})
-									.setNegativeButton("No", null)
-									.show();
+										})
+										.setNegativeButton("No", null)
+										.show();
 
-								return true;
+									return true;
+								}
+
+								return false;
 							}
+						});
 
-							return false;
-						}
-					});
-
-					menu.show();
-				}
-			});
-		}
-
-		// plant date & stage
-		Date actionDate = new Date(action.getDate());
-		Calendar actionCalendar = GregorianCalendar.getInstance();
-		actionCalendar.setTime(actionDate);
-
-		String dateDayStr = actionCalendar.get(Calendar.DAY_OF_MONTH) + " " + actionCalendar.getDisplayName(Calendar.MONTH, Calendar.SHORT, Locale.getDefault());
-
-		if (dateDay != null)
-		{
-			String lastDateStr = "";
-
-			if (index - 1 >= 0)
-			{
-				Date lastActionDate = new Date(actions.get(index - 1).getDate());
-				Calendar lastActionCalendar = GregorianCalendar.getInstance();
-				lastActionCalendar.setTime(lastActionDate);
-				lastDateStr = lastActionCalendar.get(Calendar.DAY_OF_MONTH) + " " + lastActionCalendar.getDisplayName(Calendar.MONTH, Calendar.SHORT, Locale.getDefault());
-			}
-
-			if (!lastDateStr.equalsIgnoreCase(dateDayStr))
-			{
-				dateDay.setText(Html.fromHtml(dateDayStr));
-
-				String stageDayStr = "";
-				StageChange current = null;
-				StageChange previous = null;
-
-				for (int actionIndex = index; actionIndex < actions.size(); actionIndex++)
-				{
-					if (actions.get(actionIndex) instanceof StageChange)
-					{
-						if (current == null)
-						{
-							current = (StageChange)actions.get(actionIndex);
-						}
-						else if (previous == null)
-						{
-							previous = (StageChange)actions.get(actionIndex);
-						}
+						menu.show();
 					}
-				}
-
-				int totalDays = (int)TimeHelper.toDays(Math.abs(action.getDate() - plant.getPlantDate()));
-				stageDayStr += totalDays;
-
-				if (previous == null)
-				{
-					previous = current;
-				}
-
-				if (current != null)
-				{
-					if (action == current)
-					{
-						int currentDays = (int)TimeHelper.toDays(Math.abs(current.getDate() - previous.getDate()));
-						stageDayStr += "/" + currentDays + previous.getNewStage().getPrintString().substring(0, 1).toLowerCase();
-					}
-					else
-					{
-						int currentDays = (int)TimeHelper.toDays(Math.abs(action.getDate() - current.getDate()));
-						stageDayStr += "/" + currentDays + current.getNewStage().getPrintString().substring(0, 1).toLowerCase();
-					}
-				}
-
-				stageDay.setText(stageDayStr);
+				});
 			}
 			else
 			{
-				dateDay.setText("");
-				stageDay.setText("");
+				viewHolder.getOverflow().setVisibility(View.GONE);
 			}
+		}
+
+		if (showDate)
+		{
+			// plant date & stage
+			Date actionDate = new Date(action.getDate());
+			Calendar actionCalendar = GregorianCalendar.getInstance();
+			actionCalendar.setTime(actionDate);
+
+			String dateDayStr = actionCalendar.get(Calendar.DAY_OF_MONTH) + " " + actionCalendar.getDisplayName(Calendar.MONTH, Calendar.SHORT, Locale.getDefault());
+
+			if (dateDay != null)
+			{
+				String lastDateStr = "";
+
+				if (index - 1 >= 0)
+				{
+					Date lastActionDate = new Date(actions.get(index - 1).getDate());
+					Calendar lastActionCalendar = GregorianCalendar.getInstance();
+					lastActionCalendar.setTime(lastActionDate);
+					lastDateStr = lastActionCalendar.get(Calendar.DAY_OF_MONTH) + " " + lastActionCalendar.getDisplayName(Calendar.MONTH, Calendar.SHORT, Locale.getDefault());
+				}
+
+				if (!lastDateStr.equalsIgnoreCase(dateDayStr))
+				{
+					dateDay.setText(Html.fromHtml(dateDayStr));
+
+					String stageDayStr = "";
+					StageChange current = null;
+					StageChange previous = null;
+
+					for (int actionIndex = index; actionIndex < actions.size(); actionIndex++)
+					{
+						if (actions.get(actionIndex) instanceof StageChange)
+						{
+							if (current == null)
+							{
+								current = (StageChange)actions.get(actionIndex);
+							}
+							else if (previous == null)
+							{
+								previous = (StageChange)actions.get(actionIndex);
+							}
+						}
+					}
+
+					if (plant != null)
+					{
+						int totalDays = (int)TimeHelper.toDays(Math.abs(action.getDate() - plant.getPlantDate()));
+						stageDayStr += totalDays;
+
+						if (previous == null)
+						{
+							previous = current;
+						}
+
+						if (current != null)
+						{
+							if (action == current)
+							{
+								int currentDays = (int)TimeHelper.toDays(Math.abs(current.getDate() - previous.getDate()));
+								stageDayStr += "/" + currentDays + previous.getNewStage().getPrintString().substring(0, 1).toLowerCase();
+							}
+							else
+							{
+								int currentDays = (int)TimeHelper.toDays(Math.abs(action.getDate() - current.getDate()));
+								stageDayStr += "/" + currentDays + current.getNewStage().getPrintString().substring(0, 1).toLowerCase();
+							}
+						}
+					}
+
+					stageDay.setText(stageDayStr);
+				}
+				else
+				{
+					dateDay.setText("");
+					stageDay.setText("");
+				}
+
+				((View)dateDay.getParent()).setVisibility(View.VISIBLE);
+			}
+		}
+		else
+		{
+			if (dateDay != null && stageDay != null)
+			{
+				((View)dateDay.getParent()).setVisibility(View.GONE);
+			}
+		}
+
+		if (onItemSelectCallback != null)
+		{
+			vh.itemView.setOnClickListener(new View.OnClickListener()
+			{
+				@Override public void onClick(View v)
+				{
+					onItemSelectCallback.onItemSelected(action);
+				}
+			});
 		}
 	}
 

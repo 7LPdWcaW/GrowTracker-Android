@@ -203,14 +203,39 @@ public class WateringFragment extends Fragment
 				})
 				.show();
 		}
+		else if (item.getItemId() == R.id.action_populate_previous)
+		{
+			ArrayList<Action> items = new ArrayList<>();
+			for (Plant plant : plants)
+			{
+				for (Action action : plant.getActions())
+				{
+					if (action.getClass() == Water.class)
+					{
+						items.add((Water)action);
+					}
+				}
+			}
+
+			ActionSelectDialogFragment actionSelectDialogFragment = new ActionSelectDialogFragment(items);
+			actionSelectDialogFragment.setOnActionSelectedListener(new ActionSelectDialogFragment.OnActionSelectedListener()
+			{
+				@Override public void onActionSelected(Action action)
+				{
+					water = (Water)new Kryo().copy(action);
+					setUi();
+				}
+			});
+			actionSelectDialogFragment.show(getFragmentManager(), "actions");
+		}
 
 		return super.onOptionsItemSelected(item);
 	}
 
 	private void showScheduleDialog(FeedingSchedule schedule)
 	{
-		FeedingSelectDialogFragment feedingSelectDialogFragment = new FeedingSelectDialogFragment(schedule, plants.get(0));
-		feedingSelectDialogFragment.setOnFeedingSelectedListener(new FeedingSelectDialogFragment.OnFeedingSelectedListener()
+		FeedingScheduleSelectDialogFragment feedingScheduleSelectDialogFragment = new FeedingScheduleSelectDialogFragment(schedule, plants.get(0));
+		feedingScheduleSelectDialogFragment.setOnFeedingSelectedListener(new FeedingScheduleSelectDialogFragment.OnFeedingSelectedListener()
 		{
 			@Override public void onFeedingSelected(FeedingScheduleDate date)
 			{
@@ -218,7 +243,7 @@ public class WateringFragment extends Fragment
 				populateAdditives();
 			}
 		});
-		feedingSelectDialogFragment.show(getFragmentManager(), "feeding");
+		feedingScheduleSelectDialogFragment.show(getFragmentManager(), "feeding");
 	}
 
 	private void setHints()
@@ -228,8 +253,8 @@ public class WateringFragment extends Fragment
 
 		if (usingEc)
 		{
-			waterPpm.setHint("1.0 EC");
-			((TextView)((ViewGroup)waterPpm.getParent()).findViewById(R.id.ppm_label)).setText("EC");
+			waterPpm.setHint("1.0 " + (usingEc ? "EC" : "PPM"));
+			((TextView)((ViewGroup)waterPpm.getParent()).findViewById(R.id.ppm_label)).setText(usingEc ? "EC" : "PPM");
 		}
 
 		if (water != null)
@@ -294,11 +319,11 @@ public class WateringFragment extends Fragment
 					}
 				}
 
-				averagePh = averagePh / phCount;
-				averagePpm = averagePpm / ppmCount;
-				averageRunoff = averageRunoff / runoffCount;
-				averageAmount = averageAmount / amountCount;
-				averageTemp = averageTemp / tempCount;
+				averagePh = Unit.toTwoDecimalPlaces(averagePh / phCount);
+				averagePpm = Unit.toTwoDecimalPlaces(averagePpm / ppmCount);
+				averageRunoff = Unit.toTwoDecimalPlaces(averageRunoff / runoffCount);
+				averageAmount = Unit.toTwoDecimalPlaces(averageAmount / amountCount);
+				averageTemp = Unit.toTwoDecimalPlaces(averageTemp / tempCount);
 
 				if (!averagePh.isNaN())
 				{
@@ -307,7 +332,12 @@ public class WateringFragment extends Fragment
 
 				if (!averagePpm.isNaN())
 				{
-					waterPpm.setHint(String.valueOf(averagePpm));
+					if (usingEc)
+					{
+						averagePpm = Unit.toTwoDecimalPlaces((averagePpm * 2d) / 1000d);
+					}
+
+					waterPpm.setHint(String.valueOf(averagePpm) + " " + (usingEc ? "EC" : "PPM"));
 				}
 
 				if (!averageRunoff.isNaN())
@@ -335,6 +365,14 @@ public class WateringFragment extends Fragment
 
 	private void setUi()
 	{
+		waterPh.setText("");
+		waterPpm.setText("");
+		runoffPh.setText("");
+		amount.setText("");
+		temp.setText("");
+		date.setText("");
+		notes.setText("");
+
 		getActivity().setTitle("Feeding " + (plants.size() == 1 ? plants.get(0).getName() : "multiple plants"));
 
 		Calendar date = Calendar.getInstance();
@@ -485,9 +523,9 @@ public class WateringFragment extends Fragment
 		}
 
 		final View focus = getActivity().getCurrentFocus();
-		final Object currentTag = view.getTag();
 		FragmentManager fm = getFragmentManager();
-		AddAdditiveDialogFragment addAdditiveDialogFragment = new AddAdditiveDialogFragment(view.getTag() instanceof Additive ? (Additive)view.getTag() : null);
+		final Additive current = view.getTag() instanceof Additive ? (Additive)view.getTag() : null;
+		AddAdditiveDialogFragment addAdditiveDialogFragment = new AddAdditiveDialogFragment(current);
 		addAdditiveDialogFragment.setOnAdditiveSelectedListener(new AddAdditiveDialogFragment.OnAdditiveSelectedListener()
 		{
 			@Override public void onAdditiveSelected(Additive additive)
@@ -497,7 +535,7 @@ public class WateringFragment extends Fragment
 					return;
 				}
 
-				if (!water.getAdditives().contains(additive))
+				if (!water.getAdditives().contains(current))
 				{
 					water.getAdditives().add(additive);
 				}
@@ -507,7 +545,7 @@ public class WateringFragment extends Fragment
 					{
 						Object tag = additiveContainer.getChildAt(childIndex).getTag();
 
-						if (tag == currentTag)
+						if (tag == current)
 						{
 							water.getAdditives().set(childIndex, additive);
 							break;
@@ -526,13 +564,13 @@ public class WateringFragment extends Fragment
 
 			@Override public void onAdditiveDeleteRequested(Additive additive)
 			{
-				water.getAdditives().remove(additive);
+				water.getAdditives().remove(current);
 
 				for (int childIndex = 0; childIndex < additiveContainer.getChildCount(); childIndex++)
 				{
 					Object tag = additiveContainer.getChildAt(childIndex).getTag();
 
-					if (tag == additive)
+					if (tag == current)
 					{
 						additiveContainer.removeViewAt(childIndex);
 						break;

@@ -177,7 +177,7 @@ public enum Unit
 
 	public static Double toTwoDecimalPlaces(double input)
 	{
-		return new BigDecimal(input).setScale(2, RoundingMode.HALF_EVEN).doubleValue();
+		return Double.isInfinite(input) || Double.isNaN(input) ? 0.0d : new BigDecimal(input).setScale(2, RoundingMode.HALF_EVEN).doubleValue();
 	}
 
 	/**

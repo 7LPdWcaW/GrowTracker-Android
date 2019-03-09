@@ -1,6 +1,7 @@
 <resources>
 	<string name="menu_feeding_schedule">Schedules</string>
 	<string name="schedule_details_title">Schedule Details</string>
+	<string name="schedule_date_title">Schedule Date</string>
 	<string name="schedule_name">Name</string>
 	<string name="schedule_name_hint">Light feeding</string>
 	<string name="schedule_description">Description</string>
@@ -15,6 +16,7 @@
 	<string name="to_date">To date</string>
 	<string name="to_stage">To stage</string>
 	<string name="populate_from_schedule">Populate from schedule</string>
+	<string name="populate_from_previous">Populate from previous</string>
 	<string name="confirm_title">Are you sure?</string>
 	<string name="confirm_positive">yes</string>
 	<string name="confirm_negative">no</string>
@@ -24,4 +26,8 @@
 	<string name="schedule_deleted">Schedule deleted</string>
 	<string name="undo">Undo</string>
 	<string name="feeding_schedules_title">Feeding schedules</string>
+	<string name="update_dialog_title">App updated</string>
+	<string name="update_dialog_message" formatted="true">App has been updated to version %s</string>
+	<string name="update_dialog_view_changes_button">View changes</string>
+	<string name="update_dialog_dismiss_button">Dismiss</string>
 </resources>
