@@ -116,7 +116,8 @@ public class MainActivity extends BaseActivity implements NavigationView.OnNavig
 	public void showUpdateDialog()
 	{
 		SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(this);
-		if (prefs.getInt("last_version", BuildConfig.VERSION_CODE) != BuildConfig.VERSION_CODE)
+		int lastVersion = prefs.getInt("last_version", -1);
+		if (lastVersion != BuildConfig.VERSION_CODE && lastVersion != -1)
 		{
 			new AlertDialog.Builder(this)
 				.setTitle(R.string.update_dialog_title)
