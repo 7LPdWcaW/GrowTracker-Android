@@ -33,7 +33,7 @@ import me.anon.model.PlantStage;
  * @project GrowTracker
  */
 @Views.Injectable
-public class FeedingSelectDialogFragment extends DialogFragment
+public class FeedingScheduleSelectDialogFragment extends DialogFragment
 {
 	public interface OnFeedingSelectedListener
 	{
@@ -52,7 +52,7 @@ public class FeedingSelectDialogFragment extends DialogFragment
 	}
 
 	@SuppressLint("ValidFragment")
-	public FeedingSelectDialogFragment(FeedingSchedule schedule, Plant plant)
+	public FeedingScheduleSelectDialogFragment(FeedingSchedule schedule, Plant plant)
 	{
 		this.plant = plant;
 		this.schedule = schedule;
@@ -60,7 +60,7 @@ public class FeedingSelectDialogFragment extends DialogFragment
 
 
 	@SuppressLint("ValidFragment")
-	public FeedingSelectDialogFragment()
+	public FeedingScheduleSelectDialogFragment()
 	{
 	}
 
@@ -77,7 +77,7 @@ public class FeedingSelectDialogFragment extends DialogFragment
 		recyclerView.addItemDecoration(new DividerItemDecoration(getActivity(), LinearLayout.VERTICAL));
 
 		final AlertDialog dialog = new AlertDialog.Builder(getActivity())
-			.setTitle("Feedings")
+			.setTitle("Feeding schedule")
 			.setView(view)
 			.create();
 
