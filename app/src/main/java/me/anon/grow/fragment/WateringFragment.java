@@ -203,6 +203,31 @@ public class WateringFragment extends Fragment
 				})
 				.show();
 		}
+		else if (item.getItemId() == R.id.action_populate_previous)
+		{
+			ArrayList<Action> items = new ArrayList<>();
+			for (Plant plant : plants)
+			{
+				for (Action action : plant.getActions())
+				{
+					if (action.getClass() == Water.class)
+					{
+						items.add((Water)action);
+					}
+				}
+			}
+
+			ActionSelectDialogFragment actionSelectDialogFragment = new ActionSelectDialogFragment(items);
+			actionSelectDialogFragment.setOnActionSelectedListener(new ActionSelectDialogFragment.OnActionSelectedListener()
+			{
+				@Override public void onActionSelected(Action action)
+				{
+					water = (Water)new Kryo().copy(action);
+					setUi();
+				}
+			});
+			actionSelectDialogFragment.show(getFragmentManager(), "actions");
+		}
 
 		return super.onOptionsItemSelected(item);
 	}
@@ -340,6 +365,14 @@ public class WateringFragment extends Fragment
 
 	private void setUi()
 	{
+		waterPh.setText("");
+		waterPpm.setText("");
+		runoffPh.setText("");
+		amount.setText("");
+		temp.setText("");
+		date.setText("");
+		notes.setText("");
+
 		getActivity().setTitle("Feeding " + (plants.size() == 1 ? plants.get(0).getName() : "multiple plants"));
 
 		Calendar date = Calendar.getInstance();
