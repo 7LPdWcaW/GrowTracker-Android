@@ -209,8 +209,8 @@ public class WateringFragment extends Fragment
 
 	private void showScheduleDialog(FeedingSchedule schedule)
 	{
-		FeedingSelectDialogFragment feedingSelectDialogFragment = new FeedingSelectDialogFragment(schedule, plants.get(0));
-		feedingSelectDialogFragment.setOnFeedingSelectedListener(new FeedingSelectDialogFragment.OnFeedingSelectedListener()
+		FeedingScheduleSelectDialogFragment feedingScheduleSelectDialogFragment = new FeedingScheduleSelectDialogFragment(schedule, plants.get(0));
+		feedingScheduleSelectDialogFragment.setOnFeedingSelectedListener(new FeedingScheduleSelectDialogFragment.OnFeedingSelectedListener()
 		{
 			@Override public void onFeedingSelected(FeedingScheduleDate date)
 			{
@@ -218,7 +218,7 @@ public class WateringFragment extends Fragment
 				populateAdditives();
 			}
 		});
-		feedingSelectDialogFragment.show(getFragmentManager(), "feeding");
+		feedingScheduleSelectDialogFragment.show(getFragmentManager(), "feeding");
 	}
 
 	private void setHints()
