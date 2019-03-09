@@ -1,6 +1,7 @@
 <resources>
 	<string name="menu_feeding_schedule">Schedules</string>
 	<string name="schedule_details_title">Schedule Details</string>
+	<string name="schedule_date_title">Schedule Date</string>
 	<string name="schedule_name">Name</string>
 	<string name="schedule_name_hint">Light feeding</string>
 	<string name="schedule_description">Description</string>
