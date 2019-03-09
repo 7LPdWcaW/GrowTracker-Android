@@ -15,6 +15,7 @@
 	<string name="to_date">To date</string>
 	<string name="to_stage">To stage</string>
 	<string name="populate_from_schedule">Populate from schedule</string>
+	<string name="populate_from_previous">Populate from previous</string>
 	<string name="confirm_title">Are you sure?</string>
 	<string name="confirm_positive">yes</string>
 	<string name="confirm_negative">no</string>

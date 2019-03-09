@@ -9,4 +9,10 @@
 		android:title="@string/populate_from_schedule"
 		app:showAsAction="never"
 	/>
+
+	<item
+		android:id="@+id/action_populate_previous"
+		android:title="@string/populate_from_previous"
+		app:showAsAction="never"
+	/>
 </menu>
