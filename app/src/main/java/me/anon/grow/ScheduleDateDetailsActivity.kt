@@ -21,6 +21,7 @@ class ScheduleDateDetailsActivity : AppCompatActivity()
 
 		setContentView(R.layout.fragment_holder)
 		setSupportActionBar(toolbar)
+		setTitle(R.string.schedule_date_title)
 
 		if (fragmentManager.findFragmentByTag(TAG_FRAGMENT) == null)
 		{

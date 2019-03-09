@@ -2,7 +2,10 @@ package me.anon.grow;
 
 import android.Manifest;
 import android.app.Activity;
+import android.app.AlertDialog;
+import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.net.Uri;
 import android.os.Bundle;
@@ -67,6 +70,7 @@ public class MainActivity extends BaseActivity implements NavigationView.OnNavig
 		setSupportActionBar(toolbar);
 		setNavigationView();
 		showDrawerToggle();
+		showUpdateDialog();
 
 		if (savedInstanceState == null)
 		{
@@ -107,6 +111,31 @@ public class MainActivity extends BaseActivity implements NavigationView.OnNavig
 	{
 		super.onDestroy();
 		BusHelper.getInstance().register(this);
+	}
+
+	public void showUpdateDialog()
+	{
+		SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(this);
+		int lastVersion = prefs.getInt("last_version", -1);
+		if (lastVersion != BuildConfig.VERSION_CODE && lastVersion != -1)
+		{
+			new AlertDialog.Builder(this)
+				.setTitle(R.string.update_dialog_title)
+				.setMessage(getString(R.string.update_dialog_message, BuildConfig.VERSION_NAME))
+				.setPositiveButton(R.string.update_dialog_view_changes_button, new DialogInterface.OnClickListener()
+				{
+					@Override public void onClick(DialogInterface dialog, int which)
+					{
+						Intent intent = new Intent(Intent.ACTION_VIEW);
+						intent.setData(Uri.parse("https://github.com/7LPdWcaW/GrowTracker-Android/releases/tag/v" + BuildConfig.VERSION_NAME));
+						startActivity(intent);
+					}
+				})
+				.setNegativeButton(R.string.update_dialog_dismiss_button, null)
+				.show();
+		}
+
+		prefs.edit().putInt("last_version", BuildConfig.VERSION_CODE).apply();
 	}
 
 	public void setNavigationView()

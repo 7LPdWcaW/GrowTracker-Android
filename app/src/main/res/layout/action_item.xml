@@ -50,31 +50,37 @@
 				android:layout_height="wrap_content"
 				android:paddingLeft="12dp"
 			>
-				<ImageButton
+				<LinearLayout
 					android:layout_width="wrap_content"
 					android:layout_height="wrap_content"
-					android:id="@+id/overflow"
-					android:src="@drawable/ic_overflow"
+					android:orientation="horizontal"
 					android:layout_alignParentRight="true"
-					android:background="@null"
-					android:adjustViewBounds="true"
-					android:tint="#333333"
-					android:padding="12dp"
-				/>
-
-				<TextView
-					android:layout_width="wrap_content"
-					android:layout_height="wrap_content"
-					android:id="@+id/date"
-					android:layout_toLeftOf="@id/overflow"
-					android:textSize="14sp"
 					android:layout_centerVertical="true"
-					android:textColor="#666666"
 					android:layout_marginLeft="8dp"
-					android:fontFamily="sans-serif-light"
 					android:layout_alignParentTop="true"
 					android:layout_marginTop="12dp"
-				/>
+				>
+					<TextView
+						android:layout_width="wrap_content"
+						android:layout_height="wrap_content"
+						android:id="@+id/date"
+						android:textSize="14sp"
+						android:textColor="#666666"
+						android:layout_marginRight="8dp"
+						android:fontFamily="sans-serif-light"
+					/>
+
+					<ImageButton
+						android:layout_width="wrap_content"
+						android:layout_height="wrap_content"
+						android:id="@+id/overflow"
+						android:src="@drawable/ic_overflow"
+						android:background="@null"
+						android:adjustViewBounds="true"
+						android:tint="#333333"
+						android:padding="12dp"
+					/>
+				</LinearLayout>
 
 				<TextView
 					android:layout_width="match_parent"

@@ -5,8 +5,10 @@ import android.app.AlertDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.net.Uri;
+import android.os.Build;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
+import android.support.v4.content.FileProvider;
 import android.text.Html;
 import android.util.Base64;
 import android.widget.Toast;
@@ -49,10 +51,19 @@ public class BootActivity extends Activity
 						for (String file : exceptions)
 						{
 							File fileIn = new File(ExceptionHandler.getInstance().getFilesPath() + "/" + file);
-							Uri u = Uri.fromFile(fileIn);
+							Uri u = FileProvider.getUriForFile(BootActivity.this, getPackageName() + ".provider", fileIn);
 							uris.add(u);
 						}
 
+						String deviceInfo = "";
+						deviceInfo += Build.BRAND + " ";
+						deviceInfo += Build.MODEL + " ";
+						deviceInfo += Build.DEVICE + ", ";
+						deviceInfo += Build.MANUFACTURER + ", ";
+						deviceInfo += Build.VERSION.SDK_INT + ", ";
+						deviceInfo += BuildConfig.VERSION_NAME;
+
+						share.putExtra(Intent.EXTRA_TEXT, deviceInfo);
 						share.putParcelableArrayListExtra(Intent.EXTRA_STREAM, uris);
 						startActivity(Intent.createChooser(share, "Send mail..."));
 						sentIntent = true;
