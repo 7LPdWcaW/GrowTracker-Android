@@ -26,4 +26,8 @@
 	<string name="schedule_deleted">Schedule deleted</string>
 	<string name="undo">Undo</string>
 	<string name="feeding_schedules_title">Feeding schedules</string>
+	<string name="update_dialog_title">App updated</string>
+	<string name="update_dialog_message" formatted="true">App has been updated to version %s</string>
+	<string name="update_dialog_view_changes_button">View changes</string>
+	<string name="update_dialog_dismiss_button">Dismiss</string>
 </resources>
