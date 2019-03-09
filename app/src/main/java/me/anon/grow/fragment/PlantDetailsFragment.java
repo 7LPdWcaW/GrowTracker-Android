@@ -441,6 +441,7 @@ public class PlantDetailsFragment extends Fragment
 		{
 			if (resultCode != Activity.RESULT_CANCELED)
 			{
+				setLastFeeding();
 				SnackBar.show(getActivity(), "Watering added", "Apply to another plant", new SnackBarListener()
 				{
 					@Override public void onSnackBarStarted(Object o)
