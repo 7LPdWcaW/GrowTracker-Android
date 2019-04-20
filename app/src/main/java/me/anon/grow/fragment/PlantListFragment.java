@@ -321,6 +321,7 @@ public class PlantListFragment extends Fragment
 		{
 			if (resultCode != Activity.RESULT_CANCELED)
 			{
+				adapter.notifyDataSetChanged();
 				SnackBar.show(getActivity(), "Watering added", new SnackBarListener()
 				{
 					@Override public void onSnackBarStarted(Object o)
