@@ -928,7 +928,6 @@ public class PlantDetailsFragment extends Fragment
 	public void save()
 	{
 		name.setError(null);
-		strain.setError(null);
 
 		if (!TextUtils.isEmpty(name.getText()))
 		{
@@ -943,11 +942,6 @@ public class PlantDetailsFragment extends Fragment
 		if (!TextUtils.isEmpty(strain.getText()))
 		{
 			plant.setStrain(strain.getText().toString().trim());
-		}
-		else
-		{
-			strain.setError("strain can not be empty");
-			return;
 		}
 
 		plant.setMediumDetails(mediumDetails.getText().toString());
