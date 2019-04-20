@@ -1,6 +1,7 @@
 package me.anon.lib.helper;
 
 import android.graphics.Color;
+import android.support.annotation.NonNull;
 import android.support.v4.graphics.ColorUtils;
 import android.support.v4.util.Pair;
 import android.widget.TextView;
@@ -114,7 +115,7 @@ public class StatsHelper
 		data.setValueFormatter(formatter);
 	}
 
-	public static void setAdditiveData(Plant plant, LineChart chart, Set<String> checkedAdditives)
+	public static void setAdditiveData(Plant plant, LineChart chart, @NonNull Set<String> checkedAdditives)
 	{
 		ArrayList<Action> actions = plant.getActions();
 		ArrayList<Pair<String, ArrayList<Entry>>> vals = new ArrayList<>();

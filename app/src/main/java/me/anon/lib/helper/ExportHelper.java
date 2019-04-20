@@ -31,7 +31,10 @@ import java.io.FileWriter;
 import java.io.OutputStream;
 import java.text.DateFormat;
 import java.util.Date;
+import java.util.HashSet;
+import java.util.List;
 import java.util.Map;
+import java.util.Set;
 import java.util.SortedMap;
 
 import me.anon.grow.R;
@@ -100,6 +103,7 @@ public class ExportHelper
 		long waterDifference = 0L;
 		long lastWater = 0L;
 		int totalWater = 0, totalFlush = 0;
+		final Set<String> additiveNames = new HashSet<>();
 
 		for (Action action : plant.getActions())
 		{
@@ -116,6 +120,12 @@ public class ExportHelper
 				if (lastWater != 0)
 				{
 					waterDifference += Math.abs(action.getDate() - lastWater);
+				}
+
+				List<Additive> actionAdditives = ((Water)action).getAdditives();
+				for (Additive additive : actionAdditives)
+				{
+					additiveNames.add(additive.getDescription());
 				}
 
 				totalWater++;
@@ -362,7 +372,7 @@ public class ExportHelper
 			additives.measure(widthMeasureSpec, heightMeasureSpec);
 			additives.requestLayout();
 			additives.layout(0, 0, width, height);
-			StatsHelper.setAdditiveData(plant, additives, null);
+			StatsHelper.setAdditiveData(plant, additives, additiveNames);
 			additives.getData().setDrawValues(true);
 
 			try
