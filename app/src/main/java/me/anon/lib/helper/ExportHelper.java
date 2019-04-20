@@ -208,6 +208,14 @@ public class ExportHelper
 		plantDetails.append(" - *Average input temperature*: ").append(aveTemp[2]);
 		plantDetails.append(NEW_LINE);
 
+		if (!additiveNames.isEmpty())
+		{
+			plantDetails.append("##Additives used");
+			plantDetails.append(NEW_LINE);
+			TextUtils.join(NEW_LINE + " - ", additiveNames);
+			plantDetails.append(NEW_LINE);
+		}
+
 		plantDetails.append("##Timeline");
 		plantDetails.append(NEW_LINE);
 
