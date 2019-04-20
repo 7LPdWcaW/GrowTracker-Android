@@ -6,6 +6,7 @@ import android.app.PendingIntent;
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.Bitmap;
+import android.graphics.Color;
 import android.os.AsyncTask;
 import android.os.Build;
 import android.os.Environment;
@@ -518,6 +519,10 @@ public class ExportHelper
 				if (Build.VERSION.SDK_INT >= 26)
 				{
 					NotificationChannel channel = new NotificationChannel("export", "Export status", NotificationManager.IMPORTANCE_DEFAULT);
+					channel.setSound(null, null);
+					channel.enableLights(false);
+					channel.setLightColor(Color.BLUE);
+					channel.enableVibration(false);
 					notificationManager.createNotificationChannel(channel);
 				}
 
@@ -537,6 +542,7 @@ public class ExportHelper
 
 			@Override protected void onProgressUpdate(Integer... values)
 			{
+				exportNotification.setPriority(NotificationCompat.PRIORITY_LOW);
 				exportNotification.setProgress(values[1], values[0], false);
 				notificationManager.notify(plantIndex, exportNotification.build());
 			}
