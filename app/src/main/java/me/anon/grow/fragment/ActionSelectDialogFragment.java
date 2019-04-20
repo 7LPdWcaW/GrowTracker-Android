@@ -19,6 +19,7 @@ import me.anon.controller.adapter.ActionAdapter;
 import me.anon.grow.R;
 import me.anon.lib.Views;
 import me.anon.model.Action;
+import me.anon.view.ActionHolder;
 import me.anon.view.ImageActionHolder;
 
 /**
@@ -58,6 +59,11 @@ public class ActionSelectDialogFragment extends DialogFragment
 				super.onBindViewHolder(vh, index);
 				int padding = (int)getResources().getDimension(R.dimen.padding_8dp);
 				vh.itemView.setPadding(padding, padding, padding, padding);
+
+				if (vh instanceof ActionHolder)
+				{
+					((ActionHolder)vh).getCard().setCardBackgroundColor(0xffffff);
+				}
 			}
 		};
 
@@ -65,7 +71,6 @@ public class ActionSelectDialogFragment extends DialogFragment
 		adapter.setShowActions(false);
 		adapter.setActions(null, actions, exclude);
 	}
-
 
 	@SuppressLint("ValidFragment")
 	public ActionSelectDialogFragment()
