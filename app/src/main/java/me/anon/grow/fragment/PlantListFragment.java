@@ -1,52 +1,45 @@
 package me.anon.grow.fragment;
 
-import android.app.Activity;
-import android.app.AlertDialog;
-import android.app.Fragment;
+import android.app.*;
+import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.graphics.Color;
 import android.graphics.Rect;
+import android.net.Uri;
+import android.os.Build;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
 import android.support.annotation.Nullable;
+import android.support.v4.app.NotificationCompat;
+import android.support.v4.content.FileProvider;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.helper.ItemTouchHelper;
 import android.text.Html;
 import android.util.TypedValue;
-import android.view.LayoutInflater;
-import android.view.Menu;
-import android.view.MenuInflater;
-import android.view.MenuItem;
-import android.view.View;
-import android.view.ViewGroup;
-
+import android.view.*;
+import android.widget.Toast;
 import com.esotericsoftware.kryo.Kryo;
-
-import java.util.ArrayList;
-import java.util.Arrays;
-
 import me.anon.controller.adapter.PlantAdapter;
 import me.anon.controller.adapter.SimpleItemTouchHelperCallback;
-import me.anon.grow.AddPlantActivity;
-import me.anon.grow.AddWateringActivity;
-import me.anon.grow.MainActivity;
-import me.anon.grow.MainApplication;
-import me.anon.grow.R;
+import me.anon.grow.*;
+import me.anon.lib.ExportCallback;
 import me.anon.lib.SnackBar;
 import me.anon.lib.SnackBarListener;
 import me.anon.lib.Views;
 import me.anon.lib.event.GardenChangeEvent;
 import me.anon.lib.helper.BusHelper;
+import me.anon.lib.helper.ExportHelper;
 import me.anon.lib.helper.FabAnimator;
 import me.anon.lib.manager.GardenManager;
 import me.anon.lib.manager.PlantManager;
-import me.anon.model.EmptyAction;
-import me.anon.model.Garden;
-import me.anon.model.NoteAction;
-import me.anon.model.Plant;
-import me.anon.model.PlantStage;
+import me.anon.model.*;
+
+import java.io.File;
+import java.util.ArrayList;
+import java.util.Arrays;
 
 /**
  * // TODO: Add class description
@@ -357,6 +350,7 @@ public class PlantListFragment extends Fragment
 
 		if (garden != null)
 		{
+			menu.findItem(R.id.export_garden).setVisible(true);
 			menu.findItem(R.id.edit_garden).setVisible(true);
 			menu.findItem(R.id.delete_garden).setVisible(true);
 		}
@@ -392,6 +386,36 @@ public class PlantListFragment extends Fragment
 			dialogFragment.show(getFragmentManager(), null);
 
 			return true;
+		}
+		else if (item.getItemId() == R.id.export_garden)
+		{
+			Toast.makeText(getActivity(), "Exporting grow log of garden...", Toast.LENGTH_SHORT).show();
+			NotificationManager notificationManager = (NotificationManager)getActivity().getSystemService(Context.NOTIFICATION_SERVICE);
+
+			if (Build.VERSION.SDK_INT >= 26)
+			{
+				NotificationChannel channel = new NotificationChannel("export", "Export status", NotificationManager.IMPORTANCE_DEFAULT);
+				channel.setSound(null, null);
+				channel.enableLights(false);
+				channel.setLightColor(Color.BLUE);
+				channel.enableVibration(false);
+
+				notificationManager.createNotificationChannel(channel);
+			}
+
+			NotificationCompat.Builder notifBuilder = new NotificationCompat.Builder(getActivity(), "export");
+			notifBuilder
+				.setContentText("Exporting garden grow log")
+				.setContentTitle("Exporting")
+				.setContentIntent(PendingIntent.getActivity(getActivity(), 0, new Intent(), PendingIntent.FLAG_UPDATE_CURRENT))
+				.setTicker("Exporting garden grow log")
+				.setVisibility(NotificationCompat.VISIBILITY_PUBLIC)
+				.setSmallIcon(R.drawable.ic_stat_name)
+				.build();
+
+			notificationManager.notify(0, notifBuilder.build());
+			ArrayList<Plant> export = new ArrayList<>(adapter.getPlants());
+			exportPlants(export);
 		}
 		else if (item.getItemId() == R.id.delete_garden)
 		{
@@ -474,6 +498,52 @@ public class PlantListFragment extends Fragment
 		return super.onOptionsItemSelected(item);
 	}
 
+	private void exportPlants(final ArrayList<Plant> plants)
+	{
+		final Garden currentGarden = garden;
+
+		ExportHelper.exportPlants(getActivity(), plants, garden.getName().replaceAll("[^a-zA-Z0-9]+", "-"), new ExportCallback()
+		{
+			@Override public void onCallback(Context context, File file)
+			{
+				if (file != null && file.exists() && getActivity() != null)
+				{
+					NotificationManager notificationManager = (NotificationManager)context.getSystemService(Context.NOTIFICATION_SERVICE);
+					notificationManager.cancel(0);
+
+					Intent openIntent = new Intent(Intent.ACTION_VIEW);
+					Uri apkURI = FileProvider.getUriForFile(context, context.getApplicationContext().getPackageName() + ".provider", file);
+					openIntent.setDataAndType(apkURI, "application/zip");
+					openIntent.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION);
+
+					Notification finishNotification = new NotificationCompat.Builder(context, "export")
+						.setContentText("Exported " + currentGarden.getName() + " to " + file.getAbsolutePath())
+						.setTicker("Export of " + currentGarden.getName() + " complete")
+						.setContentTitle("Export Complete")
+						.setContentIntent(PendingIntent.getActivity(context, 0, openIntent, PendingIntent.FLAG_UPDATE_CURRENT))
+						.setStyle(new NotificationCompat.BigTextStyle()
+								.bigText("Exported " + currentGarden.getName() + " to " + file.getAbsolutePath())
+							)
+						.setSmallIcon(R.drawable.ic_stat_done)
+						.setPriority(NotificationCompat.PRIORITY_HIGH)
+						.setVisibility(NotificationCompat.VISIBILITY_PUBLIC)
+						.setAutoCancel(true)
+						.build();
+					notificationManager.notify(0, finishNotification);
+
+					if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT)
+					{
+						new PlantDetailsFragment.MediaScannerWrapper(context, file.getParent(), "application/zip").scan();
+					}
+					else
+					{
+						context.sendBroadcast(new Intent(Intent.ACTION_MEDIA_MOUNTED, Uri.fromFile(file)));
+					}
+				}
+			}
+		});
+	}
+
 	private void filter()
 	{
 		ArrayList<Plant> plantList = PlantManager.getInstance().getSortedPlantList(garden);
@@ -488,7 +558,7 @@ public class PlantListFragment extends Fragment
 			}
 		}
 
-		if ((garden == null && plants.size() < plantList.size()) || garden != null)
+		if (garden != null || plants.size() < plantList.size())
 		{
 			adapter.setShowOnly(plants);
 		}
