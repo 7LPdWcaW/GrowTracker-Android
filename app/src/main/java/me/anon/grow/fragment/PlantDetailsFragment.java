@@ -1,26 +1,16 @@
 package me.anon.grow.fragment;
 
 import android.Manifest;
-import android.app.Activity;
-import android.app.AlertDialog;
-import android.app.Fragment;
-import android.app.Notification;
-import android.app.NotificationChannel;
-import android.app.NotificationManager;
-import android.app.PendingIntent;
-import android.app.ProgressDialog;
+import android.app.*;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
+import android.graphics.Color;
 import android.media.MediaScannerConnection;
 import android.net.Uri;
-import android.os.AsyncTask;
-import android.os.Build;
-import android.os.Bundle;
-import android.os.Environment;
-import android.os.ParcelFileDescriptor;
+import android.os.*;
 import android.preference.PreferenceManager;
 import android.provider.MediaStore;
 import android.support.annotation.Nullable;
@@ -29,52 +19,12 @@ import android.support.v4.content.FileProvider;
 import android.support.v7.widget.CardView;
 import android.text.Html;
 import android.text.TextUtils;
-import android.view.LayoutInflater;
-import android.view.Menu;
-import android.view.MenuInflater;
-import android.view.MenuItem;
-import android.view.View;
-import android.view.ViewGroup;
-import android.view.WindowManager;
-import android.widget.Button;
-import android.widget.CheckBox;
-import android.widget.EditText;
-import android.widget.TextView;
-import android.widget.Toast;
-
+import android.view.*;
+import android.widget.*;
 import com.esotericsoftware.kryo.Kryo;
-
-import java.io.BufferedInputStream;
-import java.io.BufferedOutputStream;
-import java.io.File;
-import java.io.FileDescriptor;
-import java.io.FileInputStream;
-import java.io.FileOutputStream;
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.OutputStream;
-import java.text.DateFormat;
-import java.util.ArrayList;
-import java.util.Calendar;
-import java.util.Date;
-import java.util.Locale;
-import java.util.UUID;
-
 import me.anon.controller.provider.PlantWidgetProvider;
-import me.anon.grow.AddWateringActivity;
-import me.anon.grow.BuildConfig;
-import me.anon.grow.EditWateringActivity;
-import me.anon.grow.EventsActivity;
-import me.anon.grow.MainApplication;
-import me.anon.grow.PlantDetailsActivity;
-import me.anon.grow.R;
-import me.anon.grow.StatisticsActivity;
-import me.anon.grow.ViewPhotosActivity;
-import me.anon.lib.DateRenderer;
-import me.anon.lib.ExportCallback;
-import me.anon.lib.SnackBar;
-import me.anon.lib.SnackBarListener;
-import me.anon.lib.Views;
+import me.anon.grow.*;
+import me.anon.lib.*;
 import me.anon.lib.helper.AddonHelper;
 import me.anon.lib.helper.ExportHelper;
 import me.anon.lib.helper.FabAnimator;
@@ -83,13 +33,11 @@ import me.anon.lib.manager.GardenManager;
 import me.anon.lib.manager.PlantManager;
 import me.anon.lib.task.AsyncCallback;
 import me.anon.lib.task.EncryptTask;
-import me.anon.model.EmptyAction;
-import me.anon.model.NoteAction;
-import me.anon.model.Plant;
-import me.anon.model.PlantMedium;
-import me.anon.model.PlantStage;
-import me.anon.model.StageChange;
-import me.anon.model.Water;
+import me.anon.model.*;
+
+import java.io.*;
+import java.text.DateFormat;
+import java.util.*;
 
 /**
  * // TODO: Add class description
@@ -735,10 +683,14 @@ public class PlantDetailsFragment extends Fragment
 			if (Build.VERSION.SDK_INT >= 26)
 			{
 				NotificationChannel channel = new NotificationChannel("export", "Export status", NotificationManager.IMPORTANCE_DEFAULT);
+				channel.setSound(null, null);
+				channel.enableLights(false);
+				channel.setLightColor(Color.BLUE);
+				channel.enableVibration(false);
 				notificationManager.createNotificationChannel(channel);
 			}
 
-			notificationManager.cancel(plantIndex);
+			notificationManager.cancel(0);
 
 			Notification exportNotification = new NotificationCompat.Builder(getActivity(), "export")
 				.setContentText("Exporting grow log for " + plant.getName())
@@ -749,16 +701,16 @@ public class PlantDetailsFragment extends Fragment
 				.setSmallIcon(R.drawable.ic_stat_name)
 				.build();
 
-			notificationManager.notify(plantIndex, exportNotification);
+			notificationManager.notify(0, exportNotification);
 
-			ExportHelper.exportPlant(getActivity(), plant, new ExportCallback()
+			ExportHelper.exportPlants(getActivity(), new ArrayList<Plant>(Arrays.asList(plant)), plant.getName().replaceAll("[^a-zA-Z0-9]+", "-"), new ExportCallback()
 			{
 				@Override public void onCallback(Context context, File file)
 				{
 					if (file != null && file.exists() && getActivity() != null)
 					{
 						NotificationManager notificationManager = (NotificationManager)getActivity().getSystemService(Context.NOTIFICATION_SERVICE);
-						notificationManager.cancel(plantIndex);
+						notificationManager.cancel(0);
 
 						Intent openIntent = new Intent(Intent.ACTION_VIEW);
 						Uri apkURI = FileProvider.getUriForFile(getActivity(), getActivity().getApplicationContext().getPackageName() + ".provider", file);
@@ -778,7 +730,7 @@ public class PlantDetailsFragment extends Fragment
 							.setVisibility(NotificationCompat.VISIBILITY_PUBLIC)
 							.setAutoCancel(true)
 							.build();
-						notificationManager.notify(plantIndex, finishNotification);
+						notificationManager.notify(0, finishNotification);
 
 						if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT)
 						{
