@@ -354,11 +354,6 @@ public class ExportHelper
 
 				try
 				{
-//					if (plants.size() > 0)
-//					{
-//						params.setRootFolderInZip(plant.getName());
-//					}
-
 					int width = 1024 + (totalWater * 20);
 					int height = 512;
 					int widthMeasureSpec = View.MeasureSpec.makeMeasureSpec(width, View.MeasureSpec.EXACTLY);

@@ -13,7 +13,7 @@ import me.anon.grow.R
 import java.io.File
 
 /**
- * // TODO: Add class description
+ * Helper class for sending notification
  */
 object NotificationHelper
 {
