@@ -1,43 +1,93 @@
 package me.anon.grow.fragment;
 
 import android.Manifest;
-import android.app.*;
+import android.app.Activity;
+import android.app.AlertDialog;
+import android.app.Fragment;
+import android.app.NotificationManager;
+import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
-import android.graphics.Color;
 import android.media.MediaScannerConnection;
 import android.net.Uri;
-import android.os.*;
+import android.os.AsyncTask;
+import android.os.Build;
+import android.os.Bundle;
+import android.os.Environment;
+import android.os.ParcelFileDescriptor;
 import android.preference.PreferenceManager;
 import android.provider.MediaStore;
 import android.support.annotation.Nullable;
-import android.support.v4.app.NotificationCompat;
 import android.support.v4.content.FileProvider;
 import android.support.v7.widget.CardView;
 import android.text.Html;
 import android.text.TextUtils;
-import android.view.*;
-import android.widget.*;
+import android.view.LayoutInflater;
+import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
+import android.view.View;
+import android.view.ViewGroup;
+import android.view.WindowManager;
+import android.widget.Button;
+import android.widget.CheckBox;
+import android.widget.EditText;
+import android.widget.TextView;
+import android.widget.Toast;
+
 import com.esotericsoftware.kryo.Kryo;
+
+import java.io.BufferedInputStream;
+import java.io.BufferedOutputStream;
+import java.io.File;
+import java.io.FileDescriptor;
+import java.io.FileInputStream;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.OutputStream;
+import java.text.DateFormat;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Calendar;
+import java.util.Date;
+import java.util.Locale;
+import java.util.UUID;
+
 import me.anon.controller.provider.PlantWidgetProvider;
-import me.anon.grow.*;
-import me.anon.lib.*;
+import me.anon.grow.AddWateringActivity;
+import me.anon.grow.BuildConfig;
+import me.anon.grow.EditWateringActivity;
+import me.anon.grow.EventsActivity;
+import me.anon.grow.MainApplication;
+import me.anon.grow.PlantDetailsActivity;
+import me.anon.grow.R;
+import me.anon.grow.StatisticsActivity;
+import me.anon.grow.ViewPhotosActivity;
+import me.anon.lib.DateRenderer;
+import me.anon.lib.ExportCallback;
+import me.anon.lib.SnackBar;
+import me.anon.lib.SnackBarListener;
+import me.anon.lib.Views;
 import me.anon.lib.helper.AddonHelper;
 import me.anon.lib.helper.ExportHelper;
 import me.anon.lib.helper.FabAnimator;
+import me.anon.lib.helper.NotificationHelper;
 import me.anon.lib.helper.PermissionHelper;
 import me.anon.lib.manager.GardenManager;
 import me.anon.lib.manager.PlantManager;
 import me.anon.lib.task.AsyncCallback;
 import me.anon.lib.task.EncryptTask;
-import me.anon.model.*;
-
-import java.io.*;
-import java.text.DateFormat;
-import java.util.*;
+import me.anon.model.EmptyAction;
+import me.anon.model.NoteAction;
+import me.anon.model.Plant;
+import me.anon.model.PlantMedium;
+import me.anon.model.PlantStage;
+import me.anon.model.StageChange;
+import me.anon.model.Water;
 
 /**
  * // TODO: Add class description
@@ -680,28 +730,8 @@ public class PlantDetailsFragment extends Fragment
 			Toast.makeText(getActivity(), "Exporting grow log...", Toast.LENGTH_SHORT).show();
 			NotificationManager notificationManager = (NotificationManager)getActivity().getSystemService(Context.NOTIFICATION_SERVICE);
 
-			if (Build.VERSION.SDK_INT >= 26)
-			{
-				NotificationChannel channel = new NotificationChannel("export", "Export status", NotificationManager.IMPORTANCE_DEFAULT);
-				channel.setSound(null, null);
-				channel.enableLights(false);
-				channel.setLightColor(Color.BLUE);
-				channel.enableVibration(false);
-				notificationManager.createNotificationChannel(channel);
-			}
-
-			notificationManager.cancel(0);
-
-			Notification exportNotification = new NotificationCompat.Builder(getActivity(), "export")
-				.setContentText("Exporting grow log for " + plant.getName())
-				.setContentTitle("Exporting")
-				.setContentIntent(PendingIntent.getActivity(getActivity(), 0, new Intent(), PendingIntent.FLAG_UPDATE_CURRENT))
-				.setTicker("Exporting grow log for " + plant.getName())
-				.setVisibility(NotificationCompat.VISIBILITY_PUBLIC)
-				.setSmallIcon(R.drawable.ic_stat_name)
-				.build();
-
-			notificationManager.notify(0, exportNotification);
+			NotificationHelper.createExportChannel(getActivity());
+			NotificationHelper.sendExportNotification(getActivity(), "Exporting grow log for " + plant.getName(), "Exporting grow log for " + plant.getName());
 
 			ExportHelper.exportPlants(getActivity(), new ArrayList<Plant>(Arrays.asList(plant)), plant.getName().replaceAll("[^a-zA-Z0-9]+", "-"), new ExportCallback()
 			{
@@ -709,28 +739,7 @@ public class PlantDetailsFragment extends Fragment
 				{
 					if (file != null && file.exists() && getActivity() != null)
 					{
-						NotificationManager notificationManager = (NotificationManager)getActivity().getSystemService(Context.NOTIFICATION_SERVICE);
-						notificationManager.cancel(0);
-
-						Intent openIntent = new Intent(Intent.ACTION_VIEW);
-						Uri apkURI = FileProvider.getUriForFile(getActivity(), getActivity().getApplicationContext().getPackageName() + ".provider", file);
-						openIntent.setDataAndType(apkURI, "application/zip");
-						openIntent.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION);
-
-						Notification finishNotification = new NotificationCompat.Builder(getActivity(), "export")
-							.setContentText("Exported " + plant.getName() + " to " + file.getAbsolutePath())
-							.setTicker("Export of " + plant.getName() + " complete")
-							.setContentTitle("Export Complete")
-							.setContentIntent(PendingIntent.getActivity(getActivity(), 0, openIntent, PendingIntent.FLAG_UPDATE_CURRENT))
-							.setStyle(new NotificationCompat.BigTextStyle()
-									.bigText("Exported " + plant.getName() + " to " + file.getAbsolutePath())
-								)
-							.setSmallIcon(R.drawable.ic_stat_done)
-							.setPriority(NotificationCompat.PRIORITY_HIGH)
-							.setVisibility(NotificationCompat.VISIBILITY_PUBLIC)
-							.setAutoCancel(true)
-							.build();
-						notificationManager.notify(0, finishNotification);
+						NotificationHelper.sendExportCompleteNotification(context, "Export of " + plant.getName() + " complete", "Exported " + plant.getName() + " to " + file.getAbsolutePath(), file);
 
 						if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT)
 						{
