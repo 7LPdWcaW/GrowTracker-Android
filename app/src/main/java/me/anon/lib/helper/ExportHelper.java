@@ -1,14 +1,11 @@
 package me.anon.lib.helper;
 
-import android.app.NotificationChannel;
 import android.app.NotificationManager;
 import android.app.PendingIntent;
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.Bitmap;
-import android.graphics.Color;
 import android.os.AsyncTask;
-import android.os.Build;
 import android.os.Environment;
 import android.preference.PreferenceManager;
 import android.support.annotation.NonNull;
@@ -17,20 +14,39 @@ import android.support.v4.app.NotificationCompat;
 import android.text.TextUtils;
 import android.view.View;
 import android.view.ViewGroup;
+
 import com.github.mikephil.charting.charts.LineChart;
-import me.anon.grow.R;
-import me.anon.lib.ExportCallback;
-import me.anon.lib.Unit;
-import me.anon.lib.manager.PlantManager;
-import me.anon.model.*;
+
 import net.lingala.zip4j.core.ZipFile;
 import net.lingala.zip4j.exception.ZipException;
 import net.lingala.zip4j.model.ZipParameters;
 import net.lingala.zip4j.util.Zip4jConstants;
 
-import java.io.*;
+import java.io.ByteArrayInputStream;
+import java.io.ByteArrayOutputStream;
+import java.io.File;
+import java.io.FileInputStream;
 import java.text.DateFormat;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
+import java.util.SortedMap;
+
+import me.anon.grow.R;
+import me.anon.lib.ExportCallback;
+import me.anon.lib.Unit;
+import me.anon.lib.manager.PlantManager;
+import me.anon.model.Action;
+import me.anon.model.Additive;
+import me.anon.model.EmptyAction;
+import me.anon.model.NoteAction;
+import me.anon.model.Plant;
+import me.anon.model.PlantStage;
+import me.anon.model.StageChange;
+import me.anon.model.Water;
 
 import static me.anon.lib.Unit.ML;
 
@@ -46,6 +62,7 @@ public class ExportHelper
 	 */
 	@Nullable public static void exportPlants(final Context context, @NonNull final ArrayList<Plant> plants, String name, final ExportCallback callback)
 	{
+		String exportInt = "" + System.currentTimeMillis();
 		String folderPath = "";
 		Unit measureUnit = Unit.getSelectedMeasurementUnit(context);
 		Unit deliveryUnit = Unit.getSelectedDeliveryUnit(context);
@@ -60,11 +77,10 @@ public class ExportHelper
 			folderPath = Environment.DIRECTORY_DOWNLOADS;
 		}
 
-		ArrayList<File> outputs = new ArrayList<>();
-		File exportFolder = new File(folderPath + "/GrowLogs/");
+		File exportFolder = new File(folderPath + "/GrowLogs/" + exportInt);
 		exportFolder.mkdirs();
 
-		final File finalFile = new File(exportFolder.getAbsolutePath() + "/" + name + ".zip");
+		final File finalFile = new File(folderPath + "/GrowLogs/" + name + ".zip");
 
 		if (finalFile.exists())
 		{
@@ -81,15 +97,7 @@ public class ExportHelper
 			for (Plant plant : plants)
 			{
 				// temp folder to write to
-				final File tempFolder = new File(exportFolder.getAbsolutePath() + "/" + plant.getId());
-				outputs.add(tempFolder);
-
-				if (tempFolder.exists())
-				{
-					deleteRecursive(tempFolder);
-				}
-
-				tempFolder.mkdir();
+				final String zipPathPrefix = plants.size() == 1 ? "" : plant.getName() + "/";
 
 				long startDate = plant.getPlantDate();
 				long endDate = System.currentTimeMillis();
@@ -206,7 +214,8 @@ public class ExportHelper
 				{
 					plantDetails.append("##Additives used");
 					plantDetails.append(NEW_LINE);
-					TextUtils.join(NEW_LINE + " - ", additiveNames);
+					plantDetails.append(" - ");
+					plantDetails.append(TextUtils.join(NEW_LINE + " - ", additiveNames));
 					plantDetails.append(NEW_LINE);
 				}
 
@@ -331,10 +340,12 @@ public class ExportHelper
 				// Write the log
 				try
 				{
-					FileWriter fileWriter = new FileWriter(tempFolder.getAbsolutePath() + "/growlog.md", false);
-					fileWriter.write(plantDetails.toString());
-					fileWriter.flush();
-					fileWriter.close();
+					ZipParameters parameters = new ZipParameters();
+					parameters.setCompressionMethod(Zip4jConstants.COMP_DEFLATE);
+					parameters.setFileNameInZip(zipPathPrefix + "growlog.md");
+					parameters.setSourceExternalStream(true);
+
+					outFile.addStream(new ByteArrayInputStream(plantDetails.toString().getBytes("UTF-8")), parameters);
 				}
 				catch (Exception e)
 				{
@@ -343,24 +354,18 @@ public class ExportHelper
 
 				try
 				{
-					if (plants.size() > 0)
-					{
-						params.setRootFolderInZip(plant.getName());
-					}
+//					if (plants.size() > 0)
+//					{
+//						params.setRootFolderInZip(plant.getName());
+//					}
 
-					outFile.addFile(new File(tempFolder.getAbsolutePath() + "/" + plant.getName() + " - growlog.md"), params);
-
-					if (new File(tempFolder.getAbsolutePath() + "/images/").exists())
-					{
-						outFile.addFolder(new File(tempFolder.getAbsolutePath() + "/images/"), params);
-					}
-
-					int width = 512 + (totalWater * 10);
+					int width = 1024 + (totalWater * 20);
 					int height = 512;
 					int widthMeasureSpec = View.MeasureSpec.makeMeasureSpec(width, View.MeasureSpec.EXACTLY);
 					int heightMeasureSpec = View.MeasureSpec.makeMeasureSpec(height, View.MeasureSpec.EXACTLY);
 
 					LineChart additives = new LineChart(context);
+					additives.setPadding(100, 100, 100, 100);
 					additives.setLayoutParams(new ViewGroup.LayoutParams(width, height));
 					additives.setMinimumWidth(width);
 					additives.setMinimumHeight(height);
@@ -372,8 +377,15 @@ public class ExportHelper
 
 					try
 					{
-						OutputStream stream = new FileOutputStream(tempFolder.getAbsolutePath() + "/additives.png");
-						additives.getChartBitmap().compress(Bitmap.CompressFormat.PNG, 100, stream);
+						ZipParameters parameters = new ZipParameters();
+						parameters.setCompressionMethod(Zip4jConstants.COMP_DEFLATE);
+						parameters.setFileNameInZip(zipPathPrefix + "additives.jpg");
+						parameters.setSourceExternalStream(true);
+
+						ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
+						additives.getChartBitmap().compress(Bitmap.CompressFormat.JPEG, 100, outputStream);
+						ByteArrayInputStream stream = new ByteArrayInputStream(outputStream.toByteArray());
+						outFile.addStream(stream, parameters);
 
 						stream.close();
 					}
@@ -383,6 +395,7 @@ public class ExportHelper
 					}
 
 					LineChart inputPh = new LineChart(context);
+					inputPh.setPadding(100, 100, 100, 100);
 					inputPh.setLayoutParams(new ViewGroup.LayoutParams(width, height));
 					inputPh.setMinimumWidth(width);
 					inputPh.setMinimumHeight(height);
@@ -394,8 +407,15 @@ public class ExportHelper
 
 					try
 					{
-						OutputStream stream = new FileOutputStream(tempFolder.getAbsolutePath() + "/input-ph.png");
-						inputPh.getChartBitmap().compress(Bitmap.CompressFormat.PNG, 100, stream);
+						ZipParameters parameters = new ZipParameters();
+						parameters.setCompressionMethod(Zip4jConstants.COMP_DEFLATE);
+						parameters.setFileNameInZip(zipPathPrefix + "input-ph.jpg");
+						parameters.setSourceExternalStream(true);
+
+						ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
+						inputPh.getChartBitmap().compress(Bitmap.CompressFormat.JPEG, 100, outputStream);
+						ByteArrayInputStream stream = new ByteArrayInputStream(outputStream.toByteArray());
+						outFile.addStream(stream, parameters);
 
 						stream.close();
 					}
@@ -405,6 +425,7 @@ public class ExportHelper
 					}
 
 					LineChart ppm = new LineChart(context);
+					ppm.setPadding(100, 100, 100, 100);
 					ppm.setLayoutParams(new ViewGroup.LayoutParams(width, height));
 					ppm.setMinimumWidth(width);
 					ppm.setMinimumHeight(height);
@@ -416,8 +437,15 @@ public class ExportHelper
 
 					try
 					{
-						OutputStream stream = new FileOutputStream(tempFolder.getAbsolutePath() + "/" + (usingEc ? "ec" : "ppm") + ".png");
-						ppm.getChartBitmap().compress(Bitmap.CompressFormat.PNG, 100, stream);
+						ZipParameters parameters = new ZipParameters();
+						parameters.setCompressionMethod(Zip4jConstants.COMP_DEFLATE);
+						parameters.setFileNameInZip(zipPathPrefix + (usingEc ? "ec" : "ppm") + ".jpg");
+						parameters.setSourceExternalStream(true);
+
+						ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
+						ppm.getChartBitmap().compress(Bitmap.CompressFormat.JPEG, 100, outputStream);
+						ByteArrayInputStream stream = new ByteArrayInputStream(outputStream.toByteArray());
+						outFile.addStream(stream, parameters);
 
 						stream.close();
 					}
@@ -427,6 +455,7 @@ public class ExportHelper
 					}
 
 					LineChart temp = new LineChart(context);
+					temp.setPadding(100, 100, 100, 100);
 					temp.setLayoutParams(new ViewGroup.LayoutParams(width, height));
 					temp.setMinimumWidth(width);
 					temp.setMinimumHeight(height);
@@ -438,8 +467,15 @@ public class ExportHelper
 
 					try
 					{
-						OutputStream stream = new FileOutputStream(tempFolder.getAbsolutePath() + "/temp.png");
-						temp.getChartBitmap().compress(Bitmap.CompressFormat.PNG, 100, stream);
+						ZipParameters parameters = new ZipParameters();
+						parameters.setCompressionMethod(Zip4jConstants.COMP_DEFLATE);
+						parameters.setFileNameInZip(zipPathPrefix + "temp.jpg");
+						parameters.setSourceExternalStream(true);
+
+						ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
+						temp.getChartBitmap().compress(Bitmap.CompressFormat.JPEG, 100, outputStream);
+						ByteArrayInputStream stream = new ByteArrayInputStream(outputStream.toByteArray());
+						outFile.addStream(stream, parameters);
 
 						stream.close();
 					}
@@ -447,41 +483,14 @@ public class ExportHelper
 					{
 						e.printStackTrace();
 					}
-
-					if (new File(tempFolder.getAbsolutePath() + "/additives.png").exists())
-					{
-						outFile.addFile(new File(tempFolder.getAbsolutePath() + "/additives.png"), params);
-					}
-
-					if (new File(tempFolder.getAbsolutePath() + "/input-ph.png").exists())
-					{
-						outFile.addFile(new File(tempFolder.getAbsolutePath() + "/input-ph.png"), params);
-					}
-
-					if (new File(tempFolder.getAbsolutePath() + "/ppm.png").exists())
-					{
-						outFile.addFile(new File(tempFolder.getAbsolutePath() + "/ppm.png"), params);
-					}
-
-					if (new File(tempFolder.getAbsolutePath() + "/ec.png").exists())
-					{
-						outFile.addFile(new File(tempFolder.getAbsolutePath() + "/ec.png"), params);
-					}
-
-					if (new File(tempFolder.getAbsolutePath() + "/temp.png").exists())
-					{
-						outFile.addFile(new File(tempFolder.getAbsolutePath() + "/temp.png"), params);
-					}
 				}
 				catch (Exception e)
 				{
 					e.printStackTrace();
 				}
-
-
 			}
 
-			copyImagesAndFinish(context, plants, outputs, outFile, callback);
+			copyImagesAndFinish(context, plants, outFile, callback);
 		}
 		catch (ZipException e)
 		{
@@ -489,7 +498,7 @@ public class ExportHelper
 		}
 	}
 
-	protected static void copyImagesAndFinish(Context context, final ArrayList<Plant> plant, final ArrayList<File> outputs, final ZipFile finalFile, final ExportCallback callback)
+	protected static void copyImagesAndFinish(Context context, final ArrayList<Plant> plant, final ZipFile finalFile, final ExportCallback callback)
 	{
 		final Context appContext = context.getApplicationContext();
 		new AsyncTask<Plant, Integer, File>()
@@ -501,17 +510,7 @@ public class ExportHelper
 			@Override protected void onPreExecute()
 			{
 				plantIndex = PlantManager.getInstance().getPlants().indexOf(plant);
-				notificationManager = (NotificationManager)appContext.getSystemService(Context.NOTIFICATION_SERVICE);
-
-				if (Build.VERSION.SDK_INT >= 26)
-				{
-					NotificationChannel channel = new NotificationChannel("export", "Export status", NotificationManager.IMPORTANCE_DEFAULT);
-					channel.setSound(null, null);
-					channel.enableLights(false);
-					channel.setLightColor(Color.BLUE);
-					channel.enableVibration(false);
-					notificationManager.createNotificationChannel(channel);
-				}
+				NotificationHelper.createExportChannel(appContext);
 
 				notificationManager = (NotificationManager)appContext.getSystemService(Context.NOTIFICATION_SERVICE);
 
@@ -520,27 +519,21 @@ public class ExportHelper
 					.setContentTitle("Exporting")
 					.setContentIntent(PendingIntent.getActivity(appContext, 0, new Intent(), PendingIntent.FLAG_UPDATE_CURRENT))
 					.setTicker("Exporting grow log for " + (plant.size() == 1 ? plant.get(0).getName() : "multiple plants"))
+					.setSmallIcon(R.drawable.ic_stat_name)
 					.setPriority(NotificationCompat.PRIORITY_DEFAULT)
-					.setVisibility(NotificationCompat.VISIBILITY_PUBLIC)
-					.setSmallIcon(R.drawable.ic_stat_name);
+					.setSound(null);
 
 				notificationManager.notify(0, exportNotification.build());
 			}
 
 			@Override protected void onProgressUpdate(Integer... values)
 			{
-				exportNotification.setPriority(NotificationCompat.PRIORITY_LOW);
 				exportNotification.setProgress(values[1], values[0], false);
 				notificationManager.notify(0, exportNotification.build());
 			}
 
 			@Override protected File doInBackground(Plant... params)
 			{
-				if (params.length != outputs.size())
-				{
-					throw new IllegalArgumentException("plant size did not match output size");
-				}
-
 				int total = 0;
 				for (Plant plant : plant)
 				{
@@ -548,11 +541,10 @@ public class ExportHelper
 				}
 
 				int count = 0;
-
 				for (int index = 0; index < params.length; index++)
 				{
 					Plant plant = params[index];
-					File tempFolder = outputs.get(index);
+					final String zipPathPrefix = params.length == 1 ? "" : plant.getName() + "/";
 
 					// Copy images to dir
 					for (String filePath : plant.getImages())
@@ -567,28 +559,13 @@ public class ExportHelper
 								fileDate = currentImage.lastModified();
 							}
 
-							File imageFolderPath = new File(tempFolder.getAbsolutePath() + "/images/" + dateFolder(appContext, fileDate) + "/");
-							imageFolderPath.mkdirs();
+							ZipParameters parameters = new ZipParameters();
+							parameters.setCompressionMethod(Zip4jConstants.COMP_DEFLATE);
+							parameters.setFileNameInZip(zipPathPrefix + "images/" + dateFolder(appContext, fileDate) + "/" + fileDate + ".jpg");
+							parameters.setSourceExternalStream(true);
 
 							FileInputStream fis = new FileInputStream(currentImage);
-							FileOutputStream fos = new FileOutputStream(new File(imageFolderPath.getAbsolutePath() + "/" + fileDate + ".jpg"));
-
-							byte[] buffer = new byte[8192];
-							int len = 0;
-
-							while ((len = fis.read(buffer)) != -1)
-							{
-								fos.write(buffer, 0, len);
-							}
-
-							fis.close();
-							fos.flush();
-							fos.close();
-
-							final ZipParameters zipParams = new ZipParameters();
-							zipParams.setCompressionMethod(Zip4jConstants.COMP_DEFLATE);
-							zipParams.setCompressionLevel(Zip4jConstants.DEFLATE_LEVEL_NORMAL);
-							finalFile.addFolder(imageFolderPath, zipParams);
+							finalFile.addStream(fis, parameters);
 						}
 						catch (Exception e)
 						{
@@ -597,8 +574,6 @@ public class ExportHelper
 
 						publishProgress(++count, total);
 					}
-
-					deleteRecursive(tempFolder);
 				}
 
 				callback.onCallback(appContext, finalFile.getFile());
