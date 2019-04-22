@@ -3,12 +3,9 @@ package me.anon.grow.fragment;
 import android.app.Activity;
 import android.app.AlertDialog;
 import android.app.Fragment;
-import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.Rect;
-import android.net.Uri;
-import android.os.Build;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
 import android.support.annotation.Nullable;
@@ -28,7 +25,6 @@ import android.widget.Toast;
 
 import com.esotericsoftware.kryo.Kryo;
 
-import java.io.File;
 import java.util.ArrayList;
 import java.util.Arrays;
 
@@ -39,13 +35,12 @@ import me.anon.grow.AddWateringActivity;
 import me.anon.grow.MainActivity;
 import me.anon.grow.MainApplication;
 import me.anon.grow.R;
-import me.anon.lib.ExportCallback;
+import me.anon.grow.service.ExportService;
 import me.anon.lib.SnackBar;
 import me.anon.lib.SnackBarListener;
 import me.anon.lib.Views;
 import me.anon.lib.event.GardenChangeEvent;
 import me.anon.lib.helper.BusHelper;
-import me.anon.lib.helper.ExportHelper;
 import me.anon.lib.helper.FabAnimator;
 import me.anon.lib.helper.NotificationHelper;
 import me.anon.lib.manager.GardenManager;
@@ -494,27 +489,8 @@ public class PlantListFragment extends Fragment
 
 	private void exportPlants(final ArrayList<Plant> plants)
 	{
-		final Garden currentGarden = garden;
-
-		ExportHelper.exportPlants(getActivity(), plants, garden.getName().replaceAll("[^a-zA-Z0-9]+", "-"), new ExportCallback()
-		{
-			@Override public void onCallback(Context context, File file)
-			{
-				if (file != null && file.exists() && getActivity() != null)
-				{
-					NotificationHelper.sendExportCompleteNotification(context, "Export of " + currentGarden.getName() + " complete", "Exported " + currentGarden.getName() + " to " + file.getAbsolutePath(), file);
-
-					if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT)
-					{
-						new PlantDetailsFragment.MediaScannerWrapper(context, file.getParent(), "application/zip").scan();
-					}
-					else
-					{
-						context.sendBroadcast(new Intent(Intent.ACTION_MEDIA_MOUNTED, Uri.fromFile(file)));
-					}
-				}
-			}
-		});
+		Toast.makeText(getActivity(), "Exporting grow log...", Toast.LENGTH_SHORT).show();
+		ExportService.export(getActivity(), plants, garden.getName().replaceAll("[^a-zA-Z0-9]+", "-"), garden.getName());
 	}
 
 	private void filter()

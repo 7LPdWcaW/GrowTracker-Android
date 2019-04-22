@@ -4,7 +4,6 @@ import android.Manifest;
 import android.app.Activity;
 import android.app.AlertDialog;
 import android.app.Fragment;
-import android.app.NotificationManager;
 import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.DialogInterface;
@@ -67,6 +66,7 @@ import me.anon.grow.PlantDetailsActivity;
 import me.anon.grow.R;
 import me.anon.grow.StatisticsActivity;
 import me.anon.grow.ViewPhotosActivity;
+import me.anon.grow.service.ExportService;
 import me.anon.lib.DateRenderer;
 import me.anon.lib.ExportCallback;
 import me.anon.lib.SnackBar;
@@ -728,30 +728,7 @@ public class PlantDetailsFragment extends Fragment
 		else if (item.getItemId() == R.id.export)
 		{
 			Toast.makeText(getActivity(), "Exporting grow log...", Toast.LENGTH_SHORT).show();
-			NotificationManager notificationManager = (NotificationManager)getActivity().getSystemService(Context.NOTIFICATION_SERVICE);
-
-			NotificationHelper.createExportChannel(getActivity());
-			NotificationHelper.sendExportNotification(getActivity(), "Exporting grow log for " + plant.getName(), "Exporting grow log for " + plant.getName());
-
-			ExportHelper.exportPlants(getActivity(), new ArrayList<Plant>(Arrays.asList(plant)), plant.getName().replaceAll("[^a-zA-Z0-9]+", "-"), new ExportCallback()
-			{
-				@Override public void onCallback(Context context, File file)
-				{
-					if (file != null && file.exists() && getActivity() != null)
-					{
-						NotificationHelper.sendExportCompleteNotification(context, "Export of " + plant.getName() + " complete", "Exported " + plant.getName() + " to " + file.getAbsolutePath(), file);
-
-						if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT)
-						{
-							new MediaScannerWrapper(getActivity(), file.getAbsolutePath(), "application/zip").scan();
-						}
-						else
-						{
-							getActivity().sendBroadcast(new Intent(Intent.ACTION_MEDIA_MOUNTED, Uri.fromFile(file)));
-						}
-					}
-				}
-			});
+			ExportService.export(getActivity(),new ArrayList<Plant>(Arrays.asList(plant)), plant.getName().replaceAll("[^a-zA-Z0-9]+", "-"), plant.getName());
 
 			return true;
 		}
