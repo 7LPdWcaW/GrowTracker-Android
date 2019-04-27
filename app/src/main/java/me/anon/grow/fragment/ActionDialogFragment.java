@@ -83,7 +83,10 @@ public class ActionDialogFragment extends DialogFragment
 		}
 
 		final String[] actions = new String[Action.ActionName.names().length];
-		System.arraycopy(Action.ActionName.names(), 0, actions, 0, actions.length);
+		for (int index = 0; index < Action.ActionName.names().length; index++)
+		{
+			actions[index] = getString(Action.ActionName.names()[index]);
+		}
 
 		actionsSpinner.setAdapter(new ArrayAdapter<String>(getActivity(), android.R.layout.simple_spinner_dropdown_item, actions));
 
@@ -127,7 +130,7 @@ public class ActionDialogFragment extends DialogFragment
 		for (int index = 0; index < actions.length; index++)
 		{
 			String actionName = actions[index];
-			if (action.getAction() != null && actionName.equalsIgnoreCase(action.getAction().getPrintString()))
+			if (action.getAction() != null && actionName.equalsIgnoreCase(getString(action.getAction().getPrintString())))
 			{
 				selectionIndex = index;
 				break;

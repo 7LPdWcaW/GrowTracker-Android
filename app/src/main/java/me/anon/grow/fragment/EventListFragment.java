@@ -529,7 +529,7 @@ public class EventListFragment extends Fragment implements ActionAdapter.OnActio
 
 			for (int index = 0; index < actionItems.length; index++)
 			{
-				actionItems[index] = Action.ActionName.values()[index].getPrintString();
+				actionItems[index] = getString(Action.ActionName.values()[index].getPrintString());
 				selectedItems[index] = selected.contains(Action.ActionName.values()[index]);
 			}
 

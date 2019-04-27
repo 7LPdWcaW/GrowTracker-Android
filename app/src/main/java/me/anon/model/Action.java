@@ -1,5 +1,7 @@
 package me.anon.model;
 
+import me.anon.grow.R;
+
 /**
  * // TODO: Add class description
  *
@@ -34,28 +36,28 @@ public abstract class Action
 
 	public enum ActionName
 	{
-		FIM("Fuck I Missed", 0x9AFFCC80),
-		FLUSH("Flush", 0x9AFFE082),
-		FOLIAR_FEED("Foliar Feed", 0x9AE6EE9C),
-		LST("Low Stress Training", 0x9AFFF59D),
-		LOLLIPOP("Lollipop", 0x9AFFD180),
-		PESTICIDE_APPLICATION("Pesticide Application", 0x9AEF9A9A),
-		TOP("Topped", 0x9ABCAAA4),
-		TRANSPLANTED("Transplanted", 0x9AFFFF8D),
-		TRIM("Trim", 0x9AFFAB91);
+		FIM(R.string.action_fim, 0x9AFFCC80),
+		FLUSH(R.string.action_flush, 0x9AFFE082),
+		FOLIAR_FEED(R.string.action_foliar_feed, 0x9AE6EE9C),
+		LST(R.string.action_lst, 0x9AFFF59D),
+		LOLLIPOP(R.string.action_lolipop, 0x9AFFD180),
+		PESTICIDE_APPLICATION(R.string.action_pesticide_application, 0x9AEF9A9A),
+		TOP(R.string.action_topped, 0x9ABCAAA4),
+		TRANSPLANTED(R.string.action_transplanted, 0x9AFFFF8D),
+		TRIM(R.string.action_trim, 0x9AFFAB91);
 
-		private String printString;
+		private int printString;
 		private int colour;
 
-		private ActionName(String name, int colour)
+		private ActionName(int name, int colour)
 		{
 			this.printString = name;
 			this.colour = colour;
 		}
 
-		public static String[] names()
+		public static int[] names()
 		{
-			String[] names = new String[values().length];
+			int[] names = new int[values().length];
 			for (int index = 0; index < names.length; index++)
 			{
 				names[index] = values()[index].getPrintString();
@@ -64,7 +66,7 @@ public abstract class Action
 			return names;
 		}
 
-		public String getPrintString()
+		public int getPrintString()
 		{
 			return printString;
 		}
