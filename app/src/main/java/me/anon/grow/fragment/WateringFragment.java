@@ -1,14 +1,22 @@
 package me.anon.grow.fragment;
 
 import android.app.Activity;
+import android.app.AlertDialog;
 import android.app.Fragment;
 import android.app.FragmentManager;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
 import android.support.annotation.Nullable;
+import android.text.Editable;
+import android.text.Html;
 import android.text.TextUtils;
+import android.text.TextWatcher;
 import android.view.LayoutInflater;
+import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.WindowManager;
@@ -21,7 +29,10 @@ import com.esotericsoftware.kryo.Kryo;
 import java.text.DateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.Date;
+import java.util.GregorianCalendar;
 
 import me.anon.controller.provider.PlantWidgetProvider;
 import me.anon.grow.R;
@@ -29,10 +40,12 @@ import me.anon.lib.TempUnit;
 import me.anon.lib.Unit;
 import me.anon.lib.Views;
 import me.anon.lib.manager.PlantManager;
+import me.anon.lib.manager.ScheduleManager;
 import me.anon.model.Action;
 import me.anon.model.Additive;
+import me.anon.model.FeedingSchedule;
+import me.anon.model.FeedingScheduleDate;
 import me.anon.model.Plant;
-import me.anon.model.PlantMedium;
 import me.anon.model.Water;
 
 import static me.anon.lib.TempUnit.CELCIUS;
@@ -68,6 +81,16 @@ public class WateringFragment extends Fragment
 	private Unit selectedMeasurementUnit, selectedDeliveryUnit;
 	private TempUnit selectedTemperatureUnit;
 	private boolean usingEc = false;
+	private TextWatcher deliveryTextChangeListener = new TextWatcher()
+	{
+		@Override public void beforeTextChanged(CharSequence s, int start, int count, int after){}
+		@Override public void onTextChanged(CharSequence s, int start, int before, int count){}
+
+		@Override public void afterTextChanged(Editable s)
+		{
+			populateAdditives();
+		}
+	};
 
 	/**
 	 * @param plantIndex If -1, assume new plant
@@ -83,6 +106,12 @@ public class WateringFragment extends Fragment
 		fragment.setArguments(args);
 
 		return fragment;
+	}
+
+	@Override public void onCreate(@Nullable Bundle savedInstanceState)
+	{
+		super.onCreate(savedInstanceState);
+		setHasOptionsMenu(true);
 	}
 
 	@Nullable @Override public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState)
@@ -149,6 +178,88 @@ public class WateringFragment extends Fragment
 		}
 	}
 
+	@Override public void onCreateOptionsMenu(Menu menu, MenuInflater inflater)
+	{
+		super.onCreateOptionsMenu(menu, inflater);
+		inflater.inflate(R.menu.feeding_menu, menu);
+	}
+
+	@Override public boolean onOptionsItemSelected(MenuItem item)
+	{
+		if (item.getItemId() == R.id.action_populate_feeding)
+		{
+			ArrayList<String> items = new ArrayList<>();
+			for (FeedingSchedule feedingSchedule : ScheduleManager.instance.getSchedules())
+			{
+				items.add(feedingSchedule.getName());
+			}
+
+			new AlertDialog.Builder(getActivity())
+				.setTitle("Select schedule")
+				.setItems(items.toArray(new String[items.size()]), new DialogInterface.OnClickListener()
+				{
+					@Override public void onClick(DialogInterface dialog, int which)
+					{
+						showScheduleDialog(ScheduleManager.instance.getSchedules().get(which));
+					}
+				})
+				.show();
+		}
+		else if (item.getItemId() == R.id.action_populate_previous)
+		{
+			ArrayList<Action> items = new ArrayList<>();
+			for (Plant plant : plants)
+			{
+				for (Action action : plant.getActions())
+				{
+					if (action.getClass() == Water.class)
+					{
+						items.add((Water)action);
+					}
+				}
+			}
+
+			Collections.sort(items, new Comparator<Action>()
+			{
+				@Override
+				public int compare(Action o1, Action o2)
+				{
+					if (o1.getDate() < o2.getDate()) return 1;
+					if (o1.getDate() > o2.getDate()) return -1;
+					return 0;
+				}
+			});
+
+			ActionSelectDialogFragment actionSelectDialogFragment = new ActionSelectDialogFragment(items);
+			actionSelectDialogFragment.setOnActionSelectedListener(new ActionSelectDialogFragment.OnActionSelectedListener()
+			{
+				@Override public void onActionSelected(Action action)
+				{
+					water = (Water)new Kryo().copy(action);
+					water.setDate(System.currentTimeMillis());
+					setUi();
+				}
+			});
+			actionSelectDialogFragment.show(getFragmentManager(), "actions");
+		}
+
+		return super.onOptionsItemSelected(item);
+	}
+
+	private void showScheduleDialog(FeedingSchedule schedule)
+	{
+		FeedingScheduleSelectDialogFragment feedingScheduleSelectDialogFragment = new FeedingScheduleSelectDialogFragment(schedule, plants.get(0));
+		feedingScheduleSelectDialogFragment.setOnFeedingSelectedListener(new FeedingScheduleSelectDialogFragment.OnFeedingSelectedListener()
+		{
+			@Override public void onFeedingSelected(FeedingScheduleDate date)
+			{
+				water.setAdditives(date.getAdditives());
+				populateAdditives();
+			}
+		});
+		feedingScheduleSelectDialogFragment.show(getFragmentManager(), "feeding");
+	}
+
 	private void setHints()
 	{
 		amountLabel.setText("Amount (" + selectedDeliveryUnit.getLabel() + ")");
@@ -156,63 +267,126 @@ public class WateringFragment extends Fragment
 
 		if (usingEc)
 		{
-			waterPpm.setHint("1.0 EC");
-			((TextView)((ViewGroup)waterPpm.getParent()).findViewById(R.id.ppm_label)).setText("EC");
+			waterPpm.setHint("1.0 " + (usingEc ? "EC" : "PPM"));
+			((TextView)((ViewGroup)waterPpm.getParent()).findViewById(R.id.ppm_label)).setText(usingEc ? "EC" : "PPM");
 		}
 
-		if (water != null && plants.size() == 1)
+		if (water != null)
 		{
-			Water hintFeed = null;
+			ArrayList<Water> hintFeed = new ArrayList<>();
 
-			for (int index = plants.get(0).getActions().size() - 1; index >= 0; index--)
+			for (Plant plant : plants)
 			{
-				if (plants.get(0).getActions().get(index).getClass() == Water.class)
+				for (int index = plant.getActions().size() - 1; index >= 0; index--)
 				{
-					hintFeed = (Water)plants.get(0).getActions().get(index);
-					break;
+					if (plant.getActions().get(index).getClass() == Water.class)
+					{
+						hintFeed.add((Water)plant.getActions().get(index));
+						break;
+					}
 				}
 			}
 
-			if (hintFeed != null)
+			if (hintFeed.size() > 0)
 			{
-				if (hintFeed.getPh() != null)
-				{
-					waterPh.setHint(String.valueOf(hintFeed.getPh()));
-				}
+				Double averagePh = 0.0;
+				int phCount = 0;
+				Double averagePpm = 0.0;
+				int ppmCount = 0;
+				Double averageRunoff = 0.0;
+				int runoffCount = 0;
+				Double averageAmount = 0.0;
+				int amountCount = 0;
+				Double averageTemp = 0.0;
+				int tempCount = 0;
 
-				if (hintFeed.getPpm() != null)
+				for (Water hint : hintFeed)
 				{
-					waterPpm.setHint(String.valueOf(hintFeed.getPpm()));
-				}
-
-				if (hintFeed.getRunoff() != null)
-				{
-					runoffPh.setHint(String.valueOf(hintFeed.getRunoff()));
-				}
-
-				if (hintFeed.getAmount() != null)
-				{
-					amount.setHint(String.valueOf(ML.to(selectedDeliveryUnit, hintFeed.getAmount())) + selectedDeliveryUnit.getLabel());
-				}
-
-				if (plants.get(0).getMedium() == PlantMedium.HYDRO || plants.get(0).getMedium() == PlantMedium.AERO)
-				{
-					tempContainer.setVisibility(View.VISIBLE);
-					tempLabel.setText("Temp (º" + selectedTemperatureUnit.getLabel() + ")");
-
-					if (hintFeed.getTemp() != null)
+					if (hint.getPh() != null)
 					{
-						temp.setHint(String.valueOf(CELCIUS.to(selectedTemperatureUnit, hintFeed.getTemp())) + selectedTemperatureUnit.getLabel());
+						averagePh += hint.getPh();
+						phCount++;
+					}
+
+					if (hint.getPpm() != null)
+					{
+						averagePpm += hint.getPpm();
+						ppmCount++;
+					}
+
+					if (hint.getRunoff() != null)
+					{
+						averageRunoff += hint.getRunoff();
+						runoffCount++;
+					}
+
+					if (hint.getAmount() != null)
+					{
+						averageAmount += hint.getAmount();
+						amountCount++;
+					}
+
+					if (hint.getTemp() != null)
+					{
+						averageTemp += hint.getTemp();
+						tempCount++;
 					}
 				}
 
-				notes.setHint(hintFeed.getNotes());
+				averagePh = Unit.toTwoDecimalPlaces(averagePh / phCount);
+				averagePpm = Unit.toTwoDecimalPlaces(averagePpm / ppmCount);
+				averageRunoff = Unit.toTwoDecimalPlaces(averageRunoff / runoffCount);
+				averageAmount = Unit.toTwoDecimalPlaces(averageAmount / amountCount);
+				averageTemp = Unit.toTwoDecimalPlaces(averageTemp / tempCount);
+
+				if (!averagePh.isNaN())
+				{
+					waterPh.setHint(String.valueOf(averagePh));
+				}
+
+				if (!averagePpm.isNaN())
+				{
+					if (usingEc)
+					{
+						averagePpm = Unit.toTwoDecimalPlaces((averagePpm * 2d) / 1000d);
+					}
+
+					waterPpm.setHint(String.valueOf(averagePpm) + " " + (usingEc ? "EC" : "PPM"));
+				}
+
+				if (!averageRunoff.isNaN())
+				{
+					runoffPh.setHint(String.valueOf(averageRunoff));
+				}
+
+				if (!averageAmount.isNaN())
+				{
+					amount.setHint(String.valueOf(ML.to(selectedDeliveryUnit, averageAmount)) + selectedDeliveryUnit.getLabel());
+				}
+
+				tempContainer.setVisibility(View.VISIBLE);
+				tempLabel.setText("Temp (º" + selectedTemperatureUnit.getLabel() + ")");
+
+				if (!averageTemp.isNaN())
+				{
+					temp.setHint(String.valueOf(CELCIUS.to(selectedTemperatureUnit, averageTemp)) + selectedTemperatureUnit.getLabel());
+				}
+
+				notes.setHint(hintFeed.get(0).getNotes());
 			}
 		}
 	}
 
 	private void setUi()
 	{
+		waterPh.setText("");
+		waterPpm.setText("");
+		runoffPh.setText("");
+		amount.setText("");
+		temp.setText("");
+		date.setText("");
+		notes.setText("");
+
 		getActivity().setTitle("Feeding " + (plants.size() == 1 ? plants.get(0).getName() : "multiple plants"));
 
 		Calendar date = Calendar.getInstance();
@@ -249,7 +423,8 @@ public class WateringFragment extends Fragment
 			}
 		});
 
-		if (plants.size() == 1)
+//		if (plants.size() == 1)
+		if (water != null)
 		{
 			if (water.getPh() != null)
 			{
@@ -277,39 +452,82 @@ public class WateringFragment extends Fragment
 				amount.setText(String.valueOf(ML.to(selectedDeliveryUnit, water.getAmount())));
 			}
 
-			if (plants.get(0).getMedium() == PlantMedium.HYDRO)
-			{
-				tempContainer.setVisibility(View.VISIBLE);
+			tempContainer.setVisibility(View.VISIBLE);
 
-				if (water.getTemp() != null)
+			if (water.getTemp() != null)
+			{
+				temp.setHint(String.valueOf(CELCIUS.to(selectedTemperatureUnit, water.getTemp())) + selectedTemperatureUnit.getLabel());
+			}
+
+			populateAdditives();
+			notes.setText(water.getNotes());
+		}
+	}
+
+	private void populateAdditives()
+	{
+		additiveContainer.removeViews(0, additiveContainer.getChildCount() - 1);
+		int maxChars = 0;
+
+		for (Additive additive : water.getAdditives())
+		{
+			if (additive == null || additive.getAmount() == null) continue;
+
+			double converted = Unit.ML.to(selectedMeasurementUnit, additive.getAmount());
+			String amountStr = converted == Math.floor(converted) ? String.valueOf((int)converted) : String.valueOf(converted);
+			amountStr = additive.getDescription() + "   -   " + amountStr + selectedMeasurementUnit.getLabel() + "/" + selectedDeliveryUnit.getLabel();
+			maxChars = Math.max(maxChars, amountStr.length());
+		}
+
+		for (Additive additive : water.getAdditives())
+		{
+			if (additive == null || additive.getAmount() == null) continue;
+
+			double converted = Unit.ML.to(selectedMeasurementUnit, additive.getAmount());
+			String amountStr = converted == Math.floor(converted) ? String.valueOf((int)converted) : String.valueOf(converted);
+
+			View additiveStub = LayoutInflater.from(getActivity()).inflate(R.layout.additive_stub, additiveContainer, false);
+			amountStr = additive.getDescription() + "&nbsp;&nbsp;&nbsp;-&nbsp;&nbsp;&nbsp;" + amountStr + selectedMeasurementUnit.getLabel() + "/" + selectedDeliveryUnit.getLabel();
+
+			Double totalDelivery = water.getAmount();
+			if (totalDelivery == null || !TextUtils.isEmpty(amount.getText().toString()))
+			{
+				if (totalDelivery == null || totalDelivery != Double.parseDouble(amount.getText().toString()))
 				{
-					temp.setHint(String.valueOf(CELCIUS.to(selectedTemperatureUnit, water.getTemp())) + selectedTemperatureUnit.getLabel());
+					try
+					{
+						totalDelivery = selectedDeliveryUnit.to(Unit.ML, Double.parseDouble(amount.getText().toString()));
+					}
+					catch (NumberFormatException e)
+					{
+						totalDelivery = null;
+					}
 				}
 			}
 
-			for (Additive additive : water.getAdditives())
+			if (totalDelivery != null)
 			{
-				if (additive == null || additive.getAmount() == null) continue;
+				totalDelivery = ML.to(selectedDeliveryUnit, totalDelivery);
+				Double additiveAmount = ML.to(selectedMeasurementUnit, additive.getAmount());
 
-				double converted = Unit.ML.to(selectedMeasurementUnit, additive.getAmount());
-				String amountStr = converted == Math.floor(converted) ? String.valueOf((int)converted) : String.valueOf(converted);
-
-				View additiveStub = LayoutInflater.from(getActivity()).inflate(R.layout.additive_stub, additiveContainer, false);
-				((TextView)additiveStub).setText(additive.getDescription() + "   -   " + amountStr + selectedMeasurementUnit.getLabel() + "/" + selectedDeliveryUnit.getLabel());
-
-				additiveStub.setTag(additive);
-				additiveStub.setOnClickListener(new View.OnClickListener()
-				{
-					@Override public void onClick(View view)
-					{
-						onNewAdditiveClick(view);
-					}
-				});
-				additiveContainer.addView(additiveStub, additiveContainer.getChildCount() - 1);
+				amountStr = amountStr + "&nbsp;&nbsp;<b>(" + Unit.toTwoDecimalPlaces(additiveAmount * totalDelivery) + selectedMeasurementUnit.getLabel() + " total)</b>";
 			}
 
-			notes.setText(water.getNotes());
+			((TextView)additiveStub).setText(Html.fromHtml(amountStr));
+
+			additiveStub.setTag(additive);
+			additiveStub.setOnClickListener(new View.OnClickListener()
+			{
+				@Override public void onClick(View view)
+				{
+					onNewAdditiveClick(view);
+				}
+			});
+			additiveContainer.addView(additiveStub, additiveContainer.getChildCount() - 1);
 		}
+
+		amount.removeTextChangedListener(deliveryTextChangeListener);
+		amount.addTextChangedListener(deliveryTextChangeListener);
 	}
 
 	@Views.OnClick public void onNewAdditiveClick(View view)
@@ -319,9 +537,10 @@ public class WateringFragment extends Fragment
 			getActivity().getCurrentFocus().clearFocus();
 		}
 
-		final Object currentTag = view.getTag();
+		final View focus = getActivity().getCurrentFocus();
 		FragmentManager fm = getFragmentManager();
-		AddAdditiveDialogFragment addAdditiveDialogFragment = new AddAdditiveDialogFragment(view.getTag() instanceof Additive ? (Additive)view.getTag() : null);
+		final Additive current = view.getTag() instanceof Additive ? (Additive)view.getTag() : null;
+		AddAdditiveDialogFragment addAdditiveDialogFragment = new AddAdditiveDialogFragment(current);
 		addAdditiveDialogFragment.setOnAdditiveSelectedListener(new AddAdditiveDialogFragment.OnAdditiveSelectedListener()
 		{
 			@Override public void onAdditiveSelected(Additive additive)
@@ -331,28 +550,9 @@ public class WateringFragment extends Fragment
 					return;
 				}
 
-				double converted = Unit.ML.to(selectedMeasurementUnit, additive.getAmount());
-				String amountStr = converted == Math.floor(converted) ? String.valueOf((int)converted) : String.valueOf(converted);
-
-				View additiveStub = LayoutInflater.from(getActivity()).inflate(R.layout.additive_stub, additiveContainer, false);
-				((TextView)additiveStub).setText(additive.getDescription() + "   -   " + amountStr + selectedMeasurementUnit.getLabel() + "/" + selectedDeliveryUnit.getLabel());
-
-				if (currentTag == null)
+				if (!water.getAdditives().contains(current))
 				{
-					if (!water.getAdditives().contains(additive))
-					{
-						water.getAdditives().add(additive);
-
-						additiveStub.setTag(additive);
-						additiveStub.setOnClickListener(new View.OnClickListener()
-						{
-							@Override public void onClick(View view)
-							{
-								onNewAdditiveClick(view);
-							}
-						});
-						additiveContainer.addView(additiveStub, additiveContainer.getChildCount() - 1);
-					}
+					water.getAdditives().add(additive);
 				}
 				else
 				{
@@ -360,45 +560,43 @@ public class WateringFragment extends Fragment
 					{
 						Object tag = additiveContainer.getChildAt(childIndex).getTag();
 
-						if (tag == currentTag)
+						if (tag == current)
 						{
-							converted = Unit.ML.to(selectedMeasurementUnit, additive.getAmount());
-							amountStr = converted == Math.floor(converted) ? String.valueOf((int)converted) : String.valueOf(converted);
-
 							water.getAdditives().set(childIndex, additive);
-
-							((TextView)additiveContainer.getChildAt(childIndex)).setText(additive.getDescription() + "   -   " + amountStr + selectedMeasurementUnit.getLabel() + "/" + selectedDeliveryUnit.getLabel());
-							additiveContainer.getChildAt(childIndex).setTag(additive);
-
 							break;
 						}
 					}
 				}
 
-				additiveStub.requestFocus();
-				additiveStub.requestFocusFromTouch();
+				populateAdditives();
+
+				if (focus != null)
+				{
+					focus.requestFocus();
+					focus.requestFocusFromTouch();
+				}
 			}
 
 			@Override public void onAdditiveDeleteRequested(Additive additive)
 			{
-				if (water.getAdditives().contains(additive))
-				{
-					water.getAdditives().remove(additive);
-				}
+				water.getAdditives().remove(current);
 
 				for (int childIndex = 0; childIndex < additiveContainer.getChildCount(); childIndex++)
 				{
 					Object tag = additiveContainer.getChildAt(childIndex).getTag();
 
-					if (tag == additive)
+					if (tag == current)
 					{
 						additiveContainer.removeViewAt(childIndex);
 						break;
 					}
 				}
 
-				additiveContainer.getChildAt(additiveContainer.getChildCount() - 1).requestFocus();
-				additiveContainer.getChildAt(additiveContainer.getChildCount() - 1).requestFocusFromTouch();
+				if (focus != null)
+				{
+					focus.requestFocus();
+					focus.requestFocusFromTouch();
+				}
 			}
 		});
 
@@ -467,5 +665,17 @@ public class WateringFragment extends Fragment
 		PlantWidgetProvider.triggerUpdateAll(getActivity());
 		getActivity().setResult(Activity.RESULT_OK);
 		getActivity().finish();
+	}
+
+	@Views.OnClick(R.id.date_now) public void onDateNowClick(View view)
+	{
+		final DateFormat dateFormat = android.text.format.DateFormat.getDateFormat(getActivity());
+		final DateFormat timeFormat = android.text.format.DateFormat.getTimeFormat(getActivity());
+
+		Calendar date = GregorianCalendar.getInstance();
+		String dateStr = dateFormat.format(date.getTime()) + " " + timeFormat.format(date.getTime());
+		WateringFragment.this.date.setText(dateStr);
+
+		water.setDate(date.getTimeInMillis());
 	}
 }

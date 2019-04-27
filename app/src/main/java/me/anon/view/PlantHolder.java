@@ -5,7 +5,6 @@ import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;
 
-import lombok.Data;
 import me.anon.grow.R;
 
 /**
@@ -15,12 +14,26 @@ import me.anon.grow.R;
  * @documentation // TODO Reference flow doc
  * @project GrowTracker
  */
-@Data
 public class PlantHolder extends RecyclerView.ViewHolder
 {
 	private ImageView image;
 	private TextView name;
 	private TextView summary;
+
+	public ImageView getImage()
+	{
+		return image;
+	}
+
+	public TextView getName()
+	{
+		return name;
+	}
+
+	public TextView getSummary()
+	{
+		return summary;
+	}
 
 	public PlantHolder(View itemView)
 	{

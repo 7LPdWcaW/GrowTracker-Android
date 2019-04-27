@@ -6,6 +6,7 @@ import android.app.Fragment;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
+import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -19,8 +20,6 @@ import android.view.ViewGroup;
 import android.view.WindowManager;
 
 import com.esotericsoftware.kryo.Kryo;
-import com.kenny.snackbar.SnackBar;
-import com.kenny.snackbar.SnackBarListener;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -32,6 +31,8 @@ import me.anon.controller.adapter.SimpleItemTouchHelperCallback;
 import me.anon.controller.provider.PlantWidgetProvider;
 import me.anon.grow.EditWateringActivity;
 import me.anon.grow.R;
+import me.anon.lib.SnackBar;
+import me.anon.lib.SnackBarListener;
 import me.anon.lib.Views;
 import me.anon.lib.helper.FabAnimator;
 import me.anon.lib.manager.PlantManager;
@@ -41,6 +42,7 @@ import me.anon.model.NoteAction;
 import me.anon.model.Plant;
 import me.anon.model.StageChange;
 import me.anon.model.Water;
+import me.anon.view.ActionHolder;
 
 /**
  * // TODO: Add class description
@@ -127,6 +129,11 @@ public class EventListFragment extends Fragment implements ActionAdapter.OnActio
 
 		ItemTouchHelper.Callback callback = new SimpleItemTouchHelperCallback(adapter)
 		{
+			@Override public boolean canDropOver(@NonNull RecyclerView recyclerView, @NonNull RecyclerView.ViewHolder current, @NonNull RecyclerView.ViewHolder target)
+			{
+				return current instanceof ActionHolder && target instanceof ActionHolder;
+			}
+
 			@Override public boolean isLongPressDragEnabled()
 			{
 				return selected.size() == Action.ActionName.values().length && watering && notes && stages;

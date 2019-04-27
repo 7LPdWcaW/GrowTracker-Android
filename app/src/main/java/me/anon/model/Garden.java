@@ -2,16 +2,28 @@ package me.anon.model;
 
 import java.util.ArrayList;
 
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
-import lombok.experimental.Accessors;
-
-@Getter @Setter
-@Accessors(prefix = {"m", ""}, chain = true)
-@NoArgsConstructor
 public class Garden
 {
 	protected String name;
 	protected ArrayList<String> plantIds;
+
+	public String getName()
+	{
+		return name;
+	}
+
+	public void setName(String name)
+	{
+		this.name = name;
+	}
+
+	public ArrayList<String> getPlantIds()
+	{
+		return plantIds;
+	}
+
+	public void setPlantIds(ArrayList<String> plantIds)
+	{
+		this.plantIds = plantIds;
+	}
 }

@@ -4,9 +4,6 @@ import android.Manifest;
 import android.app.Activity;
 import android.app.AlertDialog;
 import android.app.Fragment;
-import android.app.Notification;
-import android.app.NotificationManager;
-import android.app.PendingIntent;
 import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.DialogInterface;
@@ -23,8 +20,8 @@ import android.os.ParcelFileDescriptor;
 import android.preference.PreferenceManager;
 import android.provider.MediaStore;
 import android.support.annotation.Nullable;
-import android.support.v4.app.NotificationCompat;
 import android.support.v4.content.FileProvider;
+import android.support.v7.widget.CardView;
 import android.text.Html;
 import android.text.TextUtils;
 import android.view.LayoutInflater;
@@ -34,14 +31,13 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.WindowManager;
+import android.widget.Button;
 import android.widget.CheckBox;
 import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import com.esotericsoftware.kryo.Kryo;
-import com.kenny.snackbar.SnackBar;
-import com.kenny.snackbar.SnackBarListener;
 
 import java.io.BufferedInputStream;
 import java.io.BufferedOutputStream;
@@ -54,6 +50,7 @@ import java.io.InputStream;
 import java.io.OutputStream;
 import java.text.DateFormat;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.Locale;
@@ -69,11 +66,16 @@ import me.anon.grow.PlantDetailsActivity;
 import me.anon.grow.R;
 import me.anon.grow.StatisticsActivity;
 import me.anon.grow.ViewPhotosActivity;
+import me.anon.grow.service.ExportService;
+import me.anon.lib.DateRenderer;
 import me.anon.lib.ExportCallback;
+import me.anon.lib.SnackBar;
+import me.anon.lib.SnackBarListener;
 import me.anon.lib.Views;
 import me.anon.lib.helper.AddonHelper;
 import me.anon.lib.helper.ExportHelper;
 import me.anon.lib.helper.FabAnimator;
+import me.anon.lib.helper.NotificationHelper;
 import me.anon.lib.helper.PermissionHelper;
 import me.anon.lib.manager.GardenManager;
 import me.anon.lib.manager.PlantManager;
@@ -108,6 +110,13 @@ public class PlantDetailsFragment extends Fragment
 	@Views.InjectView(R.id.plant_date) private TextView date;
 	@Views.InjectView(R.id.plant_date_container) private View dateContainer;
 	@Views.InjectView(R.id.from_clone) private CheckBox clone;
+
+	@Views.InjectView(R.id.last_feeding) private CardView lastFeeding;
+	@Views.InjectView(R.id.last_feeding_date) private TextView lastFeedingDate;
+	@Views.InjectView(R.id.last_feeding_full_date) private TextView lastFeedingFullDate;
+	@Views.InjectView(R.id.last_feeding_name) private TextView lastFeedingName;
+	@Views.InjectView(R.id.last_feeding_summary) private TextView lastFeedingSummary;
+	@Views.InjectView(R.id.duplicate_feeding) private Button duplicateFeeding;
 
 	private int plantIndex = -1;
 	private int gardenIndex = -1;
@@ -165,6 +174,7 @@ public class PlantDetailsFragment extends Fragment
 			getActivity().setTitle(getString(R.string.new_plant_title));
 
 			plant.getActions().add(new StageChange(PlantStage.PLANTED));
+			lastFeeding.setVisibility(View.GONE);
 		}
 		else
 		{
@@ -184,6 +194,8 @@ public class PlantDetailsFragment extends Fragment
 			{
 				medium.setText(plant.getMedium().getPrintString());
 			}
+
+			setLastFeeding();
 		}
 
 		setUi();
@@ -197,6 +209,53 @@ public class PlantDetailsFragment extends Fragment
 		if (plant != null && plant.getStage() != null)
 		{
 			stage.setText(plant.getStage().getPrintString());
+		}
+	}
+
+	private void setLastFeeding()
+	{
+		Water lastWater = null;
+		for (int index = plant.getActions().size() - 1; index >= 0; index--)
+		{
+			if (plant.getActions().get(index) instanceof Water)
+			{
+				lastWater = (Water)plant.getActions().get(index);
+				break;
+			}
+		}
+
+		lastFeeding.setVisibility(View.GONE);
+		if (lastWater != null)
+		{
+			lastFeeding.setVisibility(View.VISIBLE);
+			lastFeeding.setCardBackgroundColor(0x9ABBDEFB);
+
+			lastFeedingSummary.setText(Html.fromHtml(lastWater.getSummary(getActivity())));
+
+			DateFormat dateFormat = android.text.format.DateFormat.getDateFormat(getActivity());
+			DateFormat timeFormat = android.text.format.DateFormat.getTimeFormat(getActivity());
+			Date actionDate = new Date(lastWater.getDate());
+			lastFeedingFullDate.setText(dateFormat.format(actionDate) + " " + timeFormat.format(actionDate));
+			lastFeedingDate.setText(Html.fromHtml("<b>" + new DateRenderer().timeAgo(lastWater.getDate()).formattedDate + "</b> ago"));
+
+			final Water finalLastWater = lastWater;
+			duplicateFeeding.setOnClickListener(new View.OnClickListener()
+			{
+				@Override public void onClick(View v)
+				{
+					Kryo kryo = new Kryo();
+					Water action = kryo.copy(finalLastWater);
+
+					action.setDate(System.currentTimeMillis());
+					PlantManager.getInstance().getPlants().get(plantIndex).getActions().add(action);
+					PlantManager.getInstance().save();
+
+					Intent editWater = new Intent(v.getContext(), EditWateringActivity.class);
+					editWater.putExtra("plant_index", plantIndex);
+					editWater.putExtra("action_index", PlantManager.getInstance().getPlants().get(plantIndex).getActions().size() - 1);
+					startActivityForResult(editWater, 4);
+				}
+			});
 		}
 	}
 
@@ -380,6 +439,7 @@ public class PlantDetailsFragment extends Fragment
 		{
 			if (resultCode != Activity.RESULT_CANCELED)
 			{
+				setLastFeeding();
 				SnackBar.show(getActivity(), R.string.snackbar_watering_add, R.string.snackbar_action_apply, new SnackBarListener()
 				{
 					@Override public void onSnackBarStarted(Object o)
@@ -470,6 +530,10 @@ public class PlantDetailsFragment extends Fragment
 					}
 				}
 			}
+		}
+		else if (requestCode == 4)
+		{
+			setLastFeeding();
 		}
 
 		// both photo options
@@ -632,6 +696,7 @@ public class PlantDetailsFragment extends Fragment
 			copy.setId(UUID.randomUUID().toString());
 			copy.getImages().clear();
 
+			copy.setName(copy.getName() + " (copy)");
 			PlantManager.getInstance().addPlant(copy);
 
 			SnackBar.show(getActivity(), "Plant duplicated", "open", new SnackBarListener()
@@ -663,54 +728,7 @@ public class PlantDetailsFragment extends Fragment
 		else if (item.getItemId() == R.id.export)
 		{
 			Toast.makeText(getActivity(), "Exporting grow log...", Toast.LENGTH_SHORT).show();
-			NotificationManager notificationManager = (NotificationManager)getActivity().getSystemService(Context.NOTIFICATION_SERVICE);
-
-			notificationManager.cancel(plantIndex);
-
-			Notification exportNotification = new NotificationCompat.Builder(getActivity())
-				.setContentText("Exporting grow log for " + plant.getName())
-				.setContentTitle("Exporting")
-				.setContentIntent(PendingIntent.getActivity(getActivity(), 0, new Intent(), PendingIntent.FLAG_UPDATE_CURRENT))
-				.setTicker("Exporting grow log for " + plant.getName())
-				.setPriority(NotificationCompat.PRIORITY_HIGH)
-				.setVisibility(NotificationCompat.VISIBILITY_PUBLIC)
-				.setSmallIcon(R.drawable.ic_stat_name)
-				.setVibrate(new long[0])
-				.getNotification();
-
-			notificationManager.notify(plantIndex, exportNotification);
-
-			ExportHelper.exportPlant(getActivity(), plant, new ExportCallback()
-			{
-				@Override public void onCallback(Context context, File file)
-				{
-					if (file != null && file.exists() && getActivity() != null)
-					{
-						NotificationManager notificationManager = (NotificationManager)context.getSystemService(Context.NOTIFICATION_SERVICE);
-						Notification finishNotification = new NotificationCompat.Builder(getActivity())
-							.setContentText("Exported " + plant.getName() + " to " + file.getAbsolutePath())
-							.setTicker("Export of " + plant.getName() + " complete")
-							.setContentTitle("Export Complete")
-							.setContentIntent(PendingIntent.getActivity(getActivity(), 0, new Intent(), PendingIntent.FLAG_UPDATE_CURRENT))
-							.setSmallIcon(R.drawable.ic_stat_done)
-							.setPriority(NotificationCompat.PRIORITY_HIGH)
-							.setVisibility(NotificationCompat.VISIBILITY_PUBLIC)
-							.setAutoCancel(true)
-							.setVibrate(new long[0])
-							.getNotification();
-						notificationManager.notify(plantIndex, finishNotification);
-
-						if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT)
-						{
-							new MediaScannerWrapper(getActivity(), file.getAbsolutePath(), "application/zip").scan();
-						}
-						else
-						{
-							getActivity().sendBroadcast(new Intent(Intent.ACTION_MEDIA_MOUNTED, Uri.fromFile(file)));
-						}
-					}
-				}
-			});
+			ExportService.export(getActivity(),new ArrayList<Plant>(Arrays.asList(plant)), plant.getName().replaceAll("[^a-zA-Z0-9]+", "-"), plant.getName());
 
 			return true;
 		}
@@ -851,7 +869,6 @@ public class PlantDetailsFragment extends Fragment
 	public void save()
 	{
 		name.setError(null);
-		strain.setError(null);
 
 		if (!TextUtils.isEmpty(name.getText()))
 		{
@@ -866,11 +883,6 @@ public class PlantDetailsFragment extends Fragment
 		if (!TextUtils.isEmpty(strain.getText()))
 		{
 			plant.setStrain(strain.getText().toString().trim());
-		}
-		else
-		{
-			strain.setError("strain can not be empty");
-			return;
 		}
 
 		plant.setMediumDetails(mediumDetails.getText().toString());

@@ -15,7 +15,6 @@ import android.widget.TextView;
 
 import java.util.ArrayList;
 
-import lombok.Setter;
 import me.anon.controller.adapter.PlantSelectionAdapter;
 import me.anon.grow.R;
 import me.anon.lib.Views;
@@ -42,7 +41,12 @@ public class GardenDialogFragment extends DialogFragment
 	private PlantSelectionAdapter adapter;
 	@Views.InjectView(R.id.name) private EditText name;
 	@Views.InjectView(R.id.recycler_view) private RecyclerView recyclerView;
-	@Setter private OnEditGardenListener onEditGardenListener;
+	private OnEditGardenListener onEditGardenListener;
+
+	public void setOnEditGardenListener(OnEditGardenListener onEditGardenListener)
+	{
+		this.onEditGardenListener = onEditGardenListener;
+	}
 
 	@SuppressLint("ValidFragment")
 	public GardenDialogFragment(Garden garden)

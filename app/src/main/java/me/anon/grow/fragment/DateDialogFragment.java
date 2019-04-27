@@ -11,8 +11,6 @@ import android.widget.TimePicker;
 
 import java.util.Calendar;
 
-import lombok.Setter;
-
 public class DateDialogFragment extends Fragment
 {
 	private long time;
@@ -23,7 +21,12 @@ public class DateDialogFragment extends Fragment
 		public void onCancelled();
 	}
 
-	@Setter private OnDateSelectedListener onDateSelected;
+	private OnDateSelectedListener onDateSelected;
+
+	public void setOnDateSelected(OnDateSelectedListener onDateSelected)
+	{
+		this.onDateSelected = onDateSelected;
+	}
 
 	@SuppressLint("ValidFragment")
 	public DateDialogFragment(){}

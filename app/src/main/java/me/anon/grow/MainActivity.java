@@ -2,7 +2,10 @@ package me.anon.grow;
 
 import android.Manifest;
 import android.app.Activity;
+import android.app.AlertDialog;
+import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.net.Uri;
 import android.os.Bundle;
@@ -21,8 +24,6 @@ import com.squareup.otto.Subscribe;
 
 import java.util.ArrayList;
 
-import lombok.Getter;
-import lombok.experimental.Accessors;
 import me.anon.grow.fragment.GardenDialogFragment;
 import me.anon.grow.fragment.PlantListFragment;
 import me.anon.lib.Views;
@@ -40,15 +41,19 @@ import me.anon.model.Garden;
  * @project GrowTracker
  */
 @Views.Injectable
-@Accessors(prefix = {"m", ""}, chain = true)
 public class MainActivity extends BaseActivity implements NavigationView.OnNavigationItemSelectedListener
 {
 	private static final String TAG_FRAGMENT = "current_fragment";
 
 	@Views.InjectView(R.id.toolbar) private Toolbar toolbar;
 	@Nullable @Views.InjectView(R.id.drawer_layout) private DrawerLayout drawer;
-	@Getter @Views.InjectView(R.id.navigation_view) private NavigationView navigation;
+	@Views.InjectView(R.id.navigation_view) private NavigationView navigation;
 	private int selectedItem = 0;
+
+	public NavigationView getNavigation()
+	{
+		return navigation;
+	}
 
 	@Override protected void onCreate(Bundle savedInstanceState)
 	{
@@ -65,6 +70,7 @@ public class MainActivity extends BaseActivity implements NavigationView.OnNavig
 		setSupportActionBar(toolbar);
 		setNavigationView();
 		showDrawerToggle();
+		showUpdateDialog();
 
 		if (savedInstanceState == null)
 		{
@@ -107,6 +113,31 @@ public class MainActivity extends BaseActivity implements NavigationView.OnNavig
 		BusHelper.getInstance().register(this);
 	}
 
+	public void showUpdateDialog()
+	{
+		SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(this);
+		int lastVersion = prefs.getInt("last_version", -1);
+		if (lastVersion != BuildConfig.VERSION_CODE && lastVersion != -1)
+		{
+			new AlertDialog.Builder(this)
+				.setTitle(R.string.update_dialog_title)
+				.setMessage(getString(R.string.update_dialog_message, BuildConfig.VERSION_NAME))
+				.setPositiveButton(R.string.update_dialog_view_changes_button, new DialogInterface.OnClickListener()
+				{
+					@Override public void onClick(DialogInterface dialog, int which)
+					{
+						Intent intent = new Intent(Intent.ACTION_VIEW);
+						intent.setData(Uri.parse("https://github.com/7LPdWcaW/GrowTracker-Android/releases/tag/v" + BuildConfig.VERSION_NAME));
+						startActivity(intent);
+					}
+				})
+				.setNegativeButton(R.string.update_dialog_dismiss_button, null)
+				.show();
+		}
+
+		prefs.edit().putInt("last_version", BuildConfig.VERSION_CODE).apply();
+	}
+
 	public void setNavigationView()
 	{
 		navigation.getMenu().clear();
@@ -117,7 +148,7 @@ public class MainActivity extends BaseActivity implements NavigationView.OnNavig
 		for (int index = 0, gardensSize = gardens.size(); index < gardensSize; index++)
 		{
 			Garden garden = gardens.get(index);
-			navigation.getMenu().add(R.id.gardens, 100 + index, 1, garden.getName()).setCheckable(true);
+			navigation.getMenu().findItem(R.id.garden_menu).getSubMenu().add(R.id.garden_menu, 100 + index, 1, garden.getName()).setCheckable(true);
 		}
 
 		MenuItem item = navigation.getMenu().findItem(selectedItem);
@@ -211,6 +242,13 @@ public class MainActivity extends BaseActivity implements NavigationView.OnNavig
 						GardenManager.getInstance().getGardens().set(index, garden);
 					}
 
+					MenuItem item = navigation.getMenu().findItem(selectedItem);
+
+					if (item != null)
+					{
+						item.setChecked(false);
+					}
+
 					selectedItem = 100 + index;
 
 					setNavigationView();
@@ -234,6 +272,11 @@ public class MainActivity extends BaseActivity implements NavigationView.OnNavig
 			Intent settings = new Intent(this, SettingsActivity.class);
 			startActivity(settings);
 		}
+		else if (item.getItemId() == R.id.feeding_schedule)
+		{
+			Intent schedule = new Intent(this, FeedingScheduleActivity.class);
+			startActivity(schedule);
+		}
 		else if (item.getItemId() == R.id.all)
 		{
 			selectedItem = item.getItemId();
@@ -241,7 +284,16 @@ public class MainActivity extends BaseActivity implements NavigationView.OnNavig
 		}
 		else if (item.getItemId() >= 100 && item.getItemId() < Integer.MAX_VALUE)
 		{
+			navigation.getMenu().findItem(R.id.garden_menu).getSubMenu().findItem(R.id.all).setChecked(false);
+
+			MenuItem selected = navigation.getMenu().findItem(selectedItem);
+			if (selected != null)
+			{
+				selected.setChecked(false);
+			}
+
 			selectedItem = item.getItemId();
+			item.setChecked(true);
 			int gardenIndex = item.getItemId() - 100;
 			getFragmentManager().beginTransaction().replace(R.id.fragment_holder, PlantListFragment.newInstance(GardenManager.getInstance().getGardens().get(gardenIndex)), TAG_FRAGMENT).commit();
 		}

@@ -26,12 +26,10 @@ import java.util.Queue;
 import java.util.concurrent.ConcurrentLinkedQueue;
 import java.util.concurrent.atomic.AtomicBoolean;
 
-import lombok.Data;
-import lombok.Getter;
-import lombok.experimental.Accessors;
 import me.anon.grow.BootActivity;
 import me.anon.grow.MainApplication;
 import me.anon.lib.helper.AddonHelper;
+import me.anon.lib.helper.BackupHelper;
 import me.anon.lib.helper.GsonHelper;
 import me.anon.lib.stream.DecryptInputStream;
 import me.anon.lib.stream.EncryptOutputStream;
@@ -46,11 +44,14 @@ import me.anon.model.Plant;
  * @documentation // TODO Reference flow doc
  * @project GrowTracker
  */
-@Data
-@Accessors(prefix = {"m", ""}, chain = true)
 public class PlantManager
 {
-	@Getter(lazy = true) private static final PlantManager instance = new PlantManager();
+	private static final PlantManager instance = new PlantManager();
+
+	public static PlantManager getInstance()
+	{
+		return instance;
+	}
 
 	public static String FILES_DIR;
 
@@ -58,6 +59,11 @@ public class PlantManager
 	private Context context;
 
 	private PlantManager(){}
+
+	public ArrayList<Plant> getPlants()
+	{
+		return mPlants;
+	}
 
 	public void initialise(Context context)
 	{
@@ -176,11 +182,11 @@ public class PlantManager
 		}
 	}
 
-	public void load()
+	public boolean load()
 	{
 		if (MainApplication.isFailsafe())
 		{
-			return;
+			return false;
 		}
 
 		// redundancy check
@@ -199,26 +205,30 @@ public class PlantManager
 				{
 					if (TextUtils.isEmpty(MainApplication.getKey()))
 					{
-						return;
+						return false;
 					}
 
 					DecryptInputStream stream = new DecryptInputStream(MainApplication.getKey(), new File(FILES_DIR, "/plants.json"));
 
 					mPlants.clear();
 					mPlants.addAll((ArrayList<Plant>)GsonHelper.parse(stream, new TypeToken<ArrayList<Plant>>(){}.getType()));
+					MainApplication.setFailsafe(false);
 				}
 				else
 				{
 					mPlants.clear();
 					mPlants.addAll((ArrayList<Plant>)GsonHelper.parse(new FileInputStream(new File(FILES_DIR, "/plants.json")), new TypeToken<ArrayList<Plant>>(){}.getType()));
+					MainApplication.setFailsafe(false);
 				}
+
+				return true;
 			}
 			catch (final JsonSyntaxException e)
 			{
 				e.printStackTrace();
 
-				FileManager.getInstance().copyFile(FILES_DIR + "/plants.json", FILES_DIR + "/plants_" + System.currentTimeMillis() + ".json");
-				Toast.makeText(context, "There is a syntax error in your app data. Your data has been backed up to '" + FILES_DIR + ". Please fix before re-opening the app.", Toast.LENGTH_LONG).show();
+				File backupPath = BackupHelper.backupJson();
+				Toast.makeText(context, "There is a syntax error in your app data. Your data has been backed up to " + backupPath.getPath() + ". Please fix before re-opening the app.\n" + e.getMessage(), Toast.LENGTH_LONG).show();
 
 				// prevent save
 				MainApplication.setFailsafe(true);
@@ -227,13 +237,15 @@ public class PlantManager
 			{
 				e.printStackTrace();
 
-				FileManager.getInstance().copyFile(FILES_DIR + "/plants.json", FILES_DIR + "/plants_" + System.currentTimeMillis() + ".json");
-				Toast.makeText(context, "There is a problem loading your app data.", Toast.LENGTH_LONG).show();
+				File backupPath = BackupHelper.backupJson();
+				Toast.makeText(context, "There is a problem loading your app data. Your data has been backed up to " + backupPath.getPath(), Toast.LENGTH_LONG).show();
 
 				// prevent save
 				MainApplication.setFailsafe(true);
 			}
 		}
+
+		return false;
 	}
 
 	public void save()
@@ -257,14 +269,12 @@ public class PlantManager
 
 	public void save(final AsyncCallback callback, boolean ignoreCheck)
 	{
-//		synchronized (mPlants)
+		synchronized (mPlants)
 		{
 			if (MainApplication.isFailsafe()) return;
 
 			if ((!ignoreCheck && mPlants.size() > 0) || ignoreCheck)
 			{
-				AddonHelper.broadcastPlantList(context);
-
 				saveTask.add(new SaveAsyncTask(mPlants)
 				{
 					@Override protected Void doInBackground(Void... params)
@@ -330,6 +340,8 @@ public class PlantManager
 						{
 							isSaving.set(false);
 						}
+
+						AddonHelper.broadcastPlantList(context);
 					}
 				});
 
@@ -355,7 +367,7 @@ public class PlantManager
 
 		public SaveAsyncTask(List<Plant> plants)
 		{
-			this.plants = plants;
+			this.plants = new ArrayList(plants);
 		}
 	}
 }

@@ -21,15 +21,13 @@ import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Toast;
 
 import com.esotericsoftware.kryo.Kryo;
-import com.kenny.snackbar.SnackBar;
-import com.kenny.snackbar.SnackBarListener;
 
 import java.util.ArrayList;
 import java.util.Arrays;
 
-import lombok.Setter;
 import me.anon.controller.adapter.PlantAdapter;
 import me.anon.controller.adapter.SimpleItemTouchHelperCallback;
 import me.anon.grow.AddPlantActivity;
@@ -37,10 +35,14 @@ import me.anon.grow.AddWateringActivity;
 import me.anon.grow.MainActivity;
 import me.anon.grow.MainApplication;
 import me.anon.grow.R;
+import me.anon.grow.service.ExportService;
+import me.anon.lib.SnackBar;
+import me.anon.lib.SnackBarListener;
 import me.anon.lib.Views;
 import me.anon.lib.event.GardenChangeEvent;
 import me.anon.lib.helper.BusHelper;
 import me.anon.lib.helper.FabAnimator;
+import me.anon.lib.helper.NotificationHelper;
 import me.anon.lib.manager.GardenManager;
 import me.anon.lib.manager.PlantManager;
 import me.anon.model.EmptyAction;
@@ -60,7 +62,12 @@ import me.anon.model.PlantStage;
 public class PlantListFragment extends Fragment
 {
 	private PlantAdapter adapter;
-	@Setter private Garden garden;
+	private Garden garden;
+
+	public void setGarden(Garden garden)
+	{
+		this.garden = garden;
+	}
 
 	public static PlantListFragment newInstance(@Nullable Garden garden)
 	{
@@ -317,6 +324,7 @@ public class PlantListFragment extends Fragment
 		{
 			if (resultCode != Activity.RESULT_CANCELED)
 			{
+				adapter.notifyDataSetChanged();
 				SnackBar.show(getActivity(), R.string.snackbar_watering_add, new SnackBarListener()
 				{
 					@Override public void onSnackBarStarted(Object o)
@@ -352,6 +360,7 @@ public class PlantListFragment extends Fragment
 
 		if (garden != null)
 		{
+			menu.findItem(R.id.export_garden).setVisible(true);
 			menu.findItem(R.id.edit_garden).setVisible(true);
 			menu.findItem(R.id.delete_garden).setVisible(true);
 		}
@@ -387,6 +396,15 @@ public class PlantListFragment extends Fragment
 			dialogFragment.show(getFragmentManager(), null);
 
 			return true;
+		}
+		else if (item.getItemId() == R.id.export_garden)
+		{
+			Toast.makeText(getActivity(), "Exporting grow log of garden...", Toast.LENGTH_SHORT).show();
+			NotificationHelper.createExportChannel(getActivity());
+			NotificationHelper.sendExportNotification(getActivity(), "Exporting garden grow log", "Exporting " + garden.getName());
+
+			ArrayList<Plant> export = new ArrayList<>(adapter.getPlants());
+			exportPlants(export);
 		}
 		else if (item.getItemId() == R.id.delete_garden)
 		{
@@ -469,6 +487,12 @@ public class PlantListFragment extends Fragment
 		return super.onOptionsItemSelected(item);
 	}
 
+	private void exportPlants(final ArrayList<Plant> plants)
+	{
+		Toast.makeText(getActivity(), "Exporting grow log...", Toast.LENGTH_SHORT).show();
+		ExportService.export(getActivity(), plants, garden.getName().replaceAll("[^a-zA-Z0-9]+", "-"), garden.getName());
+	}
+
 	private void filter()
 	{
 		ArrayList<Plant> plantList = PlantManager.getInstance().getSortedPlantList(garden);
@@ -483,7 +507,7 @@ public class PlantListFragment extends Fragment
 			}
 		}
 
-		if ((garden == null && plants.size() < plantList.size()) || garden != null)
+		if (garden != null || plants.size() < plantList.size())
 		{
 			adapter.setShowOnly(plants);
 		}
