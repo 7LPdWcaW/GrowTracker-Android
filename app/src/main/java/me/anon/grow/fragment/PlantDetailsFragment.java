@@ -746,7 +746,7 @@ public class PlantDetailsFragment extends Fragment
 				plant.getActions().add(action);
 				PlantManager.getInstance().upsert(plantIndex, plant);
 
-				SnackBar.show(getActivity(), action.getAction().getPrintString() + " added", "undo", new SnackBarListener()
+				SnackBar.show(getActivity(), getString(action.getAction().getPrintString()) + " added", "undo", new SnackBarListener()
 				{
 					@Override public void onSnackBarStarted(Object o)
 					{

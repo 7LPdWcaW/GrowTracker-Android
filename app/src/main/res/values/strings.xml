@@ -152,4 +152,14 @@
 	<string name="ave">Ave:</string>
 	<string name="temperature_title">Temperature</string>
 	<string name="general_title">General</string>
+	<string name="failed_to_load_plant">Failed to load plant</string>
+	<string name="action_fim">Fuck I Missed</string>
+	<string name="action_flush">Flush</string>
+	<string name="action_foliar_feed">Foliar Feed</string>
+	<string name="action_lst">Low Stress Training</string>
+	<string name="action_lolipop">Lollipop</string>
+	<string name="action_pesticide_application">Pesticide Application</string>
+	<string name="action_topped">Topped</string>
+	<string name="action_transplanted">Transplanted</string>
+	<string name="action_trim">Trim</string>
 </resources>
