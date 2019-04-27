@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<LinearLayout
+	xmlns:android="http://schemas.android.com/apk/res/android"
+	xmlns:app="http://schemas.android.com/apk/res-auto"
+	android:layout_width="match_parent"
+	android:layout_height="wrap_content"
+	android:orientation="horizontal"
+	android:paddingBottom="8dp"
+>
+	<LinearLayout
+		android:layout_width="72dp"
+		android:layout_height="wrap_content"
+		android:orientation="vertical"
+		android:layout_marginLeft="8dp"
+		android:layout_marginRight="8dp"
+	>
+		<TextView
+			android:layout_width="match_parent"
+			android:layout_height="wrap_content"
+			android:id="@+id/date_day"
+			android:textSize="16sp"
+		/>
+
+		<TextView
+			android:layout_width="match_parent"
+			android:layout_height="wrap_content"
+			android:id="@+id/stage_day"
+			android:textSize="12sp"
+			android:layout_marginTop="4dp"
+		/>
+	</LinearLayout>
+
+	<com.google.android.flexbox.FlexboxLayout
+		android:layout_width="match_parent"
+		android:layout_height="wrap_content"
+		android:id="@+id/image_container"
+		app:flexWrap="wrap"
+		app:flexDirection="row"
+		app:dividerDrawable="@drawable/divider_4dp"
+		app:showDivider="middle"
+	/>
+</LinearLayout>

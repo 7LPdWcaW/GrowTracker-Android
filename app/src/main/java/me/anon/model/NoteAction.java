@@ -1,9 +1,5 @@
 package me.anon.model;
 
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
-
 /**
  * // TODO: Add class description
  *
@@ -11,10 +7,12 @@ import lombok.Setter;
  * @documentation // TODO Reference flow doc
  * @project GrowTracker
  */
-@Getter @Setter
-@NoArgsConstructor
 public class NoteAction extends Action
 {
+	public NoteAction()
+	{
+	}
+
 	public NoteAction(String note)
 	{
 		this.setDate(System.currentTimeMillis());

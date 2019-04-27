@@ -218,7 +218,7 @@
 					android:showDividers="middle"
 					android:layout_marginTop="16dp"
 				>
-					<LinearLayout
+					<RelativeLayout
 						android:layout_width="match_parent"
 						android:layout_height="wrap_content"
 						android:id="@+id/date_container"
@@ -228,10 +228,21 @@
 						android:paddingTop="8dp"
 						android:paddingBottom="16dp"
 					>
+						<Button
+							android:layout_width="wrap_content"
+							android:layout_height="wrap_content"
+							android:id="@+id/date_now"
+							android:layout_alignParentEnd="true"
+							android:text="Now"
+							style="@style/Widget.AppCompat.Button.Borderless"
+						/>
+
 						<TextView
 							android:layout_width="match_parent"
 							android:layout_height="wrap_content"
+							android:id="@+id/date_text"
 							android:text="Date"
+							android:layout_toStartOf="@id/date_now"
 							style="@style/SubsectionTitle"
 						/>
 
@@ -242,9 +253,11 @@
 							android:editable="false"
 							android:inputType="none"
 							android:text="Today"
+							android:layout_toStartOf="@id/date_now"
+							android:layout_below="@id/date_text"
 							style="@style/SubsectionSubTitle"
 						/>
-					</LinearLayout>
+					</RelativeLayout>
 				</LinearLayout>
 			</LinearLayout>
 

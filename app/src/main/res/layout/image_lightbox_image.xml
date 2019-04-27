@@ -3,7 +3,7 @@
 <FrameLayout
 	xmlns:android="http://schemas.android.com/apk/res/android"
 	android:layout_width="match_parent"
-	android:layout_height="match_parent"
+	android:layout_height="match_parent" xmlns:app="http://schemas.android.com/apk/res-auto"
 	android:id="@+id/image_box"
 	android:background="#ff000000"
 >
@@ -23,19 +23,22 @@
 		android:scaleType="centerInside"
 	/>
 
-	<RelativeLayout
+	<android.support.constraint.ConstraintLayout
 		android:layout_width="match_parent"
 		android:layout_height="wrap_content"
-		android:padding="16dp"
 		android:layout_gravity="bottom"
 		android:background="#60000000"
 	>
 		<ImageView
-			android:layout_width="24dp"
-			android:layout_height="24dp"
+			android:layout_width="wrap_content"
+			android:layout_height="0dp"
 			android:id="@+id/comment_icon"
-			android:layout_alignParentRight="true"
 			android:src="@drawable/ic_empty_comment"
+			android:padding="4dp"
+			android:layout_marginEnd="16dp"
+			app:layout_constraintEnd_toEndOf="parent"
+			app:layout_constraintTop_toTopOf="@id/taken"
+			app:layout_constraintBottom_toBottomOf="@id/taken"
 		/>
 
 		<TextView
@@ -43,7 +46,9 @@
 			android:layout_height="wrap_content"
 			android:id="@+id/taken"
 			android:textColor="#ffffffff"
-			android:layout_toLeftOf="@id/comment_icon"
+			android:padding="16dp"
+			app:layout_constraintStart_toStartOf="parent"
+			app:layout_constraintEnd_toStartOf="@id/comment_icon"
 		/>
 
 		<EditText
@@ -51,8 +56,8 @@
 			android:layout_height="wrap_content"
 			android:id="@+id/comment"
 			android:gravity="top"
-			android:layout_below="@id/taken"
-			android:layout_marginTop="8dp"
+			android:layout_marginStart="16dp"
+			android:layout_marginEnd="16dp"
 			android:background="@null"
 			android:maxLines="1"
 			android:singleLine="true"
@@ -63,9 +68,9 @@
 			android:shadowDy="1"
 			android:shadowRadius="1"
 			android:textSize="14sp"
-			android:layout_marginBottom="8dp"
-			android:paddingBottom="12dp"
+			android:paddingBottom="24dp"
 			android:visibility="gone"
+			app:layout_constraintTop_toBottomOf="@id/taken"
 		/>
-	</RelativeLayout>
+	</android.support.constraint.ConstraintLayout>
 </FrameLayout>

@@ -64,6 +64,13 @@
 	</item>
 
 	<item
+		android:id="@+id/export_garden"
+		android:title="Export garden"
+		app:showAsAction="never"
+		android:visible="false"
+	/>
+
+	<item
 		android:id="@+id/edit_garden"
 		android:title="Edit garden"
 		app:showAsAction="never"
