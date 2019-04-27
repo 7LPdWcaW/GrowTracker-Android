@@ -5,21 +5,21 @@
 >
 	<item
 		android:id="@+id/duplicate"
-		android:title="Duplicate"
+		android:title="@string/menu_duplicate"
 	/>
 
 	<item
 		android:id="@+id/copy"
-		android:title="Copy to"
+		android:title="@string/menu_copy_to"
 	/>
 
 	<item
 		android:id="@+id/edit"
-		android:title="Edit action"
+		android:title="@string/menu_edit_action"
 	/>
 
 	<item
 		android:id="@+id/delete"
-		android:title="Delete action"
+		android:title="@string/menu_delete_action"
 	/>
 </menu>

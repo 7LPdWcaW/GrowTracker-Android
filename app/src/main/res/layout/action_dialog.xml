@@ -17,7 +17,7 @@
 		android:layout_width="match_parent"
 		android:layout_height="wrap_content"
 		android:layout_gravity="center_vertical"
-		android:text="Date"
+		android:text="@string/action_dialog_date"
 		android:layout_marginTop="16dp"
 		style="@style/SubsectionTitle"
 	/>
@@ -34,7 +34,7 @@
 		android:layout_width="match_parent"
 		android:layout_height="wrap_content"
 		android:layout_gravity="center_vertical"
-		android:text="Notes"
+		android:text="@string/action_dialog_notes"
 		android:layout_marginTop="24dp"
 		style="@style/SubsectionTitle"
 	/>

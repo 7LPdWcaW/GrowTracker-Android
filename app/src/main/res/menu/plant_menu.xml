@@ -5,19 +5,19 @@
 >
 	<item
 		android:id="@+id/export"
-		android:title="Export"
+		android:title="@string/menu_export"
 		android:showAsAction="never"
 	/>
 
 	<item
 		android:id="@+id/duplicate"
-		android:title="Duplicate"
+		android:title="@string/menu_duplicate"
 		android:showAsAction="never"
 	/>
 
 	<item
 		android:id="@+id/delete"
-		android:title="Delete"
+		android:title="@string/menu_delete"
 		android:showAsAction="never"
 	/>
 </menu>
