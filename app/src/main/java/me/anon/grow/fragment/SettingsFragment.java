@@ -607,18 +607,26 @@ public class SettingsFragment extends PreferenceFragment implements Preference.O
 				String plantsPath;
 				String gardenPath;
 				String schedulePath;
+				long size = 0;
 
 				@Override public String toString()
 				{
 					DateFormat dateFormat = android.text.format.DateFormat.getDateFormat(getActivity());
 					DateFormat timeFormat = android.text.format.DateFormat.getTimeFormat(getActivity());
-					return dateFormat.format(date) + " " + timeFormat.format(date);
+					return dateFormat.format(date) + " " + timeFormat.format(date) + " (" + lengthToString(size, false) + ")";
 				}
 			}
 
 			// get list of backups
 			File backupPath = new File(Environment.getExternalStorageDirectory(), "/backups/GrowTracker/");
 			String[] backupFiles = backupPath.list();
+
+			if (backupFiles == null || backupFiles.length == 0)
+			{
+				Toast.makeText(getActivity(), "There are no backups to restore from", Toast.LENGTH_LONG).show();
+				return false;
+			}
+
 			Arrays.sort(backupFiles);
 			final ArrayList<BackupData> backups = new ArrayList();
 
@@ -650,6 +658,7 @@ public class SettingsFragment extends PreferenceFragment implements Preference.O
 						BackupData backupData = new BackupData();
 						backupData.plantsPath = backupPath.getPath() + "/" + backup;
 						backupData.date = date;
+						backupData.size = backupPath.length();
 						backups.add(backupData);
 						continue;
 					}
@@ -670,19 +679,23 @@ public class SettingsFragment extends PreferenceFragment implements Preference.O
 					current = new BackupData();
 				}
 
+				File file = new File(backupPath.getPath() + "/" + backup);
 				if (backup.contains("plants"))
 				{
 					current.plantsPath = backupPath.getPath() + "/" + backup;
+					current.size += file.length();
 				}
 
 				if (backup.contains("gardens"))
 				{
 					current.gardenPath = backupPath.getPath() + "/" + backup;
+					current.size += file.length();
 				}
 
 				if (backup.contains("schedules"))
 				{
 					current.schedulePath = backupPath.getPath() + "/" + backup;
+					current.size += file.length();
 				}
 			}
 
@@ -755,5 +768,18 @@ public class SettingsFragment extends PreferenceFragment implements Preference.O
 			Toast.makeText(getActivity(), "Addon successfully uninstalled", Toast.LENGTH_SHORT).show();
 			populateAddons();
 		}
+	}
+
+	public String lengthToString(long bytes, boolean si)
+	{
+		int unit = si ? 1000 : 1024;
+		if (bytes < unit)
+		{
+			return bytes + " B";
+		}
+
+		int exp = (int)(Math.log(bytes) / Math.log(unit));
+		String pre = (si ? "kMGTPE" : "KMGTPE").charAt(exp - 1) + (si ? "" : "i");
+		return String.format("%.1f %sB", bytes / Math.pow(unit, exp), pre);
 	}
 }
