@@ -56,7 +56,7 @@ public class GardenManager
 	{
 		if (FileManager.getInstance().fileExists(FILES_DIR + "/gardens.json"))
 		{
-			String plantData;
+			String gardenData;
 
 			if (MainApplication.isEncrypted())
 			{
@@ -65,19 +65,19 @@ public class GardenManager
 					return;
 				}
 
-				plantData = EncryptionHelper.decrypt(MainApplication.getKey(), FileManager.getInstance().readFile(FILES_DIR + "/gardens.json"));
+				gardenData = EncryptionHelper.decrypt(MainApplication.getKey(), FileManager.getInstance().readFile(FILES_DIR + "/gardens.json"));
 			}
 			else
 			{
-				plantData = FileManager.getInstance().readFileAsString(FILES_DIR + "/gardens.json");
+				gardenData = FileManager.getInstance().readFileAsString(FILES_DIR + "/gardens.json");
 			}
 
 			try
 			{
-				if (!TextUtils.isEmpty(plantData))
+				if (!TextUtils.isEmpty(gardenData))
 				{
 					mGardens.clear();
-					mGardens.addAll((ArrayList<Garden>)GsonHelper.parse(plantData, new TypeToken<ArrayList<Garden>>(){}.getType()));
+					mGardens.addAll((ArrayList<Garden>)GsonHelper.parse(gardenData, new TypeToken<ArrayList<Garden>>(){}.getType()));
 				}
 			}
 			catch (JsonSyntaxException e)
