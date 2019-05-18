@@ -7,6 +7,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.graphics.Bitmap;
+import android.preference.PreferenceCategory;
 import android.preference.PreferenceManager;
 
 import com.nostra13.universalimageloader.core.DisplayImageOptions;
@@ -90,10 +91,17 @@ public class MainApplication extends Application
 		return isTablet;
 	}
 
+	private static Context context;
+	public static SharedPreferences getDefaultPreferences()
+	{
+		return PreferenceManager.getDefaultSharedPreferences(context);
+	}
+
 	@Override public void onCreate()
 	{
 		super.onCreate();
 
+		context = this;
 		ExceptionHandler.getInstance().register(this);
 
 		encrypted = PreferenceManager.getDefaultSharedPreferences(this).getBoolean("encrypt", false);
