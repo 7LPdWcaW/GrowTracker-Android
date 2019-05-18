@@ -40,6 +40,7 @@ import me.anon.model.Action;
 import me.anon.model.EmptyAction;
 import me.anon.model.NoteAction;
 import me.anon.model.Plant;
+import me.anon.model.PlantStage;
 import me.anon.model.StageChange;
 import me.anon.model.Water;
 import me.anon.view.ActionHolder;
@@ -436,6 +437,11 @@ public class EventListFragment extends Fragment implements ActionAdapter.OnActio
 			{
 				@Override public void onStageUpdated(final StageChange action)
 				{
+					if (action.getNewStage() == PlantStage.PLANTED)
+					{
+						plant.setPlantDate(action.getDate());
+					}
+
 					plant.getActions().set(originalIndex, action);
 					PlantManager.getInstance().upsert(plantIndex, plant);
 					setActions();
