@@ -139,7 +139,7 @@ public class BootActivity extends Activity
 					}
 					else
 					{
-						Toast.makeText(BootActivity.this, "Error - incorrect passphrase", Toast.LENGTH_SHORT).show();
+						Toast.makeText(BootActivity.this, R.string.encrypt_passphrase_error, Toast.LENGTH_SHORT).show();
 
 						check.dismiss();
 						check.show(getFragmentManager(), null);

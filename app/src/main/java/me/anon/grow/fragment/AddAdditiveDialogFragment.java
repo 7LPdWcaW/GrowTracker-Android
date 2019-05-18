@@ -74,10 +74,10 @@ public class AddAdditiveDialogFragment extends DialogFragment
 		}
 
 		final AlertDialog dialog = new AlertDialog.Builder(getActivity())
-			.setTitle("Additive")
+			.setTitle(R.string.additive)
 			.setView(view)
-			.setPositiveButton("Ok", null)
-			.setNeutralButton("Delete", new DialogInterface.OnClickListener()
+			.setPositiveButton(R.string.ok, null)
+			.setNeutralButton(R.string.delete, new DialogInterface.OnClickListener()
 			{
 				@Override public void onClick(DialogInterface dialog, int which)
 				{
@@ -87,7 +87,7 @@ public class AddAdditiveDialogFragment extends DialogFragment
 					}
 				}
 			})
-			.setNegativeButton("Cancel", new DialogInterface.OnClickListener()
+			.setNegativeButton(R.string.cancel, new DialogInterface.OnClickListener()
 			{
 				public void onClick(DialogInterface dialog, int whichButton)
 				{
@@ -122,7 +122,7 @@ public class AddAdditiveDialogFragment extends DialogFragment
 
 						if (desc == null)
 						{
-							description.setError("Field is required");
+							description.setError(getString(R.string.field_required));
 							return;
 						}
 
