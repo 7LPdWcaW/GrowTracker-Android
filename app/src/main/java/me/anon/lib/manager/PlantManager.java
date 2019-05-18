@@ -184,6 +184,11 @@ public class PlantManager
 
 	public boolean load()
 	{
+		return load(false);
+	}
+
+	public boolean load(boolean fromRestore)
+	{
 		if (MainApplication.isFailsafe())
 		{
 			return false;
@@ -227,21 +232,27 @@ public class PlantManager
 			{
 				e.printStackTrace();
 
-				File backupPath = BackupHelper.backupJson();
-				Toast.makeText(context, "There is a syntax error in your app data. Your data has been backed up to " + backupPath.getPath() + ". Please fix before re-opening the app.\n" + e.getMessage(), Toast.LENGTH_LONG).show();
+				if (!fromRestore)
+				{
+					File backupPath = BackupHelper.backupJson();
+					Toast.makeText(context, "There is a syntax error in your app data. Your data has been backed up to " + backupPath.getPath() + ". Please fix before re-opening the app.\n" + e.getMessage(), Toast.LENGTH_LONG).show();
 
-				// prevent save
-				MainApplication.setFailsafe(true);
+					// prevent save
+					MainApplication.setFailsafe(true);
+				}
 			}
 			catch (Exception e)
 			{
 				e.printStackTrace();
 
-				File backupPath = BackupHelper.backupJson();
-				Toast.makeText(context, "There is a problem loading your app data. Your data has been backed up to " + backupPath.getPath(), Toast.LENGTH_LONG).show();
+				if (!fromRestore)
+				{
+					File backupPath = BackupHelper.backupJson();
+					Toast.makeText(context, "There is a problem loading your app data. Your data has been backed up to " + backupPath.getPath(), Toast.LENGTH_LONG).show();
 
-				// prevent save
-				MainApplication.setFailsafe(true);
+					// prevent save
+					MainApplication.setFailsafe(true);
+				}
 			}
 		}
 
