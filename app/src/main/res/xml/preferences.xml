@@ -65,6 +65,14 @@
 			android:title="Backup now"
 		/>
 
+		<EditTextPreference
+			android:key="backup_size"
+			android:title="Backup size limit"
+			android:summary="Currently 20mb / Using 0mb"
+			android:hint="Size in MB"
+			android:defaultValue="20"
+		/>
+
 		<Preference
 			android:key="restore"
 			android:title="Restore from backup"
