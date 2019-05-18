@@ -20,11 +20,12 @@ class SnackBar
 	{
 		@JvmStatic
 		public fun show(context: Activity, @StringRes messageRes: Int, @StringRes actionTextRes: Int = -1,
-			listener: SnackBarListener
+			listener: SnackBarListener?
 		)
 		{
 			show(context, context.getString(messageRes),
 				if (actionTextRes != -1) context.getString(actionTextRes) else "",
+				Snackbar.LENGTH_LONG,
 				listener
 			)
 		}
@@ -36,22 +37,36 @@ class SnackBar
 		}
 
 		@JvmStatic
-		public fun show(context: Activity, message: String, listener: SnackBarListener)
+		public fun show(context: Activity, message: String, listener: SnackBarListener?)
 		{
-			show(context, message, "", listener)
+			show(context, message, "", Snackbar.LENGTH_LONG, listener)
+		}
+
+		@JvmStatic
+		public fun show(context: Activity, message: String, length: Int, listener: SnackBarListener?)
+		{
+			show(context, message, "", length, listener)
 		}
 
 		@JvmStatic
 		public fun show(context: Activity, message: String, actionText: String = "",
-			listener: SnackBarListener
+			listener: SnackBarListener?
 		)
 		{
-			SnackBar().show(context, message, actionText, {
-				listener.onSnackBarStarted(0)
+			show(context, message, actionText, Snackbar.LENGTH_LONG, listener)
+		}
+
+		@JvmStatic
+		public fun show(context: Activity, message: String, actionText: String = "", length: Int = Snackbar.LENGTH_LONG,
+			listener: SnackBarListener?
+		)
+		{
+			SnackBar().show(context, message, actionText, Snackbar.LENGTH_LONG, {
+				listener?.onSnackBarStarted(0)
 			}, {
-				listener.onSnackBarFinished(0)
+				listener?.onSnackBarFinished(0)
 			}, {
-				listener.onSnackBarAction(0)
+				listener?.onSnackBarAction(0)
 			})
 		}
 	}
@@ -69,17 +84,28 @@ class SnackBar
 	{
 		show(context, context.getString(messageRes),
 			if (actionTextRes != -1) context.getString(actionTextRes) else "",
+			Snackbar.LENGTH_LONG,
 			start, end, action
 		)
 	}
 
-	public fun show(context: Activity, message: String, actionText: String = "",
+	public fun show(context: Activity, message: String, actionText: String = "", length: Int = Snackbar.LENGTH_LONG,
 		start: () -> kotlin.Unit = {},
 		end: () -> kotlin.Unit = {},
 		action: () -> kotlin.Unit = {}
 	)
 	{
-		val snackbar = Snackbar.make(context.findViewById(android.R.id.content), message, Snackbar.LENGTH_SHORT)
+		val snackbar = Snackbar.make(context.findViewById(android.R.id.content), message, length)
+		var actionText = actionText
+		var action = action
+
+		if (length == Snackbar.LENGTH_INDEFINITE)
+		{
+			actionText = "Dismiss"
+			action = {
+				snackbar.dismiss()
+			}
+		}
 
 		if (actionText.isNotEmpty())
 		{
@@ -100,6 +126,7 @@ class SnackBar
 				end.invoke()
 			}
 		})
+
 
 		snackbar.show()
 	}
