@@ -37,6 +37,7 @@ import me.anon.model.Action;
 import me.anon.model.EmptyAction;
 import me.anon.model.NoteAction;
 import me.anon.model.Plant;
+import me.anon.model.PlantStage;
 import me.anon.model.StageChange;
 import me.anon.model.Water;
 import me.anon.view.ActionHolder;
@@ -152,6 +153,12 @@ public class ActionAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>
 		Collections.reverse(actions);
 		for (Action item : actions)
 		{
+			// force planted stage to use plant date
+			if (item instanceof StageChange && ((StageChange)item).getNewStage() == PlantStage.PLANTED)
+			{
+				item.setDate(plant.getPlantDate());
+			}
+
 			if (plant != null)
 			{
 				ArrayList<String> groupedImages = new ArrayList<>();
