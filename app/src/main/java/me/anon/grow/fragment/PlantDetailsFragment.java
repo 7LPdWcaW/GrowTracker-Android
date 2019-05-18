@@ -81,6 +81,7 @@ import me.anon.lib.manager.GardenManager;
 import me.anon.lib.manager.PlantManager;
 import me.anon.lib.task.AsyncCallback;
 import me.anon.lib.task.EncryptTask;
+import me.anon.model.Action;
 import me.anon.model.EmptyAction;
 import me.anon.model.NoteAction;
 import me.anon.model.Plant;
@@ -277,6 +278,14 @@ public class PlantDetailsFragment extends Fragment
 				{
 					@Override public void onDateSelected(Calendar newDate)
 					{
+						for (Action action : plant.getActions())
+						{
+							if (action instanceof StageChange && ((StageChange)action).getNewStage() == PlantStage.PLANTED)
+							{
+								action.setDate(newDate.getTimeInMillis());
+							}
+						}
+
 						plant.setPlantDate(newDate.getTimeInMillis());
 						String dateStr = dateFormat.format(new Date(plant.getPlantDate())) + " " + timeFormat.format(new Date(plant.getPlantDate()));
 						date.setText(dateStr);
