@@ -24,7 +24,7 @@ public class EditWateringActivity extends BaseActivity
 
 		setContentView(R.layout.fragment_holder);
 		setSupportActionBar((Toolbar)findViewById(R.id.toolbar));
-		setTitle("Edit feeding");
+		setTitle(R.string.edit_feeding);
 		Views.inject(this);
 
 		int plantIndex = -1;

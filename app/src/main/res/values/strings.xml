@@ -43,6 +43,7 @@
 	<string name="schedules_new_schedule">+ New Schedule</string>
 	<string name="new_additive">+ New Additive</string>
 	<string name="additives">Additives</string>
+	<string name="additive">Additive</string>
 	<string name="from_date">From date</string>
 	<string name="from_stage">From stage</string>
 	<string name="to_date">To date</string>
@@ -162,4 +163,26 @@
 	<string name="action_topped">Topped</string>
 	<string name="action_transplanted">Transplanted</string>
 	<string name="action_trim">Trim</string>
+
+	<string name="watered">Watered</string>
+	<string name="note">Note</string>
+	<string name="delete_event_dialog_title">Delete this event?</string>
+	<string name="confirm_delete_item_message">Are you sure you want to delete</string>
+	<string name="edit">Edit</string>
+	<string name="add">Add</string>
+	<string name="cancel">Cancel</string>
+	<string name="action">action</string>
+	<string name="ok">Ok</string>
+	<string name="field_required">Field is required</string>
+	<string name="encrypt_passphrase_error">Error - incorrect passphrase</string>
+	<string name="edit_feeding">Edit feeding</string>
+	<string name="added">added</string>
+	<string name="action_duplicated">Action duplicated</string>
+	<string name="multiple_plants">multiple plants</string>
+	<string name="added_to">Action added to</string>
+	<string name="note_updated">Note updated</string>
+	<string name="updated">updated</string>
+	<string name="stage_updated">Stage updated</string>
+	<string name="event_deleted">Event deleted</string>
+	<string name="done">Done</string>
 </resources>
