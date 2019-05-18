@@ -1,5 +1,6 @@
 package me.anon.lib.helper
 
+import android.content.Context
 import android.os.Environment
 import me.anon.grow.MainApplication
 import me.anon.lib.ext.T
@@ -20,6 +21,7 @@ object BackupHelper
 	{
 		if (MainApplication.isFailsafe()) return null
 
+		limitBackups()
 		val isEncrypted = MainApplication.isEncrypted()
 		val time = System.currentTimeMillis()
 		val backupPath = File(FILES_PATH)
@@ -30,5 +32,31 @@ object BackupHelper
 		FileManager.getInstance().copyFile("${PlantManager.FILES_DIR}/gardens.json", "$FILES_PATH/$time.gardens.json.$ext")
 
 		return backupPath
+	}
+
+	@JvmStatic
+	public fun backupSize(): Long
+	{
+		val path = File(BackupHelper.FILES_PATH)
+		return path.listFiles().fold(0L, { acc, file -> acc + file.length() })
+	}
+
+	@JvmStatic
+	public fun limitBackups(size: String = MainApplication.getDefaultPreferences().getString("backup_size", "20")!!)
+	{
+		val files = File(BackupHelper.FILES_PATH).listFiles()
+		val sorted = ArrayList(files.sortedBy { it.lastModified() })
+		val limit = size.toInt() * 1_048_576
+
+		var currentSize = backupSize()
+		while (currentSize > limit)
+		{
+			val remove = sorted.removeAt(0)
+			val len = remove.length()
+			if (remove.delete())
+			{
+				currentSize -= len
+			}
+		}
 	}
 }

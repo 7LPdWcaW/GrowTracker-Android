@@ -15,6 +15,7 @@ import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.Environment;
+import android.preference.EditTextPreference;
 import android.preference.Preference;
 import android.preference.PreferenceCategory;
 import android.preference.PreferenceFragment;
@@ -101,6 +102,10 @@ public class SettingsFragment extends PreferenceFragment implements Preference.O
 		findPreference("encrypt").setOnPreferenceChangeListener(this);
 		findPreference("failsafe").setOnPreferenceChangeListener(this);
 		findPreference("auto_backup").setOnPreferenceChangeListener(this);
+		findPreference("backup_size").setOnPreferenceChangeListener(this);
+		String currentBackup = findPreference("backup_size").getSharedPreferences().getString("backup_size", "20");
+		findPreference("backup_size").setSummary("Currently " + currentBackup + "mb / Using " + lengthToString(BackupHelper.backupSize(), false));
+
 		findPreference("readme").setOnPreferenceClickListener(this);
 		findPreference("export").setOnPreferenceClickListener(this);
 		findPreference("default_garden").setOnPreferenceClickListener(this);
@@ -233,7 +238,17 @@ public class SettingsFragment extends PreferenceFragment implements Preference.O
 
 	@Override public boolean onPreferenceChange(final Preference preference, Object newValue)
 	{
-		if ("encrypt".equals(preference.getKey()))
+		if ("backup_size".equals(preference.getKey()))
+		{
+			String currentBackup = (String)newValue;
+			PreferenceManager.getDefaultSharedPreferences(getContext()).edit()
+				.putString("backup_size", currentBackup)
+				.apply();
+			((EditTextPreference)preference).setText(currentBackup);
+			BackupHelper.limitBackups(currentBackup);
+			findPreference("backup_size").setSummary("Currently " + currentBackup + "mb / Using " + lengthToString(BackupHelper.backupSize(), false));
+		}
+		else if ("encrypt".equals(preference.getKey()))
 		{
 			if ((Boolean)newValue == true)
 			{
