@@ -12,7 +12,7 @@
 			android:summary="Default garden to show on open, currently All"
 		/>
 
-		<CheckBoxPreference
+		<SwitchPreference
 			android:key="hide_harvested"
 			android:title="Hide harvested"
 			android:summary="Hide all plants that have been harvested"
@@ -42,7 +42,7 @@
 			android:summary="Default temperature unit to use, currently C"
 		/>
 
-		<CheckBoxPreference
+		<SwitchPreference
 			android:key="tds_ec"
 			android:title="Use EC instead of ppm"
 			android:summary="Uses basic EC conversion ((ppm * 2) / 1000) instead"
@@ -53,7 +53,7 @@
 	<PreferenceCategory
 		android:title="Data management"
 	>
-		<CheckBoxPreference
+		<SwitchPreference
 			android:key="auto_backup"
 			android:title="Auto backup"
 			android:summary="Auto backup your plant data every 24 hours"
@@ -70,19 +70,19 @@
 			android:title="Restore from backup"
 		/>
 
-		<CheckBoxPreference
+		<SwitchPreference
 			android:key="encrypt"
 			android:title="Encrypt data"
 			android:summary="Adds a pin lock to the app and encrypts all data/images"
 			android:defaultValue="false"
 		/>
 
-		<CheckBoxPreference
+		<SwitchPreference
 			android:key="failsafe"
 			android:title="Fail safe"
 			android:summary="Set failsafe password to use prevent access to data"
-			android:defaultValue="false"
 			android:enabled="false"
+			android:defaultValue="false"
 		/>
 	</PreferenceCategory>
 
