@@ -12,6 +12,7 @@
 	<LinearLayout
 		android:layout_width="72dp"
 		android:layout_height="wrap_content"
+		android:id="@+id/date_container"
 		android:orientation="vertical"
 		android:layout_marginLeft="8dp"
 		android:layout_marginRight="8dp"
@@ -50,31 +51,33 @@
 			<android.support.constraint.ConstraintLayout
 				android:layout_width="match_parent"
 				android:layout_height="wrap_content"
+				android:id="@+id/content_container"
 			>
 				<ImageButton
-					android:layout_width="wrap_content"
-					android:layout_height="wrap_content"
+					android:layout_width="42dp"
+					android:layout_height="42dp"
 					android:id="@+id/overflow"
 					android:src="@drawable/ic_overflow"
 					android:background="@null"
 					android:adjustViewBounds="true"
 					android:tint="#333333"
 					android:padding="12dp"
+					android:visibility="gone"
 					app:layout_constraintEnd_toEndOf="parent"
 					app:layout_constraintTop_toTopOf="parent"
 				/>
 
 				<TextView
 					android:layout_width="wrap_content"
-					android:layout_height="wrap_content"
+					android:layout_height="42dp"
 					android:id="@+id/date"
 					android:textSize="14sp"
 					android:textColor="#666666"
+					android:gravity="center"
 					android:layout_gravity="center_vertical"
 					android:fontFamily="sans-serif-light"
-					app:layout_constraintTop_toTopOf="parent"
+					app:layout_constraintTop_toTopOf="@id/overflow"
 					app:layout_constraintEnd_toStartOf="@id/overflow"
-					app:layout_constraintBottom_toBottomOf="@id/overflow"
 					tools:text="(20m ago)"
 				/>
 
@@ -84,6 +87,8 @@
 					android:id="@+id/name"
 					android:paddingEnd="8dp"
 					android:paddingStart="8dp"
+					android:minHeight="42dp"
+					android:gravity="center_vertical"
 					app:layout_constraintTop_toTopOf="@id/date"
 					app:layout_constraintEnd_toStartOf="@id/date"
 					app:layout_constraintStart_toStartOf="parent"
