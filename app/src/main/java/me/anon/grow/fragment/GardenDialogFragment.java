@@ -74,11 +74,11 @@ public class GardenDialogFragment extends DialogFragment
 		recyclerView.setLayoutManager(new LinearLayoutManager(getActivity(), LinearLayoutManager.VERTICAL, false));
 
 		final AlertDialog alertDialog = new AlertDialog.Builder(getActivity())
-			.setTitle("Garden")
+			.setTitle(R.string.garden)
 			.setView(view)
-			.setPositiveButton("Ok", null)
-			.setNeutralButton("Select All", null)
-			.setNegativeButton("Cancel", new DialogInterface.OnClickListener()
+			.setPositiveButton(R.string.ok, null)
+			.setNeutralButton(R.string.select_all, null)
+			.setNegativeButton(R.string.cancel, new DialogInterface.OnClickListener()
 			{
 				public void onClick(DialogInterface dialog, int whichButton)
 				{
@@ -96,7 +96,7 @@ public class GardenDialogFragment extends DialogFragment
 					{
 						if (TextUtils.isEmpty(name.getText()))
 						{
-							name.setError("Field is required");
+							name.setError(getString(R.string.field_required));
 							return;
 						}
 
@@ -133,7 +133,7 @@ public class GardenDialogFragment extends DialogFragment
 
 							adapter.setSelectedIds(plantIds);
 							adapter.notifyDataSetChanged();
-							((TextView)view).setText("Select none");
+							((TextView)view).setText(R.string.select_none);
 						}
 						else
 						{
@@ -141,7 +141,7 @@ public class GardenDialogFragment extends DialogFragment
 
 							adapter.setSelectedIds(plantIds);
 							adapter.notifyDataSetChanged();
-							((TextView)view).setText("Select all");
+							((TextView)view).setText(R.string.select_all);
 						}
 					}
 				});

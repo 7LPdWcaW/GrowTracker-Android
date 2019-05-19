@@ -59,6 +59,7 @@
 	<string name="schedule_deleted">Schedule deleted</string>
 	<string name="undo">Undo</string>
 	<string name="feeding_schedules_title">Feeding schedules</string>
+	<string name="feeding_schedule_title">Feeding schedule</string>
 	<string name="update_dialog_title">App updated</string>
 	<string name="update_dialog_message" formatted="true">App has been updated to version %s</string>
 	<string name="update_dialog_view_changes_button">View changes</string>
@@ -185,4 +186,8 @@
 	<string name="stage_updated">Stage updated</string>
 	<string name="event_deleted">Event deleted</string>
 	<string name="done">Done</string>
+	<string name="garden">Garden</string>
+	<string name="select_all">Select All</string>
+	<string name="select_none">Select None</string>
+	<string name="accept">Accept</string>
 </resources>
