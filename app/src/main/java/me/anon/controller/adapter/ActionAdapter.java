@@ -458,47 +458,31 @@ public class ActionAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>
 					dateDay.setText(Html.fromHtml(dateDayStr));
 
 					String stageDayStr = "";
-					StageChange current = null;
-					StageChange previous = null;
+
+					StageChange lastChange = null;
+					StageChange currentChange = new StageChange();
+					currentChange.setDate(action.getDate());
 
 					for (int actionIndex = index; actionIndex < actions.size(); actionIndex++)
 					{
 						if (actions.get(actionIndex) instanceof StageChange)
 						{
-							if (current == null)
+							if (lastChange == null)
 							{
-								current = (StageChange)actions.get(actionIndex);
-							}
-							else if (previous == null)
-							{
-								previous = (StageChange)actions.get(actionIndex);
+								lastChange = (StageChange)actions.get(actionIndex);
+								break;
 							}
 						}
 					}
 
-					if (plant != null)
+					int totalDays = (int)TimeHelper.toDays(Math.abs(action.getDate() - plant.getPlantDate()));
+					stageDayStr += (totalDays == 0 ? 1 : totalDays);
+
+					if (lastChange != null)
 					{
-						int totalDays = (int)TimeHelper.toDays(Math.abs(action.getDate() - plant.getPlantDate()));
-						stageDayStr += totalDays;
-
-						if (previous == null)
-						{
-							previous = current;
-						}
-
-						if (current != null)
-						{
-							if (action == current)
-							{
-								int currentDays = (int)TimeHelper.toDays(Math.abs(current.getDate() - previous.getDate()));
-								stageDayStr += "/" + currentDays + previous.getNewStage().getPrintString().substring(0, 1).toLowerCase();
-							}
-							else
-							{
-								int currentDays = (int)TimeHelper.toDays(Math.abs(action.getDate() - current.getDate()));
-								stageDayStr += "/" + currentDays + current.getNewStage().getPrintString().substring(0, 1).toLowerCase();
-							}
-						}
+						int currentDays = (int)TimeHelper.toDays(Math.abs(currentChange.getDate() - lastChange.getDate()));
+						currentDays = (currentDays == 0 ? 1 : currentDays);
+						stageDayStr += "/" + currentDays + lastChange.getNewStage().getPrintString().substring(0, 1).toLowerCase();
 					}
 
 					stageDay.setText(stageDayStr);

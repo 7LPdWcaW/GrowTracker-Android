@@ -182,20 +182,18 @@ public class ImageLightboxDialog extends Activity
 				Date date = new Date(Long.parseLong(fileDate));
 
 				StageChange lastChange = null;
-				StageChange currentChange = null;
+				StageChange currentChange = new StageChange();
+				currentChange.setDate(date.getTime());
 
 				for (int index = plant.getActions().size() - 1; index >= 0; index--)
 				{
 					Action action = plant.getActions().get(index);
 					if (action instanceof StageChange)
 					{
-						if (action.getDate() > date.getTime())
-						{
-							currentChange = (StageChange)action;
-						}
-						else if (action.getDate() < date.getTime() && lastChange == null)
+						if (action.getDate() < date.getTime() && lastChange == null)
 						{
 							lastChange = (StageChange)action;
+							break;
 						}
 					}
 				}
@@ -203,19 +201,13 @@ public class ImageLightboxDialog extends Activity
 				String stageDayStr = "";
 				if (lastChange != null)
 				{
-					if (currentChange == null)
-					{
-						// fake action to get time diff from
-						currentChange = new StageChange(lastChange.getNewStage());
-						currentChange.setDate(System.currentTimeMillis());
-					}
-
 					int currentDays = (int)TimeHelper.toDays(Math.abs(currentChange.getDate() - lastChange.getDate()));
-					stageDayStr += "/" + currentDays + lastChange.getNewStage().getPrintString().substring(0, 1).toLowerCase();
+					currentDays = (currentDays == 0 ? 1 : currentDays);
+					stageDayStr += " [" + currentDays + lastChange.getNewStage().getPrintString().substring(0, 1).toLowerCase() + "]";
 				}
 
-				String dateStr = dateFormat.format(date) + " " + timeFormat.format(fileDate);
-				((TextView)imageLayout.findViewById(R.id.taken)).setText(Html.fromHtml("<b>Image taken</b>: " + dateStr + stageDayStr +" (" + new DateRenderer().timeAgo(date.getTime()).formattedDate + " ago)"));
+				String dateStr = dateFormat.format(date) + " " + timeFormat.format(date);
+				((TextView)imageLayout.findViewById(R.id.taken)).setText(Html.fromHtml("<b>Image taken</b>: " + dateStr + stageDayStr + " (" + new DateRenderer().timeAgo(date.getTime()).formattedDate + " ago)"));
 
 				try
 				{
