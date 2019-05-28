@@ -51,9 +51,12 @@ import me.anon.lib.helper.AddonHelper;
 import me.anon.lib.helper.ExportHelper;
 import me.anon.lib.helper.FabAnimator;
 import me.anon.lib.helper.PermissionHelper;
+import me.anon.lib.helper.TimeHelper;
 import me.anon.lib.manager.PlantManager;
 import me.anon.lib.task.EncryptTask;
+import me.anon.model.Action;
 import me.anon.model.Plant;
+import me.anon.model.StageChange;
 
 /**
  * // TODO: Add class description
@@ -242,7 +245,33 @@ public class ViewPhotosFragment extends Fragment
 			if (!lastFileDate.equalsIgnoreCase(printedFileDate))
 			{
 				lastFileDate = printedFileDate;
-				sections.add(new SectionedGridRecyclerViewAdapter.Section(index, printedFileDate));
+
+				StageChange lastChange = null;
+				StageChange currentChange = new StageChange();
+				currentChange.setDate(fileDate);
+
+				for (int actionIndex = plant.getActions().size() - 1; actionIndex >= 0; actionIndex--)
+				{
+					Action action = plant.getActions().get(actionIndex);
+					if (action instanceof StageChange)
+					{
+						if (action.getDate() < fileDate && lastChange == null)
+						{
+							lastChange = (StageChange)action;
+							break;
+						}
+					}
+				}
+
+				String stageDayStr = "";
+				if (lastChange != null)
+				{
+					int currentDays = (int)TimeHelper.toDays(Math.abs(currentChange.getDate() - lastChange.getDate()));
+					currentDays = (currentDays == 0 ? 1 : currentDays);
+					stageDayStr += " ~" + currentDays + lastChange.getNewStage().getPrintString().substring(0, 1).toLowerCase();
+				}
+
+				sections.add(new SectionedGridRecyclerViewAdapter.Section(index, printedFileDate + stageDayStr));
 			}
 		}
 
