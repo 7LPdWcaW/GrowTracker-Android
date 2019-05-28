@@ -17,6 +17,8 @@ import java.util.List;
 import me.anon.grow.MainApplication;
 import me.anon.grow.R;
 import me.anon.grow.fragment.ImageLightboxDialog;
+import me.anon.lib.manager.PlantManager;
+import me.anon.model.Plant;
 import me.anon.view.ImageHolder;
 
 /**
@@ -28,6 +30,7 @@ import me.anon.view.ImageHolder;
  */
 public class ImageAdapter extends RecyclerView.Adapter<ImageHolder>
 {
+	public Plant plant = null;
 	private List<String> images = new ArrayList<>();
 	private List<Integer> selected = new ArrayList<>();
 	private View.OnLongClickListener onLongClickListener;
@@ -75,6 +78,7 @@ public class ImageAdapter extends RecyclerView.Adapter<ImageHolder>
 				if (!inActionMode)
 				{
 					Intent details = new Intent(v.getContext(), ImageLightboxDialog.class);
+					details.putExtra("plant_index", PlantManager.getInstance().getPlants().indexOf(plant));
 					details.putExtra("images", (String[])images.toArray(new String[getItemCount()]));
 					details.putExtra("image_position", position);
 					v.getContext().startActivity(details);

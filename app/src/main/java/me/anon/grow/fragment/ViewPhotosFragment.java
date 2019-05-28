@@ -119,6 +119,7 @@ public class ViewPhotosFragment extends Fragment
 		}
 
 		adapter = new ImageAdapter();
+		adapter.plant = plant;
 		adapter.setOnLongClickListener(new View.OnLongClickListener()
 		{
 			@Override public boolean onLongClick(View v)
