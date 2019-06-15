@@ -457,7 +457,7 @@ public class PlantListFragment extends Fragment
 				saveCurrentState();
 			}
 
-			int[] ids = {R.id.filter_planted, R.id.filter_germination, R.id.filter_cutting, R.id.filter_vegetation, R.id.filter_flowering, R.id.filter_drying, R.id.filter_curing, R.id.filter_harvested};
+			int[] ids = {R.id.filter_planted, R.id.filter_germination, R.id.filter_seedling, R.id.filter_cutting, R.id.filter_vegetation, R.id.filter_flowering, R.id.filter_drying, R.id.filter_curing, R.id.filter_harvested};
 			PlantStage[] stages = PlantStage.values();
 
 			for (int index = 0; index < ids.length; index++)
