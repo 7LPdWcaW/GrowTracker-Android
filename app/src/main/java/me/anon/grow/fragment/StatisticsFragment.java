@@ -72,6 +72,8 @@ public class StatisticsFragment extends Fragment
 	@Views.InjectView(R.id.germ_time_container) private View germTimeContainer;
 	@Views.InjectView(R.id.veg_time) private TextView vegTime;
 	@Views.InjectView(R.id.veg_time_container) private View vegTimeContainer;
+	@Views.InjectView(R.id.seedling_time) private TextView seedlingTime;
+	@Views.InjectView(R.id.seedling_time_container) private View seedlingTimeContainer;
 	@Views.InjectView(R.id.cutting_time) private TextView cuttingTime;
 	@Views.InjectView(R.id.cutting_time_container) private View cuttingTimeContainer;
 	@Views.InjectView(R.id.flower_time) private TextView flowerTime;
@@ -297,6 +299,12 @@ public class StatisticsFragment extends Fragment
 		{
 			vegTime.setText((int)TimeHelper.toDays(stages.get(PlantStage.VEGETATION)) + " days");
 			vegTimeContainer.setVisibility(View.VISIBLE);
+		}
+
+		if (stages.containsKey(PlantStage.SEEDLING))
+		{
+			seedlingTime.setText((int)TimeHelper.toDays(stages.get(PlantStage.SEEDLING)) + " days");
+			seedlingTimeContainer.setVisibility(View.VISIBLE);
 		}
 
 		if (stages.containsKey(PlantStage.CUTTING))
