@@ -134,7 +134,10 @@ public class PlantListFragment extends Fragment
 		}
 		else
 		{
-			recycler.setLayoutManager(new LinearLayoutManager(getActivity()));
+			boolean reverse = PreferenceManager.getDefaultSharedPreferences(getActivity()).getBoolean("reverse_order", false);
+			LinearLayoutManager layoutManager = new LinearLayoutManager(getActivity(), LinearLayoutManager.VERTICAL, reverse);
+			layoutManager.setStackFromEnd(reverse);
+			recycler.setLayoutManager(layoutManager);
 		}
 
 		recycler.setAdapter(adapter);
