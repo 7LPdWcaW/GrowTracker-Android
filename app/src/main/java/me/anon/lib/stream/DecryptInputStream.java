@@ -84,7 +84,14 @@ public class DecryptInputStream extends InputStream
 
 	@Override public void close() throws IOException
 	{
-		cis.close();
-		fis.close();
+		try
+		{
+			cis.close();
+			fis.close();
+		}
+		catch (NullPointerException e)
+		{
+			e.printStackTrace();
+		}
 	}
 }

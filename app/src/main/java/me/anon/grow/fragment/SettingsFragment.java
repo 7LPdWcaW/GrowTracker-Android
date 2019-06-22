@@ -15,11 +15,13 @@ import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.Environment;
-import android.preference.CheckBoxPreference;
+import android.preference.EditTextPreference;
 import android.preference.Preference;
 import android.preference.PreferenceCategory;
 import android.preference.PreferenceFragment;
 import android.preference.PreferenceManager;
+import android.preference.SwitchPreference;
+import android.support.design.widget.Snackbar;
 import android.support.v4.content.FileProvider;
 import android.text.Html;
 import android.text.TextUtils;
@@ -28,6 +30,8 @@ import android.view.View;
 import android.widget.Toast;
 
 import com.nostra13.universalimageloader.core.ImageLoader;
+
+import org.jetbrains.annotations.NotNull;
 
 import java.io.BufferedInputStream;
 import java.io.File;
@@ -45,6 +49,7 @@ import me.anon.controller.receiver.BackupService;
 import me.anon.grow.MainApplication;
 import me.anon.grow.R;
 import me.anon.lib.SnackBar;
+import me.anon.lib.SnackBarListener;
 import me.anon.lib.TempUnit;
 import me.anon.lib.Unit;
 import me.anon.lib.helper.AddonHelper;
@@ -97,6 +102,10 @@ public class SettingsFragment extends PreferenceFragment implements Preference.O
 		findPreference("encrypt").setOnPreferenceChangeListener(this);
 		findPreference("failsafe").setOnPreferenceChangeListener(this);
 		findPreference("auto_backup").setOnPreferenceChangeListener(this);
+		findPreference("backup_size").setOnPreferenceChangeListener(this);
+		String currentBackup = findPreference("backup_size").getSharedPreferences().getString("backup_size", "20");
+		findPreference("backup_size").setSummary("Currently " + currentBackup + "mb / Using " + lengthToString(BackupHelper.backupSize(), false));
+
 		findPreference("readme").setOnPreferenceClickListener(this);
 		findPreference("export").setOnPreferenceClickListener(this);
 		findPreference("default_garden").setOnPreferenceClickListener(this);
@@ -106,14 +115,14 @@ public class SettingsFragment extends PreferenceFragment implements Preference.O
 		findPreference("backup_now").setOnPreferenceClickListener(this);
 		findPreference("restore").setOnPreferenceClickListener(this);
 
-		findPreference("failsafe").setEnabled(((CheckBoxPreference)findPreference("encrypt")).isChecked());
+		findPreference("failsafe").setEnabled(((SwitchPreference)findPreference("encrypt")).isChecked());
 
 		if (MainApplication.isFailsafe())
 		{
-			findPreference("failsafe").setTitle("");
-			findPreference("failsafe").setSummary("");
-			findPreference("encrypt").setTitle("");
-			findPreference("encrypt").setSummary("");
+			findPreference("failsafe").setTitle("Redacted");
+			findPreference("failsafe").setSummary("Redacted");
+			findPreference("encrypt").setTitle("Redacted");
+			findPreference("encrypt").setSummary("Redacted");
 		}
 		else
 		{
@@ -229,7 +238,17 @@ public class SettingsFragment extends PreferenceFragment implements Preference.O
 
 	@Override public boolean onPreferenceChange(final Preference preference, Object newValue)
 	{
-		if ("encrypt".equals(preference.getKey()))
+		if ("backup_size".equals(preference.getKey()))
+		{
+			String currentBackup = (String)newValue;
+			PreferenceManager.getDefaultSharedPreferences(getContext()).edit()
+				.putString("backup_size", currentBackup)
+				.apply();
+			((EditTextPreference)preference).setText(currentBackup);
+			BackupHelper.limitBackups(currentBackup);
+			findPreference("backup_size").setSummary("Currently " + currentBackup + "mb / Using " + lengthToString(BackupHelper.backupSize(), false));
+		}
+		else if ("encrypt".equals(preference.getKey()))
 		{
 			if ((Boolean)newValue == true)
 			{
@@ -286,7 +305,7 @@ public class SettingsFragment extends PreferenceFragment implements Preference.O
 									}
 									else
 									{
-										((CheckBoxPreference)preference).setChecked(false);
+										((SwitchPreference)preference).setChecked(false);
 										Toast.makeText(getActivity(), "Error - passphrases did not match up", Toast.LENGTH_SHORT).show();
 									}
 								}
@@ -299,14 +318,14 @@ public class SettingsFragment extends PreferenceFragment implements Preference.O
 					{
 						@Override public void onClick(DialogInterface dialog, int which)
 						{
-							((CheckBoxPreference)preference).setChecked(false);
+							((SwitchPreference)preference).setChecked(false);
 						}
 					})
-					.setOnDismissListener(new DialogInterface.OnDismissListener()
+					.setOnCancelListener(new DialogInterface.OnCancelListener()
 					{
-						@Override public void onDismiss(DialogInterface dialog)
+						@Override public void onCancel(DialogInterface dialog)
 						{
-							((CheckBoxPreference)preference).setChecked(false);
+							((SwitchPreference)preference).setChecked(false);
 						}
 					})
 					.show();
@@ -343,7 +362,7 @@ public class SettingsFragment extends PreferenceFragment implements Preference.O
 						}
 						else
 						{
-							((CheckBoxPreference)preference).setChecked(true);
+							((SwitchPreference)preference).setChecked(true);
 							Toast.makeText(getActivity(), "Error - incorrect passphrase", Toast.LENGTH_SHORT).show();
 						}
 					}
@@ -392,7 +411,7 @@ public class SettingsFragment extends PreferenceFragment implements Preference.O
 									}
 									else
 									{
-										((CheckBoxPreference)preference).setChecked(false);
+										((SwitchPreference)preference).setChecked(false);
 										Toast.makeText(getActivity(), "Error - passphrases did not match up", Toast.LENGTH_SHORT).show();
 									}
 								}
@@ -405,7 +424,7 @@ public class SettingsFragment extends PreferenceFragment implements Preference.O
 					{
 						@Override public void onClick(DialogInterface dialog, int which)
 						{
-							((CheckBoxPreference)preference).setChecked(false);
+							((SwitchPreference)preference).setChecked(false);
 						}
 					})
 					.show();
@@ -607,18 +626,27 @@ public class SettingsFragment extends PreferenceFragment implements Preference.O
 				String plantsPath;
 				String gardenPath;
 				String schedulePath;
+				long size = 0;
 
 				@Override public String toString()
 				{
 					DateFormat dateFormat = android.text.format.DateFormat.getDateFormat(getActivity());
 					DateFormat timeFormat = android.text.format.DateFormat.getTimeFormat(getActivity());
-					return dateFormat.format(date) + " " + timeFormat.format(date);
+					boolean encrypted = plantsPath != null && plantsPath.endsWith("dat");
+					return dateFormat.format(date) + " " + timeFormat.format(date) + " (" + (encrypted ? "encrypted " : "") + lengthToString(size, false) + ")";
 				}
 			}
 
 			// get list of backups
 			File backupPath = new File(Environment.getExternalStorageDirectory(), "/backups/GrowTracker/");
 			String[] backupFiles = backupPath.list();
+
+			if (backupFiles == null || backupFiles.length == 0)
+			{
+				Toast.makeText(getActivity(), "There are no backups to restore from", Toast.LENGTH_LONG).show();
+				return false;
+			}
+
 			Arrays.sort(backupFiles);
 			final ArrayList<BackupData> backups = new ArrayList();
 
@@ -650,6 +678,7 @@ public class SettingsFragment extends PreferenceFragment implements Preference.O
 						BackupData backupData = new BackupData();
 						backupData.plantsPath = backupPath.getPath() + "/" + backup;
 						backupData.date = date;
+						backupData.size = backupPath.length();
 						backups.add(backupData);
 						continue;
 					}
@@ -670,19 +699,23 @@ public class SettingsFragment extends PreferenceFragment implements Preference.O
 					current = new BackupData();
 				}
 
+				File file = new File(backupPath.getPath() + "/" + backup);
 				if (backup.contains("plants"))
 				{
 					current.plantsPath = backupPath.getPath() + "/" + backup;
+					current.size += file.length();
 				}
 
 				if (backup.contains("gardens"))
 				{
 					current.gardenPath = backupPath.getPath() + "/" + backup;
+					current.size += file.length();
 				}
 
 				if (backup.contains("schedules"))
 				{
 					current.schedulePath = backupPath.getPath() + "/" + backup;
+					current.size += file.length();
 				}
 			}
 
@@ -714,28 +747,55 @@ public class SettingsFragment extends PreferenceFragment implements Preference.O
 							MainApplication.setFailsafe(false);
 						}
 
+						if (selectedBackup.plantsPath.endsWith("dat") && !MainApplication.isEncrypted())
+						{
+							SnackBar.show(getActivity(), "You must have encrpted mode enabled with the same password to restore this backup", "Enable", new SnackBarListener()
+							{
+								@Override public void onSnackBarStarted(@NotNull Object o){}
+								@Override public void onSnackBarFinished(@NotNull Object o){}
+
+								@Override public void onSnackBarAction(@NotNull Object o)
+								{
+									((SwitchPreference)findPreference("encrypt")).setChecked(true);
+									onPreferenceChange(findPreference("encrypt"), true);
+								}
+							});
+							return;
+						}
+
+						FileManager.getInstance().copyFile(PlantManager.FILES_DIR + "/plants.json", PlantManager.FILES_DIR + "/plants.temp");
 						FileManager.getInstance().copyFile(selectedBackup.plantsPath, PlantManager.FILES_DIR + "/plants.json");
-						boolean loaded = PlantManager.getInstance().load();
+						boolean loaded = PlantManager.getInstance().load(true);
 
 						if (selectedBackup.gardenPath != null)
 						{
+							FileManager.getInstance().copyFile(GardenManager.FILES_DIR + "/gardens.json", GardenManager.FILES_DIR + "/gardens.temp");
 							FileManager.getInstance().copyFile(selectedBackup.gardenPath, GardenManager.FILES_DIR + "/gardens.json");
 							GardenManager.getInstance().load();
 						}
 
 						if (selectedBackup.schedulePath != null)
 						{
+							FileManager.getInstance().copyFile(ScheduleManager.FILES_DIR + "/schedules.json", ScheduleManager.FILES_DIR + "/schedules.temp");
 							FileManager.getInstance().copyFile(selectedBackup.schedulePath, ScheduleManager.FILES_DIR + "/schedules.json");
 							ScheduleManager.instance.load();
 						}
 
 						if (!loaded)
 						{
-							SnackBar.show(getActivity(), "Could not restore from backup " + selectedBackup, null);
+							String errorEnd = MainApplication.isEncrypted() ? "unencrypted" : "encryped";
+							SnackBar.show(getActivity(), "Could not restore from backup " + selectedBackup + ". File may be " + errorEnd, Snackbar.LENGTH_INDEFINITE, null);
+							FileManager.getInstance().copyFile(PlantManager.FILES_DIR + "/plants.temp", PlantManager.FILES_DIR + "/plants.json");
+							FileManager.getInstance().copyFile(GardenManager.FILES_DIR + "/gardens.temp", GardenManager.FILES_DIR + "/gardens.json");
+							FileManager.getInstance().copyFile(ScheduleManager.FILES_DIR + "/schedules.temp", ScheduleManager.FILES_DIR + "/schedules.json");
+							PlantManager.getInstance().load();
+							GardenManager.getInstance().load();
+							ScheduleManager.instance.load();
 						}
 						else
 						{
 							Toast.makeText(getActivity(), "Restore to " + selectedBackup + " completed", Toast.LENGTH_LONG).show();
+							getActivity().recreate();
 						}
 					}
 				})
@@ -755,5 +815,18 @@ public class SettingsFragment extends PreferenceFragment implements Preference.O
 			Toast.makeText(getActivity(), "Addon successfully uninstalled", Toast.LENGTH_SHORT).show();
 			populateAddons();
 		}
+	}
+
+	public String lengthToString(long bytes, boolean si)
+	{
+		int unit = si ? 1000 : 1024;
+		if (bytes < unit)
+		{
+			return bytes + " B";
+		}
+
+		int exp = (int)(Math.log(bytes) / Math.log(unit));
+		String pre = (si ? "kMGTPE" : "KMGTPE").charAt(exp - 1) + (si ? "" : "i");
+		return String.format("%.1f %sB", bytes / Math.pow(unit, exp), pre);
 	}
 }
