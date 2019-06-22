@@ -19,6 +19,7 @@ import me.anon.controller.adapter.ActionAdapter;
 import me.anon.grow.R;
 import me.anon.lib.Views;
 import me.anon.model.Action;
+import me.anon.view.ActionHolder;
 import me.anon.view.ImageActionHolder;
 
 /**
@@ -57,7 +58,15 @@ public class ActionSelectDialogFragment extends DialogFragment
 			{
 				super.onBindViewHolder(vh, index);
 				int padding = (int)getResources().getDimension(R.dimen.padding_8dp);
-				vh.itemView.setPadding(padding, padding, padding, padding);
+				vh.itemView.setPadding(0, 0, 0, 0);
+				vh.itemView.findViewById(R.id.date_container).setVisibility(View.GONE);
+				((View)vh.itemView.findViewById(R.id.content_container).getParent()).setPadding(0, 0, 0, 0);
+
+				if (vh instanceof ActionHolder)
+				{
+					((ActionHolder)vh).getCard().setBackgroundResource(0);
+					((ActionHolder)vh).getCard().setContentPadding(padding, padding, padding * 2, (int)(padding * 2.5));
+				}
 			}
 		};
 
@@ -65,7 +74,6 @@ public class ActionSelectDialogFragment extends DialogFragment
 		adapter.setShowActions(false);
 		adapter.setActions(null, actions, exclude);
 	}
-
 
 	@SuppressLint("ValidFragment")
 	public ActionSelectDialogFragment()

@@ -29,6 +29,8 @@ import com.esotericsoftware.kryo.Kryo;
 import java.text.DateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.Date;
 import java.util.GregorianCalendar;
 
@@ -217,12 +219,24 @@ public class WateringFragment extends Fragment
 				}
 			}
 
+			Collections.sort(items, new Comparator<Action>()
+			{
+				@Override
+				public int compare(Action o1, Action o2)
+				{
+					if (o1.getDate() < o2.getDate()) return 1;
+					if (o1.getDate() > o2.getDate()) return -1;
+					return 0;
+				}
+			});
+
 			ActionSelectDialogFragment actionSelectDialogFragment = new ActionSelectDialogFragment(items);
 			actionSelectDialogFragment.setOnActionSelectedListener(new ActionSelectDialogFragment.OnActionSelectedListener()
 			{
 				@Override public void onActionSelected(Action action)
 				{
 					water = (Water)new Kryo().copy(action);
+					water.setDate(System.currentTimeMillis());
 					setUi();
 				}
 			});
@@ -409,7 +423,8 @@ public class WateringFragment extends Fragment
 			}
 		});
 
-		if (plants.size() == 1)
+//		if (plants.size() == 1)
+		if (water != null)
 		{
 			if (water.getPh() != null)
 			{

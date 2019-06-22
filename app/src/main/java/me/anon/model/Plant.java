@@ -28,11 +28,11 @@ public class Plant
 {
 	private String id = UUID.randomUUID().toString();
 	private String name;
-	private String strain;
+	private String strain = null;
 	private long plantDate = System.currentTimeMillis();
 	private boolean clone = false;
 	private PlantMedium medium = PlantMedium.SOIL;
-	private String mediumDetails;
+	private String mediumDetails = null;
 	private ArrayList<String> images = new ArrayList<>();
 	private ArrayList<Action> actions = new ArrayList<>();
 
@@ -216,7 +216,11 @@ public class Plant
 		Unit deliveryUnit = Unit.getSelectedDeliveryUnit(context);
 
 		String summary = "";
-		summary += getStrain() + " - ";
+
+		if (getStrain() != null)
+		{
+			summary += getStrain() + " - ";
+		}
 
 		if (getStage() == PlantStage.HARVESTED)
 		{
