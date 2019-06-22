@@ -32,27 +32,27 @@ You can either elect to update manually, or get notified on releases by installi
 
 # Screenshots
 
-[![install](screenshots/install-thumb.png)](screenshots/install.png)
-[![plant list](screenshots/1-thumb.png)](screenshots/1.png)
-[![discrete plant list](screenshots/1b-thumb.png)](screenshots/1b.png)
-[![discrete plant list](screenshots/1c-thumb.png)](screenshots/1c.png)
-[![discrete plant list](screenshots/1d-thumb.png)](screenshots/1d.png)
-[![discrete plant list](screenshots/1e-thumb.png)](screenshots/1e.png)
-[![plant details](screenshots/2-thumb.png)](screenshots/2.png)
-[![feeding](screenshots/3-thumb.png)](screenshots/3.png)
-[![nutrients](screenshots/4-thumb.png)](screenshots/4.png)
-[![nutrients](screenshots/4b-thumb.png)](screenshots/4b.png)
-[![actions](screenshots/5-thumb.png)](screenshots/5.png)
-[![pictures](screenshots/6-thumb.png)](screenshots/6.png)
-[![statistics](screenshots/7-thumb.png)](screenshots/7.png)
-[![past actions](screenshots/8-thumb.png)](screenshots/8.png)
-[![action filters](screenshots/9-thumb.png)](screenshots/9.png)
-[![action options](screenshots/10-thumb.png)](screenshots/10.png)
-[![settings](screenshots/11-thumb.png)](screenshots/11.png)
-[![measurements](screenshots/12-thumb.png)](screenshots/12.png)
-[![schedules](screenshots/13-thumb.png)](screenshots/13.png)
-[![schedule details](screenshots/14-thumb.png)](screenshots/14.png)
-[![schedule date](screenshots/15-thumb.png)](screenshots/15.png)
+[![install](metadata/images/phoneScreenshotsThumbs/install-thumb.png)](metadata/images/phoneScreenshots/install.png)
+[![plant list](metadata/images/phoneScreenshotsThumbs/1-thumb.png)](metadata/images/phoneScreenshots/1.png)
+[![discrete plant list](metadata/images/phoneScreenshotsThumbs/1b-thumb.png)](metadata/images/phoneScreenshots/1b.png)
+[![discrete plant list](metadata/images/phoneScreenshotsThumbs/1c-thumb.png)](metadata/images/phoneScreenshots/1c.png)
+[![discrete plant list](metadata/images/phoneScreenshotsThumbs/1d-thumb.png)](metadata/images/phoneScreenshots/1d.png)
+[![discrete plant list](metadata/images/phoneScreenshotsThumbs/1e-thumb.png)](metadata/images/phoneScreenshots/1e.png)
+[![plant details](metadata/images/phoneScreenshotsThumbs/2-thumb.png)](metadata/images/phoneScreenshots/2.png)
+[![feeding](metadata/images/phoneScreenshotsThumbs/3-thumb.png)](metadata/images/phoneScreenshots/3.png)
+[![nutrients](metadata/images/phoneScreenshotsThumbs/4-thumb.png)](metadata/images/phoneScreenshots/4.png)
+[![nutrients](metadata/images/phoneScreenshotsThumbs/4b-thumb.png)](metadata/images/phoneScreenshots/4b.png)
+[![actions](metadata/images/phoneScreenshotsThumbs/5-thumb.png)](metadata/images/phoneScreenshots/5.png)
+[![pictures](metadata/images/phoneScreenshotsThumbs/6-thumb.png)](metadata/images/phoneScreenshots/6.png)
+[![statistics](metadata/images/phoneScreenshotsThumbs/7-thumb.png)](metadata/images/phoneScreenshots/7.png)
+[![past actions](metadata/images/phoneScreenshotsThumbs/8-thumb.png)](metadata/images/phoneScreenshots/8.png)
+[![action filters](metadata/images/phoneScreenshotsThumbs/9-thumb.png)](metadata/images/phoneScreenshots/9.png)
+[![action options](metadata/images/phoneScreenshotsThumbs/10-thumb.png)](metadata/images/phoneScreenshots/10.png)
+[![settings](metadata/images/phoneScreenshotsThumbs/11-thumb.png)](metadata/images/phoneScreenshots/11.png)
+[![measurements](metadata/images/phoneScreenshotsThumbs/12-thumb.png)](metadata/images/phoneScreenshots/12.png)
+[![schedules](metadata/images/phoneScreenshotsThumbs/13-thumb.png)](metadata/images/phoneScreenshots/13.png)
+[![schedule details](metadata/images/phoneScreenshotsThumbs/14-thumb.png)](metadata/images/phoneScreenshots/14.png)
+[![schedule date](metadata/images/phoneScreenshotsThumbs/15-thumb.png)](metadata/images/phoneScreenshots/15.png)
 
 # About the app
 
@@ -88,7 +88,7 @@ One of,
 
 One of,
 
-`PLANTED`, `GERMINATION`, `CUTTING`, `VEGETATION`, `FLOWER`, `DRYING`, `CURING`, `HARVESTED`
+`PLANTED`, `GERMINATION`, `SEEDLING`, `CUTTING`, `VEGETATION`, `FLOWER`, `DRYING`, `CURING`, `HARVESTED`
 
 ### Action object (feeding)
 
