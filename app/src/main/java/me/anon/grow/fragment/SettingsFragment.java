@@ -616,7 +616,9 @@ public class SettingsFragment extends PreferenceFragment implements Preference.O
 		}
 		else if ("backup_now".equals(preference.getKey()))
 		{
+			String currentBackup = findPreference("backup_size").getSharedPreferences().getString("backup_size", "20");
 			Toast.makeText(getActivity(), "Backed up to " + BackupHelper.backupJson().getPath(), Toast.LENGTH_SHORT).show();
+			findPreference("backup_size").setSummary("Currently " + currentBackup + "mb / Using " + lengthToString(BackupHelper.backupSize(), false));
 		}
 		else if ("restore".equals(preference.getKey()))
 		{
@@ -650,15 +652,10 @@ public class SettingsFragment extends PreferenceFragment implements Preference.O
 			Arrays.sort(backupFiles);
 			final ArrayList<BackupData> backups = new ArrayList();
 
-			BackupData current = null;
-			Date lastDate = new Date();
+			BackupData current = new BackupData();
+			Date lastDate = null;
 			for (String backup : backupFiles)
 			{
-				if (current == null)
-				{
-					current = new BackupData();
-				}
-
 				File backupFile = new File(backup);
 				String[] parts = backupFile.getName().split("\\.");
 				Date date = new Date();
@@ -682,9 +679,13 @@ public class SettingsFragment extends PreferenceFragment implements Preference.O
 						backups.add(backupData);
 						continue;
 					}
-					else
+
+					if (lastDate == null || !date.equals(lastDate))
 					{
+						lastDate = date;
+						current = new BackupData();
 						current.date = date;
+						backups.add(current);
 					}
 				}
 				else
@@ -692,12 +693,11 @@ public class SettingsFragment extends PreferenceFragment implements Preference.O
 					continue;
 				}
 
-				if (!current.date.equals(lastDate))
-				{
-					lastDate = current.date;
-					backups.add(current);
-					current = new BackupData();
-				}
+//				if (!date.equals(lastDate))
+//				{
+//					lastDate = date;
+//					backups.add(current);
+//				}
 
 				File file = new File(backupPath.getPath() + "/" + backup);
 				if (backup.contains("plants"))
@@ -746,6 +746,8 @@ public class SettingsFragment extends PreferenceFragment implements Preference.O
 						{
 							MainApplication.setFailsafe(false);
 						}
+
+						if (selectedBackup.plantsPath == null) return;
 
 						if (selectedBackup.plantsPath.endsWith("dat") && !MainApplication.isEncrypted())
 						{
