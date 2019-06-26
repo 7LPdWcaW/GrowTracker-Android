@@ -2,9 +2,9 @@
 
 Welcome to grow tracker. This app was created to help record data about growing plants in order to monitor the growing conditions to help make the plants grow better, and identify potential issues during the grow process.
 
-[Latest APK: (MD5) aa3496894c364a766145a576122e3ee6 v2.5](https://github.com/7LPdWcaW/GrowTracker-Android/releases/download/v2.5/v2.5-production.apk)
+[Latest APK: (MD5) 2be1b62b6e31193f7036b8e41d9a12db v2.5.1](https://github.com/7LPdWcaW/GrowTracker-Android/releases/download/v2.5.1/v2.5.1-production.apk)
 
-[Latest APK (Discrete): (MD5) 0f68525415eb2fc3c77184cdb3c51443 v2.5](https://github.com/7LPdWcaW/GrowTracker-Android/releases/download/v2.5/v2.5-discrete.apk)
+[Latest APK (Discrete): (MD5) 97eb68a4a733b4a59a007ef48609e81c v2.5.1](https://github.com/7LPdWcaW/GrowTracker-Android/releases/download/v2.5.1/v2.5.1-discrete.apk)
 
 [Get it on F-Droid with automatic updates](https://f-droid.org/packages/me.anon.grow/)
 
@@ -32,27 +32,27 @@ You can either elect to update manually, or get notified on releases by installi
 
 # Screenshots
 
-[![install](metadata/images/phoneScreenshotsThumbs/install-thumb.png)](metadata/images/phoneScreenshots/install.png)
-[![plant list](metadata/images/phoneScreenshotsThumbs/1-thumb.png)](metadata/images/phoneScreenshots/1.png)
-[![discrete plant list](metadata/images/phoneScreenshotsThumbs/1b-thumb.png)](metadata/images/phoneScreenshots/1b.png)
-[![discrete plant list](metadata/images/phoneScreenshotsThumbs/1c-thumb.png)](metadata/images/phoneScreenshots/1c.png)
-[![discrete plant list](metadata/images/phoneScreenshotsThumbs/1d-thumb.png)](metadata/images/phoneScreenshots/1d.png)
-[![discrete plant list](metadata/images/phoneScreenshotsThumbs/1e-thumb.png)](metadata/images/phoneScreenshots/1e.png)
-[![plant details](metadata/images/phoneScreenshotsThumbs/2-thumb.png)](metadata/images/phoneScreenshots/2.png)
-[![feeding](metadata/images/phoneScreenshotsThumbs/3-thumb.png)](metadata/images/phoneScreenshots/3.png)
-[![nutrients](metadata/images/phoneScreenshotsThumbs/4-thumb.png)](metadata/images/phoneScreenshots/4.png)
-[![nutrients](metadata/images/phoneScreenshotsThumbs/4b-thumb.png)](metadata/images/phoneScreenshots/4b.png)
-[![actions](metadata/images/phoneScreenshotsThumbs/5-thumb.png)](metadata/images/phoneScreenshots/5.png)
-[![pictures](metadata/images/phoneScreenshotsThumbs/6-thumb.png)](metadata/images/phoneScreenshots/6.png)
-[![statistics](metadata/images/phoneScreenshotsThumbs/7-thumb.png)](metadata/images/phoneScreenshots/7.png)
-[![past actions](metadata/images/phoneScreenshotsThumbs/8-thumb.png)](metadata/images/phoneScreenshots/8.png)
-[![action filters](metadata/images/phoneScreenshotsThumbs/9-thumb.png)](metadata/images/phoneScreenshots/9.png)
-[![action options](metadata/images/phoneScreenshotsThumbs/10-thumb.png)](metadata/images/phoneScreenshots/10.png)
-[![settings](metadata/images/phoneScreenshotsThumbs/11-thumb.png)](metadata/images/phoneScreenshots/11.png)
-[![measurements](metadata/images/phoneScreenshotsThumbs/12-thumb.png)](metadata/images/phoneScreenshots/12.png)
-[![schedules](metadata/images/phoneScreenshotsThumbs/13-thumb.png)](metadata/images/phoneScreenshots/13.png)
-[![schedule details](metadata/images/phoneScreenshotsThumbs/14-thumb.png)](metadata/images/phoneScreenshots/14.png)
-[![schedule date](metadata/images/phoneScreenshotsThumbs/15-thumb.png)](metadata/images/phoneScreenshots/15.png)
+[![install](fastlane/metadata/android/en-GB/images/phoneScreenshotsThumbs/install-thumb.png)](fastlane/metadata/android/en-GB/images/phoneScreenshots/install.png)
+[![plant list](fastlane/metadata/android/en-GB/images/phoneScreenshotsThumbs/1-thumb.png)](fastlane/metadata/android/en-GB/images/phoneScreenshots/1.png)
+[![discrete plant list](fastlane/metadata/android/en-GB/images/phoneScreenshotsThumbs/1b-thumb.png)](fastlane/metadata/android/en-GB/images/phoneScreenshots/1b.png)
+[![discrete plant list](fastlane/metadata/android/en-GB/images/phoneScreenshotsThumbs/1c-thumb.png)](fastlane/metadata/android/en-GB/images/phoneScreenshots/1c.png)
+[![discrete plant list](fastlane/metadata/android/en-GB/images/phoneScreenshotsThumbs/1d-thumb.png)](fastlane/metadata/android/en-GB/images/phoneScreenshots/1d.png)
+[![discrete plant list](fastlane/metadata/android/en-GB/images/phoneScreenshotsThumbs/1e-thumb.png)](fastlane/metadata/android/en-GB/images/phoneScreenshots/1e.png)
+[![plant details](fastlane/metadata/android/en-GB/images/phoneScreenshotsThumbs/2-thumb.png)](fastlane/metadata/android/en-GB/images/phoneScreenshots/2.png)
+[![feeding](fastlane/metadata/android/en-GB/images/phoneScreenshotsThumbs/3-thumb.png)](fastlane/metadata/android/en-GB/images/phoneScreenshots/3.png)
+[![nutrients](fastlane/metadata/android/en-GB/images/phoneScreenshotsThumbs/4-thumb.png)](fastlane/metadata/android/en-GB/images/phoneScreenshots/4.png)
+[![nutrients](fastlane/metadata/android/en-GB/images/phoneScreenshotsThumbs/4b-thumb.png)](fastlane/metadata/android/en-GB/images/phoneScreenshots/4b.png)
+[![actions](fastlane/metadata/android/en-GB/images/phoneScreenshotsThumbs/5-thumb.png)](fastlane/metadata/android/en-GB/images/phoneScreenshots/5.png)
+[![pictures](fastlane/metadata/android/en-GB/images/phoneScreenshotsThumbs/6-thumb.png)](fastlane/metadata/android/en-GB/images/phoneScreenshots/6.png)
+[![statistics](fastlane/metadata/android/en-GB/images/phoneScreenshotsThumbs/7-thumb.png)](fastlane/metadata/android/en-GB/images/phoneScreenshots/7.png)
+[![past actions](fastlane/metadata/android/en-GB/images/phoneScreenshotsThumbs/8-thumb.png)](fastlane/metadata/android/en-GB/images/phoneScreenshots/8.png)
+[![action filters](fastlane/metadata/android/en-GB/images/phoneScreenshotsThumbs/9-thumb.png)](fastlane/metadata/android/en-GB/images/phoneScreenshots/9.png)
+[![action options](fastlane/metadata/android/en-GB/images/phoneScreenshotsThumbs/10-thumb.png)](fastlane/metadata/android/en-GB/images/phoneScreenshots/10.png)
+[![settings](fastlane/metadata/android/en-GB/images/phoneScreenshotsThumbs/11-thumb.png)](fastlane/metadata/android/en-GB/images/phoneScreenshots/11.png)
+[![measurements](fastlane/metadata/android/en-GB/images/phoneScreenshotsThumbs/12-thumb.png)](fastlane/metadata/android/en-GB/images/phoneScreenshots/12.png)
+[![schedules](fastlane/metadata/android/en-GB/images/phoneScreenshotsThumbs/13-thumb.png)](fastlane/metadata/android/en-GB/images/phoneScreenshots/13.png)
+[![schedule details](fastlane/metadata/android/en-GB/images/phoneScreenshotsThumbs/14-thumb.png)](fastlane/metadata/android/en-GB/images/phoneScreenshots/14.png)
+[![schedule date](fastlane/metadata/android/en-GB/images/phoneScreenshotsThumbs/15-thumb.png)](fastlane/metadata/android/en-GB/images/phoneScreenshots/15.png)
 
 # About the app
 
