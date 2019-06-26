@@ -1,0 +1,11 @@
+- New reverse order setting. Requires app restart. Data is still stored as per the readme, this is purely cosmetic.
+- Fixes issue with crash when going landscape is statistics view
+- Adds seedling stage
+- Adds approximate plant stage into photos view and lightbox view - approximate due to the nature of calculating the photo's date, but should always be correct
+- Plant date will now always be the same as the planted stage. If either of these are changed, they are both changed.
+- Fixes issue with restoring from encrypted backups. This will now warn you of potential encrypted backups you're restoring from. This may not work with files encrypted before this update but will still warn you if it fails to restore that it may be because of the file being encrypted. Restoring from encrypted files requires the app to also be in encrypted mode with *the same password* as the encrypted files.
+- Fixes text overlay issues with actions on small screens
+- Refactors export functionality so it should work better and have better notifications around it and fixes crash with export
+- Adds garden export functionality
+- Strain is now an optional field
+- Fixes issue with feeding from previous dialog
