@@ -693,12 +693,6 @@ public class SettingsFragment extends PreferenceFragment implements Preference.O
 					continue;
 				}
 
-//				if (!date.equals(lastDate))
-//				{
-//					lastDate = date;
-//					backups.add(current);
-//				}
-
 				File file = new File(backupPath.getPath() + "/" + backup);
 				if (backup.contains("plants"))
 				{
