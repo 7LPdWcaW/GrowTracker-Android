@@ -1,0 +1,2 @@
+- Fixes crash when going into settings for fresh installs
+- Fixes issue with restore from backup not showing backups correctly
