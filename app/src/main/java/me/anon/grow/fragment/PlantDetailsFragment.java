@@ -343,7 +343,7 @@ public class PlantDetailsFragment extends Fragment
 						}
 					}
 
-					@Override public void onSnackBarAction(Object o)
+					@Override public void onSnackBarAction(View v)
 					{
 						plant.getActions().remove(action);
 						PlantManager.getInstance().upsert(plantIndex, plant);
@@ -469,7 +469,7 @@ public class PlantDetailsFragment extends Fragment
 						}
 					}
 
-					@Override public void onSnackBarAction(Object o)
+					@Override public void onSnackBarAction(View v)
 					{
 						final ArrayList<Plant> sortedPlants = PlantManager.getInstance().getSortedPlantList(null);
 						CharSequence[] plants = new CharSequence[sortedPlants.size()];
@@ -578,7 +578,7 @@ public class PlantDetailsFragment extends Fragment
 						}
 					}
 
-					@Override public void onSnackBarAction(Object o)
+					@Override public void onSnackBarAction(View v)
 					{
 						onPhotoClick(null);
 					}
@@ -728,7 +728,7 @@ public class PlantDetailsFragment extends Fragment
 						}
 					}
 
-					@Override public void onSnackBarAction(Object o)
+					@Override public void onSnackBarAction(View v)
 					{
 						Intent plantDetails = new Intent(getActivity(), PlantDetailsActivity.class);
 						plantDetails.putExtra("plant_index", PlantManager.getInstance().getPlants().size() - 1);
@@ -776,7 +776,7 @@ public class PlantDetailsFragment extends Fragment
 						}
 					}
 
-					@Override public void onSnackBarAction(Object o)
+					@Override public void onSnackBarAction(View v)
 					{
 						plant.getActions().remove(action);
 						PlantManager.getInstance().upsert(plantIndex, plant);
@@ -840,7 +840,7 @@ public class PlantDetailsFragment extends Fragment
 							}
 						}
 
-						@Override public void onSnackBarAction(Object o)
+						@Override public void onSnackBarAction(View v)
 						{
 							if (plantIndex > -1)
 							{

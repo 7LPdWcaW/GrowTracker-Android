@@ -761,7 +761,7 @@ public class SettingsFragment extends PreferenceFragment implements Preference.O
 								@Override public void onSnackBarStarted(@NotNull Object o){}
 								@Override public void onSnackBarFinished(@NotNull Object o){}
 
-								@Override public void onSnackBarAction(@NotNull Object o)
+								@Override public void onSnackBarAction(@NotNull View o)
 								{
 									((SwitchPreference)findPreference("encrypt")).setChecked(true);
 									onPreferenceChange(findPreference("encrypt"), true);
