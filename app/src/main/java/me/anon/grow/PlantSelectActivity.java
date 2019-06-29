@@ -1,5 +1,6 @@
 package me.anon.grow;
 
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
@@ -53,6 +54,13 @@ public class PlantSelectActivity extends BaseActivity
 			@Override public void onDialogAccept(ArrayList<Integer> plantIndex, boolean showImage)
 			{
 				configureAndFinish(plantIndex.get(0), showImage);
+			}
+		});
+		dialogFragment.setOnDismissListener(new DialogInterface.OnDismissListener()
+		{
+			@Override public void onDismiss(DialogInterface dialog)
+			{
+				finish();
 			}
 		});
 		dialogFragment.show(getFragmentManager(), null);
