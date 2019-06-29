@@ -452,7 +452,7 @@ public class ViewPhotosFragment extends Fragment
 						}
 					}
 
-					@Override public void onSnackBarAction(Object o)
+					@Override public void onSnackBarAction(View v)
 					{
 						onFabPhotoClick(null);
 					}
