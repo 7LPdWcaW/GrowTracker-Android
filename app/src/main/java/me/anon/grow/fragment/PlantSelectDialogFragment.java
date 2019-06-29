@@ -15,6 +15,7 @@ import android.widget.TextView;
 import com.nostra13.universalimageloader.core.ImageLoader;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 
 import me.anon.controller.adapter.PlantSelectionAdapter;
 import me.anon.grow.R;
@@ -46,6 +47,7 @@ public class PlantSelectDialogFragment extends DialogFragment
 	private PlantSelectionAdapter adapter;
 	@Views.InjectView(R.id.recycler_view) private RecyclerView recyclerView;
 	private boolean showImages = true;
+	private ArrayList<Integer> disabled = new ArrayList<>();
 	private OnDialogActionListener onDialogActionListener;
 
 	public void setOnDialogActionListener(OnDialogActionListener onDialogActionListener)
@@ -65,6 +67,11 @@ public class PlantSelectDialogFragment extends DialogFragment
 		this.allowMultiple = multiSelect;
 	}
 
+	public void setDisabled(Integer... disabled)
+	{
+		this.disabled.addAll(Arrays.asList(disabled));
+	}
+
 	@Override public Dialog onCreateDialog(Bundle savedInstanceState)
 	{
 		View view = getActivity().getLayoutInflater().inflate(R.layout.plant_list_dialog_view, null, false);
@@ -80,6 +87,14 @@ public class PlantSelectDialogFragment extends DialogFragment
 				{
 					ImageLoader.getInstance().cancelDisplayTask(holder.getImage());
 					holder.getImage().setImageDrawable(null);
+				}
+
+				if (disabled.indexOf(position) > -1)
+				{
+					holder.getCheckbox().setEnabled(false);
+					holder.getCheckbox().setChecked(true);
+					holder.itemView.setEnabled(false);
+					holder.itemView.setAlpha(0.6f);
 				}
 
 				final Plant plant = getPlants().get(position);
