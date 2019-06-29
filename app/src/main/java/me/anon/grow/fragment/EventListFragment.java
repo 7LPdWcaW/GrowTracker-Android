@@ -278,6 +278,7 @@ public class EventListFragment extends Fragment implements ActionAdapter.OnActio
 	@Override public void onActionCopy(final Action action)
 	{
 		PlantSelectDialogFragment dialogFragment = new PlantSelectDialogFragment(true);
+		dialogFragment.setDisabled(plantIndex);
 		dialogFragment.setOnDialogActionListener(new PlantSelectDialogFragment.OnDialogActionListener()
 		{
 			@Override public void onDialogAccept(final ArrayList<Integer> indexes, boolean showImage)

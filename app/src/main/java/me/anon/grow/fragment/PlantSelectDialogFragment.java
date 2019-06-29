@@ -6,6 +6,7 @@ import android.app.Dialog;
 import android.app.DialogFragment;
 import android.content.DialogInterface;
 import android.os.Bundle;
+import android.preference.PreferenceManager;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.View;
@@ -15,6 +16,7 @@ import android.widget.TextView;
 import com.nostra13.universalimageloader.core.ImageLoader;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 
 import me.anon.controller.adapter.PlantSelectionAdapter;
 import me.anon.grow.R;
@@ -46,11 +48,18 @@ public class PlantSelectDialogFragment extends DialogFragment
 	private PlantSelectionAdapter adapter;
 	@Views.InjectView(R.id.recycler_view) private RecyclerView recyclerView;
 	private boolean showImages = true;
+	private ArrayList<Integer> disabled = new ArrayList<>();
 	private OnDialogActionListener onDialogActionListener;
+	private DialogInterface.OnDismissListener onDismissListener;
 
 	public void setOnDialogActionListener(OnDialogActionListener onDialogActionListener)
 	{
 		this.onDialogActionListener = onDialogActionListener;
+	}
+
+	public void setOnDismissListener(DialogInterface.OnDismissListener onDismissListener)
+	{
+		this.onDismissListener = onDismissListener;
 	}
 
 	@SuppressLint("ValidFragment")
@@ -65,6 +74,11 @@ public class PlantSelectDialogFragment extends DialogFragment
 		this.allowMultiple = multiSelect;
 	}
 
+	public void setDisabled(Integer... disabled)
+	{
+		this.disabled.addAll(Arrays.asList(disabled));
+	}
+
 	@Override public Dialog onCreateDialog(Bundle savedInstanceState)
 	{
 		View view = getActivity().getLayoutInflater().inflate(R.layout.plant_list_dialog_view, null, false);
@@ -76,13 +90,26 @@ public class PlantSelectDialogFragment extends DialogFragment
 			{
 				super.onBindViewHolder(holder, position);
 
+				final Plant plant = getPlants().get(position);
 				if (!showImages)
 				{
 					ImageLoader.getInstance().cancelDisplayTask(holder.getImage());
 					holder.getImage().setImageDrawable(null);
 				}
 
-				final Plant plant = getPlants().get(position);
+				holder.getCheckbox().setEnabled(true);
+				holder.getCheckbox().setChecked(getSelectedIds().indexOf(plant.getId()) > -1);
+				holder.itemView.setEnabled(true);
+				holder.itemView.setAlpha(1.0f);
+
+				if (disabled.indexOf(position) > -1)
+				{
+					holder.getCheckbox().setEnabled(false);
+					holder.getCheckbox().setChecked(true);
+					holder.itemView.setEnabled(false);
+					holder.itemView.setAlpha(0.6f);
+				}
+
 				holder.itemView.setOnClickListener(new View.OnClickListener()
 				{
 					@Override public void onClick(View view)
@@ -104,14 +131,17 @@ public class PlantSelectDialogFragment extends DialogFragment
 							getSelectedIds().remove(plant.getId());
 						}
 
-						adapter.notifyItemChanged(position);
+						adapter.notifyDataSetChanged();
 					}
 				});
 			}
 		};
 
 		recyclerView.setAdapter(adapter);
-		recyclerView.setLayoutManager(new LinearLayoutManager(getActivity(), LinearLayoutManager.VERTICAL, false));
+		boolean reverse = PreferenceManager.getDefaultSharedPreferences(getActivity()).getBoolean("reverse_order", false);
+		LinearLayoutManager layoutManager = new LinearLayoutManager(getActivity(), LinearLayoutManager.VERTICAL, reverse);
+		layoutManager.setStackFromEnd(reverse);
+		recyclerView.setLayoutManager(layoutManager);
 
 		final AlertDialog alertDialog = new AlertDialog.Builder(getActivity())
 			.setTitle("Select plant")
@@ -128,7 +158,7 @@ public class PlantSelectDialogFragment extends DialogFragment
 
 		alertDialog.setOnShowListener(new DialogInterface.OnShowListener()
 		{
-			@Override public void onShow(DialogInterface dialogInterface)
+			@Override public void onShow(final DialogInterface dialogInterface)
 			{
 				alertDialog.getButton(DialogInterface.BUTTON_POSITIVE).setOnClickListener(new View.OnClickListener()
 				{
@@ -163,7 +193,12 @@ public class PlantSelectDialogFragment extends DialogFragment
 				{
 					@Override public void onClick(View v)
 					{
-						getActivity().finish();
+						alertDialog.dismiss();
+
+						if (onDismissListener != null)
+						{
+							onDismissListener.onDismiss(dialogInterface);
+						}
 					}
 				});
 
