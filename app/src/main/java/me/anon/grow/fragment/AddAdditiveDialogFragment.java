@@ -61,8 +61,9 @@ public class AddAdditiveDialogFragment extends DialogFragment
 		Views.inject(this, view);
 
 		final Unit selectedUnit = Unit.getSelectedMeasurementUnit(getActivity());
+		final Unit deliveryUnit = Unit.getSelectedDeliveryUnit(getActivity());
 
-		amount.setHint(selectedUnit.getLabel());
+		amount.setHint(selectedUnit.getLabel() + "/" + deliveryUnit.getLabel());
 
 		if (additive != null)
 		{
