@@ -264,12 +264,16 @@ public class ViewPhotosFragment extends Fragment
 					}
 				}
 
-				String stageDayStr = "";
+				String stageDayStr = " – ";
 				if (lastChange != null)
 				{
+					stageDayStr = " – ";
+					int totalDays = (int)TimeHelper.toDays(Math.abs(fileDate - plant.getPlantDate()));
+					stageDayStr += (totalDays == 0 ? 1 : totalDays);
+
 					int currentDays = (int)TimeHelper.toDays(Math.abs(currentChange.getDate() - lastChange.getDate()));
 					currentDays = (currentDays == 0 ? 1 : currentDays);
-					stageDayStr += " ~" + currentDays + lastChange.getNewStage().getPrintString().substring(0, 1).toLowerCase();
+					stageDayStr += "/" + currentDays + lastChange.getNewStage().getPrintString().substring(0, 1).toLowerCase();
 				}
 
 				sections.add(new SectionedGridRecyclerViewAdapter.Section(index, printedFileDate + stageDayStr));
