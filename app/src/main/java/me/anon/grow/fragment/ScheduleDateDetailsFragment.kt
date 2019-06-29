@@ -15,14 +15,12 @@ import android.widget.TextView
 import kotlinx.android.synthetic.main.schedule_date_details_view.*
 import me.anon.grow.R
 import me.anon.lib.Unit
+import me.anon.lib.ext.toSafeInt
 import me.anon.lib.manager.ScheduleManager
 import me.anon.model.Additive
 import me.anon.model.FeedingScheduleDate
 import me.anon.model.PlantStage
 
-/**
- * // TODO: Add class description
- */
 class ScheduleDateDetailsFragment : Fragment()
 {
 	companion object
@@ -110,8 +108,8 @@ class ScheduleDateDetailsFragment : Fragment()
 				return@setOnClickListener
 			}
 
-			val fromDate = from_date.text.toString().toInt()
-			val toDate = if (to_date.text.isEmpty()) fromDate else to_date.text.toString().toInt()
+			val fromDate = from_date.text.toString().toSafeInt()
+			val toDate = if (to_date.text.isEmpty()) fromDate else to_date.text.toString().toSafeInt()
 			val fromStage = PlantStage.valueOfPrintString(from_stage.selectedItem as String)!!
 			val toStage = PlantStage.valueOfPrintString(to_stage.selectedItem as String)!!
 
