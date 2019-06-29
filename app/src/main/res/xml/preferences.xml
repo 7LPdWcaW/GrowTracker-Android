@@ -77,6 +77,8 @@
 			android:summary="Currently 20mb / Using 0mb"
 			android:hint="Size in MB"
 			android:defaultValue="20"
+			android:dialogTitle="Backup limit (mb)"
+			android:inputType="numberSigned"
 		/>
 
 		<Preference
