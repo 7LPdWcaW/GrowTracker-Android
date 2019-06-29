@@ -439,10 +439,12 @@ public class PlantDetailsFragment extends Fragment
 				new File(plant.getImages().get(plant.getImages().size() - 1)).delete();
 				plant.getImages().remove(plant.getImages().size() - 1);
 			}
-
-			PlantManager.getInstance().upsert(plantIndex, plant);
-			PlantWidgetProvider.triggerUpdateAll(getActivity());
-			AddonHelper.broadcastImage(getActivity(), plant.getImages().get(plant.getImages().size() - 1), false);
+			else
+			{
+				PlantManager.getInstance().upsert(plantIndex, plant);
+				PlantWidgetProvider.triggerUpdateAll(getActivity());
+				AddonHelper.broadcastImage(getActivity(), plant.getImages().get(plant.getImages().size() - 1), false);
+			}
 		}
 		else if (requestCode == 2)
 		{
