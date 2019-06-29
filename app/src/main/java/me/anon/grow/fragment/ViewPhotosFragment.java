@@ -366,12 +366,14 @@ public class ViewPhotosFragment extends Fragment
 				new File(plant.getImages().get(plant.getImages().size() - 1)).delete();
 				plant.getImages().remove(plant.getImages().size() - 1);
 			}
+			else
+			{
+				PlantManager.getInstance().upsert(plantIndex, plant);
+				AddonHelper.broadcastImage(getActivity(), plant.getImages().get(plant.getImages().size() - 1), false);
 
-			PlantManager.getInstance().upsert(plantIndex, plant);
-			AddonHelper.broadcastImage(getActivity(), plant.getImages().get(plant.getImages().size() - 1), false);
-
-			setAdapter();
-			adapter.notifyDataSetChanged();
+				setAdapter();
+				adapter.notifyDataSetChanged();
+			}
 		}
 		else if (requestCode == 3) // choose image from gallery
 		{
