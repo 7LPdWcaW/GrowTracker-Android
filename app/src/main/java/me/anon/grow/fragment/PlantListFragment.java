@@ -270,7 +270,7 @@ public class PlantListFragment extends Fragment
 						}
 					}
 
-					@Override public void onSnackBarAction(Object o)
+					@Override public void onSnackBarAction(View v)
 					{
 					}
 				});
@@ -312,7 +312,7 @@ public class PlantListFragment extends Fragment
 						}
 					}
 
-					@Override public void onSnackBarAction(Object o)
+					@Override public void onSnackBarAction(View v)
 					{
 					}
 				});
@@ -338,7 +338,7 @@ public class PlantListFragment extends Fragment
 						}
 					}
 
-					@Override public void onSnackBarAction(Object object)
+					@Override public void onSnackBarAction(View v)
 					{
 
 					}
@@ -420,7 +420,9 @@ public class PlantListFragment extends Fragment
 					{
 						final Garden oldGarden = garden;
 						final int oldIndex = GardenManager.getInstance().getGardens().indexOf(garden);
+						final int defaultGarden = PreferenceManager.getDefaultSharedPreferences(getActivity()).getInt("default_garden", -1);
 
+						PreferenceManager.getDefaultSharedPreferences(getActivity()).edit().remove("default_garden").apply();
 						GardenManager.getInstance().getGardens().remove(garden);
 						GardenManager.getInstance().save();
 
@@ -429,8 +431,9 @@ public class PlantListFragment extends Fragment
 							@Override public void onSnackBarStarted(Object o){}
 							@Override public void onSnackBarFinished(Object o){}
 
-							@Override public void onSnackBarAction(Object o)
+							@Override public void onSnackBarAction(View o)
 							{
+								PreferenceManager.getDefaultSharedPreferences(o.getContext()).edit().putInt("default_garden", defaultGarden).apply();
 								GardenManager.getInstance().getGardens().add(oldIndex, oldGarden);
 								GardenManager.getInstance().save();
 
