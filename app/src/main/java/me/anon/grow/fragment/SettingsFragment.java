@@ -632,10 +632,20 @@ public class SettingsFragment extends PreferenceFragment implements Preference.O
 
 				@Override public String toString()
 				{
-					DateFormat dateFormat = android.text.format.DateFormat.getDateFormat(getActivity());
-					DateFormat timeFormat = android.text.format.DateFormat.getTimeFormat(getActivity());
 					boolean encrypted = plantsPath != null && plantsPath.endsWith("dat");
-					return dateFormat.format(date) + " " + timeFormat.format(date) + " (" + (encrypted ? "encrypted " : "") + lengthToString(size, false) + ")";
+					String out = "(" + (encrypted ? "encrypted " : "") + lengthToString(size, false) + ")";
+					if (getActivity() != null)
+					{
+						DateFormat dateFormat = android.text.format.DateFormat.getDateFormat(getActivity());
+						DateFormat timeFormat = android.text.format.DateFormat.getTimeFormat(getActivity());
+						out = dateFormat.format(date) + " " + timeFormat.format(date) + " " + out;
+					}
+					else
+					{
+						out = date + " " + out;
+					}
+
+					return out;
 				}
 			}
 
@@ -735,6 +745,7 @@ public class SettingsFragment extends PreferenceFragment implements Preference.O
 					@Override public void onClick(DialogInterface dialog, int which)
 					{
 						BackupData selectedBackup = backups.get(which);
+						String selectedBackupStr = selectedBackup.toString();
 
 						if ((MainApplication.isFailsafe()))
 						{
@@ -780,7 +791,7 @@ public class SettingsFragment extends PreferenceFragment implements Preference.O
 						if (!loaded)
 						{
 							String errorEnd = MainApplication.isEncrypted() ? "unencrypted" : "encryped";
-							SnackBar.show(getActivity(), "Could not restore from backup " + selectedBackup + ". File may be " + errorEnd, Snackbar.LENGTH_INDEFINITE, null);
+							SnackBar.show(getActivity(), "Could not restore from backup " + selectedBackupStr + ". File may be " + errorEnd, Snackbar.LENGTH_INDEFINITE, null);
 							FileManager.getInstance().copyFile(PlantManager.FILES_DIR + "/plants.temp", PlantManager.FILES_DIR + "/plants.json");
 							FileManager.getInstance().copyFile(GardenManager.FILES_DIR + "/gardens.temp", GardenManager.FILES_DIR + "/gardens.json");
 							FileManager.getInstance().copyFile(ScheduleManager.FILES_DIR + "/schedules.temp", ScheduleManager.FILES_DIR + "/schedules.json");
@@ -790,7 +801,7 @@ public class SettingsFragment extends PreferenceFragment implements Preference.O
 						}
 						else
 						{
-							Toast.makeText(getActivity(), "Restore to " + selectedBackup + " completed", Toast.LENGTH_LONG).show();
+							Toast.makeText(getActivity(), "Restore to " + selectedBackupStr + " completed", Toast.LENGTH_LONG).show();
 							getActivity().recreate();
 						}
 					}
