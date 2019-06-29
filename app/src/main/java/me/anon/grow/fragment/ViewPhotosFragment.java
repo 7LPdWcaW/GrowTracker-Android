@@ -157,6 +157,7 @@ public class ViewPhotosFragment extends Fragment
 										for (Integer integer : adapter.getSelected())
 										{
 											String image = adapter.getImages().get(integer);
+											new File(image).delete();
 											plant.getImages().remove(image);
 											AddonHelper.broadcastImage(getActivity(), image, true);
 										}
