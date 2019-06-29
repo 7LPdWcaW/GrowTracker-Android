@@ -307,8 +307,8 @@ public class Plant
 			}
 		}
 
-		// This should never be reached.
-		return null;
+		// Apparently this could be reached
+		return PlantStage.PLANTED;
 	}
 
 	/**
@@ -325,6 +325,13 @@ public class Plant
 			{
 				stages.put(((StageChange)actions.get(index)).getNewStage(), actions.get(index));
 			}
+		}
+
+		if (stages.isEmpty())
+		{
+			StageChange stageChange = new StageChange(PlantStage.PLANTED);
+			stageChange.setDate(plantDate);
+			stages.put(PlantStage.PLANTED, stageChange);
 		}
 
 		return stages;
@@ -371,24 +378,32 @@ public class Plant
 
 		int stageIndex = 0;
 		long lastStage = 0;
-		PlantStage previous = stages.firstKey();
-		for (PlantStage plantStage : stages.keySet())
+		if (!stages.isEmpty())
 		{
-			long difference = 0;
-			if (stageIndex == 0)
+			PlantStage previous = stages.firstKey();
+			for (PlantStage plantStage : stages.keySet())
 			{
-				difference = endDate - stages.get(plantStage);
-			}
-			else
-			{
-				difference = lastStage - stages.get(plantStage);
-			}
+				long difference = 0;
+				if (stageIndex == 0)
+				{
+					difference = endDate - stages.get(plantStage);
+				}
+				else
+				{
+					difference = lastStage - stages.get(plantStage);
+				}
 
-			previous = plantStage;
-			lastStage = stages.get(plantStage);
-			stageIndex++;
+				previous = plantStage;
+				lastStage = stages.get(plantStage);
+				stageIndex++;
 
-			stages.put(plantStage, difference);
+				stages.put(plantStage, difference);
+			}
+		}
+		else
+		{
+			PlantStage planted = PlantStage.PLANTED;
+			stages.put(planted, 0l);
 		}
 
 		return stages;
