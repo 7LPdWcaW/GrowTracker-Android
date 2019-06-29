@@ -6,6 +6,7 @@ import android.app.Dialog;
 import android.app.DialogFragment;
 import android.content.DialogInterface;
 import android.os.Bundle;
+import android.preference.PreferenceManager;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.View;
@@ -49,10 +50,16 @@ public class PlantSelectDialogFragment extends DialogFragment
 	private boolean showImages = true;
 	private ArrayList<Integer> disabled = new ArrayList<>();
 	private OnDialogActionListener onDialogActionListener;
+	private DialogInterface.OnDismissListener onDismissListener;
 
 	public void setOnDialogActionListener(OnDialogActionListener onDialogActionListener)
 	{
 		this.onDialogActionListener = onDialogActionListener;
+	}
+
+	public void setOnDismissListener(DialogInterface.OnDismissListener onDismissListener)
+	{
+		this.onDismissListener = onDismissListener;
 	}
 
 	@SuppressLint("ValidFragment")
@@ -83,11 +90,17 @@ public class PlantSelectDialogFragment extends DialogFragment
 			{
 				super.onBindViewHolder(holder, position);
 
+				final Plant plant = getPlants().get(position);
 				if (!showImages)
 				{
 					ImageLoader.getInstance().cancelDisplayTask(holder.getImage());
 					holder.getImage().setImageDrawable(null);
 				}
+
+				holder.getCheckbox().setEnabled(true);
+				holder.getCheckbox().setChecked(getSelectedIds().indexOf(plant.getId()) > -1);
+				holder.itemView.setEnabled(true);
+				holder.itemView.setAlpha(1.0f);
 
 				if (disabled.indexOf(position) > -1)
 				{
@@ -97,7 +110,6 @@ public class PlantSelectDialogFragment extends DialogFragment
 					holder.itemView.setAlpha(0.6f);
 				}
 
-				final Plant plant = getPlants().get(position);
 				holder.itemView.setOnClickListener(new View.OnClickListener()
 				{
 					@Override public void onClick(View view)
@@ -119,14 +131,17 @@ public class PlantSelectDialogFragment extends DialogFragment
 							getSelectedIds().remove(plant.getId());
 						}
 
-						adapter.notifyItemChanged(position);
+						adapter.notifyDataSetChanged();
 					}
 				});
 			}
 		};
 
 		recyclerView.setAdapter(adapter);
-		recyclerView.setLayoutManager(new LinearLayoutManager(getActivity(), LinearLayoutManager.VERTICAL, false));
+		boolean reverse = PreferenceManager.getDefaultSharedPreferences(getActivity()).getBoolean("reverse_order", false);
+		LinearLayoutManager layoutManager = new LinearLayoutManager(getActivity(), LinearLayoutManager.VERTICAL, reverse);
+		layoutManager.setStackFromEnd(reverse);
+		recyclerView.setLayoutManager(layoutManager);
 
 		final AlertDialog alertDialog = new AlertDialog.Builder(getActivity())
 			.setTitle("Select plant")
@@ -143,7 +158,7 @@ public class PlantSelectDialogFragment extends DialogFragment
 
 		alertDialog.setOnShowListener(new DialogInterface.OnShowListener()
 		{
-			@Override public void onShow(DialogInterface dialogInterface)
+			@Override public void onShow(final DialogInterface dialogInterface)
 			{
 				alertDialog.getButton(DialogInterface.BUTTON_POSITIVE).setOnClickListener(new View.OnClickListener()
 				{
@@ -178,7 +193,12 @@ public class PlantSelectDialogFragment extends DialogFragment
 				{
 					@Override public void onClick(View v)
 					{
-						getActivity().finish();
+						alertDialog.dismiss();
+
+						if (onDismissListener != null)
+						{
+							onDismissListener.onDismiss(dialogInterface);
+						}
 					}
 				});
 
