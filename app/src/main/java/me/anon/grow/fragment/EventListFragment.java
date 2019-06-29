@@ -224,7 +224,7 @@ public class EventListFragment extends Fragment implements ActionAdapter.OnActio
 						}
 					}
 
-					@Override public void onSnackBarAction(Object o)
+					@Override public void onSnackBarAction(View v)
 					{
 						plant.getActions().remove(action);
 						PlantManager.getInstance().upsert(plantIndex, plant);
@@ -265,7 +265,7 @@ public class EventListFragment extends Fragment implements ActionAdapter.OnActio
 				}
 			}
 
-			@Override public void onSnackBarAction(Object o)
+			@Override public void onSnackBarAction(View v)
 			{
 				PlantManager.getInstance().getPlants().get(plantIndex).getActions().remove(PlantManager.getInstance().getPlants().get(plantIndex).getActions().size() - 1);
 				PlantManager.getInstance().save();
@@ -313,7 +313,7 @@ public class EventListFragment extends Fragment implements ActionAdapter.OnActio
 						}
 					}
 
-					@Override public void onSnackBarAction(Object o)
+					@Override public void onSnackBarAction(View v)
 					{
 						for (int plantIndex = 0; plantIndex < indexes.size(); plantIndex++)
 						{
@@ -376,7 +376,7 @@ public class EventListFragment extends Fragment implements ActionAdapter.OnActio
 							}
 						}
 
-						@Override public void onSnackBarAction(Object o)
+						@Override public void onSnackBarAction(View v)
 						{
 							plant.getActions().set(originalIndex, action);
 							PlantManager.getInstance().upsert(plantIndex, plant);
@@ -418,7 +418,7 @@ public class EventListFragment extends Fragment implements ActionAdapter.OnActio
 							}
 						}
 
-						@Override public void onSnackBarAction(Object o)
+						@Override public void onSnackBarAction(View v)
 						{
 							plant.getActions().set(originalIndex, action);
 							PlantManager.getInstance().upsert(plantIndex, plant);
@@ -466,7 +466,7 @@ public class EventListFragment extends Fragment implements ActionAdapter.OnActio
 							}
 						}
 
-						@Override public void onSnackBarAction(Object o)
+						@Override public void onSnackBarAction(View v)
 						{
 							plant.getActions().set(originalIndex, action);
 							PlantManager.getInstance().upsert(plantIndex, plant);
@@ -506,7 +506,7 @@ public class EventListFragment extends Fragment implements ActionAdapter.OnActio
 				}
 			}
 
-			@Override public void onSnackBarAction(Object o)
+			@Override public void onSnackBarAction(View v)
 			{
 				plant.getActions().add(originalIndex, action);
 				setActions();

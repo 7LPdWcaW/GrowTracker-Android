@@ -270,7 +270,7 @@ public class PlantListFragment extends Fragment
 						}
 					}
 
-					@Override public void onSnackBarAction(Object o)
+					@Override public void onSnackBarAction(View v)
 					{
 					}
 				});
@@ -312,7 +312,7 @@ public class PlantListFragment extends Fragment
 						}
 					}
 
-					@Override public void onSnackBarAction(Object o)
+					@Override public void onSnackBarAction(View v)
 					{
 					}
 				});
@@ -338,7 +338,7 @@ public class PlantListFragment extends Fragment
 						}
 					}
 
-					@Override public void onSnackBarAction(Object object)
+					@Override public void onSnackBarAction(View v)
 					{
 
 					}
@@ -429,7 +429,7 @@ public class PlantListFragment extends Fragment
 							@Override public void onSnackBarStarted(Object o){}
 							@Override public void onSnackBarFinished(Object o){}
 
-							@Override public void onSnackBarAction(Object o)
+							@Override public void onSnackBarAction(View o)
 							{
 								GardenManager.getInstance().getGardens().add(oldIndex, oldGarden);
 								GardenManager.getInstance().save();
