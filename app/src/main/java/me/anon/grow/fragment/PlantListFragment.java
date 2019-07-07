@@ -27,6 +27,7 @@ import com.esotericsoftware.kryo.Kryo;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collections;
 
 import me.anon.controller.adapter.PlantAdapter;
 import me.anon.controller.adapter.SimpleItemTouchHelperCallback;
@@ -147,6 +148,36 @@ public class PlantListFragment extends Fragment
 			@Override public boolean isLongPressDragEnabled()
 			{
 				return !beingFiltered();
+			}
+
+			@Override public boolean onMove(RecyclerView recyclerView, RecyclerView.ViewHolder viewHolder, RecyclerView.ViewHolder target)
+			{
+				int fromPosition = viewHolder.getAdapterPosition();
+				int toPosition = target.getAdapterPosition();
+
+				if (fromPosition < toPosition)
+				{
+					for (int index = fromPosition; index < toPosition; index++)
+					{
+						Collections.swap(PlantManager.getInstance().getPlants(), index, index + 1);
+						Collections.swap(adapter.getPlants(), index, index + 1);
+						adapter.notifyItemChanged(index, Boolean.TRUE);
+						adapter.notifyItemChanged(index + 1, Boolean.TRUE);
+					}
+				}
+				else
+				{
+					for (int index = fromPosition; index > toPosition; index--)
+					{
+						Collections.swap(PlantManager.getInstance().getPlants(), index, index - 1);
+						Collections.swap(adapter.getPlants(), index, index - 1);
+						adapter.notifyItemChanged(index, Boolean.TRUE);
+						adapter.notifyItemChanged(index - 1, Boolean.TRUE);
+					}
+				}
+
+				adapter.notifyItemMoved(fromPosition, toPosition);
+				return true;
 			}
 		};
 		ItemTouchHelper touchHelper = new ItemTouchHelper(callback);
