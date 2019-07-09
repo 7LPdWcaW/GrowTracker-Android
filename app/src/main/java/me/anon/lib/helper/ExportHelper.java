@@ -223,7 +223,7 @@ public class ExportHelper
 				plantDetails.append(NEW_LINE);
 
 				ArrayList<Action> actions = plant.getActions();
-				for (int i = actions.size(); i >= 0; i--)
+				for (int i = actions.size() - 1; i >= 0; i--)
 				{
 					Action action = actions.get(i);
 					plantDetails.append("### ").append(printableDate(context, action.getDate()));
@@ -520,7 +520,7 @@ public class ExportHelper
 					.setContentIntent(PendingIntent.getActivity(appContext, 0, new Intent(), PendingIntent.FLAG_UPDATE_CURRENT))
 					.setTicker("Exporting grow log for " + (plant.size() == 1 ? plant.get(0).getName() : "multiple plants"))
 					.setSmallIcon(R.drawable.ic_stat_name)
-					.setPriority(NotificationCompat.PRIORITY_DEFAULT)
+					.setPriority(NotificationCompat.PRIORITY_LOW)
 					.setSound(null);
 
 				notificationManager.notify(0, exportNotification.build());
@@ -528,8 +528,15 @@ public class ExportHelper
 
 			@Override protected void onProgressUpdate(Integer... values)
 			{
-				exportNotification.setProgress(values[1], values[0], false);
-				notificationManager.notify(0, exportNotification.build());
+				if (values[1] == values[0])
+				{
+					notificationManager.cancel(0);
+				}
+				else
+				{
+					exportNotification.setProgress(values[1], values[0], false);
+					notificationManager.notify(0, exportNotification.build());
+				}
 			}
 
 			@Override protected File doInBackground(Plant... params)
@@ -576,6 +583,7 @@ public class ExportHelper
 					}
 				}
 
+				notificationManager.cancel(0);
 				callback.onCallback(appContext, finalFile.getFile());
 				return null;
 			}
