@@ -8,7 +8,9 @@ import android.content.Context;
 import android.content.DialogInterface;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
+import android.text.Editable;
 import android.text.TextUtils;
+import android.text.TextWatcher;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.WindowManager;
@@ -69,9 +71,9 @@ public class PinDialogFragment extends DialogFragment
 		{
 			@Override public void onClick(DialogInterface dialog, int which)
 			{
-				if (onDialogConfirmed != null)
+				if (onDialogConfirmed != null && !TextUtils.isEmpty(input.getText()))
 				{
-					onDialogConfirmed.onDialogConfirmed(TextUtils.isEmpty(input.getText()) ? null : input.getText().toString());
+					onDialogConfirmed.onDialogConfirmed(input.getText().toString());
 				}
 			}
 		});
@@ -86,7 +88,27 @@ public class PinDialogFragment extends DialogFragment
 			}
 		});
 
-		return dialog.create();
+		final Dialog show = dialog.create();
+		show.setOnShowListener(new DialogInterface.OnShowListener()
+		{
+			@Override public void onShow(DialogInterface dialog)
+			{
+				((AlertDialog)show).getButton(DialogInterface.BUTTON_POSITIVE).setEnabled(false);
+				input.addTextChangedListener(new TextWatcher()
+				{
+					@Override public void beforeTextChanged(CharSequence s, int start, int count, int after){}
+					@Override public void onTextChanged(CharSequence s, int start, int before, int count){}
+
+					@Override public void afterTextChanged(Editable s)
+					{
+						((AlertDialog)show).getButton(DialogInterface.BUTTON_POSITIVE).setEnabled(s.length() > 0);
+					}
+				});
+
+			}
+		});
+
+		return show;
 	}
 
 	@Override public void onCancel(DialogInterface dialog)
