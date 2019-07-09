@@ -23,7 +23,7 @@ object NotificationHelper
 		if (Build.VERSION.SDK_INT >= 26)
 		{
 			val notificationManager = context.getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
-			val channel = NotificationChannel("export", "Export status", NotificationManager.IMPORTANCE_HIGH)
+			val channel = NotificationChannel("export", "Export status", NotificationManager.IMPORTANCE_DEFAULT)
 			channel.setSound(null, null)
 			channel.enableLights(false)
 			channel.enableVibration(false)
@@ -67,7 +67,7 @@ object NotificationHelper
 			.setContentText(message)
 			.setTicker(title)
 			.setContentTitle("Export Complete")
-			.setContentIntent(PendingIntent.getActivity(context, 0, openIntent, PendingIntent.FLAG_UPDATE_CURRENT))
+			.setContentIntent(PendingIntent.getActivity(context, 0, openIntent, PendingIntent.FLAG_CANCEL_CURRENT))
 			.setStyle(NotificationCompat.BigTextStyle()
 				.bigText(message)
 			)

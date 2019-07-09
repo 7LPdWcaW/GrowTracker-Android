@@ -438,7 +438,7 @@ public class PlantListFragment extends Fragment
 			NotificationHelper.sendExportNotification(getActivity(), "Exporting garden grow log", "Exporting " + garden.getName());
 
 			ArrayList<Plant> export = new ArrayList<>(adapter.getPlants());
-			exportPlants(export);
+			ExportService.export(getActivity(), export, garden.getName().replaceAll("[^a-zA-Z0-9]+", "-"), garden.getName());
 		}
 		else if (item.getItemId() == R.id.delete_garden)
 		{
@@ -522,12 +522,6 @@ public class PlantListFragment extends Fragment
 		}
 
 		return super.onOptionsItemSelected(item);
-	}
-
-	private void exportPlants(final ArrayList<Plant> plants)
-	{
-		Toast.makeText(getActivity(), "Exporting grow log...", Toast.LENGTH_SHORT).show();
-		ExportService.export(getActivity(), plants, garden.getName().replaceAll("[^a-zA-Z0-9]+", "-"), garden.getName());
 	}
 
 	private void filter()

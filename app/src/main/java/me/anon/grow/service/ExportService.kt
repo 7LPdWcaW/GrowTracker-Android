@@ -12,6 +12,7 @@ import me.anon.lib.ExportCallback
 import me.anon.lib.helper.ExportHelper
 import me.anon.lib.helper.GsonHelper
 import me.anon.lib.helper.NotificationHelper
+import me.anon.lib.manager.PlantManager
 import me.anon.model.Plant
 import java.io.File
 
@@ -25,9 +26,8 @@ class ExportService : Service()
 		@JvmStatic
 		public fun export(context: Context, plants: ArrayList<Plant>, title: String, name: String)
 		{
-			val plantStr = GsonHelper.getGson().toJson(plants, object : TypeToken<ArrayList<Plant>>(){}.type)
 			val intent = Intent(context, ExportService::class.java)
-			intent.putExtra("plants", plantStr)
+			intent.putStringArrayListExtra("plants", ArrayList(plants.map { it.id }))
 			intent.putExtra("title", title)
 			intent.putExtra("name", name)
 			context.startService(intent)
@@ -39,7 +39,9 @@ class ExportService : Service()
 	override fun onStartCommand(intent: Intent?, flags: Int, startId: Int): Int
 	{
 		intent?.let {
-			val plants = GsonHelper.parse<ArrayList<Plant>>(it.extras.getString("plants", "[]"), object : TypeToken<ArrayList<Plant>>(){}.type) as ArrayList<Plant>
+			val plantsIds = it.extras.getStringArrayList("plants") ?: arrayListOf()
+
+			val plants = ArrayList(PlantManager.getInstance().plants.filter { plantsIds.contains(it.id) })
 			val title = it.getStringExtra("title")
 			val name = it.getStringExtra("name")
 
@@ -61,6 +63,8 @@ class ExportService : Service()
 					{
 						context.sendBroadcast(Intent(Intent.ACTION_MEDIA_MOUNTED, Uri.fromFile(file)))
 					}
+
+					stopSelf()
 				}
 			})
 		}
