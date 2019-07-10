@@ -138,7 +138,7 @@ public class PlantAdapter extends RecyclerView.Adapter implements ItemTouchHelpe
 				@Override public void onClick(View v)
 				{
 					Intent details = new Intent(v.getContext(), PlantDetailsActivity.class);
-					details.putExtra("plant_index", plants.indexOf(plant));
+					details.putExtra("plant_index", PlantManager.getInstance().getPlants().indexOf(plant));
 					v.getContext().startActivity(details);
 				}
 			});
