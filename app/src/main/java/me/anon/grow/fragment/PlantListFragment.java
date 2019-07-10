@@ -27,6 +27,7 @@ import com.esotericsoftware.kryo.Kryo;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collections;
 
 import me.anon.controller.adapter.PlantAdapter;
 import me.anon.controller.adapter.SimpleItemTouchHelperCallback;
@@ -147,6 +148,36 @@ public class PlantListFragment extends Fragment
 			@Override public boolean isLongPressDragEnabled()
 			{
 				return !beingFiltered();
+			}
+
+			@Override public boolean onMove(RecyclerView recyclerView, RecyclerView.ViewHolder viewHolder, RecyclerView.ViewHolder target)
+			{
+				int fromPosition = viewHolder.getAdapterPosition();
+				int toPosition = target.getAdapterPosition();
+
+				if (fromPosition < toPosition)
+				{
+					for (int index = fromPosition; index < toPosition; index++)
+					{
+						Collections.swap(PlantManager.getInstance().getPlants(), index, index + 1);
+						Collections.swap(adapter.getPlants(), index, index + 1);
+						adapter.notifyItemChanged(index, Boolean.TRUE);
+						adapter.notifyItemChanged(index + 1, Boolean.TRUE);
+					}
+				}
+				else
+				{
+					for (int index = fromPosition; index > toPosition; index--)
+					{
+						Collections.swap(PlantManager.getInstance().getPlants(), index, index - 1);
+						Collections.swap(adapter.getPlants(), index, index - 1);
+						adapter.notifyItemChanged(index, Boolean.TRUE);
+						adapter.notifyItemChanged(index - 1, Boolean.TRUE);
+					}
+				}
+
+				adapter.notifyItemMoved(fromPosition, toPosition);
+				return true;
 			}
 		};
 		ItemTouchHelper touchHelper = new ItemTouchHelper(callback);
@@ -270,7 +301,7 @@ public class PlantListFragment extends Fragment
 						}
 					}
 
-					@Override public void onSnackBarAction(Object o)
+					@Override public void onSnackBarAction(View v)
 					{
 					}
 				});
@@ -312,7 +343,7 @@ public class PlantListFragment extends Fragment
 						}
 					}
 
-					@Override public void onSnackBarAction(Object o)
+					@Override public void onSnackBarAction(View v)
 					{
 					}
 				});
@@ -338,7 +369,7 @@ public class PlantListFragment extends Fragment
 						}
 					}
 
-					@Override public void onSnackBarAction(Object object)
+					@Override public void onSnackBarAction(View v)
 					{
 
 					}
@@ -407,7 +438,7 @@ public class PlantListFragment extends Fragment
 			NotificationHelper.sendExportNotification(getActivity(), "Exporting garden grow log", "Exporting " + garden.getName());
 
 			ArrayList<Plant> export = new ArrayList<>(adapter.getPlants());
-			exportPlants(export);
+			ExportService.export(getActivity(), export, garden.getName().replaceAll("[^a-zA-Z0-9]+", "-"), garden.getName());
 		}
 		else if (item.getItemId() == R.id.delete_garden)
 		{
@@ -420,7 +451,9 @@ public class PlantListFragment extends Fragment
 					{
 						final Garden oldGarden = garden;
 						final int oldIndex = GardenManager.getInstance().getGardens().indexOf(garden);
+						final int defaultGarden = PreferenceManager.getDefaultSharedPreferences(getActivity()).getInt("default_garden", -1);
 
+						PreferenceManager.getDefaultSharedPreferences(getActivity()).edit().remove("default_garden").apply();
 						GardenManager.getInstance().getGardens().remove(garden);
 						GardenManager.getInstance().save();
 
@@ -429,8 +462,9 @@ public class PlantListFragment extends Fragment
 							@Override public void onSnackBarStarted(Object o){}
 							@Override public void onSnackBarFinished(Object o){}
 
-							@Override public void onSnackBarAction(Object o)
+							@Override public void onSnackBarAction(View o)
 							{
+								PreferenceManager.getDefaultSharedPreferences(o.getContext()).edit().putInt("default_garden", defaultGarden).apply();
 								GardenManager.getInstance().getGardens().add(oldIndex, oldGarden);
 								GardenManager.getInstance().save();
 
@@ -488,12 +522,6 @@ public class PlantListFragment extends Fragment
 		}
 
 		return super.onOptionsItemSelected(item);
-	}
-
-	private void exportPlants(final ArrayList<Plant> plants)
-	{
-		Toast.makeText(getActivity(), "Exporting grow log...", Toast.LENGTH_SHORT).show();
-		ExportService.export(getActivity(), plants, garden.getName().replaceAll("[^a-zA-Z0-9]+", "-"), garden.getName());
 	}
 
 	private void filter()

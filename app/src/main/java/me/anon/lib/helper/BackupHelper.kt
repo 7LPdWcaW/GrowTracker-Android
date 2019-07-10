@@ -4,6 +4,7 @@ import android.content.Context
 import android.os.Environment
 import me.anon.grow.MainApplication
 import me.anon.lib.ext.T
+import me.anon.lib.ext.toSafeInt
 import me.anon.lib.manager.FileManager
 import me.anon.lib.manager.PlantManager
 import java.io.File
@@ -47,7 +48,7 @@ object BackupHelper
 	{
 		File(BackupHelper.FILES_PATH).listFiles()?.let {
 			val sorted = ArrayList(it.sortedBy { it.lastModified() })
-			val limit = size.toInt() * 1_048_576
+			val limit = size.toSafeInt() * 1_048_576
 
 			var currentSize = backupSize()
 			while (currentSize > limit)

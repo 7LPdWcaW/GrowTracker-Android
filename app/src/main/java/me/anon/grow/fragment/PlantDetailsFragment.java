@@ -39,6 +39,8 @@ import android.widget.Toast;
 
 import com.esotericsoftware.kryo.Kryo;
 
+import org.jetbrains.annotations.NotNull;
+
 import java.io.BufferedInputStream;
 import java.io.BufferedOutputStream;
 import java.io.File;
@@ -343,7 +345,7 @@ public class PlantDetailsFragment extends Fragment
 						}
 					}
 
-					@Override public void onSnackBarAction(Object o)
+					@Override public void onSnackBarAction(View v)
 					{
 						plant.getActions().remove(action);
 						PlantManager.getInstance().upsert(plantIndex, plant);
@@ -439,10 +441,12 @@ public class PlantDetailsFragment extends Fragment
 				new File(plant.getImages().get(plant.getImages().size() - 1)).delete();
 				plant.getImages().remove(plant.getImages().size() - 1);
 			}
-
-			PlantManager.getInstance().upsert(plantIndex, plant);
-			PlantWidgetProvider.triggerUpdateAll(getActivity());
-			AddonHelper.broadcastImage(getActivity(), plant.getImages().get(plant.getImages().size() - 1), false);
+			else
+			{
+				PlantManager.getInstance().upsert(plantIndex, plant);
+				PlantWidgetProvider.triggerUpdateAll(getActivity());
+				AddonHelper.broadcastImage(getActivity(), plant.getImages().get(plant.getImages().size() - 1), false);
+			}
 		}
 		else if (requestCode == 2)
 		{
@@ -467,34 +471,51 @@ public class PlantDetailsFragment extends Fragment
 						}
 					}
 
-					@Override public void onSnackBarAction(Object o)
+					@Override public void onSnackBarAction(View v)
 					{
-						final ArrayList<Plant> sortedPlants = PlantManager.getInstance().getSortedPlantList(null);
-						CharSequence[] plants = new CharSequence[sortedPlants.size()];
-						for (int index = 0; index < plants.length; index++)
+						PlantSelectDialogFragment dialog = new PlantSelectDialogFragment(true);
+						dialog.setDisabled(plantIndex);
+						dialog.setOnDialogActionListener(new PlantSelectDialogFragment.OnDialogActionListener()
 						{
-							plants[index] = sortedPlants.get(index).getName();
-						}
-
-						new AlertDialog.Builder(getActivity())
-							.setTitle("Select plant")
-							.setItems(plants, new DialogInterface.OnClickListener()
+							@Override public void onDialogAccept(ArrayList<Integer> plantIndex, boolean showImage)
 							{
-								@Override public void onClick(DialogInterface dialog, int which)
+								Water water = (Water)plant.getActions().get(plant.getActions().size() - 1);
+
+								for (Integer index : plantIndex)
 								{
-									final int originalIndex = PlantManager.getInstance().getPlants().indexOf(sortedPlants.get(which));
-
-									Water water = (Water)plant.getActions().get(plant.getActions().size() - 1);
 									Water copy = new Kryo().copy(water);
-									PlantManager.getInstance().getPlants().get(originalIndex).getActions().add(copy);
-
-									Intent edit = new Intent(getActivity(), EditWateringActivity.class);
-									edit.putExtra("plant_index", originalIndex);
-									edit.putExtra("action_index", PlantManager.getInstance().getPlants().get(originalIndex).getActions().indexOf(copy));
-									startActivityForResult(edit, 2);
+									PlantManager.getInstance().getPlants().get(index).getActions().add(copy);
 								}
-							})
-							.show();
+
+								SnackBar.show(getActivity(), "Waterings added", new SnackBarListener()
+								{
+									@Override public void onSnackBarStarted(Object o)
+									{
+										if (getView() != null)
+										{
+											FabAnimator.animateUp(getView().findViewById(R.id.fab_complete));
+										}
+									}
+
+									@Override public void onSnackBarFinished(Object o)
+									{
+										if (getView() != null)
+										{
+											FabAnimator.animateDown(getView().findViewById(R.id.fab_complete));
+										}
+									}
+
+									@Override public void onSnackBarAction(@NotNull View o)
+									{
+										if (getView() != null)
+										{
+											FabAnimator.animateUp(getView().findViewById(R.id.fab_complete));
+										}
+									}
+								});
+							}
+						});
+						dialog.show(getFragmentManager(), "plant-select");
 					}
 				});
 			}
@@ -576,7 +597,7 @@ public class PlantDetailsFragment extends Fragment
 						}
 					}
 
-					@Override public void onSnackBarAction(Object o)
+					@Override public void onSnackBarAction(View v)
 					{
 						onPhotoClick(null);
 					}
@@ -726,7 +747,7 @@ public class PlantDetailsFragment extends Fragment
 						}
 					}
 
-					@Override public void onSnackBarAction(Object o)
+					@Override public void onSnackBarAction(View v)
 					{
 						Intent plantDetails = new Intent(getActivity(), PlantDetailsActivity.class);
 						plantDetails.putExtra("plant_index", PlantManager.getInstance().getPlants().size() - 1);
@@ -774,7 +795,7 @@ public class PlantDetailsFragment extends Fragment
 						}
 					}
 
-					@Override public void onSnackBarAction(Object o)
+					@Override public void onSnackBarAction(View v)
 					{
 						plant.getActions().remove(action);
 						PlantManager.getInstance().upsert(plantIndex, plant);
@@ -838,7 +859,7 @@ public class PlantDetailsFragment extends Fragment
 							}
 						}
 
-						@Override public void onSnackBarAction(Object o)
+						@Override public void onSnackBarAction(View v)
 						{
 							if (plantIndex > -1)
 							{

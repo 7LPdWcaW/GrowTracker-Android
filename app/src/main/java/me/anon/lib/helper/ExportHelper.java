@@ -144,7 +144,7 @@ public class ExportHelper
 				double days = (double)seconds * 0.0000115741d;
 
 				StringBuffer plantDetails = new StringBuffer(1000);
-				plantDetails.append("#").append(plant.getName()).append(" Grow Log");
+				plantDetails.append("# ").append(plant.getName()).append(" Grow Log");
 				plantDetails.append(NEW_LINE);
 				plantDetails.append("*Strain*: ").append(plant.getStrain());
 				plantDetails.append(NEW_LINE);
@@ -153,7 +153,7 @@ public class ExportHelper
 				plantDetails.append("*Medium*: ").append(plant.getMedium().getPrintString());
 				plantDetails.append(NEW_LINE);
 
-				plantDetails.append("##Stages");
+				plantDetails.append("## Stages");
 				plantDetails.append(NEW_LINE);
 
 				SortedMap<PlantStage, Long> stages = plant.calculateStageTime();
@@ -172,7 +172,7 @@ public class ExportHelper
 					plantDetails.append(NEW_LINE);
 				}
 
-				plantDetails.append("##General stats");
+				plantDetails.append("## General stats");
 				plantDetails.append(NEW_LINE);
 				plantDetails.append(" - *Total grow time*: ").append(String.format("%1$,.2f days", days));
 				plantDetails.append(NEW_LINE);
@@ -212,19 +212,21 @@ public class ExportHelper
 
 				if (!additiveNames.isEmpty())
 				{
-					plantDetails.append("##Additives used");
+					plantDetails.append("## Additives used");
 					plantDetails.append(NEW_LINE);
 					plantDetails.append(" - ");
 					plantDetails.append(TextUtils.join(NEW_LINE + " - ", additiveNames));
 					plantDetails.append(NEW_LINE);
 				}
 
-				plantDetails.append("##Timeline");
+				plantDetails.append("## Timeline");
 				plantDetails.append(NEW_LINE);
 
-				for (Action action : plant.getActions())
+				ArrayList<Action> actions = plant.getActions();
+				for (int i = actions.size() - 1; i >= 0; i--)
 				{
-					plantDetails.append("###").append(printableDate(context, action.getDate()));
+					Action action = actions.get(i);
+					plantDetails.append("### ").append(printableDate(context, action.getDate()));
 					plantDetails.append(NEW_LINE);
 
 					if (action.getClass() == Water.class)
@@ -301,7 +303,10 @@ public class ExportHelper
 
 							for (Additive additive : ((Water)action).getAdditives())
 							{
-								if (additive == null || additive.getAmount() == null) continue;
+								if (additive == null || additive.getAmount() == null)
+								{
+									continue;
+								}
 
 								double converted = ML.to(measureUnit, additive.getAmount());
 								String amountStr = converted == Math.floor(converted) ? String.valueOf((int)converted) : String.valueOf(converted);
@@ -331,7 +336,7 @@ public class ExportHelper
 					}
 				}
 
-				plantDetails.append("##Raw plant data");
+				plantDetails.append("## Raw plant data");
 				plantDetails.append(NEW_LINE);
 				plantDetails.append("```").append("\r\n").append(GsonHelper.parse(plant)).append("\r\n").append("```");
 				plantDetails.append(NEW_LINE);
@@ -515,7 +520,7 @@ public class ExportHelper
 					.setContentIntent(PendingIntent.getActivity(appContext, 0, new Intent(), PendingIntent.FLAG_UPDATE_CURRENT))
 					.setTicker("Exporting grow log for " + (plant.size() == 1 ? plant.get(0).getName() : "multiple plants"))
 					.setSmallIcon(R.drawable.ic_stat_name)
-					.setPriority(NotificationCompat.PRIORITY_DEFAULT)
+					.setPriority(NotificationCompat.PRIORITY_LOW)
 					.setSound(null);
 
 				notificationManager.notify(0, exportNotification.build());
@@ -523,8 +528,15 @@ public class ExportHelper
 
 			@Override protected void onProgressUpdate(Integer... values)
 			{
-				exportNotification.setProgress(values[1], values[0], false);
-				notificationManager.notify(0, exportNotification.build());
+				if (values[1] == values[0])
+				{
+					notificationManager.cancel(0);
+				}
+				else
+				{
+					exportNotification.setProgress(values[1], values[0], false);
+					notificationManager.notify(0, exportNotification.build());
+				}
 			}
 
 			@Override protected File doInBackground(Plant... params)
@@ -571,6 +583,7 @@ public class ExportHelper
 					}
 				}
 
+				notificationManager.cancel(0);
 				callback.onCallback(appContext, finalFile.getFile());
 				return null;
 			}

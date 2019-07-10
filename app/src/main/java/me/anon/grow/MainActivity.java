@@ -83,8 +83,13 @@ public class MainActivity extends BaseActivity implements NavigationView.OnNavig
 			}
 			else
 			{
-				navigation.getMenu().findItem(100 + defaultGarden).setChecked(true);
-				onNavigationItemSelected(navigation.getMenu().findItem(100 + defaultGarden));
+				MenuItem item = navigation.getMenu().findItem(100 + defaultGarden);
+
+				if (item != null)
+				{
+					item.setChecked(true);
+					onNavigationItemSelected(item);
+				}
 			}
 		}
 		else
