@@ -1,0 +1,13 @@
+- Fixes crash with decimal schedule dates
+- Fixes crash when cancelling photo/gallery select
+- Fixes issue when the user deletes all plant stages
+- Fixes issue with invalid backup size
+- Fixes issue with photo not being deleted from disk when deleted from the app
+- Adds delivery unit to additive hint
+- Fixes issue with restoring from backup - rare crash happening on some devices
+- Fixes issue with default garden select when deleted
+- Adds total plant days to photos
+- Replaces all simple plant select dialogs with new rich select dialog
+- Fixes issue with plants being overwritten after re-ordering
+- Fixes export markdown
+- Fixes issue with allowing empty passphrase when setting encrypt mode

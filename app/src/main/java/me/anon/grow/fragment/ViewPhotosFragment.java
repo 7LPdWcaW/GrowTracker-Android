@@ -157,6 +157,7 @@ public class ViewPhotosFragment extends Fragment
 										for (Integer integer : adapter.getSelected())
 										{
 											String image = adapter.getImages().get(integer);
+											new File(image).delete();
 											plant.getImages().remove(image);
 											AddonHelper.broadcastImage(getActivity(), image, true);
 										}
@@ -263,12 +264,16 @@ public class ViewPhotosFragment extends Fragment
 					}
 				}
 
-				String stageDayStr = "";
+				String stageDayStr = " – ";
 				if (lastChange != null)
 				{
+					stageDayStr = " – ";
+					int totalDays = (int)TimeHelper.toDays(Math.abs(fileDate - plant.getPlantDate()));
+					stageDayStr += (totalDays == 0 ? 1 : totalDays);
+
 					int currentDays = (int)TimeHelper.toDays(Math.abs(currentChange.getDate() - lastChange.getDate()));
 					currentDays = (currentDays == 0 ? 1 : currentDays);
-					stageDayStr += " ~" + currentDays + lastChange.getNewStage().getPrintString().substring(0, 1).toLowerCase();
+					stageDayStr += "/" + currentDays + lastChange.getNewStage().getPrintString().substring(0, 1).toLowerCase();
 				}
 
 				sections.add(new SectionedGridRecyclerViewAdapter.Section(index, printedFileDate + stageDayStr));
@@ -366,12 +371,14 @@ public class ViewPhotosFragment extends Fragment
 				new File(plant.getImages().get(plant.getImages().size() - 1)).delete();
 				plant.getImages().remove(plant.getImages().size() - 1);
 			}
+			else
+			{
+				PlantManager.getInstance().upsert(plantIndex, plant);
+				AddonHelper.broadcastImage(getActivity(), plant.getImages().get(plant.getImages().size() - 1), false);
 
-			PlantManager.getInstance().upsert(plantIndex, plant);
-			AddonHelper.broadcastImage(getActivity(), plant.getImages().get(plant.getImages().size() - 1), false);
-
-			setAdapter();
-			adapter.notifyDataSetChanged();
+				setAdapter();
+				adapter.notifyDataSetChanged();
+			}
 		}
 		else if (requestCode == 3) // choose image from gallery
 		{
@@ -449,7 +456,7 @@ public class ViewPhotosFragment extends Fragment
 						}
 					}
 
-					@Override public void onSnackBarAction(Object o)
+					@Override public void onSnackBarAction(View v)
 					{
 						onFabPhotoClick(null);
 					}

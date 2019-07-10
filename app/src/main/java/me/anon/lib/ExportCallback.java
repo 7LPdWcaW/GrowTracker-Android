@@ -5,11 +5,6 @@ import android.support.annotation.WorkerThread;
 
 import java.io.File;
 
-/**
- * // TODO: Add class description
- *
- * @author Callum Taylor
- */
 public class ExportCallback
 {
 	@WorkerThread
