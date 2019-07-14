@@ -9,8 +9,14 @@ class FeedingSchedule(
 	val id: String = UUID.randomUUID().toString(),
 	var name: String = "",
 	var description: String = "",
-	var schedules: ArrayList<FeedingScheduleDate> = arrayListOf()
+	schedules: ArrayList<FeedingScheduleDate>
 ) {
+	var schedules = schedules
+		get() {
+			field.sortWith(compareBy<FeedingScheduleDate> { it.stageRange[0].ordinal }.thenBy { it.dateRange[0] })
+			return field
+		}
+
 	constructor() : this(
 		id = UUID.randomUUID().toString(),
 		name = "",

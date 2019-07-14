@@ -15,6 +15,7 @@ import me.anon.grow.R
 import me.anon.grow.ScheduleDateDetailsActivity
 import me.anon.lib.SnackBar
 import me.anon.lib.Unit
+import me.anon.lib.ext.T
 import me.anon.lib.helper.FabAnimator
 import me.anon.lib.manager.ScheduleManager
 import me.anon.model.FeedingSchedule
@@ -105,12 +106,6 @@ class FeedingScheduleDetailsFragment : Fragment()
 	 */
 	private fun populateSchedules()
 	{
-		schedules.sortWith(Comparator { a, b ->
-			if (a.dateRange[0] < b.dateRange[0] && a.stageRange[0].ordinal < b.stageRange[0].ordinal) -1
-			else if (a.dateRange[0] > b.dateRange[0] && a.stageRange[0].ordinal > b.stageRange[0].ordinal) 1
-			else 0
-		})
-
 		schedules_container.removeViews(0, schedules_container.indexOfChild(new_schedule))
 		schedules.forEachIndexed { index, schedule ->
 			val feedingView = LayoutInflater.from(activity).inflate(R.layout.feeding_date_stub, schedules_container, false)
@@ -157,7 +152,8 @@ class FeedingScheduleDetailsFragment : Fragment()
 
 			feedingView.copy.setOnClickListener { view ->
 				val newSchedule = Kryo().copy(schedule)
-				schedules.add(newSchedule)
+				val index = schedules_container.indexOfChild(feedingView)
+				schedules.add((index < 0) T schedules.size - 1 ?: index, newSchedule)
 				populateSchedules()
 
 				SnackBar().show(activity!!, R.string.schedule_copied, R.string.undo, {
@@ -201,6 +197,7 @@ class FeedingScheduleDetailsFragment : Fragment()
 	override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?)
 	{
 		super.onActivityResult(requestCode, resultCode, data)
+		schedules = ScheduleManager.instance.schedules[scheduleIndex].schedules
 		populateSchedules()
 	}
 }
