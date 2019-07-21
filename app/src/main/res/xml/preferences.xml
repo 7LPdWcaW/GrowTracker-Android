@@ -13,12 +13,18 @@
 		/>
 
 		<SwitchPreference
+			android:key="reverse_order"
+			android:title="Reverse plant order"
+			android:summary="Shows the plants in the reverse order. (Requires app restart)"
+			android:defaultValue="false"
+		/>
+
+		<SwitchPreference
 			android:key="hide_harvested"
 			android:title="Hide harvested"
 			android:summary="Hide all plants that have been harvested"
 			android:defaultValue="false"
 		/>
-
 	</PreferenceCategory>
 
 	<PreferenceCategory
@@ -71,6 +77,8 @@
 			android:summary="Currently 20mb / Using 0mb"
 			android:hint="Size in MB"
 			android:defaultValue="20"
+			android:dialogTitle="Backup limit (mb)"
+			android:inputType="numberSigned"
 		/>
 
 		<Preference

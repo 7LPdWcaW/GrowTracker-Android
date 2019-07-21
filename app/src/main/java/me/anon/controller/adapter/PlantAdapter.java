@@ -2,6 +2,7 @@ package me.anon.controller.adapter;
 
 import android.content.Context;
 import android.content.Intent;
+import android.support.annotation.NonNull;
 import android.support.v7.widget.RecyclerView;
 import android.text.Html;
 import android.view.LayoutInflater;
@@ -151,22 +152,7 @@ public class PlantAdapter extends RecyclerView.Adapter implements ItemTouchHelpe
 
 	@Override public void onItemMove(int fromPosition, int toPosition)
 	{
-		if (fromPosition < toPosition)
-		{
-			for (int index = fromPosition; index < toPosition; index++)
-			{
-				Collections.swap(plants, index, index + 1);
-			}
-		}
-		else
-		{
-			for (int index = fromPosition; index > toPosition; index--)
-			{
-				Collections.swap(plants, index, index - 1);
-			}
-		}
 
-		notifyItemMoved(fromPosition, toPosition);
 	}
 
 	@Override public void onItemDismiss(int position)

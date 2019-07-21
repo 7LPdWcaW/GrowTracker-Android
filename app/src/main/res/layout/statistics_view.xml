@@ -50,6 +50,8 @@
 							android:layout_height="wrap_content"
 							android:text="@string/germination_label"
 							android:gravity="center_vertical"
+							android:ellipsize="end"
+							android:singleLine="true"
 							style="@style/SubsectionTitle"
 						/>
 
@@ -57,6 +59,36 @@
 							android:layout_width="wrap_content"
 							android:layout_height="wrap_content"
 							android:id="@+id/germ_time"
+							android:textSize="14sp"
+							android:textColor="#666666"
+							android:layout_marginLeft="8dp"
+							android:fontFamily="sans-serif-light"
+							android:gravity="center_vertical"
+						/>
+					</LinearLayout>
+
+					<LinearLayout
+						android:layout_width="0dp"
+						android:layout_height="wrap_content"
+						android:id="@+id/seedling_time_container"
+						android:orientation="horizontal"
+						android:layout_weight="1"
+						android:visibility="gone"
+					>
+						<TextView
+							android:layout_width="wrap_content"
+							android:layout_height="wrap_content"
+							android:text="Seedling:"
+							android:gravity="center_vertical"
+							android:ellipsize="end"
+							android:singleLine="true"
+							style="@style/SubsectionTitle"
+						/>
+
+						<TextView
+							android:layout_width="wrap_content"
+							android:layout_height="wrap_content"
+							android:id="@+id/seedling_time"
 							android:textSize="14sp"
 							android:textColor="#666666"
 							android:layout_marginLeft="8dp"
@@ -78,6 +110,8 @@
 							android:layout_height="wrap_content"
 							android:text="@string/cutting_label"
 							android:gravity="center_vertical"
+							android:ellipsize="end"
+							android:singleLine="true"
 							style="@style/SubsectionTitle"
 						/>
 
@@ -102,17 +136,20 @@
 						android:visibility="gone"
 					>
 						<TextView
-							android:layout_width="wrap_content"
+							android:layout_width="0dp"
 							android:layout_height="wrap_content"
 							android:text="@string/vegetation_label"
+							android:layout_weight="1"
 							android:gravity="center_vertical"
+							android:ellipsize="end"
 							style="@style/SubsectionTitle"
 						/>
 
 						<TextView
-							android:layout_width="wrap_content"
+							android:layout_width="0dp"
 							android:layout_height="wrap_content"
 							android:id="@+id/veg_time"
+							android:layout_weight="2"
 							android:textSize="14sp"
 							android:textColor="#666666"
 							android:layout_marginLeft="8dp"

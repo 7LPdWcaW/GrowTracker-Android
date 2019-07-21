@@ -35,11 +35,17 @@ import java.util.Date;
 import me.anon.grow.R;
 import me.anon.lib.DateRenderer;
 import me.anon.lib.Views;
+import me.anon.lib.helper.TimeHelper;
+import me.anon.lib.manager.PlantManager;
+import me.anon.model.Action;
+import me.anon.model.Plant;
+import me.anon.model.StageChange;
 
 @Views.Injectable
 public class ImageLightboxDialog extends Activity
 {
 	private String[] imageUrls = {};
+	private Plant plant;
 
 	@Views.InjectView(R.id.pager) public ViewPager pager;
 	private int pagerPosition = 0;
@@ -61,6 +67,7 @@ public class ImageLightboxDialog extends Activity
 				imageUrls = getIntent().getExtras().getStringArray("images");
 			}
 
+			plant = PlantManager.getInstance().getPlants().get(getIntent().getIntExtra("plant_index", -1));
 			pagerPosition = getIntent().getExtras().getInt("image_position", 0);
 		}
 		else
@@ -71,6 +78,7 @@ public class ImageLightboxDialog extends Activity
 
 		if (savedInstanceState != null)
 		{
+			plant = PlantManager.getInstance().getPlants().get(getIntent().getIntExtra("plant_index", -1));
 			pagerPosition = savedInstanceState.getInt("image_position");
 		}
 
@@ -82,6 +90,7 @@ public class ImageLightboxDialog extends Activity
 
 	@Override protected void onSaveInstanceState(Bundle outState)
 	{
+		outState.putInt("plant_index", PlantManager.getInstance().getPlants().indexOf(plant));
 		outState.putInt("image_position", pager.getCurrentItem());
 		super.onSaveInstanceState(outState);
 	}
@@ -169,10 +178,40 @@ public class ImageLightboxDialog extends Activity
 				DateFormat dateFormat = android.text.format.DateFormat.getDateFormat(view.getContext());
 				DateFormat timeFormat = android.text.format.DateFormat.getTimeFormat(view.getContext());
 				String[] parts = images[position].split("/");
-				String date = parts[parts.length - 1].split("\\.")[0];
+				String fileDate = parts[parts.length - 1].split("\\.")[0];
+				Date date = new Date(Long.parseLong(fileDate));
 
-				String dateStr = dateFormat.format(new Date(Long.parseLong(date))) + " " + timeFormat.format(new Date(Long.parseLong(date)));
-				((TextView)imageLayout.findViewById(R.id.taken)).setText(Html.fromHtml("<b>Image taken</b>: " + dateStr + " (" + new DateRenderer().timeAgo(Long.parseLong(date)).formattedDate + " ago)"));
+				StageChange lastChange = null;
+				StageChange currentChange = new StageChange();
+				currentChange.setDate(date.getTime());
+
+				for (int index = plant.getActions().size() - 1; index >= 0; index--)
+				{
+					Action action = plant.getActions().get(index);
+					if (action instanceof StageChange)
+					{
+						if (action.getDate() < date.getTime() && lastChange == null)
+						{
+							lastChange = (StageChange)action;
+							break;
+						}
+					}
+				}
+
+				String stageDayStr = "";
+				if (lastChange != null)
+				{
+					stageDayStr = " – ";
+					int totalDays = (int)TimeHelper.toDays(Math.abs(date.getTime() - plant.getPlantDate()));
+					stageDayStr += (totalDays == 0 ? 1 : totalDays);
+
+					int currentDays = (int)TimeHelper.toDays(Math.abs(currentChange.getDate() - lastChange.getDate()));
+					currentDays = (currentDays == 0 ? 1 : currentDays);
+					stageDayStr += "/" + currentDays + lastChange.getNewStage().getPrintString().substring(0, 1).toLowerCase();
+				}
+
+				String dateStr = dateFormat.format(date) + " " + timeFormat.format(date);
+				((TextView)imageLayout.findViewById(R.id.taken)).setText(Html.fromHtml("<b>Taken</b>: " + dateStr + stageDayStr + " (" + new DateRenderer().timeAgo(date.getTime()).formattedDate + " ago)"));
 
 				try
 				{

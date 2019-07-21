@@ -21,6 +21,7 @@ import me.anon.controller.adapter.ActionAdapter;
 import me.anon.grow.MainApplication;
 import me.anon.grow.R;
 import me.anon.grow.fragment.ImageLightboxDialog;
+import me.anon.lib.manager.PlantManager;
 
 /**
  * // TODO: Add class description
@@ -89,6 +90,7 @@ public class ImageActionHolder extends RecyclerView.ViewHolder
 					Collections.reverse(images);
 
 					Intent details = new Intent(v.getContext(), ImageLightboxDialog.class);
+					details.putExtra("plant_index", PlantManager.getInstance().getPlants().indexOf(adapter.getPlant()));
 					details.putExtra("images", (String[])images.toArray(new String[images.size()]));
 					details.putExtra("image_position", images.indexOf(imageUrl));
 					v.getContext().startActivity(details);

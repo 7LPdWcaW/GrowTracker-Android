@@ -25,6 +25,12 @@
 				/>
 
 				<item
+					android:id="@+id/filter_seedling"
+					android:title="Seedling"
+					android:checked="true"
+				/>
+
+				<item
 					android:id="@+id/filter_cutting"
 					android:title="@string/cutting"
 					android:checked="true"

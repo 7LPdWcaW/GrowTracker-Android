@@ -4,6 +4,7 @@ import android.content.Context
 import android.os.Environment
 import me.anon.grow.MainApplication
 import me.anon.lib.ext.T
+import me.anon.lib.ext.toSafeInt
 import me.anon.lib.manager.FileManager
 import me.anon.lib.manager.PlantManager
 import java.io.File
@@ -21,12 +22,13 @@ object BackupHelper
 	{
 		if (MainApplication.isFailsafe()) return null
 
-		limitBackups()
 		val isEncrypted = MainApplication.isEncrypted()
 		val time = System.currentTimeMillis()
-		val backupPath = File(FILES_PATH)
 		val ext = isEncrypted T "dat" ?: "bak"
+		val backupPath = File(FILES_PATH)
 		backupPath.mkdirs()
+		limitBackups()
+
 		FileManager.getInstance().copyFile("${PlantManager.FILES_DIR}/plants.json", "$FILES_PATH/$time.plants.json.$ext")
 		FileManager.getInstance().copyFile("${PlantManager.FILES_DIR}/schedules.json", "$FILES_PATH/$time.schedules.json.$ext")
 		FileManager.getInstance().copyFile("${PlantManager.FILES_DIR}/gardens.json", "$FILES_PATH/$time.gardens.json.$ext")
@@ -38,24 +40,25 @@ object BackupHelper
 	public fun backupSize(): Long
 	{
 		val path = File(BackupHelper.FILES_PATH)
-		return path.listFiles().fold(0L, { acc, file -> acc + file.length() })
+		return path.listFiles()?.fold(0L, { acc, file -> acc + file.length() }) ?: 0L
 	}
 
 	@JvmStatic
 	public fun limitBackups(size: String = MainApplication.getDefaultPreferences().getString("backup_size", "20")!!)
 	{
-		val files = File(BackupHelper.FILES_PATH).listFiles()
-		val sorted = ArrayList(files.sortedBy { it.lastModified() })
-		val limit = size.toInt() * 1_048_576
+		File(BackupHelper.FILES_PATH).listFiles()?.let {
+			val sorted = ArrayList(it.sortedBy { it.lastModified() })
+			val limit = size.toSafeInt() * 1_048_576
 
-		var currentSize = backupSize()
-		while (currentSize > limit)
-		{
-			val remove = sorted.removeAt(0)
-			val len = remove.length()
-			if (remove.delete())
+			var currentSize = backupSize()
+			while (currentSize > limit)
 			{
-				currentSize -= len
+				val remove = sorted.removeAt(0)
+				val len = remove.length()
+				if (remove.delete())
+				{
+					currentSize -= len
+				}
 			}
 		}
 	}

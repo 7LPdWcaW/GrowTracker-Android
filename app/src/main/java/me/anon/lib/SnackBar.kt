@@ -3,12 +3,13 @@ package me.anon.lib
 import android.app.Activity
 import android.support.annotation.StringRes
 import android.support.design.widget.Snackbar
+import android.view.View
 
 abstract class SnackBarListener
 {
 	abstract fun onSnackBarStarted(o: Any)
 	abstract fun onSnackBarFinished(o: Any)
-	abstract fun onSnackBarAction(o: Any)
+	abstract fun onSnackBarAction(o: View)
 }
 
 /**
@@ -65,8 +66,8 @@ class SnackBar
 				listener?.onSnackBarStarted(0)
 			}, {
 				listener?.onSnackBarFinished(0)
-			}, {
-				listener?.onSnackBarAction(0)
+			}, { v ->
+				listener?.onSnackBarAction(v)
 			})
 		}
 	}
@@ -79,7 +80,7 @@ class SnackBar
 	public fun show(context: Activity, @StringRes messageRes: Int, @StringRes actionTextRes: Int = -1,
 		start: () -> kotlin.Unit = {},
 		end: () -> kotlin.Unit = {},
-		action: () -> kotlin.Unit = {}
+		action: (View) -> kotlin.Unit = {}
 	)
 	{
 		show(context, context.getString(messageRes),
@@ -92,7 +93,7 @@ class SnackBar
 	public fun show(context: Activity, message: String, actionText: String = "", length: Int = Snackbar.LENGTH_LONG,
 		start: () -> kotlin.Unit = {},
 		end: () -> kotlin.Unit = {},
-		action: () -> kotlin.Unit = {}
+		action: (View) -> kotlin.Unit = {}
 	)
 	{
 		val snackbar = Snackbar.make(context.findViewById(android.R.id.content), message, length)
@@ -109,8 +110,8 @@ class SnackBar
 
 		if (actionText.isNotEmpty())
 		{
-			snackbar.setAction(actionText) { _ ->
-				action.invoke()
+			snackbar.setAction(actionText) { v ->
+				action.invoke(v)
 			}
 		}
 

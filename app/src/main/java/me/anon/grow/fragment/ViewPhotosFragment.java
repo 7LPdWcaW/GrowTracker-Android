@@ -51,9 +51,12 @@ import me.anon.lib.helper.AddonHelper;
 import me.anon.lib.helper.ExportHelper;
 import me.anon.lib.helper.FabAnimator;
 import me.anon.lib.helper.PermissionHelper;
+import me.anon.lib.helper.TimeHelper;
 import me.anon.lib.manager.PlantManager;
 import me.anon.lib.task.EncryptTask;
+import me.anon.model.Action;
 import me.anon.model.Plant;
+import me.anon.model.StageChange;
 
 /**
  * // TODO: Add class description
@@ -119,6 +122,7 @@ public class ViewPhotosFragment extends Fragment
 		}
 
 		adapter = new ImageAdapter();
+		adapter.plant = plant;
 		adapter.setOnLongClickListener(new View.OnLongClickListener()
 		{
 			@Override public boolean onLongClick(View v)
@@ -153,6 +157,7 @@ public class ViewPhotosFragment extends Fragment
 										for (Integer integer : adapter.getSelected())
 										{
 											String image = adapter.getImages().get(integer);
+											new File(image).delete();
 											plant.getImages().remove(image);
 											AddonHelper.broadcastImage(getActivity(), image, true);
 										}
@@ -241,7 +246,37 @@ public class ViewPhotosFragment extends Fragment
 			if (!lastFileDate.equalsIgnoreCase(printedFileDate))
 			{
 				lastFileDate = printedFileDate;
-				sections.add(new SectionedGridRecyclerViewAdapter.Section(index, printedFileDate));
+
+				StageChange lastChange = null;
+				StageChange currentChange = new StageChange();
+				currentChange.setDate(fileDate);
+
+				for (int actionIndex = plant.getActions().size() - 1; actionIndex >= 0; actionIndex--)
+				{
+					Action action = plant.getActions().get(actionIndex);
+					if (action instanceof StageChange)
+					{
+						if (action.getDate() < fileDate && lastChange == null)
+						{
+							lastChange = (StageChange)action;
+							break;
+						}
+					}
+				}
+
+				String stageDayStr = " – ";
+				if (lastChange != null)
+				{
+					stageDayStr = " – ";
+					int totalDays = (int)TimeHelper.toDays(Math.abs(fileDate - plant.getPlantDate()));
+					stageDayStr += (totalDays == 0 ? 1 : totalDays);
+
+					int currentDays = (int)TimeHelper.toDays(Math.abs(currentChange.getDate() - lastChange.getDate()));
+					currentDays = (currentDays == 0 ? 1 : currentDays);
+					stageDayStr += "/" + currentDays + lastChange.getNewStage().getPrintString().substring(0, 1).toLowerCase();
+				}
+
+				sections.add(new SectionedGridRecyclerViewAdapter.Section(index, printedFileDate + stageDayStr));
 			}
 		}
 
@@ -336,12 +371,14 @@ public class ViewPhotosFragment extends Fragment
 				new File(plant.getImages().get(plant.getImages().size() - 1)).delete();
 				plant.getImages().remove(plant.getImages().size() - 1);
 			}
+			else
+			{
+				PlantManager.getInstance().upsert(plantIndex, plant);
+				AddonHelper.broadcastImage(getActivity(), plant.getImages().get(plant.getImages().size() - 1), false);
 
-			PlantManager.getInstance().upsert(plantIndex, plant);
-			AddonHelper.broadcastImage(getActivity(), plant.getImages().get(plant.getImages().size() - 1), false);
-
-			setAdapter();
-			adapter.notifyDataSetChanged();
+				setAdapter();
+				adapter.notifyDataSetChanged();
+			}
 		}
 		else if (requestCode == 3) // choose image from gallery
 		{
@@ -419,7 +456,7 @@ public class ViewPhotosFragment extends Fragment
 						}
 					}
 
-					@Override public void onSnackBarAction(Object o)
+					@Override public void onSnackBarAction(View v)
 					{
 						onFabPhotoClick(null);
 					}

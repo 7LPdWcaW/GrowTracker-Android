@@ -616,7 +616,9 @@ public class SettingsFragment extends PreferenceFragment implements Preference.O
 		}
 		else if ("backup_now".equals(preference.getKey()))
 		{
+			String currentBackup = findPreference("backup_size").getSharedPreferences().getString("backup_size", "20");
 			Toast.makeText(getActivity(), "Backed up to " + BackupHelper.backupJson().getPath(), Toast.LENGTH_SHORT).show();
+			findPreference("backup_size").setSummary("Currently " + currentBackup + "mb / Using " + lengthToString(BackupHelper.backupSize(), false));
 		}
 		else if ("restore".equals(preference.getKey()))
 		{
@@ -630,10 +632,20 @@ public class SettingsFragment extends PreferenceFragment implements Preference.O
 
 				@Override public String toString()
 				{
-					DateFormat dateFormat = android.text.format.DateFormat.getDateFormat(getActivity());
-					DateFormat timeFormat = android.text.format.DateFormat.getTimeFormat(getActivity());
 					boolean encrypted = plantsPath != null && plantsPath.endsWith("dat");
-					return dateFormat.format(date) + " " + timeFormat.format(date) + " (" + (encrypted ? "encrypted " : "") + lengthToString(size, false) + ")";
+					String out = "(" + (encrypted ? "encrypted " : "") + lengthToString(size, false) + ")";
+					if (getActivity() != null)
+					{
+						DateFormat dateFormat = android.text.format.DateFormat.getDateFormat(getActivity());
+						DateFormat timeFormat = android.text.format.DateFormat.getTimeFormat(getActivity());
+						out = dateFormat.format(date) + " " + timeFormat.format(date) + " " + out;
+					}
+					else
+					{
+						out = date + " " + out;
+					}
+
+					return out;
 				}
 			}
 
@@ -650,15 +662,10 @@ public class SettingsFragment extends PreferenceFragment implements Preference.O
 			Arrays.sort(backupFiles);
 			final ArrayList<BackupData> backups = new ArrayList();
 
-			BackupData current = null;
-			Date lastDate = new Date();
+			BackupData current = new BackupData();
+			Date lastDate = null;
 			for (String backup : backupFiles)
 			{
-				if (current == null)
-				{
-					current = new BackupData();
-				}
-
 				File backupFile = new File(backup);
 				String[] parts = backupFile.getName().split("\\.");
 				Date date = new Date();
@@ -682,21 +689,18 @@ public class SettingsFragment extends PreferenceFragment implements Preference.O
 						backups.add(backupData);
 						continue;
 					}
-					else
+
+					if (lastDate == null || !date.equals(lastDate))
 					{
+						lastDate = date;
+						current = new BackupData();
 						current.date = date;
+						backups.add(current);
 					}
 				}
 				else
 				{
 					continue;
-				}
-
-				if (!current.date.equals(lastDate))
-				{
-					lastDate = current.date;
-					backups.add(current);
-					current = new BackupData();
 				}
 
 				File file = new File(backupPath.getPath() + "/" + backup);
@@ -741,11 +745,14 @@ public class SettingsFragment extends PreferenceFragment implements Preference.O
 					@Override public void onClick(DialogInterface dialog, int which)
 					{
 						BackupData selectedBackup = backups.get(which);
+						String selectedBackupStr = selectedBackup.toString();
 
 						if ((MainApplication.isFailsafe()))
 						{
 							MainApplication.setFailsafe(false);
 						}
+
+						if (selectedBackup.plantsPath == null) return;
 
 						if (selectedBackup.plantsPath.endsWith("dat") && !MainApplication.isEncrypted())
 						{
@@ -754,7 +761,7 @@ public class SettingsFragment extends PreferenceFragment implements Preference.O
 								@Override public void onSnackBarStarted(@NotNull Object o){}
 								@Override public void onSnackBarFinished(@NotNull Object o){}
 
-								@Override public void onSnackBarAction(@NotNull Object o)
+								@Override public void onSnackBarAction(@NotNull View o)
 								{
 									((SwitchPreference)findPreference("encrypt")).setChecked(true);
 									onPreferenceChange(findPreference("encrypt"), true);
@@ -784,7 +791,7 @@ public class SettingsFragment extends PreferenceFragment implements Preference.O
 						if (!loaded)
 						{
 							String errorEnd = MainApplication.isEncrypted() ? "unencrypted" : "encryped";
-							SnackBar.show(getActivity(), "Could not restore from backup " + selectedBackup + ". File may be " + errorEnd, Snackbar.LENGTH_INDEFINITE, null);
+							SnackBar.show(getActivity(), "Could not restore from backup " + selectedBackupStr + ". File may be " + errorEnd, Snackbar.LENGTH_INDEFINITE, null);
 							FileManager.getInstance().copyFile(PlantManager.FILES_DIR + "/plants.temp", PlantManager.FILES_DIR + "/plants.json");
 							FileManager.getInstance().copyFile(GardenManager.FILES_DIR + "/gardens.temp", GardenManager.FILES_DIR + "/gardens.json");
 							FileManager.getInstance().copyFile(ScheduleManager.FILES_DIR + "/schedules.temp", ScheduleManager.FILES_DIR + "/schedules.json");
@@ -794,7 +801,7 @@ public class SettingsFragment extends PreferenceFragment implements Preference.O
 						}
 						else
 						{
-							Toast.makeText(getActivity(), "Restore to " + selectedBackup + " completed", Toast.LENGTH_LONG).show();
+							Toast.makeText(getActivity(), "Restore to " + selectedBackupStr + " completed", Toast.LENGTH_LONG).show();
 							getActivity().recreate();
 						}
 					}
