@@ -8,7 +8,7 @@ import android.content.Context;
 import android.content.DialogInterface;
 import android.content.pm.PackageManager;
 import android.os.Build;
-import android.support.v4.content.PermissionChecker;
+import androidx.core.content.PermissionChecker;
 
 public class PermissionHelper
 {

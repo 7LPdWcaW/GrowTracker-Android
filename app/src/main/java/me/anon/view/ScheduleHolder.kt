@@ -2,7 +2,7 @@ package me.anon.view
 
 import android.app.AlertDialog
 import android.content.Intent
-import android.support.v7.widget.RecyclerView
+import androidx.recyclerview.widget.RecyclerView
 import android.view.View
 import kotlinx.android.synthetic.main.schedule_item.view.*
 import me.anon.controller.adapter.FeedingScheduleAdapter

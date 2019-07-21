@@ -3,7 +3,7 @@ package me.anon.lib;
 import android.app.Activity;
 import android.app.Fragment;
 import android.os.Build.VERSION;
-import android.support.v4.app.FragmentActivity;
+import androidx.fragment.app.FragmentActivity;
 import android.text.TextUtils;
 import android.util.Log;
 import android.view.View;

@@ -364,7 +364,7 @@
 			</LinearLayout>
 		</LinearLayout>
 
-		<android.support.constraint.ConstraintLayout
+		<androidx.constraintlayout.widget.ConstraintLayout
 			android:layout_width="match_parent"
 			android:layout_height="wrap_content"
 			android:orientation="vertical"
@@ -406,7 +406,7 @@
 				chart:layout_constraintStart_toStartOf="parent"
 				chart:layout_constraintEnd_toEndOf="parent"
 			/>
-		</android.support.constraint.ConstraintLayout>
+		</androidx.constraintlayout.widget.ConstraintLayout>
 
 		<LinearLayout
 			android:layout_width="match_parent"

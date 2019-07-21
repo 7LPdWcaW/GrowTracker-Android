@@ -1,6 +1,6 @@
 package me.anon.view
 
-import android.support.v7.widget.RecyclerView
+import androidx.recyclerview.widget.RecyclerView
 import android.text.Html
 import android.view.View
 import kotlinx.android.synthetic.main.feeding_date_stub.view.*

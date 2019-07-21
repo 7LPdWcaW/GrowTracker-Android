@@ -1,10 +1,11 @@
 <resources>
-	<style name="AppTheme" parent="Theme.AppCompat.Light.NoActionBar">
+	<style name="AppTheme" parent="Theme.MaterialComponents.Light.NoActionBar">
 		<item name="android:colorPrimary">#4AA74E</item>
 		<item name="android:colorPrimaryDark">#387E3B</item>
 
 		<item name="colorPrimary">#4AA74E</item>
 		<item name="colorPrimaryDark">#387E3B</item>
+		<item name="colorAccent">#2196F3</item>
 
 		<item name="actionModeBackground">@color/blue</item>
 		<item name="android:actionModeBackground">@color/blue</item>

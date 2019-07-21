@@ -1,9 +1,9 @@
 package me.anon.lib.helper;
 
 import android.graphics.Color;
-import android.support.annotation.NonNull;
-import android.support.v4.graphics.ColorUtils;
-import android.support.v4.util.Pair;
+import androidx.annotation.NonNull;
+import androidx.core.graphics.ColorUtils;
+import androidx.core.util.Pair;
 import android.widget.TextView;
 
 import com.github.mikephil.charting.charts.LineChart;

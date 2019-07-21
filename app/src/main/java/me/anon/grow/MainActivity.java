@@ -10,11 +10,11 @@ import android.content.pm.PackageManager;
 import android.net.Uri;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
-import android.support.annotation.Nullable;
-import android.support.design.widget.NavigationView;
-import android.support.v4.widget.DrawerLayout;
-import android.support.v7.app.ActionBarDrawerToggle;
-import android.support.v7.widget.Toolbar;
+import androidx.annotation.Nullable;
+import com.google.android.material.navigation.NavigationView;
+import androidx.drawerlayout.widget.DrawerLayout;
+import androidx.appcompat.app.ActionBarDrawerToggle;
+import androidx.appcompat.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -25,6 +25,7 @@ import com.squareup.otto.Subscribe;
 import java.util.ArrayList;
 
 import me.anon.grow.fragment.GardenDialogFragment;
+import me.anon.grow.fragment.GardenFragment;
 import me.anon.grow.fragment.PlantListFragment;
 import me.anon.lib.Views;
 import me.anon.lib.event.GardenChangeEvent;
@@ -300,7 +301,7 @@ public class MainActivity extends BaseActivity implements NavigationView.OnNavig
 			selectedItem = item.getItemId();
 			item.setChecked(true);
 			int gardenIndex = item.getItemId() - 100;
-			getFragmentManager().beginTransaction().replace(R.id.fragment_holder, PlantListFragment.newInstance(GardenManager.getInstance().getGardens().get(gardenIndex)), TAG_FRAGMENT).commit();
+			getFragmentManager().beginTransaction().replace(R.id.fragment_holder, GardenFragment.newInstance(GardenManager.getInstance().getGardens().get(gardenIndex)), TAG_FRAGMENT).commit();
 		}
 
 		if (drawer != null)

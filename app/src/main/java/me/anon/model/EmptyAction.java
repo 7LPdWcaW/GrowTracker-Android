@@ -1,6 +1,6 @@
 package me.anon.model;
 
-import android.support.annotation.Nullable;
+import androidx.annotation.Nullable;
 
 /**
  * // TODO: Add class description

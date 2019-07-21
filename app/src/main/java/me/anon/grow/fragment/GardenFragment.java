@@ -5,36 +5,34 @@ import android.app.AlertDialog;
 import android.app.Fragment;
 import android.content.DialogInterface;
 import android.content.Intent;
-import android.graphics.Rect;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
-import androidx.annotation.Nullable;
-import androidx.recyclerview.widget.GridLayoutManager;
-import androidx.recyclerview.widget.LinearLayoutManager;
-import androidx.recyclerview.widget.RecyclerView;
-import androidx.recyclerview.widget.ItemTouchHelper;
 import android.text.Html;
-import android.util.TypedValue;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.esotericsoftware.kryo.Kryo;
+import com.google.android.material.floatingactionbutton.FloatingActionButton;
 
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
 
+import androidx.annotation.Nullable;
+import androidx.recyclerview.widget.ItemTouchHelper;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
 import me.anon.controller.adapter.PlantAdapter;
 import me.anon.controller.adapter.SimpleItemTouchHelperCallback;
 import me.anon.grow.AddPlantActivity;
 import me.anon.grow.AddWateringActivity;
 import me.anon.grow.MainActivity;
-import me.anon.grow.MainApplication;
 import me.anon.grow.R;
 import me.anon.grow.service.ExportService;
 import me.anon.lib.SnackBar;
@@ -52,34 +50,23 @@ import me.anon.model.NoteAction;
 import me.anon.model.Plant;
 import me.anon.model.PlantStage;
 
-/**
- * // TODO: Add class description
- *
- * @author 7LPdWcaW
- * @documentation // TODO Reference flow doc
- * @project GrowTracker
- */
 @Views.Injectable
-public class PlantListFragment extends Fragment
+public class GardenFragment extends Fragment
 {
 	private PlantAdapter adapter;
 	private Garden garden;
 
-	public void setGarden(Garden garden)
+	public static GardenFragment newInstance(@Nullable Garden garden)
 	{
-		this.garden = garden;
-	}
-
-	public static PlantListFragment newInstance(@Nullable Garden garden)
-	{
-		PlantListFragment fragment = new PlantListFragment();
-		fragment.setGarden(garden);
+		GardenFragment fragment = new GardenFragment();
+		fragment.garden = garden;
 
 		return fragment;
 	}
 
-	@Views.InjectView(R.id.action_container) private View actionContainer;
+	@Views.InjectView(R.id.name) private TextView name;
 	@Views.InjectView(R.id.recycler_view) private RecyclerView recycler;
+	@Views.InjectView(R.id.fab_add) private FloatingActionButton fab;
 
 	private ArrayList<PlantStage> filterList = new ArrayList<>();
 	private boolean hideHarvested = false;
@@ -93,7 +80,7 @@ public class PlantListFragment extends Fragment
 
 	@Nullable @Override public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState)
 	{
-		View view = inflater.inflate(R.layout.plant_list_view, container, false);
+		View view = inflater.inflate(R.layout.garden_view, container, false);
 		Views.inject(this, view);
 
 		return view;
@@ -103,45 +90,17 @@ public class PlantListFragment extends Fragment
 	{
 		super.onActivityCreated(savedInstanceState);
 
-		getActivity().setTitle(garden == null ? "All" : garden.getName() + " plants");
+		getActivity().setTitle(garden.getName() + " plants");
 
 		adapter = new PlantAdapter(getActivity());
+		name.setText(garden.getName());
 
-		if (MainApplication.isTablet())
-		{
-			GridLayoutManager layoutManager = new GridLayoutManager(getActivity(), 2);
-			RecyclerView.ItemDecoration spacesItemDecoration = new RecyclerView.ItemDecoration()
-			{
-				private int space = (int)(TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, 12, getResources().getDisplayMetrics()) / 2f);
-
-				@Override
-				public void getItemOffsets(Rect outRect, View view, RecyclerView parent, RecyclerView.State state)
-				{
-					if (parent.getPaddingLeft() != space)
-					{
-						parent.setPadding(space, space, space, space);
-						parent.setClipToPadding(false);
-					}
-
-					outRect.top = space;
-					outRect.bottom = space;
-					outRect.left = space;
-					outRect.right = space;
-				}
-			};
-
-			recycler.setLayoutManager(layoutManager);
-			recycler.addItemDecoration(spacesItemDecoration);
-		}
-		else
-		{
-			boolean reverse = PreferenceManager.getDefaultSharedPreferences(getActivity()).getBoolean("reverse_order", false);
-			LinearLayoutManager layoutManager = new LinearLayoutManager(getActivity(), LinearLayoutManager.VERTICAL, reverse);
-			layoutManager.setStackFromEnd(reverse);
-			recycler.setLayoutManager(layoutManager);
-		}
-
+		boolean reverse = PreferenceManager.getDefaultSharedPreferences(getActivity()).getBoolean("reverse_order", false);
+		LinearLayoutManager layoutManager = new LinearLayoutManager(getActivity(), LinearLayoutManager.VERTICAL, reverse);
+		layoutManager.setStackFromEnd(reverse);
+		recycler.setLayoutManager(layoutManager);
 		recycler.setAdapter(adapter);
+		recycler.setNestedScrollingEnabled(false);
 
 		ItemTouchHelper.Callback callback = new SimpleItemTouchHelperCallback(adapter)
 		{
@@ -183,11 +142,6 @@ public class PlantListFragment extends Fragment
 		ItemTouchHelper touchHelper = new ItemTouchHelper(callback);
 		touchHelper.attachToRecyclerView(recycler);
 
-		if (garden != null)
-		{
-			actionContainer.setVisibility(View.VISIBLE);
-		}
-
 		filterList.addAll(Arrays.asList(PlantStage.values()));
 
 		if (hideHarvested = PreferenceManager.getDefaultSharedPreferences(getActivity()).getBoolean("hide_harvested", false))
@@ -220,36 +174,23 @@ public class PlantListFragment extends Fragment
 	{
 		ArrayList<Plant> plants = (ArrayList<Plant>)adapter.getPlants();
 
-		if (garden == null)
+		if (!beingFiltered())
 		{
-			PlantManager.getInstance().setPlants(plants);
-			PlantManager.getInstance().save();
-		}
-		else
-		{
-			if (!beingFiltered())
+			ArrayList<String> orderedPlantIds = new ArrayList<>();
+			for (Plant plant : plants)
 			{
-				ArrayList<String> orderedPlantIds = new ArrayList<>();
-				for (Plant plant : plants)
-				{
-					orderedPlantIds.add(plant.getId());
-				}
-
-				garden.setPlantIds(orderedPlantIds);
-				GardenManager.getInstance().save();
+				orderedPlantIds.add(plant.getId());
 			}
+
+			garden.setPlantIds(orderedPlantIds);
+			GardenManager.getInstance().save();
 		}
 	}
 
 	@Views.OnClick public void onFabAddClick(View view)
 	{
 		Intent addPlant = new Intent(getActivity(), AddPlantActivity.class);
-
-		if (garden != null)
-		{
-			addPlant.putExtra("garden_index", GardenManager.getInstance().getGardens().indexOf(garden));
-		}
-
+		addPlant.putExtra("garden_index", GardenManager.getInstance().getGardens().indexOf(garden));
 		startActivity(addPlant);
 	}
 
@@ -392,12 +333,9 @@ public class PlantListFragment extends Fragment
 	{
 		inflater.inflate(R.menu.plant_list_menu, menu);
 
-		if (garden != null)
-		{
-			menu.findItem(R.id.export_garden).setVisible(true);
-			menu.findItem(R.id.edit_garden).setVisible(true);
-			menu.findItem(R.id.delete_garden).setVisible(true);
-		}
+		menu.findItem(R.id.export_garden).setVisible(true);
+		menu.findItem(R.id.edit_garden).setVisible(true);
+		menu.findItem(R.id.delete_garden).setVisible(true);
 
 		if (PreferenceManager.getDefaultSharedPreferences(getActivity()).getBoolean("hide_harvested", false))
 		{
@@ -416,10 +354,10 @@ public class PlantListFragment extends Fragment
 			{
 				@Override public void onGardenEdited(Garden garden)
 				{
-					int index = GardenManager.getInstance().getGardens().indexOf(PlantListFragment.this.garden);
+					int index = GardenManager.getInstance().getGardens().indexOf(GardenFragment.this.garden);
 					GardenManager.getInstance().getGardens().set(index, garden);
 					GardenManager.getInstance().save();
-					PlantListFragment.this.garden = garden;
+					GardenFragment.this.garden = garden;
 
 					getActivity().setTitle(garden == null ? "All" : garden.getName() + " plants");
 					filter();
@@ -541,10 +479,6 @@ public class PlantListFragment extends Fragment
 		if (garden != null || plants.size() < plantList.size())
 		{
 			adapter.setShowOnly(plants);
-		}
-		else
-		{
-			adapter.setShowOnly(null);
 		}
 
 		adapter.notifyDataSetChanged();

@@ -8,7 +8,7 @@
 	android:fitsSystemWindows="false"
 	android:orientation="vertical"
 >
-	<android.support.v7.widget.Toolbar
+	<androidx.appcompat.widget.Toolbar
 		android:layout_width="match_parent"
 		android:layout_height="wrap_content"
 		android:id="@+id/toolbar"
@@ -24,7 +24,7 @@
 		android:layout_height="match_parent"
 		android:orientation="horizontal"
 	>
-		<android.support.design.widget.NavigationView
+		<com.google.android.material.navigation.NavigationView
 			android:layout_width="240dp"
 			android:layout_height="match_parent"
 			android:id="@+id/navigation_view"

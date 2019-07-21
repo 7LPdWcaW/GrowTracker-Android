@@ -75,7 +75,7 @@
 			/>
 		</LinearLayout>
 
-		<android.support.v7.widget.CardView
+		<androidx.cardview.widget.CardView
 			android:layout_width="match_parent"
 			android:layout_height="wrap_content"
 			android:id="@+id/last_feeding"
@@ -156,7 +156,7 @@
 					style="@style/Base.Widget.AppCompat.Button.Borderless"
 				/>
 			</LinearLayout>
-		</android.support.v7.widget.CardView>
+		</androidx.cardview.widget.CardView>
 
 		<LinearLayout
 			android:layout_width="match_parent"
