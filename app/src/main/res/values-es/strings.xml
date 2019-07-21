@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="schedules_new_schedule">+ Nuevo Cronograma</string>
+    <string name="additives">Aditivos</string>
+    <string name="confirm_copy_schedule">¿copiar el cronograma seleccionado?</string>
+    <string name="confirm_delete_schedule">¿Eliminar el calendario seleccionado?</string>
+    <string name="confirm_negative">no</string>
+    <string name="confirm_positive">si</string>
+    <string name="confirm_title">¿Estas seguro?</string>
+    <string name="from_date">Desde fecha</string>
+    <string name="from_stage">De etapa</string>
+    <string name="menu_feeding_schedule">Cronograma</string>
+    <string name="new_additive">+ Nuevo Aditivo</string>
+    <string name="populate_from_previous">Rellenar de anterior</string>
+    <string name="populate_from_schedule">Rellenar de cronograma</string>
+    <string name="schedule_copied">Cronograma copiado</string>
+    <string name="schedule_date_title">Programar Fecha</string>
+    <string name="schedule_deleted">Programar eliminado</string>
+    <string name="schedule_description">Descripción</string>
+    <string name="schedule_details_title">Programar Detalles</string>
+    <string name="schedule_name">Nombre</string>
+    <string name="schedules_title">Cronogramas</string>
+    <string name="to_date">A fecha</string>
+    <string name="to_stage">A etapa</string>
+    <string name="undo">Deshacer</string>
+    <string name="update_dialog_dismiss_button">Ignorar</string>
+    <string name="update_dialog_message">La app se actualizó a la versión %s</string>
+    <string name="update_dialog_title">App actualizada</string>
+    <string name="update_dialog_view_changes_button">Cambios de vista</string>
+    <string name="feeding_schedules_title">Cronograma de alimentación</string>
+    <string name="schedule_name_hint">Alimentación liviana</string>
+    <string name="schedules_new_feeding">+ Nueva Alimentación</string>
+</resources>
