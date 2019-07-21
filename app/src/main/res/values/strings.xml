@@ -190,4 +190,64 @@
 	<string name="select_all">Select All</string>
 	<string name="select_none">Select None</string>
 	<string name="accept">Accept</string>
+	<string name="enable">Enable</string>
+	<string name="decline">Decline</string>
+	<string name="seedling_label">Seedling:</string>
+	<string name="seedling">Seedling</string>
+
+	<string name="crash_title">Uh-oh</string>
+	<string name="crash_message" formatted="true">Looks like there was a crash the last time you used the app. Would you like to send these anonymous reports? These reports will be sent to &lt;a href=\"https://github.com/7LPdWcaW/GrowTracker-Android/issues\"&gt;github.com/7LPdWcaW/GrowTracker-Android/issues&lt;/a&gt;, no personal information will be included. You can optionally post these reports to &lt;a href=\"https://reddit.com/r/growutils\"&gt;reddit.com/r/growutils&lt;/a&gt; manually if you wish. Reports are stored in &lt;i&gt;%s&lt;i&gt;</string>
+	<string name="yes">Yes</string>
+	<string name="no">No</string>
+
+	<string name="passphrase_title">Enter your passphrase</string>
+	<string name="add_passphrase_title">Enter a passphrase</string>
+	<string name="readd_passphrase_title">Re-enter your passphrase</string>
+	<string name="passphrase_error">Error - passphrases did not match up</string>
+
+	<string name="fatal_error">There was a fatal problem saving the garden data, please backup this data</string>
+	<string name="taken">Taken</string>
+	<string name="ago" formatted="true">%s ago</string>
+	<string name="watered_ago" formatted="true">Watered &lt;b&gt;%s&lt;/b&gt; ago</string>
+	<string name="last_watered_ago" formatted="true">Last watered &lt;b&gt;%s&lt;/b&gt; ago</string>
+	<string name="planted_ago" formatted="true">Planted &lt;b&gt;%s&lt;/b&gt; ago</string>
+
+	<string name="permission_summary">Access to external storage is needed to store photos. No other data is consumed by this app</string>
+
+	<string name="waterings_added">Waterings added</string>
+	<string name="delete_plant_message">You are about to delete &lt;b&gt;%s&lt;/b&gt; and all of the images associated with it, are you sure? This can not be undone.</string>
+	<string name="delete_plant_progress">Deleting plant...</string>
+
+	<string name="plant_duplicated">Plant duplicated</string>
+	<string name="open">Open</string>
+
+	<string name="export_progress">Exporting grow log...</string>
+	<string name="garden_export">Exporting grow log of garden...</string>
+	<string name="action_added" formatted="true">%s added</string>
+	<string name="name_input_error">Name can not be empty</string>
+	<string name="exporting" formatted="true">Exporting %s</string>
+
+	<string name="soil">Soil</string>
+	<string name="hydroponics">Hydroponics</string>
+	<string name="coco_coir">Coco Coir</string>
+	<string name="aeroponics">Aeroponics</string>
+	<string name="hide_images">Hide images</string>
+	<string name="show_images">Show images</string>
+
+	<string name="settings_default_garden">Default garden to show on open, currently</string>
+	<string name="settings_delivery">Default delivery measurement unit to use, currently</string>
+	<string name="settings_measurement">Default additive measurement unit to use, currently</string>
+	<string name="settings_temperature">Default temperature unit to use, currently</string>
+	<string name="settings_backup_size" formatted="true">Currently %smb / Using %s</string>
+	<string name="failsafe_message">Provide this password during unencryption phase to prevent data from being loaded</string>
+	<string name="warning">Warning</string>
+	<string name="encryption_message">This is basic form of AES encryption based on a provided passphrase. This is not a guarantee form of encryption from law enforcement agencies as was designed to stop plain sight</string>
+
+	<string name="select_measurement_title">Select measurement</string>
+	<string name="select_garden_title">Select garden</string>
+	<string name="select_backup_title">Select backup</string>
+	<string name="backup_restore_error">You must have encrpted mode enabled with the same password to restore this backup</string>
+
+	<string name="backed_up_to">Backed up to </string>
+	<string name="no_backups">There are no backups to restore from</string>
 </resources>

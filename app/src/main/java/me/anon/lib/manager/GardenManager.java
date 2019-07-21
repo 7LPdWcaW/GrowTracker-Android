@@ -12,6 +12,7 @@ import java.io.File;
 import java.util.ArrayList;
 
 import me.anon.grow.MainApplication;
+import me.anon.grow.R;
 import me.anon.lib.helper.EncryptionHelper;
 import me.anon.lib.helper.GsonHelper;
 import me.anon.model.Garden;
@@ -107,7 +108,7 @@ public class GardenManager
 
 			if (new File(FILES_DIR + "/gardens.json").length() == 0 || !new File(FILES_DIR + "/gardens.json").exists())
 			{
-				Toast.makeText(context, "There was a fatal problem saving the garden data, please backup this data", Toast.LENGTH_LONG).show();
+				Toast.makeText(context, R.string.fatal_error, Toast.LENGTH_LONG).show();
 				String sendData = GsonHelper.parse(mGardens);
 				Intent share = new Intent(Intent.ACTION_SEND);
 				share.setType("text/plain");

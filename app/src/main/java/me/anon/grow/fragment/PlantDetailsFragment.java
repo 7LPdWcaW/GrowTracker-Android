@@ -368,7 +368,7 @@ public class PlantDetailsFragment extends Fragment
 	{
 		if (!PermissionHelper.hasPermission(getActivity(), Manifest.permission.WRITE_EXTERNAL_STORAGE))
 		{
-			PermissionHelper.doPermissionCheck(this, Manifest.permission.WRITE_EXTERNAL_STORAGE, 1, "Access to external storage is needed to store photos. No other data is consumed by this app");
+			PermissionHelper.doPermissionCheck(this, Manifest.permission.WRITE_EXTERNAL_STORAGE, 1, getString(R.string.permission_summary));
 			return;
 		}
 
@@ -487,7 +487,7 @@ public class PlantDetailsFragment extends Fragment
 									PlantManager.getInstance().getPlants().get(index).getActions().add(copy);
 								}
 
-								SnackBar.show(getActivity(), "Waterings added", new SnackBarListener()
+								SnackBar.show(getActivity(), R.string.waterings_added, new SnackBarListener()
 								{
 									@Override public void onSnackBarStarted(Object o)
 									{
@@ -681,13 +681,13 @@ public class PlantDetailsFragment extends Fragment
 		{
 			new AlertDialog.Builder(getActivity())
 				.setTitle(R.string.dialog_sure_title)
-				.setMessage(Html.fromHtml("You are about to delete <b>" + plant.getName() + "</b> and all of the images associated with it, are you sure? This can not be undone."))
-				.setPositiveButton("Yes", new DialogInterface.OnClickListener()
+				.setMessage(Html.fromHtml(getString(R.string.delete_plant_message, plant.getName())))
+				.setPositiveButton(R.string.yes, new DialogInterface.OnClickListener()
 				{
 					@Override public void onClick(DialogInterface dialog, int which)
 					{
 						final ProgressDialog progress = new ProgressDialog(getActivity());
-						progress.setMessage("Deleting plant...");
+						progress.setMessage(getString(R.string.delete_plant_progress));
 						progress.setCancelable(false);
 						progress.show();
 
@@ -715,7 +715,7 @@ public class PlantDetailsFragment extends Fragment
 						});
 					}
 				})
-				.setNegativeButton("No", null)
+				.setNegativeButton(R.string.no, null)
 				.show();
 
 			return true;
@@ -729,7 +729,7 @@ public class PlantDetailsFragment extends Fragment
 			copy.setName(copy.getName() + " (copy)");
 			PlantManager.getInstance().addPlant(copy);
 
-			SnackBar.show(getActivity(), "Plant duplicated", "open", new SnackBarListener()
+			SnackBar.show(getActivity(), R.string.plant_duplicated, R.string.open, new SnackBarListener()
 				{
 					@Override public void onSnackBarStarted(Object o)
 					{
@@ -757,7 +757,7 @@ public class PlantDetailsFragment extends Fragment
 		}
 		else if (item.getItemId() == R.id.export)
 		{
-			Toast.makeText(getActivity(), "Exporting grow log...", Toast.LENGTH_SHORT).show();
+			Toast.makeText(getActivity(), R.string.export_progress, Toast.LENGTH_SHORT).show();
 			ExportService.export(getActivity(),new ArrayList<Plant>(Arrays.asList(plant)), plant.getName().replaceAll("[^a-zA-Z0-9]+", "-"), plant.getName());
 
 			return true;
@@ -776,7 +776,7 @@ public class PlantDetailsFragment extends Fragment
 				plant.getActions().add(action);
 				PlantManager.getInstance().upsert(plantIndex, plant);
 
-				SnackBar.show(getActivity(), getString(action.getAction().getPrintString()) + " added", "undo", new SnackBarListener()
+				SnackBar.show(getActivity(), getString(R.string.action_added, getString(action.getAction().getPrintString())), getString(R.string.undo), new SnackBarListener()
 				{
 					@Override public void onSnackBarStarted(Object o)
 					{
@@ -841,7 +841,7 @@ public class PlantDetailsFragment extends Fragment
 					plant.getActions().add(action);
 					PlantManager.getInstance().upsert(plantIndex, plant);
 
-					SnackBar.show(getActivity(), "Stage updated", "undo", new SnackBarListener()
+					SnackBar.show(getActivity(), R.string.stage_updated, R.string.undo, new SnackBarListener()
 					{
 						@Override public void onSnackBarStarted(Object o)
 						{
@@ -884,7 +884,7 @@ public class PlantDetailsFragment extends Fragment
 		String[] mediums = PlantMedium.names();
 
 		new AlertDialog.Builder(view.getContext())
-			.setTitle("Medium")
+			.setTitle(R.string.plant_medium_label)
 			.setItems(mediums, new DialogInterface.OnClickListener()
 			{
 				@Override public void onClick(DialogInterface dialog, int which)
@@ -906,7 +906,7 @@ public class PlantDetailsFragment extends Fragment
 		}
 		else
 		{
-			name.setError("Name can not be empty");
+			name.setError(getString(R.string.name_input_error));
 			return;
 		}
 

@@ -211,7 +211,7 @@ public class ImageLightboxDialog extends Activity
 				}
 
 				String dateStr = dateFormat.format(date) + " " + timeFormat.format(date);
-				((TextView)imageLayout.findViewById(R.id.taken)).setText(Html.fromHtml("<b>Taken</b>: " + dateStr + stageDayStr + " (" + new DateRenderer().timeAgo(date.getTime()).formattedDate + " ago)"));
+				((TextView)imageLayout.findViewById(R.id.taken)).setText(Html.fromHtml("<b>" + getString(R.string.taken) + "</b>: " + dateStr + stageDayStr + " (" + getString(R.string.ago,  new DateRenderer().timeAgo(date.getTime()).formattedDate) + ")"));
 
 				try
 				{

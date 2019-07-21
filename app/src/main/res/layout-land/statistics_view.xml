@@ -76,7 +76,7 @@
 						<TextView
 							android:layout_width="wrap_content"
 							android:layout_height="wrap_content"
-							android:text="Seedling:"
+							android:text="@string/seedling_label"
 							android:gravity="center_vertical"
 							android:ellipsize="end"
 							android:singleLine="true"
@@ -106,7 +106,7 @@
 						<TextView
 							android:layout_width="wrap_content"
 							android:layout_height="wrap_content"
-							android:text="Cutting:"
+							android:text="@string/cutting_label"
 							android:gravity="center_vertical"
 							android:ellipsize="end"
 							android:singleLine="true"

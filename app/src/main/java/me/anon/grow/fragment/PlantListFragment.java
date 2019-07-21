@@ -433,9 +433,9 @@ public class PlantListFragment extends Fragment
 		}
 		else if (item.getItemId() == R.id.export_garden)
 		{
-			Toast.makeText(getActivity(), "Exporting grow log of garden...", Toast.LENGTH_SHORT).show();
+			Toast.makeText(getActivity(), R.string.garden_export, Toast.LENGTH_SHORT).show();
 			NotificationHelper.createExportChannel(getActivity());
-			NotificationHelper.sendExportNotification(getActivity(), "Exporting garden grow log", "Exporting " + garden.getName());
+			NotificationHelper.sendExportNotification(getActivity(), getString(R.string.garden_export), getString(R.string.exporting, garden.getName()));
 
 			ArrayList<Plant> export = new ArrayList<>(adapter.getPlants());
 			ExportService.export(getActivity(), export, garden.getName().replaceAll("[^a-zA-Z0-9]+", "-"), garden.getName());
