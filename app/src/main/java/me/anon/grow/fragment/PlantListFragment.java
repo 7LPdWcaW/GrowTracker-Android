@@ -443,9 +443,9 @@ public class PlantListFragment extends Fragment
 		else if (item.getItemId() == R.id.delete_garden)
 		{
 			new AlertDialog.Builder(getActivity())
-				.setTitle(R.string.dialog_garden_delete_title)
+				.setTitle(R.string.confirm_title)
 				.setMessage(Html.fromHtml(getString(R.string.dialog_garden_delete_body)))
-				.setPositiveButton(R.string.dialog_garden_delete_positive, new DialogInterface.OnClickListener()
+				.setPositiveButton(R.string.confirm_positive, new DialogInterface.OnClickListener()
 				{
 					@Override public void onClick(DialogInterface dialogInterface, int i)
 					{
@@ -477,7 +477,7 @@ public class PlantListFragment extends Fragment
 						((MainActivity)getActivity()).onNavigationItemSelected(((MainActivity)getActivity()).getNavigation().getMenu().findItem(R.id.all));
 					}
 				})
-				.setNegativeButton(R.string.dialog_garden_delete_negative, null)
+				.setNegativeButton(R.string.confirm_negative, null)
 				.show();
 		}
 		else

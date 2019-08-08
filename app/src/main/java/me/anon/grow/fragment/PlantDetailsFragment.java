@@ -680,7 +680,7 @@ public class PlantDetailsFragment extends Fragment
 		if (item.getItemId() == R.id.delete)
 		{
 			new AlertDialog.Builder(getActivity())
-				.setTitle(R.string.dialog_sure_title)
+				.setTitle(R.string.confirm_title)
 				.setMessage(Html.fromHtml(getString(R.string.delete_plant_message, plant.getName())))
 				.setPositiveButton(R.string.yes, new DialogInterface.OnClickListener()
 				{

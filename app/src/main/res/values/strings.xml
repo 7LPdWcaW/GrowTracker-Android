@@ -10,10 +10,7 @@
 	<string name="snackbar_watering_add">Watering added</string>
 	<string name="snackbar_garden_deleted">Garden deleted</string>
 	<string name="snackbar_undo">Undo</string>
-	<string name="dialog_garden_delete_title">Are you sure?</string>
 	<string name="dialog_garden_delete_body">Are you sure you want to delete garden &lt;b&gt;"%s"&lt;/b&gt;? This will not delete the plants.</string>
-	<string name="dialog_garden_delete_positive">Yes</string>
-	<string name="dialog_garden_delete_negative">No</string>
 	<string name="action_feed">Feed</string>
 	<string name="action_action">Action</string>
 	<string name="action_note">Note</string>
@@ -29,7 +26,6 @@
 	<string name="dialog_select_plant_title">Select plant</string>
 	<string name="snackbar_image_added">Image added</string>
 	<string name="snackbar_action_take_another">Take another</string>
-	<string name="dialog_sure_title">Are you sure?</string>
 
 	<string name="nav_feeding_schedule">Schedules</string>
 	<string name="schedule_details_title">Schedule Details</string>
@@ -262,7 +258,7 @@
 	<string name="select_backup_title">Select backup</string>
 	<string name="backup_restore_error">You must have encrpted mode enabled with the same password to restore this backup</string>
 
-	<string name="backed_up_to">Backed up to </string>
+	<string name="backed_up_to">Backed up to</string>
 	<string name="no_backups">There are no backups to restore from</string>
 	<string name="all_none">All/None</string>
 
@@ -273,11 +269,11 @@
 
 	<string name="photos_title">Plant photos</string>
 
-	<string name="plant_summary_ph">In pH: </string>
-	<string name="plant_summary_out_ph">Out pH: </string>
-	<string name="plant_summary_amount">Amount: </string>
-	<string name="plant_summary_temp">Temp: </string>
-	<string name="plant_summary_additives">Additives: </string>
+	<string name="plant_summary_ph">In pH:</string>
+	<string name="plant_summary_out_ph">Out pH:</string>
+	<string name="plant_summary_amount">Amount:</string>
+	<string name="plant_summary_temp">Temp:</string>
+	<string name="plant_summary_additives">Additives:</string>
 
 	<string name="select_schedule_title">Select schedule</string>
 	<string name="actions">Actions</string>
