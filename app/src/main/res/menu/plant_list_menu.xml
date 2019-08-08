@@ -6,7 +6,7 @@
 >
 	<item
 		android:id="@+id/filter"
-		android:title="Filter"
+		android:title="@string/filter"
 		android:icon="@drawable/ic_filter"
 		app:showAsAction="always"
 	>
@@ -14,55 +14,55 @@
 			<group android:checkableBehavior="all">
 				<item
 					android:id="@+id/filter_planted"
-					android:title="Planted"
+					android:title="@string/planted"
 					android:checked="true"
 				/>
 
 				<item
 					android:id="@+id/filter_germination"
-					android:title="Germination"
+					android:title="@string/germination"
 					android:checked="true"
 				/>
 
 				<item
 					android:id="@+id/filter_seedling"
-					android:title="Seedling"
+					android:title="@string/seedling"
 					android:checked="true"
 				/>
 
 				<item
 					android:id="@+id/filter_cutting"
-					android:title="Cutting"
+					android:title="@string/cutting"
 					android:checked="true"
 				/>
 
 				<item
 					android:id="@+id/filter_vegetation"
-					android:title="Vegetation"
+					android:title="@string/vegetation"
 					android:checked="true"
 				/>
 
 				<item
 					android:id="@+id/filter_flowering"
-					android:title="Flowering"
+					android:title="@string/flowering"
 					android:checked="true"
 				/>
 
 				<item
 					android:id="@+id/filter_drying"
-					android:title="Drying"
+					android:title="@string/drying"
 					android:checked="true"
 				/>
 
 				<item
 					android:id="@+id/filter_curing"
-					android:title="Curing"
+					android:title="@string/curing"
 					android:checked="true"
 				/>
 
 				<item
 					android:id="@+id/filter_harvested"
-					android:title="Harvested"
+					android:title="@string/harvested"
 					android:checked="true"
 				/>
 			</group>
@@ -71,21 +71,21 @@
 
 	<item
 		android:id="@+id/export_garden"
-		android:title="Export garden"
+		android:title="@string/menu_export_garden"
 		app:showAsAction="never"
 		android:visible="false"
 	/>
 
 	<item
 		android:id="@+id/edit_garden"
-		android:title="Edit garden"
+		android:title="@string/menu_edit_garden"
 		app:showAsAction="never"
 		android:visible="false"
 	/>
 
 	<item
 		android:id="@+id/delete_garden"
-		android:title="Delete garden"
+		android:title="@string/menu_delete_garden"
 		app:showAsAction="never"
 		android:visible="false"
 	/>

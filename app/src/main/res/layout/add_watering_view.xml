@@ -26,7 +26,7 @@
 				<TextView
 					android:layout_width="wrap_content"
 					android:layout_height="wrap_content"
-					android:text="Water details"
+					android:text="@string/water_details_title"
 					style="@style/SectionTitle"
 				/>
 
@@ -59,7 +59,7 @@
 							<TextView
 								android:layout_width="match_parent"
 								android:layout_height="wrap_content"
-								android:text="Water PH"
+								android:text="@string/water_ph_label"
 								style="@style/SubsectionTitle"
 							/>
 
@@ -85,7 +85,7 @@
 								android:layout_width="match_parent"
 								android:layout_height="wrap_content"
 								android:id="@+id/ppm_label"
-								android:text="PPM"
+								android:text="@string/ppm_label"
 								style="@style/SubsectionTitle"
 							/>
 
@@ -110,7 +110,7 @@
 							<TextView
 								android:layout_width="match_parent"
 								android:layout_height="wrap_content"
-								android:text="Runoff"
+								android:text="@string/runoff_label"
 								style="@style/SubsectionTitle"
 							/>
 
@@ -149,7 +149,7 @@
 								android:layout_width="match_parent"
 								android:layout_height="wrap_content"
 								android:id="@+id/amount_label"
-								android:text="Amount (ml)"
+								android:text="@string/amount_label"
 								style="@style/SubsectionTitle"
 							/>
 
@@ -176,7 +176,7 @@
 								android:layout_width="match_parent"
 								android:layout_height="wrap_content"
 								android:id="@+id/temp_label"
-								android:text="Temp (ºC)"
+								android:text="@string/temp_label"
 								style="@style/SubsectionTitle"
 							/>
 
@@ -206,7 +206,7 @@
 				<TextView
 					android:layout_width="wrap_content"
 					android:layout_height="wrap_content"
-					android:text="Date and time"
+					android:text="@string/date_and_time_header"
 					style="@style/SectionTitle"
 				/>
 
@@ -233,7 +233,7 @@
 							android:layout_height="wrap_content"
 							android:id="@+id/date_now"
 							android:layout_alignParentEnd="true"
-							android:text="Now"
+							android:text="@string/date_now"
 							style="@style/Widget.AppCompat.Button.Borderless"
 						/>
 
@@ -241,7 +241,7 @@
 							android:layout_width="match_parent"
 							android:layout_height="wrap_content"
 							android:id="@+id/date_text"
-							android:text="Date"
+							android:text="@string/date_label"
 							android:layout_toStartOf="@id/date_now"
 							style="@style/SubsectionTitle"
 						/>
@@ -252,7 +252,7 @@
 							android:id="@+id/date"
 							android:editable="false"
 							android:inputType="none"
-							android:text="Today"
+							android:text="@string/today"
 							android:layout_toStartOf="@id/date_now"
 							android:layout_below="@id/date_text"
 							style="@style/SubsectionSubTitle"
@@ -273,7 +273,7 @@
 				<TextView
 					android:layout_width="wrap_content"
 					android:layout_height="wrap_content"
-					android:text="Additives"
+					android:text="@string/additives_title"
 					style="@style/SectionTitle"
 				/>
 
@@ -290,7 +290,7 @@
 						android:layout_width="match_parent"
 						android:layout_height="wrap_content"
 						android:id="@+id/new_additive"
-						android:text="+ New Additive"
+						android:text="@string/add_new_additive"
 						android:textStyle="bold"
 						android:paddingLeft="16dp"
 						android:paddingRight="16dp"
@@ -312,7 +312,7 @@
 				<TextView
 					android:layout_width="wrap_content"
 					android:layout_height="wrap_content"
-					android:text="Notes"
+					android:text="@string/notes_title"
 					style="@style/SectionTitle"
 				/>
 
@@ -336,7 +336,7 @@
 						<TextView
 							android:layout_width="match_parent"
 							android:layout_height="wrap_content"
-							android:text="Notes"
+							android:text="@string/notes_label"
 							style="@style/SubsectionTitle"
 						/>
 

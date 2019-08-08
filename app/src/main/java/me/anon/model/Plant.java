@@ -11,6 +11,7 @@ import java.util.SortedMap;
 import java.util.TreeMap;
 import java.util.UUID;
 
+import me.anon.grow.R;
 import me.anon.lib.DateRenderer;
 import me.anon.lib.Unit;
 import me.anon.lib.helper.TimeHelper;
@@ -149,7 +150,7 @@ public class Plant
 
 		if (getStage() == PlantStage.HARVESTED)
 		{
-			summary += "Harvested";
+			summary += context.getString(R.string.harvested);
 		}
 		else
 		{
@@ -175,22 +176,22 @@ public class Plant
 
 				if (stageTimes.containsKey(getStage()))
 				{
-					summary += " / <b>" + (int)TimeHelper.toDays(stageTimes.get(getStage())) + getStage().getPrintString().substring(0, 1).toLowerCase() + "</b>";
+					summary += " / <b>" + (int)TimeHelper.toDays(stageTimes.get(getStage())) + context.getString(getStage().getPrintString()).substring(0, 1).toLowerCase() + "</b>";
 				}
 
 				if (lastWater != null)
 				{
 					summary += "<br/>";
-					summary += "Watered: <b>" + new DateRenderer().timeAgo(lastWater.getDate()).formattedDate + "</b> ago";
+					summary += context.getString(R.string.watered_ago, new DateRenderer().timeAgo(lastWater.getDate()).formattedDate);
 					summary += "<br/>";
 
 					if (lastWater.getPh() != null)
 					{
-						summary += "<b>" + lastWater.getPh() + " PH</b> ";
+						summary += "<b>" + lastWater.getPh() + " pH</b> ";
 
 						if (lastWater.getRunoff() != null)
 						{
-							summary += "-> <b>" + lastWater.getRunoff() + " PH</b> ";
+							summary += "-> <b>" + lastWater.getRunoff() + " pH</b> ";
 						}
 					}
 
@@ -224,12 +225,14 @@ public class Plant
 
 		if (getStage() == PlantStage.HARVESTED)
 		{
-			summary += "Harvested";
+			summary += context.getString(R.string.harvested);
 		}
 		else
 		{
 			DateRenderer.TimeAgo planted = new DateRenderer().timeAgo(getPlantDate(), 3);
-			summary += "<b>Planted " + (int)planted.time + " " + planted.unit.type + " ago</b>";
+			summary += "<b>";
+			summary += context.getString(R.string.planted_ago, (int)planted.time + " " + planted.unit.type);
+			summary += "</b>";
 
 			if (getActions() != null && getActions().size() > 0)
 			{
@@ -250,22 +253,22 @@ public class Plant
 
 				if (stageTimes.containsKey(getStage()))
 				{
-					summary += " / <b>" + (int)TimeHelper.toDays(stageTimes.get(getStage())) + getStage().getPrintString().substring(0, 1).toLowerCase() + "</b>";
+					summary += " / <b>" + (int)TimeHelper.toDays(stageTimes.get(getStage())) + context.getString(getStage().getPrintString()).substring(0, 1).toLowerCase() + "</b>";
 				}
 
 				if (lastWater != null)
 				{
 					summary += "<br/><br/>";
-					summary += "Last watered: <b>" + new DateRenderer().timeAgo(lastWater.getDate()).formattedDate + "</b> ago";
+					summary += context.getString(R.string.last_watered_ago, new DateRenderer().timeAgo(lastWater.getDate()).formattedDate);
 					summary += "<br/>";
 
 					if (lastWater.getPh() != null)
 					{
-						summary += "<b>" + lastWater.getPh() + " PH</b> ";
+						summary += "<b>" + lastWater.getPh() + " pH</b> ";
 
 						if (lastWater.getRunoff() != null)
 						{
-							summary += "-> <b>" + lastWater.getRunoff() + " PH</b> ";
+							summary += "-> <b>" + lastWater.getRunoff() + " pH</b> ";
 						}
 					}
 
@@ -282,7 +285,7 @@ public class Plant
 							total += additive.getAmount();
 						}
 
-						summary += "<br/> + <b>" + ML.to(measureUnit, total) + measureUnit.getLabel() + "</b> additives";
+						summary += "<br/> + <b>" + ML.to(measureUnit, total) + measureUnit.getLabel() + "</b> " + context.getString(R.string.additives);
 					}
 				}
 			}

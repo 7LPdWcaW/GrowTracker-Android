@@ -144,11 +144,11 @@ public class PlantSelectDialogFragment extends DialogFragment
 		recyclerView.setLayoutManager(layoutManager);
 
 		final AlertDialog alertDialog = new AlertDialog.Builder(getActivity())
-			.setTitle("Select plant")
+			.setTitle(R.string.dialog_select_plant_title)
 			.setView(view)
-			.setPositiveButton("Ok", null)
-			.setNeutralButton("Hide images", null)
-			.setNegativeButton("Cancel", new DialogInterface.OnClickListener()
+			.setPositiveButton(R.string.ok, null)
+			.setNeutralButton(R.string.hide_images, null)
+			.setNegativeButton(R.string.cancel, new DialogInterface.OnClickListener()
 			{
 				public void onClick(DialogInterface dialog, int whichButton)
 				{
@@ -211,11 +211,11 @@ public class PlantSelectDialogFragment extends DialogFragment
 
 						if (showImages)
 						{
-							((TextView)view).setText("Hide images");
+							((TextView)view).setText(R.string.hide_images);
 						}
 						else
 						{
-							((TextView)view).setText("Show images");
+							((TextView)view).setText(R.string.show_images);
 						}
 					}
 				});

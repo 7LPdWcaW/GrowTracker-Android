@@ -34,11 +34,9 @@ public class BootActivity extends Activity
 		if (exceptions != null && exceptions.length > 0)
 		{
 			new AlertDialog.Builder(this)
-				.setTitle("Uh-oh")
-				.setMessage(Html.fromHtml("Looks like there was a crash the last time you used the app. Would you like to send these anonymous reports? " +
-					"These reports will be sent to <a href=\"https://github.com/7LPdWcaW/GrowTracker-Android/issues\">github.com/7LPdWcaW/GrowTracker-Android/issues</a>, no personal information will be included. You can optionally " +
-					"post these reports to <a href=\"https://reddit.com/r/growutils\">reddit.com/r/growutils</a> manually if you wish. Reports are stored in <i>" + ExceptionHandler.getInstance().getFilesPath() + "</i>"))
-				.setPositiveButton("Yes", new DialogInterface.OnClickListener()
+				.setTitle(R.string.crash_title)
+				.setMessage(Html.fromHtml(getString(R.string.crash_message, ExceptionHandler.getInstance().getFilesPath())))
+				.setPositiveButton(R.string.yes, new DialogInterface.OnClickListener()
 				{
 					@Override public void onClick(DialogInterface dialogInterface, int i)
 					{
@@ -69,7 +67,7 @@ public class BootActivity extends Activity
 						sentIntent = true;
 					}
 				})
-				.setNegativeButton("No", new DialogInterface.OnClickListener()
+				.setNegativeButton(R.string.no, new DialogInterface.OnClickListener()
 				{
 					@Override public void onClick(DialogInterface dialogInterface, int i)
 					{
@@ -115,7 +113,7 @@ public class BootActivity extends Activity
 		if (MainApplication.isEncrypted())
 		{
 			final PinDialogFragment check = new PinDialogFragment();
-			check.setTitle("Enter your passphrase");
+			check.setTitle(getString(R.string.passphrase_title));
 			check.setOnDialogConfirmed(new PinDialogFragment.OnDialogConfirmed()
 			{
 				@Override public void onDialogConfirmed(String input)
@@ -139,7 +137,7 @@ public class BootActivity extends Activity
 					}
 					else
 					{
-						Toast.makeText(BootActivity.this, "Error - incorrect passphrase", Toast.LENGTH_SHORT).show();
+						Toast.makeText(BootActivity.this, R.string.encrypt_passphrase_error, Toast.LENGTH_SHORT).show();
 
 						check.dismiss();
 						check.show(getFragmentManager(), null);

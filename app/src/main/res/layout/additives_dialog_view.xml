@@ -13,7 +13,7 @@
 		android:id="@+id/description"
 		android:inputType="textCapSentences"
 		android:nextFocusDown="@+id/amount"
-		android:hint="Description"
+		android:hint="@string/additives_dialog_description"
 	/>
 
 	<EditText

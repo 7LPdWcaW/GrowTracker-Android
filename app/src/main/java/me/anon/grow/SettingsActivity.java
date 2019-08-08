@@ -25,7 +25,7 @@ public class SettingsActivity extends BaseActivity
 		setSupportActionBar((Toolbar)findViewById(R.id.toolbar));
 		Views.inject(this);
 
-		setTitle("Settings");
+		setTitle(R.string.nav_settings);
 
 		if (getFragmentManager().findFragmentByTag(TAG_FRAGMENT) == null)
 		{

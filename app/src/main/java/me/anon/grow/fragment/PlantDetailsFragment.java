@@ -174,14 +174,14 @@ public class PlantDetailsFragment extends Fragment
 		if (plant == null)
 		{
 			plant = new Plant();
-			getActivity().setTitle("Add new plant");
+			getActivity().setTitle(getString(R.string.new_plant_title));
 
 			plant.getActions().add(new StageChange(PlantStage.PLANTED));
 			lastFeeding.setVisibility(View.GONE);
 		}
 		else
 		{
-			getActivity().setTitle("Plant details");
+			getActivity().setTitle(getString(R.string.plant_details_title));
 
 			actionContainer.setVisibility(View.VISIBLE);
 			linkContainer.setVisibility(View.VISIBLE);
@@ -326,7 +326,7 @@ public class PlantDetailsFragment extends Fragment
 				plant.getActions().add(action);
 				PlantManager.getInstance().upsert(plantIndex, plant);
 
-				SnackBar.show(getActivity(), "Note added", "undo", new SnackBarListener()
+				SnackBar.show(getActivity(), R.string.snackbar_note_add, R.string.snackbar_undo, new SnackBarListener()
 				{
 					@Override public void onSnackBarStarted(Object o)
 					{
@@ -368,21 +368,21 @@ public class PlantDetailsFragment extends Fragment
 	{
 		if (!PermissionHelper.hasPermission(getActivity(), Manifest.permission.WRITE_EXTERNAL_STORAGE))
 		{
-			PermissionHelper.doPermissionCheck(this, Manifest.permission.WRITE_EXTERNAL_STORAGE, 1, "Access to external storage is needed to store photos. No other data is consumed by this app");
+			PermissionHelper.doPermissionCheck(this, Manifest.permission.WRITE_EXTERNAL_STORAGE, 1, getString(R.string.permission_summary));
 			return;
 		}
 
-		String[] choices = {"From camera", "From gallery"};
+		String[] choices = {getString(R.string.photo_option_camera), getString(R.string.photo_option_gallery)};
 
 		new AlertDialog.Builder(getActivity())
-			.setTitle("Select an option")
+			.setTitle(R.string.dialog_option_title)
 			.setItems(choices, new DialogInterface.OnClickListener()
 			{
 				@Override public void onClick(DialogInterface dialogInterface, int index)
 				{
 					if (index == 0)
 					{
-						Intent intent = new Intent(android.provider.MediaStore.ACTION_IMAGE_CAPTURE);
+						Intent intent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
 
 						File path = new File(Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DCIM).getPath() + "/GrowTracker/" + plant.getId() + "/");
 						path.mkdirs();
@@ -425,7 +425,7 @@ public class PlantDetailsFragment extends Fragment
 						intent.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION);
 						intent.setType("image/*");
 
-						startActivityForResult(Intent.createChooser(intent, "Select picture"), 3);
+						startActivityForResult(Intent.createChooser(intent, getString(R.string.dialog_select_picture_title)), 3);
 					}
 				}
 			})
@@ -453,7 +453,7 @@ public class PlantDetailsFragment extends Fragment
 			if (resultCode != Activity.RESULT_CANCELED)
 			{
 				setLastFeeding();
-				SnackBar.show(getActivity(), "Watering added", "Apply to another plant", new SnackBarListener()
+				SnackBar.show(getActivity(), R.string.snackbar_watering_add, R.string.snackbar_action_apply, new SnackBarListener()
 				{
 					@Override public void onSnackBarStarted(Object o)
 					{
@@ -487,7 +487,7 @@ public class PlantDetailsFragment extends Fragment
 									PlantManager.getInstance().getPlants().get(index).getActions().add(copy);
 								}
 
-								SnackBar.show(getActivity(), "Waterings added", new SnackBarListener()
+								SnackBar.show(getActivity(), R.string.waterings_added, new SnackBarListener()
 								{
 									@Override public void onSnackBarStarted(Object o)
 									{
@@ -578,7 +578,7 @@ public class PlantDetailsFragment extends Fragment
 					new EncryptTask().executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR, image);
 				}
 
-				SnackBar.show(getActivity(), "Image added", "Take another", new SnackBarListener()
+				SnackBar.show(getActivity(), R.string.snackbar_image_added, R.string.snackbar_action_take_another, new SnackBarListener()
 				{
 					@Override public void onSnackBarStarted(Object o)
 					{
@@ -680,14 +680,14 @@ public class PlantDetailsFragment extends Fragment
 		if (item.getItemId() == R.id.delete)
 		{
 			new AlertDialog.Builder(getActivity())
-				.setTitle("Are you sure?")
-				.setMessage(Html.fromHtml("You are about to delete <b>" + plant.getName() + "</b> and all of the images associated with it, are you sure? This can not be undone."))
-				.setPositiveButton("Yes", new DialogInterface.OnClickListener()
+				.setTitle(R.string.confirm_title)
+				.setMessage(Html.fromHtml(getString(R.string.delete_plant_message, plant.getName())))
+				.setPositiveButton(R.string.yes, new DialogInterface.OnClickListener()
 				{
 					@Override public void onClick(DialogInterface dialog, int which)
 					{
 						final ProgressDialog progress = new ProgressDialog(getActivity());
-						progress.setMessage("Deleting plant...");
+						progress.setMessage(getString(R.string.delete_plant_progress));
 						progress.setCancelable(false);
 						progress.show();
 
@@ -715,7 +715,7 @@ public class PlantDetailsFragment extends Fragment
 						});
 					}
 				})
-				.setNegativeButton("No", null)
+				.setNegativeButton(R.string.no, null)
 				.show();
 
 			return true;
@@ -729,7 +729,7 @@ public class PlantDetailsFragment extends Fragment
 			copy.setName(copy.getName() + " (copy)");
 			PlantManager.getInstance().addPlant(copy);
 
-			SnackBar.show(getActivity(), "Plant duplicated", "open", new SnackBarListener()
+			SnackBar.show(getActivity(), R.string.plant_duplicated, R.string.open, new SnackBarListener()
 				{
 					@Override public void onSnackBarStarted(Object o)
 					{
@@ -757,7 +757,7 @@ public class PlantDetailsFragment extends Fragment
 		}
 		else if (item.getItemId() == R.id.export)
 		{
-			Toast.makeText(getActivity(), "Exporting grow log...", Toast.LENGTH_SHORT).show();
+			Toast.makeText(getActivity(), R.string.export_progress, Toast.LENGTH_SHORT).show();
 			ExportService.export(getActivity(),new ArrayList<Plant>(Arrays.asList(plant)), plant.getName().replaceAll("[^a-zA-Z0-9]+", "-"), plant.getName());
 
 			return true;
@@ -776,7 +776,7 @@ public class PlantDetailsFragment extends Fragment
 				plant.getActions().add(action);
 				PlantManager.getInstance().upsert(plantIndex, plant);
 
-				SnackBar.show(getActivity(), action.getAction().getPrintString() + " added", "undo", new SnackBarListener()
+				SnackBar.show(getActivity(), getString(R.string.action_added, getString(action.getAction().getPrintString())), getString(R.string.undo), new SnackBarListener()
 				{
 					@Override public void onSnackBarStarted(Object o)
 					{
@@ -841,7 +841,7 @@ public class PlantDetailsFragment extends Fragment
 					plant.getActions().add(action);
 					PlantManager.getInstance().upsert(plantIndex, plant);
 
-					SnackBar.show(getActivity(), "Stage updated", "undo", new SnackBarListener()
+					SnackBar.show(getActivity(), R.string.stage_updated, R.string.undo, new SnackBarListener()
 					{
 						@Override public void onSnackBarStarted(Object o)
 						{
@@ -881,10 +881,10 @@ public class PlantDetailsFragment extends Fragment
 
 	@Views.OnClick public void onPlantMediumContainerClick(final View view)
 	{
-		String[] mediums = PlantMedium.names();
+		String[] mediums = PlantMedium.names(view.getContext());
 
 		new AlertDialog.Builder(view.getContext())
-			.setTitle("Medium")
+			.setTitle(R.string.plant_medium_label)
 			.setItems(mediums, new DialogInterface.OnClickListener()
 			{
 				@Override public void onClick(DialogInterface dialog, int which)
@@ -906,7 +906,7 @@ public class PlantDetailsFragment extends Fragment
 		}
 		else
 		{
-			name.setError("Name can not be empty");
+			name.setError(getString(R.string.name_input_error));
 			return;
 		}
 

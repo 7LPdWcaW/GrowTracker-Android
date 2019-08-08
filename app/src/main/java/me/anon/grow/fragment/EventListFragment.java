@@ -205,7 +205,7 @@ public class EventListFragment extends Fragment implements ActionAdapter.OnActio
 				plant.getActions().add(action);
 				PlantManager.getInstance().upsert(plantIndex, plant);
 
-				SnackBar.show(getActivity(), action.getAction().getPrintString() + " added", "undo", new SnackBarListener()
+				SnackBar.show(getActivity(), action.getAction().getPrintString() + " " + getString(R.string.added), getString(R.string.undo), new SnackBarListener()
 				{
 					@Override public void onSnackBarStarted(Object o)
 					{
@@ -246,7 +246,7 @@ public class EventListFragment extends Fragment implements ActionAdapter.OnActio
 		setActions();
 		adapter.notifyDataSetChanged();
 
-		SnackBar.show(getActivity(), "Action duplicated", "Undo", new SnackBarListener()
+		SnackBar.show(getActivity(), getString(R.string.action_duplicated), getString(R.string.undo), new SnackBarListener()
 		{
 			@Override public void onSnackBarStarted(Object o)
 			{
@@ -292,10 +292,10 @@ public class EventListFragment extends Fragment implements ActionAdapter.OnActio
 				setActions();
 				adapter.notifyDataSetChanged();
 
-				String plantName = "multiple plants";
+				String plantName = getString(R.string.multiple_plants);
 				plantName = indexes.size() == 0 ? PlantManager.getInstance().getPlants().get(indexes.get(0)).getName() : plantName;
 
-				SnackBar.show(getActivity(), "Action added to " + plantName, "Undo", new SnackBarListener()
+				SnackBar.show(getActivity(), getString(R.string.added_to) + plantName, getString(R.string.undo), new SnackBarListener()
 				{
 					@Override public void onSnackBarStarted(Object o)
 					{
@@ -358,7 +358,7 @@ public class EventListFragment extends Fragment implements ActionAdapter.OnActio
 					setActions();
 					adapter.notifyDataSetChanged();
 
-					SnackBar.show(getActivity(), "Note updated", "undo", new SnackBarListener()
+					SnackBar.show(getActivity(), getString(R.string.note_updated), getString(R.string.undo), new SnackBarListener()
 					{
 						@Override public void onSnackBarStarted(Object o)
 						{
@@ -401,7 +401,7 @@ public class EventListFragment extends Fragment implements ActionAdapter.OnActio
 					setActions();
 					adapter.notifyDataSetChanged();
 
-					SnackBar.show(getActivity(), action.getAction().getPrintString() + " updated", "undo", new SnackBarListener()
+					SnackBar.show(getActivity(), action.getAction().getPrintString() + " " + getString(R.string.updated), getString(R.string.undo), new SnackBarListener()
 					{
 						@Override public void onSnackBarStarted(Object o)
 						{
@@ -448,7 +448,7 @@ public class EventListFragment extends Fragment implements ActionAdapter.OnActio
 					setActions();
 					adapter.notifyDataSetChanged();
 
-					SnackBar.show(getActivity(), "Stage updated", "undo", new SnackBarListener()
+					SnackBar.show(getActivity(), getString(R.string.stage_updated), getString(R.string.undo), new SnackBarListener()
 					{
 						@Override public void onSnackBarStarted(Object o)
 						{
@@ -488,7 +488,7 @@ public class EventListFragment extends Fragment implements ActionAdapter.OnActio
 		setActions();
 		adapter.notifyDataSetChanged();
 
-		SnackBar.show(getActivity(), "Event deleted", "Undo", new SnackBarListener()
+		SnackBar.show(getActivity(), getString(R.string.event_deleted), getString(R.string.undo), new SnackBarListener()
 		{
 			@Override public void onSnackBarStarted(Object o)
 			{
@@ -536,12 +536,12 @@ public class EventListFragment extends Fragment implements ActionAdapter.OnActio
 
 			for (int index = 0; index < actionItems.length; index++)
 			{
-				actionItems[index] = Action.ActionName.values()[index].getPrintString();
+				actionItems[index] = getString(Action.ActionName.values()[index].getPrintString());
 				selectedItems[index] = selected.contains(Action.ActionName.values()[index]);
 			}
 
 			new AlertDialog.Builder(getActivity())
-				.setTitle("Actions")
+				.setTitle(R.string.filter_actions)
 				.setMultiChoiceItems(actionItems, selectedItems, new DialogInterface.OnMultiChoiceClickListener()
 				{
 					@Override public void onClick(DialogInterface dialog, int which, boolean isChecked)
@@ -556,7 +556,7 @@ public class EventListFragment extends Fragment implements ActionAdapter.OnActio
 						}
 					}
 				})
-				.setPositiveButton("Done", new DialogInterface.OnClickListener()
+				.setPositiveButton(R.string.done, new DialogInterface.OnClickListener()
 				{
 					@Override public void onClick(DialogInterface dialog, int which)
 					{

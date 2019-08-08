@@ -207,11 +207,11 @@ public class ImageLightboxDialog extends Activity
 
 					int currentDays = (int)TimeHelper.toDays(Math.abs(currentChange.getDate() - lastChange.getDate()));
 					currentDays = (currentDays == 0 ? 1 : currentDays);
-					stageDayStr += "/" + currentDays + lastChange.getNewStage().getPrintString().substring(0, 1).toLowerCase();
+					stageDayStr += "/" + currentDays + getString(lastChange.getNewStage().getPrintString()).substring(0, 1).toLowerCase();
 				}
 
 				String dateStr = dateFormat.format(date) + " " + timeFormat.format(date);
-				((TextView)imageLayout.findViewById(R.id.taken)).setText(Html.fromHtml("<b>Taken</b>: " + dateStr + stageDayStr + " (" + new DateRenderer().timeAgo(date.getTime()).formattedDate + " ago)"));
+				((TextView)imageLayout.findViewById(R.id.taken)).setText(Html.fromHtml("<b>" + getString(R.string.taken) + "</b>: " + dateStr + stageDayStr + " (" + getString(R.string.ago,  new DateRenderer().timeAgo(date.getTime()).formattedDate) + ")"));
 
 				try
 				{

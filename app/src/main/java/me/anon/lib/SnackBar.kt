@@ -32,6 +32,12 @@ class SnackBar
 		}
 
 		@JvmStatic
+		public fun show(context: Activity, @StringRes message: Int, listener: SnackBarListener)
+		{
+			show(context, context.getString(message), listener)
+		}
+
+		@JvmStatic
 		public fun show(context: Activity, message: String, listener: SnackBarListener?)
 		{
 			show(context, message, "", Snackbar.LENGTH_LONG, listener)

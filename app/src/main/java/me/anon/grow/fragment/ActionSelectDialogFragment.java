@@ -90,7 +90,7 @@ public class ActionSelectDialogFragment extends DialogFragment
 		recyclerView.addItemDecoration(new DividerItemDecoration(getActivity(), LinearLayout.VERTICAL));
 
 		final AlertDialog dialog = new AlertDialog.Builder(getActivity())
-			.setTitle("Actions")
+			.setTitle(R.string.actions)
 			.setView(view)
 			.create();
 

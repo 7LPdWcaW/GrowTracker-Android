@@ -67,7 +67,7 @@ public class PinDialogFragment extends DialogFragment
 		Views.inject(this, view);
 
 		dialog.setView(view);
-		dialog.setPositiveButton("Accept", new DialogInterface.OnClickListener()
+		dialog.setPositiveButton(R.string.accept, new DialogInterface.OnClickListener()
 		{
 			@Override public void onClick(DialogInterface dialog, int which)
 			{
@@ -77,7 +77,7 @@ public class PinDialogFragment extends DialogFragment
 				}
 			}
 		});
-		dialog.setNegativeButton("Cancel", new DialogInterface.OnClickListener()
+		dialog.setNegativeButton(R.string.cancel, new DialogInterface.OnClickListener()
 		{
 			@Override public void onClick(DialogInterface dialog, int which)
 			{
