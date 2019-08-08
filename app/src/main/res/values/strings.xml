@@ -242,6 +242,11 @@
 	<string name="failsafe_message">Provide this password during unencryption phase to prevent data from being loaded</string>
 	<string name="warning">Warning</string>
 	<string name="encryption_message">This is basic form of AES encryption based on a provided passphrase. This is not a guarantee form of encryption from law enforcement agencies as was designed to stop plain sight</string>
+	<string name="backup_enable_toast">Backup enabled, backups will be stored in /sdcard/backups/GrowTracker/</string>
+	<string name="restore_complete" formatted="true">Restore to %s completed</string>
+	<string name="restore_error" formatted="true">Could not restore from backup %s. File may be %s</string>
+	<string name="encrypted">encrypted</string>
+	<string name="unencrypted">unencrypted</string>
 
 	<string name="select_measurement_title">Select measurement</string>
 	<string name="select_garden_title">Select garden</string>

@@ -66,13 +66,6 @@ import me.anon.model.Plant;
 
 import static me.anon.lib.manager.PlantManager.FILES_DIR;
 
-/**
- * // TODO: Add class description
- *
- * @author 7LPdWcaW
- * @documentation // TODO Reference flow doc
- * @project GrowTracker
- */
 public class SettingsFragment extends PreferenceFragment implements Preference.OnPreferenceClickListener, Preference.OnPreferenceChangeListener
 {
 	private static final int REQUEST_UNINSTALL = 0x01;
@@ -104,7 +97,7 @@ public class SettingsFragment extends PreferenceFragment implements Preference.O
 		findPreference("auto_backup").setOnPreferenceChangeListener(this);
 		findPreference("backup_size").setOnPreferenceChangeListener(this);
 		String currentBackup = findPreference("backup_size").getSharedPreferences().getString("backup_size", "20");
-		findPreference("backup_size").setSummary("Currently " + currentBackup + "mb / Using " + lengthToString(BackupHelper.backupSize(), false));
+		findPreference("backup_size").setSummary(getString(R.string.settings_backup_size, currentBackup, lengthToString(BackupHelper.backupSize(), false)));
 
 		findPreference("readme").setOnPreferenceClickListener(this);
 		findPreference("export").setOnPreferenceClickListener(this);
@@ -246,7 +239,7 @@ public class SettingsFragment extends PreferenceFragment implements Preference.O
 				.apply();
 			((EditTextPreference)preference).setText(currentBackup);
 			BackupHelper.limitBackups(currentBackup);
-			findPreference("backup_size").setSummary("Currently " + currentBackup + "mb / Using " + lengthToString(BackupHelper.backupSize(), false));
+			findPreference("backup_size").setSummary(getString(R.string.settings_backup_size, currentBackup, lengthToString(BackupHelper.backupSize(), false)));
 		}
 		else if ("encrypt".equals(preference.getKey()))
 		{
@@ -444,7 +437,7 @@ public class SettingsFragment extends PreferenceFragment implements Preference.O
 			{
 				PreferenceManager.getDefaultSharedPreferences(getActivity()).edit().putBoolean("auto_backup", true).apply();
 				((MainApplication)getActivity().getApplication()).registerBackupService();
-				Toast.makeText(getActivity(), "Backup enabled, backups will be stored in /sdcard/backups/GrowTracker/", Toast.LENGTH_LONG).show();
+				Toast.makeText(getActivity(), R.string.backup_enable_toast, Toast.LENGTH_LONG).show();
 			}
 			else
 			{
@@ -790,8 +783,8 @@ public class SettingsFragment extends PreferenceFragment implements Preference.O
 
 						if (!loaded)
 						{
-							String errorEnd = MainApplication.isEncrypted() ? "unencrypted" : "encryped";
-							SnackBar.show(getActivity(), "Could not restore from backup " + selectedBackupStr + ". File may be " + errorEnd, Snackbar.LENGTH_INDEFINITE, null);
+							String errorEnd = MainApplication.isEncrypted() ? getString(R.string.unencrypted) : getString(R.string.encrypted);
+							SnackBar.show(getActivity(), getString(R.string.restore_error, selectedBackupStr, errorEnd), Snackbar.LENGTH_INDEFINITE, null);
 							FileManager.getInstance().copyFile(PlantManager.FILES_DIR + "/plants.temp", PlantManager.FILES_DIR + "/plants.json");
 							FileManager.getInstance().copyFile(GardenManager.FILES_DIR + "/gardens.temp", GardenManager.FILES_DIR + "/gardens.json");
 							FileManager.getInstance().copyFile(ScheduleManager.FILES_DIR + "/schedules.temp", ScheduleManager.FILES_DIR + "/schedules.json");
@@ -801,7 +794,7 @@ public class SettingsFragment extends PreferenceFragment implements Preference.O
 						}
 						else
 						{
-							Toast.makeText(getActivity(), "Restore to " + selectedBackupStr + " completed", Toast.LENGTH_LONG).show();
+							Toast.makeText(getActivity(), getString(R.string.restore_complete, selectedBackupStr), Toast.LENGTH_LONG).show();
 							getActivity().recreate();
 						}
 					}
