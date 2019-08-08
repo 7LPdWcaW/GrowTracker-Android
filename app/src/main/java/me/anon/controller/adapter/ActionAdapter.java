@@ -482,7 +482,7 @@ public class ActionAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>
 					{
 						int currentDays = (int)TimeHelper.toDays(Math.abs(currentChange.getDate() - lastChange.getDate()));
 						currentDays = (currentDays == 0 ? 1 : currentDays);
-						stageDayStr += "/" + currentDays + lastChange.getNewStage().getPrintString().substring(0, 1).toLowerCase();
+						stageDayStr += "/" + currentDays + dateDay.getContext().getString(lastChange.getNewStage().getPrintString()).substring(0, 1).toLowerCase();
 					}
 
 					stageDay.setText(stageDayStr);

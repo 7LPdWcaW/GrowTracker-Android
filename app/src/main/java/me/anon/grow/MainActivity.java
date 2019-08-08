@@ -61,7 +61,7 @@ public class MainActivity extends BaseActivity implements NavigationView.OnNavig
 
 		if (!PermissionHelper.hasPermission(this, Manifest.permission.WRITE_EXTERNAL_STORAGE))
 		{
-			PermissionHelper.doPermissionCheck(this, Manifest.permission.WRITE_EXTERNAL_STORAGE, 1, getString(R.string.permission_storage));
+			PermissionHelper.doPermissionCheck(this, Manifest.permission.WRITE_EXTERNAL_STORAGE, 1, getString(R.string.permission_summary));
 		}
 
 		setContentView(R.layout.main_view);

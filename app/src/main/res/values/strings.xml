@@ -1,7 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 
 <resources>
-	<string name="permission_storage">Access to external storage is to display photos in the app. No other data is read.</string>
 	<string name="version">Version %s</string>
 	<string name="menu_settings">Settings</string>
 	<string name="list_title">%s plants</string>
@@ -21,6 +20,7 @@
 	<string name="widget_encrypt_error">Widget is not available when encrypt setting is enabled</string>
 	<string name="new_plant_title">Add new plant</string>
 	<string name="plant_details_title">Plant details</string>
+	<string name="statistics_title">Plant statistics</string>
 	<string name="photo_option_camera">From camera</string>
 	<string name="photo_option_gallery">From gallery</string>
 	<string name="dialog_option_title">Select an option</string>
@@ -65,18 +65,22 @@
 	<string name="update_dialog_view_changes_button">View changes</string>
 	<string name="update_dialog_dismiss_button">Dismiss</string>
 
+	<string name="feeding_single_title" formatted="true">Feeding %s</string>
+	<string name="feeding_multiple_title" formatted="true">Feeding multiple plants</string>
+
 	<string name="action_dialog_date">Date</string>
 	<string name="action_dialog_notes">Notes</string>
 	<string name="water_details_title">Water details</string>
 	<string name="water_ph_label">Water PH</string>
 	<string name="ppm_label">PPM</string>
 	<string name="runoff_label">Runoff</string>
-	<string name="amount_label">Amount (ml)</string>
-	<string name="temp_label">Temp (ºC)</string>
+	<string name="amount_label" formatted="true">Amount (%s)</string>
+	<string name="temp_label" formatted="true">Temp (º%s)</string>
 	<string name="date_and_time_header">Date and time</string>
 	<string name="date_now">Now</string>
 	<string name="date_label">Date</string>
 	<string name="today">Today</string>
+	<string name="length_days">%s days</string>
 	<string name="additives_title">Additives</string>
 	<string name="add_new_additive">+ New Additive</string>
 	<string name="notes_title">Notes</string>
@@ -169,7 +173,11 @@
 	<string name="note">Note</string>
 	<string name="delete_event_dialog_title">Delete this event?</string>
 	<string name="confirm_delete_item_message">Are you sure you want to delete</string>
+	<string name="confirm_delete_photos_message" formatted="true">Are you sure you want to delete %s images, are you sure? You will not be able to recover these.</string>
 	<string name="edit">Edit</string>
+	<string name="stage">stage</string>
+	<string name="set">Set</string>
+	<string name="change">Change</string>
 	<string name="add">Add</string>
 	<string name="cancel">Cancel</string>
 	<string name="action">action</string>
@@ -249,10 +257,28 @@
 	<string name="unencrypted">unencrypted</string>
 
 	<string name="select_measurement_title">Select measurement</string>
+	<string name="select_temperature_title">Select temperature</string>
 	<string name="select_garden_title">Select garden</string>
 	<string name="select_backup_title">Select backup</string>
 	<string name="backup_restore_error">You must have encrpted mode enabled with the same password to restore this backup</string>
 
 	<string name="backed_up_to">Backed up to </string>
 	<string name="no_backups">There are no backups to restore from</string>
+	<string name="all_none">All/None</string>
+
+	<string name="stat_input_ph">Input pH</string>
+	<string name="stat_runoff_ph">Runoff pH</string>
+	<string name="stat_average_ph">Average pH</string>
+	<string name="stat_temerature">Temerature</string>
+
+	<string name="photos_title">Plant photos</string>
+
+	<string name="plant_summary_ph">In pH: </string>
+	<string name="plant_summary_out_ph">Out pH: </string>
+	<string name="plant_summary_amount">Amount: </string>
+	<string name="plant_summary_temp">Temp: </string>
+	<string name="plant_summary_additives">Additives: </string>
+
+	<string name="select_schedule_title">Select schedule</string>
+	<string name="actions">Actions</string>
 </resources>

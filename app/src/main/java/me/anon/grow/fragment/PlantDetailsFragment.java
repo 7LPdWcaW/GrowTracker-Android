@@ -881,7 +881,7 @@ public class PlantDetailsFragment extends Fragment
 
 	@Views.OnClick public void onPlantMediumContainerClick(final View view)
 	{
-		String[] mediums = PlantMedium.names();
+		String[] mediums = PlantMedium.names(view.getContext());
 
 		new AlertDialog.Builder(view.getContext())
 			.setTitle(R.string.plant_medium_label)

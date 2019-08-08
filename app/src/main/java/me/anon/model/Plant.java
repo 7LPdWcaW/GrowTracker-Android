@@ -176,7 +176,7 @@ public class Plant
 
 				if (stageTimes.containsKey(getStage()))
 				{
-					summary += " / <b>" + (int)TimeHelper.toDays(stageTimes.get(getStage())) + getStage().getPrintString().substring(0, 1).toLowerCase() + "</b>";
+					summary += " / <b>" + (int)TimeHelper.toDays(stageTimes.get(getStage())) + context.getString(getStage().getPrintString()).substring(0, 1).toLowerCase() + "</b>";
 				}
 
 				if (lastWater != null)
@@ -253,7 +253,7 @@ public class Plant
 
 				if (stageTimes.containsKey(getStage()))
 				{
-					summary += " / <b>" + (int)TimeHelper.toDays(stageTimes.get(getStage())) + getStage().getPrintString().substring(0, 1).toLowerCase() + "</b>";
+					summary += " / <b>" + (int)TimeHelper.toDays(stageTimes.get(getStage())) + context.getString(getStage().getPrintString()).substring(0, 1).toLowerCase() + "</b>";
 				}
 
 				if (lastWater != null)

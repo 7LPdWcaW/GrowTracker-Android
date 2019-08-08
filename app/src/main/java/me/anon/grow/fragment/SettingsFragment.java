@@ -81,7 +81,7 @@ public class SettingsFragment extends PreferenceFragment implements Preference.O
 		findPreference("default_garden").setSummary(Html.fromHtml(getString(R.string.settings_default_garden) + " <b>" + defaultGarden + "</b>"));
 		findPreference("delivery_unit").setSummary(Html.fromHtml(getString(R.string.settings_delivery) + " <b>" + Unit.getSelectedDeliveryUnit(getActivity()).getLabel() + "</b>"));
 		findPreference("measurement_unit").setSummary(Html.fromHtml(getString(R.string.settings_measurement) + " <b>" + Unit.getSelectedMeasurementUnit(getActivity()).getLabel() + "</b>"));
-		findPreference("temperature_unit").setSummary(Html.fromHtml(" <b>" + TempUnit.getSelectedTemperatureUnit(getActivity()).getLabel() + "</b>"));
+		findPreference("temperature_unit").setSummary(Html.fromHtml(getString(R.string.settings_temperature) + " <b>" + TempUnit.getSelectedTemperatureUnit(getActivity()).getLabel() + "</b>"));
 
 		try
 		{
@@ -531,7 +531,7 @@ public class SettingsFragment extends PreferenceFragment implements Preference.O
 							.putInt("temperature_unit", index)
 							.apply();
 
-					findPreference("temperature_unit").setSummary(Html.fromHtml(getString(R.string.select_temperature_title) + "<b>" + TempUnit.getSelectedTemperatureUnit(getActivity()).getLabel() + "</b>"));
+						findPreference("temperature_unit").setSummary(Html.fromHtml(getString(R.string.settings_measurement) + " <b>" + TempUnit.getSelectedTemperatureUnit(getActivity()).getLabel() + "</b>"));
 					}
 				})
 				.show();

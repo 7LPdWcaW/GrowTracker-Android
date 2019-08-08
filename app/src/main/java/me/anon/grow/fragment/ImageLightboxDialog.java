@@ -207,7 +207,7 @@ public class ImageLightboxDialog extends Activity
 
 					int currentDays = (int)TimeHelper.toDays(Math.abs(currentChange.getDate() - lastChange.getDate()));
 					currentDays = (currentDays == 0 ? 1 : currentDays);
-					stageDayStr += "/" + currentDays + lastChange.getNewStage().getPrintString().substring(0, 1).toLowerCase();
+					stageDayStr += "/" + currentDays + getString(lastChange.getNewStage().getPrintString()).substring(0, 1).toLowerCase();
 				}
 
 				String dateStr = dateFormat.format(date) + " " + timeFormat.format(date);
