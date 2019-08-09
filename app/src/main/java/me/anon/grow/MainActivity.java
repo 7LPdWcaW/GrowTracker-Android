@@ -62,7 +62,7 @@ public class MainActivity extends BaseActivity implements NavigationView.OnNavig
 
 		if (!PermissionHelper.hasPermission(this, Manifest.permission.WRITE_EXTERNAL_STORAGE))
 		{
-			PermissionHelper.doPermissionCheck(this, Manifest.permission.WRITE_EXTERNAL_STORAGE, 1, "Access to external storage is to display photos in the app. No other data is read.");
+			PermissionHelper.doPermissionCheck(this, Manifest.permission.WRITE_EXTERNAL_STORAGE, 1, getString(R.string.permission_summary));
 		}
 
 		setContentView(R.layout.main_view);
@@ -166,7 +166,7 @@ public class MainActivity extends BaseActivity implements NavigationView.OnNavig
 
 		try
 		{
-			navigation.getMenu().findItem(R.id.version).setTitle("Version " + getPackageManager().getPackageInfo(getPackageName(), 0).versionName);
+			navigation.getMenu().findItem(R.id.version).setTitle(getString(R.string.version, getPackageManager().getPackageInfo(getPackageName(), 0).versionName));
 		}
 		catch (PackageManager.NameNotFoundException e)
 		{
@@ -204,7 +204,7 @@ public class MainActivity extends BaseActivity implements NavigationView.OnNavig
 
 	@Override public boolean onCreateOptionsMenu(Menu menu)
 	{
-		menu.add(1, 1, 1, "Settings");
+		menu.add(1, 1, 1, R.string.menu_settings);
 
 		return super.onCreateOptionsMenu(menu);
 	}

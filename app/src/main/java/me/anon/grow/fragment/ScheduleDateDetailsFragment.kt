@@ -20,6 +20,7 @@ import me.anon.lib.manager.ScheduleManager
 import me.anon.model.Additive
 import me.anon.model.FeedingScheduleDate
 import me.anon.model.PlantStage
+import kotlin.math.floor
 
 class ScheduleDateDetailsFragment : Fragment()
 {
@@ -47,8 +48,8 @@ class ScheduleDateDetailsFragment : Fragment()
 	{
 		super.onActivityCreated(savedInstanceState)
 
-		to_stage.adapter = ArrayAdapter<String>(activity, android.R.layout.simple_list_item_1, PlantStage.values().map { it.printString }.toTypedArray())
-		from_stage.adapter = ArrayAdapter<String>(activity, android.R.layout.simple_list_item_1, PlantStage.values().map { it.printString }.toTypedArray())
+		to_stage.adapter = ArrayAdapter<String>(activity, android.R.layout.simple_list_item_1, PlantStage.values().map { getString(it.printString) }.toTypedArray())
+		from_stage.adapter = ArrayAdapter<String>(activity, android.R.layout.simple_list_item_1, PlantStage.values().map { getString(it.printString) }.toTypedArray())
 
 		from_stage.onItemSelectedListener = object: AdapterView.OnItemSelectedListener
 		{
@@ -110,8 +111,8 @@ class ScheduleDateDetailsFragment : Fragment()
 
 			val fromDate = from_date.text.toString().toSafeInt()
 			val toDate = if (to_date.text.isEmpty()) fromDate else to_date.text.toString().toSafeInt()
-			val fromStage = PlantStage.valueOfPrintString(from_stage.selectedItem as String)!!
-			val toStage = PlantStage.valueOfPrintString(to_stage.selectedItem as String)!!
+			val fromStage = PlantStage.valueOfPrintString(context, from_stage.selectedItem as String)!!
+			val toStage = PlantStage.valueOfPrintString(context, to_stage.selectedItem as String)!!
 
 			if (toDate < fromDate && fromStage.ordinal ?: -1 == toStage.ordinal ?: -1)
 			{
@@ -151,7 +152,7 @@ class ScheduleDateDetailsFragment : Fragment()
 			if (additive.amount == null) continue
 
 			val converted = Unit.ML.to(selectedMeasurementUnit, additive.amount)
-			val amountStr = if (converted == Math.floor(converted)) converted.toInt().toString() else converted.toString()
+			val amountStr = if (converted == floor(converted)) converted.toInt().toString() else converted.toString()
 
 			val additiveStub = LayoutInflater.from(activity).inflate(R.layout.additive_stub, additive_container, false)
 			(additiveStub as TextView).text = "${additive.description}   -   $amountStr${selectedMeasurementUnit.label}/${selectedDeliveryUnit.label}"
@@ -180,7 +181,7 @@ class ScheduleDateDetailsFragment : Fragment()
 				}
 
 				var converted = Unit.ML.to(selectedMeasurementUnit, additive.amount!!)
-				var amountStr = if (converted == Math.floor(converted)) converted.toInt().toString() else converted.toString()
+				var amountStr = if (converted == floor(converted)) converted.toInt().toString() else converted.toString()
 
 				val additiveStub = LayoutInflater.from(activity).inflate(R.layout.additive_stub, additive_container, false)
 				(additiveStub as TextView).text = "${additive.description}   -   $amountStr${selectedMeasurementUnit.label}/${selectedDeliveryUnit.label}"
@@ -205,7 +206,7 @@ class ScheduleDateDetailsFragment : Fragment()
 						if (tag === currentTag)
 						{
 							converted = Unit.ML.to(selectedMeasurementUnit, additive.amount!!)
-							amountStr = if (converted == Math.floor(converted)) converted.toInt().toString() else converted.toString()
+							amountStr = if (converted == floor(converted)) converted.toInt().toString() else converted.toString()
 
 							additives[childIndex] = additive
 

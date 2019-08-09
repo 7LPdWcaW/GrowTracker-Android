@@ -8,6 +8,7 @@ import me.anon.controller.adapter.FeedingDateAdapter
 import me.anon.lib.Unit
 import me.anon.lib.helper.TimeHelper
 import me.anon.model.FeedingScheduleDate
+import kotlin.math.floor
 
 /**
  * // TODO: Add class description
@@ -41,17 +42,17 @@ class FeedingDateHolder(val adapter: FeedingDateAdapter, itemView: View) : Recyc
 			}
 		}
 
-		title.text = "${feedingSchedule.dateRange[0]}${feedingSchedule.stageRange[0].printString[0]}"
+		title.text = "${feedingSchedule.dateRange[0]}${itemView.context.getString(feedingSchedule.stageRange[0].printString)[0]}"
 		if (feedingSchedule.dateRange[0] != feedingSchedule.dateRange[1])
 		{
-			title.text = "${title.text} - ${feedingSchedule.dateRange[1]}${feedingSchedule.stageRange[1].printString[0]}"
+			title.text = "${title.text} - ${feedingSchedule.dateRange[1]}${itemView.context.getString(feedingSchedule.stageRange[1].printString)[0]}"
 		}
 
 		var additiveStr = ""
 		for (additive in feedingSchedule.additives)
 		{
 			val converted = Unit.ML.to(measureUnit, additive.amount!!)
-			val amountStr = if (converted == Math.floor(converted)) converted.toInt().toString() else converted.toString()
+			val amountStr = if (converted == floor(converted)) converted.toInt().toString() else converted.toString()
 
 			if (additiveStr.isNotEmpty()) additiveStr += "<br />"
 			additiveStr += "• ${additive.description} - ${amountStr}${measureUnit.label}/${deliveryUnit.label}"

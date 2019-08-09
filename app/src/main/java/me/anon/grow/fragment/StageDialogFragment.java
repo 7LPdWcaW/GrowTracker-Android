@@ -64,7 +64,7 @@ public class StageDialogFragment extends DialogFragment
 		final Context context = getActivity();
 
 		AlertDialog.Builder dialog = new AlertDialog.Builder(context);
-		dialog.setTitle((edit ? "Edit" : "Change") + " stage");
+		dialog.setTitle((edit ? getString(R.string.edit) : getString(R.string.change)) + " " + getString(R.string.stage));
 		View view = LayoutInflater.from(getActivity()).inflate(R.layout.stage_dialog, null);
 
 		Views.inject(this, view);
@@ -79,8 +79,8 @@ public class StageDialogFragment extends DialogFragment
 			action.setDate(savedInstanceState.getLong("date", System.currentTimeMillis()));
 		}
 
-		final String[] actions = new String[PlantStage.names().length];
-		System.arraycopy(PlantStage.names(), 0, actions, 0, actions.length);
+		final String[] actions = new String[PlantStage.names(getActivity()).length];
+		System.arraycopy(PlantStage.names(getActivity()), 0, actions, 0, actions.length);
 
 		actionsSpinner.setAdapter(new ArrayAdapter<String>(getActivity(), android.R.layout.simple_spinner_dropdown_item, actions));
 
@@ -123,7 +123,7 @@ public class StageDialogFragment extends DialogFragment
 		for (int index = 0; index < actions.length; index++)
 		{
 			String actionName = actions[index];
-			if (action.getNewStage() != null && actionName.equalsIgnoreCase(action.getNewStage().getPrintString()))
+			if (action.getNewStage() != null && actionName.equalsIgnoreCase(getString(action.getNewStage().getPrintString())))
 			{
 				selectionIndex = index;
 				break;
@@ -133,7 +133,7 @@ public class StageDialogFragment extends DialogFragment
 		actionsSpinner.setSelection(selectionIndex);
 
 		dialog.setView(view);
-		dialog.setPositiveButton(edit ? "Edit" : "Set", new DialogInterface.OnClickListener()
+		dialog.setPositiveButton(edit ? R.string.edit : R.string.set, new DialogInterface.OnClickListener()
 		{
 			@Override public void onClick(DialogInterface dialog, int which)
 			{
@@ -145,7 +145,7 @@ public class StageDialogFragment extends DialogFragment
 				}
 			}
 		});
-		dialog.setNegativeButton("Cancel", null);
+		dialog.setNegativeButton(R.string.cancel, null);
 
 		return dialog.create();
 	}

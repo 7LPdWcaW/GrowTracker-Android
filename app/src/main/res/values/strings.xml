@@ -1,5 +1,33 @@
+<?xml version="1.0" encoding="utf-8"?>
+
 <resources>
-	<string name="menu_feeding_schedule">Schedules</string>
+	<string name="version">Version %s</string>
+	<string name="menu_settings">Settings</string>
+	<string name="list_title">%s plants</string>
+	<string name="all">All</string>
+	<string name="snackbar_action_add">Actions added</string>
+	<string name="snackbar_note_add">Notes added</string>
+	<string name="snackbar_watering_add">Watering added</string>
+	<string name="snackbar_garden_deleted">Garden deleted</string>
+	<string name="snackbar_undo">Undo</string>
+	<string name="dialog_garden_delete_body">Are you sure you want to delete garden &lt;b&gt;"%s"&lt;/b&gt;? This will not delete the plants.</string>
+	<string name="action_feed">Feed</string>
+	<string name="action_action">Action</string>
+	<string name="action_note">Note</string>
+	<string name="widget_encrypt_error">Widget is not available when encrypt setting is enabled</string>
+	<string name="new_plant_title">Add new plant</string>
+	<string name="plant_details_title">Plant details</string>
+	<string name="statistics_title">Plant statistics</string>
+	<string name="photo_option_camera">From camera</string>
+	<string name="photo_option_gallery">From gallery</string>
+	<string name="dialog_option_title">Select an option</string>
+	<string name="dialog_select_picture_title">Select picture</string>
+	<string name="snackbar_action_apply">Apply to another plant</string>
+	<string name="dialog_select_plant_title">Select plant</string>
+	<string name="snackbar_image_added">Image added</string>
+	<string name="snackbar_action_take_another">Take another</string>
+
+	<string name="nav_feeding_schedule">Schedules</string>
 	<string name="schedule_details_title">Schedule Details</string>
 	<string name="schedule_date_title">Schedule Date</string>
 	<string name="schedule_name">Name</string>
@@ -11,6 +39,7 @@
 	<string name="schedules_new_schedule">+ New Schedule</string>
 	<string name="new_additive">+ New Additive</string>
 	<string name="additives">Additives</string>
+	<string name="additive">Additive</string>
 	<string name="from_date">From date</string>
 	<string name="from_stage">From stage</string>
 	<string name="to_date">To date</string>
@@ -26,8 +55,226 @@
 	<string name="schedule_deleted">Schedule deleted</string>
 	<string name="undo">Undo</string>
 	<string name="feeding_schedules_title">Feeding schedules</string>
+	<string name="feeding_schedule_title">Feeding schedule</string>
 	<string name="update_dialog_title">App updated</string>
 	<string name="update_dialog_message" formatted="true">App has been updated to version %s</string>
 	<string name="update_dialog_view_changes_button">View changes</string>
 	<string name="update_dialog_dismiss_button">Dismiss</string>
+
+	<string name="feeding_single_title" formatted="true">Feeding %s</string>
+	<string name="feeding_multiple_title" formatted="true">Feeding multiple plants</string>
+
+	<string name="action_dialog_date">Date</string>
+	<string name="action_dialog_notes">Notes</string>
+	<string name="water_details_title">Water details</string>
+	<string name="water_ph_label">Water PH</string>
+	<string name="ppm_label">PPM</string>
+	<string name="runoff_label">Runoff</string>
+	<string name="amount_label" formatted="true">Amount (%s)</string>
+	<string name="temp_label" formatted="true">Temp (º%s)</string>
+	<string name="date_and_time_header">Date and time</string>
+	<string name="date_now">Now</string>
+	<string name="date_label">Date</string>
+	<string name="today">Today</string>
+	<string name="length_days">%s days</string>
+	<string name="additives_title">Additives</string>
+	<string name="add_new_additive">+ New Additive</string>
+	<string name="notes_title">Notes</string>
+	<string name="notes_label">Notes</string>
+	<string name="additives_dialog_description">Description</string>
+	<string name="filter_waterings">Waterings</string>
+	<string name="filter_notes">Notes</string>
+	<string name="filter_stage_changes">Stage changes</string>
+	<string name="filter_actions">Actions</string>
+	<string name="menu_duplicate">Duplicate</string>
+	<string name="menu_copy_to">Copy to</string>
+	<string name="menu_edit_action">Edit action</string>
+	<string name="menu_delete_action">Delete action</string>
+	<string name="garden_dialog_name">Name</string>
+	<string name="garden_dialog_select">Select plants</string>
+	<string name="nav_gardens">Gardens</string>
+	<string name="nav_all_plants">All plants</string>
+	<string name="nav_new_garden">+ New garden</string>
+	<string name="nav_additional">Additional</string>
+	<string name="nav_settings">Settings</string>
+	<string name="delete">Delete</string>
+	<string name="share">Share</string>
+	<string name="menu_feed">Feed</string>
+	<string name="menu_action">Action</string>
+	<string name="menu_note">Note</string>
+	<string name="menu_photo">Photo</string>
+	<string name="last_watering_title">Last watering</string>
+	<string name="feed_again">Feed again</string>
+
+	<string name="plant_name_label">Plant name</string>
+	<string name="new_plant_hint">New plant</string>
+	<string name="plant_strain_label">Plant strain</string>
+	<string name="plant_strain_hint">Lemon haze</string>
+	<string name="grow_details_title">Grow details</string>
+	<string name="plant_date_label">Plant date</string>
+	<string name="plant_medium_label">Medium</string>
+	<string name="plant_medium_hint">Soil</string>
+	<string name="medium_details_label">Medium details</string>
+	<string name="medium_details_hint">Soil, Perlite 50/50 mix</string>
+	<string name="from_clone_label">From clone?</string>
+	<string name="stage_details_title">Stage details</string>
+	<string name="plant_stage_label">Plant stage</string>
+	<string name="view_photos">View photos</string>
+	<string name="view_history">View history</string>
+	<string name="view_statistics">View statistics</string>
+	<string name="filter">Filter</string>
+	<string name="planted">Planted</string>
+	<string name="germination">Germination</string>
+	<string name="cutting">Cutting</string>
+	<string name="vegetation">Vegetation</string>
+	<string name="flowering">Flowering</string>
+	<string name="drying">Drying</string>
+	<string name="curing">Curing</string>
+	<string name="harvested">Harvested</string>
+	<string name="menu_export_garden">Export garden</string>
+	<string name="menu_edit_garden">Edit garden</string>
+	<string name="menu_delete_garden">Delete garden</string>
+	<string name="menu_export">Export</string>
+	<string name="menu_delete">Delete</string>
+	<string name="germination_label">Germination:</string>
+	<string name="vegetation_label">Vegetation:</string>
+	<string name="cutting_label">Cutting:</string>
+	<string name="flower_label">Flower:</string>
+	<string name="drying_label">Drying:</string>
+	<string name="curing_label">Curing:</string>
+	<string name="total_time_label">Total time:</string>
+	<string name="total_waters_label">Total waters:</string>
+	<string name="total_flushes_label">Total flushes:</string>
+	<string name="ave_time_between_water_label">Ave. time between water:</string>
+	<string name="filter_additives">Filter additives</string>
+	<string name="ph_title">pH</string>
+	<string name="ppm_title">PPM</string>
+	<string name="min">Min:</string>
+	<string name="max">Max:</string>
+	<string name="ave">Ave:</string>
+	<string name="temperature_title">Temperature</string>
+	<string name="general_title">General</string>
+	<string name="failed_to_load_plant">Failed to load plant</string>
+	<string name="action_fim">Fuck I Missed</string>
+	<string name="action_flush">Flush</string>
+	<string name="action_foliar_feed">Foliar Feed</string>
+	<string name="action_lst">Low Stress Training</string>
+	<string name="action_lolipop">Lollipop</string>
+	<string name="action_pesticide_application">Pesticide Application</string>
+	<string name="action_topped">Topped</string>
+	<string name="action_transplanted">Transplanted</string>
+	<string name="action_trim">Trim</string>
+
+	<string name="watered">Watered</string>
+	<string name="note">Note</string>
+	<string name="delete_event_dialog_title">Delete this event?</string>
+	<string name="confirm_delete_item_message">Are you sure you want to delete</string>
+	<string name="confirm_delete_photos_message" formatted="true">Are you sure you want to delete %s images, are you sure? You will not be able to recover these.</string>
+	<string name="edit">Edit</string>
+	<string name="stage">stage</string>
+	<string name="set">Set</string>
+	<string name="change">Change</string>
+	<string name="add">Add</string>
+	<string name="cancel">Cancel</string>
+	<string name="action">action</string>
+	<string name="ok">Ok</string>
+	<string name="field_required">Field is required</string>
+	<string name="encrypt_passphrase_error">Error - incorrect passphrase</string>
+	<string name="edit_feeding">Edit feeding</string>
+	<string name="added">added</string>
+	<string name="action_duplicated">Action duplicated</string>
+	<string name="multiple_plants">multiple plants</string>
+	<string name="added_to">Action added to</string>
+	<string name="note_updated">Note updated</string>
+	<string name="updated">updated</string>
+	<string name="stage_updated">Stage updated</string>
+	<string name="event_deleted">Event deleted</string>
+	<string name="done">Done</string>
+	<string name="garden">Garden</string>
+	<string name="select_all">Select All</string>
+	<string name="select_none">Select None</string>
+	<string name="accept">Accept</string>
+	<string name="enable">Enable</string>
+	<string name="decline">Decline</string>
+	<string name="seedling_label">Seedling:</string>
+	<string name="seedling">Seedling</string>
+
+	<string name="crash_title">Uh-oh</string>
+	<string name="crash_message" formatted="true">Looks like there was a crash the last time you used the app. Would you like to send these anonymous reports? These reports will be sent to &lt;a href=\"https://github.com/7LPdWcaW/GrowTracker-Android/issues\"&gt;github.com/7LPdWcaW/GrowTracker-Android/issues&lt;/a&gt;, no personal information will be included. You can optionally post these reports to &lt;a href=\"https://reddit.com/r/growutils\"&gt;reddit.com/r/growutils&lt;/a&gt; manually if you wish. Reports are stored in &lt;i&gt;%s&lt;i&gt;</string>
+	<string name="yes">Yes</string>
+	<string name="no">No</string>
+
+	<string name="passphrase_title">Enter your passphrase</string>
+	<string name="add_passphrase_title">Enter a passphrase</string>
+	<string name="readd_passphrase_title">Re-enter your passphrase</string>
+	<string name="passphrase_error">Error - passphrases did not match up</string>
+
+	<string name="fatal_error">There was a fatal problem saving the garden data, please backup this data</string>
+	<string name="taken">Taken</string>
+	<string name="ago" formatted="true">%s ago</string>
+	<string name="watered_ago" formatted="true">Watered &lt;b&gt;%s&lt;/b&gt; ago</string>
+	<string name="last_watered_ago" formatted="true">Last watered &lt;b&gt;%s&lt;/b&gt; ago</string>
+	<string name="planted_ago" formatted="true">Planted &lt;b&gt;%s&lt;/b&gt; ago</string>
+
+	<string name="permission_summary">Access to external storage is needed to store photos. No other data is consumed by this app</string>
+
+	<string name="waterings_added">Waterings added</string>
+	<string name="delete_plant_message">You are about to delete &lt;b&gt;%s&lt;/b&gt; and all of the images associated with it, are you sure? This can not be undone.</string>
+	<string name="delete_plant_progress">Deleting plant...</string>
+
+	<string name="plant_duplicated">Plant duplicated</string>
+	<string name="open">Open</string>
+
+	<string name="export_progress">Exporting grow log...</string>
+	<string name="garden_export">Exporting grow log of garden...</string>
+	<string name="action_added" formatted="true">%s added</string>
+	<string name="name_input_error">Name can not be empty</string>
+	<string name="exporting" formatted="true">Exporting %s</string>
+
+	<string name="soil">Soil</string>
+	<string name="hydroponics">Hydroponics</string>
+	<string name="coco_coir">Coco Coir</string>
+	<string name="aeroponics">Aeroponics</string>
+	<string name="hide_images">Hide images</string>
+	<string name="show_images">Show images</string>
+
+	<string name="settings_default_garden">Default garden to show on open, currently</string>
+	<string name="settings_delivery">Default delivery measurement unit to use, currently</string>
+	<string name="settings_measurement">Default additive measurement unit to use, currently</string>
+	<string name="settings_temperature">Default temperature unit to use, currently</string>
+	<string name="settings_backup_size" formatted="true">Currently %smb / Using %s</string>
+	<string name="failsafe_message">Provide this password during unencryption phase to prevent data from being loaded</string>
+	<string name="warning">Warning</string>
+	<string name="encryption_message">This is basic form of AES encryption based on a provided passphrase. This is not a guarantee form of encryption from law enforcement agencies as was designed to stop plain sight</string>
+	<string name="backup_enable_toast">Backup enabled, backups will be stored in /sdcard/backups/GrowTracker/</string>
+	<string name="restore_complete" formatted="true">Restore to %s completed</string>
+	<string name="restore_error" formatted="true">Could not restore from backup %s. File may be %s</string>
+	<string name="encrypted">encrypted</string>
+	<string name="unencrypted">unencrypted</string>
+
+	<string name="select_measurement_title">Select measurement</string>
+	<string name="select_temperature_title">Select temperature</string>
+	<string name="select_garden_title">Select garden</string>
+	<string name="select_backup_title">Select backup</string>
+	<string name="backup_restore_error">You must have encrpted mode enabled with the same password to restore this backup</string>
+
+	<string name="backed_up_to">Backed up to</string>
+	<string name="no_backups">There are no backups to restore from</string>
+	<string name="all_none">All/None</string>
+
+	<string name="stat_input_ph">Input pH</string>
+	<string name="stat_runoff_ph">Runoff pH</string>
+	<string name="stat_average_ph">Average pH</string>
+	<string name="stat_temerature">Temerature</string>
+
+	<string name="photos_title">Plant photos</string>
+
+	<string name="plant_summary_ph">In pH:</string>
+	<string name="plant_summary_out_ph">Out pH:</string>
+	<string name="plant_summary_amount">Amount:</string>
+	<string name="plant_summary_temp">Temp:</string>
+	<string name="plant_summary_additives">Additives:</string>
+
+	<string name="select_schedule_title">Select schedule</string>
+	<string name="actions">Actions</string>
 </resources>

@@ -66,13 +66,6 @@ import me.anon.model.Plant;
 
 import static me.anon.lib.manager.PlantManager.FILES_DIR;
 
-/**
- * // TODO: Add class description
- *
- * @author 7LPdWcaW
- * @documentation // TODO Reference flow doc
- * @project GrowTracker
- */
 public class SettingsFragment extends PreferenceFragment implements Preference.OnPreferenceClickListener, Preference.OnPreferenceChangeListener
 {
 	private static final int REQUEST_UNINSTALL = 0x01;
@@ -84,11 +77,11 @@ public class SettingsFragment extends PreferenceFragment implements Preference.O
 		addPreferencesFromResource(R.xml.preferences);
 
 		int defaultGardenIndex = PreferenceManager.getDefaultSharedPreferences(getActivity()).getInt("default_garden", -1);
-		String defaultGarden = defaultGardenIndex > -1 ? GardenManager.getInstance().getGardens().get(defaultGardenIndex).getName() : "All";
-		findPreference("default_garden").setSummary(Html.fromHtml("Default garden to show on open, currently <b>" + defaultGarden + "</b>"));
-		findPreference("delivery_unit").setSummary(Html.fromHtml("Default delivery measurement unit to use, currently <b>" + Unit.getSelectedDeliveryUnit(getActivity()).getLabel() + "</b>"));
-		findPreference("measurement_unit").setSummary(Html.fromHtml("Default additive measurement unit to use, currently <b>" + Unit.getSelectedMeasurementUnit(getActivity()).getLabel() + "</b>"));
-		findPreference("temperature_unit").setSummary(Html.fromHtml("Default temperature unit to use, currently <b>" + TempUnit.getSelectedTemperatureUnit(getActivity()).getLabel() + "</b>"));
+		String defaultGarden = defaultGardenIndex > -1 ? GardenManager.getInstance().getGardens().get(defaultGardenIndex).getName() : getString(R.string.all);
+		findPreference("default_garden").setSummary(Html.fromHtml(getString(R.string.settings_default_garden) + " <b>" + defaultGarden + "</b>"));
+		findPreference("delivery_unit").setSummary(Html.fromHtml(getString(R.string.settings_delivery) + " <b>" + Unit.getSelectedDeliveryUnit(getActivity()).getLabel() + "</b>"));
+		findPreference("measurement_unit").setSummary(Html.fromHtml(getString(R.string.settings_measurement) + " <b>" + Unit.getSelectedMeasurementUnit(getActivity()).getLabel() + "</b>"));
+		findPreference("temperature_unit").setSummary(Html.fromHtml(getString(R.string.settings_temperature) + " <b>" + TempUnit.getSelectedTemperatureUnit(getActivity()).getLabel() + "</b>"));
 
 		try
 		{
@@ -104,7 +97,7 @@ public class SettingsFragment extends PreferenceFragment implements Preference.O
 		findPreference("auto_backup").setOnPreferenceChangeListener(this);
 		findPreference("backup_size").setOnPreferenceChangeListener(this);
 		String currentBackup = findPreference("backup_size").getSharedPreferences().getString("backup_size", "20");
-		findPreference("backup_size").setSummary("Currently " + currentBackup + "mb / Using " + lengthToString(BackupHelper.backupSize(), false));
+		findPreference("backup_size").setSummary(getString(R.string.settings_backup_size, currentBackup, lengthToString(BackupHelper.backupSize(), false)));
 
 		findPreference("readme").setOnPreferenceClickListener(this);
 		findPreference("export").setOnPreferenceClickListener(this);
@@ -246,16 +239,16 @@ public class SettingsFragment extends PreferenceFragment implements Preference.O
 				.apply();
 			((EditTextPreference)preference).setText(currentBackup);
 			BackupHelper.limitBackups(currentBackup);
-			findPreference("backup_size").setSummary("Currently " + currentBackup + "mb / Using " + lengthToString(BackupHelper.backupSize(), false));
+			findPreference("backup_size").setSummary(getString(R.string.settings_backup_size, currentBackup, lengthToString(BackupHelper.backupSize(), false)));
 		}
 		else if ("encrypt".equals(preference.getKey()))
 		{
 			if ((Boolean)newValue == true)
 			{
 				new AlertDialog.Builder(getActivity())
-					.setTitle("Warning")
-					.setMessage("This is basic form of AES encryption based on a provided passphrase. This is not a guarantee form of encryption from law enforcement agencies as was designed to stop plain sight")
-					.setPositiveButton("Accept", new DialogInterface.OnClickListener()
+					.setTitle(R.string.warning)
+					.setMessage(R.string.encryption_message)
+					.setPositiveButton(R.string.accept, new DialogInterface.OnClickListener()
 					{
 						@Override public void onClick(DialogInterface dialog, int which)
 						{
@@ -263,7 +256,7 @@ public class SettingsFragment extends PreferenceFragment implements Preference.O
 							final PinDialogFragment check1 = new PinDialogFragment();
 							final PinDialogFragment check2 = new PinDialogFragment();
 
-							check1.setTitle("Enter a passphrase");
+							check1.setTitle(getString(R.string.add_passphrase_title));
 							check1.setOnDialogConfirmed(new PinDialogFragment.OnDialogConfirmed()
 							{
 								@Override public void onDialogConfirmed(String input)
@@ -273,7 +266,7 @@ public class SettingsFragment extends PreferenceFragment implements Preference.O
 								}
 							});
 
-							check2.setTitle("Re-enter your passphrase");
+							check2.setTitle(getString(R.string.readd_passphrase_title));
 							check2.setOnDialogConfirmed(new PinDialogFragment.OnDialogConfirmed()
 							{
 								@Override public void onDialogConfirmed(String input)
@@ -306,7 +299,7 @@ public class SettingsFragment extends PreferenceFragment implements Preference.O
 									else
 									{
 										((SwitchPreference)preference).setChecked(false);
-										Toast.makeText(getActivity(), "Error - passphrases did not match up", Toast.LENGTH_SHORT).show();
+										Toast.makeText(getActivity(), getString(R.string.passphrase_error), Toast.LENGTH_SHORT).show();
 									}
 								}
 							});
@@ -314,7 +307,7 @@ public class SettingsFragment extends PreferenceFragment implements Preference.O
 							check1.show(getFragmentManager(), null);
 						}
 					})
-					.setNegativeButton("Decline", new DialogInterface.OnClickListener()
+					.setNegativeButton(R.string.decline, new DialogInterface.OnClickListener()
 					{
 						@Override public void onClick(DialogInterface dialog, int which)
 						{
@@ -333,7 +326,7 @@ public class SettingsFragment extends PreferenceFragment implements Preference.O
 			else
 			{
 				final PinDialogFragment check = new PinDialogFragment();
-				check.setTitle("Enter your passphrase");
+				check.setTitle(getString(R.string.passphrase_title));
 				check.setOnDialogConfirmed(new PinDialogFragment.OnDialogConfirmed()
 				{
 					@Override public void onDialogConfirmed(String input)
@@ -363,7 +356,7 @@ public class SettingsFragment extends PreferenceFragment implements Preference.O
 						else
 						{
 							((SwitchPreference)preference).setChecked(true);
-							Toast.makeText(getActivity(), "Error - incorrect passphrase", Toast.LENGTH_SHORT).show();
+							Toast.makeText(getActivity(), R.string.passphrase_error, Toast.LENGTH_SHORT).show();
 						}
 					}
 				});
@@ -378,9 +371,9 @@ public class SettingsFragment extends PreferenceFragment implements Preference.O
 			if ((Boolean)newValue == true)
 			{
 				new AlertDialog.Builder(getActivity())
-					.setTitle("Warning")
-					.setMessage("Provide this password during unencryption phase to prevent data from being loaded")
-					.setPositiveButton("Accept", new DialogInterface.OnClickListener()
+					.setTitle(R.string.warning)
+					.setMessage(R.string.failsafe_message)
+					.setPositiveButton(R.string.accept, new DialogInterface.OnClickListener()
 					{
 						@Override public void onClick(DialogInterface dialog, int which)
 						{
@@ -388,7 +381,7 @@ public class SettingsFragment extends PreferenceFragment implements Preference.O
 							final PinDialogFragment check1 = new PinDialogFragment();
 							final PinDialogFragment check2 = new PinDialogFragment();
 
-							check1.setTitle("Enter a passphrase");
+							check1.setTitle(getString(R.string.passphrase_title));
 							check1.setOnDialogConfirmed(new PinDialogFragment.OnDialogConfirmed()
 							{
 								@Override public void onDialogConfirmed(String input)
@@ -398,7 +391,7 @@ public class SettingsFragment extends PreferenceFragment implements Preference.O
 								}
 							});
 
-							check2.setTitle("Re-enter your passphrase");
+							check2.setTitle(getString(R.string.readd_passphrase_title));
 							check2.setOnDialogConfirmed(new PinDialogFragment.OnDialogConfirmed()
 							{
 								@Override public void onDialogConfirmed(String input)
@@ -412,7 +405,7 @@ public class SettingsFragment extends PreferenceFragment implements Preference.O
 									else
 									{
 										((SwitchPreference)preference).setChecked(false);
-										Toast.makeText(getActivity(), "Error - passphrases did not match up", Toast.LENGTH_SHORT).show();
+										Toast.makeText(getActivity(), R.string.passphrase_error, Toast.LENGTH_SHORT).show();
 									}
 								}
 							});
@@ -420,7 +413,7 @@ public class SettingsFragment extends PreferenceFragment implements Preference.O
 							check1.show(getFragmentManager(), null);
 						}
 					})
-					.setNegativeButton("Decline", new DialogInterface.OnClickListener()
+					.setNegativeButton(R.string.decline, new DialogInterface.OnClickListener()
 					{
 						@Override public void onClick(DialogInterface dialog, int which)
 						{
@@ -444,7 +437,7 @@ public class SettingsFragment extends PreferenceFragment implements Preference.O
 			{
 				PreferenceManager.getDefaultSharedPreferences(getActivity()).edit().putBoolean("auto_backup", true).apply();
 				((MainApplication)getActivity().getApplication()).registerBackupService();
-				Toast.makeText(getActivity(), "Backup enabled, backups will be stored in /sdcard/backups/GrowTracker/", Toast.LENGTH_LONG).show();
+				Toast.makeText(getActivity(), R.string.backup_enable_toast, Toast.LENGTH_LONG).show();
 			}
 			else
 			{
@@ -471,7 +464,7 @@ public class SettingsFragment extends PreferenceFragment implements Preference.O
 			}
 
 			new AlertDialog.Builder(getActivity())
-				.setTitle("Select measurement")
+				.setTitle(R.string.select_measurement_title)
 				.setSingleChoiceItems(options, selectedIndex, new DialogInterface.OnClickListener()
 				{
 					@Override public void onClick(DialogInterface dialogInterface, int index)
@@ -482,7 +475,7 @@ public class SettingsFragment extends PreferenceFragment implements Preference.O
 							.putInt("delivery_unit", index)
 							.apply();
 
-						findPreference("delivery_unit").setSummary(Html.fromHtml("Default delivery measurement unit to use, currently <b>" + Unit.getSelectedDeliveryUnit(getActivity()).getLabel() + "</b>"));
+						findPreference("delivery_unit").setSummary(Html.fromHtml(getString(R.string.settings_delivery) + " <b>" + Unit.getSelectedDeliveryUnit(getActivity()).getLabel() + "</b>"));
 					}
 				})
 				.show();
@@ -499,7 +492,7 @@ public class SettingsFragment extends PreferenceFragment implements Preference.O
 			}
 
 			new AlertDialog.Builder(getActivity())
-				.setTitle("Select measurement")
+				.setTitle(R.string.select_measurement_title)
 				.setSingleChoiceItems(options, selectedIndex, new DialogInterface.OnClickListener()
 				{
 					@Override public void onClick(DialogInterface dialogInterface, int index)
@@ -510,7 +503,7 @@ public class SettingsFragment extends PreferenceFragment implements Preference.O
 							.putInt("measurement_unit", index)
 							.apply();
 
-					findPreference("measurement_unit").setSummary(Html.fromHtml("Default additive measurement unit to use, currently <b>" + Unit.getSelectedMeasurementUnit(getActivity()).getLabel() + "</b>"));
+					findPreference("measurement_unit").setSummary(Html.fromHtml(getString(R.string.settings_measurement) + " <b>" + Unit.getSelectedMeasurementUnit(getActivity()).getLabel() + "</b>"));
 					}
 				})
 				.show();
@@ -527,7 +520,7 @@ public class SettingsFragment extends PreferenceFragment implements Preference.O
 			}
 
 			new AlertDialog.Builder(getActivity())
-				.setTitle("Select temperature unit")
+				.setTitle(R.string.select_temperature_title)
 				.setSingleChoiceItems(options, selectedIndex, new DialogInterface.OnClickListener()
 				{
 					@Override public void onClick(DialogInterface dialogInterface, int index)
@@ -538,7 +531,7 @@ public class SettingsFragment extends PreferenceFragment implements Preference.O
 							.putInt("temperature_unit", index)
 							.apply();
 
-					findPreference("temperature_unit").setSummary(Html.fromHtml("Default temperature unit to use, currently <b>" + TempUnit.getSelectedTemperatureUnit(getActivity()).getLabel() + "</b>"));
+						findPreference("temperature_unit").setSummary(Html.fromHtml(getString(R.string.settings_measurement) + " <b>" + TempUnit.getSelectedTemperatureUnit(getActivity()).getLabel() + "</b>"));
 					}
 				})
 				.show();
@@ -548,7 +541,7 @@ public class SettingsFragment extends PreferenceFragment implements Preference.O
 		else if ("default_garden".equals(preference.getKey()))
 		{
 			final String[] options = new String[GardenManager.getInstance().getGardens().size() + 1];
-			options[0] = "All";
+			options[0] = getString(R.string.all);
 			int index = 0, selectedIndex = PreferenceManager.getDefaultSharedPreferences(getActivity()).getInt("default_garden", -1) + 1;
 			for (Garden garden : GardenManager.getInstance().getGardens())
 			{
@@ -556,7 +549,7 @@ public class SettingsFragment extends PreferenceFragment implements Preference.O
 			}
 
 			new AlertDialog.Builder(getActivity())
-				.setTitle("Select garden")
+				.setTitle(R.string.select_garden_title)
 				.setSingleChoiceItems(options, selectedIndex, new DialogInterface.OnClickListener()
 				{
 					@Override public void onClick(DialogInterface dialogInterface, int index)
@@ -568,7 +561,7 @@ public class SettingsFragment extends PreferenceFragment implements Preference.O
 							.apply();
 
 						String defaultGarden = index - 1 > -1 ? GardenManager.getInstance().getGardens().get(index - 1).getName() : "All";
-						findPreference("default_garden").setSummary(Html.fromHtml("Default garden to show on open, currently <b>" + defaultGarden + "</b>"));
+						findPreference("default_garden").setSummary(Html.fromHtml(getString(R.string.settings_default_garden) + "<b>" + defaultGarden + "</b>"));
 					}
 				})
 				.show();
@@ -617,8 +610,8 @@ public class SettingsFragment extends PreferenceFragment implements Preference.O
 		else if ("backup_now".equals(preference.getKey()))
 		{
 			String currentBackup = findPreference("backup_size").getSharedPreferences().getString("backup_size", "20");
-			Toast.makeText(getActivity(), "Backed up to " + BackupHelper.backupJson().getPath(), Toast.LENGTH_SHORT).show();
-			findPreference("backup_size").setSummary("Currently " + currentBackup + "mb / Using " + lengthToString(BackupHelper.backupSize(), false));
+			Toast.makeText(getActivity(), getString(R.string.backed_up_to) + BackupHelper.backupJson().getPath(), Toast.LENGTH_SHORT).show();
+			findPreference("backup_size").setSummary(getString(R.string.settings_backup_size, currentBackup, lengthToString(BackupHelper.backupSize(), false)));
 		}
 		else if ("restore".equals(preference.getKey()))
 		{
@@ -655,7 +648,7 @@ public class SettingsFragment extends PreferenceFragment implements Preference.O
 
 			if (backupFiles == null || backupFiles.length == 0)
 			{
-				Toast.makeText(getActivity(), "There are no backups to restore from", Toast.LENGTH_LONG).show();
+				Toast.makeText(getActivity(), R.string.no_backups, Toast.LENGTH_LONG).show();
 				return false;
 			}
 
@@ -739,7 +732,7 @@ public class SettingsFragment extends PreferenceFragment implements Preference.O
 			}
 
 			new AlertDialog.Builder(getActivity())
-				.setTitle("Select backup")
+				.setTitle(R.string.select_backup_title)
 				.setItems(items, new DialogInterface.OnClickListener()
 				{
 					@Override public void onClick(DialogInterface dialog, int which)
@@ -756,7 +749,7 @@ public class SettingsFragment extends PreferenceFragment implements Preference.O
 
 						if (selectedBackup.plantsPath.endsWith("dat") && !MainApplication.isEncrypted())
 						{
-							SnackBar.show(getActivity(), "You must have encrpted mode enabled with the same password to restore this backup", "Enable", new SnackBarListener()
+							SnackBar.show(getActivity(), R.string.backup_restore_error, R.string.enable, new SnackBarListener()
 							{
 								@Override public void onSnackBarStarted(@NotNull Object o){}
 								@Override public void onSnackBarFinished(@NotNull Object o){}
@@ -790,8 +783,8 @@ public class SettingsFragment extends PreferenceFragment implements Preference.O
 
 						if (!loaded)
 						{
-							String errorEnd = MainApplication.isEncrypted() ? "unencrypted" : "encryped";
-							SnackBar.show(getActivity(), "Could not restore from backup " + selectedBackupStr + ". File may be " + errorEnd, Snackbar.LENGTH_INDEFINITE, null);
+							String errorEnd = MainApplication.isEncrypted() ? getString(R.string.unencrypted) : getString(R.string.encrypted);
+							SnackBar.show(getActivity(), getString(R.string.restore_error, selectedBackupStr, errorEnd), Snackbar.LENGTH_INDEFINITE, null);
 							FileManager.getInstance().copyFile(PlantManager.FILES_DIR + "/plants.temp", PlantManager.FILES_DIR + "/plants.json");
 							FileManager.getInstance().copyFile(GardenManager.FILES_DIR + "/gardens.temp", GardenManager.FILES_DIR + "/gardens.json");
 							FileManager.getInstance().copyFile(ScheduleManager.FILES_DIR + "/schedules.temp", ScheduleManager.FILES_DIR + "/schedules.json");
@@ -801,7 +794,7 @@ public class SettingsFragment extends PreferenceFragment implements Preference.O
 						}
 						else
 						{
-							Toast.makeText(getActivity(), "Restore to " + selectedBackupStr + " completed", Toast.LENGTH_LONG).show();
+							Toast.makeText(getActivity(), getString(R.string.restore_complete, selectedBackupStr), Toast.LENGTH_LONG).show();
 							getActivity().recreate();
 						}
 					}

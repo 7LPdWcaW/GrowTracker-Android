@@ -48,7 +48,7 @@ public class NoteDialogFragment extends DialogFragment
 		final Context context = getActivity();
 
 		AlertDialog.Builder dialog = new AlertDialog.Builder(context);
-		dialog.setTitle((action == null ? "Add" : "Edit") + " note");
+		dialog.setTitle(getString((action == null ? R.string.add : R.string.edit)) + " " + getString(R.string.note));
 		View view = LayoutInflater.from(getActivity()).inflate(R.layout.note_dialog, null);
 
 		Views.inject(this, view);
@@ -59,7 +59,7 @@ public class NoteDialogFragment extends DialogFragment
 		}
 
 		dialog.setView(view);
-		dialog.setPositiveButton(action == null ? "Add" : "Edit", new DialogInterface.OnClickListener()
+		dialog.setPositiveButton(action == null ? R.string.add : R.string.edit, new DialogInterface.OnClickListener()
 		{
 			@Override public void onClick(DialogInterface dialog, int which)
 			{
@@ -69,7 +69,7 @@ public class NoteDialogFragment extends DialogFragment
 				}
 			}
 		});
-		dialog.setNegativeButton("Cancel", null);
+		dialog.setNegativeButton(R.string.cancel, null);
 
 		return dialog.create();
 	}

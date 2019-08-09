@@ -155,7 +155,7 @@ public class StatsHelper
 				long difference = action.getDate() - changeDate;
 				if (stage != null)
 				{
-					xVals.add(((int)TimeHelper.toDays(difference) + "" + stage.getPrintString().charAt(0)).toLowerCase());
+					xVals.add(((int)TimeHelper.toDays(difference) + "" + chart.getContext().getString(stage.getPrintString()).charAt(0)).toLowerCase());
 				}
 				else
 				{
@@ -267,7 +267,7 @@ public class StatsHelper
 				long difference = action.getDate() - changeDate;
 				if (stage != null)
 				{
-					xVals.add(((int)TimeHelper.toDays(difference) + "" + stage.getPrintString().charAt(0)).toLowerCase());
+					xVals.add(((int)TimeHelper.toDays(difference) + "" + chart.getContext().getString(stage.getPrintString()).charAt(0)).toLowerCase());
 				}
 				else
 				{
@@ -280,13 +280,13 @@ public class StatsHelper
 
 		if (chart != null)
 		{
-			LineDataSet dataSet = new LineDataSet(inputVals, "Input PH");
+			LineDataSet dataSet = new LineDataSet(inputVals, chart.getContext().getString(R.string.stat_input_ph));
 			styleDataset(dataSet, Color.parseColor(chart.getContext().getResources().getStringArray(R.array.stats_colours)[0]));
 
-			LineDataSet runoffDataSet = new LineDataSet(runoffVals, "Runoff PH");
+			LineDataSet runoffDataSet = new LineDataSet(runoffVals, chart.getContext().getString(R.string.stat_runoff_ph));
 			styleDataset(dataSet, Color.parseColor(chart.getContext().getResources().getStringArray(R.array.stats_colours)[1]));
 
-			LineDataSet averageDataSet = new LineDataSet(averageVals, "Average PH");
+			LineDataSet averageDataSet = new LineDataSet(averageVals, chart.getContext().getString(R.string.stat_average_ph));
 			styleDataset(dataSet, Color.parseColor(chart.getContext().getResources().getStringArray(R.array.stats_colours)[2]));
 			averageDataSet.setValueFormatter(null);
 
@@ -362,7 +362,7 @@ public class StatsHelper
 				long difference = action.getDate() - changeDate;
 				if (stage != null)
 				{
-					xVals.add(((int)TimeHelper.toDays(difference) + "" + stage.getPrintString().charAt(0)).toLowerCase());
+					xVals.add(((int)TimeHelper.toDays(difference) + "" + chart.getContext().getString(stage.getPrintString()).charAt(0)).toLowerCase());
 				}
 				else
 				{
@@ -480,7 +480,7 @@ public class StatsHelper
 				long difference = action.getDate() - changeDate;
 				if (stage != null)
 				{
-					xVals.add(((int)TimeHelper.toDays(difference) + "" + stage.getPrintString().charAt(0)).toLowerCase());
+					xVals.add(((int)TimeHelper.toDays(difference) + "" + chart.getContext().getString(stage.getPrintString()).charAt(0)).toLowerCase());
 				}
 				else
 				{
@@ -495,7 +495,7 @@ public class StatsHelper
 
 		if (chart != null)
 		{
-			LineDataSet dataSet = new LineDataSet(vals, "Temperature");
+			LineDataSet dataSet = new LineDataSet(vals, chart.getContext().getString(R.string.stat_temerature));
 			styleDataset(dataSet, Color.parseColor(chart.getContext().getResources().getStringArray(R.array.stats_colours)[0]));
 
 			LineData lineData = new LineData(xVals, dataSet);

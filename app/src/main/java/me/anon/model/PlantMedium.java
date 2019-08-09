@@ -1,5 +1,9 @@
 package me.anon.model;
 
+import android.content.Context;
+
+import me.anon.grow.R;
+
 /**
  * // TODO: Add class description
  *
@@ -9,29 +13,29 @@ package me.anon.model;
  */
 public enum PlantMedium
 {
-	SOIL("Soil"),
-	HYDRO("Hydroponics"),
-	COCO("Coco Coir"),
-	AERO("Aeroponics");
+	SOIL(R.string.soil),
+	HYDRO(R.string.hydroponics),
+	COCO(R.string.coco_coir),
+	AERO(R.string.aeroponics);
 
-	private String printString;
+	private int printString;
 
-	public String getPrintString()
+	public int getPrintString()
 	{
 		return printString;
 	}
 
-	private PlantMedium(String name)
+	private PlantMedium(int name)
 	{
 		this.printString = name;
 	}
 
-	public static String[] names()
+	public static String[] names(Context context)
 	{
 		String[] names = new String[values().length];
 		for (int index = 0; index < names.length; index++)
 		{
-			names[index] = values()[index].getPrintString();
+			names[index] = context.getString(values()[index].getPrintString());
 		}
 
 		return names;

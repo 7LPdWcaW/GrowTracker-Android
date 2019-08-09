@@ -120,7 +120,7 @@ public class StatisticsFragment extends Fragment
 		}
 
 		usingEc = PreferenceManager.getDefaultSharedPreferences(getActivity()).getBoolean("tds_ec", false);
-		getActivity().setTitle("Plant statistics");
+		getActivity().setTitle(R.string.statistics_title);
 
 		if (getArguments() != null)
 		{
@@ -199,7 +199,7 @@ public class StatisticsFragment extends Fragment
 			@Override public void onClick(View v)
 			{
 				PopupMenu menu = new PopupMenu(v.getContext(), v);
-				menu.getMenu().add("All/None").setCheckable(false);
+				menu.getMenu().add(R.string.all_none).setCheckable(false);
 				for (String additiveName : additiveNames)
 				{
 					menu.getMenu().add(additiveName).setCheckable(true).setChecked(checkedAdditives.contains(additiveName));
@@ -282,52 +282,52 @@ public class StatisticsFragment extends Fragment
 		long seconds = ((endDate - startDate) / 1000);
 		double days = (double)seconds * 0.0000115741d;
 
-		growTime.setText(String.format("%1$,.2f", days) + " days");
+		growTime.setText(getString(R.string.length_days, String.format("%1$,.2f", days)));
 		waterCount.setText(String.valueOf(totalWater));
 		flushCount.setText(String.valueOf(totalFlush));
-		aveWater.setText(String.format("%1$,.2f", (TimeHelper.toDays(waterDifference) / (double)totalWater)) + " days");
+		aveWater.setText(getString(R.string.length_days, String.format("%1$,.2f", (TimeHelper.toDays(waterDifference) / (double)totalWater))));
 
 		SortedMap<PlantStage, Long> stages = plant.calculateStageTime();
 
 		if (stages.containsKey(PlantStage.GERMINATION))
 		{
-			germTime.setText((int)TimeHelper.toDays(stages.get(PlantStage.GERMINATION)) + " days");
+			germTime.setText(getString(R.string.length_days, (int)TimeHelper.toDays(stages.get(PlantStage.GERMINATION))));
 			germTimeContainer.setVisibility(View.VISIBLE);
 		}
 
 		if (stages.containsKey(PlantStage.VEGETATION))
 		{
-			vegTime.setText((int)TimeHelper.toDays(stages.get(PlantStage.VEGETATION)) + " days");
+			vegTime.setText(getString(R.string.length_days, (int)TimeHelper.toDays(stages.get(PlantStage.VEGETATION))));
 			vegTimeContainer.setVisibility(View.VISIBLE);
 		}
 
 		if (stages.containsKey(PlantStage.SEEDLING))
 		{
-			seedlingTime.setText((int)TimeHelper.toDays(stages.get(PlantStage.SEEDLING)) + " days");
+			seedlingTime.setText(getString(R.string.length_days, (int)TimeHelper.toDays(stages.get(PlantStage.SEEDLING))));
 			seedlingTimeContainer.setVisibility(View.VISIBLE);
 		}
 
 		if (stages.containsKey(PlantStage.CUTTING))
 		{
-			cuttingTime.setText((int)TimeHelper.toDays(stages.get(PlantStage.CUTTING)) + " days");
+			cuttingTime.setText(getString(R.string.length_days, (int)TimeHelper.toDays(stages.get(PlantStage.CUTTING))));
 			cuttingTimeContainer.setVisibility(View.VISIBLE);
 		}
 
 		if (stages.containsKey(PlantStage.FLOWER))
 		{
-			flowerTime.setText((int)TimeHelper.toDays(stages.get(PlantStage.FLOWER)) + " days");
+			flowerTime.setText(getString(R.string.length_days, (int)TimeHelper.toDays(stages.get(PlantStage.FLOWER))));
 			flowerTimeContainer.setVisibility(View.VISIBLE);
 		}
 
 		if (stages.containsKey(PlantStage.DRYING))
 		{
-			dryTime.setText((int)TimeHelper.toDays(stages.get(PlantStage.DRYING)) + " days");
+			dryTime.setText(getString(R.string.length_days, (int)TimeHelper.toDays(stages.get(PlantStage.DRYING))));
 			dryTimeContainer.setVisibility(View.VISIBLE);
 		}
 
 		if (stages.containsKey(PlantStage.CURING))
 		{
-			cureTime.setText((int)TimeHelper.toDays(stages.get(PlantStage.CURING)) + " days");
+			cureTime.setText(getString(R.string.length_days, (int)TimeHelper.toDays(stages.get(PlantStage.CURING))));
 			cureTimeContainer.setVisibility(View.VISIBLE);
 		}
 	}

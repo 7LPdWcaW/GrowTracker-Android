@@ -320,7 +320,7 @@ public class ActionAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>
 			{
 				summary += ((Water)action).getSummary(viewHolder.itemView.getContext());
 				viewHolder.getCard().setCardBackgroundColor(0x9ABBDEFB);
-				viewHolder.getName().setText("Watered");
+				viewHolder.getName().setText(R.string.watered);
 			}
 			else if (action instanceof EmptyAction && ((EmptyAction)action).getAction() != null)
 			{
@@ -329,7 +329,7 @@ public class ActionAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>
 			}
 			else if (action instanceof NoteAction)
 			{
-				viewHolder.getName().setText("Note");
+				viewHolder.getName().setText(R.string.note);
 				viewHolder.getCard().setCardBackgroundColor(0xffffffff);
 			}
 			else if (action instanceof StageChange)
@@ -400,9 +400,9 @@ public class ActionAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>
 								else if (item.getItemId() == R.id.delete)
 								{
 									new AlertDialog.Builder(v.getContext())
-										.setTitle("Delete this event?")
-										.setMessage("Are you sure you want to delete " + viewHolder.getName().getText())
-										.setPositiveButton("Yes", new DialogInterface.OnClickListener()
+										.setTitle(R.string.delete_event_dialog_title)
+										.setMessage(v.getContext().getString(R.string.confirm_delete_item_message) + viewHolder.getName().getText())
+										.setPositiveButton(R.string.confirm_positive, new DialogInterface.OnClickListener()
 										{
 											@Override public void onClick(DialogInterface dialog, int which)
 											{
@@ -412,7 +412,7 @@ public class ActionAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>
 												}
 											}
 										})
-										.setNegativeButton("No", null)
+										.setNegativeButton(R.string.confirm_negative, null)
 										.show();
 
 									return true;
@@ -482,7 +482,7 @@ public class ActionAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>
 					{
 						int currentDays = (int)TimeHelper.toDays(Math.abs(currentChange.getDate() - lastChange.getDate()));
 						currentDays = (currentDays == 0 ? 1 : currentDays);
-						stageDayStr += "/" + currentDays + lastChange.getNewStage().getPrintString().substring(0, 1).toLowerCase();
+						stageDayStr += "/" + currentDays + dateDay.getContext().getString(lastChange.getNewStage().getPrintString()).substring(0, 1).toLowerCase();
 					}
 
 					stageDay.setText(stageDayStr);

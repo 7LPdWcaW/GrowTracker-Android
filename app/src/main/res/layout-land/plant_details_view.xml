@@ -39,7 +39,7 @@
 					android:gravity="center"
 					android:paddingBottom="16dp"
 					android:paddingTop="16dp"
-					android:text="Feed"
+					android:text="@string/action_feed"
 				/>
 
 				<TextView
@@ -51,7 +51,7 @@
 					android:gravity="center"
 					android:paddingBottom="16dp"
 					android:paddingTop="16dp"
-					android:text="Action"
+					android:text="@string/action_action"
 				/>
 
 				<TextView
@@ -63,7 +63,7 @@
 					android:gravity="center"
 					android:paddingBottom="16dp"
 					android:paddingTop="16dp"
-					android:text="Note"
+					android:text="@string/action_note"
 				/>
 
 				<TextView
@@ -75,7 +75,7 @@
 					android:gravity="center"
 					android:paddingBottom="16dp"
 					android:paddingTop="16dp"
-					android:text="Photo"
+					android:text="@string/menu_photo"
 				/>
 			</LinearLayout>
 
@@ -124,7 +124,7 @@
 							android:layout_toLeftOf="@id/date"
 							android:layout_alignParentTop="true"
 							android:layout_marginTop="12dp"
-							android:text="Last watering"
+							android:text="@string/last_watering_title"
 							style="@style/SubsectionTitle"
 						/>
 
@@ -153,7 +153,7 @@
 						android:layout_width="wrap_content"
 						android:layout_height="wrap_content"
 						android:id="@+id/duplicate_feeding"
-						android:text="Feed again"
+						android:text="@string/feed_again"
 						android:layout_gravity="end"
 						android:layout_margin="0dp"
 						android:padding="16dp"
@@ -173,7 +173,7 @@
 				<TextView
 					android:layout_width="wrap_content"
 					android:layout_height="wrap_content"
-					android:text="Plant details"
+					android:text="@string/plant_details_title"
 					style="@style/SectionTitle"
 				/>
 
@@ -197,7 +197,7 @@
 						<TextView
 							android:layout_width="match_parent"
 							android:layout_height="wrap_content"
-							android:text="Plant name"
+							android:text="@string/plant_name_label"
 							style="@style/SubsectionTitle"
 						/>
 
@@ -205,7 +205,7 @@
 							android:layout_width="match_parent"
 							android:layout_height="wrap_content"
 							android:id="@+id/plant_name"
-							android:hint="New plant"
+							android:hint="@string/new_plant_hint"
 							android:nextFocusDown="@+id/plant_strain"
 							android:singleLine="true"
 							android:inputType="textCapWords"
@@ -225,14 +225,14 @@
 						<TextView
 							android:layout_width="match_parent"
 							android:layout_height="wrap_content"
-							android:text="Plant strain"
+							android:text="@string/plant_strain_label"
 							style="@style/SubsectionTitle"
 						/>
 
 						<EditText
 							android:layout_width="match_parent"
 							android:layout_height="wrap_content"
-							android:hint="Lemon haze"
+							android:hint="@string/plant_strain_hint"
 							android:id="@+id/plant_strain"
 							android:nextFocusDown="@+id/plant_date"
 							android:singleLine="true"
@@ -255,7 +255,7 @@
 				<TextView
 					android:layout_width="wrap_content"
 					android:layout_height="wrap_content"
-					android:text="Grow details"
+					android:text="@string/grow_details_title"
 					style="@style/SectionTitle"
 				/>
 
@@ -288,7 +288,7 @@
 							<TextView
 								android:layout_width="match_parent"
 								android:layout_height="wrap_content"
-								android:text="Plant date"
+								android:text="@string/plant_date_label"
 								style="@style/SubsectionTitle"
 							/>
 
@@ -315,14 +315,14 @@
 							<TextView
 								android:layout_width="match_parent"
 								android:layout_height="wrap_content"
-								android:text="Medium"
+								android:text="@string/plant_medium_label"
 								style="@style/SubsectionTitle"
 							/>
 
 							<TextView
 								android:layout_width="match_parent"
 								android:layout_height="wrap_content"
-								android:text="Soil"
+								android:text="@string/plant_medium_hint"
 								android:id="@+id/plant_medium"
 								style="@style/SubsectionSubTitle"
 							/>
@@ -343,7 +343,7 @@
 							<TextView
 								android:layout_width="wrap_content"
 								android:layout_height="wrap_content"
-								android:text="From clone?"
+								android:text="@string/from_clone_label"
 								style="@style/SubsectionTitle"
 							/>
 
@@ -370,7 +370,7 @@
 						<TextView
 							android:layout_width="match_parent"
 							android:layout_height="wrap_content"
-							android:text="Medium details"
+							android:text="@string/medium_details_label"
 							style="@style/SubsectionTitle"
 						/>
 
@@ -378,7 +378,7 @@
 							android:layout_width="match_parent"
 							android:layout_height="wrap_content"
 							android:id="@+id/plant_medium_details"
-							android:hint="Soil, Perlite 50/50 mix"
+							android:hint="@string/medium_details_hint"
 							android:lines="3"
 							android:gravity="top"
 							style="@style/SubsectionSubTitle"
@@ -399,7 +399,7 @@
 				<TextView
 					android:layout_width="wrap_content"
 					android:layout_height="wrap_content"
-					android:text="Stage details"
+					android:text="@string/stage_details_title"
 					style="@style/SectionTitle"
 				/>
 
@@ -424,14 +424,14 @@
 						<TextView
 							android:layout_width="match_parent"
 							android:layout_height="wrap_content"
-							android:text="Plant stage"
+							android:text="@string/plant_stage_label"
 							style="@style/SubsectionTitle"
 						/>
 
 						<TextView
 							android:layout_width="match_parent"
 							android:layout_height="wrap_content"
-							android:text="Germination"
+							android:text="@string/germination"
 							android:id="@+id/plant_stage"
 							style="@style/SubsectionSubTitle"
 						/>
@@ -465,7 +465,7 @@
 						android:layout_width="match_parent"
 						android:layout_height="wrap_content"
 						android:layout_gravity="center_vertical"
-						android:text="View photos"
+						android:text="@string/view_photos"
 						style="@style/SubsectionTitle"
 					/>
 				</LinearLayout>
@@ -481,7 +481,7 @@
 						android:layout_width="match_parent"
 						android:layout_height="wrap_content"
 						android:layout_gravity="center_vertical"
-						android:text="View history"
+						android:text="@string/view_history"
 						style="@style/SubsectionTitle"
 					/>
 				</LinearLayout>
@@ -497,7 +497,7 @@
 						android:layout_width="match_parent"
 						android:layout_height="wrap_content"
 						android:layout_gravity="center_vertical"
-						android:text="View statistics"
+						android:text="@string/view_statistics"
 						style="@style/SubsectionTitle"
 					/>
 				</LinearLayout>

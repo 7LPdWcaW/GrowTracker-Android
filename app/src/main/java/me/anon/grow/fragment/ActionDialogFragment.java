@@ -67,7 +67,7 @@ public class ActionDialogFragment extends DialogFragment
 		final Context context = getActivity();
 
 		AlertDialog.Builder dialog = new AlertDialog.Builder(context);
-		dialog.setTitle((edit ? "Edit" : "Add") + " action");
+		dialog.setTitle(getString(edit ? R.string.edit : R.string.add) + " " + getString(R.string.action));
 		View view = LayoutInflater.from(getActivity()).inflate(R.layout.action_dialog, null);
 
 		Views.inject(this, view);
@@ -83,7 +83,10 @@ public class ActionDialogFragment extends DialogFragment
 		}
 
 		final String[] actions = new String[Action.ActionName.names().length];
-		System.arraycopy(Action.ActionName.names(), 0, actions, 0, actions.length);
+		for (int index = 0; index < Action.ActionName.names().length; index++)
+		{
+			actions[index] = getString(Action.ActionName.names()[index]);
+		}
 
 		actionsSpinner.setAdapter(new ArrayAdapter<String>(getActivity(), android.R.layout.simple_spinner_dropdown_item, actions));
 
@@ -127,7 +130,7 @@ public class ActionDialogFragment extends DialogFragment
 		for (int index = 0; index < actions.length; index++)
 		{
 			String actionName = actions[index];
-			if (action.getAction() != null && actionName.equalsIgnoreCase(action.getAction().getPrintString()))
+			if (action.getAction() != null && actionName.equalsIgnoreCase(getString(action.getAction().getPrintString())))
 			{
 				selectionIndex = index;
 				break;
@@ -137,7 +140,7 @@ public class ActionDialogFragment extends DialogFragment
 		actionsSpinner.setSelection(selectionIndex);
 
 		dialog.setView(view);
-		dialog.setPositiveButton(edit ? "Edit" : "Add", new DialogInterface.OnClickListener()
+		dialog.setPositiveButton(edit ? R.string.edit : R.string.add, new DialogInterface.OnClickListener()
 		{
 			@Override public void onClick(DialogInterface dialog, int which)
 			{
@@ -150,7 +153,7 @@ public class ActionDialogFragment extends DialogFragment
 				}
 			}
 		});
-		dialog.setNegativeButton("Cancel", null);
+		dialog.setNegativeButton(R.string.cancel, null);
 
 		return dialog.create();
 	}

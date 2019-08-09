@@ -77,7 +77,7 @@ public class FeedingScheduleSelectDialogFragment extends DialogFragment
 		recyclerView.addItemDecoration(new DividerItemDecoration(getActivity(), LinearLayout.VERTICAL));
 
 		final AlertDialog dialog = new AlertDialog.Builder(getActivity())
-			.setTitle("Feeding schedule")
+			.setTitle(R.string.feeding_schedule_title)
 			.setView(view)
 			.create();
 

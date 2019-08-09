@@ -33,7 +33,7 @@
 				android:gravity="center"
 				android:paddingBottom="16dp"
 				android:paddingTop="16dp"
-				android:text="Feed"
+				android:text="@string/action_feed"
 			/>
 
 			<TextView
@@ -45,7 +45,7 @@
 				android:gravity="center"
 				android:paddingBottom="16dp"
 				android:paddingTop="16dp"
-				android:text="Action"
+				android:text="@string/action_action"
 			/>
 
 			<TextView
@@ -57,7 +57,7 @@
 				android:gravity="center"
 				android:paddingBottom="16dp"
 				android:paddingTop="16dp"
-				android:text="Note"
+				android:text="@string/action_note"
 			/>
 		</LinearLayout>
 
@@ -77,7 +77,7 @@
 		android:layout_width="wrap_content"
 		android:layout_height="wrap_content"
 		android:id="@+id/fab_add"
-		android:layout_gravity="bottom|right"
+		android:layout_gravity="bottom|end"
 		android:layout_margin="16dp"
 	>
 		<ImageView

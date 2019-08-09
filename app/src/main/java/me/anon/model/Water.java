@@ -6,6 +6,7 @@ import android.preference.PreferenceManager;
 import java.util.ArrayList;
 import java.util.List;
 
+import me.anon.grow.R;
 import me.anon.lib.TempUnit;
 import me.anon.lib.Unit;
 
@@ -123,14 +124,18 @@ public class Water extends Action
 
 		if (getPh() != null)
 		{
-			waterStr.append("<b>In pH: </b>");
+			waterStr.append("<b>");
+			waterStr.append(context.getString(R.string.plant_summary_ph));
+			waterStr.append("</b>");
 			waterStr.append(getPh());
 			waterStr.append(", ");
 		}
 
 		if (getRunoff() != null)
 		{
-			waterStr.append("<b>Out pH: </b>");
+			waterStr.append("<b>");
+			waterStr.append(context.getString(R.string.plant_summary_out_ph));
+			waterStr.append("</b>");
 			waterStr.append(getRunoff());
 			waterStr.append(", ");
 		}
@@ -158,7 +163,9 @@ public class Water extends Action
 
 		if (getAmount() != null)
 		{
-			waterStr.append("<b>Amount: </b>");
+			waterStr.append("<b>");
+			waterStr.append(context.getString(R.string.plant_summary_amount));
+			waterStr.append("</b>");
 			waterStr.append(ML.to(deliveryUnit, getAmount()));
 			waterStr.append(deliveryUnit.getLabel());
 			waterStr.append(", ");
@@ -166,7 +173,9 @@ public class Water extends Action
 
 		if (getTemp() != null)
 		{
-			waterStr.append("<b>Temp: </b>");
+			waterStr.append("<b>");
+			waterStr.append(context.getString(R.string.plant_summary_temp));
+			waterStr.append("</b>");
 			waterStr.append(CELCIUS.to(tempUnit, getTemp()));
 			waterStr.append("º").append(tempUnit.getLabel()).append(", ");
 		}
@@ -177,7 +186,9 @@ public class Water extends Action
 
 		if (getAdditives().size() > 0)
 		{
-			waterStr.append("<b>Additives:</b>");
+			waterStr.append("<b>");
+			waterStr.append(context.getString(R.string.plant_summary_additives));
+			waterStr.append("</b>");
 
 			for (Additive additive : getAdditives())
 			{

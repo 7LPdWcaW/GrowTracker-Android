@@ -102,7 +102,7 @@ public class ViewPhotosFragment extends Fragment
 	{
 		super.onActivityCreated(savedInstanceState);
 
-		getActivity().setTitle("Plant photos");
+		getActivity().setTitle(R.string.photos_title);
 
 		if (getArguments() != null)
 		{
@@ -148,9 +148,9 @@ public class ViewPhotosFragment extends Fragment
 						if (item.getItemId() == R.id.delete)
 						{
 							new AlertDialog.Builder(getActivity())
-								.setTitle("Are you sure?")
-								.setMessage("You're about to delete " + adapter.getSelected().size() + " images, are you sure? You will not be able to recover these")
-								.setPositiveButton("Yes", new DialogInterface.OnClickListener()
+								.setTitle(R.string.confirm_title)
+								.setMessage(getString(R.string.confirm_delete_photos_message, adapter.getSelected().size()))
+								.setPositiveButton(R.string.yes, new DialogInterface.OnClickListener()
 								{
 									@Override public void onClick(DialogInterface dialog, int which)
 									{
@@ -168,7 +168,7 @@ public class ViewPhotosFragment extends Fragment
 										mode.finish();
 									}
 								})
-								.setNegativeButton("No", null)
+								.setNegativeButton(R.string.no, null)
 								.show();
 
 							return true;
@@ -273,7 +273,7 @@ public class ViewPhotosFragment extends Fragment
 
 					int currentDays = (int)TimeHelper.toDays(Math.abs(currentChange.getDate() - lastChange.getDate()));
 					currentDays = (currentDays == 0 ? 1 : currentDays);
-					stageDayStr += "/" + currentDays + lastChange.getNewStage().getPrintString().substring(0, 1).toLowerCase();
+					stageDayStr += "/" + currentDays + getString(lastChange.getNewStage().getPrintString()).substring(0, 1).toLowerCase();
 				}
 
 				sections.add(new SectionedGridRecyclerViewAdapter.Section(index, printedFileDate + stageDayStr));
@@ -298,14 +298,14 @@ public class ViewPhotosFragment extends Fragment
 	{
 		if (!PermissionHelper.hasPermission(getActivity(), Manifest.permission.WRITE_EXTERNAL_STORAGE))
 		{
-			PermissionHelper.doPermissionCheck(this, Manifest.permission.WRITE_EXTERNAL_STORAGE, 1, "Access to external storage is needed to store photos. No other data is consumed by this app");
+			PermissionHelper.doPermissionCheck(this, Manifest.permission.WRITE_EXTERNAL_STORAGE, 1, getString(R.string.permission_summary));
 			return;
 		}
 
-		String[] choices = {"From camera", "From gallery"};
+		String[] choices = {getString(R.string.photo_option_camera), getString(R.string.photo_option_gallery)};
 
 		new AlertDialog.Builder(getActivity())
-			.setTitle("Select an option")
+			.setTitle(R.string.dialog_option_title)
 			.setItems(choices, new DialogInterface.OnClickListener()
 			{
 				@Override public void onClick(DialogInterface dialogInterface, int index)
@@ -438,7 +438,7 @@ public class ViewPhotosFragment extends Fragment
 					new EncryptTask().executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR, image);
 				}
 
-				SnackBar.show(getActivity(), "Image added", "Take another", new SnackBarListener()
+				SnackBar.show(getActivity(), R.string.snackbar_image_added, R.string.snackbar_action_take_another, new SnackBarListener()
 				{
 					@Override public void onSnackBarStarted(Object o)
 					{

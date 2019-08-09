@@ -39,5 +39,7 @@
 		app:flexDirection="row"
 		app:dividerDrawable="@drawable/divider_4dp"
 		app:showDivider="middle"
+		android:clipChildren="false"
+		android:clipToPadding="false"
 	/>
 </LinearLayout>

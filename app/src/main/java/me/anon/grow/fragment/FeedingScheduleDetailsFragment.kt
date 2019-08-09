@@ -20,6 +20,7 @@ import me.anon.lib.helper.FabAnimator
 import me.anon.lib.manager.ScheduleManager
 import me.anon.model.FeedingSchedule
 import me.anon.model.FeedingScheduleDate
+import kotlin.math.floor
 
 /**
  * // TODO: Add class description
@@ -109,17 +110,17 @@ class FeedingScheduleDetailsFragment : Fragment()
 		schedules_container.removeViews(0, schedules_container.indexOfChild(new_schedule))
 		schedules.forEachIndexed { index, schedule ->
 			val feedingView = LayoutInflater.from(activity).inflate(R.layout.feeding_date_stub, schedules_container, false)
-			feedingView.title.text = "${schedule.dateRange[0]}${schedule.stageRange[0].printString[0]}"
+			feedingView.title.text = "${schedule.dateRange[0]}${getString(schedule.stageRange[0].printString)[0]}"
 			if (schedule.dateRange[0] != schedule.dateRange[1])
 			{
-				feedingView.title.text = "${feedingView.title.text} - ${schedule.dateRange[1]}${schedule.stageRange[1].printString[0]}"
+				feedingView.title.text = "${feedingView.title.text} - ${schedule.dateRange[1]}${getString(schedule.stageRange[1].printString)[0]}"
 			}
 
 			var waterStr = ""
 			for (additive in schedule.additives)
 			{
 				val converted = Unit.ML.to(measureUnit, additive.amount!!)
-				val amountStr = if (converted == Math.floor(converted)) converted.toInt().toString() else converted.toString()
+				val amountStr = if (converted == floor(converted)) converted.toInt().toString() else converted.toString()
 
 				if (waterStr.isNotEmpty()) waterStr += "<br />"
 				waterStr += "• ${additive.description} - ${amountStr}${measureUnit.label}/${deliveryUnit.label}"

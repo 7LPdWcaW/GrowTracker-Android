@@ -195,7 +195,7 @@ public class WateringFragment extends Fragment
 			}
 
 			new AlertDialog.Builder(getActivity())
-				.setTitle("Select schedule")
+				.setTitle(R.string.select_schedule_title)
 				.setItems(items.toArray(new String[items.size()]), new DialogInterface.OnClickListener()
 				{
 					@Override public void onClick(DialogInterface dialog, int which)
@@ -262,8 +262,9 @@ public class WateringFragment extends Fragment
 
 	private void setHints()
 	{
-		amountLabel.setText("Amount (" + selectedDeliveryUnit.getLabel() + ")");
+		amountLabel.setText(getString(R.string.amount_label, selectedDeliveryUnit.getLabel()));
 		amount.setHint("250" + selectedDeliveryUnit.getLabel());
+		tempLabel.setHint(getString(R.string.temp_label, selectedTemperatureUnit.getLabel()));
 
 		if (usingEc)
 		{
@@ -365,7 +366,7 @@ public class WateringFragment extends Fragment
 				}
 
 				tempContainer.setVisibility(View.VISIBLE);
-				tempLabel.setText("Temp (º" + selectedTemperatureUnit.getLabel() + ")");
+				tempLabel.setText(getString(R.string.temp_label, selectedTemperatureUnit.getLabel()));
 
 				if (!averageTemp.isNaN())
 				{
@@ -387,7 +388,7 @@ public class WateringFragment extends Fragment
 		date.setText("");
 		notes.setText("");
 
-		getActivity().setTitle("Feeding " + (plants.size() == 1 ? plants.get(0).getName() : "multiple plants"));
+		getActivity().setTitle(plants.size() == 1 ? getString(R.string.feeding_single_title, plants.get(0).getName()) : getString(R.string.feeding_multiple_title));
 
 		Calendar date = Calendar.getInstance();
 		date.setTimeInMillis(water.getDate());

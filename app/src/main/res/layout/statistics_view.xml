@@ -22,7 +22,7 @@
 			<TextView
 				android:layout_width="wrap_content"
 				android:layout_height="wrap_content"
-				android:text="General"
+				android:text="@string/general_title"
 				style="@style/SectionTitle"
 			/>
 
@@ -48,7 +48,7 @@
 						<TextView
 							android:layout_width="wrap_content"
 							android:layout_height="wrap_content"
-							android:text="Germination:"
+							android:text="@string/germination_label"
 							android:gravity="center_vertical"
 							android:ellipsize="end"
 							android:singleLine="true"
@@ -78,7 +78,7 @@
 						<TextView
 							android:layout_width="wrap_content"
 							android:layout_height="wrap_content"
-							android:text="Seedling:"
+							android:text="@string/seedling_label"
 							android:gravity="center_vertical"
 							android:ellipsize="end"
 							android:singleLine="true"
@@ -108,7 +108,7 @@
 						<TextView
 							android:layout_width="wrap_content"
 							android:layout_height="wrap_content"
-							android:text="Cutting:"
+							android:text="@string/cutting_label"
 							android:gravity="center_vertical"
 							android:ellipsize="end"
 							android:singleLine="true"
@@ -138,8 +138,8 @@
 						<TextView
 							android:layout_width="0dp"
 							android:layout_height="wrap_content"
+							android:text="@string/vegetation_label"
 							android:layout_weight="1"
-							android:text="Vegetation:"
 							android:gravity="center_vertical"
 							android:ellipsize="end"
 							style="@style/SubsectionTitle"
@@ -175,7 +175,7 @@
 						<TextView
 							android:layout_width="wrap_content"
 							android:layout_height="wrap_content"
-							android:text="Flower:"
+							android:text="@string/flower_label"
 							android:gravity="center_vertical"
 							style="@style/SubsectionTitle"
 						/>
@@ -203,7 +203,7 @@
 						<TextView
 							android:layout_width="wrap_content"
 							android:layout_height="wrap_content"
-							android:text="Drying:"
+							android:text="@string/drying_label"
 							android:gravity="center_vertical"
 							style="@style/SubsectionTitle"
 						/>
@@ -237,7 +237,7 @@
 						<TextView
 							android:layout_width="wrap_content"
 							android:layout_height="wrap_content"
-							android:text="Curing:"
+							android:text="@string/curing_label"
 							android:gravity="center_vertical"
 							style="@style/SubsectionTitle"
 						/>
@@ -263,7 +263,7 @@
 					<TextView
 						android:layout_width="wrap_content"
 						android:layout_height="wrap_content"
-						android:text="Total time:"
+						android:text="@string/total_time_label"
 						android:gravity="center_vertical"
 						style="@style/SubsectionTitle"
 					/>
@@ -294,7 +294,7 @@
 						<TextView
 							android:layout_width="wrap_content"
 							android:layout_height="wrap_content"
-							android:text="Total waters:"
+							android:text="@string/total_waters_label"
 							android:gravity="center_vertical"
 							style="@style/SubsectionTitle"
 						/>
@@ -320,7 +320,7 @@
 						<TextView
 							android:layout_width="wrap_content"
 							android:layout_height="wrap_content"
-							android:text="Total flushes:"
+							android:text="@string/total_flushes_label"
 							android:gravity="center_vertical"
 							style="@style/SubsectionTitle"
 						/>
@@ -352,7 +352,7 @@
 						<TextView
 							android:layout_width="wrap_content"
 							android:layout_height="wrap_content"
-							android:text="Ave. time between water:"
+							android:text="@string/ave_time_between_water_label"
 							android:gravity="center"
 							style="@style/SubsectionTitle"
 							android:singleLine="false"
@@ -399,7 +399,7 @@
 				android:layout_width="wrap_content"
 				android:layout_height="wrap_content"
 				android:id="@+id/additive_selector"
-				android:text="Filter additives"
+				android:text="@string/filter_additives"
 				android:textColor="#000000"
 				chart:layout_constraintTop_toTopOf="parent"
 				chart:layout_constraintEnd_toEndOf="parent"
@@ -432,7 +432,7 @@
 			<TextView
 				android:layout_width="wrap_content"
 				android:layout_height="wrap_content"
-				android:text="pH"
+				android:text="@string/ph_title"
 				style="@style/SectionTitle"
 				android:textColor="#000000"
 			/>
@@ -460,7 +460,7 @@
 					<TextView
 						android:layout_width="wrap_content"
 						android:layout_height="wrap_content"
-						android:text="Min:"
+						android:text="@string/min"
 						android:gravity="center_vertical"
 						style="@style/SubsectionTitle"
 						android:textColor="#000000"
@@ -487,7 +487,7 @@
 					<TextView
 						android:layout_width="wrap_content"
 						android:layout_height="wrap_content"
-						android:text="Max:"
+						android:text="@string/max"
 						android:gravity="center_vertical"
 						style="@style/SubsectionTitle"
 						android:textColor="#000000"
@@ -514,7 +514,7 @@
 					<TextView
 						android:layout_width="wrap_content"
 						android:layout_height="wrap_content"
-						android:text="Ave:"
+						android:text="@string/ave"
 						android:gravity="center_vertical"
 						style="@style/SubsectionTitle"
 						android:textColor="#000000"
@@ -547,7 +547,7 @@
 				android:layout_width="wrap_content"
 				android:layout_height="wrap_content"
 				android:id="@+id/ppm_title"
-				android:text="PPM"
+				android:text="@string/ppm_title"
 				style="@style/SectionTitle"
 				android:textColor="#000000"
 			/>
@@ -575,7 +575,7 @@
 					<TextView
 						android:layout_width="wrap_content"
 						android:layout_height="wrap_content"
-						android:text="Min:"
+						android:text="@string/min"
 						android:gravity="center_vertical"
 						style="@style/SubsectionTitle"
 						android:textColor="#000000"
@@ -602,7 +602,7 @@
 					<TextView
 						android:layout_width="wrap_content"
 						android:layout_height="wrap_content"
-						android:text="Max:"
+						android:text="@string/max"
 						android:gravity="center_vertical"
 						style="@style/SubsectionTitle"
 						android:textColor="#000000"
@@ -629,7 +629,7 @@
 					<TextView
 						android:layout_width="wrap_content"
 						android:layout_height="wrap_content"
-						android:text="Ave:"
+						android:text="@string/ave"
 						android:gravity="center_vertical"
 						style="@style/SubsectionTitle"
 						android:textColor="#000000"
@@ -663,7 +663,7 @@
 			<TextView
 				android:layout_width="wrap_content"
 				android:layout_height="wrap_content"
-				android:text="Temperature"
+				android:text="@string/temperature_title"
 				style="@style/SectionTitle"
 				android:textColor="#000000"
 			/>
@@ -691,7 +691,7 @@
 					<TextView
 						android:layout_width="wrap_content"
 						android:layout_height="wrap_content"
-						android:text="Min:"
+						android:text="@string/min"
 						android:gravity="center_vertical"
 						style="@style/SubsectionTitle"
 						android:textColor="#000000"
@@ -718,7 +718,7 @@
 					<TextView
 						android:layout_width="wrap_content"
 						android:layout_height="wrap_content"
-						android:text="Max:"
+						android:text="@string/max"
 						android:gravity="center_vertical"
 						style="@style/SubsectionTitle"
 						android:textColor="#000000"
@@ -745,7 +745,7 @@
 					<TextView
 						android:layout_width="wrap_content"
 						android:layout_height="wrap_content"
-						android:text="Ave:"
+						android:text="@string/ave"
 						android:gravity="center_vertical"
 						style="@style/SubsectionTitle"
 						android:textColor="#000000"
