@@ -21,7 +21,7 @@ class ScheduleManager private constructor()
 	fun initialise(context: Context)
 	{
 		this.context = context.applicationContext
-		FILES_DIR = this.context.getExternalFilesDir(null).absolutePath
+		FILES_DIR = this.context.getExternalFilesDir(null)!!.absolutePath
 
 		load()
 	}
