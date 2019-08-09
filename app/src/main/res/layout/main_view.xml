@@ -37,5 +37,6 @@
 		android:id="@+id/navigation_view"
 		android:layout_gravity="start"
 		android:fitsSystemWindows="true"
+		app:itemTextColor="?colorOnPrimarySurface"
 	/>
 </androidx.drawerlayout.widget.DrawerLayout>

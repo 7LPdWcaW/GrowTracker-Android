@@ -1,0 +1,25 @@
+<resources>
+	<style name="AppTheme" parent="Theme.MaterialComponents.DayNight.NoActionBar">
+		<item name="android:colorPrimary">#1F1F1F</item>
+		<item name="android:colorPrimaryDark">#000000</item>
+
+		<item name="colorPrimary">#FF1F1F1F</item>
+		<item name="colorPrimaryDark">#000000</item>
+		<item name="colorAccent">#2196F3</item>
+		<item name="colorControlNormal">#4AA74E</item>
+		<item name="colorSurface">#1D1D1D</item>
+		<item name="colorOnPrimarySurface">#ffffff</item>
+		<item name="actionMenuTextColor">#ffffff</item>
+		<item name="android:windowBackground">#121212</item>
+		<item name="android:textColor">?attr/colorOnBackground</item>
+		<item name="android:textColorPrimaryInverse">#abdefd</item>
+
+		<item name="actionModeBackground">@color/blue</item>
+		<item name="android:actionModeBackground">@color/blue</item>
+
+		<item name="actionModeStyle">@style/ActionMode</item>
+		<item name="android:actionModeStyle">@style/ActionMode</item>
+
+		<item name="windowActionModeOverlay">true</item>
+	</style>
+</resources>
