@@ -1,18 +1,11 @@
 package me.anon.grow.fragment;
 
 import android.app.Activity;
-import android.app.AlertDialog;
-import android.app.Fragment;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.Rect;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
-import androidx.annotation.Nullable;
-import androidx.recyclerview.widget.GridLayoutManager;
-import androidx.recyclerview.widget.LinearLayoutManager;
-import androidx.recyclerview.widget.RecyclerView;
-import androidx.recyclerview.widget.ItemTouchHelper;
 import android.text.Html;
 import android.util.TypedValue;
 import android.view.LayoutInflater;
@@ -29,6 +22,13 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
 
+import androidx.annotation.Nullable;
+import androidx.appcompat.app.AlertDialog;
+import androidx.fragment.app.Fragment;
+import androidx.recyclerview.widget.GridLayoutManager;
+import androidx.recyclerview.widget.ItemTouchHelper;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
 import me.anon.controller.adapter.PlantAdapter;
 import me.anon.controller.adapter.SimpleItemTouchHelperCallback;
 import me.anon.grow.AddPlantActivity;
@@ -307,7 +307,7 @@ public class PlantListFragment extends Fragment
 				});
 			}
 		});
-		dialogFragment.show(getFragmentManager(), null);
+		dialogFragment.show(getChildFragmentManager(), null);
 	}
 
 	@Views.OnClick public void onNoteClick(final View view)
@@ -349,7 +349,7 @@ public class PlantListFragment extends Fragment
 				});
 			}
 		});
-		dialogFragment.show(getFragmentManager(), null);
+		dialogFragment.show(getChildFragmentManager(), null);
 	}
 
 	@Override public void onActivityResult(int requestCode, int resultCode, Intent data)

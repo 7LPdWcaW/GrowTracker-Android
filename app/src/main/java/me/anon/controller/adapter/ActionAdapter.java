@@ -1,6 +1,6 @@
 package me.anon.controller.adapter;
 
-import android.app.AlertDialog;
+import androidx.appcompat.app.AlertDialog;
 import android.content.DialogInterface;
 import android.preference.PreferenceManager;
 import androidx.annotation.Nullable;

@@ -63,7 +63,7 @@ public class PlantSelectActivity extends BaseActivity
 				finish();
 			}
 		});
-		dialogFragment.show(getFragmentManager(), null);
+		dialogFragment.show(getSupportFragmentManager(), null);
 	}
 
 	private void configureAndFinish(int plantIndex, boolean allowImage)

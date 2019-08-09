@@ -2,7 +2,7 @@ package me.anon.grow;
 
 import android.Manifest;
 import android.app.Activity;
-import android.app.AlertDialog;
+import androidx.appcompat.app.AlertDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
@@ -261,7 +261,7 @@ public class MainActivity extends BaseActivity implements NavigationView.OnNavig
 					onNavigationItemSelected(navigation.getMenu().findItem(selectedItem));
 				}
 			});
-			dialogFragment.show(getFragmentManager(), null);
+			dialogFragment.show(getSupportFragmentManager(), null);
 			item.setChecked(false);
 
 			if (drawer != null)
@@ -286,7 +286,7 @@ public class MainActivity extends BaseActivity implements NavigationView.OnNavig
 		else if (item.getItemId() == R.id.all)
 		{
 			selectedItem = item.getItemId();
-			getFragmentManager().beginTransaction().replace(R.id.fragment_holder, PlantListFragment.newInstance(null), TAG_FRAGMENT).commit();
+			getSupportFragmentManager().beginTransaction().replace(R.id.fragment_holder, PlantListFragment.newInstance(null), TAG_FRAGMENT).commit();
 		}
 		else if (item.getItemId() >= 100 && item.getItemId() < Integer.MAX_VALUE)
 		{
@@ -301,7 +301,7 @@ public class MainActivity extends BaseActivity implements NavigationView.OnNavig
 			selectedItem = item.getItemId();
 			item.setChecked(true);
 			int gardenIndex = item.getItemId() - 100;
-			getFragmentManager().beginTransaction().replace(R.id.fragment_holder, GardenFragment.newInstance(GardenManager.getInstance().getGardens().get(gardenIndex)), TAG_FRAGMENT).commit();
+			getSupportFragmentManager().beginTransaction().replace(R.id.fragment_holder, GardenFragment.newInstance(GardenManager.getInstance().getGardens().get(gardenIndex)), TAG_FRAGMENT).commit();
 		}
 
 		if (drawer != null)

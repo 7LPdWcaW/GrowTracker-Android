@@ -1,14 +1,12 @@
 package me.anon.grow;
 
 import android.app.Activity;
-import android.app.AlertDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
-import androidx.core.content.FileProvider;
 import android.text.Html;
 import android.util.Base64;
 import android.widget.Toast;
@@ -16,13 +14,16 @@ import android.widget.Toast;
 import java.io.File;
 import java.util.ArrayList;
 
+import androidx.appcompat.app.AlertDialog;
+import androidx.core.content.FileProvider;
+import androidx.fragment.app.FragmentActivity;
 import me.anon.grow.fragment.PinDialogFragment;
 import me.anon.lib.handler.ExceptionHandler;
 import me.anon.lib.helper.EncryptionHelper;
 import me.anon.lib.helper.MigrationHelper;
 import me.anon.lib.manager.PlantManager;
 
-public class BootActivity extends Activity
+public class BootActivity extends FragmentActivity
 {
 	private boolean sentIntent = false;
 
@@ -140,7 +141,7 @@ public class BootActivity extends Activity
 						Toast.makeText(BootActivity.this, R.string.encrypt_passphrase_error, Toast.LENGTH_SHORT).show();
 
 						check.dismiss();
-						check.show(getFragmentManager(), null);
+						check.show(getSupportFragmentManager(), null);
 					}
 				}
 			});
@@ -152,7 +153,7 @@ public class BootActivity extends Activity
 				}
 			});
 
-			check.show(getFragmentManager(), null);
+			check.show(getSupportFragmentManager(), null);
 		}
 		else
 		{

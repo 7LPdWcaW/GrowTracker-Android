@@ -23,9 +23,9 @@ class FeedingScheduleActivity : AppCompatActivity()
 		setSupportActionBar(toolbar)
 		setTitle(R.string.feeding_schedules_title)
 
-		if (fragmentManager.findFragmentByTag(TAG_FRAGMENT) == null)
+		if (supportFragmentManager.findFragmentByTag(TAG_FRAGMENT) == null)
 		{
-			fragmentManager.beginTransaction().replace(R.id.fragment_holder, FeedingScheduleListFragment(), TAG_FRAGMENT).commit()
+			supportFragmentManager.beginTransaction().replace(R.id.fragment_holder, FeedingScheduleListFragment(), TAG_FRAGMENT).commit()
 		}
 	}
 }

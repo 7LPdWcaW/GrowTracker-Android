@@ -1,9 +1,7 @@
 package me.anon.grow.fragment;
 
-import android.app.Fragment;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
-import androidx.annotation.Nullable;
 import android.view.LayoutInflater;
 import android.view.MenuItem;
 import android.view.View;
@@ -20,6 +18,8 @@ import java.util.List;
 import java.util.Set;
 import java.util.SortedMap;
 
+import androidx.annotation.Nullable;
+import androidx.fragment.app.Fragment;
 import me.anon.grow.R;
 import me.anon.lib.Views;
 import me.anon.lib.helper.StatsHelper;

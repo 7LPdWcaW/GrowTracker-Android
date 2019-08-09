@@ -1,13 +1,14 @@
 package me.anon.grow.fragment
 
-import android.app.AlertDialog
-import android.app.Fragment
 import android.content.Intent
 import android.os.Bundle
 import android.text.Html
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.appcompat.app.AlertDialog
+import androidx.appcompat.app.AppCompatActivity
+import androidx.fragment.app.Fragment
 import com.esotericsoftware.kryo.Kryo
 import kotlinx.android.synthetic.main.feeding_date_stub.view.*
 import kotlinx.android.synthetic.main.schedule_details_view.*
@@ -42,8 +43,8 @@ class FeedingScheduleDetailsFragment : Fragment()
 	private val measureUnit: Unit by lazy { Unit.getSelectedMeasurementUnit(activity); }
 	private val deliveryUnit: Unit by lazy { Unit.getSelectedDeliveryUnit(activity); }
 
-	override fun onCreateView(inflater: LayoutInflater?, container: ViewGroup?, savedInstanceState: Bundle?): View
-		= inflater?.inflate(R.layout.schedule_details_view, container, false) ?: View(activity)
+	override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View?
+		= inflater.inflate(R.layout.schedule_details_view, container, false) ?: View(activity)
 
 	override fun onActivityCreated(savedInstanceState: Bundle?)
 	{
@@ -81,7 +82,7 @@ class FeedingScheduleDetailsFragment : Fragment()
 				}
 			}
 
-			activity.finish()
+			activity?.finish()
 		}
 	}
 
@@ -138,7 +139,7 @@ class FeedingScheduleDetailsFragment : Fragment()
 						schedules.remove(schedule)
 						populateSchedules()
 
-						SnackBar().show(activity!!, R.string.schedule_deleted, R.string.undo, {
+						SnackBar().show(activity as AppCompatActivity, R.string.schedule_deleted, R.string.undo, {
 							FabAnimator.animateUp(fab_complete)
 						}, {
 							FabAnimator.animateDown(fab_complete)

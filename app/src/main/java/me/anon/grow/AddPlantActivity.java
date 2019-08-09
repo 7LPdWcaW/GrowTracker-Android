@@ -1,10 +1,10 @@
 package me.anon.grow;
 
-import android.app.Fragment;
+import androidx.fragment.app.Fragment;
 import android.os.Bundle;
-import androidx.appcompat.widget.Toolbar;
 import android.view.MenuItem;
 
+import androidx.appcompat.widget.Toolbar;
 import me.anon.grow.fragment.PlantDetailsFragment;
 import me.anon.lib.Views;
 
@@ -37,9 +37,9 @@ public class AddPlantActivity extends BaseActivity
 			gardenIndex = getIntent().getExtras().getInt("garden_index", -1);
 		}
 
-		if (getFragmentManager().findFragmentByTag(TAG_FRAGMENT) == null)
+		if (getSupportFragmentManager().findFragmentByTag(TAG_FRAGMENT) == null)
 		{
-			getFragmentManager().beginTransaction().replace(R.id.fragment_holder, PlantDetailsFragment.newInstance(-1, gardenIndex), TAG_FRAGMENT).commit();
+			getSupportFragmentManager().beginTransaction().replace(R.id.fragment_holder, PlantDetailsFragment.newInstance(-1, gardenIndex), TAG_FRAGMENT).commit();
 		}
 	}
 
@@ -47,7 +47,7 @@ public class AddPlantActivity extends BaseActivity
 	{
 		if (item.getItemId() == android.R.id.home)
 		{
-			Fragment fragment = getFragmentManager().findFragmentById(R.id.fragment_holder);
+			Fragment fragment = getSupportFragmentManager().findFragmentById(R.id.fragment_holder);
 
 			if (fragment instanceof PlantDetailsFragment)
 			{

@@ -1,6 +1,5 @@
 package me.anon.grow.fragment
 
-import android.app.Fragment
 import android.content.Intent
 import android.os.Bundle
 import androidx.recyclerview.widget.DividerItemDecoration
@@ -9,6 +8,8 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.LinearLayout.VERTICAL
+import androidx.appcompat.app.AppCompatActivity
+import androidx.fragment.app.Fragment
 import com.esotericsoftware.kryo.Kryo
 import kotlinx.android.synthetic.main.schedule_list_view.*
 import me.anon.controller.adapter.FeedingScheduleAdapter
@@ -25,8 +26,8 @@ class FeedingScheduleListFragment : Fragment()
 {
 	private val adapter = FeedingScheduleAdapter()
 
-	override fun onCreateView(inflater: LayoutInflater?, container: ViewGroup?, savedInstanceState: Bundle?): View
-		= inflater?.inflate(R.layout.schedule_list_view, container, false) ?: View(activity)
+	override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View?
+		= inflater.inflate(R.layout.schedule_list_view, container, false) ?: View(activity)
 
 	override fun onActivityCreated(savedInstanceState: Bundle?)
 	{
@@ -46,7 +47,7 @@ class FeedingScheduleListFragment : Fragment()
 			adapter.items = ScheduleManager.instance.schedules
 			adapter.notifyDataSetChanged()
 
-			SnackBar().show(activity, R.string.schedule_deleted, R.string.undo, {
+			SnackBar().show(activity as AppCompatActivity, R.string.schedule_deleted, R.string.undo, {
 				FabAnimator.animateUp(fab_add)
 			}, {
 				FabAnimator.animateDown(fab_add)
@@ -65,7 +66,7 @@ class FeedingScheduleListFragment : Fragment()
 			adapter.items = ScheduleManager.instance.schedules
 			adapter.notifyDataSetChanged()
 
-			SnackBar().show(activity, R.string.schedule_copied, R.string.undo, {
+			SnackBar().show(activity as AppCompatActivity, R.string.schedule_copied, R.string.undo, {
 				FabAnimator.animateUp(fab_add)
 			}, {
 				FabAnimator.animateDown(fab_add)

@@ -2,7 +2,6 @@ package me.anon.grow.fragment;
 
 import android.annotation.SuppressLint;
 import android.app.DatePickerDialog;
-import android.app.Fragment;
 import android.app.TimePickerDialog;
 import android.content.DialogInterface;
 import android.os.Bundle;
@@ -10,6 +9,8 @@ import android.widget.DatePicker;
 import android.widget.TimePicker;
 
 import java.util.Calendar;
+
+import androidx.fragment.app.Fragment;
 
 public class DateDialogFragment extends Fragment
 {

@@ -38,9 +38,9 @@ public class EventsActivity extends BaseActivity
 			return;
 		}
 
-		if (getFragmentManager().findFragmentByTag(TAG_FRAGMENT) == null)
+		if (getSupportFragmentManager().findFragmentByTag(TAG_FRAGMENT) == null)
 		{
-			getFragmentManager().beginTransaction().replace(R.id.fragment_holder, EventListFragment.newInstance(plantIndex), TAG_FRAGMENT).commit();
+			getSupportFragmentManager().beginTransaction().replace(R.id.fragment_holder, EventListFragment.newInstance(plantIndex), TAG_FRAGMENT).commit();
 		}
 	}
 }

@@ -42,9 +42,9 @@ public class EditWateringActivity extends BaseActivity
 			return;
 		}
 
-		if (getFragmentManager().findFragmentByTag(TAG_FRAGMENT) == null)
+		if (getSupportFragmentManager().findFragmentByTag(TAG_FRAGMENT) == null)
 		{
-			getFragmentManager().beginTransaction().replace(R.id.fragment_holder, WateringFragment.newInstance(new int[]{plantIndex}, feedingIndex), TAG_FRAGMENT).commit();
+			getSupportFragmentManager().beginTransaction().replace(R.id.fragment_holder, WateringFragment.newInstance(new int[]{plantIndex}, feedingIndex), TAG_FRAGMENT).commit();
 		}
 	}
 }

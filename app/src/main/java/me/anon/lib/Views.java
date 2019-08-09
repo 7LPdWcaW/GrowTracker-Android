@@ -1,7 +1,7 @@
 package me.anon.lib;
 
 import android.app.Activity;
-import android.app.Fragment;
+import androidx.fragment.app.Fragment;
 import android.os.Build.VERSION;
 import androidx.fragment.app.FragmentActivity;
 import android.text.TextUtils;

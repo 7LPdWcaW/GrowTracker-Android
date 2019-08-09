@@ -23,9 +23,9 @@ class ScheduleDateDetailsActivity : AppCompatActivity()
 		setSupportActionBar(toolbar)
 		setTitle(R.string.schedule_date_title)
 
-		if (fragmentManager.findFragmentByTag(TAG_FRAGMENT) == null)
+		if (supportFragmentManager.findFragmentByTag(TAG_FRAGMENT) == null)
 		{
-			fragmentManager.beginTransaction().replace(
+			supportFragmentManager.beginTransaction().replace(
 				R.id.fragment_holder,
 				ScheduleDateDetailsFragment.newInstance(
 					intent.extras?.getInt("schedule_index", -1) ?: -1,

@@ -1,13 +1,9 @@
 package me.anon.grow.fragment;
 
-import android.app.Activity;
 import android.content.Context;
 import android.graphics.Bitmap;
 import android.os.Bundle;
 import android.os.Parcelable;
-import androidx.exifinterface.media.ExifInterface;
-import androidx.viewpager.widget.PagerAdapter;
-import androidx.viewpager.widget.ViewPager;
 import android.text.Html;
 import android.text.TextUtils;
 import android.view.Gravity;
@@ -32,6 +28,10 @@ import java.io.IOException;
 import java.text.DateFormat;
 import java.util.Date;
 
+import androidx.exifinterface.media.ExifInterface;
+import androidx.fragment.app.FragmentActivity;
+import androidx.viewpager.widget.PagerAdapter;
+import androidx.viewpager.widget.ViewPager;
 import me.anon.grow.R;
 import me.anon.lib.DateRenderer;
 import me.anon.lib.Views;
@@ -42,7 +42,7 @@ import me.anon.model.Plant;
 import me.anon.model.StageChange;
 
 @Views.Injectable
-public class ImageLightboxDialog extends Activity
+public class ImageLightboxDialog extends FragmentActivity
 {
 	private String[] imageUrls = {};
 	private Plant plant;
