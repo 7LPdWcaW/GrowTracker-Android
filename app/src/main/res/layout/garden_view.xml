@@ -39,36 +39,56 @@
 						tools:text="Garden name"
 					/>
 
-					<com.google.android.material.button.MaterialButtonToggleGroup
+					<LinearLayout
 						android:layout_width="0dp"
 						android:layout_height="wrap_content"
 						android:id="@+id/actions"
 						android:layout_marginTop="8dp"
+						android:orientation="horizontal"
 						app:layout_constraintTop_toBottomOf="@+id/name"
 						app:layout_constraintStart_toStartOf="parent"
 						app:layout_constraintEnd_toEndOf="parent"
 					>
 						<com.google.android.material.button.MaterialButton
-							android:layout_width="wrap_content"
+							android:layout_width="0dp"
 							android:layout_height="wrap_content"
-							android:text="Feed plants"
-							style="?attr/materialButtonOutlinedStyle"
+							android:layout_weight="1"
+							android:text="@string/action_feed"
+							style="@style/Widget.MaterialComponents.Button.TextButton"
 						/>
 						<com.google.android.material.button.MaterialButton
-							android:layout_width="wrap_content"
+							android:layout_width="0dp"
 							android:layout_height="wrap_content"
-							android:text="Add action"
-							style="?attr/materialButtonOutlinedStyle"
+							android:layout_weight="1"
+							android:text="@string/action_action"
+							style="@style/Widget.MaterialComponents.Button.TextButton"
 						/>
 						<com.google.android.material.button.MaterialButton
-							android:layout_width="wrap_content"
+							android:layout_width="0dp"
 							android:layout_height="wrap_content"
-							android:text="Add note"
-							style="?attr/materialButtonOutlinedStyle"
+							android:layout_weight="1"
+							android:text="@string/action_note"
+							style="@style/Widget.MaterialComponents.Button.TextButton"
 						/>
-					</com.google.android.material.button.MaterialButtonToggleGroup>
+					</LinearLayout>
 				</androidx.constraintlayout.widget.ConstraintLayout>
 			</com.google.android.material.card.MaterialCardView>
+
+			<TextView
+				android:layout_width="match_parent"
+				android:layout_height="wrap_content"
+				android:text="Last photos"
+				android:layout_marginTop="16dp"
+				style="@style/SubsectionTitle"
+				tools:text="Plants"
+			/>
+
+			<androidx.recyclerview.widget.RecyclerView
+				android:layout_width="match_parent"
+				android:layout_height="wrap_content"
+				android:layout_marginTop="8dp"
+				android:id="@+id/image_recycler_view"
+			/>
 
 			<TextView
 				android:layout_width="match_parent"
@@ -81,7 +101,7 @@
 
 			<androidx.recyclerview.widget.RecyclerView
 				android:layout_width="match_parent"
-				android:layout_height="match_parent"
+				android:layout_height="wrap_content"
 				android:layout_marginTop="8dp"
 				android:id="@+id/recycler_view"
 			/>

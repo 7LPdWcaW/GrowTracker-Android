@@ -25,9 +25,11 @@ import java.util.Collections;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AlertDialog;
 import androidx.fragment.app.Fragment;
+import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.ItemTouchHelper;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
+import me.anon.controller.adapter.ImageAdapter;
 import me.anon.controller.adapter.PlantAdapter;
 import me.anon.controller.adapter.SimpleItemTouchHelperCallback;
 import me.anon.grow.AddPlantActivity;
@@ -54,6 +56,7 @@ import me.anon.model.PlantStage;
 public class GardenFragment extends Fragment
 {
 	private PlantAdapter adapter;
+	private ImageAdapter imageAdapter;
 	private Garden garden;
 
 	public static GardenFragment newInstance(@Nullable Garden garden)
@@ -66,6 +69,7 @@ public class GardenFragment extends Fragment
 
 	@Views.InjectView(R.id.name) private TextView name;
 	@Views.InjectView(R.id.recycler_view) private RecyclerView recycler;
+	@Views.InjectView(R.id.image_recycler_view) private RecyclerView imageRecycler;
 	@Views.InjectView(R.id.fab_add) private FloatingActionButton fab;
 
 	private ArrayList<PlantStage> filterList = new ArrayList<>();
@@ -90,7 +94,23 @@ public class GardenFragment extends Fragment
 	{
 		super.onActivityCreated(savedInstanceState);
 
-		getActivity().setTitle(garden.getName() + " plants");
+		getActivity().setTitle(getString(R.string.list_title, garden.getName()));
+
+		imageAdapter = new ImageAdapter();
+		imageRecycler.setAdapter(adapter);
+		imageRecycler.setLayoutManager(new GridLayoutManager(getActivity(), 6));
+
+		ArrayList<String> images = new ArrayList<>();
+		ArrayList<Plant> plantList = PlantManager.getInstance().getSortedPlantList(garden);
+		for (Plant plant : plantList)
+		{
+			for (int index = plant.getImages().size() - 1, counter = 0; index >= 0 && counter < 3; index++, counter++)
+			{
+				images.add(plant.getImages().get(index));
+			}
+		}
+
+		imageAdapter.setImages(images);
 
 		adapter = new PlantAdapter(getActivity());
 		name.setText(garden.getName());
