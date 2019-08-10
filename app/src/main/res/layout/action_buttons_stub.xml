@@ -1,0 +1,70 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<LinearLayout
+	xmlns:android="http://schemas.android.com/apk/res/android"
+	android:layout_width="match_parent"
+	android:layout_height="wrap_content"
+	android:id="@+id/action_container"
+	android:orientation="horizontal"
+	android:divider="@drawable/action_vertical_full_divider"
+	android:showDividers="middle"
+	android:dividerPadding="8dp"
+	android:padding="0dp"
+	android:visibility="gone"
+>
+	<TextView
+		android:layout_width="0dp"
+		android:layout_height="match_parent"
+		android:id="@+id/feeding"
+		android:layout_weight="1"
+		android:layout_gravity="center_vertical"
+		android:gravity="center"
+		android:paddingBottom="16dp"
+		android:paddingTop="16dp"
+		android:text="@string/menu_feed"
+		android:textColor="?colorOnPrimary"
+		android:background="?selectableItemBackground"
+	/>
+
+	<TextView
+		android:layout_width="0dp"
+		android:layout_height="match_parent"
+		android:id="@+id/action"
+		android:layout_weight="1"
+		android:layout_gravity="center_vertical"
+		android:gravity="center"
+		android:paddingBottom="16dp"
+		android:paddingTop="16dp"
+		android:text="@string/menu_action"
+		android:textColor="?colorOnPrimary"
+		android:background="?selectableItemBackground"
+	/>
+
+	<TextView
+		android:layout_width="0dp"
+		android:layout_height="match_parent"
+		android:id="@+id/note"
+		android:layout_weight="1"
+		android:layout_gravity="center_vertical"
+		android:gravity="center"
+		android:paddingBottom="16dp"
+		android:paddingTop="16dp"
+		android:text="@string/menu_note"
+		android:textColor="?colorOnPrimary"
+		android:background="?selectableItemBackground"
+	/>
+
+	<TextView
+		android:layout_width="0dp"
+		android:layout_height="match_parent"
+		android:id="@+id/photo"
+		android:layout_weight="1"
+		android:layout_gravity="center_vertical"
+		android:gravity="center"
+		android:paddingBottom="16dp"
+		android:paddingTop="16dp"
+		android:text="@string/menu_photo"
+		android:textColor="?colorOnPrimary"
+		android:background="?selectableItemBackground"
+	/>
+</LinearLayout>

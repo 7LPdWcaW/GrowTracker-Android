@@ -7,17 +7,22 @@
 	android:layout_height="match_parent"
 	android:orientation="vertical"
 >
-	<androidx.appcompat.widget.Toolbar
+	<com.google.android.material.appbar.AppBarLayout
 		android:layout_width="match_parent"
 		android:layout_height="wrap_content"
-		android:id="@+id/toolbar"
-		android:minHeight="@dimen/abc_action_bar_default_height_material"
-		android:background="?attr/colorPrimary"
-		android:fitsSystemWindows="true"
-		app:titleTextColor="@android:color/white"
-		app:theme="@style/Toolbar"
-		app:popupTheme="@style/ThemeOverlay.AppCompat.Light"
-	/>
+		android:id="@+id/toolbar_layout"
+		app:elevation="4dp"
+		style="@style/Widget.MaterialComponents.ActionBar.Primary"
+	>
+		<com.google.android.material.appbar.MaterialToolbar
+			android:layout_width="match_parent"
+			android:layout_height="wrap_content"
+			android:id="@+id/toolbar"
+			android:fitsSystemWindows="true"
+			app:theme="@style/Toolbar"
+			app:popupTheme="@style/ThemeOverlay.AppCompat.Light"
+		/>
+	</com.google.android.material.appbar.AppBarLayout>
 
 	<FrameLayout
 		android:layout_width="match_parent"

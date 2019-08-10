@@ -1,10 +1,11 @@
 package me.anon.grow;
 
-import androidx.fragment.app.Fragment;
 import android.os.Bundle;
-import androidx.appcompat.widget.Toolbar;
 import android.view.MenuItem;
 
+import com.google.android.material.appbar.AppBarLayout;
+
+import androidx.fragment.app.Fragment;
 import me.anon.grow.fragment.PlantDetailsFragment;
 import me.anon.lib.Views;
 
@@ -18,6 +19,7 @@ import me.anon.lib.Views;
 @Views.Injectable
 public class PlantDetailsActivity extends BaseActivity
 {
+	@Views.InjectView(R.id.toolbar_layout) public AppBarLayout toolbarLayout;
 	private static final String TAG_FRAGMENT = "current_fragment";
 
 	@Override protected void onCreate(Bundle savedInstanceState)
@@ -27,7 +29,7 @@ public class PlantDetailsActivity extends BaseActivity
 		if (!checkEncryptState())
 		{
 			setContentView(R.layout.fragment_holder);
-			setSupportActionBar((Toolbar)findViewById(R.id.toolbar));
+			setSupportActionBar(findViewById(R.id.toolbar));
 			getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 			getSupportActionBar().setHomeAsUpIndicator(R.drawable.ic_done_white_24dp);
 			Views.inject(this);

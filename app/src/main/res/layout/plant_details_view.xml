@@ -11,69 +11,6 @@
 		android:layout_height="wrap_content"
 		android:orientation="vertical"
 	>
-		<LinearLayout
-			android:layout_width="match_parent"
-			android:layout_height="wrap_content"
-			android:id="@+id/action_container"
-			android:orientation="horizontal"
-			android:elevation="4dp"
-			android:layout_marginBottom="12dp"
-			android:divider="@drawable/vertical_full_divider"
-			android:showDividers="middle"
-			android:dividerPadding="8dp"
-			android:padding="0dp"
-			android:visibility="gone"
-			style="@style/PaperCard"
-		>
-			<TextView
-				android:layout_width="0dp"
-				android:layout_height="match_parent"
-				android:id="@+id/feeding"
-				android:layout_weight="1"
-				android:layout_gravity="center_vertical"
-				android:gravity="center"
-				android:paddingBottom="16dp"
-				android:paddingTop="16dp"
-				android:text="@string/menu_feed"
-			/>
-
-			<TextView
-				android:layout_width="0dp"
-				android:layout_height="match_parent"
-				android:id="@+id/action"
-				android:layout_weight="1"
-				android:layout_gravity="center_vertical"
-				android:gravity="center"
-				android:paddingBottom="16dp"
-				android:paddingTop="16dp"
-				android:text="@string/menu_action"
-			/>
-
-			<TextView
-				android:layout_width="0dp"
-				android:layout_height="match_parent"
-				android:id="@+id/note"
-				android:layout_weight="1"
-				android:layout_gravity="center_vertical"
-				android:gravity="center"
-				android:paddingBottom="16dp"
-				android:paddingTop="16dp"
-				android:text="@string/menu_note"
-			/>
-
-			<TextView
-				android:layout_width="0dp"
-				android:layout_height="match_parent"
-				android:id="@+id/photo"
-				android:layout_weight="1"
-				android:layout_gravity="center_vertical"
-				android:gravity="center"
-				android:paddingBottom="16dp"
-				android:paddingTop="16dp"
-				android:text="@string/menu_photo"
-			/>
-		</LinearLayout>
-
 		<androidx.cardview.widget.CardView
 			android:layout_width="match_parent"
 			android:layout_height="wrap_content"
@@ -258,17 +195,15 @@
 				android:orientation="vertical"
 				android:divider="@drawable/full_divider"
 				android:showDividers="middle"
-				android:layout_marginTop="16dp"
+				android:layout_marginTop="8dp"
 			>
 				<LinearLayout
 					android:layout_width="match_parent"
 					android:layout_height="wrap_content"
 					android:id="@+id/plant_date_container"
 					android:orientation="vertical"
-					android:paddingLeft="16dp"
-					android:paddingRight="16dp"
-					android:paddingTop="8dp"
-					android:paddingBottom="16dp"
+					android:padding="16dp"
+					android:background="?selectableItemBackground"
 				>
 					<TextView
 						android:layout_width="match_parent"
@@ -292,6 +227,7 @@
 					android:id="@+id/plant_medium_container"
 					android:orientation="vertical"
 					android:padding="16dp"
+					android:background="?selectableItemBackground"
 				>
 					<TextView
 						android:layout_width="match_parent"
@@ -384,16 +320,14 @@
 				android:orientation="vertical"
 				android:divider="@drawable/full_divider"
 				android:showDividers="middle"
-				android:layout_marginTop="16dp"
+				android:layout_marginTop="8dp"
+				android:background="?selectableItemBackground"
 			>
 				<LinearLayout
 					android:layout_width="match_parent"
 					android:layout_height="wrap_content"
 					android:orientation="vertical"
-					android:paddingLeft="16dp"
-					android:paddingRight="16dp"
-					android:paddingTop="8dp"
-					android:paddingBottom="16dp"
+					android:padding="16dp"
 				>
 					<TextView
 						android:layout_width="match_parent"

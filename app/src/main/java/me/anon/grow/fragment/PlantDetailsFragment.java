@@ -2,8 +2,6 @@ package me.anon.grow.fragment;
 
 import android.Manifest;
 import android.app.Activity;
-import androidx.appcompat.app.AlertDialog;
-import androidx.fragment.app.Fragment;
 import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.DialogInterface;
@@ -19,9 +17,6 @@ import android.os.Environment;
 import android.os.ParcelFileDescriptor;
 import android.preference.PreferenceManager;
 import android.provider.MediaStore;
-import androidx.annotation.Nullable;
-import androidx.core.content.FileProvider;
-import androidx.cardview.widget.CardView;
 import android.text.Html;
 import android.text.TextUtils;
 import android.view.LayoutInflater;
@@ -58,6 +53,11 @@ import java.util.Date;
 import java.util.Locale;
 import java.util.UUID;
 
+import androidx.annotation.Nullable;
+import androidx.appcompat.app.AlertDialog;
+import androidx.cardview.widget.CardView;
+import androidx.core.content.FileProvider;
+import androidx.fragment.app.Fragment;
 import me.anon.controller.provider.PlantWidgetProvider;
 import me.anon.grow.AddWateringActivity;
 import me.anon.grow.BuildConfig;
@@ -155,6 +155,9 @@ public class PlantDetailsFragment extends Fragment
 	@Override public void onActivityCreated(Bundle savedInstanceState)
 	{
 		super.onActivityCreated(savedInstanceState);
+
+		((PlantDetailsActivity)getActivity()).toolbarLayout.addView(LayoutInflater.from(getActivity()).inflate(R.layout.action_buttons_stub, ((PlantDetailsActivity)getActivity()).toolbarLayout, false));
+		Views.inject(this, ((PlantDetailsActivity)getActivity()).toolbarLayout);
 
 		if (getArguments() != null)
 		{

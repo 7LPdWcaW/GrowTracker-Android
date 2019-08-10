@@ -7,7 +7,7 @@
 		<item name="colorPrimaryDark">#387E3B</item>
 		<item name="colorAccent">#2196F3</item>
 		<item name="colorControlNormal">#4AA74E</item>
-		<item name="colorSurface">#ffffff</item>
+		<!--<item name="colorSurface">#ffffff</item>-->
 
 		<item name="actionModeBackground">@color/blue</item>
 		<item name="android:actionModeBackground">@color/blue</item>
@@ -37,7 +37,7 @@
 	</style>
 
 	<style name="ActionMode" parent="@style/Widget.AppCompat.ActionMode">
-    	<item name="android:background">@color/blue</item>
+		<item name="android:background">@color/blue</item>
 	</style>
 
 	<style name="fullscreen" parent="Theme.AppCompat">
