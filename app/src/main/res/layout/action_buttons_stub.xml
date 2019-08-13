@@ -22,7 +22,7 @@
 		android:paddingBottom="16dp"
 		android:paddingTop="16dp"
 		android:text="@string/menu_feed"
-		android:textColor="?colorOnPrimary"
+		android:textColor="?android:actionMenuTextColor"
 		android:background="?selectableItemBackground"
 	/>
 
@@ -36,7 +36,7 @@
 		android:paddingBottom="16dp"
 		android:paddingTop="16dp"
 		android:text="@string/menu_action"
-		android:textColor="?colorOnPrimary"
+		android:textColor="?android:actionMenuTextColor"
 		android:background="?selectableItemBackground"
 	/>
 
@@ -50,7 +50,7 @@
 		android:paddingBottom="16dp"
 		android:paddingTop="16dp"
 		android:text="@string/menu_note"
-		android:textColor="?colorOnPrimary"
+		android:textColor="?android:actionMenuTextColor"
 		android:background="?selectableItemBackground"
 	/>
 
@@ -64,7 +64,7 @@
 		android:paddingBottom="16dp"
 		android:paddingTop="16dp"
 		android:text="@string/menu_photo"
-		android:textColor="?colorOnPrimary"
+		android:textColor="?android:actionMenuTextColor"
 		android:background="?selectableItemBackground"
 	/>
 </LinearLayout>

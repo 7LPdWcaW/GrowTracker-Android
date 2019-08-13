@@ -232,7 +232,7 @@
 							android:id="@+id/date_now"
 							android:layout_alignParentEnd="true"
 							android:text="@string/date_now"
-							style="@style/Widget.AppCompat.Button.Borderless"
+							style="@style/Widget.MaterialComponents.Button.TextButton"
 						/>
 
 						<TextView

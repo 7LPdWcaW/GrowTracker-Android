@@ -12,7 +12,7 @@
 				android:height="1dp"
 			/>
 
-			<solid android:color="#7f000000" />
+			<solid android:color="#ff333333" />
 		</shape>
 	</item>
 </layer-list>

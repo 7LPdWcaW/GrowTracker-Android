@@ -20,7 +20,6 @@
 			android:id="@+id/toolbar"
 			android:fitsSystemWindows="true"
 			app:theme="@style/Toolbar"
-			app:popupTheme="@style/ThemeOverlay.AppCompat.Light"
 		/>
 	</com.google.android.material.appbar.AppBarLayout>
 

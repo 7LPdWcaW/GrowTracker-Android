@@ -1,8 +1,13 @@
 package me.anon.grow;
 
 import android.content.Intent;
-import androidx.appcompat.app.AppCompatActivity;
+import android.os.Bundle;
 import android.text.TextUtils;
+
+import androidx.annotation.Nullable;
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.app.AppCompatDelegate;
+import androidx.preference.PreferenceManager;
 
 /**
  * Base activity that sends broadcast events on resume
@@ -27,6 +32,14 @@ public class BaseActivity extends AppCompatActivity
 		}
 
 		return false;
+	}
+
+	@Override protected void onCreate(@Nullable Bundle savedInstanceState)
+	{
+		super.onCreate(savedInstanceState);
+
+		boolean forceDark = PreferenceManager.getDefaultSharedPreferences(this).getBoolean("force_dark", false);
+		AppCompatDelegate.setDefaultNightMode(forceDark ? AppCompatDelegate.MODE_NIGHT_YES : AppCompatDelegate.MODE_NIGHT_FOLLOW_SYSTEM);
 	}
 
 	@Override protected void onResume()
