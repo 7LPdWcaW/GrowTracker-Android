@@ -12,6 +12,7 @@
 		android:layout_height="wrap_content"
 		android:id="@+id/toolbar_layout"
 		app:elevation="4dp"
+		android:theme="@style/Toolbar"
 		style="@style/Widget.MaterialComponents.ActionBar.Primary"
 	>
 		<com.google.android.material.appbar.MaterialToolbar
@@ -19,11 +20,11 @@
 			android:layout_height="wrap_content"
 			android:id="@+id/toolbar"
 			android:fitsSystemWindows="true"
-			app:theme="@style/Toolbar"
+			app:popupTheme="@style/ThemeOverlay.AppCompat.DayNight"
 		/>
 	</com.google.android.material.appbar.AppBarLayout>
 
-	<FrameLayout
+	<androidx.coordinatorlayout.widget.CoordinatorLayout
 		android:layout_width="match_parent"
 		android:layout_height="match_parent"
 		android:id="@+id/fragment_holder"

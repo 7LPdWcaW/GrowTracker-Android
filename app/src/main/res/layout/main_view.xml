@@ -2,38 +2,12 @@
 
 <androidx.drawerlayout.widget.DrawerLayout
 	xmlns:android="http://schemas.android.com/apk/res/android"
-	xmlns:app="http://schemas.android.com/apk/res-auto"
 	android:layout_width="match_parent"
 	android:layout_height="match_parent"
 	android:id="@+id/drawer_layout"
 	android:fitsSystemWindows="false"
 >
-	<LinearLayout
-		android:layout_width="match_parent"
-		android:layout_height="match_parent"
-		android:orientation="vertical"
-	>
-		<com.google.android.material.appbar.AppBarLayout
-			android:layout_width="match_parent"
-			android:layout_height="wrap_content"
-			android:id="@+id/toolbar_layout"
-			style="@style/Widget.MaterialComponents.ActionBar.Primary"
-		>
-			<com.google.android.material.appbar.MaterialToolbar
-				android:layout_width="match_parent"
-				android:layout_height="wrap_content"
-				android:id="@+id/toolbar"
-				android:fitsSystemWindows="true"
-				app:theme="@style/Toolbar"
-			/>
-		</com.google.android.material.appbar.AppBarLayout>
-
-		<FrameLayout
-			android:layout_width="match_parent"
-			android:layout_height="match_parent"
-			android:id="@+id/fragment_holder"
-		/>
-	</LinearLayout>
+	<include layout="@layout/fragment_holder" />
 
 	<com.google.android.material.navigation.NavigationView
 		android:layout_width="wrap_content"
