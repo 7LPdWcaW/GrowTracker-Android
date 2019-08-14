@@ -20,6 +20,10 @@
 		<item name="windowActionModeOverlay">true</item>
 	</style>
 
+	<style name="AppThemeLaunch" parent="Theme.MaterialComponents.NoActionBar">
+		<item name="android:background">@drawable/light_window</item>
+	</style>
+
 	<style name="Theme.Transparent" parent="Theme.AppCompat">
 		<item name="android:windowIsTranslucent">true</item>
 		<item name="android:windowBackground">@android:color/transparent</item>

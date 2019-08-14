@@ -7,4 +7,8 @@
 		<item name="colorControlNormal">#555555</item>
 		<item name="android:windowBackground">@drawable/dark_window</item>
 	</style>
+
+	<style name="AppThemeLaunch" parent="Theme.MaterialComponents.NoActionBar">
+		<item name="android:background">@drawable/dark_window</item>
+	</style>
 </resources>

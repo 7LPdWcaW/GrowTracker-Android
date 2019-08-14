@@ -1,6 +1,5 @@
 package me.anon.grow;
 
-import android.app.Activity;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.net.Uri;
@@ -15,6 +14,7 @@ import java.io.File;
 import java.util.ArrayList;
 
 import androidx.appcompat.app.AlertDialog;
+import androidx.appcompat.app.AppCompatDelegate;
 import androidx.core.content.FileProvider;
 import androidx.fragment.app.FragmentActivity;
 import me.anon.grow.fragment.PinDialogFragment;
@@ -29,6 +29,9 @@ public class BootActivity extends FragmentActivity
 
 	@Override protected void onCreate(Bundle savedInstanceState)
 	{
+		boolean forceDark = androidx.preference.PreferenceManager.getDefaultSharedPreferences(this).getBoolean("force_dark", false);
+		AppCompatDelegate.setDefaultNightMode(forceDark ? AppCompatDelegate.MODE_NIGHT_YES : AppCompatDelegate.MODE_NIGHT_FOLLOW_SYSTEM);
+
 		super.onCreate(savedInstanceState);
 
 		final String[] exceptions = ExceptionHandler.getInstance().searchForStackTraces();

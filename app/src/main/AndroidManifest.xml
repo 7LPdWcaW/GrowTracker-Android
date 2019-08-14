@@ -40,7 +40,7 @@
 			/>
 		</receiver>
 
-		<activity android:name=".BootActivity" android:finishOnTaskLaunch="true">
+		<activity android:name=".BootActivity" android:finishOnTaskLaunch="true" android:theme="@style/AppThemeLaunch">
 			<intent-filter>
 				<category android:name="android.intent.category.LAUNCHER" />
 				<action android:name="android.intent.action.MAIN" />
