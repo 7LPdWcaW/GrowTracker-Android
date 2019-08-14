@@ -14,16 +14,16 @@ import java.io.File;
 import java.util.ArrayList;
 
 import androidx.appcompat.app.AlertDialog;
+import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.app.AppCompatDelegate;
 import androidx.core.content.FileProvider;
-import androidx.fragment.app.FragmentActivity;
 import me.anon.grow.fragment.PinDialogFragment;
 import me.anon.lib.handler.ExceptionHandler;
 import me.anon.lib.helper.EncryptionHelper;
 import me.anon.lib.helper.MigrationHelper;
 import me.anon.lib.manager.PlantManager;
 
-public class BootActivity extends FragmentActivity
+public class BootActivity extends AppCompatActivity
 {
 	private boolean sentIntent = false;
 
@@ -31,6 +31,7 @@ public class BootActivity extends FragmentActivity
 	{
 		boolean forceDark = androidx.preference.PreferenceManager.getDefaultSharedPreferences(this).getBoolean("force_dark", false);
 		AppCompatDelegate.setDefaultNightMode(forceDark ? AppCompatDelegate.MODE_NIGHT_YES : AppCompatDelegate.MODE_NIGHT_FOLLOW_SYSTEM);
+		AppCompatDelegate.create(this, null).applyDayNight();
 
 		super.onCreate(savedInstanceState);
 

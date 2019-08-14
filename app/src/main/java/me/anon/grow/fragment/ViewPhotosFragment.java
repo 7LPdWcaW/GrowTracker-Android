@@ -2,8 +2,6 @@ package me.anon.grow.fragment;
 
 import android.Manifest;
 import android.app.Activity;
-import androidx.appcompat.app.AlertDialog;
-import androidx.fragment.app.Fragment;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.pm.PackageManager;
@@ -12,14 +10,9 @@ import android.os.AsyncTask;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.Environment;
+import android.os.Handler;
 import android.os.ParcelFileDescriptor;
 import android.provider.MediaStore;
-import androidx.annotation.Nullable;
-import androidx.core.content.FileProvider;
-import androidx.appcompat.app.AppCompatActivity;
-import androidx.appcompat.view.ActionMode;
-import androidx.recyclerview.widget.GridLayoutManager;
-import androidx.recyclerview.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -39,6 +32,14 @@ import java.io.OutputStream;
 import java.util.ArrayList;
 import java.util.List;
 
+import androidx.annotation.Nullable;
+import androidx.appcompat.app.AlertDialog;
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.view.ActionMode;
+import androidx.core.content.FileProvider;
+import androidx.fragment.app.Fragment;
+import androidx.recyclerview.widget.GridLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
 import me.anon.controller.adapter.ImageAdapter;
 import me.anon.controller.adapter.SectionedGridRecyclerViewAdapter;
 import me.anon.grow.BuildConfig;
@@ -132,6 +133,7 @@ public class ViewPhotosFragment extends Fragment
 					@Override public boolean onCreateActionMode(ActionMode mode, Menu menu)
 					{
 						getActivity().getMenuInflater().inflate(R.menu.photo_menu, menu);
+						getActivity().findViewById(R.id.toolbar_layout).setVisibility(View.GONE);
 						adapter.setInActionMode(true);
 						adapter.notifyDataSetChanged();
 
@@ -203,6 +205,20 @@ public class ViewPhotosFragment extends Fragment
 					{
 						adapter.setInActionMode(false);
 						adapter.notifyDataSetChanged();
+						new Handler().postDelayed(new Runnable()
+						{
+							@Override public void run()
+							{
+								getActivity().runOnUiThread(new Runnable()
+								{
+									@Override public void run()
+									{
+										getActivity().findViewById(R.id.toolbar_layout).setVisibility(View.VISIBLE);
+									}
+								});
+							}
+						}, 400);
+
 					}
 				});
 

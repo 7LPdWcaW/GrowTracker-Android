@@ -231,7 +231,6 @@ public class PlantDetailsFragment extends Fragment
 		if (lastWater != null)
 		{
 			lastFeeding.setVisibility(View.VISIBLE);
-			lastFeeding.setCardBackgroundColor(0x9ABBDEFB);
 
 			lastFeedingSummary.setText(Html.fromHtml(lastWater.getSummary(getActivity())));
 

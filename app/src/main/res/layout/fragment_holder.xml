@@ -12,6 +12,7 @@
 		android:layout_height="wrap_content"
 		android:id="@+id/toolbar_layout"
 		app:elevation="4dp"
+		android:elevation="4dp"
 		android:theme="@style/Toolbar"
 		style="@style/Widget.MaterialComponents.ActionBar.Primary"
 	>

@@ -1,9 +1,6 @@
 package me.anon.lib.helper;
 
 import android.graphics.Color;
-import androidx.annotation.NonNull;
-import androidx.core.graphics.ColorUtils;
-import androidx.core.util.Pair;
 import android.widget.TextView;
 
 import com.github.mikephil.charting.charts.LineChart;
@@ -26,7 +23,11 @@ import java.util.ListIterator;
 import java.util.Random;
 import java.util.Set;
 
+import androidx.annotation.NonNull;
+import androidx.core.graphics.ColorUtils;
+import androidx.core.util.Pair;
 import me.anon.grow.R;
+import me.anon.lib.ext.IntUtilsKt;
 import me.anon.model.Action;
 import me.anon.model.Additive;
 import me.anon.model.Plant;
@@ -52,13 +53,13 @@ public class StatsHelper
 		chart.setGridBackgroundColor(0x00ffffff);
 		chart.getAxisLeft().setDrawGridLines(false);
 		chart.getXAxis().setDrawGridLines(false);
-		chart.getLegend().setTextColor(0xff666666);
+		chart.getLegend().setTextColor(IntUtilsKt.resolveColor(android.R.attr.textColorSecondary, chart.getContext()));
 		chart.getLegend().setTextSize(12f);
 		chart.getXAxis().setPosition(XAxis.XAxisPosition.BOTTOM);
-		chart.getXAxis().setTextColor(0xff666666);
+		chart.getXAxis().setTextColor(IntUtilsKt.resolveColor(android.R.attr.textColorSecondary, chart.getContext()));
 		chart.getXAxis().setTextSize(12f);
 		chart.getAxisRight().setEnabled(false);
-		chart.getAxisLeft().setTextColor(0xff666666);
+		chart.getAxisLeft().setTextColor(IntUtilsKt.resolveColor(android.R.attr.textColorSecondary, chart.getContext()));
 		chart.getAxisLeft().setTextSize(12f);
 		chart.getAxisLeft().setValueFormatter(new YAxisValueFormatter()
 		{
@@ -199,7 +200,7 @@ public class StatsHelper
 
 		LineData lineData = new LineData(xVals, dataSets);
 		lineData.setValueFormatter(StatsHelper.formatter);
-		lineData.setValueTextColor(0xff666666);
+		lineData.setValueTextColor(IntUtilsKt.resolveColor(android.R.attr.textColorSecondary, chart.getContext()));
 
 		styleGraph(chart);
 
