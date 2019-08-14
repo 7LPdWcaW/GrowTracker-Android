@@ -7,6 +7,9 @@ android:
   - android-28
 script:
 - "./gradlew assembleProductionRelease"
+branches:
+  only:
+  - develop
 deploy:
   provider: releases
   overwrite: true
