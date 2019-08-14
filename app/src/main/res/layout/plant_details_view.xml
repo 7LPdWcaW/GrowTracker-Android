@@ -51,7 +51,7 @@
 						android:layout_height="wrap_content"
 						android:id="@+id/last_feeding_name"
 						android:layout_centerVertical="true"
-						android:layout_toLeftOf="@id/date"
+						android:layout_toLeftOf="@id/last_feeding_date"
 						android:layout_alignParentTop="true"
 						android:layout_marginTop="12dp"
 						android:text="@string/last_watering_title"
@@ -366,6 +366,7 @@
 				android:text="@string/view_photos"
 				style="@style/SubsectionTitle"
 				android:padding="16dp"
+				android:background="?selectableItemBackground"
 			/>
 
 			<TextView
@@ -376,6 +377,7 @@
 				android:text="@string/view_history"
 				style="@style/SubsectionTitle"
 				android:padding="16dp"
+				android:background="?selectableItemBackground"
 			/>
 
 			<TextView
@@ -386,6 +388,7 @@
 				android:text="@string/view_statistics"
 				style="@style/SubsectionTitle"
 				android:padding="16dp"
+				android:background="?selectableItemBackground"
 			/>
 		</LinearLayout>
 	</LinearLayout>

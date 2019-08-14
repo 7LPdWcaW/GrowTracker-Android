@@ -1,5 +1,6 @@
 package me.anon.lib.helper;
 
+import android.content.Context;
 import android.graphics.Color;
 import android.widget.TextView;
 
@@ -24,6 +25,7 @@ import java.util.Random;
 import java.util.Set;
 
 import androidx.annotation.NonNull;
+import androidx.appcompat.view.ContextThemeWrapper;
 import androidx.core.graphics.ColorUtils;
 import androidx.core.util.Pair;
 import me.anon.grow.R;
@@ -49,17 +51,18 @@ public class StatsHelper
 
 	public static void styleGraph(LineChart chart)
 	{
+		Context context = new ContextThemeWrapper(chart.getContext(), R.style.AppTheme);
 		chart.setDrawGridBackground(false);
 		chart.setGridBackgroundColor(0x00ffffff);
 		chart.getAxisLeft().setDrawGridLines(false);
 		chart.getXAxis().setDrawGridLines(false);
-		chart.getLegend().setTextColor(IntUtilsKt.resolveColor(android.R.attr.textColorSecondary, chart.getContext()));
+		chart.getLegend().setTextColor(IntUtilsKt.resolveColor(R.attr.colorAccent, context));
 		chart.getLegend().setTextSize(12f);
 		chart.getXAxis().setPosition(XAxis.XAxisPosition.BOTTOM);
-		chart.getXAxis().setTextColor(IntUtilsKt.resolveColor(android.R.attr.textColorSecondary, chart.getContext()));
+		chart.getXAxis().setTextColor(IntUtilsKt.resolveColor(R.attr.colorAccent, context));
 		chart.getXAxis().setTextSize(12f);
 		chart.getAxisRight().setEnabled(false);
-		chart.getAxisLeft().setTextColor(IntUtilsKt.resolveColor(android.R.attr.textColorSecondary, chart.getContext()));
+		chart.getAxisLeft().setTextColor(IntUtilsKt.resolveColor(R.attr.colorAccent, context));
 		chart.getAxisLeft().setTextSize(12f);
 		chart.getAxisLeft().setValueFormatter(new YAxisValueFormatter()
 		{
@@ -86,6 +89,7 @@ public class StatsHelper
 			public void refreshContent(Entry e, Highlight highlight)
 			{
 				((TextView)findViewById(R.id.content)).setText("" + e.getVal());
+				((TextView)findViewById(R.id.content)).setTextColor(IntUtilsKt.resolveColor(R.attr.colorAccent, findViewById(R.id.content).getContext()));
 			}
 
 			@Override public int getXOffset(float xpos)
@@ -100,8 +104,11 @@ public class StatsHelper
 		});
 	}
 
-	public static void styleDataset(LineDataSet data, int colour)
+	public static void styleDataset(Context context, LineDataSet data, int colour)
 	{
+		context = new ContextThemeWrapper(context, R.style.AppTheme);
+		data.setValueTextColor(IntUtilsKt.resolveColor(R.attr.colorAccent, context));
+		data.setCircleColor(IntUtilsKt.resolveColor(R.attr.colorAccent, context));
 		data.setDrawCubic(true);
 		data.setLineWidth(2.0f);
 		data.setDrawCircleHole(true);
@@ -192,7 +199,7 @@ public class StatsHelper
 
 			String[] colours = chart.getResources().getStringArray(R.array.stats_colours);
 			ArrayList<String> namesList = new ArrayList<>(additiveNames);
-			StatsHelper.styleDataset(dataSet, dataSets.size() < colours.length ? Color.parseColor(colours[namesList.indexOf(additiveName)]) : (additiveName.hashCode() + new Random().nextInt(0xffffff)));
+			StatsHelper.styleDataset(chart.getContext(), dataSet, dataSets.size() < colours.length ? Color.parseColor(colours[namesList.indexOf(additiveName)]) : (additiveName.hashCode() + new Random().nextInt(0xffffff)));
 
 			dataSet.setValueFormatter(StatsHelper.formatter);
 			dataSets.add(dataSet);
@@ -282,13 +289,13 @@ public class StatsHelper
 		if (chart != null)
 		{
 			LineDataSet dataSet = new LineDataSet(inputVals, chart.getContext().getString(R.string.stat_input_ph));
-			styleDataset(dataSet, Color.parseColor(chart.getContext().getResources().getStringArray(R.array.stats_colours)[0]));
+			styleDataset(chart.getContext(), dataSet, Color.parseColor(chart.getContext().getResources().getStringArray(R.array.stats_colours)[0]));
 
 			LineDataSet runoffDataSet = new LineDataSet(runoffVals, chart.getContext().getString(R.string.stat_runoff_ph));
-			styleDataset(dataSet, Color.parseColor(chart.getContext().getResources().getStringArray(R.array.stats_colours)[1]));
+			styleDataset(chart.getContext(), dataSet, Color.parseColor(chart.getContext().getResources().getStringArray(R.array.stats_colours)[1]));
 
 			LineDataSet averageDataSet = new LineDataSet(averageVals, chart.getContext().getString(R.string.stat_average_ph));
-			styleDataset(dataSet, Color.parseColor(chart.getContext().getResources().getStringArray(R.array.stats_colours)[2]));
+			styleDataset(chart.getContext(), dataSet, Color.parseColor(chart.getContext().getResources().getStringArray(R.array.stats_colours)[2]));
 			averageDataSet.setValueFormatter(null);
 
 			ArrayList<LineDataSet> dataSets = new ArrayList<LineDataSet>();
@@ -379,7 +386,7 @@ public class StatsHelper
 		if (chart != null)
 		{
 			LineDataSet dataSet = new LineDataSet(vals, usingEc ? "EC" : "PPM");
-			styleDataset(dataSet, Color.parseColor(chart.getContext().getResources().getStringArray(R.array.stats_colours)[0]));
+			styleDataset(chart.getContext(), dataSet, Color.parseColor(chart.getContext().getResources().getStringArray(R.array.stats_colours)[0]));
 			styleGraph(chart);
 			chart.setMarkerView(new MarkerView(chart.getContext(), R.layout.chart_marker)
 			{
@@ -393,6 +400,7 @@ public class StatsHelper
 					}
 
 					((TextView)findViewById(R.id.content)).setText(val);
+					((TextView)findViewById(R.id.content)).setTextColor(IntUtilsKt.resolveColor(R.attr.colorAccent, findViewById(R.id.content).getContext()));
 				}
 
 				@Override public int getXOffset(float xpos)
@@ -497,7 +505,7 @@ public class StatsHelper
 		if (chart != null)
 		{
 			LineDataSet dataSet = new LineDataSet(vals, chart.getContext().getString(R.string.stat_temerature));
-			styleDataset(dataSet, Color.parseColor(chart.getContext().getResources().getStringArray(R.array.stats_colours)[0]));
+			styleDataset(chart.getContext(), dataSet, Color.parseColor(chart.getContext().getResources().getStringArray(R.array.stats_colours)[0]));
 
 			LineData lineData = new LineData(xVals, dataSet);
 			lineData.setValueFormatter(formatter);

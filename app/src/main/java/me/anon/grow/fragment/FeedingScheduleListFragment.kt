@@ -2,14 +2,14 @@ package me.anon.grow.fragment
 
 import android.content.Intent
 import android.os.Bundle
-import androidx.recyclerview.widget.DividerItemDecoration
-import androidx.recyclerview.widget.LinearLayoutManager
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.LinearLayout.VERTICAL
 import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.Fragment
+import androidx.recyclerview.widget.DividerItemDecoration
+import androidx.recyclerview.widget.LinearLayoutManager
 import com.esotericsoftware.kryo.Kryo
 import kotlinx.android.synthetic.main.schedule_list_view.*
 import me.anon.controller.adapter.FeedingScheduleAdapter
@@ -36,9 +36,7 @@ class FeedingScheduleListFragment : Fragment()
 		adapter.items = ScheduleManager.instance.schedules
 		recycler_view.adapter = adapter
 		recycler_view.layoutManager = LinearLayoutManager(activity)
-		recycler_view.addItemDecoration(DividerItemDecoration(activity, VERTICAL).also {
-			it.setDrawable(resources.getDrawable(R.drawable.left_inset_divider))
-		})
+		recycler_view.addItemDecoration(DividerItemDecoration(activity, VERTICAL))
 
 		adapter.onDeleteCallback = { schedule ->
 			val index = ScheduleManager.instance.schedules.indexOf(schedule)
