@@ -6,6 +6,13 @@ repositories {
 	mavenCentral()
 }
 
+def travis = System.getenv("CI") == "true"
+
+def getCommitCountTotal = { ->
+	def commitCount = "git rev-list HEAD --count".execute().text.trim()
+	return (commitCount == "") ? 0 : commitCount.toInteger()
+}
+
 android {
 	compileSdkVersion 28
 	buildToolsVersion "28.0.3"
@@ -14,8 +21,9 @@ android {
 		applicationId "me.anon.grow"
 		minSdkVersion 17
 		targetSdkVersion 28
-		versionCode 23
+		versionCode getCommitCountTotal()
 		versionName "2.5.2"
+		versionNameSuffix (travis ? "-alpha" : "")
 
 		javaCompileOptions {
 			annotationProcessorOptions {
@@ -61,6 +69,19 @@ android {
 			resValue "string", "app_name", "Dev GrowTracker"
 			applicationIdSuffix = ".debug"
 		}
+	}
+
+	signingConfigs {
+		release
+	}
+
+	if (travis)
+	{
+		// configure keystore
+		signingConfigs.release.storeFile = file("keystore.jks")
+		signingConfigs.release.storePassword = System.getenv("keystore_password")
+		signingConfigs.release.keyAlias = System.getenv("keystore_alias")
+		signingConfigs.release.keyPassword = System.getenv("keystore_alias_password")
 	}
 }
 
