@@ -38,4 +38,16 @@
 		<item>#F4D749</item>
 		<item>#F4ABAA</item>
 	</string-array>
+
+	<string-array name="settings_card_entry_values">
+		<item>0</item>
+		<item>1</item>
+		<item>2</item>
+	</string-array>
+
+	<string-array name="settings_card_entries">
+		<item>Original</item>
+		<item>Compact</item>
+		<item>Extreme</item>
+	</string-array>
 </resources>

@@ -33,6 +33,15 @@
 			app:summary="@string/settings_dark_summary"
 			android:defaultValue="false"
 		/>
+
+		<ListPreference
+			app:key="card_style"
+			app:title="@string/settings_cardstyle_title"
+			app:summary="Select card style, currently %s"
+			android:entryValues="@array/settings_card_entry_values"
+			android:entries="@array/settings_card_entries"
+			android:defaultValue="0"
+		/>
 	</PreferenceCategory>
 
 	<PreferenceCategory

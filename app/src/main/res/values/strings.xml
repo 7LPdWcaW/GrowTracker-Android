@@ -311,4 +311,5 @@
 	<string name="settings_about">About</string>
 	<string name="settings_readme">Read me</string>
 	<string name="settings_export">Export data</string>
+	<string name="settings_cardstyle_title">Card style</string>
 </resources>

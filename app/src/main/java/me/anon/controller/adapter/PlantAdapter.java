@@ -8,6 +8,7 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
+import androidx.preference.PreferenceManager;
 import androidx.recyclerview.widget.RecyclerView;
 import me.anon.grow.R;
 import me.anon.lib.Unit;
@@ -76,7 +77,14 @@ public class PlantAdapter extends RecyclerView.Adapter implements ItemTouchHelpe
 			return 0;
 		}
 
-		return 1;
+		try
+		{
+			return Integer.parseInt(PreferenceManager.getDefaultSharedPreferences(context).getString("card_style", "0")) + 1;
+		}
+		catch (NumberFormatException e)
+		{
+			return 1;
+		}
 	}
 
 	@Override public RecyclerView.ViewHolder onCreateViewHolder(ViewGroup viewGroup, int typeView)
@@ -86,10 +94,10 @@ public class PlantAdapter extends RecyclerView.Adapter implements ItemTouchHelpe
 			case 0:
 				return new RecyclerView.ViewHolder(LayoutInflater.from(viewGroup.getContext()).inflate(R.layout.empty, viewGroup, false)){};
 
-			case 3:
+			case 2:
 				return new PlantHolder(LayoutInflater.from(viewGroup.getContext()).inflate(R.layout.plant_compact_item, viewGroup, false));
 
-			case 2:
+			case 3:
 				return new PlantHolder(LayoutInflater.from(viewGroup.getContext()).inflate(R.layout.plant_extreme_item, viewGroup, false));
 
 			default:
