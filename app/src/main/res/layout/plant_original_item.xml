@@ -7,6 +7,8 @@
 	android:layout_height="wrap_content"
 	android:id="@+id/card_view"
 	android:layout_gravity="center"
+	android:clickable="true"
+	android:focusable="true"
 	app:cardElevation="2dp"
 	app:cardCornerRadius="4dp"
 	android:layout_marginBottom="8dp"
@@ -18,7 +20,7 @@
 	>
 		<RelativeLayout
 			android:layout_width="match_parent"
-			android:layout_height="148dp"
+			android:layout_height="wrap_content"
 			android:background="#ff000000"
 		>
 			<ImageView
@@ -27,10 +29,12 @@
 				android:id="@+id/image"
 				android:layout_gravity="center"
 				android:scaleType="centerCrop"
+				android:layout_alignBottom="@+id/summary_container"
 				android:layout_alignLeft="@+id/summary_container"
 				android:layout_alignRight="@+id/summary_container"
-				android:maxHeight="148dp"
-				android:alpha="0.5"
+				android:layout_alignTop="@+id/summary_container"
+				android:maxHeight="256dp"
+				android:alpha="0.8"
 			/>
 
 			<LinearLayout
@@ -39,8 +43,9 @@
 				android:id="@+id/summary_container"
 				android:orientation="vertical"
 				android:layout_gravity="center"
-				android:layout_centerInParent="true"
 				android:padding="16dp"
+				android:background="?selectableItemBackground"
+				android:duplicateParentState="true"
 			>
 				<TextView
 					android:layout_width="wrap_content"

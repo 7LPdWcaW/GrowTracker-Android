@@ -122,6 +122,9 @@
 	<string name="view_photos">View photos</string>
 	<string name="view_history">View history</string>
 	<string name="view_statistics">View statistics</string>
+	<string name="view_photos_short">Photos</string>
+	<string name="view_history_short">History</string>
+	<string name="view_statistics_short">Statistics</string>
 	<string name="filter">Filter</string>
 	<string name="planted">Planted</string>
 	<string name="germination">Germination</string>
