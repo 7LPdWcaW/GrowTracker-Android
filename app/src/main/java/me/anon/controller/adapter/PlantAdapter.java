@@ -76,7 +76,7 @@ public class PlantAdapter extends RecyclerView.Adapter implements ItemTouchHelpe
 			return 0;
 		}
 
-		return 2;
+		return 1;
 	}
 
 	@Override public RecyclerView.ViewHolder onCreateViewHolder(ViewGroup viewGroup, int typeView)
@@ -85,6 +85,9 @@ public class PlantAdapter extends RecyclerView.Adapter implements ItemTouchHelpe
 		{
 			case 0:
 				return new RecyclerView.ViewHolder(LayoutInflater.from(viewGroup.getContext()).inflate(R.layout.empty, viewGroup, false)){};
+
+			case 3:
+				return new PlantHolder(LayoutInflater.from(viewGroup.getContext()).inflate(R.layout.plant_compact_item, viewGroup, false));
 
 			case 2:
 				return new PlantHolder(LayoutInflater.from(viewGroup.getContext()).inflate(R.layout.plant_extreme_item, viewGroup, false));

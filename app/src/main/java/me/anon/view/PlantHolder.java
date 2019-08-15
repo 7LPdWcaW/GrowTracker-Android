@@ -33,6 +33,7 @@ public class PlantHolder extends RecyclerView.ViewHolder
 	private ImageView image;
 	private TextView name;
 	private TextView summary;
+	private TextView shortSummary;
 	private Button photos;
 	private Button history;
 	private Button statistic;
@@ -44,6 +45,7 @@ public class PlantHolder extends RecyclerView.ViewHolder
 		image = (ImageView)itemView.findViewById(R.id.image);
 		name = (TextView)itemView.findViewById(R.id.name);
 		summary = (TextView)itemView.findViewById(R.id.summary);
+		shortSummary = (TextView)itemView.findViewById(R.id.short_summary);
 		photos = (Button)itemView.findViewById(R.id.view_photos);
 		history = (Button)itemView.findViewById(R.id.view_history);
 		statistic = (Button)itemView.findViewById(R.id.view_statistics);
@@ -53,8 +55,17 @@ public class PlantHolder extends RecyclerView.ViewHolder
 	{
 		name.setText(plant.getName());
 
-		String summaryStr = plant.generateLongSummary(itemView.getContext());
-		summary.setText(Html.fromHtml(summaryStr));
+		if (summary != null)
+		{
+			String summaryStr = plant.generateLongSummary(itemView.getContext());
+			summary.setText(Html.fromHtml(summaryStr));
+		}
+
+		if (shortSummary != null)
+		{
+			String summaryStr = plant.generateShortSummary(itemView.getContext());
+			shortSummary.setText(Html.fromHtml(summaryStr));
+		}
 
 		if (plant.getImages() != null && plant.getImages().size() > 0)
 		{

@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 
-<androidx.cardview.widget.CardView
+<com.google.android.material.card.MaterialCardView
 	xmlns:android="http://schemas.android.com/apk/res/android"
 	xmlns:app="http://schemas.android.com/apk/res-auto"
 	android:layout_width="match_parent"
@@ -11,7 +11,7 @@
 	android:focusable="true"
 	app:cardElevation="2dp"
 	app:cardCornerRadius="4dp"
-	android:layout_marginBottom="8dp"
+	style="@style/Widget.MaterialComponents.CardView"
 >
 	<LinearLayout
 		android:layout_width="match_parent"
@@ -44,8 +44,6 @@
 				android:orientation="vertical"
 				android:layout_gravity="center"
 				android:padding="16dp"
-				android:background="?selectableItemBackground"
-				android:duplicateParentState="true"
 			>
 				<TextView
 					android:layout_width="wrap_content"
@@ -68,4 +66,4 @@
 			</LinearLayout>
 		</RelativeLayout>
 	</LinearLayout>
-</androidx.cardview.widget.CardView>
+</com.google.android.material.card.MaterialCardView>
