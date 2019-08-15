@@ -53,7 +53,7 @@
 			/>
 		</LinearLayout>
 
-		<LinearLayout
+		<androidx.constraintlayout.widget.ConstraintLayout
 			android:layout_width="match_parent"
 			android:layout_height="wrap_content"
 			android:orientation="horizontal"
@@ -63,31 +63,41 @@
 			android:layout_marginTop="8dp"
 		>
 			<com.google.android.material.button.MaterialButton
-				android:layout_width="0dp"
+				android:layout_width="wrap_content"
 				android:layout_height="wrap_content"
-				android:layout_weight="1"
-				android:id="@+id/view_photos"
-				android:text="@string/view_photos_short"
+				android:id="@+id/action_feed"
+				android:text="@string/menu_feed"
+				app:layout_constraintTop_toTopOf="parent"
+				app:layout_constraintStart_toStartOf="parent"
+				app:layout_constraintBottom_toBottomOf="parent"
 				style="@style/Widget.MaterialComponents.Button.TextButton"
 			/>
 
 			<com.google.android.material.button.MaterialButton
-				android:layout_width="0dp"
+				android:layout_width="wrap_content"
 				android:layout_height="wrap_content"
-				android:layout_weight="1"
-				android:id="@+id/view_history"
-				android:text="@string/view_history_short"
+				android:id="@+id/action_photo"
+				android:text="@string/menu_photo"
+				app:layout_constraintTop_toTopOf="parent"
+				app:layout_constraintStart_toEndOf="@id/action_feed"
+				app:layout_constraintBottom_toBottomOf="parent"
 				style="@style/Widget.MaterialComponents.Button.TextButton"
 			/>
 
-			<com.google.android.material.button.MaterialButton
-				android:layout_width="0dp"
-				android:layout_height="wrap_content"
-				android:layout_weight="1"
-				android:id="@+id/view_statistics"
-				android:text="@string/view_statistics_short"
-				style="@style/Widget.MaterialComponents.Button.TextButton"
+			<ImageView
+				android:layout_width="24dp"
+				android:layout_height="24dp"
+				android:id="@+id/action_overflow"
+				android:background="?actionBarItemBackground"
+				android:src="@drawable/ic_overflow"
+				android:tint="?android:textColorSecondary"
+				android:layout_gravity="center_vertical"
+				android:layout_marginStart="8dp"
+				android:layout_marginEnd="8dp"
+				app:layout_constraintEnd_toEndOf="parent"
+				app:layout_constraintTop_toTopOf="parent"
+				app:layout_constraintBottom_toBottomOf="parent"
 			/>
-		</LinearLayout>
+		</androidx.constraintlayout.widget.ConstraintLayout>
 	</LinearLayout>
 </com.google.android.material.card.MaterialCardView>

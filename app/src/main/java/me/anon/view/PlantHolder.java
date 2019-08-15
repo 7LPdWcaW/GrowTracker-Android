@@ -2,6 +2,8 @@ package me.anon.view;
 
 import android.content.Intent;
 import android.text.Html;
+import android.view.Gravity;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
 import android.widget.ImageView;
@@ -11,13 +13,11 @@ import com.nostra13.universalimageloader.core.ImageLoader;
 import com.nostra13.universalimageloader.core.imageaware.ImageAware;
 import com.nostra13.universalimageloader.core.imageaware.ImageViewAware;
 
+import androidx.appcompat.widget.PopupMenu;
 import androidx.recyclerview.widget.RecyclerView;
-import me.anon.grow.EventsActivity;
 import me.anon.grow.MainApplication;
 import me.anon.grow.PlantDetailsActivity;
 import me.anon.grow.R;
-import me.anon.grow.StatisticsActivity;
-import me.anon.grow.ViewPhotosActivity;
 import me.anon.lib.manager.PlantManager;
 import me.anon.model.Plant;
 
@@ -34,9 +34,9 @@ public class PlantHolder extends RecyclerView.ViewHolder
 	private TextView name;
 	private TextView summary;
 	private TextView shortSummary;
-	private Button photos;
-	private Button history;
-	private Button statistic;
+	private Button feed;
+	private Button photo;
+	private View overflow;
 
 	public PlantHolder(View itemView)
 	{
@@ -46,9 +46,9 @@ public class PlantHolder extends RecyclerView.ViewHolder
 		name = (TextView)itemView.findViewById(R.id.name);
 		summary = (TextView)itemView.findViewById(R.id.summary);
 		shortSummary = (TextView)itemView.findViewById(R.id.short_summary);
-		photos = (Button)itemView.findViewById(R.id.view_photos);
-		history = (Button)itemView.findViewById(R.id.view_history);
-		statistic = (Button)itemView.findViewById(R.id.view_statistics);
+		feed = (Button)itemView.findViewById(R.id.action_feed);
+		photo = (Button)itemView.findViewById(R.id.action_photo);
+		overflow = itemView.findViewById(R.id.action_overflow);
 	}
 
 	public void bind(Plant plant)
@@ -96,41 +96,51 @@ public class PlantHolder extends RecyclerView.ViewHolder
 			}
 		});
 
-		if (photos != null)
+		if (photo != null)
 		{
-			photos.setOnClickListener(new View.OnClickListener()
+			photo.setOnClickListener(new View.OnClickListener()
 			{
 				@Override public void onClick(View view)
 				{
-					Intent photos = new Intent(view.getContext(), ViewPhotosActivity.class);
+					Intent photos = new Intent(view.getContext(), PlantDetailsActivity.class);
 					photos.putExtra("plant_index", PlantManager.getInstance().getPlants().indexOf(plant));
 					view.getContext().startActivity(photos);
 				}
 			});
 		}
 
-		if (statistic != null)
+		if (feed != null)
 		{
-			statistic.setOnClickListener(new View.OnClickListener()
+			feed.setOnClickListener(new View.OnClickListener()
 			{
 				@Override public void onClick(View view)
 				{
-					Intent photos = new Intent(view.getContext(), StatisticsActivity.class);
+					Intent photos = new Intent(view.getContext(), PlantDetailsActivity.class);
 					photos.putExtra("plant_index", PlantManager.getInstance().getPlants().indexOf(plant));
 					view.getContext().startActivity(photos);
 				}
 			});
 		}
 
-		if (history != null)
+		if (overflow != null)
 		{
-			history.setOnClickListener(new View.OnClickListener()
+			overflow.setOnClickListener(new View.OnClickListener()
 			{
 				@Override public void onClick(View view)
 				{
-					Intent photos = new Intent(view.getContext(), EventsActivity.class);
-					photos.putExtra("plant_index", PlantManager.getInstance().getPlants().indexOf(plant));
-					view.getContext().startActivity(photos);
+					PopupMenu menu = new PopupMenu(view.getContext(), view, Gravity.BOTTOM);
+					menu.inflate(R.menu.plant_overflow);
+					menu.setOnMenuItemClickListener(new PopupMenu.OnMenuItemClickListener()
+					{
+						@Override public boolean onMenuItemClick(MenuItem item)
+						{
+
+
+							return false;
+						}
+					});
+
+					menu.show();
 				}
 			});
 		}
