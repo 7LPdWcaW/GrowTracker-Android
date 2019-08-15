@@ -1,8 +1,6 @@
 package me.anon.model;
 
 import android.content.Context;
-import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
 
 import java.util.ArrayList;
 import java.util.Comparator;
@@ -11,6 +9,8 @@ import java.util.SortedMap;
 import java.util.TreeMap;
 import java.util.UUID;
 
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 import me.anon.grow.R;
 import me.anon.lib.DateRenderer;
 import me.anon.lib.Unit;
@@ -191,7 +191,7 @@ public class Plant
 
 						if (lastWater.getRunoff() != null)
 						{
-							summary += "-> <b>" + lastWater.getRunoff() + " pH</b> ";
+							summary += "➙ <b>" + lastWater.getRunoff() + " pH</b> ";
 						}
 					}
 
@@ -268,7 +268,7 @@ public class Plant
 
 						if (lastWater.getRunoff() != null)
 						{
-							summary += "-> <b>" + lastWater.getRunoff() + " pH</b> ";
+							summary += "➙ <b>" + lastWater.getRunoff() + " pH</b> ";
 						}
 					}
 
