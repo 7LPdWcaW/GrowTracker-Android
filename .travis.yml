@@ -7,9 +7,6 @@ android:
   - android-29
 script:
 - "./gradlew assembleProductionRelease"
-branches:
-  only:
-  - develop
 deploy:
   provider: releases
   overwrite: true
@@ -21,3 +18,4 @@ deploy:
   on:
     repo: 7LPdWcaW/GrowTracker-Android
     tags: true
+    all_branches: true
