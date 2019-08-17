@@ -64,7 +64,7 @@ public class ActionSelectDialogFragment extends DialogFragment
 
 				if (vh instanceof ActionHolder)
 				{
-					((ActionHolder)vh).getCard().setBackgroundResource(0);
+					((ActionHolder)vh).getCard().setCardBackgroundColor(0);
 					((ActionHolder)vh).getCard().setContentPadding(padding, padding, padding * 2, (int)(padding * 2.5));
 				}
 			}

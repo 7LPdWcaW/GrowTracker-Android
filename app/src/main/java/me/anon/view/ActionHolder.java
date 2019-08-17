@@ -1,11 +1,12 @@
 package me.anon.view;
 
-import androidx.cardview.widget.CardView;
-import androidx.recyclerview.widget.RecyclerView;
 import android.view.View;
 import android.widget.ImageButton;
 import android.widget.TextView;
 
+import com.google.android.material.card.MaterialCardView;
+
+import androidx.recyclerview.widget.RecyclerView;
 import me.anon.grow.R;
 
 /**
@@ -17,7 +18,7 @@ import me.anon.grow.R;
  */
 public class ActionHolder extends RecyclerView.ViewHolder
 {
-	private CardView card;
+	private MaterialCardView card;
 	private TextView date;
 	private TextView fullDate;
 	private TextView dateDay;
@@ -26,7 +27,7 @@ public class ActionHolder extends RecyclerView.ViewHolder
 	private TextView summary;
 	private ImageButton overflow;
 
-	public CardView getCard()
+	public MaterialCardView getCard()
 	{
 		return card;
 	}
@@ -70,7 +71,7 @@ public class ActionHolder extends RecyclerView.ViewHolder
 	{
 		super(itemView);
 
-		card = (CardView)itemView.findViewById(R.id.card);
+		card = (MaterialCardView)itemView.findViewById(R.id.card);
 		date = (TextView)itemView.findViewById(R.id.date);
 		fullDate = (TextView)itemView.findViewById(R.id.full_date);
 		dateDay = (TextView)itemView.findViewById(R.id.date_day);

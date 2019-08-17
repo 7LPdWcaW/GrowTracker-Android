@@ -507,13 +507,19 @@ public class ActionAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>
 
 		if (onItemSelectCallback != null)
 		{
-			vh.itemView.setOnClickListener(new View.OnClickListener()
+			if (vh instanceof ActionHolder)
 			{
-				@Override public void onClick(View v)
+				((ActionHolder)vh).getCard().setClickable(true);
+				((ActionHolder)vh).getCard().setFocusable(true);
+
+				((ActionHolder)vh).getCard().setOnClickListener(new View.OnClickListener()
 				{
-					onItemSelectCallback.onItemSelected(action);
-				}
-			});
+					@Override public void onClick(View v)
+					{
+						onItemSelectCallback.onItemSelected(action);
+					}
+				});
+			}
 		}
 	}
 

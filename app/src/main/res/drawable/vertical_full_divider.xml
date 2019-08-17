@@ -8,11 +8,11 @@
 			android:shape="rectangle"
 		>
 			<size
-				android:width="0.5dp"
+				android:width="1dp"
 				android:height="1dp"
 			/>
 
-			<solid android:color="#ffcccccc" />
+			<solid android:color="#0fffffff" />
 		</shape>
 	</item>
 </layer-list>

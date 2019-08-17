@@ -194,7 +194,7 @@
 					android:layout_width="match_parent"
 					android:layout_height="wrap_content"
 					android:orientation="vertical"
-					android:divider="@drawable/full_divider"
+					android:divider="?android:listDivider"
 					android:showDividers="middle"
 					android:layout_marginTop="16dp"
 				>
@@ -338,7 +338,7 @@
 					android:layout_height="wrap_content"
 					android:id="@+id/plant_stage_container"
 					android:orientation="vertical"
-					android:divider="@drawable/full_divider"
+					android:divider="?android:listDivider"
 					android:showDividers="middle"
 					android:layout_marginTop="16dp"
 				>
@@ -376,7 +376,7 @@
 				android:orientation="vertical"
 				android:elevation="4dp"
 				android:layout_marginTop="12dp"
-				android:divider="@drawable/full_divider"
+				android:divider="?android:listDivider"
 				android:showDividers="middle"
 				android:visibility="gone"
 				style="@style/PaperCard"

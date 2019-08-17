@@ -34,7 +34,7 @@
 					android:layout_width="match_parent"
 					android:layout_height="wrap_content"
 					android:orientation="vertical"
-					android:divider="@drawable/full_divider"
+					android:divider="?android:listDivider"
 					android:showDividers="middle"
 					android:layout_marginTop="16dp"
 				>
@@ -213,7 +213,7 @@
 					android:layout_width="match_parent"
 					android:layout_height="wrap_content"
 					android:orientation="vertical"
-					android:divider="@drawable/full_divider"
+					android:divider="?android:listDivider"
 					android:showDividers="middle"
 					android:layout_marginTop="16dp"
 				>
@@ -222,10 +222,8 @@
 						android:layout_height="wrap_content"
 						android:id="@+id/date_container"
 						android:orientation="vertical"
-						android:paddingLeft="16dp"
-						android:paddingRight="16dp"
-						android:paddingTop="8dp"
-						android:paddingBottom="16dp"
+						android:padding="16dp"
+						android:background="?selectableItemBackground"
 					>
 						<Button
 							android:layout_width="wrap_content"
@@ -280,7 +278,7 @@
 					android:layout_height="wrap_content"
 					android:id="@+id/additive_container"
 					android:orientation="vertical"
-					android:divider="@drawable/left_inset_divider"
+					android:divider="?android:listDivider"
 					android:showDividers="middle"
 					android:layout_marginTop="16dp"
 				>
@@ -294,6 +292,7 @@
 						android:paddingRight="16dp"
 						android:paddingTop="18dp"
 						android:paddingBottom="18dp"
+						android:background="?selectableItemBackground"
 					/>
 				</LinearLayout>
 			</LinearLayout>
@@ -317,7 +316,7 @@
 					android:layout_width="match_parent"
 					android:layout_height="wrap_content"
 					android:orientation="vertical"
-					android:divider="@drawable/full_divider"
+					android:divider="?android:listDivider"
 					android:showDividers="middle"
 					android:layout_marginTop="16dp"
 				>
