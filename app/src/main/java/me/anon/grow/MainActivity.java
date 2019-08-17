@@ -293,7 +293,7 @@ public class MainActivity extends BaseActivity implements NavigationView.OnNavig
 		else if (item.getItemId() == R.id.all)
 		{
 			selectedItem = item.getItemId();
-			getSupportFragmentManager().beginTransaction().replace(R.id.fragment_holder, PlantListFragment.newInstance(null), TAG_FRAGMENT).commit();
+			getSupportFragmentManager().beginTransaction().replace(R.id.fragment_holder, PlantListFragment.newInstance(), TAG_FRAGMENT).commit();
 		}
 		else if (item.getItemId() >= 100 && item.getItemId() < Integer.MAX_VALUE)
 		{

@@ -312,4 +312,6 @@
 	<string name="settings_readme">Read me</string>
 	<string name="settings_export">Export data</string>
 	<string name="settings_cardstyle_title">Card style</string>
+	<string name="empty_plant_list">There are no plants to show</string>
+	<string name="empty_schedules">There are no schedules</string>
 </resources>

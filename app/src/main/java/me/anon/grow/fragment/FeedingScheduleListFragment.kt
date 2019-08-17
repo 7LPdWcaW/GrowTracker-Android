@@ -44,6 +44,7 @@ class FeedingScheduleListFragment : Fragment()
 			ScheduleManager.instance.save()
 			adapter.items = ScheduleManager.instance.schedules
 			adapter.notifyDataSetChanged()
+			checkAdapter()
 
 			SnackBar().show(activity as AppCompatActivity, R.string.schedule_deleted, R.string.undo, {
 				FabAnimator.animateUp(fab_add)
@@ -54,6 +55,7 @@ class FeedingScheduleListFragment : Fragment()
 				ScheduleManager.instance.save()
 				adapter.items = ScheduleManager.instance.schedules
 				adapter.notifyDataSetChanged()
+				checkAdapter()
 			})
 		}
 
@@ -63,6 +65,7 @@ class FeedingScheduleListFragment : Fragment()
 			ScheduleManager.instance.insert(newSchedule)
 			adapter.items = ScheduleManager.instance.schedules
 			adapter.notifyDataSetChanged()
+			checkAdapter()
 
 			SnackBar().show(activity as AppCompatActivity, R.string.schedule_copied, R.string.undo, {
 				FabAnimator.animateUp(fab_add)
@@ -73,6 +76,7 @@ class FeedingScheduleListFragment : Fragment()
 				ScheduleManager.instance.save()
 				adapter.items = ScheduleManager.instance.schedules
 				adapter.notifyDataSetChanged()
+				checkAdapter()
 			})
 		}
 
@@ -86,5 +90,21 @@ class FeedingScheduleListFragment : Fragment()
 		super.onResume()
 		adapter.items = ScheduleManager.instance.schedules
 		adapter.notifyDataSetChanged()
+
+		checkAdapter()
+	}
+
+	private fun checkAdapter()
+	{
+		if (adapter.itemCount == 0)
+		{
+			empty.visibility = View.VISIBLE
+			recycler_view.visibility = View.GONE
+		}
+		else
+		{
+			empty.visibility = View.GONE
+			recycler_view.visibility = View.VISIBLE
+		}
 	}
 }

@@ -6,62 +6,11 @@
 	android:layout_width="match_parent"
 	android:layout_height="match_parent"
 >
-	<LinearLayout
+	<androidx.constraintlayout.widget.ConstraintLayout
 		android:layout_width="match_parent"
 		android:layout_height="match_parent"
 		android:orientation="vertical"
 	>
-		<LinearLayout
-			android:layout_width="match_parent"
-			android:layout_height="wrap_content"
-			android:id="@+id/action_container"
-			android:orientation="horizontal"
-			android:background="#ffffff"
-			android:elevation="4dp"
-			android:divider="@drawable/vertical_full_divider"
-			android:showDividers="middle"
-			android:dividerPadding="8dp"
-			android:padding="0dp"
-			android:visibility="gone"
-			style="@style/PaperCard"
-		>
-			<TextView
-				android:layout_width="0dp"
-				android:layout_height="match_parent"
-				android:id="@+id/feeding"
-				android:layout_weight="1"
-				android:layout_gravity="center_vertical"
-				android:gravity="center"
-				android:paddingBottom="16dp"
-				android:paddingTop="16dp"
-				android:text="@string/action_feed"
-			/>
-
-			<TextView
-				android:layout_width="0dp"
-				android:layout_height="match_parent"
-				android:id="@+id/action"
-				android:layout_weight="1"
-				android:layout_gravity="center_vertical"
-				android:gravity="center"
-				android:paddingBottom="16dp"
-				android:paddingTop="16dp"
-				android:text="@string/action_action"
-			/>
-
-			<TextView
-				android:layout_width="0dp"
-				android:layout_height="match_parent"
-				android:id="@+id/note"
-				android:layout_weight="1"
-				android:layout_gravity="center_vertical"
-				android:gravity="center"
-				android:paddingBottom="16dp"
-				android:paddingTop="16dp"
-				android:text="@string/action_note"
-			/>
-		</LinearLayout>
-
 		<androidx.recyclerview.widget.RecyclerView
 			android:layout_width="match_parent"
 			android:layout_height="match_parent"
@@ -71,8 +20,40 @@
 			android:paddingTop="8dp"
 			android:paddingBottom="88dp"
 			android:clipToPadding="false"
+			android:visibility="gone"
+			app:layout_constraintTop_toTopOf="parent"
 		/>
-	</LinearLayout>
+
+		<LinearLayout
+			android:layout_width="wrap_content"
+			android:layout_height="wrap_content"
+			android:id="@+id/empty"
+			android:layout_gravity="center"
+			android:orientation="vertical"
+			app:layout_constraintTop_toTopOf="parent"
+			app:layout_constraintBottom_toBottomOf="parent"
+			app:layout_constraintStart_toStartOf="parent"
+			app:layout_constraintEnd_toEndOf="parent"
+		>
+			<ImageView
+				android:layout_width="256dp"
+				android:layout_height="256dp"
+				app:srcCompat="@drawable/ic_flower"
+				app:tint="?android:textColorTertiary"
+				android:alpha="0.2"
+			/>
+
+			<TextView
+				android:layout_width="wrap_content"
+				android:layout_height="wrap_content"
+				android:gravity="center_horizontal"
+				android:text="@string/empty_plant_list"
+				android:textColor="?android:textColorTertiary"
+				android:layout_marginTop="12dp"
+				android:layout_gravity="center_horizontal"
+			/>
+		</LinearLayout>
+	</androidx.constraintlayout.widget.ConstraintLayout>
 
 	<com.google.android.material.floatingactionbutton.FloatingActionButton
 		android:layout_width="wrap_content"
