@@ -1,11 +1,7 @@
 package me.anon.controller.adapter;
 
-import android.app.AlertDialog;
 import android.content.DialogInterface;
 import android.preference.PreferenceManager;
-import android.support.annotation.Nullable;
-import android.support.v7.widget.PopupMenu;
-import android.support.v7.widget.RecyclerView;
 import android.text.Html;
 import android.text.TextUtils;
 import android.view.Gravity;
@@ -28,10 +24,15 @@ import java.util.GregorianCalendar;
 import java.util.List;
 import java.util.Locale;
 
+import androidx.annotation.Nullable;
+import androidx.appcompat.app.AlertDialog;
+import androidx.appcompat.widget.PopupMenu;
+import androidx.recyclerview.widget.RecyclerView;
 import me.anon.grow.R;
 import me.anon.lib.DateRenderer;
 import me.anon.lib.TempUnit;
 import me.anon.lib.Unit;
+import me.anon.lib.ext.IntUtilsKt;
 import me.anon.lib.helper.TimeHelper;
 import me.anon.model.Action;
 import me.anon.model.EmptyAction;
@@ -313,7 +314,7 @@ public class ActionAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>
 			viewHolder.getFullDate().setText(Html.fromHtml(fullDateStr));
 			viewHolder.getDate().setText(Html.fromHtml(dateStr));
 			viewHolder.getSummary().setVisibility(View.GONE);
-			viewHolder.getCard().setCardBackgroundColor(0xffffffff);
+			viewHolder.getCard().setCardBackgroundColor(IntUtilsKt.resolveColor(R.attr.colorSurface, viewHolder.itemView.getContext()));
 
 			String summary = "";
 			if (action.getClass() == Water.class)
@@ -330,7 +331,7 @@ public class ActionAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>
 			else if (action instanceof NoteAction)
 			{
 				viewHolder.getName().setText(R.string.note);
-				viewHolder.getCard().setCardBackgroundColor(0xffffffff);
+				viewHolder.getCard().setCardBackgroundColor(IntUtilsKt.resolveColor(R.attr.colorSurface, viewHolder.itemView.getContext()));
 			}
 			else if (action instanceof StageChange)
 			{
@@ -506,13 +507,19 @@ public class ActionAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>
 
 		if (onItemSelectCallback != null)
 		{
-			vh.itemView.setOnClickListener(new View.OnClickListener()
+			if (vh instanceof ActionHolder)
 			{
-				@Override public void onClick(View v)
+				((ActionHolder)vh).getCard().setClickable(true);
+				((ActionHolder)vh).getCard().setFocusable(true);
+
+				((ActionHolder)vh).getCard().setOnClickListener(new View.OnClickListener()
 				{
-					onItemSelectCallback.onItemSelected(action);
-				}
-			});
+					@Override public void onClick(View v)
+					{
+						onItemSelectCallback.onItemSelected(action);
+					}
+				});
+			}
 		}
 	}
 

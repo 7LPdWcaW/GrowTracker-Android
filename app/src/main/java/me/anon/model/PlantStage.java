@@ -1,7 +1,7 @@
 package me.anon.model;
 
+import androidx.annotation.Nullable;
 import android.content.Context;
-import android.support.annotation.Nullable;
 
 import me.anon.grow.R;
 

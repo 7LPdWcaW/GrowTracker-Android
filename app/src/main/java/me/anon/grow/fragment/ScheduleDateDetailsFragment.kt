@@ -1,7 +1,6 @@
 package me.anon.grow.fragment
 
 import android.app.Activity
-import android.app.Fragment
 import android.os.Bundle
 import android.text.Editable
 import android.text.TextUtils
@@ -12,6 +11,7 @@ import android.view.ViewGroup
 import android.widget.AdapterView
 import android.widget.ArrayAdapter
 import android.widget.TextView
+import androidx.fragment.app.Fragment
 import kotlinx.android.synthetic.main.schedule_date_details_view.*
 import me.anon.grow.R
 import me.anon.lib.Unit
@@ -41,15 +41,15 @@ class ScheduleDateDetailsFragment : Fragment()
 	private val selectedMeasurementUnit: Unit by lazy { Unit.getSelectedMeasurementUnit(activity); }
 	private val selectedDeliveryUnit: Unit by lazy { Unit.getSelectedDeliveryUnit(activity); }
 
-	override fun onCreateView(inflater: LayoutInflater?, container: ViewGroup?, savedInstanceState: Bundle?): View
+	override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View?
 		= inflater?.inflate(R.layout.schedule_date_details_view, container, false) ?: View(activity)
 
 	override fun onActivityCreated(savedInstanceState: Bundle?)
 	{
 		super.onActivityCreated(savedInstanceState)
 
-		to_stage.adapter = ArrayAdapter<String>(activity, android.R.layout.simple_list_item_1, PlantStage.values().map { getString(it.printString) }.toTypedArray())
-		from_stage.adapter = ArrayAdapter<String>(activity, android.R.layout.simple_list_item_1, PlantStage.values().map { getString(it.printString) }.toTypedArray())
+		to_stage.adapter = ArrayAdapter<String>(activity!!, android.R.layout.simple_list_item_1, PlantStage.values().map { getString(it.printString) }.toTypedArray())
+		from_stage.adapter = ArrayAdapter<String>(activity!!, android.R.layout.simple_list_item_1, PlantStage.values().map { getString(it.printString) }.toTypedArray())
 
 		from_stage.onItemSelectedListener = object: AdapterView.OnItemSelectedListener
 		{
@@ -140,8 +140,8 @@ class ScheduleDateDetailsFragment : Fragment()
 				}
 			}
 
-			activity.setResult(Activity.RESULT_OK)
-			activity.finish()
+			activity?.setResult(Activity.RESULT_OK)
+			activity?.finish()
 		}
 	}
 
@@ -167,9 +167,9 @@ class ScheduleDateDetailsFragment : Fragment()
 
 	private fun onNewAdditiveClick(view: View)
 	{
-		val currentFocus = activity.currentFocus
+		val currentFocus = activity?.currentFocus
 		val currentTag = view.tag
-		val fm = fragmentManager
+		val fm = childFragmentManager
 		val addAdditiveDialogFragment = AddAdditiveDialogFragment(if (view.tag is Additive) view.tag as Additive else null)
 		addAdditiveDialogFragment.setOnAdditiveSelectedListener(object : AddAdditiveDialogFragment.OnAdditiveSelectedListener
 		{

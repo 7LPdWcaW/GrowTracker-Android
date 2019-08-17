@@ -1,61 +1,69 @@
 <?xml version="1.0" encoding="utf-8"?>
 
-<android.support.constraint.ConstraintLayout
+<com.google.android.material.card.MaterialCardView
 	xmlns:android="http://schemas.android.com/apk/res/android"
 	xmlns:app="http://schemas.android.com/apk/res-auto"
 	android:layout_width="match_parent"
 	android:layout_height="wrap_content"
-	android:paddingLeft="16dp"
-	android:paddingRight="16dp"
-	android:paddingTop="18dp"
-	android:paddingBottom="18dp"
-	android:background="?attr/selectableItemBackground"
+	app:cardBackgroundColor="@android:color/transparent"
+	app:cardElevation="0dp"
+	style="@style/Widget.MaterialComponents.CardView"
 >
-	<ImageView
-		android:layout_width="wrap_content"
+	<androidx.constraintlayout.widget.ConstraintLayout
+		android:layout_width="match_parent"
 		android:layout_height="wrap_content"
-		android:id="@+id/delete"
-		android:src="@drawable/ic_delete"
-		android:padding="12dp"
-		android:tint="#666666"
-		app:layout_constraintTop_toTopOf="parent"
-		app:layout_constraintBottom_toBottomOf="parent"
-		app:layout_constraintEnd_toEndOf="parent"
-	/>
-
-	<ImageView
-		android:layout_width="wrap_content"
-		android:layout_height="wrap_content"
-		android:id="@+id/copy"
-		android:padding="12dp"
-		android:tint="#666666"
-		app:srcCompat="@drawable/ic_content_copy_black_24dp"
-		app:layout_constraintTop_toTopOf="parent"
-		app:layout_constraintBottom_toBottomOf="parent"
-		app:layout_constraintEnd_toStartOf="@id/delete"
-	/>
-
-	<LinearLayout
-		android:layout_width="0dp"
-		android:layout_height="wrap_content"
-		android:orientation="vertical"
-		app:layout_constraintStart_toStartOf="parent"
-		app:layout_constraintTop_toTopOf="parent"
-		app:layout_constraintBottom_toBottomOf="parent"
-		app:layout_constraintEnd_toStartOf="@id/copy"
+		android:paddingLeft="16dp"
+		android:paddingRight="16dp"
+		android:paddingTop="18dp"
+		android:paddingBottom="18dp"
 	>
-		<TextView
+		<ImageView
 			android:layout_width="wrap_content"
 			android:layout_height="wrap_content"
-			android:id="@+id/title"
-			android:textStyle="bold"
+			android:id="@+id/delete"
+			app:srcCompat="@drawable/ic_delete"
+			app:tint="?android:textColorTertiary"
+			android:padding="12dp"
+			app:layout_constraintTop_toTopOf="parent"
+			app:layout_constraintBottom_toBottomOf="parent"
+			app:layout_constraintEnd_toEndOf="parent"
 		/>
 
-		<TextView
+		<ImageView
 			android:layout_width="wrap_content"
 			android:layout_height="wrap_content"
-			android:id="@+id/additives"
-			android:layout_marginTop="2dp"
+			android:id="@+id/copy"
+			android:padding="12dp"
+			app:tint="?android:textColorSecondary"
+			app:srcCompat="@drawable/ic_content_copy_black_24dp"
+			app:layout_constraintTop_toTopOf="parent"
+			app:layout_constraintBottom_toBottomOf="parent"
+			app:layout_constraintEnd_toStartOf="@id/delete"
 		/>
-	</LinearLayout>
-</android.support.constraint.ConstraintLayout>
+
+		<LinearLayout
+			android:layout_width="0dp"
+			android:layout_height="wrap_content"
+			android:orientation="vertical"
+			app:layout_constraintStart_toStartOf="parent"
+			app:layout_constraintTop_toTopOf="parent"
+			app:layout_constraintBottom_toBottomOf="parent"
+			app:layout_constraintEnd_toStartOf="@id/copy"
+		>
+			<TextView
+				android:layout_width="wrap_content"
+				android:layout_height="wrap_content"
+				android:id="@+id/title"
+				android:textStyle="bold"
+			/>
+
+			<TextView
+				android:layout_width="wrap_content"
+				android:layout_height="wrap_content"
+				android:id="@+id/additives"
+				android:layout_marginTop="2dp"
+				android:layout_marginStart="4dp"
+			/>
+		</LinearLayout>
+	</androidx.constraintlayout.widget.ConstraintLayout>
+</com.google.android.material.card.MaterialCardView>

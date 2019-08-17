@@ -1,18 +1,27 @@
 <resources>
-	<style name="AppTheme" parent="Theme.AppCompat.Light.NoActionBar">
+	<style name="AppTheme" parent="Theme.MaterialComponents.DayNight.NoActionBar">
 		<item name="android:colorPrimary">#4AA74E</item>
 		<item name="android:colorPrimaryDark">#387E3B</item>
 
 		<item name="colorPrimary">#4AA74E</item>
 		<item name="colorPrimaryDark">#387E3B</item>
+		<item name="colorAccent">#2196F3</item>
+		<item name="colorSecondary">#ffb71c1c</item>
+		<item name="colorControlNormal">#4AA74E</item>
+		<item name="colorOnSecondary">#ffffff</item>
 
-		<item name="actionModeBackground">@color/blue</item>
-		<item name="android:actionModeBackground">@color/blue</item>
+		<item name="actionModeBackground">?colorPrimary</item>
+		<item name="android:actionModeBackground">?colorPrimary</item>
 
-		<item name="actionModeStyle">@style/ActionMode</item>
-		<item name="android:actionModeStyle">@style/ActionMode</item>
+		<!--<item name="actionModeStyle">@style/ActionMode</item>-->
+		<!--<item name="android:actionModeStyle">@style/ActionMode</item>-->
+		<item name="android:windowBackground">@drawable/light_window</item>
 
 		<item name="windowActionModeOverlay">true</item>
+	</style>
+
+	<style name="AppThemeLaunch" parent="Theme.AppCompat.NoActionBar">
+		<item name="android:background">@drawable/dark_window</item>
 	</style>
 
 	<style name="Theme.Transparent" parent="Theme.AppCompat">
@@ -34,7 +43,7 @@
 	</style>
 
 	<style name="ActionMode" parent="@style/Widget.AppCompat.ActionMode">
-    	<item name="android:background">@color/blue</item>
+		<item name="android:background">@color/blue</item>
 	</style>
 
 	<style name="fullscreen" parent="Theme.AppCompat">
@@ -45,7 +54,7 @@
 	</style>
 
 	<style name="SectionTitle">
-		<item name="android:textColor">#ABA39B</item>
+		<item name="android:textColor">?colorAccent</item>
 		<item name="android:textSize">14sp</item>
 		<item name="android:fontFamily">sans-serif-medium</item>
 		<item name="android:singleLine">true</item>
@@ -54,20 +63,21 @@
 		<item name="android:paddingRight">16dp</item>
 	</style>
 
-	<style name="PaperCard">
+	<style name="PaperCard" parent="Widget.MaterialComponents.CardView">
 		<item name="android:paddingTop">16dp</item>
-		<item name="android:paddingBottom">8dp</item>
+		<item name="android:layout_marginBottom">8dp</item>
+		<item name="android:background">?colorSurface</item>
 	</style>
 
 	<style name="SubsectionTitle">
-		<item name="android:textColor">#ff000000</item>
+		<item name="android:textColor">?android:textColorPrimary</item>
 		<item name="android:textSize">16sp</item>
 		<item name="android:fontFamily">sans-serif-medium</item>
 		<item name="android:clickable">false</item>
 	</style>
 
 	<style name="SubsectionSubTitle">
-		<item name="android:textColor">#ff666666</item>
+		<item name="android:textColor">?android:textColorSecondary</item>
 		<item name="android:textSize">16sp</item>
 		<item name="android:fontFamily">sans-serif-light</item>
 		<item name="android:clickable">false</item>

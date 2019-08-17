@@ -1,6 +1,6 @@
 package me.anon.lib.manager;
 
-import android.support.annotation.Nullable;
+import androidx.annotation.Nullable;
 import android.text.TextUtils;
 
 import com.google.gson.JsonElement;

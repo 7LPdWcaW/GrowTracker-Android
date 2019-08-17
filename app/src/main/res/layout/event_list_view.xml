@@ -2,10 +2,11 @@
 
 <FrameLayout
 	xmlns:android="http://schemas.android.com/apk/res/android"
+	xmlns:app="http://schemas.android.com/apk/res-auto"
 	android:layout_width="match_parent"
 	android:layout_height="match_parent"
 >
-	<android.support.v7.widget.RecyclerView
+	<androidx.recyclerview.widget.RecyclerView
 		android:layout_width="match_parent"
 		android:layout_height="match_parent"
 		android:id="@+id/recycler_view"
@@ -16,37 +17,13 @@
 		android:clipToPadding="false"
 	/>
 
-	<FrameLayout
+	<com.google.android.material.floatingactionbutton.FloatingActionButton
 		android:layout_width="wrap_content"
 		android:layout_height="wrap_content"
 		android:id="@+id/fab_add"
-		android:layout_gravity="bottom|right"
+		app:backgroundTint="#E10A19"
+		app:srcCompat="@drawable/ic_floting_add"
+		android:layout_gravity="bottom|end"
 		android:layout_margin="16dp"
-	>
-		<ImageView
-			android:layout_width="57dp"
-			android:layout_height="56dp"
-			android:layout_marginTop="3dp"
-			android:src="@drawable/fab_button_shadow"
-			android:layout_gravity="center_horizontal"
-		/>
-
-		<FrameLayout
-			android:layout_width="wrap_content"
-			android:layout_height="wrap_content"
-		>
-			<ImageView
-				android:layout_width="56dp"
-				android:layout_height="56dp"
-				android:background="@drawable/add_button_bg"
-			/>
-
-			<ImageView
-				android:layout_width="24dp"
-				android:layout_height="24dp"
-				android:layout_gravity="center"
-				android:src="@drawable/ic_floting_add"
-			/>
-		</FrameLayout>
-	</FrameLayout>
+	/>
 </FrameLayout>

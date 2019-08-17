@@ -1,7 +1,6 @@
 package me.anon.grow.fragment;
 
 import android.app.AlarmManager;
-import android.app.AlertDialog;
 import android.app.PendingIntent;
 import android.content.ComponentName;
 import android.content.Context;
@@ -15,20 +14,13 @@ import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.Environment;
-import android.preference.EditTextPreference;
-import android.preference.Preference;
-import android.preference.PreferenceCategory;
-import android.preference.PreferenceFragment;
-import android.preference.PreferenceManager;
-import android.preference.SwitchPreference;
-import android.support.design.widget.Snackbar;
-import android.support.v4.content.FileProvider;
 import android.text.Html;
 import android.text.TextUtils;
 import android.util.Base64;
 import android.view.View;
 import android.widget.Toast;
 
+import com.google.android.material.snackbar.Snackbar;
 import com.nostra13.universalimageloader.core.ImageLoader;
 
 import org.jetbrains.annotations.NotNull;
@@ -45,6 +37,17 @@ import java.util.Comparator;
 import java.util.Date;
 import java.util.List;
 
+import androidx.appcompat.app.AlertDialog;
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.app.AppCompatDelegate;
+import androidx.core.content.FileProvider;
+import androidx.fragment.app.FragmentActivity;
+import androidx.preference.EditTextPreference;
+import androidx.preference.Preference;
+import androidx.preference.PreferenceCategory;
+import androidx.preference.PreferenceFragmentCompat;
+import androidx.preference.PreferenceManager;
+import androidx.preference.SwitchPreferenceCompat;
 import me.anon.controller.receiver.BackupService;
 import me.anon.grow.MainApplication;
 import me.anon.grow.R;
@@ -66,15 +69,13 @@ import me.anon.model.Plant;
 
 import static me.anon.lib.manager.PlantManager.FILES_DIR;
 
-public class SettingsFragment extends PreferenceFragment implements Preference.OnPreferenceClickListener, Preference.OnPreferenceChangeListener
+public class SettingsFragment extends PreferenceFragmentCompat implements Preference.OnPreferenceClickListener, Preference.OnPreferenceChangeListener
 {
 	private static final int REQUEST_UNINSTALL = 0x01;
 
-	@Override public void onActivityCreated(Bundle savedInstanceState)
+	@Override public void onCreatePreferences(Bundle savedInstanceState, String rootKey)
 	{
-		super.onActivityCreated(savedInstanceState);
-
-		addPreferencesFromResource(R.xml.preferences);
+		setPreferencesFromResource(R.xml.preferences, rootKey);
 
 		int defaultGardenIndex = PreferenceManager.getDefaultSharedPreferences(getActivity()).getInt("default_garden", -1);
 		String defaultGarden = defaultGardenIndex > -1 ? GardenManager.getInstance().getGardens().get(defaultGardenIndex).getName() : getString(R.string.all);
@@ -96,6 +97,7 @@ public class SettingsFragment extends PreferenceFragment implements Preference.O
 		findPreference("failsafe").setOnPreferenceChangeListener(this);
 		findPreference("auto_backup").setOnPreferenceChangeListener(this);
 		findPreference("backup_size").setOnPreferenceChangeListener(this);
+		findPreference("force_dark").setOnPreferenceChangeListener(this);
 		String currentBackup = findPreference("backup_size").getSharedPreferences().getString("backup_size", "20");
 		findPreference("backup_size").setSummary(getString(R.string.settings_backup_size, currentBackup, lengthToString(BackupHelper.backupSize(), false)));
 
@@ -108,7 +110,7 @@ public class SettingsFragment extends PreferenceFragment implements Preference.O
 		findPreference("backup_now").setOnPreferenceClickListener(this);
 		findPreference("restore").setOnPreferenceClickListener(this);
 
-		findPreference("failsafe").setEnabled(((SwitchPreference)findPreference("encrypt")).isChecked());
+		findPreference("failsafe").setEnabled(((SwitchPreferenceCompat)findPreference("encrypt")).isChecked());
 
 		if (MainApplication.isFailsafe())
 		{
@@ -231,10 +233,16 @@ public class SettingsFragment extends PreferenceFragment implements Preference.O
 
 	@Override public boolean onPreferenceChange(final Preference preference, Object newValue)
 	{
-		if ("backup_size".equals(preference.getKey()))
+		if ("force_dark".equals(preference.getKey()))
+		{
+			PreferenceManager.getDefaultSharedPreferences(getActivity()).edit().putBoolean("force_dark", (boolean)newValue).apply();
+			AppCompatDelegate.setDefaultNightMode((boolean)newValue ? AppCompatDelegate.MODE_NIGHT_YES : AppCompatDelegate.MODE_NIGHT_FOLLOW_SYSTEM);
+			getActivity().recreate();
+		}
+		else if ("backup_size".equals(preference.getKey()))
 		{
 			String currentBackup = (String)newValue;
-			PreferenceManager.getDefaultSharedPreferences(getContext()).edit()
+			PreferenceManager.getDefaultSharedPreferences(getActivity()).edit()
 				.putString("backup_size", currentBackup)
 				.apply();
 			((EditTextPreference)preference).setText(currentBackup);
@@ -262,7 +270,7 @@ public class SettingsFragment extends PreferenceFragment implements Preference.O
 								@Override public void onDialogConfirmed(String input)
 								{
 									pin.append(input);
-									check2.show(getFragmentManager(), null);
+									check2.show(((FragmentActivity)getActivity()).getSupportFragmentManager(), null);
 								}
 							});
 
@@ -298,27 +306,27 @@ public class SettingsFragment extends PreferenceFragment implements Preference.O
 									}
 									else
 									{
-										((SwitchPreference)preference).setChecked(false);
+										((SwitchPreferenceCompat)preference).setChecked(false);
 										Toast.makeText(getActivity(), getString(R.string.passphrase_error), Toast.LENGTH_SHORT).show();
 									}
 								}
 							});
 
-							check1.show(getFragmentManager(), null);
+							check1.show(((FragmentActivity)getActivity()).getSupportFragmentManager(), null);
 						}
 					})
 					.setNegativeButton(R.string.decline, new DialogInterface.OnClickListener()
 					{
 						@Override public void onClick(DialogInterface dialog, int which)
 						{
-							((SwitchPreference)preference).setChecked(false);
+							((SwitchPreferenceCompat)preference).setChecked(false);
 						}
 					})
 					.setOnCancelListener(new DialogInterface.OnCancelListener()
 					{
 						@Override public void onCancel(DialogInterface dialog)
 						{
-							((SwitchPreference)preference).setChecked(false);
+							((SwitchPreferenceCompat)preference).setChecked(false);
 						}
 					})
 					.show();
@@ -355,13 +363,13 @@ public class SettingsFragment extends PreferenceFragment implements Preference.O
 						}
 						else
 						{
-							((SwitchPreference)preference).setChecked(true);
+							((SwitchPreferenceCompat)preference).setChecked(true);
 							Toast.makeText(getActivity(), R.string.passphrase_error, Toast.LENGTH_SHORT).show();
 						}
 					}
 				});
 
-				check.show(getFragmentManager(), null);
+				check.show(((FragmentActivity)getActivity()).getSupportFragmentManager(), null);
 			}
 
 			return true;
@@ -387,7 +395,7 @@ public class SettingsFragment extends PreferenceFragment implements Preference.O
 								@Override public void onDialogConfirmed(String input)
 								{
 									pin.append(input);
-									check2.show(getFragmentManager(), null);
+									check2.show(((FragmentActivity)getActivity()).getSupportFragmentManager(), null);
 								}
 							});
 
@@ -404,20 +412,20 @@ public class SettingsFragment extends PreferenceFragment implements Preference.O
 									}
 									else
 									{
-										((SwitchPreference)preference).setChecked(false);
+										((SwitchPreferenceCompat)preference).setChecked(false);
 										Toast.makeText(getActivity(), R.string.passphrase_error, Toast.LENGTH_SHORT).show();
 									}
 								}
 							});
 
-							check1.show(getFragmentManager(), null);
+							check1.show(((FragmentActivity)getActivity()).getSupportFragmentManager(), null);
 						}
 					})
 					.setNegativeButton(R.string.decline, new DialogInterface.OnClickListener()
 					{
 						@Override public void onClick(DialogInterface dialog, int which)
 						{
-							((SwitchPreference)preference).setChecked(false);
+							((SwitchPreferenceCompat)preference).setChecked(false);
 						}
 					})
 					.show();
@@ -749,14 +757,14 @@ public class SettingsFragment extends PreferenceFragment implements Preference.O
 
 						if (selectedBackup.plantsPath.endsWith("dat") && !MainApplication.isEncrypted())
 						{
-							SnackBar.show(getActivity(), R.string.backup_restore_error, R.string.enable, new SnackBarListener()
+							SnackBar.show((AppCompatActivity)getActivity(), R.string.backup_restore_error, R.string.enable, new SnackBarListener()
 							{
 								@Override public void onSnackBarStarted(@NotNull Object o){}
 								@Override public void onSnackBarFinished(@NotNull Object o){}
 
 								@Override public void onSnackBarAction(@NotNull View o)
 								{
-									((SwitchPreference)findPreference("encrypt")).setChecked(true);
+									((SwitchPreferenceCompat)findPreference("encrypt")).setChecked(true);
 									onPreferenceChange(findPreference("encrypt"), true);
 								}
 							});
@@ -784,7 +792,7 @@ public class SettingsFragment extends PreferenceFragment implements Preference.O
 						if (!loaded)
 						{
 							String errorEnd = MainApplication.isEncrypted() ? getString(R.string.unencrypted) : getString(R.string.encrypted);
-							SnackBar.show(getActivity(), getString(R.string.restore_error, selectedBackupStr, errorEnd), Snackbar.LENGTH_INDEFINITE, null);
+							SnackBar.show((AppCompatActivity)getActivity(), getString(R.string.restore_error, selectedBackupStr, errorEnd), Snackbar.LENGTH_INDEFINITE, null);
 							FileManager.getInstance().copyFile(PlantManager.FILES_DIR + "/plants.temp", PlantManager.FILES_DIR + "/plants.json");
 							FileManager.getInstance().copyFile(GardenManager.FILES_DIR + "/gardens.temp", GardenManager.FILES_DIR + "/gardens.json");
 							FileManager.getInstance().copyFile(ScheduleManager.FILES_DIR + "/schedules.temp", ScheduleManager.FILES_DIR + "/schedules.json");

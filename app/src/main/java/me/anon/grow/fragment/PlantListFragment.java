@@ -1,19 +1,10 @@
 package me.anon.grow.fragment;
 
 import android.app.Activity;
-import android.app.AlertDialog;
-import android.app.Fragment;
-import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.Rect;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
-import android.support.annotation.Nullable;
-import android.support.v7.widget.GridLayoutManager;
-import android.support.v7.widget.LinearLayoutManager;
-import android.support.v7.widget.RecyclerView;
-import android.support.v7.widget.helper.ItemTouchHelper;
-import android.text.Html;
 import android.util.TypedValue;
 import android.view.LayoutInflater;
 import android.view.Menu;
@@ -21,7 +12,6 @@ import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Toast;
 
 import com.esotericsoftware.kryo.Kryo;
 
@@ -29,25 +19,24 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
 
+import androidx.annotation.Nullable;
+import androidx.fragment.app.Fragment;
+import androidx.recyclerview.widget.GridLayoutManager;
+import androidx.recyclerview.widget.ItemTouchHelper;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
 import me.anon.controller.adapter.PlantAdapter;
 import me.anon.controller.adapter.SimpleItemTouchHelperCallback;
 import me.anon.grow.AddPlantActivity;
 import me.anon.grow.AddWateringActivity;
-import me.anon.grow.MainActivity;
 import me.anon.grow.MainApplication;
 import me.anon.grow.R;
-import me.anon.grow.service.ExportService;
 import me.anon.lib.SnackBar;
 import me.anon.lib.SnackBarListener;
 import me.anon.lib.Views;
-import me.anon.lib.event.GardenChangeEvent;
-import me.anon.lib.helper.BusHelper;
 import me.anon.lib.helper.FabAnimator;
-import me.anon.lib.helper.NotificationHelper;
-import me.anon.lib.manager.GardenManager;
 import me.anon.lib.manager.PlantManager;
 import me.anon.model.EmptyAction;
-import me.anon.model.Garden;
 import me.anon.model.NoteAction;
 import me.anon.model.Plant;
 import me.anon.model.PlantStage;
@@ -63,23 +52,15 @@ import me.anon.model.PlantStage;
 public class PlantListFragment extends Fragment
 {
 	private PlantAdapter adapter;
-	private Garden garden;
 
-	public void setGarden(Garden garden)
-	{
-		this.garden = garden;
-	}
-
-	public static PlantListFragment newInstance(@Nullable Garden garden)
+	public static PlantListFragment newInstance()
 	{
 		PlantListFragment fragment = new PlantListFragment();
-		fragment.setGarden(garden);
-
 		return fragment;
 	}
 
-	@Views.InjectView(R.id.action_container) private View actionContainer;
 	@Views.InjectView(R.id.recycler_view) private RecyclerView recycler;
+	@Views.InjectView(R.id.empty) private View empty;
 
 	private ArrayList<PlantStage> filterList = new ArrayList<>();
 	private boolean hideHarvested = false;
@@ -103,7 +84,7 @@ public class PlantListFragment extends Fragment
 	{
 		super.onActivityCreated(savedInstanceState);
 
-		getActivity().setTitle(getString(R.string.list_title, (garden == null ? getString(R.string.all) : garden.getName())));
+		getActivity().setTitle(getString(R.string.list_title, getString(R.string.all)));
 
 		adapter = new PlantAdapter(getActivity());
 
@@ -136,7 +117,7 @@ public class PlantListFragment extends Fragment
 		else
 		{
 			boolean reverse = PreferenceManager.getDefaultSharedPreferences(getActivity()).getBoolean("reverse_order", false);
-			LinearLayoutManager layoutManager = new LinearLayoutManager(getActivity(), LinearLayoutManager.VERTICAL, reverse);
+			LinearLayoutManager layoutManager = new LinearLayoutManager(getActivity(), RecyclerView.VERTICAL, reverse);
 			layoutManager.setStackFromEnd(reverse);
 			recycler.setLayoutManager(layoutManager);
 		}
@@ -183,11 +164,6 @@ public class PlantListFragment extends Fragment
 		ItemTouchHelper touchHelper = new ItemTouchHelper(callback);
 		touchHelper.attachToRecyclerView(recycler);
 
-		if (garden != null)
-		{
-			actionContainer.setVisibility(View.VISIBLE);
-		}
-
 		filterList.addAll(Arrays.asList(PlantStage.values()));
 
 		if (hideHarvested = PreferenceManager.getDefaultSharedPreferences(getActivity()).getBoolean("hide_harvested", false))
@@ -220,36 +196,13 @@ public class PlantListFragment extends Fragment
 	{
 		ArrayList<Plant> plants = (ArrayList<Plant>)adapter.getPlants();
 
-		if (garden == null)
-		{
-			PlantManager.getInstance().setPlants(plants);
-			PlantManager.getInstance().save();
-		}
-		else
-		{
-			if (!beingFiltered())
-			{
-				ArrayList<String> orderedPlantIds = new ArrayList<>();
-				for (Plant plant : plants)
-				{
-					orderedPlantIds.add(plant.getId());
-				}
-
-				garden.setPlantIds(orderedPlantIds);
-				GardenManager.getInstance().save();
-			}
-		}
+		PlantManager.getInstance().setPlants(plants);
+		PlantManager.getInstance().save();
 	}
 
 	@Views.OnClick public void onFabAddClick(View view)
 	{
 		Intent addPlant = new Intent(getActivity(), AddPlantActivity.class);
-
-		if (garden != null)
-		{
-			addPlant.putExtra("garden_index", GardenManager.getInstance().getGardens().indexOf(garden));
-		}
-
 		startActivity(addPlant);
 	}
 
@@ -307,7 +260,7 @@ public class PlantListFragment extends Fragment
 				});
 			}
 		});
-		dialogFragment.show(getFragmentManager(), null);
+		dialogFragment.show(getChildFragmentManager(), null);
 	}
 
 	@Views.OnClick public void onNoteClick(final View view)
@@ -349,7 +302,7 @@ public class PlantListFragment extends Fragment
 				});
 			}
 		});
-		dialogFragment.show(getFragmentManager(), null);
+		dialogFragment.show(getChildFragmentManager(), null);
 	}
 
 	@Override public void onActivityResult(int requestCode, int resultCode, Intent data)
@@ -392,13 +345,6 @@ public class PlantListFragment extends Fragment
 	{
 		inflater.inflate(R.menu.plant_list_menu, menu);
 
-		if (garden != null)
-		{
-			menu.findItem(R.id.export_garden).setVisible(true);
-			menu.findItem(R.id.edit_garden).setVisible(true);
-			menu.findItem(R.id.delete_garden).setVisible(true);
-		}
-
 		if (PreferenceManager.getDefaultSharedPreferences(getActivity()).getBoolean("hide_harvested", false))
 		{
 			menu.findItem(R.id.filter_harvested).setVisible(false);
@@ -409,116 +355,42 @@ public class PlantListFragment extends Fragment
 
 	@Override public boolean onOptionsItemSelected(MenuItem item)
 	{
-		if (item.getItemId() == R.id.edit_garden)
+		if (item.isCheckable())
 		{
-			GardenDialogFragment dialogFragment = new GardenDialogFragment(garden);
-			dialogFragment.setOnEditGardenListener(new GardenDialogFragment.OnEditGardenListener()
+			item.setChecked(!item.isChecked());
+		}
+
+		boolean filter = false;
+
+		if (!beingFiltered())
+		{
+			saveCurrentState();
+		}
+
+		int[] ids = {R.id.filter_planted, R.id.filter_germination, R.id.filter_seedling, R.id.filter_cutting, R.id.filter_vegetation, R.id.filter_flowering, R.id.filter_drying, R.id.filter_curing, R.id.filter_harvested};
+		PlantStage[] stages = PlantStage.values();
+
+		for (int index = 0; index < ids.length; index++)
+		{
+			int id = ids[index];
+			if (item.getItemId() == id)
 			{
-				@Override public void onGardenEdited(Garden garden)
+				if (filterList.contains(stages[index]))
 				{
-					int index = GardenManager.getInstance().getGardens().indexOf(PlantListFragment.this.garden);
-					GardenManager.getInstance().getGardens().set(index, garden);
-					GardenManager.getInstance().save();
-					PlantListFragment.this.garden = garden;
-
-					getActivity().setTitle(getString(R.string.list_title, (garden == null ? getString(R.string.all) : garden.getName())));
-					filter();
-
-					((MainActivity)getActivity()).setNavigationView();
+					filterList.remove(stages[index]);
 				}
-			});
-			dialogFragment.show(getFragmentManager(), null);
-
-			return true;
-		}
-		else if (item.getItemId() == R.id.export_garden)
-		{
-			Toast.makeText(getActivity(), R.string.garden_export, Toast.LENGTH_SHORT).show();
-			NotificationHelper.createExportChannel(getActivity());
-			NotificationHelper.sendExportNotification(getActivity(), getString(R.string.garden_export), getString(R.string.exporting, garden.getName()));
-
-			ArrayList<Plant> export = new ArrayList<>(adapter.getPlants());
-			ExportService.export(getActivity(), export, garden.getName().replaceAll("[^a-zA-Z0-9]+", "-"), garden.getName());
-		}
-		else if (item.getItemId() == R.id.delete_garden)
-		{
-			new AlertDialog.Builder(getActivity())
-				.setTitle(R.string.confirm_title)
-				.setMessage(Html.fromHtml(getString(R.string.dialog_garden_delete_body)))
-				.setPositiveButton(R.string.confirm_positive, new DialogInterface.OnClickListener()
+				else
 				{
-					@Override public void onClick(DialogInterface dialogInterface, int i)
-					{
-						final Garden oldGarden = garden;
-						final int oldIndex = GardenManager.getInstance().getGardens().indexOf(garden);
-						final int defaultGarden = PreferenceManager.getDefaultSharedPreferences(getActivity()).getInt("default_garden", -1);
-
-						PreferenceManager.getDefaultSharedPreferences(getActivity()).edit().remove("default_garden").apply();
-						GardenManager.getInstance().getGardens().remove(garden);
-						GardenManager.getInstance().save();
-
-						SnackBar.show(getActivity(), R.string.snackbar_garden_deleted, R.string.snackbar_undo, new SnackBarListener()
-						{
-							@Override public void onSnackBarStarted(Object o){}
-							@Override public void onSnackBarFinished(Object o){}
-
-							@Override public void onSnackBarAction(View o)
-							{
-								PreferenceManager.getDefaultSharedPreferences(o.getContext()).edit().putInt("default_garden", defaultGarden).apply();
-								GardenManager.getInstance().getGardens().add(oldIndex, oldGarden);
-								GardenManager.getInstance().save();
-
-								BusHelper.getInstance().post(new GardenChangeEvent());
-							}
-						});
-
-						((MainActivity)getActivity()).setNavigationView();
-						((MainActivity)getActivity()).getNavigation().getMenu().findItem(R.id.all).setChecked(true);
-						((MainActivity)getActivity()).onNavigationItemSelected(((MainActivity)getActivity()).getNavigation().getMenu().findItem(R.id.all));
-					}
-				})
-				.setNegativeButton(R.string.confirm_negative, null)
-				.show();
-		}
-		else
-		{
-			if (item.isCheckable())
-			{
-				item.setChecked(!item.isChecked());
-			}
-
-			boolean filter = false;
-
-			if (!beingFiltered())
-			{
-				saveCurrentState();
-			}
-
-			int[] ids = {R.id.filter_planted, R.id.filter_germination, R.id.filter_seedling, R.id.filter_cutting, R.id.filter_vegetation, R.id.filter_flowering, R.id.filter_drying, R.id.filter_curing, R.id.filter_harvested};
-			PlantStage[] stages = PlantStage.values();
-
-			for (int index = 0; index < ids.length; index++)
-			{
-				int id = ids[index];
-				if (item.getItemId() == id)
-				{
-					if (filterList.contains(stages[index]))
-					{
-						filterList.remove(stages[index]);
-					}
-					else
-					{
-						filterList.add(stages[index]);
-					}
-
-					filter = true;
+					filterList.add(stages[index]);
 				}
-			}
 
-			if (filter)
-			{
-				filter();
+				filter = true;
 			}
+		}
+
+		if (filter)
+		{
+			filter();
 		}
 
 		return super.onOptionsItemSelected(item);
@@ -526,7 +398,7 @@ public class PlantListFragment extends Fragment
 
 	private void filter()
 	{
-		ArrayList<Plant> plantList = PlantManager.getInstance().getSortedPlantList(garden);
+		ArrayList<Plant> plantList = PlantManager.getInstance().getSortedPlantList(null);
 		adapter.setPlants(plantList);
 
 		ArrayList<String> plants = new ArrayList<>();
@@ -538,7 +410,7 @@ public class PlantListFragment extends Fragment
 			}
 		}
 
-		if (garden != null || plants.size() < plantList.size())
+		if (plants.size() < plantList.size())
 		{
 			adapter.setShowOnly(plants);
 		}
@@ -548,5 +420,16 @@ public class PlantListFragment extends Fragment
 		}
 
 		adapter.notifyDataSetChanged();
+
+		if (adapter.getFilteredCount() == 0)
+		{
+			empty.setVisibility(View.VISIBLE);
+			recycler.setVisibility(View.GONE);
+		}
+		else
+		{
+			empty.setVisibility(View.GONE);
+			recycler.setVisibility(View.VISIBLE);
+		}
 	}
 }

@@ -1,14 +1,14 @@
 package me.anon.grow
 
 import android.os.Bundle
-import android.support.v7.app.AppCompatActivity
+import androidx.appcompat.app.AppCompatActivity
 import kotlinx.android.synthetic.main.fragment_holder.*
 import me.anon.grow.fragment.ScheduleDateDetailsFragment
 
 /**
  * Activity holder for feeding schedule list
  */
-class ScheduleDateDetailsActivity : AppCompatActivity()
+class ScheduleDateDetailsActivity : BaseActivity()
 {
 	companion object
 	{
@@ -23,9 +23,9 @@ class ScheduleDateDetailsActivity : AppCompatActivity()
 		setSupportActionBar(toolbar)
 		setTitle(R.string.schedule_date_title)
 
-		if (fragmentManager.findFragmentByTag(TAG_FRAGMENT) == null)
+		if (supportFragmentManager.findFragmentByTag(TAG_FRAGMENT) == null)
 		{
-			fragmentManager.beginTransaction().replace(
+			supportFragmentManager.beginTransaction().replace(
 				R.id.fragment_holder,
 				ScheduleDateDetailsFragment.newInstance(
 					intent.extras?.getInt("schedule_index", -1) ?: -1,

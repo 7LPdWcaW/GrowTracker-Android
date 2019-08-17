@@ -16,7 +16,6 @@
 			android:layout_height="wrap_content"
 			android:orientation="vertical"
 			android:elevation="4dp"
-			android:background="#ffffff"
 			style="@style/PaperCard"
 		>
 			<TextView
@@ -58,7 +57,7 @@
 							android:layout_height="wrap_content"
 							android:id="@+id/germ_time"
 							android:textSize="14sp"
-							android:textColor="#666666"
+							android:textColor="?android:textColorSecondary"
 							android:layout_marginLeft="8dp"
 							android:fontFamily="sans-serif-light"
 							android:gravity="center_vertical"
@@ -88,7 +87,7 @@
 							android:layout_height="wrap_content"
 							android:id="@+id/seedling_time"
 							android:textSize="14sp"
-							android:textColor="#666666"
+							android:textColor="?android:textColorSecondary"
 							android:layout_marginLeft="8dp"
 							android:fontFamily="sans-serif-light"
 							android:gravity="center_vertical"
@@ -118,7 +117,7 @@
 							android:layout_height="wrap_content"
 							android:id="@+id/cutting_time"
 							android:textSize="14sp"
-							android:textColor="#666666"
+							android:textColor="?android:textColorSecondary"
 							android:layout_marginLeft="8dp"
 							android:fontFamily="sans-serif-light"
 							android:gravity="center_vertical"
@@ -146,7 +145,7 @@
 							android:layout_height="wrap_content"
 							android:id="@+id/veg_time"
 							android:textSize="14sp"
-							android:textColor="#666666"
+							android:textColor="?android:textColorSecondary"
 							android:layout_marginLeft="8dp"
 							android:fontFamily="sans-serif-light"
 							android:gravity="center_vertical"
@@ -174,7 +173,7 @@
 							android:layout_height="wrap_content"
 							android:id="@+id/flower_time"
 							android:textSize="14sp"
-							android:textColor="#666666"
+							android:textColor="?android:textColorSecondary"
 							android:layout_marginLeft="8dp"
 							android:fontFamily="sans-serif-light"
 							android:gravity="center_vertical"
@@ -208,7 +207,7 @@
 							android:layout_height="wrap_content"
 							android:id="@+id/dry_time"
 							android:textSize="14sp"
-							android:textColor="#666666"
+							android:textColor="?android:textColorSecondary"
 							android:layout_marginLeft="8dp"
 							android:fontFamily="sans-serif-light"
 							android:gravity="center_vertical"
@@ -236,7 +235,7 @@
 							android:layout_height="wrap_content"
 							android:id="@+id/cure_time"
 							android:textSize="14sp"
-							android:textColor="#666666"
+							android:textColor="?android:textColorSecondary"
 							android:layout_marginLeft="8dp"
 							android:fontFamily="sans-serif-light"
 							android:gravity="center_vertical"
@@ -262,7 +261,7 @@
 						android:layout_height="wrap_content"
 						android:id="@+id/grow_time"
 						android:textSize="14sp"
-						android:textColor="#666666"
+						android:textColor="?android:textColorSecondary"
 						android:layout_marginLeft="8dp"
 						android:fontFamily="sans-serif-light"
 						android:gravity="center_vertical"
@@ -293,7 +292,7 @@
 							android:layout_height="wrap_content"
 							android:id="@+id/water_count"
 							android:textSize="14sp"
-							android:textColor="#666666"
+							android:textColor="?android:textColorSecondary"
 							android:layout_marginLeft="8dp"
 							android:fontFamily="sans-serif-light"
 							android:gravity="center_vertical"
@@ -319,7 +318,7 @@
 							android:layout_height="wrap_content"
 							android:id="@+id/flush_count"
 							android:textSize="14sp"
-							android:textColor="#666666"
+							android:textColor="?android:textColorSecondary"
 							android:layout_marginLeft="8dp"
 							android:fontFamily="sans-serif-light"
 							android:gravity="center_vertical"
@@ -353,7 +352,7 @@
 							android:layout_height="match_parent"
 							android:id="@+id/ave_water"
 							android:textSize="14sp"
-							android:textColor="#666666"
+							android:textColor="?android:textColorSecondary"
 							android:layout_marginLeft="8dp"
 							android:fontFamily="sans-serif-light"
 							android:gravity="center"
@@ -364,13 +363,14 @@
 			</LinearLayout>
 		</LinearLayout>
 
-		<android.support.constraint.ConstraintLayout
+		<androidx.constraintlayout.widget.ConstraintLayout
 			android:layout_width="match_parent"
 			android:layout_height="wrap_content"
 			android:orientation="vertical"
-			android:background="#ffffff"
 			android:layout_marginTop="8dp"
 			android:elevation="4dp"
+			android:paddingBottom="12dp"
+			android:paddingTop="0dp"
 			style="@style/PaperCard"
 		>
 			<TextView
@@ -379,8 +379,8 @@
 				android:id="@+id/additive_title"
 				android:text="@string/additives"
 				android:paddingBottom="8dp"
+				android:paddingTop="16dp"
 				style="@style/SectionTitle"
-				android:textColor="#000000"
 			/>
 
 			<TextView
@@ -388,12 +388,18 @@
 				android:layout_height="wrap_content"
 				android:id="@+id/additive_selector"
 				android:text="@string/filter_additives"
-				android:textColor="#000000"
+				android:textColor="?android:textColorPrimary"
 				chart:layout_constraintTop_toTopOf="parent"
 				chart:layout_constraintEnd_toEndOf="parent"
 				android:drawableEnd="@drawable/ic_dropdown"
+				android:drawableTint="?android:textColorPrimary"
 				android:drawablePadding="8dp"
-				android:paddingBottom="8dp"
+				android:padding="8dp"
+				android:layout_marginEnd="8dp"
+				android:layout_marginTop="8dp"
+				android:clickable="true"
+				android:focusable="true"
+				android:background="?selectableItemBackground"
 			/>
 
 			<com.github.mikephil.charting.charts.LineChart
@@ -406,13 +412,12 @@
 				chart:layout_constraintStart_toStartOf="parent"
 				chart:layout_constraintEnd_toEndOf="parent"
 			/>
-		</android.support.constraint.ConstraintLayout>
+		</androidx.constraintlayout.widget.ConstraintLayout>
 
 		<LinearLayout
 			android:layout_width="match_parent"
 			android:layout_height="wrap_content"
 			android:orientation="vertical"
-			android:background="#ffffff"
 			android:layout_marginTop="8dp"
 			android:elevation="4dp"
 			style="@style/PaperCard"
@@ -422,7 +427,7 @@
 				android:layout_height="wrap_content"
 				android:text="@string/ph_title"
 				style="@style/SectionTitle"
-				android:textColor="#000000"
+				android:textColor="?colorAccent"
 			/>
 
 			<com.github.mikephil.charting.charts.LineChart
@@ -451,7 +456,7 @@
 						android:text="@string/min"
 						android:gravity="center_vertical"
 						style="@style/SubsectionTitle"
-						android:textColor="#000000"
+						android:textColor="?android:textColorPrimary"
 					/>
 
 					<TextView
@@ -462,7 +467,7 @@
 						android:layout_marginLeft="8dp"
 						android:fontFamily="sans-serif-light"
 						android:gravity="center_vertical"
-						android:textColor="#000000"
+						android:textColor="?android:textColorPrimary"
 					/>
 				</LinearLayout>
 
@@ -478,7 +483,7 @@
 						android:text="@string/max"
 						android:gravity="center_vertical"
 						style="@style/SubsectionTitle"
-						android:textColor="#000000"
+						android:textColor="?android:textColorPrimary"
 					/>
 
 					<TextView
@@ -489,7 +494,7 @@
 						android:layout_marginLeft="8dp"
 						android:fontFamily="sans-serif-light"
 						android:gravity="center_vertical"
-						android:textColor="#000000"
+						android:textColor="?android:textColorPrimary"
 					/>
 				</LinearLayout>
 
@@ -505,7 +510,7 @@
 						android:text="@string/ave"
 						android:gravity="center_vertical"
 						style="@style/SubsectionTitle"
-						android:textColor="#000000"
+						android:textColor="?android:textColorPrimary"
 					/>
 
 					<TextView
@@ -513,7 +518,7 @@
 						android:layout_height="wrap_content"
 						android:id="@+id/ave_input_ph"
 						android:textSize="14sp"
-						android:textColor="#000000"
+						android:textColor="?android:textColorPrimary"
 						android:layout_marginLeft="8dp"
 						android:fontFamily="sans-serif-light"
 						android:gravity="center_vertical"
@@ -526,7 +531,6 @@
 			android:layout_width="match_parent"
 			android:layout_height="wrap_content"
 			android:orientation="vertical"
-			android:background="#ffffff"
 			android:layout_marginTop="8dp"
 			android:elevation="4dp"
 			style="@style/PaperCard"
@@ -537,7 +541,7 @@
 				android:id="@+id/ppm_title"
 				android:text="@string/ppm_title"
 				style="@style/SectionTitle"
-				android:textColor="#000000"
+				android:textColor="?colorAccent"
 			/>
 
 			<com.github.mikephil.charting.charts.LineChart
@@ -566,7 +570,7 @@
 						android:text="@string/min"
 						android:gravity="center_vertical"
 						style="@style/SubsectionTitle"
-						android:textColor="#000000"
+						android:textColor="?android:textColorPrimary"
 					/>
 
 					<TextView
@@ -577,7 +581,7 @@
 						android:layout_marginLeft="8dp"
 						android:fontFamily="sans-serif-light"
 						android:gravity="center_vertical"
-						android:textColor="#000000"
+						android:textColor="?android:textColorPrimary"
 					/>
 				</LinearLayout>
 
@@ -593,7 +597,7 @@
 						android:text="@string/max"
 						android:gravity="center_vertical"
 						style="@style/SubsectionTitle"
-						android:textColor="#000000"
+						android:textColor="?android:textColorPrimary"
 					/>
 
 					<TextView
@@ -604,7 +608,7 @@
 						android:layout_marginLeft="8dp"
 						android:fontFamily="sans-serif-light"
 						android:gravity="center_vertical"
-						android:textColor="#000000"
+						android:textColor="?android:textColorPrimary"
 					/>
 				</LinearLayout>
 
@@ -620,7 +624,7 @@
 						android:text="@string/ave"
 						android:gravity="center_vertical"
 						style="@style/SubsectionTitle"
-						android:textColor="#000000"
+						android:textColor="?android:textColorPrimary"
 					/>
 
 					<TextView
@@ -628,7 +632,7 @@
 						android:layout_height="wrap_content"
 						android:id="@+id/ave_ppm"
 						android:textSize="14sp"
-						android:textColor="#000000"
+						android:textColor="?android:textColorPrimary"
 						android:layout_marginLeft="8dp"
 						android:fontFamily="sans-serif-light"
 						android:gravity="center_vertical"
@@ -642,7 +646,6 @@
 			android:layout_height="wrap_content"
 			android:id="@+id/temp_container"
 			android:orientation="vertical"
-			android:background="#ffffff"
 			android:layout_marginTop="8dp"
 			android:elevation="4dp"
 			android:visibility="gone"
@@ -653,7 +656,7 @@
 				android:layout_height="wrap_content"
 				android:text="@string/temperature_title"
 				style="@style/SectionTitle"
-				android:textColor="#000000"
+				android:textColor="?colorAccent"
 			/>
 
 			<com.github.mikephil.charting.charts.LineChart
@@ -682,7 +685,7 @@
 						android:text="@string/min"
 						android:gravity="center_vertical"
 						style="@style/SubsectionTitle"
-						android:textColor="#000000"
+						android:textColor="?android:textColorPrimary"
 					/>
 
 					<TextView
@@ -693,7 +696,7 @@
 						android:layout_marginLeft="8dp"
 						android:fontFamily="sans-serif-light"
 						android:gravity="center_vertical"
-						android:textColor="#000000"
+						android:textColor="?android:textColorPrimary"
 					/>
 				</LinearLayout>
 
@@ -709,7 +712,7 @@
 						android:text="@string/max"
 						android:gravity="center_vertical"
 						style="@style/SubsectionTitle"
-						android:textColor="#000000"
+						android:textColor="?android:textColorPrimary"
 					/>
 
 					<TextView
@@ -720,7 +723,7 @@
 						android:layout_marginLeft="8dp"
 						android:fontFamily="sans-serif-light"
 						android:gravity="center_vertical"
-						android:textColor="#000000"
+						android:textColor="?android:textColorPrimary"
 					/>
 				</LinearLayout>
 
@@ -736,7 +739,7 @@
 						android:text="@string/ave"
 						android:gravity="center_vertical"
 						style="@style/SubsectionTitle"
-						android:textColor="#000000"
+						android:textColor="?android:textColorPrimary"
 					/>
 
 					<TextView
@@ -744,7 +747,7 @@
 						android:layout_height="wrap_content"
 						android:id="@+id/ave_temp"
 						android:textSize="14sp"
-						android:textColor="#000000"
+						android:textColor="?android:textColorPrimary"
 						android:layout_marginLeft="8dp"
 						android:fontFamily="sans-serif-light"
 						android:gravity="center_vertical"

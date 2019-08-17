@@ -1,12 +1,9 @@
 package me.anon.grow.fragment;
 
-import android.app.AlertDialog;
 import android.app.Dialog;
-import android.app.DialogFragment;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.os.Bundle;
-import android.support.annotation.Nullable;
 import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -19,6 +16,10 @@ import java.text.DateFormat;
 import java.util.Calendar;
 import java.util.Date;
 
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
+import androidx.appcompat.app.AlertDialog;
+import androidx.fragment.app.DialogFragment;
 import me.anon.grow.R;
 import me.anon.lib.Views;
 import me.anon.model.Action;
@@ -37,6 +38,7 @@ public class ActionDialogFragment extends DialogFragment
 	@Views.InjectView(R.id.date) private TextView date;
 
 	private OnActionSelected onActionSelected;
+	public DialogInterface.OnCancelListener onCancelListener;
 
 	public void setOnActionSelected(OnActionSelected onActionSelected)
 	{
@@ -117,10 +119,10 @@ public class ActionDialogFragment extends DialogFragment
 
 					@Override public void onCancelled()
 					{
-						getFragmentManager().beginTransaction().remove(fragment).commit();
+						getChildFragmentManager().beginTransaction().remove(fragment).commit();
 					}
 				});
-				getFragmentManager().beginTransaction().add(fragment, "date").commit();
+				getChildFragmentManager().beginTransaction().add(fragment, "date").commit();
 			}
 		});
 
@@ -162,5 +164,11 @@ public class ActionDialogFragment extends DialogFragment
 	{
 		super.onSaveInstanceState(outState);
 		outState.putLong("date", action.getDate());
+	}
+
+	@Override public void onCancel(@NonNull DialogInterface dialog)
+	{
+		super.onCancel(dialog);
+		if (onCancelListener != null) onCancelListener.onCancel(dialog);
 	}
 }

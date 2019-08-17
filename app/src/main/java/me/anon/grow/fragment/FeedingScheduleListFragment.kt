@@ -1,14 +1,15 @@
 package me.anon.grow.fragment
 
-import android.app.Fragment
 import android.content.Intent
 import android.os.Bundle
-import android.support.v7.widget.DividerItemDecoration
-import android.support.v7.widget.LinearLayoutManager
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.LinearLayout.VERTICAL
+import androidx.appcompat.app.AppCompatActivity
+import androidx.fragment.app.Fragment
+import androidx.recyclerview.widget.DividerItemDecoration
+import androidx.recyclerview.widget.LinearLayoutManager
 import com.esotericsoftware.kryo.Kryo
 import kotlinx.android.synthetic.main.schedule_list_view.*
 import me.anon.controller.adapter.FeedingScheduleAdapter
@@ -25,8 +26,8 @@ class FeedingScheduleListFragment : Fragment()
 {
 	private val adapter = FeedingScheduleAdapter()
 
-	override fun onCreateView(inflater: LayoutInflater?, container: ViewGroup?, savedInstanceState: Bundle?): View
-		= inflater?.inflate(R.layout.schedule_list_view, container, false) ?: View(activity)
+	override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View?
+		= inflater.inflate(R.layout.schedule_list_view, container, false) ?: View(activity)
 
 	override fun onActivityCreated(savedInstanceState: Bundle?)
 	{
@@ -35,9 +36,7 @@ class FeedingScheduleListFragment : Fragment()
 		adapter.items = ScheduleManager.instance.schedules
 		recycler_view.adapter = adapter
 		recycler_view.layoutManager = LinearLayoutManager(activity)
-		recycler_view.addItemDecoration(DividerItemDecoration(activity, VERTICAL).also {
-			it.setDrawable(resources.getDrawable(R.drawable.left_inset_divider))
-		})
+		recycler_view.addItemDecoration(DividerItemDecoration(activity, VERTICAL))
 
 		adapter.onDeleteCallback = { schedule ->
 			val index = ScheduleManager.instance.schedules.indexOf(schedule)
@@ -45,8 +44,9 @@ class FeedingScheduleListFragment : Fragment()
 			ScheduleManager.instance.save()
 			adapter.items = ScheduleManager.instance.schedules
 			adapter.notifyDataSetChanged()
+			checkAdapter()
 
-			SnackBar().show(activity, R.string.schedule_deleted, R.string.undo, {
+			SnackBar().show(activity as AppCompatActivity, R.string.schedule_deleted, R.string.undo, {
 				FabAnimator.animateUp(fab_add)
 			}, {
 				FabAnimator.animateDown(fab_add)
@@ -55,6 +55,7 @@ class FeedingScheduleListFragment : Fragment()
 				ScheduleManager.instance.save()
 				adapter.items = ScheduleManager.instance.schedules
 				adapter.notifyDataSetChanged()
+				checkAdapter()
 			})
 		}
 
@@ -64,8 +65,9 @@ class FeedingScheduleListFragment : Fragment()
 			ScheduleManager.instance.insert(newSchedule)
 			adapter.items = ScheduleManager.instance.schedules
 			adapter.notifyDataSetChanged()
+			checkAdapter()
 
-			SnackBar().show(activity, R.string.schedule_copied, R.string.undo, {
+			SnackBar().show(activity as AppCompatActivity, R.string.schedule_copied, R.string.undo, {
 				FabAnimator.animateUp(fab_add)
 			}, {
 				FabAnimator.animateDown(fab_add)
@@ -74,6 +76,7 @@ class FeedingScheduleListFragment : Fragment()
 				ScheduleManager.instance.save()
 				adapter.items = ScheduleManager.instance.schedules
 				adapter.notifyDataSetChanged()
+				checkAdapter()
 			})
 		}
 
@@ -87,5 +90,21 @@ class FeedingScheduleListFragment : Fragment()
 		super.onResume()
 		adapter.items = ScheduleManager.instance.schedules
 		adapter.notifyDataSetChanged()
+
+		checkAdapter()
+	}
+
+	private fun checkAdapter()
+	{
+		if (adapter.itemCount == 0)
+		{
+			empty.visibility = View.VISIBLE
+			recycler_view.visibility = View.GONE
+		}
+		else
+		{
+			empty.visibility = View.GONE
+			recycler_view.visibility = View.VISIBLE
+		}
 	}
 }

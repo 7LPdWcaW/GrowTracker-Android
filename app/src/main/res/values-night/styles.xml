@@ -1,0 +1,11 @@
+<resources>
+	<style name="AppTheme" parent="Theme.MaterialComponents.DayNight.NoActionBar">
+		<item name="colorPrimary">#4AA74E</item>
+		<item name="colorAccent">#2196F3</item>
+		<item name="colorSecondary">#A74A4A</item>
+		<item name="colorOnSecondary">#97FFFFFF</item>
+		<item name="colorControlNormal">#555555</item>
+		<item name="colorSurface">#242424</item>
+		<item name="android:windowBackground">@drawable/dark_window</item>
+	</style>
+</resources>

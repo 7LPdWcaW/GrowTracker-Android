@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<menu
+	xmlns:android="http://schemas.android.com/apk/res/android"
+>
+	<item
+		android:id="@+id/menu_action"
+		android:title="@string/menu_action"
+	/>
+
+	<item
+		android:id="@+id/menu_note"
+		android:title="@string/menu_note"
+	/>
+
+	<item
+		android:id="@+id/menu_photos"
+		android:title="@string/view_photos_short"
+	/>
+
+	<item
+		android:id="@+id/menu_history"
+		android:title="@string/view_history_short"
+	/>
+
+	<item
+		android:id="@+id/menu_statistics"
+		android:title="@string/view_statistics_short"
+	/>
+</menu>

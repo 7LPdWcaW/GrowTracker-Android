@@ -2,8 +2,6 @@ package me.anon.grow.fragment;
 
 import android.Manifest;
 import android.app.Activity;
-import android.app.AlertDialog;
-import android.app.Fragment;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.pm.PackageManager;
@@ -14,12 +12,7 @@ import android.os.Bundle;
 import android.os.Environment;
 import android.os.ParcelFileDescriptor;
 import android.provider.MediaStore;
-import android.support.annotation.Nullable;
-import android.support.v4.content.FileProvider;
-import android.support.v7.app.AppCompatActivity;
-import android.support.v7.view.ActionMode;
-import android.support.v7.widget.GridLayoutManager;
-import android.support.v7.widget.RecyclerView;
+import android.view.ActionMode;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -39,6 +32,14 @@ import java.io.OutputStream;
 import java.util.ArrayList;
 import java.util.List;
 
+import androidx.annotation.Nullable;
+import androidx.appcompat.app.AlertDialog;
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.widget.Toolbar;
+import androidx.core.content.FileProvider;
+import androidx.fragment.app.Fragment;
+import androidx.recyclerview.widget.GridLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
 import me.anon.controller.adapter.ImageAdapter;
 import me.anon.controller.adapter.SectionedGridRecyclerViewAdapter;
 import me.anon.grow.BuildConfig;
@@ -71,6 +72,8 @@ public class ViewPhotosFragment extends Fragment
 	private ImageAdapter adapter;
 
 	@Views.InjectView(R.id.recycler_view) private RecyclerView recycler;
+	@Views.InjectView(R.id.empty) private View empty;
+	private ActionMode action = null;
 
 	private int plantIndex = -1;
 	private Plant plant;
@@ -123,11 +126,22 @@ public class ViewPhotosFragment extends Fragment
 
 		adapter = new ImageAdapter();
 		adapter.plant = plant;
+		adapter.onItemSelectedListener = new ImageAdapter.OnItemSelectedListener()
+		{
+			@Override public void onItemSelected(int totalSelected)
+			{
+				if (action != null)
+				{
+					action.setTitle(totalSelected + " Selected");
+				}
+			}
+		};
 		adapter.setOnLongClickListener(new View.OnLongClickListener()
 		{
 			@Override public boolean onLongClick(View v)
 			{
-				((AppCompatActivity)getActivity()).startSupportActionMode(new ActionMode.Callback()
+				Toolbar toolbar = ((AppCompatActivity)getActivity()).findViewById(R.id.toolbar);
+				action = toolbar.startActionMode(new ActionMode.Callback()
 				{
 					@Override public boolean onCreateActionMode(ActionMode mode, Menu menu)
 					{
@@ -149,7 +163,6 @@ public class ViewPhotosFragment extends Fragment
 						{
 							new AlertDialog.Builder(getActivity())
 								.setTitle(R.string.confirm_title)
-								.setMessage(getString(R.string.confirm_delete_photos_message, adapter.getSelected().size()))
 								.setPositiveButton(R.string.yes, new DialogInterface.OnClickListener()
 								{
 									@Override public void onClick(DialogInterface dialog, int which)
@@ -203,8 +216,10 @@ public class ViewPhotosFragment extends Fragment
 					{
 						adapter.setInActionMode(false);
 						adapter.notifyDataSetChanged();
+						action = null;
 					}
 				});
+				action.setTitle("1 Selected");
 
 				return true;
 			}
@@ -284,6 +299,17 @@ public class ViewPhotosFragment extends Fragment
 		sectionedAdapter.setSections(sections.toArray(new SectionedGridRecyclerViewAdapter.Section[sections.size()]));
 
 		recycler.setAdapter(sectionedAdapter);
+
+		if (adapter.getItemCount() == 0)
+		{
+			empty.setVisibility(View.VISIBLE);
+			recycler.setVisibility(View.GONE);
+		}
+		else
+		{
+			empty.setVisibility(View.GONE);
+			recycler.setVisibility(View.VISIBLE);
+		}
 	}
 
 	@Override public void onRequestPermissionsResult(int requestCode, String[] permissions, int[] grantResults)

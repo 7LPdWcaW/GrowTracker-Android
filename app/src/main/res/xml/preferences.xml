@@ -2,127 +2,144 @@
 
 <PreferenceScreen
 	xmlns:android="http://schemas.android.com/apk/res/android"
+	xmlns:app="http://schemas.android.com/apk/res-auto"
 >
 	<PreferenceCategory
-		android:title="General"
+		app:title="@string/settings_general"
 	>
 		<Preference
-			android:key="default_garden"
-			android:title="Default garden"
-			android:summary="Default garden to show on open, currently All"
+			app:key="default_garden"
+			app:title="@string/settings_garden_title"
+			app:summary="@string/settings_garden_summary"
 		/>
 
-		<SwitchPreference
-			android:key="reverse_order"
-			android:title="Reverse plant order"
-			android:summary="Shows the plants in the reverse order. (Requires app restart)"
+		<SwitchPreferenceCompat
+			app:key="reverse_order"
+			app:title="@string/settings_reverse_title"
+			app:summary="@string/settings_reverse_summary"
 			android:defaultValue="false"
 		/>
 
-		<SwitchPreference
-			android:key="hide_harvested"
-			android:title="Hide harvested"
-			android:summary="Hide all plants that have been harvested"
+		<SwitchPreferenceCompat
+			app:key="hide_harvested"
+			app:title="@string/settings_harvest_title"
+			app:summary="@string/settings_harvest_summary"
+			android:defaultValue="false"
+		/>
+
+		<SwitchPreferenceCompat
+			app:key="force_dark"
+			app:title="@string/settings_dark_title"
+			app:summary="@string/settings_dark_summary"
+			android:defaultValue="false"
+		/>
+
+		<ListPreference
+			app:key="card_style"
+			app:title="@string/settings_cardstyle_title"
+			app:summary="Select card style, currently %s"
+			android:entryValues="@array/settings_card_entry_values"
+			android:entries="@array/settings_card_entries"
+			android:defaultValue="0"
+		/>
+	</PreferenceCategory>
+
+	<PreferenceCategory
+		app:title="@string/settings_units"
+	>
+		<Preference
+			app:key="delivery_unit"
+			app:title="@string/settings_delivery_title"
+			app:summary="Default delivery measurement unit to use, currently l"
+		/>
+
+		<Preference
+			app:key="measurement_unit"
+			app:title="@string/settings_measurement_title"
+			app:summary="Default additive measurement unit to use, currently ml"
+		/>
+
+		<Preference
+			app:key="temperature_unit"
+			app:title="@string/settings_temp_title"
+			app:summary="Default temperature unit to use, currently C"
+		/>
+
+		<SwitchPreferenceCompat
+			app:key="tds_ec"
+			app:title="@string/settings_tds_title"
+			app:summary="@string/settings_tds_summary"
 			android:defaultValue="false"
 		/>
 	</PreferenceCategory>
 
 	<PreferenceCategory
-		android:title="Units"
+		app:title="@string/settings_data_management"
 	>
-		<Preference
-			android:key="delivery_unit"
-			android:title="Delivery unit"
-			android:summary="Default delivery measurement unit to use, currently l"
-		/>
-
-		<Preference
-			android:key="measurement_unit"
-			android:title="Measurement unit"
-			android:summary="Default additive measurement unit to use, currently ml"
-		/>
-
-		<Preference
-			android:key="temperature_unit"
-			android:title="Temperature unit"
-			android:summary="Default temperature unit to use, currently C"
-		/>
-
-		<SwitchPreference
-			android:key="tds_ec"
-			android:title="Use EC instead of ppm"
-			android:summary="Uses basic EC conversion ((ppm * 2) / 1000) instead"
-			android:defaultValue="false"
-		/>
-	</PreferenceCategory>
-
-	<PreferenceCategory
-		android:title="Data management"
-	>
-		<SwitchPreference
-			android:key="auto_backup"
-			android:title="Auto backup"
-			android:summary="Auto backup your plant data every 24 hours"
+		<SwitchPreferenceCompat
+			app:key="auto_backup"
+			app:title="@string/settings_autobackup_title"
+			app:summary="@string/settings_autobackup_summary"
 			android:defaultValue="false"
 		/>
 
 		<Preference
-			android:key="backup_now"
-			android:title="Backup now"
+			app:key="backup_now"
+			app:title="@string/settings_backupnow"
 		/>
 
 		<EditTextPreference
-			android:key="backup_size"
-			android:title="Backup size limit"
-			android:summary="Currently 20mb / Using 0mb"
-			android:hint="Size in MB"
+			app:key="backup_size"
+			app:title="@string/settings_backupsize_title"
+			app:summary="Currently 20mb / Using 0mb"
+			android:hint="@string/settings_backupsize_hint"
 			android:defaultValue="20"
-			android:dialogTitle="Backup limit (mb)"
+			android:dialogTitle="@string/settings_backupsize_dialogtitle"
 			android:inputType="numberSigned"
 		/>
 
 		<Preference
-			android:key="restore"
-			android:title="Restore from backup"
+			app:key="restore"
+			app:title="@string/settings_restore_backup"
 		/>
 
-		<SwitchPreference
-			android:key="encrypt"
-			android:title="Encrypt data"
-			android:summary="Adds a pin lock to the app and encrypts all data/images"
+		<SwitchPreferenceCompat
+			app:key="encrypt"
+			app:title="@string/settings_encrypt_title"
+			app:summary="@string/settings_encrypt_summary"
 			android:defaultValue="false"
 		/>
 
-		<SwitchPreference
-			android:key="failsafe"
-			android:title="Fail safe"
-			android:summary="Set failsafe password to use prevent access to data"
+		<SwitchPreferenceCompat
+			app:key="failsafe"
+			app:title="@string/settings_failsafe_title"
+			app:summary="@string/settings_failsafe_summary"
 			android:enabled="false"
 			android:defaultValue="false"
 		/>
 	</PreferenceCategory>
 
 	<PreferenceCategory
-		android:title="Addons"
-		android:key="addon_list"
+		app:title="@string/settings_addons"
+		app:key="addon_list"
 	/>
 
 	<PreferenceCategory
-		android:title="About"
+		app:title="@string/settings_about"
 	>
 		<Preference
-			android:key="readme"
-			android:title="Read me"
+			app:key="readme"
+			app:title="@string/settings_readme"
 		/>
 
 		<Preference
-			android:key="export"
-			android:title="Export data"
+			app:key="export"
+			app:title="@string/settings_export"
 		/>
 
 		<Preference
-			android:key="version"
-			android:title="Version v1.2"
+			app:key="version"
+			app:title="Version v1.2"
 		/>
 	</PreferenceCategory>
 </PreferenceScreen>

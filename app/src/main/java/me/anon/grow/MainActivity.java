@@ -2,7 +2,6 @@ package me.anon.grow;
 
 import android.Manifest;
 import android.app.Activity;
-import android.app.AlertDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
@@ -10,21 +9,24 @@ import android.content.pm.PackageManager;
 import android.net.Uri;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
-import android.support.annotation.Nullable;
-import android.support.design.widget.NavigationView;
-import android.support.v4.widget.DrawerLayout;
-import android.support.v7.app.ActionBarDrawerToggle;
-import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.inputmethod.InputMethodManager;
 
+import com.google.android.material.appbar.AppBarLayout;
+import com.google.android.material.appbar.MaterialToolbar;
+import com.google.android.material.navigation.NavigationView;
 import com.squareup.otto.Subscribe;
 
 import java.util.ArrayList;
 
+import androidx.annotation.Nullable;
+import androidx.appcompat.app.ActionBarDrawerToggle;
+import androidx.appcompat.app.AlertDialog;
+import androidx.drawerlayout.widget.DrawerLayout;
 import me.anon.grow.fragment.GardenDialogFragment;
+import me.anon.grow.fragment.GardenFragment;
 import me.anon.grow.fragment.PlantListFragment;
 import me.anon.lib.Views;
 import me.anon.lib.event.GardenChangeEvent;
@@ -45,7 +47,8 @@ public class MainActivity extends BaseActivity implements NavigationView.OnNavig
 {
 	private static final String TAG_FRAGMENT = "current_fragment";
 
-	@Views.InjectView(R.id.toolbar) private Toolbar toolbar;
+	@Views.InjectView(R.id.toolbar) private MaterialToolbar toolbar;
+	@Views.InjectView(R.id.toolbar_layout) public AppBarLayout toolbarLayout;
 	@Nullable @Views.InjectView(R.id.drawer_layout) private DrawerLayout drawer;
 	@Views.InjectView(R.id.navigation_view) private NavigationView navigation;
 	private int selectedItem = 0;
@@ -69,7 +72,6 @@ public class MainActivity extends BaseActivity implements NavigationView.OnNavig
 
 		setSupportActionBar(toolbar);
 		setNavigationView();
-		showDrawerToggle();
 		showUpdateDialog();
 
 		if (savedInstanceState == null)
@@ -104,6 +106,12 @@ public class MainActivity extends BaseActivity implements NavigationView.OnNavig
 		}
 
 		BusHelper.getInstance().register(this);
+	}
+
+	@Override protected void onResume()
+	{
+		super.onResume();
+		showDrawerToggle();
 	}
 
 	@Override protected void onSaveInstanceState(Bundle outState)
@@ -260,7 +268,7 @@ public class MainActivity extends BaseActivity implements NavigationView.OnNavig
 					onNavigationItemSelected(navigation.getMenu().findItem(selectedItem));
 				}
 			});
-			dialogFragment.show(getFragmentManager(), null);
+			dialogFragment.show(getSupportFragmentManager(), null);
 			item.setChecked(false);
 
 			if (drawer != null)
@@ -285,7 +293,7 @@ public class MainActivity extends BaseActivity implements NavigationView.OnNavig
 		else if (item.getItemId() == R.id.all)
 		{
 			selectedItem = item.getItemId();
-			getFragmentManager().beginTransaction().replace(R.id.fragment_holder, PlantListFragment.newInstance(null), TAG_FRAGMENT).commit();
+			getSupportFragmentManager().beginTransaction().replace(R.id.fragment_holder, PlantListFragment.newInstance(), TAG_FRAGMENT).commit();
 		}
 		else if (item.getItemId() >= 100 && item.getItemId() < Integer.MAX_VALUE)
 		{
@@ -300,7 +308,7 @@ public class MainActivity extends BaseActivity implements NavigationView.OnNavig
 			selectedItem = item.getItemId();
 			item.setChecked(true);
 			int gardenIndex = item.getItemId() - 100;
-			getFragmentManager().beginTransaction().replace(R.id.fragment_holder, PlantListFragment.newInstance(GardenManager.getInstance().getGardens().get(gardenIndex)), TAG_FRAGMENT).commit();
+			getSupportFragmentManager().beginTransaction().replace(R.id.fragment_holder, GardenFragment.newInstance(GardenManager.getInstance().getGardens().get(gardenIndex)), TAG_FRAGMENT).commit();
 		}
 
 		if (drawer != null)

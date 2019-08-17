@@ -39,7 +39,7 @@ class ExportService : Service()
 	override fun onStartCommand(intent: Intent?, flags: Int, startId: Int): Int
 	{
 		intent?.let {
-			val plantsIds = it.extras.getStringArrayList("plants") ?: arrayListOf()
+			val plantsIds = it.extras?.getStringArrayList("plants") ?: arrayListOf()
 
 			val plants = ArrayList(PlantManager.getInstance().plants.filter { plantsIds.contains(it.id) })
 			val title = it.getStringExtra("title")

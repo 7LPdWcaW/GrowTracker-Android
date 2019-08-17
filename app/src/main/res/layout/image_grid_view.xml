@@ -2,10 +2,11 @@
 
 <FrameLayout
 	xmlns:android="http://schemas.android.com/apk/res/android"
+	xmlns:app="http://schemas.android.com/apk/res-auto"
 	android:layout_width="match_parent"
 	android:layout_height="match_parent"
 >
-	<android.support.v7.widget.RecyclerView
+	<androidx.recyclerview.widget.RecyclerView
 		android:layout_width="match_parent"
 		android:layout_height="match_parent"
 		android:id="@+id/recycler_view"
@@ -14,37 +15,40 @@
 		android:clipToPadding="false"
 	/>
 
-	<FrameLayout
+	<LinearLayout
+		android:layout_width="wrap_content"
+		android:layout_height="wrap_content"
+		android:id="@+id/empty"
+		android:layout_gravity="center"
+		android:orientation="vertical"
+		android:visibility="gone"
+	>
+		<ImageView
+			android:layout_width="256dp"
+			android:layout_height="256dp"
+			app:srcCompat="@drawable/ic_photo"
+			app:tint="?android:textColorTertiary"
+			android:alpha="0.2"
+		/>
+
+		<TextView
+			android:layout_width="wrap_content"
+			android:layout_height="wrap_content"
+			android:gravity="center_horizontal"
+			android:text="@string/empty_photos"
+			android:textColor="?android:textColorTertiary"
+			android:layout_marginTop="12dp"
+			android:layout_gravity="center_horizontal"
+		/>
+	</LinearLayout>
+
+	<com.google.android.material.floatingactionbutton.FloatingActionButton
 		android:layout_width="wrap_content"
 		android:layout_height="wrap_content"
 		android:id="@+id/fab_photo"
-		android:layout_gravity="bottom|right"
+		app:backgroundTint="#2196F3"
+		app:srcCompat="@drawable/ic_floating_photo"
+		android:layout_gravity="bottom|end"
 		android:layout_margin="16dp"
-	>
-		<ImageView
-			android:layout_width="57dp"
-			android:layout_height="56dp"
-			android:layout_marginTop="3dp"
-			android:src="@drawable/fab_button_shadow"
-			android:layout_gravity="center_horizontal"
-		/>
-
-		<FrameLayout
-			android:layout_width="wrap_content"
-			android:layout_height="wrap_content"
-		>
-			<ImageView
-				android:layout_width="56dp"
-				android:layout_height="56dp"
-				android:background="@drawable/photo_button_bg"
-			/>
-
-			<ImageView
-				android:layout_width="24dp"
-				android:layout_height="24dp"
-				android:layout_gravity="center"
-				android:src="@drawable/ic_floating_photo"
-			/>
-		</FrameLayout>
-	</FrameLayout>
+	/>
 </FrameLayout>

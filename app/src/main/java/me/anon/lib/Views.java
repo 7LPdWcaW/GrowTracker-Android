@@ -1,9 +1,7 @@
 package me.anon.lib;
 
 import android.app.Activity;
-import android.app.Fragment;
 import android.os.Build.VERSION;
-import android.support.v4.app.FragmentActivity;
 import android.text.TextUtils;
 import android.util.Log;
 import android.view.View;
@@ -23,6 +21,8 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
 
+import androidx.fragment.app.Fragment;
+import androidx.fragment.app.FragmentActivity;
 import me.anon.grow.R;
 
 /**
@@ -630,6 +630,7 @@ public class Views
 						}
 
 						View view = finder.findById(source, id);
+						if (view == null) continue;
 						view.setOnClickListener(new View.OnClickListener()
 						{
 							@Override public void onClick(View v)
