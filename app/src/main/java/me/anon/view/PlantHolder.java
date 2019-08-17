@@ -104,6 +104,7 @@ public class PlantHolder extends RecyclerView.ViewHolder
 				{
 					Intent photos = new Intent(view.getContext(), PlantDetailsActivity.class);
 					photos.putExtra("plant_index", PlantManager.getInstance().getPlants().indexOf(plant));
+					photos.putExtra("forward", "photo");
 					view.getContext().startActivity(photos);
 				}
 			});
@@ -117,6 +118,7 @@ public class PlantHolder extends RecyclerView.ViewHolder
 				{
 					Intent photos = new Intent(view.getContext(), PlantDetailsActivity.class);
 					photos.putExtra("plant_index", PlantManager.getInstance().getPlants().indexOf(plant));
+					photos.putExtra("forward", "feed");
 					view.getContext().startActivity(photos);
 				}
 			});
@@ -134,9 +136,37 @@ public class PlantHolder extends RecyclerView.ViewHolder
 					{
 						@Override public boolean onMenuItemClick(MenuItem item)
 						{
+							Intent photos = new Intent(view.getContext(), PlantDetailsActivity.class);
+							photos.putExtra("plant_index", PlantManager.getInstance().getPlants().indexOf(plant));
 
+							if (item.getItemId() == R.id.menu_action)
+							{
+								photos.putExtra("forward", "action");
+							}
+							else if (item.getItemId() == R.id.menu_note)
+							{
+								photos.putExtra("forward", "note");
+							}
+							else if (item.getItemId() == R.id.menu_photos)
+							{
+								photos.putExtra("forward", "photos");
+							}
+							else if (item.getItemId() == R.id.menu_history)
+							{
+								photos.putExtra("forward", "history");
+							}
+							else if (item.getItemId() == R.id.menu_statistics)
+							{
+								photos.putExtra("forward", "statistics");
+							}
+							else
+							{
+								return false;
+							}
 
-							return false;
+							view.getContext().startActivity(photos);
+
+							return true;
 						}
 					});
 

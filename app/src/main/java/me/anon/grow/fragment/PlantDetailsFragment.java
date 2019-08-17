@@ -121,6 +121,7 @@ public class PlantDetailsFragment extends Fragment
 	private int plantIndex = -1;
 	private int gardenIndex = -1;
 	private Plant plant;
+	private boolean forwardIntent = false;
 
 	/**
 	 * @param plantIndex If -1, assume new plant
@@ -156,9 +157,6 @@ public class PlantDetailsFragment extends Fragment
 	{
 		super.onActivityCreated(savedInstanceState);
 
-		((PlantDetailsActivity)getActivity()).toolbarLayout.addView(LayoutInflater.from(getActivity()).inflate(R.layout.action_buttons_stub, ((PlantDetailsActivity)getActivity()).toolbarLayout, false));
-		Views.inject(this, ((PlantDetailsActivity)getActivity()).toolbarLayout);
-
 		if (getArguments() != null)
 		{
 			plantIndex = getArguments().getInt("plant_index", -1);
@@ -170,6 +168,23 @@ public class PlantDetailsFragment extends Fragment
 				getActivity().getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_ALWAYS_HIDDEN);
 			}
 		}
+
+		if (getActivity().getIntent().getExtras().containsKey("forward"))
+		{
+			Bundle extras = getActivity().getIntent().getExtras();
+			String forward = extras.getString("forward", "");
+			forwardIntent = !TextUtils.isEmpty(forward);
+
+			if ("feed".equals(forward))
+			{
+				Intent feeding = new Intent(getActivity(), AddWateringActivity.class);
+				feeding.putExtra("plant_index", new int[]{plantIndex});
+				startActivityForResult(feeding, 2);
+			}
+		}
+
+		((PlantDetailsActivity)getActivity()).getToolbarLayout().addView(LayoutInflater.from(getActivity()).inflate(R.layout.action_buttons_stub, ((PlantDetailsActivity)getActivity()).getToolbarLayout(), false));
+		Views.inject(this, ((PlantDetailsActivity)getActivity()).getToolbarLayout());
 
 		if (plant == null)
 		{
@@ -602,6 +617,11 @@ public class PlantDetailsFragment extends Fragment
 					}
 				});
 			}
+		}
+
+		if (forwardIntent)
+		{
+			getActivity().finish();
 		}
 
 		super.onActivityResult(requestCode, resultCode, data);

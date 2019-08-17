@@ -1,0 +1,76 @@
+package me.anon.grow
+
+import android.os.Bundle
+import android.view.MenuItem
+import com.google.android.material.appbar.AppBarLayout
+import kotlinx.android.synthetic.main.fragment_holder.*
+import me.anon.grow.fragment.PlantDetailsFragment
+
+/**
+ * // TODO: Add class description
+ *
+ * @author 7LPdWcaW
+ * @documentation // TODO Reference flow doc
+ * @project GrowTracker
+ */
+class PlantDetailsActivity : BaseActivity()
+{
+	public val toolbarLayout: AppBarLayout by lazy { toolbar_layout }
+
+	override fun onCreate(savedInstanceState: Bundle?)
+	{
+		super.onCreate(savedInstanceState)
+
+		if (!checkEncryptState())
+		{
+			var gardenIndex = -1
+			var plantIndex = -1
+
+			intent.extras?.let {
+				plantIndex = it.getInt("plant_index", -1)
+				gardenIndex = it.getInt("garden_index", -1)
+
+//				it.getString("forward", "").isNotEmpty() T {
+//					setTheme(R.style.Theme_Transparent)
+//				}()
+			}
+
+			if (plantIndex < 0)
+			{
+				finish()
+				return
+			}
+
+			setContentView(R.layout.fragment_holder)
+			setSupportActionBar(toolbar)
+			supportActionBar?.setDisplayHomeAsUpEnabled(true)
+			supportActionBar?.setHomeAsUpIndicator(R.drawable.ic_done_white_24dp)
+
+			supportFragmentManager.findFragmentByTag(TAG_FRAGMENT) ?: let {
+				supportFragmentManager.beginTransaction().replace(R.id.fragment_holder, PlantDetailsFragment.newInstance(plantIndex, gardenIndex), TAG_FRAGMENT).commit()
+			}
+		}
+	}
+
+	override fun onOptionsItemSelected(item: MenuItem): Boolean
+	{
+		if (item.itemId == android.R.id.home)
+		{
+			val fragment = supportFragmentManager.findFragmentById(R.id.fragment_holder)
+
+			if (fragment is PlantDetailsFragment)
+			{
+				fragment.save()
+			}
+
+			return true
+		}
+
+		return super.onOptionsItemSelected(item)
+	}
+
+	companion object
+	{
+		private val TAG_FRAGMENT = "current_fragment"
+	}
+}
