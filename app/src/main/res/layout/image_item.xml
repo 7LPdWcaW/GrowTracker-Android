@@ -8,7 +8,10 @@
 	app:cardElevation="2dp"
 	app:cardCornerRadius="8dp"
 	app:cardUseCompatPadding="false"
-	android:clipChildren="true"
+	android:clipChildren="false"
+	android:clipToPadding="false"
+	android:layout_marginEnd="8dp"
+	android:layout_marginBottom="8dp"
 	style="@style/Widget.MaterialComponents.CardView"
 >
 	<me.anon.view.SquareRelativeLayout
