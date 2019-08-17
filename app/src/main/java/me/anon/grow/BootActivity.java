@@ -31,7 +31,6 @@ public class BootActivity extends AppCompatActivity
 	{
 		boolean forceDark = androidx.preference.PreferenceManager.getDefaultSharedPreferences(this).getBoolean("force_dark", false);
 		AppCompatDelegate.setDefaultNightMode(forceDark ? AppCompatDelegate.MODE_NIGHT_YES : AppCompatDelegate.MODE_NIGHT_FOLLOW_SYSTEM);
-		AppCompatDelegate.create(this, null).applyDayNight();
 
 		super.onCreate(savedInstanceState);
 

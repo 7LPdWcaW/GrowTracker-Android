@@ -40,7 +40,13 @@
 			/>
 		</receiver>
 
-		<activity android:name=".BootActivity" android:finishOnTaskLaunch="true" android:theme="@style/AppThemeLaunch">
+		<activity
+			android:name=".BootActivity"
+			android:noHistory="true"
+			android:finishOnTaskLaunch="true"
+			android:configChanges="orientation|screenSize"
+			android:theme="@style/AppThemeLaunch"
+		>
 			<intent-filter>
 				<category android:name="android.intent.category.LAUNCHER" />
 				<action android:name="android.intent.action.MAIN" />
