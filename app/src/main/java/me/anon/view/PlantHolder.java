@@ -15,9 +15,12 @@ import com.nostra13.universalimageloader.core.imageaware.ImageViewAware;
 
 import androidx.appcompat.widget.PopupMenu;
 import androidx.recyclerview.widget.RecyclerView;
+import me.anon.grow.EventsActivity;
 import me.anon.grow.MainApplication;
 import me.anon.grow.PlantDetailsActivity;
 import me.anon.grow.R;
+import me.anon.grow.StatisticsActivity;
+import me.anon.grow.ViewPhotosActivity;
 import me.anon.lib.manager.PlantManager;
 import me.anon.model.Plant;
 
@@ -136,35 +139,35 @@ public class PlantHolder extends RecyclerView.ViewHolder
 					{
 						@Override public boolean onMenuItemClick(MenuItem item)
 						{
-							Intent photos = new Intent(view.getContext(), PlantDetailsActivity.class);
-							photos.putExtra("plant_index", PlantManager.getInstance().getPlants().indexOf(plant));
+							Intent intent = new Intent(view.getContext(), PlantDetailsActivity.class);
 
 							if (item.getItemId() == R.id.menu_action)
 							{
-								photos.putExtra("forward", "action");
+								intent.putExtra("forward", "action");
 							}
 							else if (item.getItemId() == R.id.menu_note)
 							{
-								photos.putExtra("forward", "note");
+								intent.putExtra("forward", "note");
 							}
 							else if (item.getItemId() == R.id.menu_photos)
 							{
-								photos.putExtra("forward", "photos");
+								intent = new Intent(view.getContext(), ViewPhotosActivity.class);
 							}
 							else if (item.getItemId() == R.id.menu_history)
 							{
-								photos.putExtra("forward", "history");
+								intent = new Intent(view.getContext(), EventsActivity.class);
 							}
 							else if (item.getItemId() == R.id.menu_statistics)
 							{
-								photos.putExtra("forward", "statistics");
+								intent = new Intent(view.getContext(), StatisticsActivity.class);
 							}
 							else
 							{
 								return false;
 							}
 
-							view.getContext().startActivity(photos);
+							intent.putExtra("plant_index", PlantManager.getInstance().getPlants().indexOf(plant));
+							view.getContext().startActivity(intent);
 
 							return true;
 						}

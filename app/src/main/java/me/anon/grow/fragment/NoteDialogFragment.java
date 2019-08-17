@@ -10,6 +10,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.EditText;
 
+import androidx.annotation.NonNull;
 import androidx.appcompat.app.AlertDialog;
 import androidx.fragment.app.DialogFragment;
 import me.anon.grow.R;
@@ -28,6 +29,7 @@ public class NoteDialogFragment extends DialogFragment
 	private NoteAction action;
 
 	private OnDialogConfirmed onDialogConfirmed;
+	public DialogInterface.OnCancelListener onCancelListener;
 
 	public void setOnDialogConfirmed(OnDialogConfirmed onDialogConfirmed)
 	{
@@ -72,5 +74,11 @@ public class NoteDialogFragment extends DialogFragment
 		dialog.setNegativeButton(R.string.cancel, null);
 
 		return dialog.create();
+	}
+
+	@Override public void onCancel(@NonNull DialogInterface dialog)
+	{
+		super.onCancel(dialog);
+		if (onCancelListener != null) onCancelListener.onCancel(dialog);
 	}
 }

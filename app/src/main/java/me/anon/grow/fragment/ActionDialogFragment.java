@@ -16,6 +16,7 @@ import java.text.DateFormat;
 import java.util.Calendar;
 import java.util.Date;
 
+import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AlertDialog;
 import androidx.fragment.app.DialogFragment;
@@ -37,6 +38,7 @@ public class ActionDialogFragment extends DialogFragment
 	@Views.InjectView(R.id.date) private TextView date;
 
 	private OnActionSelected onActionSelected;
+	public DialogInterface.OnCancelListener onCancelListener;
 
 	public void setOnActionSelected(OnActionSelected onActionSelected)
 	{
@@ -162,5 +164,11 @@ public class ActionDialogFragment extends DialogFragment
 	{
 		super.onSaveInstanceState(outState);
 		outState.putLong("date", action.getDate());
+	}
+
+	@Override public void onCancel(@NonNull DialogInterface dialog)
+	{
+		super.onCancel(dialog);
+		if (onCancelListener != null) onCancelListener.onCancel(dialog);
 	}
 }

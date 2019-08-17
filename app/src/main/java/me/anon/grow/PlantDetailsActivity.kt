@@ -19,8 +19,6 @@ class PlantDetailsActivity : BaseActivity()
 
 	override fun onCreate(savedInstanceState: Bundle?)
 	{
-		super.onCreate(savedInstanceState)
-
 		if (!checkEncryptState())
 		{
 			var gardenIndex = -1
@@ -29,10 +27,6 @@ class PlantDetailsActivity : BaseActivity()
 			intent.extras?.let {
 				plantIndex = it.getInt("plant_index", -1)
 				gardenIndex = it.getInt("garden_index", -1)
-
-//				it.getString("forward", "").isNotEmpty() T {
-//					setTheme(R.style.Theme_Transparent)
-//				}()
 			}
 
 			if (plantIndex < 0)
@@ -40,6 +34,8 @@ class PlantDetailsActivity : BaseActivity()
 				finish()
 				return
 			}
+
+			super.onCreate(savedInstanceState)
 
 			setContentView(R.layout.fragment_holder)
 			setSupportActionBar(toolbar)

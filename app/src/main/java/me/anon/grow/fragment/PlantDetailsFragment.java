@@ -177,9 +177,31 @@ public class PlantDetailsFragment extends Fragment
 
 			if ("feed".equals(forward))
 			{
-				Intent feeding = new Intent(getActivity(), AddWateringActivity.class);
-				feeding.putExtra("plant_index", new int[]{plantIndex});
-				startActivityForResult(feeding, 2);
+				onFeedingClick();
+			}
+			else if ("action".equals(forward))
+			{
+				onActionClick();
+			}
+			else if ("note".equals(forward))
+			{
+				onNoteClick();
+			}
+			else if ("photo".equals(forward))
+			{
+				onPhotoClick();
+			}
+			else if ("photos".equals(forward))
+			{
+				onViewPhotosClick();
+			}
+			else if ("history".equals(forward))
+			{
+				onViewHistoryClick();
+			}
+			else if ("statistics".equals(forward))
+			{
+				onViewStatisticsClick();
 			}
 		}
 
@@ -321,14 +343,14 @@ public class PlantDetailsFragment extends Fragment
 		strain.setText(plant.getStrain());
 	}
 
-	@Views.OnClick public void onFeedingClick(final View view)
+	@Views.OnClick public void onFeedingClick()
 	{
-		Intent feeding = new Intent(view.getContext(), AddWateringActivity.class);
+		Intent feeding = new Intent(getActivity(), AddWateringActivity.class);
 		feeding.putExtra("plant_index", new int[]{plantIndex});
 		startActivityForResult(feeding, 2);
 	}
 
-	@Views.OnClick public void onNoteClick(final View view)
+	@Views.OnClick public void onNoteClick()
 	{
 		NoteDialogFragment dialogFragment = new NoteDialogFragment();
 		dialogFragment.setOnDialogConfirmed(new NoteDialogFragment.OnDialogConfirmed()
@@ -367,6 +389,13 @@ public class PlantDetailsFragment extends Fragment
 				});
 			}
 		});
+		dialogFragment.onCancelListener = new DialogInterface.OnCancelListener()
+		{
+			@Override public void onCancel(DialogInterface dialogInterface)
+			{
+				if (forwardIntent) getActivity().finish();
+			}
+		};
 		dialogFragment.show(getFragmentManager(), null);
 	}
 
@@ -374,11 +403,11 @@ public class PlantDetailsFragment extends Fragment
 	{
 		if (requestCode == 1 && (grantResults != null && grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED))
 		{
-			onPhotoClick(null);
+			onPhotoClick();
 		}
 	}
 
-	@Views.OnClick public void onPhotoClick(final View view)
+	@Views.OnClick public void onPhotoClick()
 	{
 		if (!PermissionHelper.hasPermission(getActivity(), Manifest.permission.WRITE_EXTERNAL_STORAGE))
 		{
@@ -441,6 +470,13 @@ public class PlantDetailsFragment extends Fragment
 
 						startActivityForResult(Intent.createChooser(intent, getString(R.string.dialog_select_picture_title)), 3);
 					}
+				}
+			})
+			.setOnCancelListener(new DialogInterface.OnCancelListener()
+			{
+				@Override public void onCancel(DialogInterface dialogInterface)
+				{
+					if (forwardIntent) getActivity().finish();
 				}
 			})
 			.show();
@@ -613,7 +649,7 @@ public class PlantDetailsFragment extends Fragment
 
 					@Override public void onSnackBarAction(View v)
 					{
-						onPhotoClick(null);
+						onPhotoClick();
 					}
 				});
 			}
@@ -785,7 +821,7 @@ public class PlantDetailsFragment extends Fragment
 		return super.onOptionsItemSelected(item);
 	}
 
-	@Views.OnClick public void onActionClick(final View view)
+	@Views.OnClick public void onActionClick()
 	{
 		ActionDialogFragment dialogFragment = new ActionDialogFragment();
 		dialogFragment.setOnActionSelected(new ActionDialogFragment.OnActionSelected()
@@ -822,31 +858,38 @@ public class PlantDetailsFragment extends Fragment
 				});
 			}
 		});
+		dialogFragment.onCancelListener = new DialogInterface.OnCancelListener()
+		{
+			@Override public void onCancel(DialogInterface dialogInterface)
+			{
+				if (forwardIntent) getActivity().finish();
+			}
+		};
 		dialogFragment.show(getFragmentManager(), null);
 	}
 
-	@Views.OnClick public void onViewStatisticsClick(View view)
+	@Views.OnClick public void onViewStatisticsClick()
 	{
 		Intent stats = new Intent(getActivity(), StatisticsActivity.class);
 		stats.putExtra("plant_index", plantIndex);
 		startActivity(stats);
 	}
 
-	@Views.OnClick public void onViewHistoryClick(View view)
+	@Views.OnClick public void onViewHistoryClick()
 	{
 		Intent events = new Intent(getActivity(), EventsActivity.class);
 		events.putExtra("plant_index", plantIndex);
 		startActivity(events);
 	}
 
-	@Views.OnClick public void onViewPhotosClick(View view)
+	@Views.OnClick public void onViewPhotosClick()
 	{
 		Intent photos = new Intent(getActivity(), ViewPhotosActivity.class);
 		photos.putExtra("plant_index", plantIndex);
 		startActivity(photos);
 	}
 
-	@Views.OnClick public void onPlantStageContainerClick(final View view)
+	@Views.OnClick public void onPlantStageContainerClick()
 	{
 		StageDialogFragment dialogFragment = StageDialogFragment.newInstance();
 		dialogFragment.setOnStageUpdated(new StageDialogFragment.OnStageUpdated()
@@ -898,11 +941,11 @@ public class PlantDetailsFragment extends Fragment
 		dialogFragment.show(getFragmentManager(), null);
 	}
 
-	@Views.OnClick public void onPlantMediumContainerClick(final View view)
+	@Views.OnClick public void onPlantMediumContainerClick()
 	{
-		String[] mediums = PlantMedium.names(view.getContext());
+		String[] mediums = PlantMedium.names(getActivity());
 
-		new AlertDialog.Builder(view.getContext())
+		new AlertDialog.Builder(getActivity())
 			.setTitle(R.string.plant_medium_label)
 			.setItems(mediums, new DialogInterface.OnClickListener()
 			{
