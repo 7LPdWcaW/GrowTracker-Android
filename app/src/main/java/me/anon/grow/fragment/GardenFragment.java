@@ -22,6 +22,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
 
+import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AlertDialog;
 import androidx.fragment.app.Fragment;
@@ -92,11 +93,19 @@ public class GardenFragment extends Fragment
 	{
 		super.onActivityCreated(savedInstanceState);
 
-		getActivity().setTitle(getString(R.string.list_title, garden.getName()));
+		if (savedInstanceState != null)
+		{
+			garden = savedInstanceState.getParcelable("garden");
+			Views.inject(this, getActivity().findViewById(android.R.id.content));
+		}
+		else
+		{
+			((MainActivity)getActivity()).toolbarLayout.addView(LayoutInflater.from(getActivity()).inflate(R.layout.action_buttons_stub, ((MainActivity)getActivity()).toolbarLayout, false));
+			Views.inject(this, ((MainActivity)getActivity()).toolbarLayout);
+			photo.setVisibility(View.GONE);
+		}
 
-		((MainActivity)getActivity()).toolbarLayout.addView(LayoutInflater.from(getActivity()).inflate(R.layout.action_buttons_stub, ((MainActivity)getActivity()).toolbarLayout, false));
-		Views.inject(this, ((MainActivity)getActivity()).toolbarLayout);
-		photo.setVisibility(View.GONE);
+		getActivity().setTitle(getString(R.string.list_title, garden.getName()));
 
 //		ArrayList<String> images = new ArrayList<>();
 //		ArrayList<Plant> plantList = PlantManager.getInstance().getSortedPlantList(garden);
@@ -165,6 +174,12 @@ public class GardenFragment extends Fragment
 			filterList.remove(PlantStage.HARVESTED);
 			hideHarvested = true;
 		}
+	}
+
+	@Override public void onSaveInstanceState(@NonNull Bundle outState)
+	{
+		super.onSaveInstanceState(outState);
+		outState.putParcelable("garden", garden);
 	}
 
 	@Override public void onStart()

@@ -16,17 +16,19 @@
 			android:layout_width="match_parent"
 			android:layout_height="match_parent"
 			android:orientation="vertical"
-			android:paddingLeft="8dp"
-			android:paddingRight="8dp"
-			android:paddingTop="8dp"
-			android:paddingBottom="88dp"
 			android:clipToPadding="false"
+			android:clipChildren="false"
 		>
 			<androidx.recyclerview.widget.RecyclerView
 				android:layout_width="match_parent"
 				android:layout_height="match_parent"
 				android:layout_marginTop="8dp"
 				android:id="@+id/recycler_view"
+				android:paddingLeft="8dp"
+				android:paddingRight="8dp"
+				android:paddingTop="8dp"
+				android:paddingBottom="88dp"
+				android:clipToPadding="false"
 			/>
 
 			<LinearLayout
