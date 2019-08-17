@@ -99,7 +99,6 @@ import me.anon.model.Water;
 @Views.Injectable
 public class PlantDetailsFragment extends Fragment
 {
-	@Views.InjectView(R.id.action_container) private View actionContainer;
 	@Views.InjectView(R.id.link_container) private View linkContainer;
 
 	@Views.InjectView(R.id.plant_name) private TextView name;
@@ -169,7 +168,7 @@ public class PlantDetailsFragment extends Fragment
 			}
 		}
 
-		if (getActivity().getIntent().getExtras().containsKey("forward"))
+		if (getActivity().getIntent().getExtras() != null && getActivity().getIntent().getExtras().containsKey("forward"))
 		{
 			Bundle extras = getActivity().getIntent().getExtras();
 			String forward = extras.getString("forward", "");
@@ -205,9 +204,6 @@ public class PlantDetailsFragment extends Fragment
 			}
 		}
 
-		((PlantDetailsActivity)getActivity()).getToolbarLayout().addView(LayoutInflater.from(getActivity()).inflate(R.layout.action_buttons_stub, ((PlantDetailsActivity)getActivity()).getToolbarLayout(), false));
-		Views.inject(this, ((PlantDetailsActivity)getActivity()).getToolbarLayout());
-
 		if (plant == null)
 		{
 			plant = new Plant();
@@ -220,7 +216,8 @@ public class PlantDetailsFragment extends Fragment
 		{
 			getActivity().setTitle(getString(R.string.plant_details_title));
 
-			actionContainer.setVisibility(View.VISIBLE);
+			((PlantDetailsActivity)getActivity()).getToolbarLayout().addView(LayoutInflater.from(getActivity()).inflate(R.layout.action_buttons_stub, ((PlantDetailsActivity)getActivity()).getToolbarLayout(), false));
+			Views.inject(this, ((PlantDetailsActivity)getActivity()).getToolbarLayout());
 			linkContainer.setVisibility(View.VISIBLE);
 
 			name.setText(plant.getName());
@@ -960,16 +957,13 @@ public class PlantDetailsFragment extends Fragment
 
 	public void save()
 	{
-		name.setError(null);
-
 		if (!TextUtils.isEmpty(name.getText()))
 		{
 			plant.setName(name.getText().toString().trim());
 		}
 		else
 		{
-			name.setError(getString(R.string.name_input_error));
-			return;
+			plant.setName(("Untitled " + (PlantManager.getInstance().getPlants().size() + 1)).trim());
 		}
 
 		if (!TextUtils.isEmpty(strain.getText()))
