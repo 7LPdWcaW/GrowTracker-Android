@@ -6,10 +6,9 @@
 		<item name="colorPrimary">#4AA74E</item>
 		<item name="colorPrimaryDark">#387E3B</item>
 		<item name="colorAccent">#2196F3</item>
-		<item name="colorOnSecondary">#BEBEBE</item>
 		<item name="colorSecondary">#ffb71c1c</item>
 		<item name="colorControlNormal">#4AA74E</item>
-		<!--<item name="colorSurface">#ffffff</item>-->
+		<item name="colorOnSecondary">#ffffff</item>
 
 		<item name="actionModeBackground">?colorPrimary</item>
 		<item name="android:actionModeBackground">?colorPrimary</item>
