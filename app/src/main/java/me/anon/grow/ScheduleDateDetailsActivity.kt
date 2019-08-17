@@ -8,7 +8,7 @@ import me.anon.grow.fragment.ScheduleDateDetailsFragment
 /**
  * Activity holder for feeding schedule list
  */
-class ScheduleDateDetailsActivity : AppCompatActivity()
+class ScheduleDateDetailsActivity : BaseActivity()
 {
 	companion object
 	{

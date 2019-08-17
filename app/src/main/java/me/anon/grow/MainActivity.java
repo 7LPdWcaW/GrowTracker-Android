@@ -72,7 +72,6 @@ public class MainActivity extends BaseActivity implements NavigationView.OnNavig
 
 		setSupportActionBar(toolbar);
 		setNavigationView();
-		showDrawerToggle();
 		showUpdateDialog();
 
 		if (savedInstanceState == null)
@@ -107,6 +106,12 @@ public class MainActivity extends BaseActivity implements NavigationView.OnNavig
 		}
 
 		BusHelper.getInstance().register(this);
+	}
+
+	@Override protected void onResume()
+	{
+		super.onResume();
+		showDrawerToggle();
 	}
 
 	@Override protected void onSaveInstanceState(Bundle outState)

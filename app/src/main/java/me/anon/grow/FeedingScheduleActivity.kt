@@ -1,14 +1,13 @@
 package me.anon.grow
 
 import android.os.Bundle
-import androidx.appcompat.app.AppCompatActivity
 import kotlinx.android.synthetic.main.fragment_holder.*
 import me.anon.grow.fragment.FeedingScheduleListFragment
 
 /**
  * Activity holder for feeding schedule list
  */
-class FeedingScheduleActivity : AppCompatActivity()
+class FeedingScheduleActivity : BaseActivity()
 {
 	companion object
 	{

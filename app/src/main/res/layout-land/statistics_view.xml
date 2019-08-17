@@ -369,6 +369,8 @@
 			android:orientation="vertical"
 			android:layout_marginTop="8dp"
 			android:elevation="4dp"
+			android:paddingBottom="12dp"
+			android:paddingTop="0dp"
 			style="@style/PaperCard"
 		>
 			<TextView
@@ -377,8 +379,8 @@
 				android:id="@+id/additive_title"
 				android:text="@string/additives"
 				android:paddingBottom="8dp"
+				android:paddingTop="16dp"
 				style="@style/SectionTitle"
-				android:textColor="?colorAccent"
 			/>
 
 			<TextView
@@ -390,8 +392,14 @@
 				chart:layout_constraintTop_toTopOf="parent"
 				chart:layout_constraintEnd_toEndOf="parent"
 				android:drawableEnd="@drawable/ic_dropdown"
+				android:drawableTint="?android:textColorPrimary"
 				android:drawablePadding="8dp"
-				android:paddingBottom="8dp"
+				android:padding="8dp"
+				android:layout_marginEnd="8dp"
+				android:layout_marginTop="8dp"
+				android:clickable="true"
+				android:focusable="true"
+				android:background="?selectableItemBackground"
 			/>
 
 			<com.github.mikephil.charting.charts.LineChart

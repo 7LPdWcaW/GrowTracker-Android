@@ -1,11 +1,14 @@
 package me.anon.view
 
-import androidx.recyclerview.widget.RecyclerView
 import android.text.Html
 import android.view.View
+import androidx.recyclerview.widget.RecyclerView
+import com.google.android.material.card.MaterialCardView
 import kotlinx.android.synthetic.main.feeding_date_stub.view.*
 import me.anon.controller.adapter.FeedingDateAdapter
+import me.anon.grow.R
 import me.anon.lib.Unit
+import me.anon.lib.ext.resolveColor
 import me.anon.lib.helper.TimeHelper
 import me.anon.model.FeedingScheduleDate
 import kotlin.math.floor
@@ -15,6 +18,7 @@ import kotlin.math.floor
  */
 class FeedingDateHolder(val adapter: FeedingDateAdapter, itemView: View) : RecyclerView.ViewHolder(itemView)
 {
+	private val card = itemView as MaterialCardView
 	private val title = itemView.title
 	private val additives = itemView.additives
 	private val delete = itemView.delete
@@ -27,7 +31,7 @@ class FeedingDateHolder(val adapter: FeedingDateAdapter, itemView: View) : Recyc
 	{
 		delete.visibility = View.GONE
 		copy.visibility = View.GONE
-		itemView.setBackgroundColor(0x00FFFFFF.toInt())
+		card.setCardBackgroundColor(R.attr.colorSurface.resolveColor(card.context))
 
 		val lastStage = adapter.plantStages.toSortedMap().lastKey()
 		val days = TimeHelper.toDays(adapter.plantStages[lastStage] ?: 0).toInt()
@@ -38,7 +42,7 @@ class FeedingDateHolder(val adapter: FeedingDateAdapter, itemView: View) : Recyc
 			&& ((days <= feedingSchedule.dateRange[1] && lastStage.ordinal == feedingSchedule.stageRange[0].ordinal)
 				|| (lastStage.ordinal < feedingSchedule.stageRange[1].ordinal)))
 			{
-				itemView.setBackgroundColor(0x70BBDEFB.toInt())
+				card.setCardBackgroundColor(android.R.attr.colorAccent.resolveColor(card.context))
 			}
 		}
 

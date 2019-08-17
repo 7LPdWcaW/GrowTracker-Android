@@ -3,7 +3,9 @@ package me.anon.grow;
 import android.content.Intent;
 import android.os.Bundle;
 import android.text.TextUtils;
+import android.view.MenuItem;
 
+import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.app.AppCompatDelegate;
@@ -46,6 +48,23 @@ public class BaseActivity extends AppCompatActivity
 	{
 		super.onResume();
 
+		if (getSupportActionBar() != null)
+		{
+			getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+		}
+
 		sendBroadcast(new Intent("me.anon.grow.ACTION_UPDATER"));
+	}
+
+	@Override public boolean onOptionsItemSelected(@NonNull MenuItem item)
+	{
+		if (item.getItemId() == android.R.id.home)
+		{
+			// ew
+			onBackPressed();
+			return true;
+		}
+
+		return super.onOptionsItemSelected(item);
 	}
 }
