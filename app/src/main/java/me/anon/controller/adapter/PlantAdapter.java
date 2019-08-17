@@ -87,6 +87,21 @@ public class PlantAdapter extends RecyclerView.Adapter implements ItemTouchHelpe
 		}
 	}
 
+	public int getFilteredCount()
+	{
+		int total = 0;
+		for (int position = 0; position < plants.size(); position++)
+		{
+			Plant plant = plants.get(position);
+			if (showOnly == null || showOnly.contains(plant.getId()))
+			{
+				total++;
+			}
+		}
+
+		return total;
+	}
+
 	@Override public RecyclerView.ViewHolder onCreateViewHolder(ViewGroup viewGroup, int typeView)
 	{
 		switch (typeView)

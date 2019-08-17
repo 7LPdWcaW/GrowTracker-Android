@@ -421,7 +421,7 @@ public class PlantListFragment extends Fragment
 
 		adapter.notifyDataSetChanged();
 
-		if (adapter.getItemCount() == 0)
+		if (adapter.getFilteredCount() == 0)
 		{
 			empty.setVisibility(View.VISIBLE);
 			recycler.setVisibility(View.GONE);

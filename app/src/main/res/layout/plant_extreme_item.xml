@@ -58,18 +58,20 @@
 			android:layout_height="wrap_content"
 			android:orientation="horizontal"
 			android:paddingStart="12dp"
-			android:paddingEnd="12dp"
+			android:paddingEnd="4dp"
 			android:paddingBottom="8dp"
-			android:layout_marginTop="8dp"
 		>
 			<com.google.android.material.button.MaterialButton
 				android:layout_width="wrap_content"
 				android:layout_height="wrap_content"
 				android:id="@+id/action_feed"
 				android:text="@string/menu_feed"
+				android:paddingStart="0dp"
+				android:paddingEnd="0dp"
 				app:layout_constraintTop_toTopOf="parent"
 				app:layout_constraintStart_toStartOf="parent"
 				app:layout_constraintBottom_toBottomOf="parent"
+				android:minWidth="0dp"
 				style="@style/Widget.MaterialComponents.Button.TextButton"
 			/>
 
@@ -78,9 +80,13 @@
 				android:layout_height="wrap_content"
 				android:id="@+id/action_photo"
 				android:text="@string/menu_photo"
+				android:layout_marginStart="8dp"
+				android:paddingStart="0dp"
+				android:paddingEnd="0dp"
 				app:layout_constraintTop_toTopOf="parent"
 				app:layout_constraintStart_toEndOf="@id/action_feed"
 				app:layout_constraintBottom_toBottomOf="parent"
+				android:minWidth="0dp"
 				style="@style/Widget.MaterialComponents.Button.TextButton"
 			/>
 
