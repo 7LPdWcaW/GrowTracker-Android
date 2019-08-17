@@ -18,4 +18,3 @@ deploy:
   on:
     repo: 7LPdWcaW/GrowTracker-Android
     tags: true
-    all_branches: true
