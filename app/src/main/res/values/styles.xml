@@ -16,6 +16,7 @@
 
 		<item name="actionModeStyle">@style/ActionMode</item>
 		<item name="android:actionModeStyle">@style/ActionMode</item>
+		<item name="android:windowBackground">@drawable/light_window</item>
 
 		<item name="windowActionModeOverlay">true</item>
 	</style>

@@ -20,9 +20,9 @@
 				android:layout_height="wrap_content"
 				android:id="@+id/last_feeding"
 				android:layout_margin="16dp"
-				app:cardBackgroundColor="?colorAccent"
+				app:cardBackgroundColor="@color/light_blue"
 				app:cardCornerRadius="4dp"
-				app:cardElevation="0dp"
+				app:cardElevation="2dp"
 			>
 				<LinearLayout
 					android:layout_width="match_parent"
@@ -89,6 +89,7 @@
 						android:text="@string/feed_again"
 						android:layout_gravity="end"
 						android:padding="16dp"
+						android:layout_marginEnd="8dp"
 						android:textColor="?android:textColorPrimary"
 						style="@style/Widget.MaterialComponents.Button.TextButton"
 					/>
