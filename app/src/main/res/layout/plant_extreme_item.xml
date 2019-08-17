@@ -85,15 +85,15 @@
 			/>
 
 			<ImageView
-				android:layout_width="24dp"
-				android:layout_height="24dp"
+				android:layout_width="48dp"
+				android:layout_height="48dp"
 				android:id="@+id/action_overflow"
+				android:padding="12dp"
 				android:background="?actionBarItemBackground"
 				android:src="@drawable/ic_overflow"
 				android:tint="?android:textColorSecondary"
 				android:layout_gravity="center_vertical"
 				android:layout_marginStart="8dp"
-				android:layout_marginEnd="8dp"
 				app:layout_constraintEnd_toEndOf="parent"
 				app:layout_constraintTop_toTopOf="parent"
 				app:layout_constraintBottom_toBottomOf="parent"

@@ -60,7 +60,7 @@
 					android:src="@drawable/ic_overflow"
 					android:background="@null"
 					android:adjustViewBounds="true"
-					android:tint="#333333"
+					android:tint="?android:textColorSecondary"
 					android:padding="12dp"
 					android:visibility="gone"
 					app:layout_constraintEnd_toEndOf="parent"
