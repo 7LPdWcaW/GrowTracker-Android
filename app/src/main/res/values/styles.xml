@@ -11,11 +11,11 @@
 		<item name="colorControlNormal">#4AA74E</item>
 		<!--<item name="colorSurface">#ffffff</item>-->
 
-		<item name="actionModeBackground">@color/blue</item>
-		<item name="android:actionModeBackground">@color/blue</item>
+		<item name="actionModeBackground">?colorPrimary</item>
+		<item name="android:actionModeBackground">?colorPrimary</item>
 
-		<item name="actionModeStyle">@style/ActionMode</item>
-		<item name="android:actionModeStyle">@style/ActionMode</item>
+		<!--<item name="actionModeStyle">@style/ActionMode</item>-->
+		<!--<item name="android:actionModeStyle">@style/ActionMode</item>-->
 		<item name="android:windowBackground">@drawable/light_window</item>
 
 		<item name="windowActionModeOverlay">true</item>

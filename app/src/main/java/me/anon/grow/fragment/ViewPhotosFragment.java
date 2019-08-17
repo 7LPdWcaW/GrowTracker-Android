@@ -10,9 +10,9 @@ import android.os.AsyncTask;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.Environment;
-import android.os.Handler;
 import android.os.ParcelFileDescriptor;
 import android.provider.MediaStore;
+import android.view.ActionMode;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -35,7 +35,7 @@ import java.util.List;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.appcompat.view.ActionMode;
+import androidx.appcompat.widget.Toolbar;
 import androidx.core.content.FileProvider;
 import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.GridLayoutManager;
@@ -72,6 +72,8 @@ public class ViewPhotosFragment extends Fragment
 	private ImageAdapter adapter;
 
 	@Views.InjectView(R.id.recycler_view) private RecyclerView recycler;
+	@Views.InjectView(R.id.empty) private View empty;
+	private ActionMode action = null;
 
 	private int plantIndex = -1;
 	private Plant plant;
@@ -124,16 +126,26 @@ public class ViewPhotosFragment extends Fragment
 
 		adapter = new ImageAdapter();
 		adapter.plant = plant;
+		adapter.onItemSelectedListener = new ImageAdapter.OnItemSelectedListener()
+		{
+			@Override public void onItemSelected(int totalSelected)
+			{
+				if (action != null)
+				{
+					action.setTitle(totalSelected + " Selected");
+				}
+			}
+		};
 		adapter.setOnLongClickListener(new View.OnLongClickListener()
 		{
 			@Override public boolean onLongClick(View v)
 			{
-				((AppCompatActivity)getActivity()).startSupportActionMode(new ActionMode.Callback()
+				Toolbar toolbar = ((AppCompatActivity)getActivity()).findViewById(R.id.toolbar);
+				action = toolbar.startActionMode(new ActionMode.Callback()
 				{
 					@Override public boolean onCreateActionMode(ActionMode mode, Menu menu)
 					{
 						getActivity().getMenuInflater().inflate(R.menu.photo_menu, menu);
-						getActivity().findViewById(R.id.toolbar_layout).setVisibility(View.GONE);
 						adapter.setInActionMode(true);
 						adapter.notifyDataSetChanged();
 
@@ -151,7 +163,6 @@ public class ViewPhotosFragment extends Fragment
 						{
 							new AlertDialog.Builder(getActivity())
 								.setTitle(R.string.confirm_title)
-								.setMessage(getString(R.string.confirm_delete_photos_message, adapter.getSelected().size()))
 								.setPositiveButton(R.string.yes, new DialogInterface.OnClickListener()
 								{
 									@Override public void onClick(DialogInterface dialog, int which)
@@ -205,22 +216,10 @@ public class ViewPhotosFragment extends Fragment
 					{
 						adapter.setInActionMode(false);
 						adapter.notifyDataSetChanged();
-						new Handler().postDelayed(new Runnable()
-						{
-							@Override public void run()
-							{
-								getActivity().runOnUiThread(new Runnable()
-								{
-									@Override public void run()
-									{
-										getActivity().findViewById(R.id.toolbar_layout).setVisibility(View.VISIBLE);
-									}
-								});
-							}
-						}, 400);
-
+						action = null;
 					}
 				});
+				action.setTitle("1 Selected");
 
 				return true;
 			}
@@ -300,6 +299,17 @@ public class ViewPhotosFragment extends Fragment
 		sectionedAdapter.setSections(sections.toArray(new SectionedGridRecyclerViewAdapter.Section[sections.size()]));
 
 		recycler.setAdapter(sectionedAdapter);
+
+		if (adapter.getItemCount() == 0)
+		{
+			empty.setVisibility(View.VISIBLE);
+			recycler.setVisibility(View.GONE);
+		}
+		else
+		{
+			empty.setVisibility(View.GONE);
+			recycler.setVisibility(View.VISIBLE);
+		}
 	}
 
 	@Override public void onRequestPermissionsResult(int requestCode, String[] permissions, int[] grantResults)
