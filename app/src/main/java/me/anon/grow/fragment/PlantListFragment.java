@@ -25,6 +25,7 @@ import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.ItemTouchHelper;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
+import kotlin.jvm.functions.Function3;
 import me.anon.controller.adapter.PlantAdapter;
 import me.anon.controller.adapter.SimpleItemTouchHelperCallback;
 import me.anon.grow.AddPlantActivity;
@@ -40,6 +41,7 @@ import me.anon.model.EmptyAction;
 import me.anon.model.NoteAction;
 import me.anon.model.Plant;
 import me.anon.model.PlantStage;
+import me.anon.view.SomeDividerItemDecoration;
 
 /**
  * // TODO: Add class description
@@ -122,6 +124,13 @@ public class PlantListFragment extends Fragment
 			recycler.setLayoutManager(layoutManager);
 		}
 
+		recycler.addItemDecoration(new SomeDividerItemDecoration(getActivity(), SomeDividerItemDecoration.VERTICAL, R.drawable.divider_8dp, new Function3<Integer, RecyclerView.ViewHolder, RecyclerView.Adapter<RecyclerView.ViewHolder>, Boolean>()
+		{
+			@Override public Boolean invoke(Integer integer, RecyclerView.ViewHolder viewHolder, RecyclerView.Adapter<RecyclerView.ViewHolder> viewHolderAdapter)
+			{
+				return true;
+			}
+		}));
 		recycler.setAdapter(adapter);
 
 		ItemTouchHelper.Callback callback = new SimpleItemTouchHelperCallback(adapter)

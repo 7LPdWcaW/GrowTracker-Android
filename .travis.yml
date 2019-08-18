@@ -1,6 +1,7 @@
 language: android
 jdk: oraclejdk8
 dist: trusty
+if: tag IS present
 android:
   components:
   - build-tools-29.0.2

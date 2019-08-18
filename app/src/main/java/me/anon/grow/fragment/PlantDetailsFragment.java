@@ -53,6 +53,7 @@ import java.util.Date;
 import java.util.Locale;
 import java.util.UUID;
 
+import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AlertDialog;
 import androidx.cardview.widget.CardView;
@@ -152,6 +153,13 @@ public class PlantDetailsFragment extends Fragment
 		return view;
 	}
 
+	@Override public void onSaveInstanceState(@NonNull Bundle outState)
+	{
+		super.onSaveInstanceState(outState);
+		outState.putInt("plant_index", plantIndex);
+		outState.putInt("garden_index", gardenIndex);
+	}
+
 	@Override public void onActivityCreated(Bundle savedInstanceState)
 	{
 		super.onActivityCreated(savedInstanceState);
@@ -160,6 +168,18 @@ public class PlantDetailsFragment extends Fragment
 		{
 			plantIndex = getArguments().getInt("plant_index", -1);
 			gardenIndex = getArguments().getInt("garden_index", -1);
+
+			if (plantIndex > -1)
+			{
+				plant = PlantManager.getInstance().getPlants().get(plantIndex);
+				getActivity().getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_ALWAYS_HIDDEN);
+			}
+		}
+
+		if (savedInstanceState != null)
+		{
+			plantIndex = savedInstanceState.getInt("plant_index", plantIndex);
+			gardenIndex = savedInstanceState.getInt("garden_index", plantIndex);
 
 			if (plantIndex > -1)
 			{
@@ -492,7 +512,10 @@ public class PlantDetailsFragment extends Fragment
 			{
 				PlantManager.getInstance().upsert(plantIndex, plant);
 				PlantWidgetProvider.triggerUpdateAll(getActivity());
-				AddonHelper.broadcastImage(getActivity(), plant.getImages().get(plant.getImages().size() - 1), false);
+				if (plant.getImages().size() - 1 > 0)
+				{
+					AddonHelper.broadcastImage(getActivity(), plant.getImages().get(plant.getImages().size() - 1), false);
+				}
 			}
 		}
 		else if (requestCode == 2)
