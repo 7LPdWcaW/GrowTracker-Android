@@ -1,9 +1,6 @@
 package me.anon.view;
 
 import android.content.Intent;
-import androidx.core.view.ViewCompat;
-import androidx.cardview.widget.CardView;
-import androidx.recyclerview.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.ImageView;
@@ -17,6 +14,9 @@ import com.nostra13.universalimageloader.core.imageaware.ImageViewAware;
 import java.util.ArrayList;
 import java.util.Collections;
 
+import androidx.cardview.widget.CardView;
+import androidx.core.view.ViewCompat;
+import androidx.recyclerview.widget.RecyclerView;
 import me.anon.controller.adapter.ActionAdapter;
 import me.anon.grow.MainApplication;
 import me.anon.grow.R;

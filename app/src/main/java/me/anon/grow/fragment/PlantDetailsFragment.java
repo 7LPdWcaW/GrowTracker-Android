@@ -512,7 +512,10 @@ public class PlantDetailsFragment extends Fragment
 			{
 				PlantManager.getInstance().upsert(plantIndex, plant);
 				PlantWidgetProvider.triggerUpdateAll(getActivity());
-				AddonHelper.broadcastImage(getActivity(), plant.getImages().get(plant.getImages().size() - 1), false);
+				if (plant.getImages().size() - 1 > 0)
+				{
+					AddonHelper.broadcastImage(getActivity(), plant.getImages().get(plant.getImages().size() - 1), false);
+				}
 			}
 		}
 		else if (requestCode == 2)
