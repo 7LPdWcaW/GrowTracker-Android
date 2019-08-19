@@ -13,7 +13,6 @@ import com.squareup.moshi.Types;
 
 import java.io.BufferedOutputStream;
 import java.io.File;
-import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.OutputStream;
 import java.util.ArrayList;
@@ -221,7 +220,7 @@ public class PlantManager
 				else
 				{
 					mPlants.clear();
-					mPlants.addAll(MoshiHelper.parse(new FileInputStream(new File(FILES_DIR, "/plants.json")), Types.newParameterizedType(ArrayList.class, Plant.class)));
+					mPlants.addAll(MoshiHelper.parse(new File(FILES_DIR, "/plants.json"), Types.newParameterizedType(ArrayList.class, Plant.class)));
 					MainApplication.setFailsafe(false);
 				}
 

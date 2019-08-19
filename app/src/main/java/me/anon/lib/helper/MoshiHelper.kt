@@ -1,5 +1,6 @@
 package me.anon.lib.helper
 
+import com.squareup.moshi.JsonReader
 import com.squareup.moshi.JsonWriter
 import com.squareup.moshi.Moshi
 import com.squareup.moshi.kotlin.reflect.KotlinJsonAdapterFactory
@@ -7,6 +8,7 @@ import me.anon.lib.adapter.ActionJsonAdapter
 import me.anon.lib.adapter.ArrayListJsonAdapter
 import me.anon.model.Action
 import okio.Okio
+import java.io.File
 import java.io.InputStream
 import java.io.OutputStream
 import java.lang.reflect.Type
@@ -20,9 +22,15 @@ object MoshiHelper
 	}
 
 	@JvmStatic
+	public fun <T> parse(json: File, type: Type): T
+	{
+		return getMoshi().adapter<T>(type).fromJson(JsonReader.of(Okio.buffer(Okio.source(json)))) as T
+	}
+
+	@JvmStatic
 	public fun <T> parse(json: InputStream, type: Type): T
 	{
-		return getMoshi().adapter<T>(type).fromJson(Okio.buffer(Okio.source(json))) as T
+		return getMoshi().adapter<T>(type).fromJson(JsonReader.of(Okio.buffer(Okio.source(json)))) as T
 	}
 
 	@JvmStatic
@@ -53,15 +61,13 @@ object MoshiHelper
 	{
 		val moshi = Moshi.Builder()
 		moshi.add<Action>(Action::class.java, ActionJsonAdapter())
-		moshi.add(ArrayListJsonAdapter.FACTORY)
-		moshi.add(KotlinJsonAdapterFactory())
+		addAdapters(moshi)
 
 		return moshi.build()
 	}
 
 	public fun addAdapters(builder: Moshi.Builder): Moshi.Builder
 	{
-		builder.add<Action>(Action::class.java, ActionJsonAdapter())
 		builder.add(ArrayListJsonAdapter.FACTORY)
 		builder.add(KotlinJsonAdapterFactory())
 		return builder
