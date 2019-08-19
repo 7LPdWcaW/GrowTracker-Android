@@ -1,9 +1,14 @@
 package me.anon.grow;
 
+import android.content.ComponentName;
 import android.content.Intent;
+import android.content.pm.PackageManager;
+import android.content.pm.ResolveInfo;
 import android.os.Bundle;
 import android.text.TextUtils;
 import android.view.MenuItem;
+
+import java.util.List;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -53,7 +58,30 @@ public class BaseActivity extends AppCompatActivity
 			getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 		}
 
-		sendBroadcast(new Intent("me.anon.grow.ACTION_UPDATER"));
+		Intent otherIntents = new Intent("me.anon.grow.ACTION_UPDATER");
+		List<ResolveInfo> resolveInfos = getPackageManager().queryBroadcastReceivers(otherIntents, PackageManager.GET_META_DATA);
+
+		if (resolveInfos.size() > 0)
+		{
+			for (final ResolveInfo resolveInfo : resolveInfos)
+			{
+				try
+				{
+					String appName = (String)resolveInfo.loadLabel(getPackageManager());
+					appName = TextUtils.isEmpty(appName) ? resolveInfo.activityInfo.packageName : appName;
+
+					Intent broadcast = new Intent();
+					broadcast.setAction("me.anon.grow.ACTION_UPDATER");
+					broadcast.setComponent(new ComponentName(resolveInfo.activityInfo.packageName, resolveInfo.activityInfo.name));
+					broadcast.addFlags(Intent.FLAG_INCLUDE_STOPPED_PACKAGES);
+					sendBroadcast(broadcast);
+				}
+				catch (Exception e)
+				{
+
+				}
+			}
+		}
 	}
 
 	@Override public boolean onOptionsItemSelected(@NonNull MenuItem item)
