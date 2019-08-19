@@ -1,7 +1,10 @@
 package me.anon.model;
 
+import com.squareup.moshi.JsonClass;
+
 import java.io.Serializable;
 
+@JsonClass(generateAdapter = true)
 public class CrashReport implements Serializable
 {
 	// App information

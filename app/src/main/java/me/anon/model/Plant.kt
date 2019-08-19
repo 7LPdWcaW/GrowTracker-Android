@@ -170,7 +170,7 @@ class Plant(
 					}
 
 					lastWater.additives?.let {
-						var total = it.sumByDouble { it.amount }
+						var total = it.sumByDouble { it.amount ?: 0.0 }
 						summary += "<br/> + <b>" + Unit.ML.to(measureUnit, total) + measureUnit.label + "</b> " + context.getString(R.string.additives)
 					}
 				}
@@ -240,11 +240,11 @@ class Plant(
 			{
 				if (action is StageChange)
 				{
-					stages[action.newStage] = action.getDate()
+					stages[action.newStage] = action.date
 
 					if (action.newStage == PlantStage.HARVESTED)
 					{
-						endDate = action.getDate()
+						endDate = action.date
 					}
 				}
 			}
