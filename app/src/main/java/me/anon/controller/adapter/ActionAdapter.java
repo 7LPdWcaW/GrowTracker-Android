@@ -1,6 +1,9 @@
 package me.anon.controller.adapter;
 
+import android.annotation.SuppressLint;
 import android.content.DialogInterface;
+import android.os.Parcel;
+import android.os.Parcelable;
 import android.preference.PreferenceManager;
 import android.text.Html;
 import android.text.TextUtils;
@@ -28,6 +31,7 @@ import androidx.annotation.Nullable;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.widget.PopupMenu;
 import androidx.recyclerview.widget.RecyclerView;
+import kotlinx.android.parcel.Parcelize;
 import me.anon.grow.R;
 import me.anon.lib.DateRenderer;
 import me.anon.lib.TempUnit;
@@ -79,13 +83,24 @@ public class ActionAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>
 	/**
 	 * Dummy image action placeholder class
 	 */
-	private static class ImageAction extends Action
+	@SuppressLint("ParcelCreator") @Parcelize
+	private static class ImageAction extends Action implements Parcelable
 	{
 		public ArrayList<String> images = new ArrayList<>();
 
 		@Override public long getDate()
 		{
 			return getImageDate(images.get(0));
+		}
+
+		@Override public int describeContents()
+		{
+			return 0;
+		}
+
+		@Override public void writeToParcel(Parcel parcel, int i)
+		{
+
 		}
 	}
 
@@ -461,8 +476,7 @@ public class ActionAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>
 					String stageDayStr = "";
 
 					StageChange lastChange = null;
-					StageChange currentChange = new StageChange();
-					currentChange.setDate(action.getDate());
+					long currentChangeDate = action.getDate();
 
 					for (int actionIndex = index; actionIndex < actions.size(); actionIndex++)
 					{
@@ -481,7 +495,7 @@ public class ActionAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>
 
 					if (lastChange != null)
 					{
-						int currentDays = (int)TimeHelper.toDays(Math.abs(currentChange.getDate() - lastChange.getDate()));
+						int currentDays = (int)TimeHelper.toDays(Math.abs(currentChangeDate - lastChange.getDate()));
 						currentDays = (currentDays == 0 ? 1 : currentDays);
 						stageDayStr += "/" + currentDays + dateDay.getContext().getString(lastChange.getNewStage().getPrintString()).substring(0, 1).toLowerCase();
 					}
