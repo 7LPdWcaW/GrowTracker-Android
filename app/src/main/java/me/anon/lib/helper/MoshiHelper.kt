@@ -58,4 +58,12 @@ object MoshiHelper
 
 		return moshi.build()
 	}
+
+	public fun addAdapters(builder: Moshi.Builder): Moshi.Builder
+	{
+		builder.add<Action>(Action::class.java, ActionJsonAdapter())
+		builder.add(ArrayListJsonAdapter.FACTORY)
+		builder.add(KotlinJsonAdapterFactory())
+		return builder
+	}
 }

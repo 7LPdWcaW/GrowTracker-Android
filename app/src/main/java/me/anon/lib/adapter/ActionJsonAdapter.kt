@@ -7,11 +7,11 @@ import java.io.IOException
 
 public class ActionJsonAdapter() : JsonAdapter<Action>()
 {
-	private val moshi: Moshi = MoshiHelper.getMoshi()
-	private val emptyActionAdater: JsonAdapter<EmptyAction> = moshi.adapter<EmptyAction>(EmptyAction::class.java)
-	private val noteActionAdapter: JsonAdapter<NoteAction> = moshi.adapter<NoteAction>(NoteAction::class.java)
-	private val stageChangeAdapter: JsonAdapter<StageChange> = moshi.adapter<StageChange>(StageChange::class.java)
-	private val waterAdapter: JsonAdapter<Water> = moshi.adapter<Water>(Water::class.java)
+	private val moshi: Moshi by lazy { MoshiHelper.addAdapters(Moshi.Builder()).build() }
+	private val emptyActionAdater: JsonAdapter<EmptyAction> by lazy { moshi.adapter<EmptyAction>(EmptyAction::class.java) }
+	private val noteActionAdapter: JsonAdapter<NoteAction> by lazy { moshi.adapter<NoteAction>(NoteAction::class.java) }
+	private val stageChangeAdapter: JsonAdapter<StageChange> by lazy { moshi.adapter<StageChange>(StageChange::class.java) }
+	private val waterAdapter: JsonAdapter<Water> by lazy { moshi.adapter<Water>(Water::class.java) }
 
 	@Throws(IOException::class)
 	override fun fromJson(reader: JsonReader): Action

@@ -3,6 +3,7 @@ package me.anon.model
 import android.content.Context
 import android.os.Parcelable
 import android.preference.PreferenceManager
+import com.squareup.moshi.JsonClass
 import kotlinx.android.parcel.Parcelize
 import me.anon.grow.R
 import me.anon.lib.TempUnit
@@ -12,6 +13,7 @@ import me.anon.lib.Unit
  * // TODO: Add class description
  */
 @Parcelize
+@JsonClass(generateAdapter = true)
 class Water(
 	var ppm: Double? = null,
 	var ph: Double? = null,

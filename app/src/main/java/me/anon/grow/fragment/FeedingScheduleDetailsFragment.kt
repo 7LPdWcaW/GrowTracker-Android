@@ -66,7 +66,7 @@ class FeedingScheduleDetailsFragment : Fragment()
 					val schedule: FeedingSchedule = FeedingSchedule(
 						name = title.text.toString(),
 						description = description.text.toString(),
-						schedules = schedules
+						_schedules = schedules
 					)
 
 					ScheduleManager.instance.insert(schedule)
@@ -184,7 +184,7 @@ class FeedingScheduleDetailsFragment : Fragment()
 				ScheduleManager.instance.insert(FeedingSchedule(
 					name = title.text.toString(),
 					description = description.text.toString(),
-					schedules = schedules
+					_schedules = schedules
 				))
 				scheduleIndex = ScheduleManager.instance.schedules.size - 1
 			}
