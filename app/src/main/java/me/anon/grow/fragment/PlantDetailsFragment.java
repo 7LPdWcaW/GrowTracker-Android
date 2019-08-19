@@ -229,7 +229,7 @@ public class PlantDetailsFragment extends Fragment
 			plant = new Plant();
 			getActivity().setTitle(getString(R.string.new_plant_title));
 
-			plant.getActions().add(new StageChange(PlantStage.PLANTED));
+			plant.getActions().add(new StageChange());
 			lastFeeding.setVisibility(View.GONE);
 		}
 		else
@@ -322,7 +322,7 @@ public class PlantDetailsFragment extends Fragment
 
 		String dateStr = dateFormat.format(new Date(plant.getPlantDate())) + " " + timeFormat.format(new Date(plant.getPlantDate()));
 		date.setText(dateStr);
-		clone.setChecked(plant.isClone());
+		clone.setChecked(plant.getClone());
 
 		dateContainer.setOnClickListener(new View.OnClickListener()
 		{
@@ -374,7 +374,7 @@ public class PlantDetailsFragment extends Fragment
 		{
 			@Override public void onDialogConfirmed(String notes)
 			{
-				final NoteAction action = new NoteAction(notes);
+				final NoteAction action = new NoteAction(System.currentTimeMillis(), notes);
 
 				plant.getActions().add(action);
 				PlantManager.getInstance().upsert(plantIndex, plant);
@@ -963,7 +963,7 @@ public class PlantDetailsFragment extends Fragment
 
 	@Views.OnClick public void onPlantMediumContainerClick()
 	{
-		String[] mediums = PlantMedium.names(getActivity());
+		String[] mediums = PlantMedium.Companion.names(getActivity());
 
 		new AlertDialog.Builder(getActivity())
 			.setTitle(R.string.plant_medium_label)
@@ -999,7 +999,7 @@ public class PlantDetailsFragment extends Fragment
 		PlantStage newStage = PlantStage.valueOf(stage.getText().toString().toUpperCase(Locale.ENGLISH));
 		if (plant.getStage() != newStage || (plantIndex < 0 && newStage == PlantStage.GERMINATION))
 		{
-			plant.getActions().add(new StageChange(newStage));
+			plant.getActions().add(new StageChange(newStage, System.currentTimeMillis(), null));
 		}
 
 		if (plantIndex < 0)

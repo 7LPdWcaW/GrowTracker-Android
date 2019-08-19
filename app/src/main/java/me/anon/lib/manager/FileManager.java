@@ -1,10 +1,6 @@
 package me.anon.lib.manager;
 
-import androidx.annotation.Nullable;
 import android.text.TextUtils;
-
-import com.google.gson.JsonElement;
-import com.google.gson.JsonParser;
 
 import java.io.BufferedInputStream;
 import java.io.ByteArrayOutputStream;
@@ -20,6 +16,8 @@ import java.io.OutputStreamWriter;
 import java.io.Serializable;
 import java.security.DigestInputStream;
 import java.security.MessageDigest;
+
+import androidx.annotation.Nullable;
 
 public class FileManager
 {
@@ -114,42 +112,6 @@ public class FileManager
 	public String readFileAsString(InputStream stream)
 	{
 		return new String(readFile(stream));
-	}
-
-	/**
-	 * Read from file and return as a JSON element
-	 *
-	 * @param filePath The absolute path to the file on the local filesystem
-	 *
-	 * @return JSON representation of file contents
-	 */
-	public JsonElement readFileAsJson(String filePath)
-	{
-		return readFileAsJson(new File(filePath));
-	}
-
-	/**
-	 * Read from file and return as a JSON element
-	 *
-	 * @param file The file on the local filesystem
-	 *
-	 * @return JSON representation of file contents
-	 */
-	public JsonElement readFileAsJson(File file)
-	{
-		return new JsonParser().parse(readFileAsString(file));
-	}
-
-	/**
-	 * Read from file and return as a JSON element
-	 *
-	 * @param stream The stream to read from
-	 *
-	 * @return JSON representation of file contents
-	 */
-	public JsonElement readFileAsJson(InputStream stream)
-	{
-		return new JsonParser().parse(readFileAsString(stream));
 	}
 
 	/**

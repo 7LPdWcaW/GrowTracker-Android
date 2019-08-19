@@ -351,7 +351,7 @@ public class EventListFragment extends Fragment implements ActionAdapter.OnActio
 			{
 				@Override public void onDialogConfirmed(String notes)
 				{
-					final NoteAction noteAction = new NoteAction(notes);
+					final NoteAction noteAction = new NoteAction(System.currentTimeMillis(), notes);
 
 					plant.getActions().set(originalIndex, noteAction);
 					PlantManager.getInstance().upsert(plantIndex, plant);

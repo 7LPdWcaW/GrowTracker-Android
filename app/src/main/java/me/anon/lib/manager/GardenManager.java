@@ -5,8 +5,8 @@ import android.content.Intent;
 import android.text.TextUtils;
 import android.widget.Toast;
 
-import com.google.gson.JsonSyntaxException;
-import com.google.gson.reflect.TypeToken;
+import com.squareup.moshi.JsonDataException;
+import com.squareup.moshi.Types;
 
 import java.io.File;
 import java.util.ArrayList;
@@ -14,7 +14,7 @@ import java.util.ArrayList;
 import me.anon.grow.MainApplication;
 import me.anon.grow.R;
 import me.anon.lib.helper.EncryptionHelper;
-import me.anon.lib.helper.GsonHelper;
+import me.anon.lib.helper.MoshiHelper;
 import me.anon.model.Garden;
 
 /**
@@ -78,10 +78,10 @@ public class GardenManager
 				if (!TextUtils.isEmpty(gardenData))
 				{
 					mGardens.clear();
-					mGardens.addAll((ArrayList<Garden>)GsonHelper.parse(gardenData, new TypeToken<ArrayList<Garden>>(){}.getType()));
+					mGardens.addAll(MoshiHelper.parse(gardenData, Types.newParameterizedType(ArrayList.class, Garden.class)));
 				}
 			}
-			catch (JsonSyntaxException e)
+			catch (JsonDataException e)
 			{
 				e.printStackTrace();
 			}
@@ -99,17 +99,17 @@ public class GardenManager
 					return;
 				}
 
-				FileManager.getInstance().writeFile(FILES_DIR + "/gardens.json", EncryptionHelper.encrypt(MainApplication.getKey(), GsonHelper.parse(mGardens)));
+				FileManager.getInstance().writeFile(FILES_DIR + "/gardens.json", EncryptionHelper.encrypt(MainApplication.getKey(), MoshiHelper.toJson(mGardens, Types.newParameterizedType(ArrayList.class, Garden.class))));
 			}
 			else
 			{
-				FileManager.getInstance().writeFile(FILES_DIR + "/gardens.json", GsonHelper.parse(mGardens));
+				FileManager.getInstance().writeFile(FILES_DIR + "/gardens.json", MoshiHelper.toJson(mGardens, Types.newParameterizedType(ArrayList.class, Garden.class)));
 			}
 
 			if (new File(FILES_DIR + "/gardens.json").length() == 0 || !new File(FILES_DIR + "/gardens.json").exists())
 			{
 				Toast.makeText(context, R.string.fatal_error, Toast.LENGTH_LONG).show();
-				String sendData = GsonHelper.parse(mGardens);
+				String sendData = MoshiHelper.toJson(mGardens, Types.newParameterizedType(ArrayList.class, Garden.class));
 				Intent share = new Intent(Intent.ACTION_SEND);
 				share.setType("text/plain");
 				share.putExtra(Intent.EXTRA_TEXT, "== WARNING : PLEASE BACK UP THIS DATA == \r\n\r\n " + sendData);

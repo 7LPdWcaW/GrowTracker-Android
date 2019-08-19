@@ -1,14 +1,10 @@
 package me.anon.grow.fragment;
 
 import android.annotation.SuppressLint;
-import androidx.appcompat.app.AlertDialog;
 import android.app.Dialog;
-import androidx.fragment.app.DialogFragment;
 import android.content.DialogInterface;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
-import androidx.recyclerview.widget.LinearLayoutManager;
-import androidx.recyclerview.widget.RecyclerView;
 import android.view.View;
 import android.widget.CheckBox;
 import android.widget.TextView;
@@ -18,6 +14,10 @@ import com.nostra13.universalimageloader.core.ImageLoader;
 import java.util.ArrayList;
 import java.util.Arrays;
 
+import androidx.appcompat.app.AlertDialog;
+import androidx.fragment.app.DialogFragment;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
 import me.anon.controller.adapter.PlantSelectionAdapter;
 import me.anon.grow.R;
 import me.anon.lib.Views;

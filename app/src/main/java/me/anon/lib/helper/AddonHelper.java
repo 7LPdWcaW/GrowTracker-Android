@@ -4,6 +4,8 @@ import android.content.Context;
 import android.content.Intent;
 import android.util.Base64;
 
+import com.squareup.moshi.Types;
+
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
@@ -53,7 +55,7 @@ public class AddonHelper
 			@Override public void run()
 			{
 				ArrayList<Plant> plants = new ArrayList<Plant>(PlantManager.getInstance().getPlants());
-				String plantListData = GsonHelper.parse(plants);
+				String plantListData = MoshiHelper.toJson(plants, Types.newParameterizedType(ArrayList.class, Plant.class));
 
 				if (MainApplication.isEncrypted())
 				{

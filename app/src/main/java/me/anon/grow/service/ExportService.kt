@@ -6,11 +6,9 @@ import android.content.Intent
 import android.net.Uri
 import android.os.Build
 import android.os.IBinder
-import com.google.gson.reflect.TypeToken
 import me.anon.grow.fragment.PlantDetailsFragment
 import me.anon.lib.ExportCallback
 import me.anon.lib.helper.ExportHelper
-import me.anon.lib.helper.GsonHelper
 import me.anon.lib.helper.NotificationHelper
 import me.anon.lib.manager.PlantManager
 import me.anon.model.Plant
@@ -41,7 +39,7 @@ class ExportService : Service()
 		intent?.let {
 			val plantsIds = it.extras?.getStringArrayList("plants") ?: arrayListOf()
 
-			val plants = ArrayList(PlantManager.getInstance().plants.filter { plantsIds.contains(it.id) })
+			val plants = java.util.ArrayList(PlantManager.getInstance().plants.filter { plantsIds.contains(it.id) })
 			val title = it.getStringExtra("title")
 			val name = it.getStringExtra("name")
 

@@ -76,7 +76,7 @@ public class ActionDialogFragment extends DialogFragment
 
 		if (action == null)
 		{
-			action = new EmptyAction(null);
+			action = new EmptyAction();
 		}
 
 		if (savedInstanceState != null)
