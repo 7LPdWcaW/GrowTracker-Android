@@ -281,7 +281,7 @@ public class PlantListFragment extends Fragment
 			{
 				for (Plant plant : adapter.getPlants())
 				{
-					NoteAction action = new NoteAction(notes);
+					NoteAction action = new NoteAction(System.currentTimeMillis(), notes);
 					plant.getActions().add(action);
 				}
 

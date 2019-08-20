@@ -8,14 +8,12 @@ import android.graphics.Bitmap;
 import android.os.AsyncTask;
 import android.os.Environment;
 import android.preference.PreferenceManager;
-import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
-import androidx.core.app.NotificationCompat;
 import android.text.TextUtils;
 import android.view.View;
 import android.view.ViewGroup;
 
 import com.github.mikephil.charting.charts.LineChart;
+import com.squareup.moshi.Types;
 
 import net.lingala.zip4j.core.ZipFile;
 import net.lingala.zip4j.exception.ZipException;
@@ -35,6 +33,9 @@ import java.util.Map;
 import java.util.Set;
 import java.util.SortedMap;
 
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
+import androidx.core.app.NotificationCompat;
 import me.anon.grow.R;
 import me.anon.lib.ExportCallback;
 import me.anon.lib.Unit;
@@ -148,7 +149,7 @@ public class ExportHelper
 				plantDetails.append(NEW_LINE);
 				plantDetails.append("*Strain*: ").append(plant.getStrain());
 				plantDetails.append(NEW_LINE);
-				plantDetails.append("*Is clone?*: ").append(plant.isClone());
+				plantDetails.append("*Is clone?*: ").append(plant.getClone());
 				plantDetails.append(NEW_LINE);
 				plantDetails.append("*Medium*: ").append(plant.getMedium().getPrintString());
 				plantDetails.append(NEW_LINE);
@@ -338,7 +339,7 @@ public class ExportHelper
 
 				plantDetails.append("## Raw plant data");
 				plantDetails.append(NEW_LINE);
-				plantDetails.append("```").append("\r\n").append(GsonHelper.parse(plant)).append("\r\n").append("```");
+				plantDetails.append("```").append("\r\n").append(MoshiHelper.toJson(plant, Types.newParameterizedType(ArrayList.class, Plant.class))).append("\r\n").append("```");
 				plantDetails.append(NEW_LINE);
 				plantDetails.append("Generated using [Grow Tracker](https://github.com/7LPdWcaW/GrowTracker-Android)");
 

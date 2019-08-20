@@ -12,11 +12,9 @@ import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.TextView;
 import android.widget.Toast;
 
 import com.esotericsoftware.kryo.Kryo;
-import com.google.android.material.floatingactionbutton.FloatingActionButton;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -34,7 +32,6 @@ import me.anon.controller.adapter.SimpleItemTouchHelperCallback;
 import me.anon.grow.AddPlantActivity;
 import me.anon.grow.AddWateringActivity;
 import me.anon.grow.MainActivity;
-import me.anon.grow.PlantDetailsActivity;
 import me.anon.grow.R;
 import me.anon.grow.service.ExportService;
 import me.anon.lib.SnackBar;
@@ -291,7 +288,7 @@ public class GardenFragment extends Fragment
 			{
 				for (Plant plant : adapter.getPlants())
 				{
-					NoteAction action = new NoteAction(notes);
+					NoteAction action = new NoteAction(System.currentTimeMillis(), notes);
 					plant.getActions().add(action);
 				}
 

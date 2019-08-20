@@ -1,7 +1,5 @@
 package me.anon.lib.handler;
 
-import com.google.gson.Gson;
-
 import java.io.BufferedWriter;
 import java.io.FileWriter;
 import java.io.PrintWriter;
@@ -9,6 +7,7 @@ import java.io.StringWriter;
 import java.lang.Thread.UncaughtExceptionHandler;
 import java.util.Random;
 
+import me.anon.lib.helper.MoshiHelper;
 import me.anon.model.CrashReport;
 
 public class DefaultExceptionHandler implements UncaughtExceptionHandler
@@ -55,7 +54,7 @@ public class DefaultExceptionHandler implements UncaughtExceptionHandler
 			String filename = Integer.toString(random) + ".stacktrace";
 
 			BufferedWriter bufferedWriter = new BufferedWriter(new FileWriter(ExceptionHandler.getInstance().getFilesPath() + "/" + filename));
-			bufferedWriter.write(new Gson().toJson(report));
+			bufferedWriter.write(MoshiHelper.toJson(report, CrashReport.class));
 			bufferedWriter.close();
 		}
 		catch (Exception ebos)

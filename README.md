@@ -64,7 +64,7 @@ The structure is very simple. Note: date timestamps are all unix timestamps from
 
 - Plant date in milliseconds
 
-```
+```js
 {
     "id": <String>,
     "actions": [<Action Object>],
@@ -100,10 +100,11 @@ Temperature measured in ºC
 - Temperature measured in ºC
 - Amount measured in ml
 - Date is milliseconds
+- Notes as string
 
 Water action for waterings
 
-```
+```js
 {
     "additives": [<Additive>],
     "ph": <Double>,
@@ -112,7 +113,8 @@ Water action for waterings
     "amount": <Double>,
     "date": 1431268453111,
     "type": "Water",
-    "temp": <Double>
+    "temp": <Double>,
+    "notes": <String>
 }
 ```
 
@@ -120,7 +122,7 @@ Water action for waterings
 
 - Amount is measured in ml
 
-```
+```js
 {
     "description": <String>,
     "amount": <Double>
@@ -135,11 +137,12 @@ Action can be one of,
 
 - Date in milliseconds
 
-```
+```js
 {
     "action": <Action>,
     "date": 1431258118968,
-    "type": "Action"
+    "type": "Action",
+    "notes": <String>
 }
 ```
 
@@ -151,7 +154,8 @@ Action can be one of,
 {
     "newStage": <Plant Stage>,
     "date": 1431258118968,
-    "type": "StageChange"
+    "type": "StageChange",
+    "notes": <String>
 }
 ```
 

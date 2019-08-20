@@ -291,43 +291,43 @@ public class StatisticsFragment extends Fragment
 
 		if (stages.containsKey(PlantStage.GERMINATION))
 		{
-			germTime.setText(getString(R.string.length_days, (int)TimeHelper.toDays(stages.get(PlantStage.GERMINATION))));
+			germTime.setText(getString(R.string.length_days, "" + (int)TimeHelper.toDays(stages.get(PlantStage.GERMINATION))));
 			germTimeContainer.setVisibility(View.VISIBLE);
 		}
 
 		if (stages.containsKey(PlantStage.VEGETATION))
 		{
-			vegTime.setText(getString(R.string.length_days, (int)TimeHelper.toDays(stages.get(PlantStage.VEGETATION))));
+			vegTime.setText(getString(R.string.length_days, "" + (int)TimeHelper.toDays(stages.get(PlantStage.VEGETATION))));
 			vegTimeContainer.setVisibility(View.VISIBLE);
 		}
 
 		if (stages.containsKey(PlantStage.SEEDLING))
 		{
-			seedlingTime.setText(getString(R.string.length_days, (int)TimeHelper.toDays(stages.get(PlantStage.SEEDLING))));
+			seedlingTime.setText(getString(R.string.length_days, "" + (int)TimeHelper.toDays(stages.get(PlantStage.SEEDLING))));
 			seedlingTimeContainer.setVisibility(View.VISIBLE);
 		}
 
 		if (stages.containsKey(PlantStage.CUTTING))
 		{
-			cuttingTime.setText(getString(R.string.length_days, (int)TimeHelper.toDays(stages.get(PlantStage.CUTTING))));
+			cuttingTime.setText(getString(R.string.length_days, "" + (int)TimeHelper.toDays(stages.get(PlantStage.CUTTING))));
 			cuttingTimeContainer.setVisibility(View.VISIBLE);
 		}
 
 		if (stages.containsKey(PlantStage.FLOWER))
 		{
-			flowerTime.setText(getString(R.string.length_days, (int)TimeHelper.toDays(stages.get(PlantStage.FLOWER))));
+			flowerTime.setText(getString(R.string.length_days, "" + (int)TimeHelper.toDays(stages.get(PlantStage.FLOWER))));
 			flowerTimeContainer.setVisibility(View.VISIBLE);
 		}
 
 		if (stages.containsKey(PlantStage.DRYING))
 		{
-			dryTime.setText(getString(R.string.length_days, (int)TimeHelper.toDays(stages.get(PlantStage.DRYING))));
+			dryTime.setText(getString(R.string.length_days, "" + (int)TimeHelper.toDays(stages.get(PlantStage.DRYING))));
 			dryTimeContainer.setVisibility(View.VISIBLE);
 		}
 
 		if (stages.containsKey(PlantStage.CURING))
 		{
-			cureTime.setText(getString(R.string.length_days, (int)TimeHelper.toDays(stages.get(PlantStage.CURING))));
+			cureTime.setText(getString(R.string.length_days, "" + (int)TimeHelper.toDays(stages.get(PlantStage.CURING))));
 			cureTimeContainer.setVisibility(View.VISIBLE);
 		}
 	}

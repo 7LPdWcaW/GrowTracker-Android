@@ -111,8 +111,8 @@ class ScheduleDateDetailsFragment : Fragment()
 
 			val fromDate = from_date.text.toString().toSafeInt()
 			val toDate = if (to_date.text.isEmpty()) fromDate else to_date.text.toString().toSafeInt()
-			val fromStage = PlantStage.valueOfPrintString(context, from_stage.selectedItem as String)!!
-			val toStage = PlantStage.valueOfPrintString(context, to_stage.selectedItem as String)!!
+			val fromStage = PlantStage.valueOfPrintString(context!!, from_stage.selectedItem as String)!!
+			val toStage = PlantStage.valueOfPrintString(context!!, to_stage.selectedItem as String)!!
 
 			if (toDate < fromDate && fromStage.ordinal ?: -1 == toStage.ordinal ?: -1)
 			{
@@ -151,7 +151,7 @@ class ScheduleDateDetailsFragment : Fragment()
 		{
 			if (additive.amount == null) continue
 
-			val converted = Unit.ML.to(selectedMeasurementUnit, additive.amount)
+			val converted = Unit.ML.to(selectedMeasurementUnit, additive.amount!!)
 			val amountStr = if (converted == floor(converted)) converted.toInt().toString() else converted.toString()
 
 			val additiveStub = LayoutInflater.from(activity).inflate(R.layout.additive_stub, additive_container, false)

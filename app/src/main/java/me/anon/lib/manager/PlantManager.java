@@ -5,19 +5,16 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.AsyncTask;
 import android.preference.PreferenceManager;
-import androidx.annotation.Nullable;
 import android.text.TextUtils;
 import android.widget.Toast;
 
-import com.google.gson.JsonSyntaxException;
-import com.google.gson.reflect.TypeToken;
+import com.squareup.moshi.JsonDataException;
+import com.squareup.moshi.Types;
 
-import java.io.BufferedWriter;
+import java.io.BufferedOutputStream;
 import java.io.File;
-import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.OutputStream;
-import java.io.OutputStreamWriter;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
@@ -26,11 +23,12 @@ import java.util.Queue;
 import java.util.concurrent.ConcurrentLinkedQueue;
 import java.util.concurrent.atomic.AtomicBoolean;
 
+import androidx.annotation.Nullable;
 import me.anon.grow.BootActivity;
 import me.anon.grow.MainApplication;
 import me.anon.lib.helper.AddonHelper;
 import me.anon.lib.helper.BackupHelper;
-import me.anon.lib.helper.GsonHelper;
+import me.anon.lib.helper.MoshiHelper;
 import me.anon.lib.stream.DecryptInputStream;
 import me.anon.lib.stream.EncryptOutputStream;
 import me.anon.lib.task.AsyncCallback;
@@ -216,19 +214,19 @@ public class PlantManager
 					DecryptInputStream stream = new DecryptInputStream(MainApplication.getKey(), new File(FILES_DIR, "/plants.json"));
 
 					mPlants.clear();
-					mPlants.addAll((ArrayList<Plant>)GsonHelper.parse(stream, new TypeToken<ArrayList<Plant>>(){}.getType()));
+					mPlants.addAll(MoshiHelper.parse(stream, Types.newParameterizedType(ArrayList.class, Plant.class)));
 					MainApplication.setFailsafe(false);
 				}
 				else
 				{
 					mPlants.clear();
-					mPlants.addAll((ArrayList<Plant>)GsonHelper.parse(new FileInputStream(new File(FILES_DIR, "/plants.json")), new TypeToken<ArrayList<Plant>>(){}.getType()));
+					mPlants.addAll(MoshiHelper.parse(new File(FILES_DIR, "/plants.json"), Types.newParameterizedType(ArrayList.class, Plant.class)));
 					MainApplication.setFailsafe(false);
 				}
 
 				return true;
 			}
-			catch (final JsonSyntaxException e)
+			catch (final JsonDataException e)
 			{
 				e.printStackTrace();
 
@@ -310,13 +308,7 @@ public class PlantManager
 								outstream = new FileOutputStream(new File(FILES_DIR + "/plants.json"));
 							}
 
-							BufferedWriter writer = new BufferedWriter(new OutputStreamWriter(outstream, "UTF-8"), 8192);
-							GsonHelper.getGson().toJson(plants, new TypeToken<ArrayList<Plant>>(){}.getType(), writer);
-
-							writer.flush();
-							outstream.flush();
-							writer.close();
-							outstream.close();
+							MoshiHelper.toJson(plants, Types.newParameterizedType(ArrayList.class, Plant.class), new BufferedOutputStream(outstream, 8192));
 						}
 						catch (Exception e)
 						{
@@ -336,7 +328,7 @@ public class PlantManager
 						if (new File(FILES_DIR + "/plants.json").length() == 0 || !new File(FILES_DIR + "/plants.json").exists())
 						{
 							Toast.makeText(context, "There was a fatal problem saving the plant data, please backup this data", Toast.LENGTH_LONG).show();
-							String sendData = GsonHelper.parse(mPlants);
+							String sendData = MoshiHelper.toJson(mPlants, Types.newParameterizedType(ArrayList.class, Plant.class));
 							Intent share = new Intent(Intent.ACTION_SEND);
 							share.setType("text/plain");
 							share.putExtra(Intent.EXTRA_TEXT, "== WARNING : PLEASE BACK UP THIS DATA == \r\n\r\n " + sendData);

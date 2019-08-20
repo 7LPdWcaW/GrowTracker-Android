@@ -1,14 +1,14 @@
 package me.anon.model;
 
-/**
- * // TODO: Add class description
- *
- * @author 7LPdWcaW
- * @documentation // TODO Reference flow doc
- * @project GrowTracker
- */
-@Deprecated
-public class Nutrient
+import android.annotation.SuppressLint;
+import android.os.Parcel;
+import android.os.Parcelable;
+
+import kotlinx.android.parcel.Parcelize;
+
+@SuppressLint("ParcelCreator") @Deprecated
+@Parcelize
+public class Nutrient implements Parcelable
 {
 	private Double npc; // nitrogen
 	private Double ppc; // phosphorus
@@ -75,5 +75,15 @@ public class Nutrient
 	public void setMgpc(Double mgpc)
 	{
 		this.mgpc = mgpc;
+	}
+
+	@Override public int describeContents()
+	{
+		return 0;
+	}
+
+	@Override public void writeToParcel(Parcel parcel, int i)
+	{
+
 	}
 }

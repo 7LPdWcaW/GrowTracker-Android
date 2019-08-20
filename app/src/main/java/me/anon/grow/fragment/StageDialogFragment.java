@@ -1,12 +1,9 @@
 package me.anon.grow.fragment;
 
-import androidx.appcompat.app.AlertDialog;
 import android.app.Dialog;
-import androidx.fragment.app.DialogFragment;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.os.Bundle;
-import androidx.annotation.Nullable;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.ArrayAdapter;
@@ -17,6 +14,9 @@ import java.text.DateFormat;
 import java.util.Calendar;
 import java.util.Date;
 
+import androidx.annotation.Nullable;
+import androidx.appcompat.app.AlertDialog;
+import androidx.fragment.app.DialogFragment;
 import me.anon.grow.R;
 import me.anon.lib.Views;
 import me.anon.model.PlantStage;
@@ -71,7 +71,7 @@ public class StageDialogFragment extends DialogFragment
 
 		if (action == null)
 		{
-			action = new StageChange(null);
+			action = new StageChange();
 		}
 
 		if (savedInstanceState != null)
@@ -79,8 +79,8 @@ public class StageDialogFragment extends DialogFragment
 			action.setDate(savedInstanceState.getLong("date", System.currentTimeMillis()));
 		}
 
-		final String[] actions = new String[PlantStage.names(getActivity()).length];
-		System.arraycopy(PlantStage.names(getActivity()), 0, actions, 0, actions.length);
+		final String[] actions = new String[PlantStage.Companion.names(getActivity()).length];
+		System.arraycopy(PlantStage.Companion.names(getActivity()), 0, actions, 0, actions.length);
 
 		actionsSpinner.setAdapter(new ArrayAdapter<String>(getActivity(), android.R.layout.simple_spinner_dropdown_item, actions));
 

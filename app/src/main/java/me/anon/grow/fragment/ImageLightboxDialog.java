@@ -182,8 +182,7 @@ public class ImageLightboxDialog extends FragmentActivity
 				Date date = new Date(Long.parseLong(fileDate));
 
 				StageChange lastChange = null;
-				StageChange currentChange = new StageChange();
-				currentChange.setDate(date.getTime());
+				long currentChangeDate = date.getTime();
 
 				for (int index = plant.getActions().size() - 1; index >= 0; index--)
 				{
@@ -205,7 +204,7 @@ public class ImageLightboxDialog extends FragmentActivity
 					int totalDays = (int)TimeHelper.toDays(Math.abs(date.getTime() - plant.getPlantDate()));
 					stageDayStr += (totalDays == 0 ? 1 : totalDays);
 
-					int currentDays = (int)TimeHelper.toDays(Math.abs(currentChange.getDate() - lastChange.getDate()));
+					int currentDays = (int)TimeHelper.toDays(Math.abs(currentChangeDate - lastChange.getDate()));
 					currentDays = (currentDays == 0 ? 1 : currentDays);
 					stageDayStr += "/" + currentDays + getString(lastChange.getNewStage().getPrintString()).substring(0, 1).toLowerCase();
 				}
