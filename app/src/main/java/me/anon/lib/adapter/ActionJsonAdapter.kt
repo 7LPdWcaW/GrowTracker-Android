@@ -19,20 +19,26 @@ public class ActionJsonAdapter : JsonAdapter<Action>()
 		var value: Action? = null
 
 		var type = ""
-		val temp = reader.peekJson()
-		temp.beginObject()
-		while (temp.hasNext())
+		try
 		{
-			when (temp.selectName(JsonReader.Options.of("type")))
+			val temp = reader.peekJson()
+			temp.beginObject()
+			while (temp.hasNext())
 			{
-				0 -> {
-					type = temp.nextString()
-				}
-				-1 -> {
-					temp.skipName()
-					temp.skipValue()
+				when (temp.selectName(JsonReader.Options.of("type")))
+				{
+					0 -> {
+						type = temp.nextString()
+					}
+					-1 -> {
+						temp.skipName()
+						temp.skipValue()
+					}
 				}
 			}
+		}
+		catch (e: Exception)
+		{
 		}
 
 		when (type)
