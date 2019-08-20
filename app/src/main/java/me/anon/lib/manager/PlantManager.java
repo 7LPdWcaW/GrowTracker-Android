@@ -11,9 +11,10 @@ import android.widget.Toast;
 import com.squareup.moshi.JsonDataException;
 import com.squareup.moshi.Types;
 
-import java.io.BufferedOutputStream;
+import java.io.BufferedWriter;
 import java.io.File;
 import java.io.FileOutputStream;
+import java.io.FileWriter;
 import java.io.OutputStream;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -308,7 +309,11 @@ public class PlantManager
 								outstream = new FileOutputStream(new File(FILES_DIR + "/plants.json"));
 							}
 
-							MoshiHelper.toJson(plants, Types.newParameterizedType(ArrayList.class, Plant.class), new BufferedOutputStream(outstream, 8192));
+							String output = MoshiHelper.toJson(plants, Types.newParameterizedType(ArrayList.class, Plant.class));
+							BufferedWriter writer = new BufferedWriter(new FileWriter(FILES_DIR + "/plants.json"));
+							writer.write(output);
+							writer.flush();
+							writer.close();
 						}
 						catch (Exception e)
 						{
@@ -330,6 +335,7 @@ public class PlantManager
 							Toast.makeText(context, "There was a fatal problem saving the plant data, please backup this data", Toast.LENGTH_LONG).show();
 							String sendData = MoshiHelper.toJson(mPlants, Types.newParameterizedType(ArrayList.class, Plant.class));
 							Intent share = new Intent(Intent.ACTION_SEND);
+							share.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
 							share.setType("text/plain");
 							share.putExtra(Intent.EXTRA_TEXT, "== WARNING : PLEASE BACK UP THIS DATA == \r\n\r\n " + sendData);
 							context.startActivity(share);
@@ -337,7 +343,7 @@ public class PlantManager
 
 						if (saveTask.size() > 0)
 						{
-							saveTask.poll().executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
+							saveTask.poll().executeOnExecutor(AsyncTask.SERIAL_EXECUTOR);
 						}
 						else
 						{
@@ -351,7 +357,7 @@ public class PlantManager
 				if (!isSaving.get())
 				{
 					isSaving.set(true);
-					saveTask.poll().executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
+					saveTask.poll().executeOnExecutor(AsyncTask.SERIAL_EXECUTOR);
 				}
 			}
 			else
