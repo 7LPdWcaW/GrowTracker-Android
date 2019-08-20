@@ -27,6 +27,7 @@ import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.ItemTouchHelper;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
+import kotlin.jvm.functions.Function3;
 import me.anon.controller.adapter.PlantAdapter;
 import me.anon.controller.adapter.SimpleItemTouchHelperCallback;
 import me.anon.grow.AddPlantActivity;
@@ -48,6 +49,7 @@ import me.anon.model.Garden;
 import me.anon.model.NoteAction;
 import me.anon.model.Plant;
 import me.anon.model.PlantStage;
+import me.anon.view.SomeDividerItemDecoration;
 
 @Views.Injectable
 public class GardenFragment extends Fragment
@@ -97,6 +99,7 @@ public class GardenFragment extends Fragment
 		}
 		else
 		{
+			((MainActivity)getActivity()).toolbarLayout.removeViews(1, ((MainActivity)getActivity()).toolbarLayout.getChildCount() - 1);
 			((MainActivity)getActivity()).toolbarLayout.addView(LayoutInflater.from(getActivity()).inflate(R.layout.action_buttons_stub, ((MainActivity)getActivity()).toolbarLayout, false));
 			Views.inject(this, ((MainActivity)getActivity()).toolbarLayout);
 			photo.setVisibility(View.GONE);
@@ -122,6 +125,15 @@ public class GardenFragment extends Fragment
 		layoutManager.setStackFromEnd(reverse);
 		recycler.setLayoutManager(layoutManager);
 		recycler.setAdapter(adapter);
+
+		recycler.addItemDecoration(new SomeDividerItemDecoration(getActivity(), SomeDividerItemDecoration.VERTICAL, R.drawable.divider_8dp, new Function3<Integer, RecyclerView.ViewHolder, RecyclerView.Adapter<RecyclerView.ViewHolder>, Boolean>()
+		{
+			@Override public Boolean invoke(Integer integer, RecyclerView.ViewHolder viewHolder, RecyclerView.Adapter<RecyclerView.ViewHolder> viewHolderAdapter)
+			{
+				return true;
+			}
+		}));
+
 		recycler.setNestedScrollingEnabled(false);
 
 		ItemTouchHelper.Callback callback = new SimpleItemTouchHelperCallback(adapter)
