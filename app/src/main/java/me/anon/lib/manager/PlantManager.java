@@ -216,12 +216,14 @@ public class PlantManager
 					mPlants.clear();
 					mPlants.addAll(MoshiHelper.parse(stream, Types.newParameterizedType(ArrayList.class, Plant.class)));
 					MainApplication.setFailsafe(false);
+					MainApplication.isPanic = false;
 				}
 				else
 				{
 					mPlants.clear();
 					mPlants.addAll(MoshiHelper.parse(new File(FILES_DIR, "/plants.json"), Types.newParameterizedType(ArrayList.class, Plant.class)));
 					MainApplication.setFailsafe(false);
+					MainApplication.isPanic = false;
 				}
 
 				return true;
@@ -237,6 +239,7 @@ public class PlantManager
 
 					// prevent save
 					MainApplication.setFailsafe(true);
+					MainApplication.isPanic = true;
 				}
 			}
 			catch (Exception e)
@@ -250,6 +253,7 @@ public class PlantManager
 
 					// prevent save
 					MainApplication.setFailsafe(true);
+					MainApplication.isPanic = true;
 				}
 			}
 		}

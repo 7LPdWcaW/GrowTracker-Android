@@ -6,6 +6,7 @@
 >
 	<PreferenceCategory
 		app:title="@string/settings_general"
+		android:key="settings_general"
 	>
 		<Preference
 			app:key="default_garden"
@@ -46,6 +47,7 @@
 
 	<PreferenceCategory
 		app:title="@string/settings_units"
+		android:key="settings_units"
 	>
 		<Preference
 			app:key="delivery_unit"
@@ -75,6 +77,7 @@
 
 	<PreferenceCategory
 		app:title="@string/settings_data_management"
+		android:key="settings_data"
 	>
 		<SwitchPreferenceCompat
 			app:key="auto_backup"
