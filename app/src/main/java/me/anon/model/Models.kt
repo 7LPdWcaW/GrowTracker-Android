@@ -1,6 +1,8 @@
 package me.anon.model
 
 import android.os.Parcelable
+import com.squareup.moshi.Json
+import com.squareup.moshi.JsonClass
 import kotlinx.android.parcel.Parcelize
 import java.util.*
 
@@ -8,13 +10,14 @@ import java.util.*
  * Schedule root object holding list of feeding schedules
  */
 @Parcelize
+@JsonClass(generateAdapter = true)
 class FeedingSchedule(
 	val id: String = UUID.randomUUID().toString(),
 	var name: String = "",
 	var description: String = "",
-	var _schedules: ArrayList<FeedingScheduleDate>
+	@field:Json(name = "schedules") var _schedules: ArrayList<FeedingScheduleDate>
 ) : Parcelable {
-	var schedules = _schedules
+	@field:Transient var schedules = _schedules
 		get() {
 			field.sortWith(compareBy<FeedingScheduleDate> { it.stageRange[0].ordinal }.thenBy { it.dateRange[0] })
 			return field
@@ -32,6 +35,7 @@ class FeedingSchedule(
  * Feeding schedule for specific date
  */
 @Parcelize
+@JsonClass(generateAdapter = true)
 class FeedingScheduleDate(
 	val id: String = UUID.randomUUID().toString(),
 	var dateRange: Array<Int>,

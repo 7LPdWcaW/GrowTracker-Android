@@ -9,9 +9,6 @@ import me.anon.grow.R
 import me.anon.lib.TempUnit
 import me.anon.lib.Unit
 
-/**
- * // TODO: Add class description
- */
 @Parcelize
 @JsonClass(generateAdapter = true)
 class Water(
@@ -26,6 +23,8 @@ class Water(
 	override var notes: String? = null
 ) : Action(date, notes), Parcelable
 {
+	public var type: String = "Water"
+
 	@Deprecated("")
 	public var nutrient: Nutrient? = null
 	@Deprecated("")

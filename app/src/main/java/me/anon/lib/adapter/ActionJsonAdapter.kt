@@ -44,13 +44,18 @@ public class ActionJsonAdapter : JsonAdapter<Action>()
 			else -> throw JsonDataException("Action $type not recognised")
 		}
 
-		return value!!
+		return value
 	}
 
 	@Throws(IOException::class)
 	override fun toJson(writer: JsonWriter, value: Action?)
 	{
-		writer.beginObject()
-		writer.endObject()
+		when (value)
+		{
+			is Water -> waterAdapter.toJson(writer, value)
+			is Action -> emptyActionAdater.toJson(writer, EmptyAction(null, value.date, value.notes))
+			is NoteAction -> noteActionAdapter.toJson(writer, value)
+			is StageChange -> stageChangeAdapter.toJson(writer, value)
+		}
 	}
 }

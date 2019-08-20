@@ -9,3 +9,6 @@ class NoteAction(
 	override var date: Long = System.currentTimeMillis(),
 	override var notes: String? = null
 ) : Action(date, notes)
+{
+	public var type: String = "Note"
+}
