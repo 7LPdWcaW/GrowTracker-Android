@@ -60,7 +60,6 @@
 		</activity>
 
 		<activity android:name=".MainActivity" />
-		<activity android:name=".AddPlantActivity" />
 		<activity android:name=".AddWateringActivity" />
 		<activity android:name=".EditWateringActivity" />
 		<activity android:name=".ViewPhotosActivity" />

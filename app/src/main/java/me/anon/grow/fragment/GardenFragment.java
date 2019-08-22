@@ -30,9 +30,9 @@ import androidx.recyclerview.widget.RecyclerView;
 import kotlin.jvm.functions.Function3;
 import me.anon.controller.adapter.PlantAdapter;
 import me.anon.controller.adapter.SimpleItemTouchHelperCallback;
-import me.anon.grow.AddPlantActivity;
 import me.anon.grow.AddWateringActivity;
 import me.anon.grow.MainActivity;
+import me.anon.grow.PlantDetailsActivity;
 import me.anon.grow.R;
 import me.anon.grow.service.ExportService;
 import me.anon.lib.SnackBar;
@@ -229,7 +229,7 @@ public class GardenFragment extends Fragment
 
 	@Views.OnClick public void onFabAddClick(View view)
 	{
-		Intent addPlant = new Intent(getActivity(), AddPlantActivity.class);
+		Intent addPlant = new Intent(getActivity(), PlantDetailsActivity.class);
 		addPlant.putExtra("garden_index", GardenManager.getInstance().getGardens().indexOf(garden));
 		startActivity(addPlant);
 	}

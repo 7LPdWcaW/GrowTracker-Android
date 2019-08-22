@@ -21,20 +21,6 @@ class PlantDetailsActivity : BaseActivity()
 	{
 		if (!checkEncryptState())
 		{
-			var gardenIndex = -1
-			var plantIndex = -1
-
-			intent.extras?.let {
-				plantIndex = it.getInt("plant_index", -1)
-				gardenIndex = it.getInt("garden_index", -1)
-			}
-
-			if (plantIndex < 0)
-			{
-				finish()
-				return
-			}
-
 			super.onCreate(savedInstanceState)
 
 			setContentView(R.layout.fragment_holder)
@@ -43,7 +29,7 @@ class PlantDetailsActivity : BaseActivity()
 			supportActionBar?.setHomeAsUpIndicator(R.drawable.ic_done_white_24dp)
 
 			supportFragmentManager.findFragmentByTag(TAG_FRAGMENT) ?: let {
-				supportFragmentManager.beginTransaction().replace(R.id.fragment_holder, PlantDetailsFragment.newInstance(plantIndex, gardenIndex), TAG_FRAGMENT).commit()
+				supportFragmentManager.beginTransaction().replace(R.id.fragment_holder, PlantDetailsFragment.newInstance(intent.extras), TAG_FRAGMENT).commit()
 			}
 		}
 	}

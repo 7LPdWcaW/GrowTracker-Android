@@ -645,7 +645,7 @@ public class WateringFragment extends Fragment
 				plants.get(0).getActions().set(actionIndex, water);
 			}
 
-			PlantManager.getInstance().upsert(plantIndex[0], plants.get(0));
+			PlantManager.getInstance().upsert(plants.get(0));
 		}
 		else
 		{

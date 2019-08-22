@@ -28,9 +28,9 @@ import androidx.recyclerview.widget.RecyclerView;
 import kotlin.jvm.functions.Function3;
 import me.anon.controller.adapter.PlantAdapter;
 import me.anon.controller.adapter.SimpleItemTouchHelperCallback;
-import me.anon.grow.AddPlantActivity;
 import me.anon.grow.AddWateringActivity;
 import me.anon.grow.MainApplication;
+import me.anon.grow.PlantDetailsActivity;
 import me.anon.grow.R;
 import me.anon.lib.SnackBar;
 import me.anon.lib.SnackBarListener;
@@ -182,6 +182,8 @@ public class PlantListFragment extends Fragment
 		}
 	}
 
+
+
 	@Override public void onStart()
 	{
 		super.onStart();
@@ -211,7 +213,7 @@ public class PlantListFragment extends Fragment
 
 	@Views.OnClick public void onFabAddClick(View view)
 	{
-		Intent addPlant = new Intent(getActivity(), AddPlantActivity.class);
+		Intent addPlant = new Intent(getActivity(), PlantDetailsActivity.class);
 		startActivity(addPlant);
 	}
 

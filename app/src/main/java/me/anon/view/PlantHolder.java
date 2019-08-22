@@ -21,7 +21,6 @@ import me.anon.grow.PlantDetailsActivity;
 import me.anon.grow.R;
 import me.anon.grow.StatisticsActivity;
 import me.anon.grow.ViewPhotosActivity;
-import me.anon.lib.manager.PlantManager;
 import me.anon.model.Plant;
 
 /**
@@ -94,7 +93,7 @@ public class PlantHolder extends RecyclerView.ViewHolder
 			@Override public void onClick(View v)
 			{
 				Intent details = new Intent(v.getContext(), PlantDetailsActivity.class);
-				details.putExtra("plant_index", PlantManager.getInstance().getPlants().indexOf(plant));
+				details.putExtra("plant", plant);
 				v.getContext().startActivity(details);
 			}
 		});
@@ -105,10 +104,10 @@ public class PlantHolder extends RecyclerView.ViewHolder
 			{
 				@Override public void onClick(View view)
 				{
-					Intent photos = new Intent(view.getContext(), PlantDetailsActivity.class);
-					photos.putExtra("plant_index", PlantManager.getInstance().getPlants().indexOf(plant));
-					photos.putExtra("forward", "photo");
-					view.getContext().startActivity(photos);
+					Intent intent = new Intent(view.getContext(), PlantDetailsActivity.class);
+					intent.putExtra("plant", plant);
+					intent.putExtra("forward", "photo");
+					view.getContext().startActivity(intent);
 				}
 			});
 		}
@@ -119,10 +118,10 @@ public class PlantHolder extends RecyclerView.ViewHolder
 			{
 				@Override public void onClick(View view)
 				{
-					Intent photos = new Intent(view.getContext(), PlantDetailsActivity.class);
-					photos.putExtra("plant_index", PlantManager.getInstance().getPlants().indexOf(plant));
-					photos.putExtra("forward", "feed");
-					view.getContext().startActivity(photos);
+					Intent intent = new Intent(view.getContext(), PlantDetailsActivity.class);
+					intent.putExtra("plant", plant);
+					intent.putExtra("forward", "feed");
+					view.getContext().startActivity(intent);
 				}
 			});
 		}
@@ -166,7 +165,7 @@ public class PlantHolder extends RecyclerView.ViewHolder
 								return false;
 							}
 
-							intent.putExtra("plant_index", PlantManager.getInstance().getPlants().indexOf(plant));
+							intent.putExtra("plant", plant);
 							view.getContext().startActivity(intent);
 
 							return true;

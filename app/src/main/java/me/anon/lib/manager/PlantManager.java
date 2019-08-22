@@ -168,15 +168,22 @@ public class PlantManager
 		}
 	}
 
-	public void upsert(int index, Plant plant)
+	public void upsert(Plant plant)
 	{
-		if (index < 0)
+		boolean found = false;
+		int index = 0;
+		for (; index < mPlants.size() && !found; index++)
+		{
+			if (plant.getId().equals(mPlants.get(index).getId())) found = true;
+		}
+
+		if (!found)
 		{
 			addPlant(plant);
 		}
 		else
 		{
-			mPlants.set(index, plant);
+			mPlants.set(index - 1, plant);
 			save();
 		}
 	}
