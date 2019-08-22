@@ -67,8 +67,6 @@ import me.anon.lib.task.EncryptTask;
 import me.anon.model.Garden;
 import me.anon.model.Plant;
 
-import static me.anon.lib.manager.PlantManager.FILES_DIR;
-
 public class SettingsFragment extends PreferenceFragmentCompat implements Preference.OnPreferenceClickListener, Preference.OnPreferenceChangeListener
 {
 	private static final int REQUEST_UNINSTALL = 0x01;
@@ -604,7 +602,7 @@ public class SettingsFragment extends PreferenceFragmentCompat implements Prefer
 		}
 		else if ("export".equals(preference.getKey()))
 		{
-			Uri contentUri = FileProvider.getUriForFile(getActivity(), getActivity().getPackageName() + ".provider", new File(FILES_DIR, "plants.json"));
+			Uri contentUri = FileProvider.getUriForFile(getActivity(), getActivity().getPackageName() + ".provider", new File(PlantManager.FILES_DIR, "plants.json"));
 
 			Intent shareIntent = new Intent();
 			shareIntent.setAction(Intent.ACTION_SEND);

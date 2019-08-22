@@ -6,13 +6,6 @@ import com.google.android.material.appbar.AppBarLayout
 import kotlinx.android.synthetic.main.fragment_holder.*
 import me.anon.grow.fragment.PlantDetailsFragment
 
-/**
- * // TODO: Add class description
- *
- * @author 7LPdWcaW
- * @documentation // TODO Reference flow doc
- * @project GrowTracker
- */
 class PlantDetailsActivity : BaseActivity()
 {
 	public val toolbarLayout: AppBarLayout by lazy { toolbar_layout }

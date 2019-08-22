@@ -60,6 +60,7 @@ import androidx.cardview.widget.CardView;
 import androidx.core.content.FileProvider;
 import androidx.fragment.app.Fragment;
 import me.anon.controller.provider.PlantWidgetProvider;
+import me.anon.grow.AddWateringActivity;
 import me.anon.grow.BuildConfig;
 import me.anon.grow.EditWateringActivity;
 import me.anon.grow.EventsActivity;
@@ -88,13 +89,6 @@ import me.anon.model.PlantStage;
 import me.anon.model.StageChange;
 import me.anon.model.Water;
 
-/**
- * // TODO: Add class description
- *
- * @author 7LPdWcaW
- * @documentation // TODO Reference flow doc
- * @project GrowTracker
- */
 @Views.Injectable
 public class PlantDetailsFragment extends Fragment
 {
@@ -347,9 +341,9 @@ public class PlantDetailsFragment extends Fragment
 
 	@Views.OnClick public void onFeedingClick()
 	{
-//		Intent feeding = new Intent(getActivity(), AddWateringActivity.class);
-//		feeding.putExtra("plant_index", new int[]{plantIndex});
-//		startActivityForResult(feeding, 2);
+		Intent feeding = new Intent(getActivity(), AddWateringActivity.class);
+		feeding.putExtra("plant_index", new int[]{PlantManager.getInstance().indexOf(plant)});
+		startActivityForResult(feeding, 2);
 	}
 
 	@Views.OnClick public void onNoteClick()
