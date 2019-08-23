@@ -457,6 +457,10 @@ public class ViewPhotosFragment extends Fragment
 		// both photo options
 		if ((requestCode == 1 || requestCode == 3) && resultCode != Activity.RESULT_CANCELED)
 		{
+			Intent intent = new Intent();
+			intent.putExtra("plant", plant);
+			getActivity().setResult(Activity.RESULT_OK, intent);
+
 			if (getActivity() != null)
 			{
 				if (MainApplication.isEncrypted())

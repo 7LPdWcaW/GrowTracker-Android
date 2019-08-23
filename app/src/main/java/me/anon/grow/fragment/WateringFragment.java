@@ -3,6 +3,7 @@ package me.anon.grow.fragment;
 import android.app.Activity;
 import android.content.Context;
 import android.content.DialogInterface;
+import android.content.Intent;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
 import android.text.Editable;
@@ -664,7 +665,17 @@ public class WateringFragment extends Fragment
 		}
 
 		PlantWidgetProvider.triggerUpdateAll(getActivity());
-		getActivity().setResult(Activity.RESULT_OK);
+
+		Plant plant = null;
+		for (int index : plantIndex)
+		{
+			plant = PlantManager.getInstance().getPlants().get(index);
+			break;
+		}
+
+		Intent intent = new Intent();
+		intent.putExtra("plant", plant);
+		getActivity().setResult(Activity.RESULT_OK, intent);
 		getActivity().finish();
 	}
 

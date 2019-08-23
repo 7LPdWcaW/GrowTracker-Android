@@ -315,4 +315,5 @@
 	<string name="empty_plant_list">There are no plants to show</string>
 	<string name="empty_schedules">There are no schedules</string>
 	<string name="empty_photos">There are no photos to show</string>
+	<string name="events_title">Past actions</string>
 </resources>

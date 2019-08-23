@@ -6,7 +6,6 @@ import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
-import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.media.MediaScannerConnection;
 import android.net.Uri;
@@ -15,7 +14,6 @@ import android.os.Build;
 import android.os.Bundle;
 import android.os.Environment;
 import android.os.ParcelFileDescriptor;
-import android.preference.PreferenceManager;
 import android.provider.MediaStore;
 import android.text.Html;
 import android.text.TextUtils;
@@ -79,6 +77,7 @@ import me.anon.lib.helper.FabAnimator;
 import me.anon.lib.helper.PermissionHelper;
 import me.anon.lib.manager.GardenManager;
 import me.anon.lib.manager.PlantManager;
+import me.anon.lib.task.AsyncCallback;
 import me.anon.lib.task.EncryptTask;
 import me.anon.model.Action;
 import me.anon.model.EmptyAction;
@@ -114,6 +113,11 @@ public class PlantDetailsFragment extends Fragment
 	private Plant plant = null;
 	private boolean forwardIntent = false;
 	private boolean newPlant = false;
+
+	public static final int ACTIVITY_REQUEST_PHOTO_CAMERA = 1;
+	public static final int ACTIVITY_REQUEST_FEEDING = 2;
+	public static final int ACTIVITY_REQUEST_PHOTO_GALLERY = 3;
+	public static final int ACTIVITY_REQUEST_LAST_WATER = 4;
 
 	/**
 	 * @return Instantiated details fragment
@@ -343,7 +347,7 @@ public class PlantDetailsFragment extends Fragment
 	{
 		Intent feeding = new Intent(getActivity(), AddWateringActivity.class);
 		feeding.putExtra("plant_index", new int[]{PlantManager.getInstance().indexOf(plant)});
-		startActivityForResult(feeding, 2);
+		startActivityForResult(feeding, ACTIVITY_REQUEST_FEEDING);
 	}
 
 	@Views.OnClick public void onNoteClick()
@@ -480,7 +484,14 @@ public class PlantDetailsFragment extends Fragment
 
 	@Override public void onActivityResult(int requestCode, int resultCode, Intent data)
 	{
-		if (requestCode == 1) // take image from camera
+		if (resultCode == Activity.RESULT_OK && data != null && data.hasExtra("plant"))
+		{
+			plant = data.getParcelableExtra("plant");
+			setLastFeeding();
+			setUi();
+		}
+
+		if (requestCode == ACTIVITY_REQUEST_PHOTO_CAMERA) // take image from camera
 		{
 			if (resultCode == Activity.RESULT_CANCELED)
 			{
@@ -497,7 +508,7 @@ public class PlantDetailsFragment extends Fragment
 				}
 			}
 		}
-		else if (requestCode == 2)
+		else if (requestCode == ACTIVITY_REQUEST_FEEDING)
 		{
 			if (resultCode != Activity.RESULT_CANCELED)
 			{
@@ -569,7 +580,7 @@ public class PlantDetailsFragment extends Fragment
 				});
 			}
 		}
-		else if (requestCode == 3) // choose image from gallery
+		else if (requestCode == ACTIVITY_REQUEST_PHOTO_GALLERY) // choose image from gallery
 		{
 			if (resultCode != Activity.RESULT_CANCELED)
 			{
@@ -610,13 +621,13 @@ public class PlantDetailsFragment extends Fragment
 				}
 			}
 		}
-		else if (requestCode == 4)
+		else if (requestCode == ACTIVITY_REQUEST_LAST_WATER)
 		{
 			setLastFeeding();
 		}
 
 		// both photo options
-		if ((requestCode == 1 || requestCode == 3) && resultCode != Activity.RESULT_CANCELED)
+		if ((requestCode == ACTIVITY_REQUEST_PHOTO_CAMERA || requestCode == ACTIVITY_REQUEST_PHOTO_GALLERY) && resultCode != Activity.RESULT_CANCELED)
 		{
 			if (getActivity() != null)
 			{
@@ -745,28 +756,27 @@ public class PlantDetailsFragment extends Fragment
 						progress.setCancelable(false);
 						progress.show();
 
-//						final Plant toDelete = PlantManager.getInstance().getPlants().get(plantIndex);
-//						PlantManager.getInstance().deletePlant(plantIndex, new AsyncCallback()
-//						{
-//							@Override public void callback()
-//							{
-//								PlantManager.getInstance().save(new AsyncCallback()
-//								{
-//									@Override public void callback()
-//									{
-//										if (progress != null)
-//										{
-//											progress.dismiss();
-//										}
-//
-//										if (getActivity() != null)
-//										{
-//											getActivity().finish();
-//										}
-//									}
-//								}, true);
-//							}
-//						});
+						PlantManager.getInstance().deletePlant(plant, new AsyncCallback()
+						{
+							@Override public void callback()
+							{
+								PlantManager.getInstance().save(new AsyncCallback()
+								{
+									@Override public void callback()
+									{
+										if (progress != null)
+										{
+											progress.dismiss();
+										}
+
+										if (getActivity() != null)
+										{
+											getActivity().finish();
+										}
+									}
+								}, true);
+							}
+						});
 					}
 				})
 				.setNegativeButton(R.string.no, null)
@@ -804,7 +814,7 @@ public class PlantDetailsFragment extends Fragment
 					@Override public void onSnackBarAction(View v)
 					{
 						Intent plantDetails = new Intent(getActivity(), PlantDetailsActivity.class);
-						plantDetails.putExtra("plant_index", PlantManager.getInstance().getPlants().size() - 1);
+						plantDetails.putExtra("plant", PlantManager.getInstance().getPlants().get(PlantManager.getInstance().getPlants().size() - 1));
 						startActivity(plantDetails);
 					}
 				});
@@ -812,7 +822,7 @@ public class PlantDetailsFragment extends Fragment
 		else if (item.getItemId() == R.id.export)
 		{
 			Toast.makeText(getActivity(), R.string.export_progress, Toast.LENGTH_SHORT).show();
-			ExportService.export(getActivity(),new ArrayList<Plant>(Arrays.asList(plant)), plant.getName().replaceAll("[^a-zA-Z0-9]+", "-"), plant.getName());
+			ExportService.export(getActivity(),new ArrayList<>(Arrays.asList(plant)), plant.getName().replaceAll("[^a-zA-Z0-9]+", "-"), plant.getName());
 
 			return true;
 		}
@@ -870,22 +880,22 @@ public class PlantDetailsFragment extends Fragment
 	@Views.OnClick public void onViewStatisticsClick()
 	{
 		Intent stats = new Intent(getActivity(), StatisticsActivity.class);
-//		stats.putExtra("plant_index", plantIndex);
-		startActivity(stats);
+		stats.putExtra("plant", plant);
+		startActivityForResult(stats, 5);
 	}
 
 	@Views.OnClick public void onViewHistoryClick()
 	{
 		Intent events = new Intent(getActivity(), EventsActivity.class);
-//		events.putExtra("plant_index", plantIndex);
-		startActivity(events);
+		events.putExtra("plant", plant);
+		startActivityForResult(events, 5);
 	}
 
 	@Views.OnClick public void onViewPhotosClick()
 	{
 		Intent photos = new Intent(getActivity(), ViewPhotosActivity.class);
 		photos.putExtra("plant", plant);
-		startActivity(photos);
+		startActivityForResult(photos, 5);
 	}
 
 	@Views.OnClick public void onPlantStageContainerClick()
@@ -981,24 +991,6 @@ public class PlantDetailsFragment extends Fragment
 			plant.getActions().add(new StageChange(newStage, System.currentTimeMillis(), null));
 		}
 
-		if (plant == null)
-		{
-			SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(getActivity());
-			SharedPreferences.Editor edit = prefs.edit();
-
-			int plantsSize = PlantManager.getInstance().getPlants().size();
-
-			for (int index = 0; index < plantsSize; index++)
-			{
-				int currentPos = prefs.getInt(String.valueOf(index), 0);
-
-				edit.putInt(String.valueOf(index), currentPos + 1);
-			}
-
-			edit.putInt(String.valueOf(plantsSize + 1), 0);
-			edit.apply();
-		}
-
 		plant.setClone(clone.isChecked());
 		PlantManager.getInstance().upsert(plant);
 
@@ -1012,6 +1004,10 @@ public class PlantDetailsFragment extends Fragment
 		}
 
 		PlantWidgetProvider.triggerUpdateAll(getActivity());
+
+		Intent intent = new Intent();
+		intent.putExtra("plant", plant);
+		getActivity().setResult(Activity.RESULT_OK, intent);
 		getActivity().finish();
 	}
 

@@ -24,7 +24,6 @@ import me.anon.grow.R;
 import me.anon.lib.Views;
 import me.anon.lib.helper.StatsHelper;
 import me.anon.lib.helper.TimeHelper;
-import me.anon.lib.manager.PlantManager;
 import me.anon.model.Action;
 import me.anon.model.Additive;
 import me.anon.model.EmptyAction;
@@ -33,25 +32,13 @@ import me.anon.model.PlantStage;
 import me.anon.model.StageChange;
 import me.anon.model.Water;
 
-/**
- * @author 7LPdWcaW
- * @project GrowTracker
- */
 @Views.Injectable
 public class StatisticsFragment extends Fragment
 {
-	private int plantIndex = -1;
 	private Plant plant;
 
-	/**
-	 * @param plantIndex If -1, assume new plant
-	 * @return Instantiated details fragment
-	 */
-	public static StatisticsFragment newInstance(int plantIndex)
+	public static StatisticsFragment newInstance(Bundle args)
 	{
-		Bundle args = new Bundle();
-		args.putInt("plant_index", plantIndex);
-
 		StatisticsFragment fragment = new StatisticsFragment();
 		fragment.setArguments(args);
 
@@ -124,13 +111,8 @@ public class StatisticsFragment extends Fragment
 
 		if (getArguments() != null)
 		{
-			plantIndex = getArguments().getInt("plant_index");
-
-			if (plantIndex > -1)
-			{
-				plant = PlantManager.getInstance().getPlants().get(plantIndex);
-				getActivity().getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_ALWAYS_HIDDEN);
-			}
+			plant = getArguments().getParcelable("plant");
+			getActivity().getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_ALWAYS_HIDDEN);
 		}
 
 		setStatistics();
