@@ -28,6 +28,7 @@ import androidx.recyclerview.widget.RecyclerView;
 import kotlin.jvm.functions.Function3;
 import me.anon.controller.adapter.PlantAdapter;
 import me.anon.controller.adapter.SimpleItemTouchHelperCallback;
+import me.anon.controller.provider.PlantWidgetProvider;
 import me.anon.grow.AddWateringActivity;
 import me.anon.grow.MainApplication;
 import me.anon.grow.PlantDetailsActivity;
@@ -214,7 +215,7 @@ public class PlantListFragment extends Fragment
 	@Views.OnClick public void onFabAddClick(View view)
 	{
 		Intent addPlant = new Intent(getActivity(), PlantDetailsActivity.class);
-		startActivity(addPlant);
+		startActivityForResult(addPlant, 5);
 	}
 
 	@Views.OnClick public void onFeedingClick(View view)
@@ -318,6 +319,14 @@ public class PlantListFragment extends Fragment
 
 	@Override public void onActivityResult(int requestCode, int resultCode, Intent data)
 	{
+		if (resultCode == Activity.RESULT_OK && data.hasExtra("plant"))
+		{
+			Plant plant = data.getParcelableExtra("plant");
+			PlantManager.getInstance().upsert(plant);
+			filter();
+			PlantWidgetProvider.triggerUpdateAll(getActivity());
+		}
+
 		if (requestCode == 2)
 		{
 			if (resultCode != Activity.RESULT_CANCELED)

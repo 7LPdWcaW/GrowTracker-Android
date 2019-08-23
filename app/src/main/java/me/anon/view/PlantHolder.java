@@ -1,5 +1,6 @@
 package me.anon.view;
 
+import android.app.Activity;
 import android.content.Intent;
 import android.text.Html;
 import android.view.Gravity;
@@ -94,7 +95,7 @@ public class PlantHolder extends RecyclerView.ViewHolder
 			{
 				Intent details = new Intent(v.getContext(), PlantDetailsActivity.class);
 				details.putExtra("plant", plant);
-				v.getContext().startActivity(details);
+				((Activity)v.getContext()).startActivityForResult(details, 5);
 			}
 		});
 
@@ -107,7 +108,7 @@ public class PlantHolder extends RecyclerView.ViewHolder
 					Intent intent = new Intent(view.getContext(), PlantDetailsActivity.class);
 					intent.putExtra("plant", plant);
 					intent.putExtra("forward", "photo");
-					view.getContext().startActivity(intent);
+					((Activity)view.getContext()).startActivityForResult(intent, 5);
 				}
 			});
 		}
@@ -121,7 +122,7 @@ public class PlantHolder extends RecyclerView.ViewHolder
 					Intent intent = new Intent(view.getContext(), PlantDetailsActivity.class);
 					intent.putExtra("plant", plant);
 					intent.putExtra("forward", "feed");
-					view.getContext().startActivity(intent);
+					((Activity)view.getContext()).startActivityForResult(intent, 5);
 				}
 			});
 		}
@@ -166,7 +167,7 @@ public class PlantHolder extends RecyclerView.ViewHolder
 							}
 
 							intent.putExtra("plant", plant);
-							view.getContext().startActivity(intent);
+							((Activity)view.getContext()).startActivityForResult(intent, 5);
 
 							return true;
 						}

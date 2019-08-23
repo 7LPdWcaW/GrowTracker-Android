@@ -343,6 +343,11 @@ public class PlantDetailsFragment extends Fragment
 		strain.setText(plant.getStrain());
 	}
 
+	@Override public void onDestroy()
+	{
+		super.onDestroy();
+	}
+
 	@Views.OnClick public void onFeedingClick()
 	{
 		Intent feeding = new Intent(getActivity(), AddWateringActivity.class);
@@ -992,7 +997,7 @@ public class PlantDetailsFragment extends Fragment
 		}
 
 		plant.setClone(clone.isChecked());
-		PlantManager.getInstance().upsert(plant);
+		//PlantManager.getInstance().upsert(plant);
 
 		if (gardenIndex != -1)
 		{
@@ -1002,8 +1007,6 @@ public class PlantDetailsFragment extends Fragment
 				GardenManager.getInstance().save();
 			}
 		}
-
-		PlantWidgetProvider.triggerUpdateAll(getActivity());
 
 		Intent intent = new Intent();
 		intent.putExtra("plant", plant);

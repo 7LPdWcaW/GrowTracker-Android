@@ -108,6 +108,12 @@ public class MainActivity extends BaseActivity implements NavigationView.OnNavig
 		BusHelper.getInstance().register(this);
 	}
 
+	@Override protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data)
+	{
+		super.onActivityResult(requestCode, resultCode, data);
+		getSupportFragmentManager().findFragmentById(R.id.fragment_holder).onActivityResult(requestCode, resultCode, data);
+	}
+
 	@Override protected void onResume()
 	{
 		super.onResume();

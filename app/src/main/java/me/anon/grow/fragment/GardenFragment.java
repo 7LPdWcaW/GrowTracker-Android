@@ -30,6 +30,7 @@ import androidx.recyclerview.widget.RecyclerView;
 import kotlin.jvm.functions.Function3;
 import me.anon.controller.adapter.PlantAdapter;
 import me.anon.controller.adapter.SimpleItemTouchHelperCallback;
+import me.anon.controller.provider.PlantWidgetProvider;
 import me.anon.grow.AddWateringActivity;
 import me.anon.grow.MainActivity;
 import me.anon.grow.PlantDetailsActivity;
@@ -225,6 +226,8 @@ public class GardenFragment extends Fragment
 			garden.setPlantIds(orderedPlantIds);
 			GardenManager.getInstance().save();
 		}
+
+		PlantManager.getInstance().upsert(plants);
 	}
 
 	@Views.OnClick public void onFabAddClick(View view)
@@ -262,9 +265,9 @@ public class GardenFragment extends Fragment
 					plant.getActions().add(new Kryo().copy(action));
 				}
 
-				PlantManager.getInstance().save();
+				saveCurrentState();
 
-				SnackBar.show(getActivity(), "Actions added", new SnackBarListener()
+				SnackBar.show(getActivity(), getString(R.string.snackbar_action_add), new SnackBarListener()
 				{
 					@Override public void onSnackBarStarted(Object o)
 					{
@@ -304,9 +307,9 @@ public class GardenFragment extends Fragment
 					plant.getActions().add(action);
 				}
 
-				PlantManager.getInstance().save();
+				saveCurrentState();
 
-				SnackBar.show(getActivity(), "Notes added", new SnackBarListener()
+				SnackBar.show(getActivity(), getString(R.string.snackbar_note_add), new SnackBarListener()
 				{
 					@Override public void onSnackBarStarted(Object o)
 					{
@@ -335,12 +338,21 @@ public class GardenFragment extends Fragment
 
 	@Override public void onActivityResult(int requestCode, int resultCode, Intent data)
 	{
+		if (resultCode == Activity.RESULT_OK && data.hasExtra("plant"))
+		{
+			Plant plant = data.getParcelableExtra("plant");
+			PlantManager.getInstance().upsert(plant);
+			filter();
+			PlantWidgetProvider.triggerUpdateAll(getActivity());
+		}
+
 		if (requestCode == 2)
 		{
 			if (resultCode != Activity.RESULT_CANCELED)
 			{
 				adapter.notifyDataSetChanged();
-				SnackBar.show(getActivity(), "Watering added", new SnackBarListener()
+				saveCurrentState();
+				SnackBar.show(getActivity(), getString(R.string.snackbar_watering_add), new SnackBarListener()
 				{
 					@Override public void onSnackBarStarted(Object o)
 					{
@@ -399,7 +411,7 @@ public class GardenFragment extends Fragment
 					GardenManager.getInstance().save();
 					GardenFragment.this.garden = garden;
 
-					getActivity().setTitle(garden == null ? "All" : garden.getName() + " plants");
+					getActivity().setTitle(getString(R.string.list_title, garden.getName()));
 					filter();
 
 					((MainActivity)getActivity()).setNavigationView();
@@ -411,9 +423,9 @@ public class GardenFragment extends Fragment
 		}
 		else if (item.getItemId() == R.id.export_garden)
 		{
-			Toast.makeText(getActivity(), "Exporting grow log of garden...", Toast.LENGTH_SHORT).show();
+			Toast.makeText(getActivity(), R.string.garden_export, Toast.LENGTH_SHORT).show();
 			NotificationHelper.createExportChannel(getActivity());
-			NotificationHelper.sendExportNotification(getActivity(), "Exporting garden grow log", "Exporting " + garden.getName());
+			NotificationHelper.sendExportNotification(getActivity(), getString(R.string.garden_export), "Exporting " + garden.getName());
 
 			ArrayList<Plant> export = new ArrayList<>(adapter.getPlants());
 			ExportService.export(getActivity(), export, garden.getName().replaceAll("[^a-zA-Z0-9]+", "-"), garden.getName());
@@ -421,9 +433,9 @@ public class GardenFragment extends Fragment
 		else if (item.getItemId() == R.id.delete_garden)
 		{
 			new AlertDialog.Builder(getActivity())
-				.setTitle("Are you sure?")
-				.setMessage(Html.fromHtml("Are you sure you want to delete garden <b>" + garden.getName() + "</b>? This will not delete the plants."))
-				.setPositiveButton("Yes", new DialogInterface.OnClickListener()
+				.setTitle(R.string.confirm_title)
+				.setMessage(Html.fromHtml(getString(R.string.dialog_garden_delete_body, garden.getName())))
+				.setPositiveButton(R.string.confirm_positive, new DialogInterface.OnClickListener()
 				{
 					@Override public void onClick(DialogInterface dialogInterface, int i)
 					{
@@ -435,7 +447,7 @@ public class GardenFragment extends Fragment
 						GardenManager.getInstance().getGardens().remove(garden);
 						GardenManager.getInstance().save();
 
-						SnackBar.show(getActivity(), "Garden deleted", "undo", new SnackBarListener()
+						SnackBar.show(getActivity(), R.string.snackbar_garden_deleted, R.string.undo, new SnackBarListener()
 						{
 							@Override public void onSnackBarStarted(Object o){}
 							@Override public void onSnackBarFinished(Object o){}
@@ -455,7 +467,7 @@ public class GardenFragment extends Fragment
 						((MainActivity)getActivity()).onNavigationItemSelected(((MainActivity)getActivity()).getNavigation().getMenu().findItem(R.id.all));
 					}
 				})
-				.setNegativeButton("No", null)
+				.setNegativeButton(R.string.confirm_negative, null)
 				.show();
 		}
 		else

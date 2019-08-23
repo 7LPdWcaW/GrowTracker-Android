@@ -9,7 +9,6 @@ import android.text.TextUtils
 import android.widget.Toast
 import com.squareup.moshi.JsonDataException
 import com.squareup.moshi.Types
-import me.anon.grow.BootActivity
 import me.anon.grow.MainApplication
 import me.anon.lib.helper.AddonHelper
 import me.anon.lib.helper.BackupHelper
@@ -20,7 +19,6 @@ import me.anon.lib.task.AsyncCallback
 import me.anon.model.Garden
 import me.anon.model.Plant
 import java.io.*
-import java.util.*
 import java.util.concurrent.ConcurrentLinkedQueue
 import java.util.concurrent.atomic.AtomicBoolean
 
@@ -57,26 +55,7 @@ class PlantManager private constructor()
 		}
 
 		synchronized(this.plants) {
-			val plantsSize = PlantManager.instance.plants.size
-			val ordered = arrayOfNulls<Plant>(garden?.plantIds?.size ?: plantsSize)
-
-			for (index in 0 until plantsSize)
-			{
-				val plant = PlantManager.instance.plants[index]
-
-				if (garden != null && !garden.plantIds.contains(plant.id))
-				{
-					continue
-				}
-
-				ordered[garden?.plantIds?.indexOf(plant.id) ?: index] = plant
-			}
-
-			val finalList = ArrayList<Plant>()
-			finalList.addAll(Arrays.asList<Plant>(*ordered))
-			finalList.removeAll { it == null }
-
-			return finalList
+			return ArrayList(plants.filterIndexed { index, plant -> garden?.plantIds?.contains(plant.id) ?: true })
 		}
 	}
 
@@ -95,51 +74,54 @@ class PlantManager private constructor()
 	public fun deletePlant(plant: Plant, callback: AsyncCallback?)
 	{
 		//		synchronized (this.mPlants)
-		run {
-			if (MainApplication.isFailsafe()) return
+		if (MainApplication.isFailsafe()) return
 
-			object : AsyncTask<Void, Void, Void>()
+		object : AsyncTask<Void?, Void?, Void?>()
+		{
+			override fun doInBackground(vararg params: Void?): Void?
 			{
-				override fun doInBackground(vararg params: Void): Void?
-				{
-					plants.find { it.id == plant.id }?.let { plant ->
-						// Delete images
-						plant.images?.forEach { filePath ->
-							File(filePath).delete()
-						}
-
-						// Remove plant
-						plants.removeAll { it.id == plant.id }
-
-						// Remove from shared prefs
-//						val prefs = PreferenceManager.getDefaultSharedPreferences(context)
-//						prefs.edit().remove(plantIndex.toString()).apply()
+				plants.find { it.id == plant.id }?.let { plant ->
+					// Delete images
+					plant.images?.forEach { filePath ->
+						File(filePath).delete()
 					}
 
-					return null
+					// Remove plant
+					plants.removeAll { it.id == plant.id }
+
+					// Remove from shared prefs
+//						val prefs = PreferenceManager.getDefaultSharedPreferences(context)
+//						prefs.edit().remove(plantIndex.toString()).apply()
 				}
 
-				override fun onPostExecute(aVoid: Void)
-				{
-					callback?.callback()
-				}
-			}.executeOnExecutor(AsyncTask.SERIAL_EXECUTOR)
-		}
+				return null
+			}
+
+			override fun onPostExecute(aVoid: Void?)
+			{
+				callback?.callback()
+			}
+		}.executeOnExecutor(AsyncTask.SERIAL_EXECUTOR)
 	}
 
-	public fun upsert(plant: Plant)
-	{
-		var index = plants.indexOfFirst { it.id == plant.id }
+	public fun upsert(plant: Plant) = upsert(arrayListOf(plant))
 
-		if (index < 0)
-		{
-			addPlant(plant)
+	public fun upsert(plants: ArrayList<Plant>)
+	{
+		plants.forEach { plant ->
+			var index = this.plants.indexOfFirst { it.id == plant.id }
+
+			if (index < 0)
+			{
+				addPlant(plant)
+			}
+			else
+			{
+				this.plants[index] = plant
+			}
 		}
-		else
-		{
-			plants[index] = plant
-			save()
-		}
+
+		save()
 	}
 
 	@JvmOverloads
@@ -220,9 +202,8 @@ class PlantManager private constructor()
 		synchronized(plants) {
 			if (MainApplication.isFailsafe()) return
 
-			if (!ignoreCheck && plants.size > 0 || ignoreCheck)
+			if ((!ignoreCheck && plants.size > 0) || ignoreCheck)
 			{
-
 				saveTask.add(object : SaveAsyncTask(plants)
 				{
 					override fun doInBackground(vararg params: Void?): Int
@@ -301,10 +282,11 @@ class PlantManager private constructor()
 			}
 			else
 			{
-				load()
-				val restart = Intent(context, BootActivity::class.java)
-				restart.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP or Intent.FLAG_ACTIVITY_NEW_TASK)
-				context.startActivity(restart)
+				//Not sure if we need this any more
+//				load()
+//				val restart = Intent(context, BootActivity::class.java)
+//				restart.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP or Intent.FLAG_ACTIVITY_NEW_TASK)
+//				context.startActivity(restart)
 			}
 		}
 	}

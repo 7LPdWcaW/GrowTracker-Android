@@ -26,8 +26,8 @@ public class PlantAdapter extends RecyclerView.Adapter implements ItemTouchHelpe
 {
 	private List<Plant> plants = new ArrayList<>();
 	private List<String> showOnly = null;
-	private Context context;
 	private Unit measureUnit, deliveryUnit;
+	private int cardStyle = 1;
 
 	public void setShowOnly(List<String> showOnly)
 	{
@@ -56,10 +56,17 @@ public class PlantAdapter extends RecyclerView.Adapter implements ItemTouchHelpe
 
 	public PlantAdapter(Context context)
 	{
-		this.context = context;
-
 		measureUnit = Unit.getSelectedMeasurementUnit(context);
 		deliveryUnit = Unit.getSelectedDeliveryUnit(context);
+
+		try
+		{
+			cardStyle = Integer.parseInt(PreferenceManager.getDefaultSharedPreferences(context).getString("card_style", "0")) + 1;
+		}
+		catch (NumberFormatException e)
+		{
+			cardStyle = 1;
+		}
 	}
 
 	public void setPlants(List<Plant> plants)
@@ -77,14 +84,7 @@ public class PlantAdapter extends RecyclerView.Adapter implements ItemTouchHelpe
 			return 0;
 		}
 
-		try
-		{
-			return Integer.parseInt(PreferenceManager.getDefaultSharedPreferences(context).getString("card_style", "0")) + 1;
-		}
-		catch (NumberFormatException e)
-		{
-			return 1;
-		}
+		return cardStyle;
 	}
 
 	public int getFilteredCount()
