@@ -343,11 +343,6 @@ public class PlantDetailsFragment extends Fragment
 		strain.setText(plant.getStrain());
 	}
 
-	@Override public void onDestroy()
-	{
-		super.onDestroy();
-	}
-
 	@Views.OnClick public void onFeedingClick()
 	{
 		Intent feeding = new Intent(getActivity(), AddWateringActivity.class);

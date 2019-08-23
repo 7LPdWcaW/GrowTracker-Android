@@ -19,6 +19,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
 
+import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.GridLayoutManager;
@@ -30,6 +31,7 @@ import me.anon.controller.adapter.PlantAdapter;
 import me.anon.controller.adapter.SimpleItemTouchHelperCallback;
 import me.anon.controller.provider.PlantWidgetProvider;
 import me.anon.grow.AddWateringActivity;
+import me.anon.grow.MainActivity;
 import me.anon.grow.MainApplication;
 import me.anon.grow.PlantDetailsActivity;
 import me.anon.grow.R;
@@ -65,7 +67,7 @@ public class PlantListFragment extends Fragment
 	@Views.InjectView(R.id.recycler_view) private RecyclerView recycler;
 	@Views.InjectView(R.id.empty) private View empty;
 
-	private ArrayList<PlantStage> filterList = new ArrayList<>();
+	private ArrayList<PlantStage> filterList = null;
 	private boolean hideHarvested = false;
 
 	@Override public void onCreate(Bundle savedInstanceState)
@@ -87,6 +89,12 @@ public class PlantListFragment extends Fragment
 	{
 		super.onActivityCreated(savedInstanceState);
 
+		if (savedInstanceState != null)
+		{
+			filterList = savedInstanceState.getParcelableArrayList("filter");
+		}
+
+		((MainActivity)getActivity()).toolbarLayout.removeViews(1, ((MainActivity)getActivity()).toolbarLayout.getChildCount() - 1);
 		getActivity().setTitle(getString(R.string.list_title, getString(R.string.all)));
 
 		adapter = new PlantAdapter(getActivity());
@@ -174,7 +182,11 @@ public class PlantListFragment extends Fragment
 		ItemTouchHelper touchHelper = new ItemTouchHelper(callback);
 		touchHelper.attachToRecyclerView(recycler);
 
-		filterList.addAll(Arrays.asList(PlantStage.values()));
+		if (filterList == null)
+		{
+			filterList = new ArrayList<>();
+			filterList.addAll(Arrays.asList(PlantStage.values()));
+		}
 
 		if (hideHarvested = PreferenceManager.getDefaultSharedPreferences(getActivity()).getBoolean("hide_harvested", false))
 		{
@@ -183,11 +195,15 @@ public class PlantListFragment extends Fragment
 		}
 	}
 
-
-
-	@Override public void onStart()
+	@Override public void onSaveInstanceState(@NonNull Bundle outState)
 	{
-		super.onStart();
+		outState.putParcelableArrayList("filter", filterList);
+		super.onSaveInstanceState(outState);
+	}
+
+	@Override public void onResume()
+	{
+		super.onResume();
 
 		filter();
 	}
@@ -365,9 +381,54 @@ public class PlantListFragment extends Fragment
 	{
 		inflater.inflate(R.menu.plant_list_menu, menu);
 
+		menu.findItem(R.id.filter_germination).setChecked(false);
+		menu.findItem(R.id.filter_vegetation).setChecked(false);
+		menu.findItem(R.id.filter_seedling).setChecked(false);
+		menu.findItem(R.id.filter_cutting).setChecked(false);
+		menu.findItem(R.id.filter_flowering).setChecked(false);
+		menu.findItem(R.id.filter_drying).setChecked(false);
+		menu.findItem(R.id.filter_curing).setChecked(false);
+		menu.findItem(R.id.filter_harvested).setChecked(false);
+		menu.findItem(R.id.filter_planted).setChecked(false);
+
+		for (PlantStage plantStage : filterList)
+		{
+			switch (plantStage)
+			{
+				case GERMINATION:
+					menu.findItem(R.id.filter_germination).setChecked(true);
+					continue;
+				case VEGETATION:
+					menu.findItem(R.id.filter_vegetation).setChecked(true);
+					continue;
+				case SEEDLING:
+					menu.findItem(R.id.filter_seedling).setChecked(true);
+					continue;
+				case CUTTING:
+					menu.findItem(R.id.filter_cutting).setChecked(true);
+					continue;
+				case FLOWER:
+					menu.findItem(R.id.filter_flowering).setChecked(true);
+					continue;
+				case DRYING:
+					menu.findItem(R.id.filter_drying).setChecked(true);
+					continue;
+				case CURING:
+					menu.findItem(R.id.filter_curing).setChecked(true);
+					continue;
+				case HARVESTED:
+					menu.findItem(R.id.filter_harvested).setChecked(true);
+					continue;
+				case PLANTED:
+					menu.findItem(R.id.filter_planted).setChecked(true);
+					continue;
+			}
+		}
+
 		if (PreferenceManager.getDefaultSharedPreferences(getActivity()).getBoolean("hide_harvested", false))
 		{
 			menu.findItem(R.id.filter_harvested).setVisible(false);
+			menu.findItem(R.id.filter_harvested).setChecked(false);
 		}
 
 		super.onCreateOptionsMenu(menu, inflater);

@@ -139,7 +139,7 @@ public class PlantWidgetProvider extends AppWidgetProvider
 
 					Intent intent = new Intent(context, PlantDetailsActivity.class);
 					intent.setAction(Long.toString(System.currentTimeMillis()));
-					intent.putExtra("plant_index", plantIndex);
+					intent.putExtra("plant", plant);
 					intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_NEW_TASK);
 					PendingIntent plantIntent = PendingIntent.getActivity(context, 0, intent, PendingIntent.FLAG_UPDATE_CURRENT);
 					remoteViews.setOnClickPendingIntent(R.id.card_view, plantIntent);

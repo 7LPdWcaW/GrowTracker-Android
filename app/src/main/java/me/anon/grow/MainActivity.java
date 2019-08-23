@@ -101,7 +101,6 @@ public class MainActivity extends BaseActivity implements NavigationView.OnNavig
 			if (navigation.getMenu().findItem(selectedItem).isCheckable())
 			{
 				navigation.getMenu().findItem(selectedItem).setChecked(true);
-				onNavigationItemSelected(navigation.getMenu().findItem(selectedItem));
 			}
 		}
 

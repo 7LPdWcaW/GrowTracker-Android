@@ -71,7 +71,7 @@ public class GardenFragment extends Fragment
 	@Views.InjectView(R.id.empty) private View empty;
 	@Views.InjectView(R.id.photo) private View photo;
 
-	private ArrayList<PlantStage> filterList = new ArrayList<>();
+	private ArrayList<PlantStage> filterList = null;
 	private boolean hideHarvested = false;
 
 	@Override public void onCreate(Bundle savedInstanceState)
@@ -96,15 +96,13 @@ public class GardenFragment extends Fragment
 		if (savedInstanceState != null)
 		{
 			garden = savedInstanceState.getParcelable("garden");
-			Views.inject(this, getActivity().findViewById(android.R.id.content));
+			filterList = savedInstanceState.getParcelableArrayList("filter");
 		}
-		else
-		{
-			((MainActivity)getActivity()).toolbarLayout.removeViews(1, ((MainActivity)getActivity()).toolbarLayout.getChildCount() - 1);
-			((MainActivity)getActivity()).toolbarLayout.addView(LayoutInflater.from(getActivity()).inflate(R.layout.action_buttons_stub, ((MainActivity)getActivity()).toolbarLayout, false));
-			Views.inject(this, ((MainActivity)getActivity()).toolbarLayout);
-			photo.setVisibility(View.GONE);
-		}
+
+		((MainActivity)getActivity()).toolbarLayout.removeViews(1, ((MainActivity)getActivity()).toolbarLayout.getChildCount() - 1);
+		((MainActivity)getActivity()).toolbarLayout.addView(LayoutInflater.from(getActivity()).inflate(R.layout.action_buttons_stub, ((MainActivity)getActivity()).toolbarLayout, false));
+		Views.inject(this, ((MainActivity)getActivity()).toolbarLayout);
+		photo.setVisibility(View.GONE);
 
 		getActivity().setTitle(getString(R.string.list_title, garden.getName()));
 
@@ -177,7 +175,11 @@ public class GardenFragment extends Fragment
 		ItemTouchHelper touchHelper = new ItemTouchHelper(callback);
 		touchHelper.attachToRecyclerView(recycler);
 
-		filterList.addAll(Arrays.asList(PlantStage.values()));
+		if (filterList == null)
+		{
+			filterList = new ArrayList<>();
+			filterList.addAll(Arrays.asList(PlantStage.values()));
+		}
 
 		if (hideHarvested = PreferenceManager.getDefaultSharedPreferences(getActivity()).getBoolean("hide_harvested", false))
 		{
@@ -190,11 +192,12 @@ public class GardenFragment extends Fragment
 	{
 		super.onSaveInstanceState(outState);
 		outState.putParcelable("garden", garden);
+		outState.putParcelableArrayList("filter", filterList);
 	}
 
-	@Override public void onStart()
+	@Override public void onResume()
 	{
-		super.onStart();
+		super.onResume();
 
 		filter();
 	}
@@ -389,9 +392,54 @@ public class GardenFragment extends Fragment
 		menu.findItem(R.id.edit_garden).setVisible(true);
 		menu.findItem(R.id.delete_garden).setVisible(true);
 
+		menu.findItem(R.id.filter_germination).setChecked(false);
+		menu.findItem(R.id.filter_vegetation).setChecked(false);
+		menu.findItem(R.id.filter_seedling).setChecked(false);
+		menu.findItem(R.id.filter_cutting).setChecked(false);
+		menu.findItem(R.id.filter_flowering).setChecked(false);
+		menu.findItem(R.id.filter_drying).setChecked(false);
+		menu.findItem(R.id.filter_curing).setChecked(false);
+		menu.findItem(R.id.filter_harvested).setChecked(false);
+		menu.findItem(R.id.filter_planted).setChecked(false);
+
+		for (PlantStage plantStage : filterList)
+		{
+			switch (plantStage)
+			{
+				case GERMINATION:
+					menu.findItem(R.id.filter_germination).setChecked(true);
+					continue;
+				case VEGETATION:
+					menu.findItem(R.id.filter_vegetation).setChecked(true);
+					continue;
+				case SEEDLING:
+					menu.findItem(R.id.filter_seedling).setChecked(true);
+					continue;
+				case CUTTING:
+					menu.findItem(R.id.filter_cutting).setChecked(true);
+					continue;
+				case FLOWER:
+					menu.findItem(R.id.filter_flowering).setChecked(true);
+					continue;
+				case DRYING:
+					menu.findItem(R.id.filter_drying).setChecked(true);
+					continue;
+				case CURING:
+					menu.findItem(R.id.filter_curing).setChecked(true);
+					continue;
+				case HARVESTED:
+					menu.findItem(R.id.filter_harvested).setChecked(true);
+					continue;
+				case PLANTED:
+					menu.findItem(R.id.filter_planted).setChecked(true);
+					continue;
+			}
+		}
+
 		if (PreferenceManager.getDefaultSharedPreferences(getActivity()).getBoolean("hide_harvested", false))
 		{
 			menu.findItem(R.id.filter_harvested).setVisible(false);
+			menu.findItem(R.id.filter_harvested).setChecked(false);
 		}
 
 		super.onCreateOptionsMenu(menu, inflater);
@@ -537,11 +585,13 @@ public class GardenFragment extends Fragment
 
 		if (adapter.getFilteredCount() == 0)
 		{
+			getActivity().findViewById(R.id.action_container).setVisibility(View.GONE);
 			empty.setVisibility(View.VISIBLE);
 			recycler.setVisibility(View.GONE);
 		}
 		else
 		{
+			getActivity().findViewById(R.id.action_container).setVisibility(View.VISIBLE);
 			empty.setVisibility(View.GONE);
 			recycler.setVisibility(View.VISIBLE);
 		}

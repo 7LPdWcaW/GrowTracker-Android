@@ -435,7 +435,8 @@ enum class PlantMedium private constructor(val printString: Int)
 	}
 }
 
-enum class PlantStage private constructor(val printString: Int)
+@Parcelize
+enum class PlantStage private constructor(val printString: Int) : Parcelable
 {
 	PLANTED(R.string.planted),
 	GERMINATION(R.string.germination),
