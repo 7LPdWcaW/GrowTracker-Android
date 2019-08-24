@@ -44,6 +44,7 @@ public class MainApplication extends Application
 	private static String key = "";
 	private static boolean failsafe = false;
 	private static boolean isTablet = false;
+	public static boolean isPanic = false;
 
 	public static void setEncrypted(boolean encrypted)
 	{

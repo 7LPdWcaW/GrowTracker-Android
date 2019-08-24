@@ -47,6 +47,7 @@ import androidx.preference.EditTextPreference;
 import androidx.preference.Preference;
 import androidx.preference.PreferenceCategory;
 import androidx.preference.PreferenceFragmentCompat;
+import androidx.preference.PreferenceGroup;
 import androidx.preference.PreferenceManager;
 import androidx.preference.SwitchPreferenceCompat;
 import me.anon.controller.receiver.BackupService;
@@ -123,9 +124,21 @@ public class SettingsFragment extends PreferenceFragmentCompat implements Prefer
 			populateAddons();
 		}
 
-		Intent refresh = new Intent();
-		refresh.putExtra("refresh", true);
-		getActivity().setResult(Activity.RESULT_OK, refresh);
+		if (MainApplication.isPanic)
+		{
+			getPreferenceScreen().removePreference(findPreference("settings_general"));
+			getPreferenceScreen().removePreference(findPreference("settings_units"));
+			getPreferenceScreen().removePreference(findPreference("addon_list"));
+			getPreferenceScreen().removePreference(findPreference("failsafe"));
+			getPreferenceScreen().removePreference(findPreference("encrypt"));
+			((PreferenceGroup)getPreferenceScreen().findPreference("settings_data")).notifyDependencyChange(false);
+		}
+		else
+		{
+			Intent refresh = new Intent();
+			refresh.putExtra("refresh", true);
+			getActivity().setResult(Activity.RESULT_OK, refresh);
+		}
 	}
 
 	/**
@@ -218,6 +231,7 @@ public class SettingsFragment extends PreferenceFragmentCompat implements Prefer
 								return true;
 							}
 						});
+
 						list.addPreference(preference);
 					}
 					catch (Exception e)

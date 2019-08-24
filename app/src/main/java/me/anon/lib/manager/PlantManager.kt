@@ -154,12 +154,14 @@ class PlantManager private constructor()
 					plants.clear()
 					plants.addAll(MoshiHelper.parse(stream, Types.newParameterizedType(ArrayList::class.java, Plant::class.java)))
 					MainApplication.setFailsafe(false)
+					MainApplication.isPanic = false
 				}
 				else
 				{
 					plants.clear()
 					plants.addAll(MoshiHelper.parse(File(FILES_DIR, "/plants.json"), Types.newParameterizedType(ArrayList::class.java, Plant::class.java)))
 					MainApplication.setFailsafe(false)
+					MainApplication.isPanic = false
 				}
 
 				return true
@@ -175,6 +177,7 @@ class PlantManager private constructor()
 
 					// prevent save
 					MainApplication.setFailsafe(true)
+					MainApplication.isPanic = true
 				}
 			}
 			catch (e: Exception)
@@ -188,6 +191,7 @@ class PlantManager private constructor()
 
 					// prevent save
 					MainApplication.setFailsafe(true)
+					MainApplication.isPanic = true
 				}
 			}
 		}
