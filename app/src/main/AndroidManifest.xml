@@ -79,5 +79,6 @@
 		</activity>
 
 		<meta-data android:name="me.anon.grow.APP_TYPE" android:value="${appType}" />
+		<meta-data android:name="me.anon.grow.VERSION_DATE" android:value="${version_date}" />
 	</application>
 </manifest>

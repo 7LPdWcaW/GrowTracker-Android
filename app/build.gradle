@@ -38,6 +38,10 @@ android {
 			targetCompatibility 1.8
 		}
 
+		manifestPlaceholders = [
+			"version_date": "" + System.currentTimeMillis()
+		]
+
 		javaCompileOptions {
 			annotationProcessorOptions {
 				includeCompileClasspath false
