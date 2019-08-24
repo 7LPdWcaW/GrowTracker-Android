@@ -17,6 +17,7 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 import java.util.SortedMap;
+import java.util.TreeSet;
 
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
@@ -153,7 +154,7 @@ public class StatisticsFragment extends Fragment
 
 	private void setAdditiveStats()
 	{
-		final Set<String> additiveNames = new HashSet<>();
+		final Set<String> additiveNames = new TreeSet<>(String.CASE_INSENSITIVE_ORDER);
 		for (Action action : plant.getActions())
 		{
 			if (action instanceof Water)

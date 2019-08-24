@@ -11,7 +11,8 @@
 		android:layout_width="match_parent"
 		android:layout_height="wrap_content"
 		android:id="@+id/description"
-		android:inputType="textCapSentences|text"
+		android:inputType="textCapSentences"
+		android:capitalize="words"
 		android:nextFocusDown="@+id/amount"
 		android:hint="@string/additives_dialog_description"
 	/>
