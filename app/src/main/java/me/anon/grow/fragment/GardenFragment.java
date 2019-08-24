@@ -19,6 +19,8 @@ import com.esotericsoftware.kryo.Kryo;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
+import java.util.LinkedHashSet;
+import java.util.Set;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -40,6 +42,7 @@ import me.anon.lib.SnackBar;
 import me.anon.lib.SnackBarListener;
 import me.anon.lib.Views;
 import me.anon.lib.event.GardenChangeEvent;
+import me.anon.lib.ext.IntUtilsKt;
 import me.anon.lib.helper.BusHelper;
 import me.anon.lib.helper.FabAnimator;
 import me.anon.lib.helper.NotificationHelper;
@@ -72,7 +75,6 @@ public class GardenFragment extends Fragment
 	@Views.InjectView(R.id.photo) private View photo;
 
 	private ArrayList<PlantStage> filterList = null;
-	private boolean hideHarvested = false;
 
 	@Override public void onCreate(Bundle savedInstanceState)
 	{
@@ -178,13 +180,26 @@ public class GardenFragment extends Fragment
 		if (filterList == null)
 		{
 			filterList = new ArrayList<>();
-			filterList.addAll(Arrays.asList(PlantStage.values()));
-		}
-
-		if (hideHarvested = PreferenceManager.getDefaultSharedPreferences(getActivity()).getBoolean("hide_harvested", false))
-		{
-			filterList.remove(PlantStage.HARVESTED);
-			hideHarvested = true;
+			Set<String> prefsList = androidx.preference.PreferenceManager.getDefaultSharedPreferences(getActivity()).getStringSet("filter_list", null);
+			if (prefsList == null)
+			{
+				filterList.addAll(Arrays.asList(PlantStage.values()));
+			}
+			else
+			{
+				for (String s : prefsList)
+				{
+					try
+					{
+						int ordinal = IntUtilsKt.toSafeInt(s);
+						filterList.add(PlantStage.values()[ordinal]);
+					}
+					catch (Exception e)
+					{
+						e.printStackTrace();
+					}
+				}
+			}
 		}
 	}
 
@@ -211,7 +226,7 @@ public class GardenFragment extends Fragment
 
 	private boolean beingFiltered()
 	{
-		return !(filterList.size() == PlantStage.values().length - (hideHarvested ? 1 : 0));
+		return !(filterList.size() == PlantStage.values().length);
 	}
 
 	private synchronized void saveCurrentState()
@@ -388,58 +403,16 @@ public class GardenFragment extends Fragment
 	{
 		inflater.inflate(R.menu.plant_list_menu, menu);
 
-		menu.findItem(R.id.export_garden).setVisible(true);
-		menu.findItem(R.id.edit_garden).setVisible(true);
-		menu.findItem(R.id.delete_garden).setVisible(true);
+		int[] ids = {R.id.filter_germination, R.id.filter_vegetation, R.id.filter_seedling, R.id.filter_cutting, R.id.filter_flowering, R.id.filter_drying, R.id.filter_curing, R.id.filter_harvested, R.id.filter_planted};
+		PlantStage[] stages = {PlantStage.GERMINATION, PlantStage.VEGETATION, PlantStage.SEEDLING, PlantStage.CUTTING, PlantStage.FLOWER, PlantStage.DRYING, PlantStage.CURING, PlantStage.HARVESTED, PlantStage.PLANTED};
 
-		menu.findItem(R.id.filter_germination).setChecked(false);
-		menu.findItem(R.id.filter_vegetation).setChecked(false);
-		menu.findItem(R.id.filter_seedling).setChecked(false);
-		menu.findItem(R.id.filter_cutting).setChecked(false);
-		menu.findItem(R.id.filter_flowering).setChecked(false);
-		menu.findItem(R.id.filter_drying).setChecked(false);
-		menu.findItem(R.id.filter_curing).setChecked(false);
-		menu.findItem(R.id.filter_harvested).setChecked(false);
-		menu.findItem(R.id.filter_planted).setChecked(false);
-
-		for (PlantStage plantStage : filterList)
+		for (int index = 0; index < ids.length; index++)
 		{
-			switch (plantStage)
+			menu.findItem(ids[index]).setChecked(false);
+			if (filterList.contains(stages[index]))
 			{
-				case GERMINATION:
-					menu.findItem(R.id.filter_germination).setChecked(true);
-					continue;
-				case VEGETATION:
-					menu.findItem(R.id.filter_vegetation).setChecked(true);
-					continue;
-				case SEEDLING:
-					menu.findItem(R.id.filter_seedling).setChecked(true);
-					continue;
-				case CUTTING:
-					menu.findItem(R.id.filter_cutting).setChecked(true);
-					continue;
-				case FLOWER:
-					menu.findItem(R.id.filter_flowering).setChecked(true);
-					continue;
-				case DRYING:
-					menu.findItem(R.id.filter_drying).setChecked(true);
-					continue;
-				case CURING:
-					menu.findItem(R.id.filter_curing).setChecked(true);
-					continue;
-				case HARVESTED:
-					menu.findItem(R.id.filter_harvested).setChecked(true);
-					continue;
-				case PLANTED:
-					menu.findItem(R.id.filter_planted).setChecked(true);
-					continue;
+				menu.findItem(ids[index]).setChecked(true);
 			}
-		}
-
-		if (PreferenceManager.getDefaultSharedPreferences(getActivity()).getBoolean("hide_harvested", false))
-		{
-			menu.findItem(R.id.filter_harvested).setVisible(false);
-			menu.findItem(R.id.filter_harvested).setChecked(false);
 		}
 
 		super.onCreateOptionsMenu(menu, inflater);
@@ -552,6 +525,15 @@ public class GardenFragment extends Fragment
 					filter = true;
 				}
 			}
+
+			Set<String> stageOrdinals = new LinkedHashSet<>();
+			for (PlantStage plantStage : filterList)
+			{
+				stageOrdinals.add(plantStage.ordinal() + "");
+			}
+			androidx.preference.PreferenceManager.getDefaultSharedPreferences(getActivity()).edit()
+				.putStringSet("filter_list", stageOrdinals)
+				.apply();
 
 			if (filter)
 			{

@@ -70,15 +70,15 @@
 	</item>
 
 	<item
-		android:id="@+id/export_garden"
-		android:title="@string/menu_export_garden"
+		android:id="@+id/edit_garden"
+		android:title="@string/menu_edit_garden"
 		app:showAsAction="never"
 		android:visible="false"
 	/>
-
+	
 	<item
-		android:id="@+id/edit_garden"
-		android:title="@string/menu_edit_garden"
+		android:id="@+id/export_garden"
+		android:title="@string/menu_export_garden"
 		app:showAsAction="never"
 		android:visible="false"
 	/>
