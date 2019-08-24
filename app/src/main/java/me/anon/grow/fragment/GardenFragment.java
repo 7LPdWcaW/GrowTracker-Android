@@ -131,7 +131,7 @@ public class GardenFragment extends Fragment
 		{
 			@Override public Boolean invoke(Integer integer, RecyclerView.ViewHolder viewHolder, RecyclerView.Adapter<RecyclerView.ViewHolder> viewHolderAdapter)
 			{
-				return true;
+				return viewHolderAdapter.getItemViewType(integer) != 0;
 			}
 		}));
 
