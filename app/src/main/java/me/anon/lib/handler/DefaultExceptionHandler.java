@@ -39,8 +39,8 @@ public class DefaultExceptionHandler implements UncaughtExceptionHandler
 			e.printStackTrace(writer);
 
 			CrashReport report = new CrashReport();
-			report.setException(e);
-			report.setAdditionalMessage(strWriter.toString() + "\r\n" + optionalMessage);
+			report.setException(strWriter.toString());
+			report.setAdditionalMessage(optionalMessage);
 			report.setModel(android.os.Build.MODEL);
 			report.setManufacturer(android.os.Build.MANUFACTURER);
 			report.setOsVersion(android.os.Build.VERSION.RELEASE);

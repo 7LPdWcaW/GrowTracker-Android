@@ -21,13 +21,6 @@
 		/>
 
 		<SwitchPreferenceCompat
-			app:key="hide_harvested"
-			app:title="@string/settings_harvest_title"
-			app:summary="@string/settings_harvest_summary"
-			android:defaultValue="false"
-		/>
-
-		<SwitchPreferenceCompat
 			app:key="force_dark"
 			app:title="@string/settings_dark_title"
 			app:summary="@string/settings_dark_summary"

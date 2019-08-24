@@ -39,7 +39,7 @@ class ExportService : Service()
 		intent?.let {
 			val plantsIds = it.extras?.getStringArrayList("plants") ?: arrayListOf()
 
-			val plants = java.util.ArrayList(PlantManager.getInstance().plants.filter { plantsIds.contains(it.id) })
+			val plants = java.util.ArrayList(PlantManager.instance.plants.filter { plantsIds.contains(it.id) })
 			val title = it.getStringExtra("title")
 			val name = it.getStringExtra("name")
 

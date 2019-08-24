@@ -19,26 +19,20 @@ public class ActionJsonAdapter : JsonAdapter<Action>()
 		var value: Action? = null
 
 		var type = ""
-		try
+		val temp = reader.peekJson()
+		temp.beginObject()
+		while (temp.hasNext())
 		{
-			val temp = reader.peekJson()
-			temp.beginObject()
-			while (temp.hasNext())
+			when (temp.selectName(JsonReader.Options.of("type")))
 			{
-				when (temp.selectName(JsonReader.Options.of("type")))
-				{
-					0 -> {
-						type = temp.nextString()
-					}
-					-1 -> {
-						temp.skipName()
-						temp.skipValue()
-					}
+				0 -> {
+					type = temp.nextString()
+				}
+				-1 -> {
+					temp.skipName()
+					temp.skipValue()
 				}
 			}
-		}
-		catch (e: Exception)
-		{
 		}
 
 		when (type)
@@ -59,7 +53,7 @@ public class ActionJsonAdapter : JsonAdapter<Action>()
 		when (value)
 		{
 			is Water -> waterAdapter.toJson(writer, value)
-			is Action -> emptyActionAdater.toJson(writer, EmptyAction(null, value.date, value.notes))
+			is EmptyAction -> emptyActionAdater.toJson(writer, EmptyAction(value.action, value.date, value.notes))
 			is NoteAction -> noteActionAdapter.toJson(writer, value)
 			is StageChange -> stageChangeAdapter.toJson(writer, value)
 		}

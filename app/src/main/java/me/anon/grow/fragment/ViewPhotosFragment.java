@@ -32,6 +32,7 @@ import java.io.OutputStream;
 import java.util.ArrayList;
 import java.util.List;
 
+import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
@@ -75,20 +76,12 @@ public class ViewPhotosFragment extends Fragment
 	@Views.InjectView(R.id.empty) private View empty;
 	private ActionMode action = null;
 
-	private int plantIndex = -1;
 	private Plant plant;
 
-	/**
-	 * @param plantIndex If -1, assume new plant
-	 * @return Instantiated details fragment
-	 */
-	public static ViewPhotosFragment newInstance(int plantIndex)
+	public static ViewPhotosFragment newInstance(Bundle arguments)
 	{
-		Bundle args = new Bundle();
-		args.putInt("plant_index", plantIndex);
-
 		ViewPhotosFragment fragment = new ViewPhotosFragment();
-		fragment.setArguments(args);
+		fragment.setArguments(arguments);
 
 		return fragment;
 	}
@@ -101,6 +94,12 @@ public class ViewPhotosFragment extends Fragment
 		return view;
 	}
 
+	@Override public void onSaveInstanceState(@NonNull Bundle outState)
+	{
+		outState.putParcelable("plant", plant);
+		super.onSaveInstanceState(outState);
+	}
+
 	@Override public void onActivityCreated(Bundle savedInstanceState)
 	{
 		super.onActivityCreated(savedInstanceState);
@@ -109,13 +108,11 @@ public class ViewPhotosFragment extends Fragment
 
 		if (getArguments() != null)
 		{
-			plantIndex = getArguments().getInt("plant_index");
-
-			if (plantIndex > -1)
-			{
-				plant = PlantManager.getInstance().getPlants().get(plantIndex);
-				getActivity().getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_ALWAYS_HIDDEN);
-			}
+			plant = getArguments().getParcelable("plant");
+		}
+		else if (savedInstanceState != null)
+		{
+			plant = savedInstanceState.getParcelable("plant");
 		}
 
 		if (plant == null)
@@ -124,6 +121,7 @@ public class ViewPhotosFragment extends Fragment
 			return;
 		}
 
+		getActivity().getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_ALWAYS_HIDDEN);
 		adapter = new ImageAdapter();
 		adapter.plant = plant;
 		adapter.onItemSelectedListener = new ImageAdapter.OnItemSelectedListener()
@@ -175,7 +173,7 @@ public class ViewPhotosFragment extends Fragment
 											AddonHelper.broadcastImage(getActivity(), image, true);
 										}
 
-										PlantManager.getInstance().upsert(plantIndex, plant);
+										PlantManager.getInstance().upsert(plant);
 										setAdapter();
 										adapter.notifyDataSetChanged();
 										mode.finish();
@@ -241,7 +239,7 @@ public class ViewPhotosFragment extends Fragment
 
 	private void setAdapter()
 	{
-		adapter.setImages(PlantManager.getInstance().getPlants().get(plantIndex).getImages());
+		adapter.setImages(plant.getImages());
 
 		String lastFileDate = "";
 		List<SectionedGridRecyclerViewAdapter.Section> sections = new ArrayList<SectionedGridRecyclerViewAdapter.Section>();
@@ -381,7 +379,7 @@ public class ViewPhotosFragment extends Fragment
 						intent.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION);
 						intent.setType("image/*");
 
-						startActivityForResult(Intent.createChooser(intent, "Select picture"), 3);
+						startActivityForResult(Intent.createChooser(intent, getString(R.string.dialog_select_picture_title)), 3);
 					}
 				}
 			})
@@ -399,7 +397,7 @@ public class ViewPhotosFragment extends Fragment
 			}
 			else
 			{
-				PlantManager.getInstance().upsert(plantIndex, plant);
+				PlantManager.getInstance().upsert(plant);
 				AddonHelper.broadcastImage(getActivity(), plant.getImages().get(plant.getImages().size() - 1), false);
 
 				setAdapter();
@@ -438,8 +436,12 @@ public class ViewPhotosFragment extends Fragment
 					{
 						plant.getImages().add(out.getAbsolutePath());
 
-						PlantManager.getInstance().upsert(plantIndex, plant);
-						AddonHelper.broadcastImage(getActivity(), plant.getImages().get(plant.getImages().size() - 1), false);
+						PlantManager.getInstance().upsert(plant);
+
+						if (plant.getImages().size() - 1 > 0)
+						{
+							AddonHelper.broadcastImage(getActivity(), plant.getImages().get(plant.getImages().size() - 1), false);
+						}
 
 						setAdapter();
 						adapter.notifyDataSetChanged();
@@ -455,6 +457,10 @@ public class ViewPhotosFragment extends Fragment
 		// both photo options
 		if ((requestCode == 1 || requestCode == 3) && resultCode != Activity.RESULT_CANCELED)
 		{
+			Intent intent = new Intent();
+			intent.putExtra("plant", plant);
+			getActivity().setResult(Activity.RESULT_OK, intent);
+
 			if (getActivity() != null)
 			{
 				if (MainApplication.isEncrypted())

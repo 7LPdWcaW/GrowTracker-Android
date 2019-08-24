@@ -45,13 +45,6 @@ import me.anon.model.StageChange;
 import me.anon.model.Water;
 import me.anon.view.ActionHolder;
 
-/**
- * // TODO: Add class description
- *
- * @author 7LPdWcaW
- * @documentation // TODO Reference flow doc
- * @project GrowTracker
- */
 @Views.Injectable
 public class EventListFragment extends Fragment implements ActionAdapter.OnActionSelectListener
 {
@@ -59,23 +52,16 @@ public class EventListFragment extends Fragment implements ActionAdapter.OnActio
 
 	@Views.InjectView(R.id.recycler_view) private RecyclerView recycler;
 
-	private int plantIndex = -1;
 	private Plant plant;
 
 	private boolean watering = true;
 	private boolean notes = true, stages = true;
 	private ArrayList<Action.ActionName> selected = new ArrayList<>();
-	private boolean beingDragged = false;
 
-	/**
-	 * @param plantIndex If -1, assume new plant
-	 * @return Instantiated details fragment
-	 */
-	public static EventListFragment newInstance(int plantIndex)
+	public static final int REQUEST_WATERING = 3;
+
+	public static EventListFragment newInstance(Bundle args)
 	{
-		Bundle args = new Bundle();
-		args.putInt("plant_index", plantIndex);
-
 		EventListFragment fragment = new EventListFragment();
 		fragment.setArguments(args);
 
@@ -100,17 +86,12 @@ public class EventListFragment extends Fragment implements ActionAdapter.OnActio
 	{
 		super.onActivityCreated(savedInstanceState);
 
-		getActivity().setTitle("Past actions");
+		getActivity().setTitle(R.string.events_title);
 
 		if (getArguments() != null)
 		{
-			plantIndex = getArguments().getInt("plant_index");
-
-			if (plantIndex > -1)
-			{
-				plant = PlantManager.getInstance().getPlants().get(plantIndex);
-				getActivity().getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_ALWAYS_HIDDEN);
-			}
+			plant = getArguments().getParcelable("plant");
+			getActivity().getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_ALWAYS_HIDDEN);
 		}
 
 		if (plant == null)
@@ -161,14 +142,15 @@ public class EventListFragment extends Fragment implements ActionAdapter.OnActio
 
 	@Override public void onDestroy()
 	{
+		PlantManager.getInstance().upsert(plant);
+
 		super.onDestroy();
-		PlantManager.getInstance().upsert(plantIndex, plant);
 	}
 
 	public void setActions()
 	{
 		ArrayList<Action> actions = new ArrayList<>();
-		actions.addAll(PlantManager.getInstance().getPlants().get(plantIndex).getActions());
+		actions.addAll(plant.getActions());
 		Collections.reverse(actions);
 		actions.removeAll(Collections.singleton(null));
 		adapter.setActions(plant, actions);
@@ -176,18 +158,15 @@ public class EventListFragment extends Fragment implements ActionAdapter.OnActio
 
 	@Override public void onActivityResult(int requestCode, int resultCode, Intent data)
 	{
-		if (requestCode == 2)
+		if (resultCode == Activity.RESULT_OK && data.getExtras().containsKey("plant"))
 		{
-			if (resultCode != Activity.RESULT_CANCELED)
-			{
-				PlantManager.getInstance().upsert(plantIndex, plant);
-				setActions();
-				adapter.notifyDataSetChanged();
-			}
+			plant = data.getExtras().getParcelable("plant");
+			PlantManager.getInstance().upsert(plant);
+			setResult();
 		}
-		else if (requestCode == 3)
+
+		if (requestCode == REQUEST_WATERING)
 		{
-			plant = PlantManager.getInstance().getPlants().get(plantIndex);
 			setActions();
 			adapter.notifyDataSetChanged();
 		}
@@ -203,7 +182,8 @@ public class EventListFragment extends Fragment implements ActionAdapter.OnActio
 			@Override public void onActionSelected(final EmptyAction action)
 			{
 				plant.getActions().add(action);
-				PlantManager.getInstance().upsert(plantIndex, plant);
+				PlantManager.getInstance().upsert(plant);
+				setResult();
 
 				SnackBar.show(getActivity(), action.getAction().getPrintString() + " " + getString(R.string.added), getString(R.string.undo), new SnackBarListener()
 				{
@@ -227,7 +207,8 @@ public class EventListFragment extends Fragment implements ActionAdapter.OnActio
 					@Override public void onSnackBarAction(View v)
 					{
 						plant.getActions().remove(action);
-						PlantManager.getInstance().upsert(plantIndex, plant);
+						PlantManager.getInstance().upsert(plant);
+						setResult();
 					}
 				});
 
@@ -241,8 +222,10 @@ public class EventListFragment extends Fragment implements ActionAdapter.OnActio
 	@Override public void onActionDuplicate(Action action)
 	{
 		action.setDate(action.getDate() + new Random().nextInt(1000));
-		PlantManager.getInstance().getPlants().get(plantIndex).getActions().add(action);
-		PlantManager.getInstance().save();
+		plant.getActions().add(action);
+		PlantManager.getInstance().upsert(plant);
+		setResult();
+
 		setActions();
 		adapter.notifyDataSetChanged();
 
@@ -267,8 +250,10 @@ public class EventListFragment extends Fragment implements ActionAdapter.OnActio
 
 			@Override public void onSnackBarAction(View v)
 			{
-				PlantManager.getInstance().getPlants().get(plantIndex).getActions().remove(PlantManager.getInstance().getPlants().get(plantIndex).getActions().size() - 1);
-				PlantManager.getInstance().save();
+				plant.getActions().remove(plant.getActions().size() - 1);
+				PlantManager.getInstance().upsert(plant);
+				setResult();
+
 				setActions();
 				adapter.notifyDataSetChanged();
 			}
@@ -278,7 +263,7 @@ public class EventListFragment extends Fragment implements ActionAdapter.OnActio
 	@Override public void onActionCopy(final Action action)
 	{
 		PlantSelectDialogFragment dialogFragment = new PlantSelectDialogFragment(true);
-		dialogFragment.setDisabled(plantIndex);
+		dialogFragment.setDisabled(PlantManager.getInstance().indexOf(plant));
 		dialogFragment.setOnDialogActionListener(new PlantSelectDialogFragment.OnDialogActionListener()
 		{
 			@Override public void onDialogAccept(final ArrayList<Integer> indexes, boolean showImage)
@@ -340,9 +325,9 @@ public class EventListFragment extends Fragment implements ActionAdapter.OnActio
 		if (action instanceof Water)
 		{
 			Intent edit = new Intent(getActivity(), EditWateringActivity.class);
-			edit.putExtra("plant_index", plantIndex);
+			edit.putExtra("plant_index", PlantManager.getInstance().indexOf(plant));
 			edit.putExtra("action_index", originalIndex);
-			startActivityForResult(edit, 3);
+			startActivityForResult(edit, REQUEST_WATERING);
 		}
 		else if (action instanceof NoteAction)
 		{
@@ -354,7 +339,7 @@ public class EventListFragment extends Fragment implements ActionAdapter.OnActio
 					final NoteAction noteAction = new NoteAction(System.currentTimeMillis(), notes);
 
 					plant.getActions().set(originalIndex, noteAction);
-					PlantManager.getInstance().upsert(plantIndex, plant);
+					PlantManager.getInstance().upsert(plant);
 					setActions();
 					adapter.notifyDataSetChanged();
 
@@ -380,7 +365,7 @@ public class EventListFragment extends Fragment implements ActionAdapter.OnActio
 						@Override public void onSnackBarAction(View v)
 						{
 							plant.getActions().set(originalIndex, action);
-							PlantManager.getInstance().upsert(plantIndex, plant);
+							PlantManager.getInstance().upsert(plant);
 							setActions();
 							adapter.notifyDataSetChanged();
 						}
@@ -397,7 +382,7 @@ public class EventListFragment extends Fragment implements ActionAdapter.OnActio
 				@Override public void onActionSelected(final EmptyAction action)
 				{
 					plant.getActions().set(originalIndex, action);
-					PlantManager.getInstance().upsert(plantIndex, plant);
+					PlantManager.getInstance().upsert(plant);
 					setActions();
 					adapter.notifyDataSetChanged();
 
@@ -422,7 +407,7 @@ public class EventListFragment extends Fragment implements ActionAdapter.OnActio
 						@Override public void onSnackBarAction(View v)
 						{
 							plant.getActions().set(originalIndex, action);
-							PlantManager.getInstance().upsert(plantIndex, plant);
+							PlantManager.getInstance().upsert(plant);
 							setActions();
 							adapter.notifyDataSetChanged();
 						}
@@ -444,7 +429,7 @@ public class EventListFragment extends Fragment implements ActionAdapter.OnActio
 					}
 
 					plant.getActions().set(originalIndex, action);
-					PlantManager.getInstance().upsert(plantIndex, plant);
+					PlantManager.getInstance().upsert(plant);
 					setActions();
 					adapter.notifyDataSetChanged();
 
@@ -470,7 +455,7 @@ public class EventListFragment extends Fragment implements ActionAdapter.OnActio
 						@Override public void onSnackBarAction(View v)
 						{
 							plant.getActions().set(originalIndex, action);
-							PlantManager.getInstance().upsert(plantIndex, plant);
+							PlantManager.getInstance().upsert(plant);
 							setActions();
 							adapter.notifyDataSetChanged();
 						}
@@ -487,6 +472,8 @@ public class EventListFragment extends Fragment implements ActionAdapter.OnActio
 		plant.getActions().remove(action);
 		setActions();
 		adapter.notifyDataSetChanged();
+
+		setResult();
 
 		SnackBar.show(getActivity(), getString(R.string.event_deleted), getString(R.string.undo), new SnackBarListener()
 		{
@@ -512,8 +499,17 @@ public class EventListFragment extends Fragment implements ActionAdapter.OnActio
 				plant.getActions().add(originalIndex, action);
 				setActions();
 				adapter.notifyDataSetChanged();
+
+				setResult();
 			}
 		});
+	}
+
+	private void setResult()
+	{
+		Intent intent = new Intent();
+		intent.putExtra("plant", plant);
+		getActivity().setResult(Activity.RESULT_OK, intent);
 	}
 
 	@Override public void onCreateOptionsMenu(Menu menu, MenuInflater inflater)
@@ -586,7 +582,7 @@ public class EventListFragment extends Fragment implements ActionAdapter.OnActio
 	private void filter()
 	{
 		ArrayList<Action> items = new ArrayList<>();
-		items.addAll(PlantManager.getInstance().getPlants().get(plantIndex).getActions());
+		items.addAll(plant.getActions());
 		Collections.reverse(items);
 
 		for (int index = 0; index < items.size(); index++)

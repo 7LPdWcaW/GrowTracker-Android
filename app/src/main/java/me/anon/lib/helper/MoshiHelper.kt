@@ -46,12 +46,6 @@ object MoshiHelper
 	}
 
 	@JvmStatic
-	public fun toJson(obj: Any, outputStream: OutputStream)
-	{
-		getMoshi().adapter(obj.javaClass).toJson(JsonWriter.of(Okio.buffer(Okio.sink(outputStream))), obj)
-	}
-
-	@JvmStatic
 	public fun <T> toJson(obj: T, type: Type, outputStream: OutputStream)
 	{
 		getMoshi().adapter<T>(type).toJson(JsonWriter.of(Okio.buffer(Okio.sink(outputStream))), obj)

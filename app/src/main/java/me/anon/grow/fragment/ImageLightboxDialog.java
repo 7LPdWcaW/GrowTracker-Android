@@ -36,7 +36,6 @@ import me.anon.grow.R;
 import me.anon.lib.DateRenderer;
 import me.anon.lib.Views;
 import me.anon.lib.helper.TimeHelper;
-import me.anon.lib.manager.PlantManager;
 import me.anon.model.Action;
 import me.anon.model.Plant;
 import me.anon.model.StageChange;
@@ -67,7 +66,7 @@ public class ImageLightboxDialog extends FragmentActivity
 				imageUrls = getIntent().getExtras().getStringArray("images");
 			}
 
-			plant = PlantManager.getInstance().getPlants().get(getIntent().getIntExtra("plant_index", -1));
+			plant = getIntent().getParcelableExtra("plant");
 			pagerPosition = getIntent().getExtras().getInt("image_position", 0);
 		}
 		else
@@ -78,7 +77,7 @@ public class ImageLightboxDialog extends FragmentActivity
 
 		if (savedInstanceState != null)
 		{
-			plant = PlantManager.getInstance().getPlants().get(getIntent().getIntExtra("plant_index", -1));
+			plant = savedInstanceState.getParcelable("plant");
 			pagerPosition = savedInstanceState.getInt("image_position");
 		}
 
@@ -90,7 +89,7 @@ public class ImageLightboxDialog extends FragmentActivity
 
 	@Override protected void onSaveInstanceState(Bundle outState)
 	{
-		outState.putInt("plant_index", PlantManager.getInstance().getPlants().indexOf(plant));
+		outState.putParcelable("plant", plant);
 		outState.putInt("image_position", pager.getCurrentItem());
 		super.onSaveInstanceState(outState);
 	}

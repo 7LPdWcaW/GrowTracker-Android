@@ -18,7 +18,10 @@ import com.esotericsoftware.kryo.Kryo;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
+import java.util.LinkedHashSet;
+import java.util.Set;
 
+import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.GridLayoutManager;
@@ -28,13 +31,16 @@ import androidx.recyclerview.widget.RecyclerView;
 import kotlin.jvm.functions.Function3;
 import me.anon.controller.adapter.PlantAdapter;
 import me.anon.controller.adapter.SimpleItemTouchHelperCallback;
-import me.anon.grow.AddPlantActivity;
+import me.anon.controller.provider.PlantWidgetProvider;
 import me.anon.grow.AddWateringActivity;
+import me.anon.grow.MainActivity;
 import me.anon.grow.MainApplication;
+import me.anon.grow.PlantDetailsActivity;
 import me.anon.grow.R;
 import me.anon.lib.SnackBar;
 import me.anon.lib.SnackBarListener;
 import me.anon.lib.Views;
+import me.anon.lib.ext.IntUtilsKt;
 import me.anon.lib.helper.FabAnimator;
 import me.anon.lib.manager.PlantManager;
 import me.anon.model.EmptyAction;
@@ -43,13 +49,6 @@ import me.anon.model.Plant;
 import me.anon.model.PlantStage;
 import me.anon.view.SomeDividerItemDecoration;
 
-/**
- * // TODO: Add class description
- *
- * @author 7LPdWcaW
- * @documentation // TODO Reference flow doc
- * @project GrowTracker
- */
 @Views.Injectable
 public class PlantListFragment extends Fragment
 {
@@ -64,8 +63,7 @@ public class PlantListFragment extends Fragment
 	@Views.InjectView(R.id.recycler_view) private RecyclerView recycler;
 	@Views.InjectView(R.id.empty) private View empty;
 
-	private ArrayList<PlantStage> filterList = new ArrayList<>();
-	private boolean hideHarvested = false;
+	private ArrayList<PlantStage> filterList = null;
 
 	@Override public void onCreate(Bundle savedInstanceState)
 	{
@@ -86,6 +84,12 @@ public class PlantListFragment extends Fragment
 	{
 		super.onActivityCreated(savedInstanceState);
 
+		if (savedInstanceState != null)
+		{
+			filterList = savedInstanceState.getParcelableArrayList("filter");
+		}
+
+		((MainActivity)getActivity()).toolbarLayout.removeViews(1, ((MainActivity)getActivity()).toolbarLayout.getChildCount() - 1);
 		getActivity().setTitle(getString(R.string.list_title, getString(R.string.all)));
 
 		adapter = new PlantAdapter(getActivity());
@@ -128,7 +132,7 @@ public class PlantListFragment extends Fragment
 		{
 			@Override public Boolean invoke(Integer integer, RecyclerView.ViewHolder viewHolder, RecyclerView.Adapter<RecyclerView.ViewHolder> viewHolderAdapter)
 			{
-				return true;
+				return viewHolderAdapter.getItemViewType(integer) != 0;
 			}
 		}));
 		recycler.setAdapter(adapter);
@@ -173,18 +177,41 @@ public class PlantListFragment extends Fragment
 		ItemTouchHelper touchHelper = new ItemTouchHelper(callback);
 		touchHelper.attachToRecyclerView(recycler);
 
-		filterList.addAll(Arrays.asList(PlantStage.values()));
-
-		if (hideHarvested = PreferenceManager.getDefaultSharedPreferences(getActivity()).getBoolean("hide_harvested", false))
+		if (filterList == null)
 		{
-			filterList.remove(PlantStage.HARVESTED);
-			hideHarvested = true;
+			filterList = new ArrayList<>();
+			Set<String> prefsList = androidx.preference.PreferenceManager.getDefaultSharedPreferences(getActivity()).getStringSet("filter_list", null);
+			if (prefsList == null)
+			{
+				filterList.addAll(Arrays.asList(PlantStage.values()));
+			}
+			else
+			{
+				for (String s : prefsList)
+				{
+					try
+					{
+						int ordinal = IntUtilsKt.toSafeInt(s);
+						filterList.add(PlantStage.values()[ordinal]);
+					}
+					catch (Exception e)
+					{
+						e.printStackTrace();
+					}
+				}
+			}
 		}
 	}
 
-	@Override public void onStart()
+	@Override public void onSaveInstanceState(@NonNull Bundle outState)
 	{
-		super.onStart();
+		outState.putParcelableArrayList("filter", filterList);
+		super.onSaveInstanceState(outState);
+	}
+
+	@Override public void onResume()
+	{
+		super.onResume();
 
 		filter();
 	}
@@ -198,7 +225,7 @@ public class PlantListFragment extends Fragment
 
 	private boolean beingFiltered()
 	{
-		return !(filterList.size() == PlantStage.values().length - (hideHarvested ? 1 : 0));
+		return !(filterList.size() == PlantStage.values().length);
 	}
 
 	private synchronized void saveCurrentState()
@@ -211,8 +238,8 @@ public class PlantListFragment extends Fragment
 
 	@Views.OnClick public void onFabAddClick(View view)
 	{
-		Intent addPlant = new Intent(getActivity(), AddPlantActivity.class);
-		startActivity(addPlant);
+		Intent addPlant = new Intent(getActivity(), PlantDetailsActivity.class);
+		startActivityForResult(addPlant, 5);
 	}
 
 	@Views.OnClick public void onFeedingClick(View view)
@@ -316,6 +343,13 @@ public class PlantListFragment extends Fragment
 
 	@Override public void onActivityResult(int requestCode, int resultCode, Intent data)
 	{
+		if (resultCode == Activity.RESULT_OK && data.hasExtra("plant"))
+		{
+			Plant plant = data.getParcelableExtra("plant");
+			PlantManager.getInstance().upsert(plant);
+			PlantWidgetProvider.triggerUpdateAll(getActivity());
+		}
+
 		if (requestCode == 2)
 		{
 			if (resultCode != Activity.RESULT_CANCELED)
@@ -354,9 +388,16 @@ public class PlantListFragment extends Fragment
 	{
 		inflater.inflate(R.menu.plant_list_menu, menu);
 
-		if (PreferenceManager.getDefaultSharedPreferences(getActivity()).getBoolean("hide_harvested", false))
+		int[] ids = {R.id.filter_germination, R.id.filter_vegetation, R.id.filter_seedling, R.id.filter_cutting, R.id.filter_flowering, R.id.filter_drying, R.id.filter_curing, R.id.filter_harvested, R.id.filter_planted};
+		PlantStage[] stages = {PlantStage.GERMINATION, PlantStage.VEGETATION, PlantStage.SEEDLING, PlantStage.CUTTING, PlantStage.FLOWER, PlantStage.DRYING, PlantStage.CURING, PlantStage.HARVESTED, PlantStage.PLANTED};
+
+		for (int index = 0; index < ids.length; index++)
 		{
-			menu.findItem(R.id.filter_harvested).setVisible(false);
+			menu.findItem(ids[index]).setChecked(false);
+			if (filterList.contains(stages[index]))
+			{
+				menu.findItem(ids[index]).setChecked(true);
+			}
 		}
 
 		super.onCreateOptionsMenu(menu, inflater);
@@ -396,6 +437,15 @@ public class PlantListFragment extends Fragment
 				filter = true;
 			}
 		}
+
+		Set<String> stageOrdinals = new LinkedHashSet<>();
+		for (PlantStage plantStage : filterList)
+		{
+			stageOrdinals.add(plantStage.ordinal() + "");
+		}
+		androidx.preference.PreferenceManager.getDefaultSharedPreferences(getActivity()).edit()
+			.putStringSet("filter_list", stageOrdinals)
+			.apply();
 
 		if (filter)
 		{

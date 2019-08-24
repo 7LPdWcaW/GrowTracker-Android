@@ -76,7 +76,9 @@
 	<string name="date_now">Now</string>
 	<string name="date_label">Date</string>
 	<string name="today">Today</string>
+	<string name="length_cured">Cured for %s days</string>
 	<string name="length_days">%s days</string>
+	<string name="length_days_inv">Days %s</string>
 	<string name="additives_title">Additives</string>
 	<string name="add_new_additive">+ New Additive</string>
 	<string name="notes_title">Notes</string>
@@ -134,6 +136,7 @@
 	<string name="drying">Drying</string>
 	<string name="curing">Curing</string>
 	<string name="harvested">Harvested</string>
+	<string name="harvested_ago" formatted="true">Harvested %s ago</string>
 	<string name="menu_export_garden">Export garden</string>
 	<string name="menu_edit_garden">Edit garden</string>
 	<string name="menu_delete_garden">Delete garden</string>
@@ -315,4 +318,5 @@
 	<string name="empty_plant_list">There are no plants to show</string>
 	<string name="empty_schedules">There are no schedules</string>
 	<string name="empty_photos">There are no photos to show</string>
+	<string name="events_title">Past actions</string>
 </resources>

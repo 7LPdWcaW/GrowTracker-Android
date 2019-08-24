@@ -14,6 +14,7 @@
 			android:layout_width="match_parent"
 			android:layout_height="wrap_content"
 			android:orientation="vertical"
+			android:paddingBottom="12dp"
 		>
 			<androidx.cardview.widget.CardView
 				android:layout_width="match_parent"
@@ -114,7 +115,7 @@
 					android:layout_width="match_parent"
 					android:layout_height="wrap_content"
 					android:orientation="horizontal"
-					android:layout_marginTop="16dp"
+					android:layout_marginTop="8dp"
 					android:divider="@drawable/vertical_full_divider"
 					android:showDividers="middle"
 				>
@@ -122,9 +123,7 @@
 						android:layout_width="0dp"
 						android:layout_height="wrap_content"
 						android:orientation="vertical"
-						android:paddingLeft="16dp"
-						android:paddingRight="16dp"
-						android:paddingTop="8dp"
+						android:padding="16dp"
 						android:layout_weight="1"
 					>
 						<TextView
@@ -150,9 +149,7 @@
 						android:layout_width="0dp"
 						android:layout_height="wrap_content"
 						android:orientation="vertical"
-						android:paddingLeft="16dp"
-						android:paddingRight="16dp"
-						android:paddingTop="8dp"
+						android:padding="16dp"
 						android:layout_weight="1"
 					>
 						<TextView
@@ -197,7 +194,7 @@
 					android:orientation="vertical"
 					android:divider="?android:listDivider"
 					android:showDividers="middle"
-					android:layout_marginTop="16dp"
+					android:layout_marginTop="8dp"
 				>
 					<LinearLayout
 						android:layout_width="match_parent"
@@ -211,11 +208,9 @@
 							android:layout_height="wrap_content"
 							android:id="@+id/plant_date_container"
 							android:orientation="vertical"
-							android:paddingLeft="16dp"
-							android:paddingRight="16dp"
-							android:paddingTop="8dp"
-							android:paddingBottom="16dp"
+							android:padding="16dp"
 							android:layout_weight="1"
+							android:background="?selectableItemBackground"
 						>
 							<TextView
 								android:layout_width="match_parent"
@@ -238,11 +233,9 @@
 							android:layout_height="wrap_content"
 							android:id="@+id/plant_medium_container"
 							android:orientation="vertical"
-							android:paddingLeft="16dp"
-							android:paddingRight="16dp"
-							android:paddingTop="8dp"
-							android:paddingBottom="16dp"
+							android:padding="16dp"
 							android:layout_weight="1"
+							android:background="?selectableItemBackground"
 						>
 							<TextView
 								android:layout_width="match_parent"
@@ -264,10 +257,7 @@
 							android:layout_width="0dp"
 							android:layout_height="wrap_content"
 							android:orientation="horizontal"
-							android:paddingLeft="16dp"
-							android:paddingRight="16dp"
-							android:paddingTop="8dp"
-							android:paddingBottom="16dp"
+							android:padding="16dp"
 							android:layout_weight="1"
 							android:layout_gravity="center_vertical"
 							android:gravity="center_vertical"
@@ -295,9 +285,7 @@
 						android:layout_height="wrap_content"
 						android:id="@+id/plant_medium_details_container"
 						android:orientation="vertical"
-						android:paddingLeft="16dp"
-						android:paddingRight="16dp"
-						android:paddingTop="16dp"
+						android:padding="16dp"
 					>
 						<TextView
 							android:layout_width="match_parent"
@@ -341,16 +329,14 @@
 					android:orientation="vertical"
 					android:divider="?android:listDivider"
 					android:showDividers="middle"
-					android:layout_marginTop="16dp"
+					android:layout_marginTop="8dp"
+					android:background="?selectableItemBackground"
 				>
 					<LinearLayout
 						android:layout_width="match_parent"
 						android:layout_height="wrap_content"
 						android:orientation="vertical"
-						android:paddingLeft="16dp"
-						android:paddingRight="16dp"
-						android:paddingTop="8dp"
-						android:paddingBottom="16dp"
+						android:padding="16dp"
 					>
 						<TextView
 							android:layout_width="match_parent"
@@ -375,7 +361,6 @@
 				android:layout_height="wrap_content"
 				android:id="@+id/link_container"
 				android:orientation="vertical"
-				android:elevation="4dp"
 				android:layout_marginTop="12dp"
 				android:divider="?android:listDivider"
 				android:showDividers="middle"
@@ -384,54 +369,41 @@
 				android:paddingTop="0dp"
 				android:paddingBottom="0dp"
 			>
-				<LinearLayout
+				<TextView
 					android:layout_width="match_parent"
 					android:layout_height="wrap_content"
 					android:id="@+id/view_photos"
-					android:orientation="horizontal"
+					android:layout_gravity="center_vertical"
+					android:text="@string/view_photos"
+					style="@style/SubsectionTitle"
 					android:padding="16dp"
-				>
-					<TextView
-						android:layout_width="match_parent"
-						android:layout_height="wrap_content"
-						android:layout_gravity="center_vertical"
-						android:text="@string/view_photos"
-						style="@style/SubsectionTitle"
-					/>
-				</LinearLayout>
+					android:background="?selectableItemBackground"
+				/>
 
-				<LinearLayout
+				<TextView
 					android:layout_width="match_parent"
 					android:layout_height="wrap_content"
 					android:id="@+id/view_history"
-					android:orientation="horizontal"
+					android:layout_gravity="center_vertical"
+					android:text="@string/view_history"
+					style="@style/SubsectionTitle"
 					android:padding="16dp"
-				>
-					<TextView
-						android:layout_width="match_parent"
-						android:layout_height="wrap_content"
-						android:layout_gravity="center_vertical"
-						android:text="@string/view_history"
-						style="@style/SubsectionTitle"
-					/>
-				</LinearLayout>
+					android:background="?selectableItemBackground"
+				/>
 
-				<LinearLayout
+				<TextView
 					android:layout_width="match_parent"
 					android:layout_height="wrap_content"
 					android:id="@+id/view_statistics"
-					android:orientation="horizontal"
+					android:layout_gravity="center_vertical"
+					android:text="@string/view_statistics"
+					style="@style/SubsectionTitle"
 					android:padding="16dp"
-				>
-					<TextView
-						android:layout_width="match_parent"
-						android:layout_height="wrap_content"
-						android:layout_gravity="center_vertical"
-						android:text="@string/view_statistics"
-						style="@style/SubsectionTitle"
-					/>
-				</LinearLayout>
+					android:background="?selectableItemBackground"
+				/>
 			</LinearLayout>
+
+			<Space android:layout_width="1dp" android:layout_height="1dp" />
 		</LinearLayout>
 	</ScrollView>
 </FrameLayout>

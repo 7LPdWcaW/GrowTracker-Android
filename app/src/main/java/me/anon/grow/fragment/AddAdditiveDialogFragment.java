@@ -9,14 +9,23 @@ import android.text.TextUtils;
 import android.view.View;
 import android.view.Window;
 import android.view.inputmethod.InputMethodManager;
+import android.widget.ArrayAdapter;
+import android.widget.AutoCompleteTextView;
 import android.widget.TextView;
+
+import java.util.Set;
+import java.util.TreeSet;
 
 import androidx.appcompat.app.AlertDialog;
 import androidx.fragment.app.DialogFragment;
 import me.anon.grow.R;
 import me.anon.lib.Unit;
 import me.anon.lib.Views;
+import me.anon.lib.manager.PlantManager;
+import me.anon.model.Action;
 import me.anon.model.Additive;
+import me.anon.model.Plant;
+import me.anon.model.Water;
 
 /**
  * // TODO: Add class description
@@ -35,7 +44,7 @@ public class AddAdditiveDialogFragment extends DialogFragment
 	}
 
 	private Additive additive;
-	@Views.InjectView(R.id.description) private TextView description;
+	@Views.InjectView(R.id.description) private AutoCompleteTextView description;
 	@Views.InjectView(R.id.amount) private TextView amount;
 	private OnAdditiveSelectedListener onAdditiveSelectedListener;
 
@@ -59,6 +68,24 @@ public class AddAdditiveDialogFragment extends DialogFragment
 	{
 		View view = getActivity().getLayoutInflater().inflate(R.layout.additives_dialog_view, null, false);
 		Views.inject(this, view);
+
+		Set<String> additives = new TreeSet<>(String.CASE_INSENSITIVE_ORDER);
+
+		for (Plant plant : PlantManager.getInstance().getPlants())
+		{
+			for (Action action : plant.getActions())
+			{
+				if (action.getClass() == Water.class)
+				{
+					for (Additive additive : ((Water)action).getAdditives())
+					{
+						additives.add(additive.getDescription());
+					}
+				}
+			}
+		}
+
+		description.setAdapter(new ArrayAdapter<String>(getActivity(), android.R.layout.simple_list_item_1, additives.toArray(new String[additives.size()])));
 
 		final Unit selectedUnit = Unit.getSelectedMeasurementUnit(getActivity());
 		final Unit deliveryUnit = Unit.getSelectedDeliveryUnit(getActivity());

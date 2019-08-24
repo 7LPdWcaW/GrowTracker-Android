@@ -1,5 +1,6 @@
 package me.anon.grow.fragment;
 
+import android.app.Activity;
 import android.app.AlarmManager;
 import android.app.PendingIntent;
 import android.content.ComponentName;
@@ -67,8 +68,6 @@ import me.anon.lib.task.EncryptTask;
 import me.anon.model.Garden;
 import me.anon.model.Plant;
 
-import static me.anon.lib.manager.PlantManager.FILES_DIR;
-
 public class SettingsFragment extends PreferenceFragmentCompat implements Preference.OnPreferenceClickListener, Preference.OnPreferenceChangeListener
 {
 	private static final int REQUEST_UNINSTALL = 0x01;
@@ -123,6 +122,10 @@ public class SettingsFragment extends PreferenceFragmentCompat implements Prefer
 		{
 			populateAddons();
 		}
+
+		Intent refresh = new Intent();
+		refresh.putExtra("refresh", true);
+		getActivity().setResult(Activity.RESULT_OK, refresh);
 	}
 
 	/**
@@ -233,6 +236,10 @@ public class SettingsFragment extends PreferenceFragmentCompat implements Prefer
 
 	@Override public boolean onPreferenceChange(final Preference preference, Object newValue)
 	{
+		Intent refresh = new Intent();
+		refresh.putExtra("refresh", true);
+		getActivity().setResult(Activity.RESULT_OK, refresh);
+
 		if ("force_dark".equals(preference.getKey()))
 		{
 			PreferenceManager.getDefaultSharedPreferences(getActivity()).edit().putBoolean("force_dark", (boolean)newValue).apply();
@@ -462,6 +469,10 @@ public class SettingsFragment extends PreferenceFragmentCompat implements Prefer
 
 	@Override public boolean onPreferenceClick(Preference preference)
 	{
+		Intent refresh = new Intent();
+		refresh.putExtra("refresh", true);
+		getActivity().setResult(Activity.RESULT_OK, refresh);
+
 		if ("delivery_unit".equals(preference.getKey()))
 		{
 			final String[] options = new String[Unit.values().length];
@@ -604,7 +615,7 @@ public class SettingsFragment extends PreferenceFragmentCompat implements Prefer
 		}
 		else if ("export".equals(preference.getKey()))
 		{
-			Uri contentUri = FileProvider.getUriForFile(getActivity(), getActivity().getPackageName() + ".provider", new File(FILES_DIR, "plants.json"));
+			Uri contentUri = FileProvider.getUriForFile(getActivity(), getActivity().getPackageName() + ".provider", new File(PlantManager.FILES_DIR, "plants.json"));
 
 			Intent shareIntent = new Intent();
 			shareIntent.setAction(Intent.ACTION_SEND);
