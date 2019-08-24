@@ -30,7 +30,7 @@ android {
 		minSdkVersion 17
 		targetSdkVersion 29
 		versionCode getCommitCountTotal()
-		versionName "2.5.2"
+		versionName "2.6"
 		versionNameSuffix (travis ? "-alpha" : "")
 
 		compileOptions {
