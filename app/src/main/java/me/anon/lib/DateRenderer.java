@@ -57,13 +57,14 @@ public class DateRenderer
 		double difference = (double)((double)(currentTime - time) / 1000d);
 
 		String formattedDate = null;
+		String longFormattedDate = null;
 		Unit lastUnit = null;
 
 		if (unitindex < 0)
 		{
 			if (difference < 5)
 			{
-				return new TimeAgo(units[0], round(difference / (double)units[0].inSeconds, 2), now);
+				return new TimeAgo(units[0], round(difference / (double)units[0].inSeconds, 2), now, now);
 			}
 
 			for (Unit unit : units)
@@ -71,6 +72,7 @@ public class DateRenderer
 				if (difference < unit.limit)
 				{
 					formattedDate = getFormattedDate(unit, difference);
+					longFormattedDate = getLongFormattedDate(unit, difference);
 					lastUnit = unit;
 					break;
 				}
@@ -79,6 +81,7 @@ public class DateRenderer
 		else
 		{
 			formattedDate = getFormattedDate(units[unitindex], difference);
+			longFormattedDate = getLongFormattedDate(units[unitindex], difference);
 			lastUnit = units[unitindex];
 		}
 
@@ -86,9 +89,10 @@ public class DateRenderer
 		{
 			lastUnit = units[units.length - 1];
 			formattedDate = getFormattedDate(lastUnit, difference);
+			longFormattedDate = getLongFormattedDate(lastUnit, difference);
 		}
 
-		return new TimeAgo(lastUnit, round(difference / (double)lastUnit.inSeconds, 2), formattedDate);
+		return new TimeAgo(lastUnit, round(difference / (double)lastUnit.inSeconds, 2), formattedDate, longFormattedDate);
 	}
 
 	private static double round(double value, int places)
@@ -109,17 +113,25 @@ public class DateRenderer
 		return String.format("%s%s", newDiff, unit.name);
 	}
 
+	private String getLongFormattedDate(Unit unit, double difference)
+	{
+		int newDiff = (int)Math.floor(difference / unit.inSeconds);
+		return String.format("%s %s", newDiff, unit.type);
+	}
+
 	public class TimeAgo
 	{
 		public Unit unit;
 		public double time;
 		public String formattedDate;
+		public String longFormattedDate;
 
-		public TimeAgo(Unit unit, double time, String formattedDate)
+		public TimeAgo(Unit unit, double time, String formattedDate, String longFormattedDate)
 		{
 			this.unit = unit;
 			this.time = time;
 			this.formattedDate = formattedDate;
+			this.longFormattedDate = longFormattedDate;
 		}
 	}
 

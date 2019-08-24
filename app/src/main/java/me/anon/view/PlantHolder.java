@@ -3,6 +3,7 @@ package me.anon.view;
 import android.app.Activity;
 import android.content.Intent;
 import android.text.Html;
+import android.text.TextUtils;
 import android.view.Gravity;
 import android.view.MenuItem;
 import android.view.View;
@@ -14,6 +15,8 @@ import com.nostra13.universalimageloader.core.ImageLoader;
 import com.nostra13.universalimageloader.core.imageaware.ImageAware;
 import com.nostra13.universalimageloader.core.imageaware.ImageViewAware;
 
+import java.util.ArrayList;
+
 import androidx.appcompat.widget.PopupMenu;
 import androidx.recyclerview.widget.RecyclerView;
 import me.anon.grow.EventsActivity;
@@ -23,6 +26,7 @@ import me.anon.grow.R;
 import me.anon.grow.StatisticsActivity;
 import me.anon.grow.ViewPhotosActivity;
 import me.anon.model.Plant;
+import me.anon.model.PlantStage;
 
 /**
  * // TODO: Add class description
@@ -35,8 +39,8 @@ public class PlantHolder extends RecyclerView.ViewHolder
 {
 	private ImageView image;
 	private TextView name;
+	private TextView strain;
 	private TextView summary;
-	private TextView shortSummary;
 	private Button feed;
 	private Button photo;
 	private View overflow;
@@ -47,28 +51,35 @@ public class PlantHolder extends RecyclerView.ViewHolder
 
 		image = (ImageView)itemView.findViewById(R.id.image);
 		name = (TextView)itemView.findViewById(R.id.name);
+		strain = (TextView)itemView.findViewById(R.id.strain);
 		summary = (TextView)itemView.findViewById(R.id.summary);
-		shortSummary = (TextView)itemView.findViewById(R.id.short_summary);
 		feed = (Button)itemView.findViewById(R.id.action_feed);
 		photo = (Button)itemView.findViewById(R.id.action_photo);
 		overflow = itemView.findViewById(R.id.action_overflow);
 	}
 
-	public void bind(Plant plant)
+	public void bind(Plant plant, int cardStyle)
 	{
+		PlantStage stage = plant.getStage();
+
+		if (feed != null) feed.setVisibility(stage == PlantStage.HARVESTED ? View.GONE : View.VISIBLE);
+		if (photo != null) photo.setVisibility(stage == PlantStage.HARVESTED ? View.GONE : View.VISIBLE);
+		if (overflow != null) overflow.setVisibility(stage == PlantStage.HARVESTED ? View.GONE : View.VISIBLE);
+
+		ArrayList<String> summaryList = plant.generateSummary(itemView.getContext(), cardStyle);
 		name.setText(plant.getName());
 
-		if (summary != null)
+		if (cardStyle == 1)
 		{
-			String summaryStr = plant.generateLongSummary(itemView.getContext());
-			summary.setText(Html.fromHtml(summaryStr));
+			summaryList.set(0, plant.getStrain() + " " + summaryList.get(0));
 		}
 
-		if (shortSummary != null)
+		if (strain != null)
 		{
-			String summaryStr = plant.generateShortSummary(itemView.getContext());
-			shortSummary.setText(Html.fromHtml(summaryStr));
+			strain.setText(plant.getStrain());
 		}
+
+		summary.setText(Html.fromHtml(TextUtils.join("<br />", summaryList)));
 
 		if (plant.getImages() != null && plant.getImages().size() > 0)
 		{

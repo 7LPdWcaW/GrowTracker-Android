@@ -27,7 +27,7 @@ public class PlantAdapter extends RecyclerView.Adapter implements ItemTouchHelpe
 	private List<Plant> plants = new ArrayList<>();
 	private List<String> showOnly = null;
 	private Unit measureUnit, deliveryUnit;
-	private int cardStyle = 1;
+	private int cardStyle = 2;
 
 	public void setShowOnly(List<String> showOnly)
 	{
@@ -61,7 +61,7 @@ public class PlantAdapter extends RecyclerView.Adapter implements ItemTouchHelpe
 
 		try
 		{
-			cardStyle = Integer.parseInt(PreferenceManager.getDefaultSharedPreferences(context).getString("card_style", "0")) + 1;
+			cardStyle = Integer.parseInt(PreferenceManager.getDefaultSharedPreferences(context).getString("card_style", "1")) + 1;
 		}
 		catch (NumberFormatException e)
 		{
@@ -109,14 +109,14 @@ public class PlantAdapter extends RecyclerView.Adapter implements ItemTouchHelpe
 			case 0:
 				return new RecyclerView.ViewHolder(LayoutInflater.from(viewGroup.getContext()).inflate(R.layout.empty, viewGroup, false)){};
 
-			case 2:
+			case 1:
 				return new PlantHolder(LayoutInflater.from(viewGroup.getContext()).inflate(R.layout.plant_compact_item, viewGroup, false));
 
 			case 3:
 				return new PlantHolder(LayoutInflater.from(viewGroup.getContext()).inflate(R.layout.plant_extreme_item, viewGroup, false));
 
 			default:
-			case 1:
+			case 2:
 				return new PlantHolder(LayoutInflater.from(viewGroup.getContext()).inflate(R.layout.plant_original_item, viewGroup, false));
 		}
 	}
@@ -127,7 +127,7 @@ public class PlantAdapter extends RecyclerView.Adapter implements ItemTouchHelpe
 
 		if (viewHolder instanceof PlantHolder)
 		{
-			((PlantHolder)viewHolder).bind(plant);
+			((PlantHolder)viewHolder).bind(plant, cardStyle);
 		}
 	}
 

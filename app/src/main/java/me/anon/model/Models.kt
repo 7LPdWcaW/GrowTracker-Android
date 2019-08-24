@@ -173,143 +173,143 @@ class Plant(
 			return PlantStage.PLANTED
 		}
 
-	public fun generateShortSummary(context: Context): String
+	/**
+	 * Generates summary of the plant.
+	 * index 0: planted string
+	 * index 1: watered ago
+	 * index 2: ph -> runoff amount @ppm temp
+	 * index 3: additives
+	 * index 4: last note
+	 * @param verbosity How verbose the summary is. bigger = more
+	 * @return Array list of string lines
+	 */
+	public fun generateSummary(context: Context, verbosity: Int = 0): ArrayList<String>
 	{
 		val measureUnit = Unit.getSelectedMeasurementUnit(context)
 		val deliveryUnit = Unit.getSelectedDeliveryUnit(context)
+		val tempUnit = TempUnit.getSelectedTemperatureUnit(context)
+		val usingEc = PreferenceManager.getDefaultSharedPreferences(context).getBoolean("tds_ec", false)
 
-		var summary = ""
+		val summary = arrayListOf<String>()
+		var lastWater: Water? = null
+		var lastNote: NoteAction? = null
+		val stageTimes = calculateStageTime()
+
+		actions?.let { actions ->
+			for (index in actions.indices.reversed())
+			{
+				val action = actions[index]
+
+				if (action.javaClass == Water::class.java && lastWater == null)
+				{
+					lastWater = action as Water
+				}
+
+				if (action.javaClass == NoteAction::class.java && lastNote == null)
+				{
+					lastNote = action as NoteAction
+				}
+			}
+		}
+
+		var currentStageTime: String? = null
+		if (stageTimes.containsKey(stage))
+		{
+			currentStageTime = when (verbosity)
+			{
+				0, 1 -> TimeHelper.toDays(stageTimes[stage] ?: 0).toInt().toString() + context.getString(stage.printString).substring(0, 1).toLowerCase()
+				else -> "<b>${TimeHelper.toDays(stageTimes[stage] ?: 0).toInt()} ${context.getString(R.string.length_days_inv, context.getString(stage.printString))}</b>"
+			}
+		}
 
 		if (stage == PlantStage.HARVESTED)
 		{
-			summary += context.getString(R.string.harvested)
+			val stageDate = stageTimes[stage] ?: 0
+			val harvested = DateRenderer().timeAgo((System.currentTimeMillis() - stageDate).toDouble(), -1)
+			val harvestedDays = TimeHelper.toDays(stageDate).toInt()
+
+			summary.add(context.getString(R.string.harvested_ago, "${harvested.time.toInt()} ${harvested.unit.type}") +
+				when (verbosity)
+				{
+					0, 1 -> ""
+					else -> " (${context.getString(R.string.length_days, "" + harvestedDays)})"
+				}
+			)
+
+			if (stageTimes.containsKey(PlantStage.CURING))
+			{
+				val cureTime = TimeHelper.toDays(stageTimes[PlantStage.CURING] ?: 0).toInt()
+				summary.add(context.getString(R.string.length_cured, "" + cureTime))
+			}
 		}
 		else
 		{
-			val planted = DateRenderer().timeAgo(plantDate.toDouble(), 3)
-			summary += "<b>" + planted.time.toInt() + " " + planted.unit.type + "</b>"
+			val planted = DateRenderer().timeAgo(plantDate.toDouble(), -1)
+			val plantedDays = DateRenderer().timeAgo(plantDate.toDouble(), 3)
+			summary.add(when (verbosity)
+			{
+				0, 1 -> "${plantedDays.time.toInt()}" + currentStageTime?.let {"/$it"}
+				else -> context.getString(R.string.planted_ago, "${planted.time.toInt()} ${planted.unit.type}") + currentStageTime?.let {", $it"}
+			})
 
-			actions?.let { actions ->
-				var lastWater: Water? = null
-
-				val actions = actions
-				for (index in actions.indices.reversed())
-				{
-					val action = actions[index]
-
-					if (action.javaClass == Water::class.java && lastWater == null)
+			lastWater?.let {
+				summary.add(context.getString(R.string.last_watered_ago, DateRenderer().timeAgo(it.date.toDouble()).let { time ->
+					when (verbosity)
 					{
-						lastWater = action as Water
+						0, 1 -> time.formattedDate
+						else -> time.longFormattedDate
 					}
-				}
+				}))
 
-				val stageTimes = calculateStageTime()
-
-				if (stageTimes.containsKey(stage))
+				if (verbosity > 0)
 				{
-					summary += " / <b>${TimeHelper.toDays(stageTimes[stage] ?: 0).toInt()}${context.getString(stage!!.printString).substring(0, 1).toLowerCase()}</b>"
-				}
+					var waterStr: String? = null
 
-				if (lastWater != null)
-				{
-					summary += "<br/>"
-					summary += context.getString(R.string.watered_ago, DateRenderer().timeAgo(lastWater.date.toDouble()).formattedDate)
-					summary += "<br/>"
+					it.ph?.let { ph ->
+						waterStr = "<b>$ph pH</b> "
 
-					lastWater.ph?.let { ph ->
-						summary += "<b>$ph pH</b> "
-
-						lastWater.runoff?.let { runoff ->
-							summary += "➙ <b>$runoff} pH</b> "
+						if (verbosity > 1)
+						{
+							it.runoff?.let { runoff ->
+								waterStr += "➙ <b>$runoff pH</b> "
+							}
 						}
 					}
 
-					lastWater.amount?.let {
-						summary += "<b>${Unit.ML.to(deliveryUnit, lastWater.amount!!)}${deliveryUnit.label}</b>"
+					it.amount?.let { amount ->
+						waterStr += "<b>${Unit.ML.to(deliveryUnit, amount)}${deliveryUnit.label}</b> "
+					}
+
+					it.ppm?.let { ppm ->
+						val ppm = if (usingEc) Unit.toTwoDecimalPlaces(ppm) else ppm.toInt()
+						waterStr += "<b>@${ppm}</b> "
+					}
+
+					it.temp?.let { temp ->
+						val temp = "º${TempUnit.CELCIUS.to(tempUnit, temp)}${tempUnit.label}"
+						waterStr += "<b>$temp</b> "
+					}
+
+					waterStr?.let { summary.add(it) }
+
+					if (it.additives.isNotEmpty())
+					{
+						var total = it.additives.sumByDouble { it.amount ?: 0.0 }
+						summary += "+ <b>" + Unit.ML.to(measureUnit, total) + measureUnit.label + "</b> " + context.getString(R.string.additives)
 					}
 				}
 			}
 		}
 
-		if (summary.endsWith("<br/>"))
+		if (verbosity == 2)
 		{
-			summary = summary.substring(0, summary.length - "<br/>".length)
-		}
-
-		return summary
-	}
-
-	public fun generateLongSummary(context: Context): String
-	{
-		val measureUnit = Unit.getSelectedMeasurementUnit(context)
-		val deliveryUnit = Unit.getSelectedDeliveryUnit(context)
-
-		var summary = ""
-
-		strain?.let {
-			summary += "$it - "
-		}
-
-		if (stage == PlantStage.HARVESTED)
-		{
-			summary += context.getString(R.string.harvested)
-		}
-		else
-		{
-			val planted = DateRenderer().timeAgo(plantDate.toDouble(), 3)
-			summary += "<b>"
-			summary += context.getString(R.string.planted_ago, planted.time.toInt().toString() + " " + planted.unit.type)
-			summary += "</b>"
-
-			actions?.let { actions ->
-				var lastWater: Water? = null
-
-				val actions = actions
-				for (index in actions.indices.reversed())
+			lastNote?.let {
+				if (it.notes?.isNotEmpty() == true)
 				{
-					val action = actions[index]
-
-					if (action.javaClass == Water::class.java && lastWater == null)
-					{
-						lastWater = action as Water
-					}
-				}
-
-				val stageTimes = calculateStageTime()
-
-				if (stageTimes.containsKey(stage))
-				{
-					summary += " / <b>${TimeHelper.toDays(stageTimes[stage] ?: 0).toInt()}${context.getString(stage.printString).substring(0, 1).toLowerCase()}</b>"
-				}
-
-				lastWater?.let {
-					summary += "<br/><br/>"
-					summary += context.getString(R.string.last_watered_ago, DateRenderer().timeAgo(lastWater.date.toDouble()).formattedDate)
-					summary += "<br/>"
-
-					lastWater.ph?.let { ph ->
-						summary += "<b>$ph pH</b> "
-
-						lastWater.runoff?.let { runoff ->
-							summary += "➙ <b>$runoff pH</b> "
-						}
-					}
-
-					lastWater.amount?.let {
-						summary += "<b>${Unit.ML.to(deliveryUnit, lastWater.amount!!)}${deliveryUnit.label}</b>"
-					}
-
-					lastWater.additives?.let {
-						var total = it.sumByDouble { it.amount ?: 0.0 }
-						summary += "<br/> + <b>" + Unit.ML.to(measureUnit, total) + measureUnit.label + "</b> " + context.getString(R.string.additives)
-					}
+					summary.add("<hr />")
+					summary.add(it.notes ?: "")
 				}
 			}
-		}
-
-		if (summary.endsWith("<br/>"))
-		{
-			summary = summary.substring(0, summary.length - "<br/>".length)
 		}
 
 		return summary
@@ -374,7 +374,7 @@ class Plant(
 
 					if (action.newStage == PlantStage.HARVESTED)
 					{
-						endDate = action.date
+						endDate = System.currentTimeMillis()
 					}
 				}
 			}

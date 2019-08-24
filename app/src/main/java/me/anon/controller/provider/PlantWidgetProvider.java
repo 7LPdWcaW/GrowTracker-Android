@@ -166,13 +166,20 @@ public class PlantWidgetProvider extends AppWidgetProvider
 
 		if (size[1] <= 100)
 		{
-			view.setTextViewText(R.id.summary, Html.fromHtml("<b>" + plant.getName() + "</b> " + plant.generateShortSummary(context)));
+			view.setTextViewText(R.id.summary, Html.fromHtml("<b>" + plant.getName() + "</b> " + TextUtils.join("<br />", plant.generateSummary(context, 0))));
 			view.setViewVisibility(R.id.name, View.GONE);
 			view.setTextViewTextSize(R.id.summary, TypedValue.COMPLEX_UNIT_DIP, 12);
 		}
+		else if (size[1] <= 200)
+		{
+			view.setTextViewText(R.id.summary, Html.fromHtml(TextUtils.join("<br />", plant.generateSummary(context, 1))));
+			view.setViewVisibility(R.id.name, View.VISIBLE);
+			view.setTextViewTextSize(R.id.name, TypedValue.COMPLEX_UNIT_DIP, 16);
+			view.setTextViewTextSize(R.id.summary, TypedValue.COMPLEX_UNIT_DIP, 14);
+		}
 		else
 		{
-			view.setTextViewText(R.id.summary, Html.fromHtml(plant.generateLongSummary(context)));
+			view.setTextViewText(R.id.summary, Html.fromHtml(TextUtils.join("<br />", plant.generateSummary(context, 2))));
 			view.setViewVisibility(R.id.name, View.VISIBLE);
 			view.setTextViewTextSize(R.id.name, TypedValue.COMPLEX_UNIT_DIP, 16);
 			view.setTextViewTextSize(R.id.summary, TypedValue.COMPLEX_UNIT_DIP, 14);
@@ -252,13 +259,6 @@ public class PlantWidgetProvider extends AppWidgetProvider
 				widgetLandWidth = appWidgetOptions.getInt(AppWidgetManager.OPTION_APPWIDGET_MAX_WIDTH);
 				widgetLandHeight = appWidgetOptions.getInt(AppWidgetManager.OPTION_APPWIDGET_MIN_HEIGHT);
 				widgetPortHeight = appWidgetOptions.getInt(AppWidgetManager.OPTION_APPWIDGET_MAX_HEIGHT);
-			}
-			else
-			{
-				widgetLandWidth = providerInfo.minWidth;
-				widgetPortHeight = providerInfo.minHeight;
-				widgetPortWidth = providerInfo.minWidth;
-				widgetLandHeight = providerInfo.minHeight;
 			}
 
 			// If device is in port oriantation, use port sizes

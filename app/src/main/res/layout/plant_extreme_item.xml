@@ -27,7 +27,7 @@
 			android:maxHeight="192dp"
 		/>
 
-		<LinearLayout
+		<androidx.constraintlayout.widget.ConstraintLayout
 			android:layout_width="match_parent"
 			android:layout_height="wrap_content"
 			android:id="@+id/summary_container"
@@ -35,23 +35,47 @@
 			android:layout_gravity="center"
 			android:padding="16dp"
 		>
-			<TextView
-				android:layout_width="wrap_content"
+			<com.google.android.flexbox.FlexboxLayout
+				android:layout_width="match_parent"
 				android:layout_height="wrap_content"
-				android:id="@+id/name"
-				android:text="@string/plant_name_label"
-				android:textSize="24dp"
-				android:textStyle="bold"
-				android:textColor="?android:textColorPrimary"
-			/>
+				android:id="@+id/title_container"
+				app:flexWrap="wrap"
+				app:layout_constraintStart_toStartOf="parent"
+				app:layout_constraintTop_toTopOf="parent"
+			>
+				<TextView
+					android:layout_width="wrap_content"
+					android:layout_height="wrap_content"
+					android:id="@+id/name"
+					android:text="@string/plant_name_label"
+					android:textSize="22dp"
+					android:textStyle="bold"
+					android:textColor="?android:textColorPrimary"
+					android:layout_marginEnd="8dp"
+				/>
+
+				<TextView
+					android:layout_width="wrap_content"
+					android:layout_height="wrap_content"
+					android:id="@+id/strain"
+					android:textSize="18dp"
+					app:layout_alignSelf="baseline"
+					android:gravity="bottom"
+					android:textColor="?android:textColorPrimary"
+				/>
+			</com.google.android.flexbox.FlexboxLayout>
 
 			<TextView
-				android:layout_width="match_parent"
+				android:layout_width="0dp"
 				android:layout_height="wrap_content"
 				android:id="@+id/summary"
 				android:textColor="?android:textColorSecondary"
+				android:lineSpacingMultiplier="1.2"
+				app:layout_constraintTop_toBottomOf="@id/title_container"
+				app:layout_constraintStart_toStartOf="parent"
+				app:layout_constraintEnd_toEndOf="parent"
 			/>
-		</LinearLayout>
+		</androidx.constraintlayout.widget.ConstraintLayout>
 
 		<androidx.constraintlayout.widget.ConstraintLayout
 			android:layout_width="match_parent"
