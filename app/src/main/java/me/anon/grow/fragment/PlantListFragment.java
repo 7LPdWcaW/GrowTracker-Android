@@ -339,7 +339,6 @@ public class PlantListFragment extends Fragment
 		{
 			Plant plant = data.getParcelableExtra("plant");
 			PlantManager.getInstance().upsert(plant);
-			filter();
 			PlantWidgetProvider.triggerUpdateAll(getActivity());
 		}
 
@@ -425,10 +424,14 @@ public class PlantListFragment extends Fragment
 			}
 		}
 
-		if (PreferenceManager.getDefaultSharedPreferences(getActivity()).getBoolean("hide_harvested", false))
+		if (hideHarvested)
 		{
 			menu.findItem(R.id.filter_harvested).setVisible(false);
 			menu.findItem(R.id.filter_harvested).setChecked(false);
+		}
+		else
+		{
+			menu.findItem(R.id.filter_harvested).setVisible(true);
 		}
 
 		super.onCreateOptionsMenu(menu, inflater);

@@ -110,6 +110,17 @@ public class MainActivity extends BaseActivity implements NavigationView.OnNavig
 	@Override protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data)
 	{
 		super.onActivityResult(requestCode, resultCode, data);
+
+		if (resultCode == Activity.RESULT_OK && data.hasExtra("refresh"))
+		{
+			if (navigation.getMenu().findItem(selectedItem).isCheckable())
+			{
+				getSupportFragmentManager().beginTransaction().remove(getSupportFragmentManager().findFragmentById(R.id.fragment_holder)).commit();
+				navigation.getMenu().findItem(selectedItem).setChecked(true);
+				onNavigationItemSelected(navigation.getMenu().findItem(selectedItem));
+			}
+		}
+
 		getSupportFragmentManager().findFragmentById(R.id.fragment_holder).onActivityResult(requestCode, resultCode, data);
 	}
 
@@ -226,7 +237,7 @@ public class MainActivity extends BaseActivity implements NavigationView.OnNavig
 		if (item.getItemId() == 1)
 		{
 			Intent settings = new Intent(this, SettingsActivity.class);
-			startActivity(settings);
+			startActivityForResult(settings, 5);
 		}
 
 		return super.onOptionsItemSelected(item);
@@ -288,7 +299,7 @@ public class MainActivity extends BaseActivity implements NavigationView.OnNavig
 			item.setChecked(false);
 
 			Intent settings = new Intent(this, SettingsActivity.class);
-			startActivity(settings);
+			startActivityForResult(settings, 5);
 		}
 		else if (item.getItemId() == R.id.feeding_schedule)
 		{

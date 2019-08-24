@@ -1,5 +1,6 @@
 package me.anon.grow.fragment;
 
+import android.app.Activity;
 import android.app.AlarmManager;
 import android.app.PendingIntent;
 import android.content.ComponentName;
@@ -121,6 +122,10 @@ public class SettingsFragment extends PreferenceFragmentCompat implements Prefer
 		{
 			populateAddons();
 		}
+
+		Intent refresh = new Intent();
+		refresh.putExtra("refresh", true);
+		getActivity().setResult(Activity.RESULT_OK, refresh);
 	}
 
 	/**
@@ -231,6 +236,10 @@ public class SettingsFragment extends PreferenceFragmentCompat implements Prefer
 
 	@Override public boolean onPreferenceChange(final Preference preference, Object newValue)
 	{
+		Intent refresh = new Intent();
+		refresh.putExtra("refresh", true);
+		getActivity().setResult(Activity.RESULT_OK, refresh);
+
 		if ("force_dark".equals(preference.getKey()))
 		{
 			PreferenceManager.getDefaultSharedPreferences(getActivity()).edit().putBoolean("force_dark", (boolean)newValue).apply();
@@ -460,6 +469,10 @@ public class SettingsFragment extends PreferenceFragmentCompat implements Prefer
 
 	@Override public boolean onPreferenceClick(Preference preference)
 	{
+		Intent refresh = new Intent();
+		refresh.putExtra("refresh", true);
+		getActivity().setResult(Activity.RESULT_OK, refresh);
+
 		if ("delivery_unit".equals(preference.getKey()))
 		{
 			final String[] options = new String[Unit.values().length];
