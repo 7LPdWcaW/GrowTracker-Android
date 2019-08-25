@@ -39,7 +39,7 @@ android {
 		}
 
 		manifestPlaceholders = [
-			"version_date": "" + System.currentTimeMillis()
+			"version_date": System.currentTimeMillis().toString()
 		]
 
 		javaCompileOptions {

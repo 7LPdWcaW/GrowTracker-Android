@@ -10,8 +10,6 @@
 		android:layout_width="match_parent"
 		android:layout_height="match_parent"
 		android:orientation="vertical"
-		android:paddingBottom="88dp"
-		android:clipToPadding="false"
 	>
 		<com.prolificinteractive.materialcalendarview.MaterialCalendarView
 			android:layout_width="match_parent"
@@ -30,6 +28,8 @@
 			android:paddingLeft="8dp"
 			android:paddingRight="8dp"
 			android:paddingTop="8dp"
+			android:paddingBottom="88dp"
+			android:clipToPadding="false"
 		/>
 	</LinearLayout>
 

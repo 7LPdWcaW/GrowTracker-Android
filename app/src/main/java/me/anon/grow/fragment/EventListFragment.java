@@ -17,6 +17,7 @@ import com.prolificinteractive.materialcalendarview.CalendarDay;
 import com.prolificinteractive.materialcalendarview.DayViewDecorator;
 import com.prolificinteractive.materialcalendarview.DayViewFacade;
 import com.prolificinteractive.materialcalendarview.MaterialCalendarView;
+import com.prolificinteractive.materialcalendarview.OnDateSelectedListener;
 import com.prolificinteractive.materialcalendarview.spans.DotSpan;
 
 import org.threeten.bp.Instant;
@@ -60,14 +61,17 @@ public class EventListFragment extends Fragment implements ActionAdapter.OnActio
 {
 	private ActionAdapter adapter;
 
+	@Views.InjectView(R.id.fab_add) private View fabAdd;
 	@Views.InjectView(R.id.recycler_view) private RecyclerView recycler;
 	@Views.InjectView(R.id.calendar) private MaterialCalendarView calendar;
 
 	private Plant plant;
 
+	private boolean filtered = false;
 	private boolean watering = true;
 	private boolean notes = true, stages = true;
 	private ArrayList<Action.ActionName> selected = new ArrayList<>();
+	private CalendarDay selectedFilterDate = null;
 
 	public static final int REQUEST_WATERING = 3;
 
@@ -99,7 +103,14 @@ public class EventListFragment extends Fragment implements ActionAdapter.OnActio
 
 		getActivity().setTitle(R.string.events_title);
 
-		if (getArguments() != null)
+
+		if (savedInstanceState != null)
+		{
+			selectedFilterDate = savedInstanceState.getParcelable("selected_filter_date");
+			filtered = savedInstanceState.getBoolean("filtered", filtered);
+			plant = savedInstanceState.getParcelable("plant");
+		}
+		else if (getArguments() != null)
 		{
 			plant = getArguments().getParcelable("plant");
 			getActivity().getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_ALWAYS_HIDDEN);
@@ -135,13 +146,23 @@ public class EventListFragment extends Fragment implements ActionAdapter.OnActio
 
 				@Override public void decorate(DayViewFacade dayViewFacade)
 				{
-					dayViewFacade.addSpan(new DotSpan(IntUtilsKt.resolveColor(R.attr.colorAccent, getActivity())));
+					dayViewFacade.addSpan(new DotSpan(6.0f, IntUtilsKt.resolveColor(R.attr.colorAccent, getActivity())));
 				}
 			});
 		}
 
-		calendar.setSelectedDate(CalendarDay.today());
-		calendar.setVisibility(View.GONE);
+		calendar.setOnDateChangedListener(new OnDateSelectedListener()
+		{
+			@Override public void onDateSelected(@NonNull MaterialCalendarView materialCalendarView, @NonNull CalendarDay calendarDay, boolean b)
+			{
+				selectedFilterDate = calendarDay;
+				adapter.setFilterDate(selectedFilterDate);
+				adapter.notifyDataSetChanged();
+			}
+		});
+		calendar.setCurrentDate(CalendarDay.today());
+		calendar.setVisibility(filtered ? View.VISIBLE : View.GONE);
+		adapter.setFilterDate(selectedFilterDate);
 
 		setActions();
 
@@ -157,7 +178,7 @@ public class EventListFragment extends Fragment implements ActionAdapter.OnActio
 
 			@Override public boolean isLongPressDragEnabled()
 			{
-				return selected.size() == Action.ActionName.values().length && watering && notes && stages;
+				return selected.size() == Action.ActionName.values().length && watering && notes && stages && !filtered;
 			}
 		};
 		ItemTouchHelper touchHelper = new ItemTouchHelper(callback);
@@ -167,7 +188,7 @@ public class EventListFragment extends Fragment implements ActionAdapter.OnActio
 		{
 			@Override public void onItemRangeMoved(int fromPosition, int toPosition, int itemCount)
 			{
-				if (selected.size() == Action.ActionName.values().length && watering && notes && stages)
+				if (selected.size() == Action.ActionName.values().length && watering && notes && stages && !filtered)
 				{
 					ArrayList<Action> actions = new ArrayList<Action>();
 					actions.addAll((ArrayList<Action>)adapter.getActions());
@@ -177,6 +198,15 @@ public class EventListFragment extends Fragment implements ActionAdapter.OnActio
 				}
 			}
 		});
+	}
+
+	@Override public void onSaveInstanceState(@NonNull Bundle outState)
+	{
+		outState.putParcelable("selected_filter_date", selectedFilterDate);
+		outState.putBoolean("filtered", filtered);
+		outState.putParcelable("plant", plant);
+
+		super.onSaveInstanceState(outState);
 	}
 
 	@Override public void onDestroy()
@@ -567,6 +597,19 @@ public class EventListFragment extends Fragment implements ActionAdapter.OnActio
 		if (item.getItemId() == R.id.menu_calendar)
 		{
 			calendar.setVisibility(calendar.getVisibility() == View.GONE ? View.VISIBLE : View.GONE);
+			filtered = calendar.getVisibility() == View.VISIBLE;
+			selectedFilterDate = null;
+			fabAdd.setVisibility(View.VISIBLE);
+
+			if (filtered)
+			{
+				fabAdd.setVisibility(View.GONE);
+				selectedFilterDate = CalendarDay.today();
+				calendar.setSelectedDate(selectedFilterDate);
+			}
+
+			adapter.setFilterDate(selectedFilterDate);
+			adapter.notifyDataSetChanged();
 		}
 		else if (item.getItemId() == R.id.filter_actions)
 		{
