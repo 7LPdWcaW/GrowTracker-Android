@@ -13,6 +13,15 @@ import android.view.ViewGroup;
 import android.view.WindowManager;
 
 import com.esotericsoftware.kryo.Kryo;
+import com.prolificinteractive.materialcalendarview.CalendarDay;
+import com.prolificinteractive.materialcalendarview.DayViewDecorator;
+import com.prolificinteractive.materialcalendarview.DayViewFacade;
+import com.prolificinteractive.materialcalendarview.MaterialCalendarView;
+import com.prolificinteractive.materialcalendarview.spans.DotSpan;
+
+import org.threeten.bp.Instant;
+import org.threeten.bp.LocalDate;
+import org.threeten.bp.ZoneId;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -34,6 +43,7 @@ import me.anon.grow.R;
 import me.anon.lib.SnackBar;
 import me.anon.lib.SnackBarListener;
 import me.anon.lib.Views;
+import me.anon.lib.ext.IntUtilsKt;
 import me.anon.lib.helper.FabAnimator;
 import me.anon.lib.manager.PlantManager;
 import me.anon.model.Action;
@@ -51,6 +61,7 @@ public class EventListFragment extends Fragment implements ActionAdapter.OnActio
 	private ActionAdapter adapter;
 
 	@Views.InjectView(R.id.recycler_view) private RecyclerView recycler;
+	@Views.InjectView(R.id.calendar) private MaterialCalendarView calendar;
 
 	private Plant plant;
 
@@ -103,6 +114,34 @@ public class EventListFragment extends Fragment implements ActionAdapter.OnActio
 		selected.addAll(new ArrayList<Action.ActionName>(Arrays.asList(Action.ActionName.values())));
 		adapter = new ActionAdapter();
 		adapter.setOnActionSelectListener(this);
+		if (plant.getActions() != null && plant.getActions().size() > 0)
+		{
+			calendar.addDecorator(new DayViewDecorator()
+			{
+				@Override public boolean shouldDecorate(CalendarDay calendarDay)
+				{
+					// find an action that is on this day
+					for (Action action : plant.getActions())
+					{
+						LocalDate actionDate = CalendarDay.from(LocalDate.from(Instant.ofEpochMilli(action.getDate()).atZone(ZoneId.systemDefault()))).getDate();
+						if (calendarDay.getDate().equals(actionDate))
+						{
+							return true;
+						}
+					}
+
+					return false;
+				}
+
+				@Override public void decorate(DayViewFacade dayViewFacade)
+				{
+					dayViewFacade.addSpan(new DotSpan(IntUtilsKt.resolveColor(R.attr.colorAccent, getActivity())));
+				}
+			});
+		}
+
+		calendar.setSelectedDate(CalendarDay.today());
+		calendar.setVisibility(View.GONE);
 
 		setActions();
 
@@ -525,7 +564,11 @@ public class EventListFragment extends Fragment implements ActionAdapter.OnActio
 			item.setChecked(!item.isChecked());
 		}
 
-		if (item.getItemId() == R.id.filter_actions)
+		if (item.getItemId() == R.id.menu_calendar)
+		{
+			calendar.setVisibility(calendar.getVisibility() == View.GONE ? View.VISIBLE : View.GONE);
+		}
+		else if (item.getItemId() == R.id.filter_actions)
 		{
 			CharSequence[] actionItems = new CharSequence[Action.ActionName.values().length];
 			boolean[] selectedItems = new boolean[Action.ActionName.values().length];

@@ -6,16 +6,32 @@
 	android:layout_width="match_parent"
 	android:layout_height="match_parent"
 >
-	<androidx.recyclerview.widget.RecyclerView
+	<LinearLayout
 		android:layout_width="match_parent"
 		android:layout_height="match_parent"
-		android:id="@+id/recycler_view"
-		android:paddingLeft="8dp"
-		android:paddingRight="8dp"
-		android:paddingTop="8dp"
+		android:orientation="vertical"
 		android:paddingBottom="88dp"
 		android:clipToPadding="false"
-	/>
+	>
+		<com.prolificinteractive.materialcalendarview.MaterialCalendarView
+			android:layout_width="match_parent"
+			android:layout_height="300dp"
+			android:id="@+id/calendar"
+			android:layout_marginBottom="12dp"
+			app:mcv_tileWidth="match_parent"
+			app:mcv_showOtherDates="other_months"
+			app:mcv_calendarMode="month"
+		/>
+
+		<androidx.recyclerview.widget.RecyclerView
+			android:layout_width="match_parent"
+			android:layout_height="match_parent"
+			android:id="@+id/recycler_view"
+			android:paddingLeft="8dp"
+			android:paddingRight="8dp"
+			android:paddingTop="8dp"
+		/>
+	</LinearLayout>
 
 	<com.google.android.material.floatingactionbutton.FloatingActionButton
 		android:layout_width="wrap_content"
