@@ -3,6 +3,7 @@ package me.anon.view;
 import android.content.Intent;
 import android.view.LayoutInflater;
 import android.view.View;
+import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
 
@@ -14,7 +15,6 @@ import com.nostra13.universalimageloader.core.imageaware.ImageViewAware;
 import java.util.ArrayList;
 import java.util.Collections;
 
-import androidx.cardview.widget.CardView;
 import androidx.core.view.ViewCompat;
 import androidx.recyclerview.widget.RecyclerView;
 import me.anon.controller.adapter.ActionAdapter;
@@ -61,8 +61,8 @@ public class ImageActionHolder extends RecyclerView.ViewHolder
 		flexboxLayout.removeAllViews();
 		for (final String imageUrl : imageUrls)
 		{
-			CardView view = (CardView)LayoutInflater.from(itemView.getContext()).inflate(R.layout.action_image_item, flexboxLayout, false);
-			final ImageView image = (ImageView)view.getChildAt(0);
+			ViewGroup view = (ViewGroup)LayoutInflater.from(itemView.getContext()).inflate(R.layout.action_image_item, flexboxLayout, false);
+			final ImageView image = (ImageView)view.findViewById(R.id.image);
 
 			ImageLoader.getInstance().cancelDisplayTask(image);
 
@@ -80,7 +80,7 @@ public class ImageActionHolder extends RecyclerView.ViewHolder
 
 			flexboxLayout.addView(view);
 
-			image.setOnClickListener(new View.OnClickListener()
+			view.setOnClickListener(new View.OnClickListener()
 			{
 				@Override public void onClick(View v)
 				{
