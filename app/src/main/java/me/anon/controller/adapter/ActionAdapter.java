@@ -15,6 +15,11 @@ import android.view.ViewGroup;
 import android.widget.TextView;
 
 import com.esotericsoftware.kryo.Kryo;
+import com.prolificinteractive.materialcalendarview.CalendarDay;
+
+import org.threeten.bp.Instant;
+import org.threeten.bp.LocalDate;
+import org.threeten.bp.ZoneId;
 
 import java.io.File;
 import java.text.DateFormat;
@@ -79,6 +84,12 @@ public class ActionAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>
 	private boolean usingEc = false;
 	private boolean showDate = true;
 	private boolean showActions = true;
+	private CalendarDay selectedFilterDate = null;
+
+	public void setFilterDate(CalendarDay selectedFilterDate)
+	{
+		this.selectedFilterDate = selectedFilterDate;
+	}
 
 	/**
 	 * Dummy image action placeholder class
@@ -253,6 +264,12 @@ public class ActionAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>
 
 	@Override public int getItemViewType(int position)
 	{
+		if (selectedFilterDate != null)
+		{
+			LocalDate actionDate = CalendarDay.from(LocalDate.from(Instant.ofEpochMilli(actions.get(position).getDate()).atZone(ZoneId.systemDefault()))).getDate();
+			if (!selectedFilterDate.getDate().equals(actionDate)) return 0;
+		}
+
 		if (actions.get(position).getClass() == ImageAction.class)
 		{
 			return 2;
@@ -263,7 +280,11 @@ public class ActionAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>
 
 	@Override public RecyclerView.ViewHolder onCreateViewHolder(ViewGroup viewGroup, int viewType)
 	{
-		if (viewType == 2)
+		if (viewType == 0)
+		{
+			return new RecyclerView.ViewHolder(LayoutInflater.from(viewGroup.getContext()).inflate(R.layout.empty, viewGroup, false)){};
+		}
+		else if (viewType == 2)
 		{
 			return new ImageActionHolder(this, LayoutInflater.from(viewGroup.getContext()).inflate(R.layout.action_image, viewGroup, false));
 		}
@@ -273,6 +294,8 @@ public class ActionAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>
 
 	@Override public void onBindViewHolder(final RecyclerView.ViewHolder vh, final int index)
 	{
+		if (getItemViewType(index) == 0) return;
+
 		final Action action = actions.get(index);
 		DateFormat dateFormat = android.text.format.DateFormat.getDateFormat(vh.itemView.getContext());
 		DateFormat timeFormat = android.text.format.DateFormat.getTimeFormat(vh.itemView.getContext());

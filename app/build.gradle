@@ -39,7 +39,7 @@ android {
 		}
 
 		manifestPlaceholders = [
-			"version_date": "" + System.currentTimeMillis()
+			"version_date": System.currentTimeMillis().toString()
 		]
 
 		javaCompileOptions {
@@ -112,6 +112,9 @@ dependencies {
 	implementation 'androidx.cardview:cardview:1.0.0'
 	implementation 'com.google.android.material:material:1.0.0'
 	implementation 'androidx.exifinterface:exifinterface:1.0.0'
+
+	implementation 'com.github.prolificinteractive:material-calendarview:2.0.0'
+	implementation 'com.jakewharton.threetenabp:threetenabp:1.1.1'
 
     implementation 'com.google.android:flexbox:1.1.0'
 	implementation 'com.esotericsoftware:kryo:3.0.3'
