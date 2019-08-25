@@ -9,7 +9,6 @@
 		android:title="@string/show_hide_calendar"
 		android:icon="@drawable/ic_calendar"
 		app:showAsAction="always"
-		app:iconTint="?colorOnPrimary"
 	/>
 
 	<group android:checkableBehavior="all">
