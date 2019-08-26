@@ -280,6 +280,8 @@
 	<string name="plant_summary_amount">Amount:</string>
 	<string name="plant_summary_temp">Temp:</string>
 	<string name="plant_summary_additives">Additives:</string>
+	<string name="plant_summary_ec">EC:</string>
+	<string name="plant_summary_ppm">PPM:</string>
 
 	<string name="select_schedule_title">Select schedule</string>
 	<string name="actions">Actions</string>
