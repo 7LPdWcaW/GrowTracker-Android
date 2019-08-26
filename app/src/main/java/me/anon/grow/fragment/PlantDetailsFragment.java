@@ -287,10 +287,10 @@ public class PlantDetailsFragment extends Fragment
 
 					action.setDate(System.currentTimeMillis());
 					plant.getActions().add(action);
-					PlantManager.getInstance().save();
+					PlantManager.getInstance().upsert(plant);
 
 					Intent editWater = new Intent(v.getContext(), EditWateringActivity.class);
-					editWater.putExtra("plant", plant);
+					editWater.putExtra("plant_index", PlantManager.getInstance().indexOf(plant));
 					editWater.putExtra("action_index", plant.getActions().size() - 1);
 					startActivityForResult(editWater, 4);
 				}
