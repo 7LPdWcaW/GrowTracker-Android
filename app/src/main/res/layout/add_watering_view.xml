@@ -286,7 +286,7 @@
 						android:layout_width="match_parent"
 						android:layout_height="wrap_content"
 						android:id="@+id/new_additive"
-						android:text="@string/add_new_additive"
+						android:text="@string/new_additive"
 						android:textStyle="bold"
 						android:paddingLeft="16dp"
 						android:paddingRight="16dp"

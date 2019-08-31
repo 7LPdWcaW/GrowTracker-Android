@@ -11,7 +11,7 @@
 		<Preference
 			app:key="default_garden"
 			app:title="@string/settings_garden_title"
-			app:summary="@string/settings_garden_summary"
+			app:summary="@string/settings_default_garden"
 		/>
 
 		<SwitchPreferenceCompat
