@@ -244,14 +244,14 @@
 	<string name="hide_images">Hide images</string>
 	<string name="show_images">Show images</string>
 
-	<string name="settings_default_garden">Default garden to show on open, currently</string>
-	<string name="settings_delivery">Default delivery measurement unit to use, currently</string>
-	<string name="settings_measurement">Default additive measurement unit to use, currently</string>
-	<string name="settings_temperature">Default temperature unit to use, currently</string>
-	<string name="settings_backup_size" formatted="true">Currently %smb / Using %s</string>
+	<string name="settings_default_garden">Default garden to show on open, currently &lt;b&gt;%s&lt;/b&gt;</string>
+	<string name="settings_delivery">Default delivery measurement unit to use, currently &lt;b&gt;%s&lt;/b&gt;</string>
+	<string name="settings_measurement">Default additive measurement unit to use, currently &lt;b&gt;%s&lt;/b&gt;</string>
+	<string name="settings_temperature">Default temperature unit to use, currently &lt;b&gt;%s&lt;/b&gt;</string>
+	<string name="settings_backup_size" formatted="true">Currently &lt;b&gt;%s MiB&lt;/b&gt; / Using &lt;b&gt;%s&lt;/b&gt;</string>
 	<string name="failsafe_message">Provide this password during unencryption phase to prevent data from being loaded</string>
 	<string name="warning">Warning</string>
-	<string name="encryption_message">This is basic form of AES encryption based on a provided passphrase. This is not a guarantee form of encryption from law enforcement agencies as was designed to stop plain sight</string>
+	<string name="encryption_message">This is basic form of AES encryption based on a provided passphrase. This is not a guaranteed form of protection from law enforcement agencies.</string>
 	<string name="backup_enable_toast">Backup enabled, backups will be stored in /sdcard/backups/GrowTracker/</string>
 	<string name="restore_complete" formatted="true">Restore to %s completed</string>
 	<string name="restore_error" formatted="true">Could not restore from backup %s. File may be %s</string>
@@ -292,7 +292,7 @@
 	<string name="settings_reverse_title">Reverse plant order</string>
 	<string name="settings_reverse_summary">Shows the plants in the reverse order. (Requires app restart)</string>
 	<string name="settings_garden_title">Default garden</string>
-	<string name="settings_garden_summary">Default garden to show on open, currently All</string>
+	<string name="settings_garden_summary">Default garden to show on open, currently &lt;b&gt;%s</string>
 	<string name="settings_general">General</string>
 	<string name="settings_units">Units</string>
 	<string name="settings_delivery_title">Delivery unit</string>
@@ -305,8 +305,8 @@
 	<string name="settings_autobackup_summary">Auto backup your plant data every 24 hours</string>
 	<string name="settings_backupnow">Backup now</string>
 	<string name="settings_backupsize_title">Backup size limit</string>
-	<string name="settings_backupsize_hint">Size in MB</string>
-	<string name="settings_backupsize_dialogtitle">Backup limit (mb)</string>
+	<string name="settings_backupsize_hint">Size in MiB</string>
+	<string name="settings_backupsize_dialogtitle">Backup limit (MiB)</string>
 	<string name="settings_restore_backup">Restore from backup</string>
 	<string name="settings_encrypt_title">Encrypt data</string>
 	<string name="settings_encrypt_summary">Adds a pin lock to the app and encrypts all data/images</string>

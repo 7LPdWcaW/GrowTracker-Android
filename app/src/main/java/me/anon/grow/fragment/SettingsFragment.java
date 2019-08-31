@@ -79,10 +79,10 @@ public class SettingsFragment extends PreferenceFragmentCompat implements Prefer
 
 		int defaultGardenIndex = PreferenceManager.getDefaultSharedPreferences(getActivity()).getInt("default_garden", -1);
 		String defaultGarden = defaultGardenIndex > -1 ? GardenManager.getInstance().getGardens().get(defaultGardenIndex).getName() : getString(R.string.all);
-		findPreference("default_garden").setSummary(Html.fromHtml(getString(R.string.settings_default_garden) + " <b>" + defaultGarden + "</b>"));
-		findPreference("delivery_unit").setSummary(Html.fromHtml(getString(R.string.settings_delivery) + " <b>" + Unit.getSelectedDeliveryUnit(getActivity()).getLabel() + "</b>"));
-		findPreference("measurement_unit").setSummary(Html.fromHtml(getString(R.string.settings_measurement) + " <b>" + Unit.getSelectedMeasurementUnit(getActivity()).getLabel() + "</b>"));
-		findPreference("temperature_unit").setSummary(Html.fromHtml(getString(R.string.settings_temperature) + " <b>" + TempUnit.getSelectedTemperatureUnit(getActivity()).getLabel() + "</b>"));
+		findPreference("default_garden").setSummary(Html.fromHtml(getString(R.string.settings_default_garden, defaultGarden)));
+		findPreference("delivery_unit").setSummary(Html.fromHtml(getString(R.string.settings_delivery, Unit.getSelectedDeliveryUnit(getActivity()).getLabel())));
+		findPreference("measurement_unit").setSummary(Html.fromHtml(getString(R.string.settings_measurement, Unit.getSelectedMeasurementUnit(getActivity()).getLabel())));
+		findPreference("temperature_unit").setSummary(Html.fromHtml(getString(R.string.settings_temperature, TempUnit.getSelectedTemperatureUnit(getActivity()).getLabel())));
 
 		try
 		{
@@ -99,7 +99,7 @@ public class SettingsFragment extends PreferenceFragmentCompat implements Prefer
 		findPreference("backup_size").setOnPreferenceChangeListener(this);
 		findPreference("force_dark").setOnPreferenceChangeListener(this);
 		String currentBackup = findPreference("backup_size").getSharedPreferences().getString("backup_size", "20");
-		findPreference("backup_size").setSummary(getString(R.string.settings_backup_size, currentBackup, lengthToString(BackupHelper.backupSize(), false)));
+		findPreference("backup_size").setSummary(Html.fromHtml(getString(R.string.settings_backup_size, currentBackup, lengthToString(BackupHelper.backupSize()))));
 
 		findPreference("readme").setOnPreferenceClickListener(this);
 		findPreference("export").setOnPreferenceClickListener(this);
@@ -268,7 +268,7 @@ public class SettingsFragment extends PreferenceFragmentCompat implements Prefer
 				.apply();
 			((EditTextPreference)preference).setText(currentBackup);
 			BackupHelper.limitBackups(currentBackup);
-			findPreference("backup_size").setSummary(getString(R.string.settings_backup_size, currentBackup, lengthToString(BackupHelper.backupSize(), false)));
+			findPreference("backup_size").setSummary(getString(R.string.settings_backup_size, currentBackup, lengthToString(BackupHelper.backupSize())));
 		}
 		else if ("encrypt".equals(preference.getKey()))
 		{
@@ -508,7 +508,7 @@ public class SettingsFragment extends PreferenceFragmentCompat implements Prefer
 							.putInt("delivery_unit", index)
 							.apply();
 
-						findPreference("delivery_unit").setSummary(Html.fromHtml(getString(R.string.settings_delivery) + " <b>" + Unit.getSelectedDeliveryUnit(getActivity()).getLabel() + "</b>"));
+						findPreference("delivery_unit").setSummary(Html.fromHtml(getString(R.string.settings_delivery, Unit.getSelectedDeliveryUnit(getActivity()).getLabel())));
 					}
 				})
 				.show();
@@ -536,7 +536,7 @@ public class SettingsFragment extends PreferenceFragmentCompat implements Prefer
 							.putInt("measurement_unit", index)
 							.apply();
 
-					findPreference("measurement_unit").setSummary(Html.fromHtml(getString(R.string.settings_measurement) + " <b>" + Unit.getSelectedMeasurementUnit(getActivity()).getLabel() + "</b>"));
+					findPreference("measurement_unit").setSummary(Html.fromHtml(getString(R.string.settings_measurement, Unit.getSelectedMeasurementUnit(getActivity()).getLabel())));
 					}
 				})
 				.show();
@@ -564,7 +564,7 @@ public class SettingsFragment extends PreferenceFragmentCompat implements Prefer
 							.putInt("temperature_unit", index)
 							.apply();
 
-						findPreference("temperature_unit").setSummary(Html.fromHtml(getString(R.string.settings_measurement) + " <b>" + TempUnit.getSelectedTemperatureUnit(getActivity()).getLabel() + "</b>"));
+						findPreference("temperature_unit").setSummary(Html.fromHtml(getString(R.string.settings_measurement, TempUnit.getSelectedTemperatureUnit(getActivity()).getLabel())));
 					}
 				})
 				.show();
@@ -594,7 +594,7 @@ public class SettingsFragment extends PreferenceFragmentCompat implements Prefer
 							.apply();
 
 						String defaultGarden = index - 1 > -1 ? GardenManager.getInstance().getGardens().get(index - 1).getName() : "All";
-						findPreference("default_garden").setSummary(Html.fromHtml(getString(R.string.settings_default_garden) + "<b>" + defaultGarden + "</b>"));
+						findPreference("default_garden").setSummary(Html.fromHtml(getString(R.string.settings_default_garden, defaultGarden)));
 					}
 				})
 				.show();
@@ -644,7 +644,7 @@ public class SettingsFragment extends PreferenceFragmentCompat implements Prefer
 		{
 			String currentBackup = findPreference("backup_size").getSharedPreferences().getString("backup_size", "20");
 			Toast.makeText(getActivity(), getString(R.string.backed_up_to) + BackupHelper.backupJson().getPath(), Toast.LENGTH_SHORT).show();
-			findPreference("backup_size").setSummary(getString(R.string.settings_backup_size, currentBackup, lengthToString(BackupHelper.backupSize(), false)));
+			findPreference("backup_size").setSummary(Html.fromHtml(getString(R.string.settings_backup_size, currentBackup, lengthToString(BackupHelper.backupSize()))));
 		}
 		else if ("restore".equals(preference.getKey()))
 		{
@@ -659,7 +659,7 @@ public class SettingsFragment extends PreferenceFragmentCompat implements Prefer
 				@Override public String toString()
 				{
 					boolean encrypted = plantsPath != null && plantsPath.endsWith("dat");
-					String out = "(" + (encrypted ? "encrypted " : "") + lengthToString(size, false) + ")";
+					String out = "(" + (encrypted ? "encrypted " : "") + lengthToString(size) + ")";
 					if (getActivity() != null)
 					{
 						DateFormat dateFormat = android.text.format.DateFormat.getDateFormat(getActivity());
@@ -850,16 +850,16 @@ public class SettingsFragment extends PreferenceFragmentCompat implements Prefer
 		}
 	}
 
-	public String lengthToString(long bytes, boolean si)
+	public String lengthToString(long bytes)
 	{
-		int unit = si ? 1000 : 1024;
+		int unit = 1024;
 		if (bytes < unit)
 		{
 			return bytes + " B";
 		}
 
 		int exp = (int)(Math.log(bytes) / Math.log(unit));
-		String pre = (si ? "kMGTPE" : "KMGTPE").charAt(exp - 1) + (si ? "" : "i");
+		String pre = "KMGTPE".charAt(exp - 1) + "i";
 		return String.format("%.1f %sB", bytes / Math.pow(unit, exp), pre);
 	}
 }
