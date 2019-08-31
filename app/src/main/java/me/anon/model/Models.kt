@@ -532,14 +532,14 @@ class Water(
 			{
 				waterStr.append("<b>")
 				waterStr.append(context.getString(R.string.plant_summary_ec))
-				waterStr.append("</b>")
+				waterStr.append("</b> ")
 				ppm = (it * 2.0 / 1000.0).toString()
 			}
 			else
 			{
 				waterStr.append("<b>")
 				waterStr.append(context.getString(R.string.plant_summary_ppm))
-				waterStr.append("</b>")
+				waterStr.append("</b> ")
 			}
 
 			waterStr.append(ppm)
@@ -558,7 +558,7 @@ class Water(
 		temp?.let {
 			waterStr.append("<b>")
 			waterStr.append(context.getString(R.string.plant_summary_temp))
-			waterStr.append("</b>")
+			waterStr.append("</b> ")
 			waterStr.append(TempUnit.CELCIUS.to(tempUnit, it))
 			waterStr.append("º").append(tempUnit.label).append(", ")
 		}
