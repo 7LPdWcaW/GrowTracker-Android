@@ -23,6 +23,8 @@
 				app:mcv_tileWidth="match_parent"
 				app:mcv_showOtherDates="other_months"
 				app:mcv_calendarMode="month"
+				app:mcv_dateTextAppearance="?textAppearanceBody1"
+				app:mcv_arrowColor="?android:textColorPrimary"
 			/>
 
 			<androidx.recyclerview.widget.RecyclerView

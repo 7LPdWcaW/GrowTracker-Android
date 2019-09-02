@@ -281,8 +281,8 @@ class Plant(
 					}
 
 					it.ppm?.let { ppm ->
-						val ppm = if (usingEc) Unit.toTwoDecimalPlaces(ppm) else ppm.toInt()
-						waterStr += "<b>@${ppm}</b> "
+						val ppm = if (usingEc) "${Unit.toTwoDecimalPlaces((ppm * 2.0 / 1000.0))}" else "${ppm.toInt()}"
+						waterStr += "<b>@$ppm</b> "
 					}
 
 					it.temp?.let { temp ->
@@ -509,7 +509,7 @@ class Water(
 		ph?.let {
 			waterStr.append("<b>")
 			waterStr.append(context.getString(R.string.plant_summary_ph))
-			waterStr.append("</b>")
+			waterStr.append("</b> ")
 			waterStr.append(it)
 			waterStr.append(", ")
 		}
@@ -517,7 +517,7 @@ class Water(
 		runoff?.let {
 			waterStr.append("<b>")
 			waterStr.append(context.getString(R.string.plant_summary_out_ph))
-			waterStr.append("</b>")
+			waterStr.append("</b> ")
 			waterStr.append(it)
 			waterStr.append(", ")
 		}
@@ -530,12 +530,16 @@ class Water(
 			var ppm = it.toLong().toString()
 			if (usingEc)
 			{
-				waterStr.append("<b>EC: </b>")
+				waterStr.append("<b>")
+				waterStr.append(context.getString(R.string.plant_summary_ec))
+				waterStr.append("</b> ")
 				ppm = (it * 2.0 / 1000.0).toString()
 			}
 			else
 			{
-				waterStr.append("<b>PPM: </b>")
+				waterStr.append("<b>")
+				waterStr.append(context.getString(R.string.plant_summary_ppm))
+				waterStr.append("</b> ")
 			}
 
 			waterStr.append(ppm)
@@ -545,7 +549,7 @@ class Water(
 		amount?.let {
 			waterStr.append("<b>")
 			waterStr.append(context.getString(R.string.plant_summary_amount))
-			waterStr.append("</b>")
+			waterStr.append("</b> ")
 			waterStr.append(Unit.ML.to(deliveryUnit, it))
 			waterStr.append(deliveryUnit.label)
 			waterStr.append(", ")
@@ -554,7 +558,7 @@ class Water(
 		temp?.let {
 			waterStr.append("<b>")
 			waterStr.append(context.getString(R.string.plant_summary_temp))
-			waterStr.append("</b>")
+			waterStr.append("</b> ")
 			waterStr.append(TempUnit.CELCIUS.to(tempUnit, it))
 			waterStr.append("º").append(tempUnit.label).append(", ")
 		}
@@ -567,7 +571,7 @@ class Water(
 		{
 			waterStr.append("<b>")
 			waterStr.append(context.getString(R.string.plant_summary_additives))
-			waterStr.append("</b>")
+			waterStr.append("</b> ")
 
 			additives.forEach { additive ->
 				if (additive.amount == null) return@forEach
@@ -575,7 +579,7 @@ class Water(
 				val converted = Unit.ML.to(measureUnit, additive.amount!!)
 				val amountStr = if (converted == Math.floor(converted)) converted.toInt().toString() else converted.toString()
 
-				waterStr.append("<br/>&nbsp;&nbsp;&nbsp;&nbsp;• ")
+				waterStr.append("<br/>&nbsp;&nbsp;&nbsp;&nbsp; → ")
 				waterStr.append(additive.description)
 				waterStr.append("  -  ")
 				waterStr.append(amountStr)

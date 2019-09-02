@@ -4,6 +4,7 @@ import android.annotation.SuppressLint;
 import android.app.Dialog;
 import android.content.DialogInterface;
 import android.os.Bundle;
+import android.preference.PreferenceManager;
 import android.text.TextUtils;
 import android.view.View;
 import android.widget.EditText;
@@ -71,7 +72,10 @@ public class GardenDialogFragment extends DialogFragment
 
 		adapter = new PlantSelectionAdapter(PlantManager.getInstance().getSortedPlantList(null), garden == null ? null : garden.getPlantIds(), getActivity());
 		recyclerView.setAdapter(adapter);
-		recyclerView.setLayoutManager(new LinearLayoutManager(getActivity(), LinearLayoutManager.VERTICAL, false));
+		boolean reverse = PreferenceManager.getDefaultSharedPreferences(getActivity()).getBoolean("reverse_order", false);
+		LinearLayoutManager layoutManager = new LinearLayoutManager(getActivity(), RecyclerView.VERTICAL, reverse);
+		layoutManager.setStackFromEnd(reverse);
+		recyclerView.setLayoutManager(layoutManager);
 
 		final AlertDialog alertDialog = new AlertDialog.Builder(getActivity())
 			.setTitle(R.string.garden)

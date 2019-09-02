@@ -252,7 +252,7 @@ public class GardenFragment extends Fragment
 	{
 		Intent addPlant = new Intent(getActivity(), PlantDetailsActivity.class);
 		addPlant.putExtra("garden_index", GardenManager.getInstance().getGardens().indexOf(garden));
-		startActivity(addPlant);
+		startActivityForResult(addPlant, 5);
 	}
 
 	@Views.OnClick public void onFeedingClick(View view)
@@ -402,6 +402,9 @@ public class GardenFragment extends Fragment
 	@Override public void onCreateOptionsMenu(Menu menu, MenuInflater inflater)
 	{
 		inflater.inflate(R.menu.plant_list_menu, menu);
+		menu.findItem(R.id.edit_garden).setVisible(true);
+		menu.findItem(R.id.export_garden).setVisible(true);
+		menu.findItem(R.id.delete_garden).setVisible(true);
 
 		int[] ids = {R.id.filter_germination, R.id.filter_vegetation, R.id.filter_seedling, R.id.filter_cutting, R.id.filter_flowering, R.id.filter_drying, R.id.filter_curing, R.id.filter_harvested, R.id.filter_planted};
 		PlantStage[] stages = {PlantStage.GERMINATION, PlantStage.VEGETATION, PlantStage.SEEDLING, PlantStage.CUTTING, PlantStage.FLOWER, PlantStage.DRYING, PlantStage.CURING, PlantStage.HARVESTED, PlantStage.PLANTED};

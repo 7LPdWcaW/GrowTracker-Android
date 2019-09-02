@@ -11,7 +11,7 @@
 		<Preference
 			app:key="default_garden"
 			app:title="@string/settings_garden_title"
-			app:summary="@string/settings_garden_summary"
+			app:summary="@string/settings_default_garden"
 		/>
 
 		<SwitchPreferenceCompat
@@ -34,7 +34,7 @@
 			app:summary="Select card style, currently %s"
 			android:entryValues="@array/settings_card_entry_values"
 			android:entries="@array/settings_card_entries"
-			android:defaultValue="0"
+			android:defaultValue="1"
 		/>
 	</PreferenceCategory>
 

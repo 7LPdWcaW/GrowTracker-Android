@@ -265,7 +265,7 @@ public class WateringFragment extends Fragment
 	{
 		amountLabel.setText(getString(R.string.amount_label, selectedDeliveryUnit.getLabel()));
 		amount.setHint("250" + selectedDeliveryUnit.getLabel());
-		tempLabel.setHint(getString(R.string.temp_label, selectedTemperatureUnit.getLabel()));
+		tempLabel.setText(getString(R.string.temp_label, selectedTemperatureUnit.getLabel()));
 
 		if (usingEc)
 		{
@@ -367,7 +367,6 @@ public class WateringFragment extends Fragment
 				}
 
 				tempContainer.setVisibility(View.VISIBLE);
-				tempLabel.setText(getString(R.string.temp_label, selectedTemperatureUnit.getLabel()));
 
 				if (!averageTemp.isNaN())
 				{

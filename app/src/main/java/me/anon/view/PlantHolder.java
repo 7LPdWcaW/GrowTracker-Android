@@ -71,7 +71,10 @@ public class PlantHolder extends RecyclerView.ViewHolder
 
 		if (cardStyle == 1)
 		{
-			summaryList.set(0, plant.getStrain() + " " + summaryList.get(0));
+			if (plant.getStrain() != null)
+			{
+				summaryList.set(0, (plant.getStrain() + " " + summaryList.get(0)).trim());
+			}
 		}
 
 		if (strain != null)
