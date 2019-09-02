@@ -281,8 +281,8 @@ class Plant(
 					}
 
 					it.ppm?.let { ppm ->
-						val ppm = if (usingEc) Unit.toTwoDecimalPlaces(ppm) else ppm.toInt()
-						waterStr += "<b>@${ppm}</b> "
+						val ppm = if (usingEc) "${Unit.toTwoDecimalPlaces((ppm * 2.0 / 1000.0))}" else "${ppm.toInt()}"
+						waterStr += "<b>@$ppm</b> "
 					}
 
 					it.temp?.let { temp ->
