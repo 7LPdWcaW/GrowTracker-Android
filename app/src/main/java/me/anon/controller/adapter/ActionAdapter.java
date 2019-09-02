@@ -358,7 +358,7 @@ public class ActionAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>
 			if (action.getClass() == Water.class)
 			{
 				summary += ((Water)action).getSummary(viewHolder.itemView.getContext());
-				viewHolder.getCard().setCardBackgroundColor(viewHolder.itemView.getContext().getColor(R.color.light_blue));
+				viewHolder.getCard().setCardBackgroundColor(viewHolder.itemView.getContext().getResources().getColor(R.color.light_blue));
 				viewHolder.getName().setText(R.string.watered);
 			}
 			else if (action instanceof EmptyAction && ((EmptyAction)action).getAction() != null)
