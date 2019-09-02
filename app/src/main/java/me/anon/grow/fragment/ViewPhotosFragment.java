@@ -60,13 +60,6 @@ import me.anon.model.Action;
 import me.anon.model.Plant;
 import me.anon.model.StageChange;
 
-/**
- * // TODO: Add class description
- *
- * @author 7LPdWcaW
- * @documentation // TODO Reference flow doc
- * @project GrowTracker
- */
 @Views.Injectable
 public class ViewPhotosFragment extends Fragment
 {
@@ -128,9 +121,15 @@ public class ViewPhotosFragment extends Fragment
 		{
 			@Override public void onItemSelected(int totalSelected)
 			{
-				if (action != null)
+				if (action == null) return;
+
+				if (totalSelected == 0)
 				{
-					action.setTitle(totalSelected + " Selected");
+					action.finish();
+				}
+				else
+				{
+					action.setTitle(getString(R.string.selected_len, totalSelected));
 				}
 			}
 		};
@@ -217,7 +216,7 @@ public class ViewPhotosFragment extends Fragment
 						action = null;
 					}
 				});
-				action.setTitle("1 Selected");
+				action.setTitle(getString(R.string.selected_len, 1));
 
 				return true;
 			}

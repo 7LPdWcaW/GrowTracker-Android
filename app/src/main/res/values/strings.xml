@@ -317,4 +317,5 @@
 	<string name="empty_photos">There are no photos to show</string>
 	<string name="events_title">Past actions</string>
 	<string name="show_hide_calendar">Show/hide calendar</string>
+	<string name="selected_len" formatted="true">%o Selected</string>
 </resources>
