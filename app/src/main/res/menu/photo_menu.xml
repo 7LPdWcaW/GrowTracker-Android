@@ -5,6 +5,13 @@
 	xmlns:app="http://schemas.android.com/apk/res-auto"
 >
 	<item
+		android:title="@string/compare"
+		android:id="@+id/compare"
+		android:icon="@drawable/ic_compare_black_24dp"
+		app:iconTint="?colorOnPrimary"
+	/>
+
+	<item
 		android:title="@string/delete"
 		android:id="@+id/delete"
 		android:icon="@drawable/ic_delete"

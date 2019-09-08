@@ -66,7 +66,8 @@
 		<activity android:name=".EventsActivity" />
 		<activity android:name=".StatisticsActivity" />
 		<activity android:name=".SettingsActivity" />
-		<activity android:name=".fragment.ImageLightboxDialog" android:theme="@style/fullscreen" android:windowSoftInputMode="stateHidden|adjustResize" />
+		<activity android:name=".fragment.ImageLightboxDialog" android:theme="@style/fullscreen" android:windowSoftInputMode="stateHidden|adjustResize" android:configChanges="screenSize|orientation|uiMode" />
+		<activity android:name=".fragment.CompareImageLightboxDialog" android:theme="@style/fullscreen" android:windowSoftInputMode="stateHidden|adjustResize" android:configChanges="screenSize|orientation|uiMode" />
 		<activity android:name=".PlantDetailsActivity" android:windowSoftInputMode="stateAlwaysHidden" />
 		<activity android:name=".FeedingScheduleActivity" android:windowSoftInputMode="stateAlwaysHidden" />
 		<activity android:name=".FeedingScheduleDetailsActivity" android:windowSoftInputMode="stateAlwaysHidden" />

@@ -156,7 +156,14 @@ public class ViewPhotosFragment extends Fragment
 
 					@Override public boolean onActionItemClicked(final ActionMode mode, MenuItem item)
 					{
-						if (item.getItemId() == R.id.delete)
+						if (item.getItemId() == R.id.compare)
+						{
+							Intent details = new Intent(v.getContext(), CompareImageLightboxDialog.class);
+							details.putExtra("plant", plant);
+							details.putExtra("images", (String[])adapter.getSelected().toArray(new String[adapter.getSelected().size()]));
+							v.getContext().startActivity(details);
+						}
+						else if (item.getItemId() == R.id.delete)
 						{
 							new AlertDialog.Builder(getActivity())
 								.setTitle(R.string.confirm_title)
@@ -164,9 +171,8 @@ public class ViewPhotosFragment extends Fragment
 								{
 									@Override public void onClick(DialogInterface dialog, int which)
 									{
-										for (Integer integer : adapter.getSelected())
+										for (String image : adapter.getSelected())
 										{
-											String image = adapter.getImages().get(integer);
 											new File(image).delete();
 											plant.getImages().remove(image);
 											AddonHelper.broadcastImage(getActivity(), image, true);
@@ -191,9 +197,8 @@ public class ViewPhotosFragment extends Fragment
 
 							ArrayList<Uri> files = new ArrayList<Uri>();
 
-							for (Integer integer : adapter.getSelected())
+							for (String image : adapter.getSelected())
 							{
-								String image = adapter.getImages().get(integer);
 								File file = new File(image);
 								Uri uri = FileProvider.getUriForFile(getActivity(), getActivity().getPackageName() + ".provider", file);
 								files.add(uri);

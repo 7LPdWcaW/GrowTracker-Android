@@ -318,4 +318,5 @@
 	<string name="events_title">Past actions</string>
 	<string name="show_hide_calendar">Show/hide calendar</string>
 	<string name="selected_len" formatted="true">%o Selected</string>
+	<string name="compare">Compare</string>
 </resources>
