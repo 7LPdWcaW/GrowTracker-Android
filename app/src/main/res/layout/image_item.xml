@@ -31,10 +31,11 @@
 			android:layout_width="wrap_content"
 			android:layout_height="wrap_content"
 			android:id="@+id/selection"
-			android:padding="4dp"
-			android:layout_margin="4dp"
-			android:layout_alignParentTop="true"
-			android:layout_alignParentRight="true"
+			android:clickable="false"
+			android:focusable="false"
+			android:background="#ffffff"
+			android:minWidth="0dp"
+			android:minHeight="0dp"
 		/>
 	</me.anon.view.SquareRelativeLayout>
 </com.google.android.material.card.MaterialCardView>

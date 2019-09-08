@@ -87,21 +87,13 @@
 					android:id="@+id/name"
 					android:paddingEnd="8dp"
 					android:paddingStart="8dp"
-					android:minHeight="42dp"
 					android:gravity="center_vertical"
 					app:layout_constraintTop_toTopOf="@id/date"
+					app:layout_constraintBottom_toBottomOf="@id/date"
 					app:layout_constraintEnd_toStartOf="@id/date"
 					app:layout_constraintStart_toStartOf="parent"
 					tools:text="Very Long Action name"
 					style="@style/SubsectionTitle"
-				/>
-
-				<androidx.constraintlayout.widget.Barrier
-					android:layout_width="0dp"
-					android:layout_height="0dp"
-					android:id="@+id/title_barrier"
-					app:barrierDirection="bottom"
-					app:constraint_referenced_ids="name,overflow,date"
 				/>
 
 				<TextView
@@ -114,9 +106,9 @@
 					android:layout_below="@id/name"
 					android:paddingEnd="8dp"
 					android:paddingStart="8dp"
-					app:layout_constraintTop_toBottomOf="@id/title_barrier"
-					app:layout_constraintStart_toStartOf="parent"
-					app:layout_constraintEnd_toEndOf="parent"
+					app:layout_constraintTop_toBottomOf="@id/name"
+					app:layout_constraintStart_toStartOf="@id/name"
+					app:layout_constraintEnd_toStartOf="@id/date"
 				/>
 			</androidx.constraintlayout.widget.ConstraintLayout>
 

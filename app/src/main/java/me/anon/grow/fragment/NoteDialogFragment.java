@@ -71,7 +71,13 @@ public class NoteDialogFragment extends DialogFragment
 				}
 			}
 		});
-		dialog.setNegativeButton(R.string.cancel, null);
+		dialog.setNegativeButton(R.string.cancel, new DialogInterface.OnClickListener()
+		{
+			@Override public void onClick(DialogInterface dialogInterface, int i)
+			{
+				onCancel(dialogInterface);
+			}
+		});
 
 		return dialog.create();
 	}
