@@ -13,7 +13,7 @@
 	<string name="snackbar_garden_deleted">Garden deleted</string>
 
 	<string name="dialog_garden_delete_body">Are you sure you want to delete garden &lt;b&gt;"%s"&lt;/b&gt;? This will not delete the plants.</string>
-	<string name="action_feed">Feed</string>
+	<string name="action_feed">Water</string>
 	<string name="action_action">Action</string>
 
 	<string name="widget_encrypt_error">Widget is not available when encrypt setting is enabled</string>
@@ -65,8 +65,8 @@
 	<string name="update_dialog_dismiss_button">Dismiss</string>
 
 	<!-- Feeding {plant name} -->
-	<string name="feeding_single_title" formatted="true">Feeding %s</string>
-	<string name="feeding_multiple_title" formatted="true">Feeding multiple plants</string>
+	<string name="feeding_single_title" formatted="true">Watering %s</string>
+	<string name="feeding_multiple_title">Watering multiple plants</string>
 
 	<string name="action_dialog_notes">Notes</string>
 	<string name="water_details_title">Water details</string>
@@ -101,7 +101,7 @@
 	<string name="share">Share</string>
 	<string name="menu_photo">Photo</string>
 	<string name="last_watering_title">Last watering</string>
-	<string name="feed_again">Feed again</string>
+	<string name="feed_again">Water again</string>
 
 	<string name="plant_name_label">Plant name</string>
 	<string name="new_plant_hint">New plant</string>
@@ -183,7 +183,7 @@
 	<string name="ok">OK</string>
 	<string name="field_required">Field is required</string>
 	<string name="encrypt_passphrase_error">Error - incorrect passphrase</string>
-	<string name="edit_feeding">Edit feeding</string>
+	<string name="edit_feeding">Edit watering</string>
 	<string name="added">added</string>
 	<string name="action_duplicated">Action duplicated</string>
 	<string name="multiple_plants">multiple plants</string>
