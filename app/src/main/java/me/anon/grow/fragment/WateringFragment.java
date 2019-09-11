@@ -31,6 +31,7 @@ import java.util.Comparator;
 import java.util.Date;
 import java.util.GregorianCalendar;
 
+import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AlertDialog;
 import androidx.fragment.app.Fragment;
@@ -132,23 +133,29 @@ public class WateringFragment extends Fragment
 		selectedTemperatureUnit = TempUnit.getSelectedTemperatureUnit(getActivity());
 		usingEc = PreferenceManager.getDefaultSharedPreferences(getActivity()).getBoolean("tds_ec", false);
 
-		if (getArguments() != null)
+		if (savedInstanceState != null)
+		{
+			plantIndex = savedInstanceState.getIntArray("plant_index");
+			actionIndex = savedInstanceState.getInt("action_index");
+			water = savedInstanceState.getParcelable("water");
+		}
+		else if (getArguments() != null)
 		{
 			plantIndex = getArguments().getIntArray("plant_index");
 			actionIndex = getArguments().getInt("action_index");
-
-			for (int index : plantIndex)
-			{
-				Plant plant = PlantManager.getInstance().getPlants().get(index);
-				plants.add(plant);
-
-				getActivity().getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_ALWAYS_HIDDEN);
-			}
 
 			if (actionIndex > -1 && plantIndex.length == 1)
 			{
 				water = (Water)PlantManager.getInstance().getPlants().get(plantIndex[0]).getActions().get(actionIndex);
 			}
+		}
+
+		for (int index : plantIndex)
+		{
+			Plant plant = PlantManager.getInstance().getPlants().get(index);
+			plants.add(plant);
+
+			getActivity().getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_ALWAYS_HIDDEN);
 		}
 
 		if (water == null)
@@ -164,6 +171,15 @@ public class WateringFragment extends Fragment
 
 		setUi();
 		setHints();
+	}
+
+	@Override public void onSaveInstanceState(@NonNull Bundle outState)
+	{
+		outState.putIntArray("plant_index", plantIndex);
+		outState.putInt("action_index", actionIndex);
+		outState.putParcelable("water", water);
+
+		super.onSaveInstanceState(outState);
 	}
 
 	@Override public void onResume()
