@@ -254,7 +254,14 @@ public class WateringFragment extends Fragment
 		{
 			@Override public void onFeedingSelected(FeedingScheduleDate date)
 			{
-				water.setAdditives(date.getAdditives());
+				ArrayList<Additive> additives = new ArrayList<>();
+
+				for (Additive additive : date.getAdditives())
+				{
+					additives.add(new Kryo().copy(additive));
+				}
+
+				water.setAdditives(additives);
 				populateAdditives();
 			}
 		});
