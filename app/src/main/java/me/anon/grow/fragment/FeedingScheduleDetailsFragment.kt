@@ -23,22 +23,19 @@ import me.anon.model.FeedingSchedule
 import me.anon.model.FeedingScheduleDate
 import kotlin.math.floor
 
-/**
- * // TODO: Add class description
- */
 class FeedingScheduleDetailsFragment : Fragment()
 {
 	companion object
 	{
-		fun newInstance(scheduleIndex: Int = -1): FeedingScheduleDetailsFragment
+		fun newInstance(schedule: FeedingSchedule? = null): FeedingScheduleDetailsFragment
 		{
 			return FeedingScheduleDetailsFragment().apply {
-				this.scheduleIndex = scheduleIndex
+				this.schedule = schedule
 			}
 		}
 	}
 
-	private var scheduleIndex: Int = -1
+	private var schedule: FeedingSchedule? = null
 	private var schedules = arrayListOf<FeedingScheduleDate>()
 	private val measureUnit: Unit by lazy { Unit.getSelectedMeasurementUnit(activity); }
 	private val deliveryUnit: Unit by lazy { Unit.getSelectedDeliveryUnit(activity); }
@@ -50,20 +47,28 @@ class FeedingScheduleDetailsFragment : Fragment()
 	{
 		super.onActivityCreated(savedInstanceState)
 
-		if (scheduleIndex > -1)
+		if (savedInstanceState != null)
 		{
-			schedules = ScheduleManager.instance.schedules[scheduleIndex].schedules
-			title.setText(ScheduleManager.instance.schedules[scheduleIndex].name)
-			description.setText(ScheduleManager.instance.schedules[scheduleIndex].description)
+			schedule = savedInstanceState.get("schedule") as FeedingSchedule
+			schedules = savedInstanceState.getParcelableArrayList<FeedingScheduleDate>("schedules") as ArrayList<FeedingScheduleDate>
 		}
+
+		if (schedule == null)
+		{
+			activity!!.finish()
+			return
+		}
+
+		title.setText(schedule?.name)
+		description.setText(schedule?.description)
 
 		populateSchedules()
 
 		fab_complete.setOnClickListener {
-			when (scheduleIndex)
+			when (schedule)
 			{
-				-1 -> {
-					val schedule: FeedingSchedule = FeedingSchedule(
+				null -> {
+					val schedule = FeedingSchedule(
 						name = title.text.toString(),
 						description = description.text.toString(),
 						_schedules = schedules
@@ -72,13 +77,13 @@ class FeedingScheduleDetailsFragment : Fragment()
 					ScheduleManager.instance.insert(schedule)
 				}
 				else -> {
-					ScheduleManager.instance.schedules[scheduleIndex].apply {
+					schedule!!.apply {
 						name = this@FeedingScheduleDetailsFragment.title.text.toString()
 						description = this@FeedingScheduleDetailsFragment.description.text.toString()
 						schedules = this@FeedingScheduleDetailsFragment.schedules
 					}
 
-					ScheduleManager.instance.save()
+					ScheduleManager.instance.upsert(schedule!!)
 				}
 			}
 
@@ -86,19 +91,26 @@ class FeedingScheduleDetailsFragment : Fragment()
 		}
 	}
 
+	override fun onSaveInstanceState(outState: Bundle)
+	{
+		outState.putParcelable("schedule", schedule)
+		outState.putParcelableArrayList("schedules", schedules)
+		super.onSaveInstanceState(outState)
+	}
+
 	public fun onBackPressed(): Boolean
 	{
-		if (scheduleIndex > -1)
-		{
-			with (ScheduleManager.instance.schedules[scheduleIndex])
-			{
-				if (name.isEmpty() && schedules.isEmpty())
-				{
-					ScheduleManager.instance.schedules.removeAt(scheduleIndex)
-					return true
-				}
-			}
-		}
+//		if (scheduleIndex > -1)
+//		{
+//			with (schedule)
+//			{
+//				if (name.isEmpty() && schedules.isEmpty())
+//				{
+//					ScheduleManager.instance.schedules.removeAt(scheduleIndex)
+//					return true
+//				}
+//			}
+//		}
 
 		return true
 	}
@@ -170,7 +182,7 @@ class FeedingScheduleDetailsFragment : Fragment()
 
 			feedingView.setOnClickListener {
 				startActivityForResult(Intent(it.context, ScheduleDateDetailsActivity::class.java).also {
-					it.putExtra("schedule_index", scheduleIndex)
+					it.putExtra("schedule", schedule)
 					it.putExtra("date_index", index)
 				}, 0)
 			}
@@ -178,19 +190,19 @@ class FeedingScheduleDetailsFragment : Fragment()
 		}
 
 		new_schedule.setOnClickListener {
-			if (scheduleIndex < 0)
+			if (schedule == null)
 			{
 				schedules = arrayListOf()
-				ScheduleManager.instance.insert(FeedingSchedule(
+				schedule = FeedingSchedule(
 					name = title.text.toString(),
 					description = description.text.toString(),
 					_schedules = schedules
-				))
-				scheduleIndex = ScheduleManager.instance.schedules.size - 1
+				)
+				ScheduleManager.instance.insert(schedule!!)
 			}
 
 			startActivityForResult(Intent(it.context, ScheduleDateDetailsActivity::class.java).also {
-				it.putExtra("schedule_index", scheduleIndex)
+				it.putExtra("schedule", schedule)
 				it.putExtra("date_index", -1)
 			}, 0)
 		}
@@ -199,7 +211,7 @@ class FeedingScheduleDetailsFragment : Fragment()
 	override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?)
 	{
 		super.onActivityResult(requestCode, resultCode, data)
-		schedules = ScheduleManager.instance.schedules[scheduleIndex].schedules
+		schedules = schedule!!.schedules
 		populateSchedules()
 	}
 }
