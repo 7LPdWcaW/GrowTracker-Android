@@ -140,7 +140,7 @@
 							android:hint="@string/new_plant_hint"
 							android:nextFocusDown="@+id/plant_strain"
 							android:singleLine="true"
-							android:inputType="textCapWords"
+							android:inputType="textCapWords|textAutoComplete"
 							style="@style/SubsectionSubTitle"
 						/>
 					</LinearLayout>
@@ -159,7 +159,7 @@
 							style="@style/SubsectionTitle"
 						/>
 
-						<EditText
+						<AutoCompleteTextView
 							android:layout_width="match_parent"
 							android:layout_height="wrap_content"
 							android:hint="@string/plant_strain_hint"
