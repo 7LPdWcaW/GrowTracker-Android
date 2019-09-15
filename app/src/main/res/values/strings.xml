@@ -167,6 +167,7 @@
 	<string name="action_topped">Topped</string>
 	<string name="action_transplanted">Transplanted</string>
 	<string name="action_trim">Trim</string>
+	<string name="action_tuck">ScrOG Tuck</string>
 
 	<string name="watered">Watered</string>
 	<string name="note">Note</string>

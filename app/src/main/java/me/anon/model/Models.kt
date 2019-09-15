@@ -72,7 +72,8 @@ abstract class Action(
 		PESTICIDE_APPLICATION(R.string.action_pesticide_application, -0x65106566),
 		TOP(R.string.action_topped, -0x6543555c),
 		TRANSPLANTED(R.string.action_transplanted, -0x65000073),
-		TRIM(R.string.action_trim, -0x6500546f);
+		TRIM(R.string.action_trim, -0x6500546f),
+		TUCK(R.string.action_tuck, -0x65800046);
 
 		companion object
 		{
