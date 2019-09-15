@@ -318,4 +318,16 @@
 	<string name="events_title">Past actions</string>
 	<string name="show_hide_calendar">Show/hide calendar</string>
 	<string name="selected_len" formatted="true">%o Selected</string>
+	<string name="translations_title">Thank you to the following</string>
+	<string name="translations_by">Translations by</string>
+
+	<!-- Add your name here! -->
+	<string-array name="translators">
+		<item>Maxtille - fr</item>
+		<item>Alex (Noxmiles) - de</item>
+		<item>basti b (Weltenesche) - de</item>
+		<item>Sascha Zenglein (szenglein) - de </item>
+		<item>W Q (williq) - de</item>
+		<item>EmmanuelMess - es</item>
+	</string-array>
 </resources>
