@@ -320,6 +320,7 @@
 	<string name="selected_len" formatted="true">%o Selected</string>
 	<string name="translations_title">Thank you to the following</string>
 	<string name="translations_by">Translations by</string>
+	<string name="help_translate">Help translate</string>
 
 	<!-- Add your name here! -->
 	<string-array name="translators">

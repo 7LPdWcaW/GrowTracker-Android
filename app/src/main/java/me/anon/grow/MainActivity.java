@@ -264,6 +264,16 @@ public class MainActivity extends BaseActivity implements NavigationView.OnNavig
 			new AlertDialog.Builder(this)
 				.setTitle(R.string.translations_title)
 				.setMessage(Html.fromHtml(TextUtils.join("<br />", getResources().getStringArray(R.array.translators))))
+				.setPositiveButton(R.string.help_translate, new DialogInterface.OnClickListener()
+				{
+					@Override public void onClick(DialogInterface dialogInterface, int i)
+					{
+						Intent view = new Intent(Intent.ACTION_VIEW);
+						view.setData(Uri.parse("https://github.com/7LPdWcaW/GrowTracker-Android/issues/116"));
+						startActivity(view);
+					}
+				})
+				.setNegativeButton(R.string.cancel, null)
 				.show();
 		}
 		else if (item.getItemId() == R.id.add)
