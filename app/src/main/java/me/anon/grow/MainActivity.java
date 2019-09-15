@@ -9,6 +9,8 @@ import android.content.pm.PackageManager;
 import android.net.Uri;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
+import android.text.Html;
+import android.text.TextUtils;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -256,6 +258,13 @@ public class MainActivity extends BaseActivity implements NavigationView.OnNavig
 			Intent view = new Intent(Intent.ACTION_VIEW);
 			view.setData(Uri.parse("http://github.com/7lpdwcaw/"));
 			startActivity(view);
+		}
+		else if (item.getItemId() == R.id.translations)
+		{
+			new AlertDialog.Builder(this)
+				.setTitle(R.string.translations_title)
+				.setMessage(Html.fromHtml(TextUtils.join("<br />", getResources().getStringArray(R.array.translators))))
+				.show();
 		}
 		else if (item.getItemId() == R.id.add)
 		{

@@ -42,6 +42,12 @@
 			/>
 
 			<item
+				android:id="@+id/translations"
+				android:title="@string/translations_by"
+				android:orderInCategory="3"
+			/>
+
+			<item
 				android:enabled="false"
 				android:id="@+id/version"
 				android:title="Version 2.1"
