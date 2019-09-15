@@ -10,7 +10,11 @@ import android.view.WindowManager;
 import android.widget.PopupMenu;
 import android.widget.TextView;
 
+import com.github.mikephil.charting.charts.BarChart;
 import com.github.mikephil.charting.charts.LineChart;
+import com.github.mikephil.charting.data.BarData;
+import com.github.mikephil.charting.data.BarDataSet;
+import com.github.mikephil.charting.data.BarEntry;
 
 import java.util.ArrayList;
 import java.util.HashSet;
@@ -51,6 +55,7 @@ public class StatisticsFragment extends Fragment
 	@Views.InjectView(R.id.input_ph) private LineChart inputPh;
 	@Views.InjectView(R.id.ppm) private LineChart ppm;
 	@Views.InjectView(R.id.temp) private LineChart temp;
+	@Views.InjectView(R.id.stage_chart) private BarChart stages;
 
 	@Views.InjectView(R.id.grow_time) private TextView growTime;
 	@Views.InjectView(R.id.water_count) private TextView waterCount;
@@ -313,5 +318,23 @@ public class StatisticsFragment extends Fragment
 			cureTime.setText(getString(R.string.length_days, "" + (int)TimeHelper.toDays(stages.get(PlantStage.CURING))));
 			cureTimeContainer.setVisibility(View.VISIBLE);
 		}
+
+		float[] entries = new float[stages.size()];
+		String[] labels = new String[stages.size()];
+		int index = 0;
+		for (PlantStage plantStage : stages.keySet())
+		{
+			labels[index] = plantStage.name();
+			entries[index++] = (float)TimeHelper.toDays(stages.get(plantStage));
+		}
+
+		ArrayList<BarEntry> entry = new ArrayList<>();
+		entry.add(new BarEntry(1, entries));
+		BarDataSet set = new BarDataSet(entry, "Stacked");
+		set.setStackLabels(labels);
+
+		BarData data = new BarData(set);
+
+//		StatisticsFragment.this.stages.setData(data);
 	}
 }
