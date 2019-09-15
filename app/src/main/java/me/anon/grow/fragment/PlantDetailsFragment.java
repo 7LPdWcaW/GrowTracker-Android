@@ -24,6 +24,8 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.WindowManager;
+import android.widget.ArrayAdapter;
+import android.widget.AutoCompleteTextView;
 import android.widget.Button;
 import android.widget.CheckBox;
 import android.widget.EditText;
@@ -49,6 +51,8 @@ import java.util.Arrays;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.Locale;
+import java.util.Set;
+import java.util.TreeSet;
 import java.util.UUID;
 
 import androidx.annotation.NonNull;
@@ -94,7 +98,7 @@ public class PlantDetailsFragment extends Fragment
 	@Views.InjectView(R.id.link_container) private View linkContainer;
 
 	@Views.InjectView(R.id.plant_name) private TextView name;
-	@Views.InjectView(R.id.plant_strain) private TextView strain;
+	@Views.InjectView(R.id.plant_strain) private AutoCompleteTextView strain;
 	@Views.InjectView(R.id.plant_stage) private TextView stage;
 	@Views.InjectView(R.id.plant_medium) private TextView medium;
 	@Views.InjectView(R.id.plant_medium_details) private EditText mediumDetails;
@@ -306,6 +310,15 @@ public class PlantDetailsFragment extends Fragment
 		String dateStr = dateFormat.format(new Date(plant.getPlantDate())) + " " + timeFormat.format(new Date(plant.getPlantDate()));
 		date.setText(dateStr);
 		clone.setChecked(plant.getClone());
+
+		Set<String> strains = new TreeSet<>(String.CASE_INSENSITIVE_ORDER);
+
+		for (Plant plant : PlantManager.getInstance().getPlants())
+		{
+			strains.add(plant.getStrain());
+		}
+
+		strain.setAdapter(new ArrayAdapter<String>(getActivity(), android.R.layout.simple_list_item_1, strains.toArray(new String[strains.size()])));
 
 		dateContainer.setOnClickListener(new View.OnClickListener()
 		{
