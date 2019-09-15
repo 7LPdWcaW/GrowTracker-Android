@@ -134,7 +134,7 @@
 				<LinearLayout
 					android:layout_width="match_parent"
 					android:layout_height="wrap_content"
-					android:id="@+id/schedules_container"
+					android:id="@+id/schedule_dates_container"
 					android:orientation="vertical"
 					android:divider="?android:listDivider"
 					android:showDividers="middle"

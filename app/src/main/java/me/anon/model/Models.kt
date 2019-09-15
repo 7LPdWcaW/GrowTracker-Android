@@ -19,7 +19,7 @@ import java.util.*
 @Parcelize
 @JsonClass(generateAdapter = true)
 class FeedingSchedule(
-	val id: String = UUID.randomUUID().toString(),
+	var id: String = UUID.randomUUID().toString(),
 	var name: String = "",
 	var description: String = "",
 	@field:Json(name = "schedules") var _schedules: ArrayList<FeedingScheduleDate>
@@ -44,7 +44,7 @@ class FeedingSchedule(
 @Parcelize
 @JsonClass(generateAdapter = true)
 class FeedingScheduleDate(
-	val id: String = UUID.randomUUID().toString(),
+	var id: String = UUID.randomUUID().toString(),
 	var dateRange: Array<Int>,
 	var stageRange: Array<PlantStage>,
 	var additives: ArrayList<Additive> = arrayListOf()

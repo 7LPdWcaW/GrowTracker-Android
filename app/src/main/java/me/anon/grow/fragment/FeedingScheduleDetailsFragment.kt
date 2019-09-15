@@ -1,5 +1,6 @@
 package me.anon.grow.fragment
 
+import android.app.Activity
 import android.content.Intent
 import android.os.Bundle
 import android.text.Html
@@ -21,22 +22,24 @@ import me.anon.lib.helper.FabAnimator
 import me.anon.lib.manager.ScheduleManager
 import me.anon.model.FeedingSchedule
 import me.anon.model.FeedingScheduleDate
+import java.util.*
 import kotlin.math.floor
 
 class FeedingScheduleDetailsFragment : Fragment()
 {
 	companion object
 	{
-		fun newInstance(schedule: FeedingSchedule? = null): FeedingScheduleDetailsFragment
+		fun newInstance(bundle: Bundle?): FeedingScheduleDetailsFragment
 		{
 			return FeedingScheduleDetailsFragment().apply {
-				this.schedule = schedule
+				this.schedule = bundle?.getParcelable("schedule")
+				this.scheduleDates = this.schedule?.schedules ?: arrayListOf()
 			}
 		}
 	}
 
 	private var schedule: FeedingSchedule? = null
-	private var schedules = arrayListOf<FeedingScheduleDate>()
+	private var scheduleDates = arrayListOf<FeedingScheduleDate>()
 	private val measureUnit: Unit by lazy { Unit.getSelectedMeasurementUnit(activity); }
 	private val deliveryUnit: Unit by lazy { Unit.getSelectedDeliveryUnit(activity); }
 
@@ -50,51 +53,50 @@ class FeedingScheduleDetailsFragment : Fragment()
 		if (savedInstanceState != null)
 		{
 			schedule = savedInstanceState.get("schedule") as FeedingSchedule
-			schedules = savedInstanceState.getParcelableArrayList<FeedingScheduleDate>("schedules") as ArrayList<FeedingScheduleDate>
-		}
-
-		if (schedule == null)
-		{
-			activity!!.finish()
-			return
+			scheduleDates = savedInstanceState.getParcelableArrayList<FeedingScheduleDate>("schedule_dates") as ArrayList<FeedingScheduleDate>
 		}
 
 		title.setText(schedule?.name)
 		description.setText(schedule?.description)
 
-		populateSchedules()
+		populateScheduleDates()
 
 		fab_complete.setOnClickListener {
-			when (schedule)
+			title.error = null
+
+			if (scheduleDates.isNotEmpty() && title.text.isEmpty())
 			{
-				null -> {
-					val schedule = FeedingSchedule(
-						name = title.text.toString(),
-						description = description.text.toString(),
-						_schedules = schedules
-					)
-
-					ScheduleManager.instance.insert(schedule)
-				}
-				else -> {
-					schedule!!.apply {
-						name = this@FeedingScheduleDetailsFragment.title.text.toString()
-						description = this@FeedingScheduleDetailsFragment.description.text.toString()
-						schedules = this@FeedingScheduleDetailsFragment.schedules
-					}
-
-					ScheduleManager.instance.upsert(schedule!!)
-				}
+				title.error = getString(R.string.field_required)
 			}
+			else
+			{
+				ScheduleManager.instance.upsert(when (schedule)
+				{
+					null -> {
+						FeedingSchedule(
+							name = title.text.toString(),
+							description = description.text.toString(),
+							_schedules = scheduleDates
+						)
+					}
+					else -> {
+						schedule!!.apply {
+							name = this@FeedingScheduleDetailsFragment.title.text.toString()
+							description = this@FeedingScheduleDetailsFragment.description.text.toString()
+							_schedules = this@FeedingScheduleDetailsFragment.scheduleDates
+						}
+					}
+				})
 
-			activity?.finish()
+				activity?.finish()
+			}
 		}
 	}
 
 	override fun onSaveInstanceState(outState: Bundle)
 	{
 		outState.putParcelable("schedule", schedule)
-		outState.putParcelableArrayList("schedules", schedules)
+		outState.putParcelableArrayList("schedule_dates", scheduleDates)
 		super.onSaveInstanceState(outState)
 	}
 
@@ -104,9 +106,9 @@ class FeedingScheduleDetailsFragment : Fragment()
 //		{
 //			with (schedule)
 //			{
-//				if (name.isEmpty() && schedules.isEmpty())
+//				if (name.isEmpty() && scheduleDates.isEmpty())
 //				{
-//					ScheduleManager.instance.schedules.removeAt(scheduleIndex)
+//					ScheduleManager.instance.scheduleDates.removeAt(scheduleIndex)
 //					return true
 //				}
 //			}
@@ -116,21 +118,22 @@ class FeedingScheduleDetailsFragment : Fragment()
 	}
 
 	/**
-	 * Populates the schedules container
+	 * Populates the scheduleDates container
 	 */
-	private fun populateSchedules()
+	private fun populateScheduleDates()
 	{
-		schedules_container.removeViews(0, schedules_container.indexOfChild(new_schedule))
-		schedules.forEachIndexed { index, schedule ->
-			val feedingView = LayoutInflater.from(activity).inflate(R.layout.feeding_date_stub, schedules_container, false)
-			feedingView.title.text = "${schedule.dateRange[0]}${getString(schedule.stageRange[0].printString)[0]}"
-			if (schedule.dateRange[0] != schedule.dateRange[1])
+		schedule_dates_container.removeViews(0, schedule_dates_container.indexOfChild(new_schedule))
+		scheduleDates.sortWith(compareBy<FeedingScheduleDate> { it.stageRange[0].ordinal }.thenBy { it.dateRange[0] })
+		scheduleDates.forEachIndexed { index, date ->
+			val feedingView = LayoutInflater.from(activity).inflate(R.layout.feeding_date_stub, schedule_dates_container, false)
+			feedingView.title.text = "${date.dateRange[0]}${getString(date.stageRange[0].printString)[0]}"
+			if (date.dateRange[0] != date.dateRange[1])
 			{
-				feedingView.title.text = "${feedingView.title.text} - ${schedule.dateRange[1]}${getString(schedule.stageRange[1].printString)[0]}"
+				feedingView.title.text = "${feedingView.title.text} - ${date.dateRange[1]}${getString(date.stageRange[1].printString)[0]}"
 			}
 
 			var waterStr = ""
-			for (additive in schedule.additives)
+			for (additive in date.additives)
 			{
 				val converted = Unit.ML.to(measureUnit, additive.amount!!)
 				val amountStr = if (converted == floor(converted)) converted.toInt().toString() else converted.toString()
@@ -147,17 +150,17 @@ class FeedingScheduleDetailsFragment : Fragment()
 					.setTitle(R.string.confirm_title)
 					.setMessage(R.string.confirm_delete_schedule)
 					.setPositiveButton(R.string.confirm_positive) { dialog, which ->
-						val index = schedules.indexOf(schedule)
-						schedules.remove(schedule)
-						populateSchedules()
+						val index = scheduleDates.indexOf(date)
+						scheduleDates.remove(date)
+						populateScheduleDates()
 
 						SnackBar().show(activity as AppCompatActivity, R.string.schedule_deleted, R.string.undo, {
 							FabAnimator.animateUp(fab_complete)
 						}, {
 							FabAnimator.animateDown(fab_complete)
 						}, {
-							schedules.add(index, schedule)
-							populateSchedules()
+							scheduleDates.add(index, date)
+							populateScheduleDates()
 						})
 					}
 					.setNegativeButton(R.string.confirm_negative, null)
@@ -165,45 +168,44 @@ class FeedingScheduleDetailsFragment : Fragment()
 			}
 
 			feedingView.copy.setOnClickListener { view ->
-				val newSchedule = Kryo().copy(schedule)
-				val index = schedules_container.indexOfChild(feedingView)
-				schedules.add((index < 0) T schedules.size - 1 ?: index, newSchedule)
-				populateSchedules()
+				val newSchedule = Kryo().copy(date)
+				newSchedule.id = UUID.randomUUID().toString()
+				val index = schedule_dates_container.indexOfChild(feedingView)
+				scheduleDates.add((index < 0) T scheduleDates.size - 1 ?: index, newSchedule)
+				populateScheduleDates()
 
 				SnackBar().show(activity!!, R.string.schedule_copied, R.string.undo, {
 					FabAnimator.animateUp(fab_complete)
 				}, {
 					FabAnimator.animateDown(fab_complete)
 				}, {
-					schedules.remove(newSchedule)
-					populateSchedules()
+					scheduleDates.remove(newSchedule)
+					populateScheduleDates()
 				})
 			}
 
 			feedingView.setOnClickListener {
 				startActivityForResult(Intent(it.context, ScheduleDateDetailsActivity::class.java).also {
-					it.putExtra("schedule", schedule)
-					it.putExtra("date_index", index)
+					it.putExtra("schedule_date", date)
 				}, 0)
 			}
-			schedules_container.addView(feedingView, schedules_container.childCount - 1)
+			schedule_dates_container.addView(feedingView, schedule_dates_container.childCount - 1)
 		}
 
 		new_schedule.setOnClickListener {
 			if (schedule == null)
 			{
-				schedules = arrayListOf()
+				scheduleDates = arrayListOf()
 				schedule = FeedingSchedule(
 					name = title.text.toString(),
 					description = description.text.toString(),
-					_schedules = schedules
+					_schedules = scheduleDates
 				)
 				ScheduleManager.instance.insert(schedule!!)
 			}
 
 			startActivityForResult(Intent(it.context, ScheduleDateDetailsActivity::class.java).also {
 				it.putExtra("schedule", schedule)
-				it.putExtra("date_index", -1)
 			}, 0)
 		}
 	}
@@ -211,7 +213,17 @@ class FeedingScheduleDetailsFragment : Fragment()
 	override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?)
 	{
 		super.onActivityResult(requestCode, resultCode, data)
-		schedules = schedule!!.schedules
-		populateSchedules()
+
+		if (resultCode == Activity.RESULT_OK)
+		{
+			if (data?.extras?.containsKey("schedule_date") == true)
+			{
+				val replacement = data?.extras?.get("schedule_date") as FeedingScheduleDate
+				val index = scheduleDates.indexOfFirst { it.id == replacement.id }
+				if (index > -1) scheduleDates[index] = replacement else scheduleDates.add(replacement)
+			}
+		}
+
+		populateScheduleDates()
 	}
 }
