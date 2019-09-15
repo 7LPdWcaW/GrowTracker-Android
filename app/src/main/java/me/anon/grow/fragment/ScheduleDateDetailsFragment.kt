@@ -1,6 +1,7 @@
 package me.anon.grow.fragment
 
 import android.app.Activity
+import android.content.Intent
 import android.os.Bundle
 import android.text.Editable
 import android.text.TextUtils
@@ -16,7 +17,6 @@ import kotlinx.android.synthetic.main.schedule_date_details_view.*
 import me.anon.grow.R
 import me.anon.lib.Unit
 import me.anon.lib.ext.toSafeInt
-import me.anon.lib.manager.ScheduleManager
 import me.anon.model.Additive
 import me.anon.model.FeedingScheduleDate
 import me.anon.model.PlantStage
@@ -26,27 +26,30 @@ class ScheduleDateDetailsFragment : Fragment()
 {
 	companion object
 	{
-		fun newInstance(scheduleIndex: Int = -1, dateIndex: Int = -1): ScheduleDateDetailsFragment
+		fun newInstance(bundle: Bundle): ScheduleDateDetailsFragment
 		{
 			return ScheduleDateDetailsFragment().apply {
-				this.scheduleIndex = scheduleIndex
-				this.dateIndex = dateIndex
+				arguments = bundle
 			}
 		}
 	}
 
-	private var scheduleIndex: Int = -1
-	private var dateIndex: Int = -1
+	private var date: FeedingScheduleDate? = null
 	private var additives: ArrayList<Additive> = arrayListOf()
 	private val selectedMeasurementUnit: Unit by lazy { Unit.getSelectedMeasurementUnit(activity); }
 	private val selectedDeliveryUnit: Unit by lazy { Unit.getSelectedDeliveryUnit(activity); }
 
 	override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View?
-		= inflater?.inflate(R.layout.schedule_date_details_view, container, false) ?: View(activity)
+		= inflater.inflate(R.layout.schedule_date_details_view, container, false) ?: View(activity)
 
 	override fun onActivityCreated(savedInstanceState: Bundle?)
 	{
 		super.onActivityCreated(savedInstanceState)
+
+		(savedInstanceState ?: arguments).let {
+			date = it?.get("schedule_date") as FeedingScheduleDate?
+			additives = (it?.get("additives") as ArrayList<Additive>?) ?: date?.additives ?: arrayListOf<Additive>()
+		}
 
 		to_stage.adapter = ArrayAdapter<String>(activity!!, android.R.layout.simple_list_item_1, PlantStage.values().map { getString(it.printString) }.toTypedArray())
 		from_stage.adapter = ArrayAdapter<String>(activity!!, android.R.layout.simple_list_item_1, PlantStage.values().map { getString(it.printString) }.toTypedArray())
@@ -88,16 +91,13 @@ class ScheduleDateDetailsFragment : Fragment()
 			}
 		})
 
-		if (dateIndex > -1)
-		{
-			ScheduleManager.instance.schedules[scheduleIndex].schedules[dateIndex].apply {
-				from_stage.setSelection(this.stageRange[0].ordinal)
-				to_stage.setSelection(this.stageRange[1].ordinal)
-				from_date.setText(this.dateRange[0].toString())
-				to_date.setText(this.dateRange[1].toString())
+		date?.let {
+			from_stage.setSelection(it.stageRange[0].ordinal)
+			to_stage.setSelection(it.stageRange[1].ordinal)
+			from_date.setText(it.dateRange[0].toString())
+			to_date.setText(it.dateRange[1].toString())
 
-				this@ScheduleDateDetailsFragment.additives = additives
-			}
+			this@ScheduleDateDetailsFragment.additives = additives
 		}
 
 		populateAdditives()
@@ -120,29 +120,36 @@ class ScheduleDateDetailsFragment : Fragment()
 				return@setOnClickListener
 			}
 
-			when (dateIndex)
+			val date = when (date)
 			{
-				-1 -> {
-					val date: FeedingScheduleDate = FeedingScheduleDate(
+				null -> {
+					FeedingScheduleDate(
 						dateRange = arrayOf<Int>(fromDate, if (to_date.text.isEmpty()) fromDate else toDate),
 						stageRange = arrayOf<PlantStage>(fromStage, toStage),
 						additives = additives
 					)
-
-					ScheduleManager.instance.schedules[scheduleIndex].schedules.add(date)
 				}
 				else -> {
-					ScheduleManager.instance.schedules[scheduleIndex].schedules[dateIndex].apply {
-						this.dateRange = arrayOf<Int>(fromDate, if (to_date.text.isEmpty()) fromDate else toDate)
-						this.stageRange = arrayOf<PlantStage>(fromStage, toStage)
-						this.additives = this@ScheduleDateDetailsFragment.additives
+					date!!.apply {
+						dateRange = arrayOf<Int>(fromDate, if (to_date.text.isEmpty()) fromDate else toDate)
+						stageRange = arrayOf<PlantStage>(fromStage, toStage)
+						additives = this@ScheduleDateDetailsFragment.additives
 					}
 				}
 			}
 
-			activity?.setResult(Activity.RESULT_OK)
+			activity?.setResult(Activity.RESULT_OK, Intent().also {
+				it.putExtra("schedule_date", date)
+			})
 			activity?.finish()
 		}
+	}
+
+	override fun onSaveInstanceState(outState: Bundle)
+	{
+		outState.putParcelable("schedule_date", date)
+		outState.putParcelableArrayList("additives", additives)
+		super.onSaveInstanceState(outState)
 	}
 
 	private fun populateAdditives()

@@ -24,7 +24,7 @@ class FeedingScheduleDetailsActivity : BaseActivity()
 
 		if (supportFragmentManager.findFragmentByTag(TAG_FRAGMENT) == null)
 		{
-			supportFragmentManager.beginTransaction().replace(R.id.fragment_holder, FeedingScheduleDetailsFragment.newInstance(intent.extras?.getInt("schedule_index", -1) ?: -1), TAG_FRAGMENT).commit()
+			supportFragmentManager.beginTransaction().replace(R.id.fragment_holder, FeedingScheduleDetailsFragment.newInstance(intent.extras), TAG_FRAGMENT).commit()
 		}
 	}
 

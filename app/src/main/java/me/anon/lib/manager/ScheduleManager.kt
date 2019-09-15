@@ -26,6 +26,24 @@ class ScheduleManager private constructor()
 		load()
 	}
 
+	public fun indexOf(schedule: FeedingSchedule) = schedules.indexOfFirst { it.id == schedule.id }
+
+	public fun upsert(schedule: FeedingSchedule)
+	{
+		var index = indexOf(schedule)
+
+		if (index < 0)
+		{
+			insert(schedule)
+		}
+		else
+		{
+			this.schedules[index] = schedule
+		}
+
+		save()
+	}
+
 	fun load()
 	{
 		if (FileManager.getInstance().fileExists("$FILES_DIR/schedules.json"))
