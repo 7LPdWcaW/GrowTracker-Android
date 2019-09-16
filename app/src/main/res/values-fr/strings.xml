@@ -167,6 +167,7 @@
 	<string name="action_topped">Apex taillé</string>
 	<string name="action_transplanted">Rempotage</string>
 	<string name="action_trim">Taillée</string>
+	<string name="action_tuck">Tricotage ScrOG</string>
 
 	<string name="watered">Arrosée</string>
 	<string name="note">Note</string>
@@ -318,4 +319,17 @@
 	<string name="events_title">Actions passées</string>
 	<string name="show_hide_calendar">Montrer/Cacher le calendrier</string>
 	<string name="selected_len" formatted="true">%o Selectionné</string>
+	<string name="translations_title">Remerciements :</string>
+	<string name="translations_by">Traduction par</string>
+	<string name="help_translate">Aider à traduire</string>
+
+	<!-- Add your name here! -->
+	<string-array name="translators">
+		<item>Maxtille - fr</item>
+		<item>Alex (Noxmiles) - de</item>
+		<item>basti b (Weltenesche) - de</item>
+		<item>Sascha Zenglein (szenglein) - de </item>
+		<item>W Q (williq) - de</item>
+		<item>EmmanuelMess - es</item>
+	</string-array>
 </resources>
