@@ -60,6 +60,7 @@ class ScheduleDateDetailsFragment : Fragment()
 
 			override fun onItemSelected(parent: AdapterView<*>?, view: View?, position: Int, id: Long)
 			{
+				from_stage.tag = PlantStage.values()[position]
 				if (to_stage.selectedItemPosition < position)
 				{
 					to_stage.setSelection(position)
@@ -73,6 +74,7 @@ class ScheduleDateDetailsFragment : Fragment()
 
 			override fun onItemSelected(parent: AdapterView<*>?, view: View?, position: Int, id: Long)
 			{
+				to_stage.tag = PlantStage.values()[position]
 				if (from_stage.selectedItemPosition > position)
 				{
 					from_stage.setSelection(position)
@@ -93,7 +95,9 @@ class ScheduleDateDetailsFragment : Fragment()
 
 		date?.let {
 			from_stage.setSelection(it.stageRange[0].ordinal)
+			from_stage.tag = it.stageRange[0]
 			to_stage.setSelection(it.stageRange[1].ordinal)
+			to_stage.tag = it.stageRange[1]
 			from_date.setText(it.dateRange[0].toString())
 			to_date.setText(it.dateRange[1].toString())
 
@@ -111,10 +115,10 @@ class ScheduleDateDetailsFragment : Fragment()
 
 			val fromDate = from_date.text.toString().toSafeInt()
 			val toDate = if (to_date.text.isEmpty()) fromDate else to_date.text.toString().toSafeInt()
-			val fromStage = PlantStage.valueOfPrintString(context!!, from_stage.selectedItem as String)!!
-			val toStage = PlantStage.valueOfPrintString(context!!, to_stage.selectedItem as String)!!
+			val fromStage = from_stage.tag as PlantStage?
+			val toStage = to_stage.tag as PlantStage?
 
-			if (toDate < fromDate && fromStage.ordinal ?: -1 == toStage.ordinal ?: -1)
+			if (toDate < fromDate && fromStage?.ordinal ?: -1 == toStage?.ordinal ?: -1)
 			{
 				to_date.error = "Date can not be before from date"
 				return@setOnClickListener
@@ -124,15 +128,15 @@ class ScheduleDateDetailsFragment : Fragment()
 			{
 				null -> {
 					FeedingScheduleDate(
-						dateRange = arrayOf<Int>(fromDate, if (to_date.text.isEmpty()) fromDate else toDate),
-						stageRange = arrayOf<PlantStage>(fromStage, toStage),
+						dateRange = arrayOf(fromDate, if (to_date.text.isEmpty()) fromDate else toDate),
+						stageRange = arrayOf(fromStage!!, toStage!!),
 						additives = additives
 					)
 				}
 				else -> {
 					date!!.apply {
-						dateRange = arrayOf<Int>(fromDate, if (to_date.text.isEmpty()) fromDate else toDate)
-						stageRange = arrayOf<PlantStage>(fromStage, toStage)
+						dateRange = arrayOf(fromDate, if (to_date.text.isEmpty()) fromDate else toDate)
+						stageRange = arrayOf(fromStage!!, toStage!!)
 						additives = this@ScheduleDateDetailsFragment.additives
 					}
 				}

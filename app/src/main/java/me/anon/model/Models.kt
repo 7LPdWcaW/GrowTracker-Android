@@ -460,19 +460,6 @@ enum class PlantStage private constructor(val printString: Int) : Parcelable
 
 			return names.toTypedArray()
 		}
-
-		public fun valueOfPrintString(context: Context, printString: String): PlantStage?
-		{
-			for (plantStage in values())
-			{
-				if (context.getString(plantStage.printString) == printString)
-				{
-					return plantStage
-				}
-			}
-
-			return null
-		}
 	}
 }
 
