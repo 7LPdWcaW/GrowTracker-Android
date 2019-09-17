@@ -7,6 +7,8 @@ import java.io.FileInputStream;
 import java.io.IOException;
 import java.util.ArrayList;
 
+import javax.crypto.Cipher;
+
 import me.anon.grow.MainApplication;
 import me.anon.lib.stream.EncryptOutputStream;
 
@@ -19,10 +21,14 @@ import me.anon.lib.stream.EncryptOutputStream;
  */
 public class EncryptTask extends AsyncTask<ArrayList<String>, Void, Void>
 {
+	private Cipher cipher = EncryptOutputStream.createCipher(MainApplication.getKey());
+
 	@Override protected Void doInBackground(ArrayList<String>... params)
 	{
 		for (String filePath : params[0])
 		{
+			if (!new File(filePath).exists()) continue;
+
 			FileInputStream fis = null;
 			EncryptOutputStream eos = null;
 			try
@@ -30,7 +36,7 @@ public class EncryptTask extends AsyncTask<ArrayList<String>, Void, Void>
 				new File(filePath).renameTo(new File(filePath + ".temp"));
 
 				fis = new FileInputStream(new File(filePath + ".temp"));
-				eos = new EncryptOutputStream(MainApplication.getKey(), new File(filePath));
+				eos = new EncryptOutputStream(cipher, new File(filePath));
 
 				byte[] buffer = new byte[8192];
 				int len = 0;
@@ -46,7 +52,7 @@ public class EncryptTask extends AsyncTask<ArrayList<String>, Void, Void>
 			}
 			catch (Exception e)
 			{
-				//e.printStackTrace();
+				e.printStackTrace();
 			}
 			finally
 			{

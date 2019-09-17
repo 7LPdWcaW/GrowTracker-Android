@@ -17,21 +17,38 @@ public class EncryptOutputStream extends OutputStream
 	private CipherOutputStream cos;
 	private FileOutputStream fos;
 
+	public static Cipher createCipher(String key)
+	{
+		SecretKey secretKey = EncryptionHelper.generateKey(key);
+
+		try
+		{
+			if (secretKey != null)
+			{
+				Cipher cipher = Cipher.getInstance("AES");
+				cipher.init(Cipher.ENCRYPT_MODE, secretKey);
+				return cipher;
+			}
+		}
+		catch (Exception e)
+		{
+			e.printStackTrace();
+		}
+
+		return null;
+	}
+
 	public EncryptOutputStream(String key, File file) throws FileNotFoundException
+	{
+		this(createCipher(key), file);
+	}
+
+	public EncryptOutputStream(Cipher cipher, File file) throws FileNotFoundException
 	{
 		try
 		{
-			SecretKey secretKey = EncryptionHelper.generateKey(key);
-
-			if (secretKey != null)
-			{
-				fos = new FileOutputStream(file);
-
-				Cipher cipher = Cipher.getInstance("AES");
-				cipher.init(Cipher.ENCRYPT_MODE, secretKey);
-
-				cos = new CipherOutputStream(fos, cipher);
-			}
+			fos = new FileOutputStream(file);
+			cos = new CipherOutputStream(fos, cipher);
 		}
 		catch (Exception e)
 		{

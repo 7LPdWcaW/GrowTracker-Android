@@ -272,7 +272,6 @@ public class SettingsFragment extends PreferenceFragmentCompat implements Prefer
 		{
 			PreferenceManager.getDefaultSharedPreferences(getActivity()).edit().putBoolean("force_dark", (boolean)newValue).apply();
 			AppCompatDelegate.setDefaultNightMode((boolean)newValue ? AppCompatDelegate.MODE_NIGHT_YES : AppCompatDelegate.MODE_NIGHT_FOLLOW_SYSTEM);
-			getActivity().recreate();
 		}
 		else if ("backup_size".equals(preference.getKey()))
 		{
@@ -335,14 +334,16 @@ public class SettingsFragment extends PreferenceFragmentCompat implements Prefer
 										PlantManager.getInstance().save();
 
 										// Encrypt images
+										ArrayList<String> images = new ArrayList<>();
 										for (Plant plant : PlantManager.getInstance().getPlants())
 										{
 											if (plant != null && plant.getImages() != null)
 											{
-												new EncryptTask().executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR, plant.getImages());
+												images.addAll(plant.getImages());
 											}
 										}
 
+										new EncryptTask().executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR, images);
 										ImageLoader.getInstance().clearMemoryCache();
 										ImageLoader.getInstance().clearDiskCache();
 
@@ -407,14 +408,16 @@ public class SettingsFragment extends PreferenceFragmentCompat implements Prefer
 							PlantManager.getInstance().save();
 
 							// Decrypt images
+							ArrayList<String> images = new ArrayList<>();
 							for (Plant plant : PlantManager.getInstance().getPlants())
 							{
 								if (plant != null && plant.getImages() != null)
 								{
-									new DecryptTask().executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR, plant.getImages());
+									images.addAll(plant.getImages());
 								}
 							}
 
+							new DecryptTask().executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR, images);
 							Toast.makeText(SettingsFragment.this.getActivity(), R.string.decrypt_progress_warning, Toast.LENGTH_LONG).show();
 
 							// make sure the preferences is definitely turned off
