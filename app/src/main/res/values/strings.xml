@@ -4,8 +4,11 @@
 	<string name="version">Version %s</string>
 	<string name="menu_settings">Settings</string>
 
-	<!-- Plant list title "All plants" -->
+	<!-- Garden Plant list title "garden name plants" -->
 	<string name="list_title">%s plants</string>
+	<!-- All plants list -->
+	<string name="all_list_title">All plants</string>
+	<!-- All/everything -->
 	<string name="all">All</string>
 	<string name="snackbar_action_add">Actions added</string>
 	<string name="snackbar_note_add">Notes added</string>
@@ -318,18 +321,20 @@
 	<string name="empty_photos">There are no photos to show</string>
 	<string name="events_title">Past actions</string>
 	<string name="show_hide_calendar">Show/hide calendar</string>
+	<!-- "1 selected" -->
 	<string name="selected_len" formatted="true">%o Selected</string>
 	<string name="translations_title">Thank you to the following</string>
 	<string name="translations_by">Translations by</string>
 	<string name="help_translate">Help translate</string>
 
 	<!-- Add your name here! -->
-	<string-array name="translators">
+	<string-array name="translators" translatable="false">
 		<item>Maxtille - fr</item>
 		<item>Alex (Noxmiles) - de</item>
-		<item>basti b (Weltenesche) - de</item>
-		<item>Sascha Zenglein (szenglein) - de </item>
+		<item>Basti B (Weltenesche) - de</item>
+		<item>Sascha Zenglein (szenglein) - de</item>
 		<item>W Q (williq) - de</item>
+		<item>Patrick B (EukalyptusX) - de</item>
 		<item>EmmanuelMess - es</item>
 	</string-array>
 </resources>
