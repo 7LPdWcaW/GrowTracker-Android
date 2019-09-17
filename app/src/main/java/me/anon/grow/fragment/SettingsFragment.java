@@ -346,6 +346,8 @@ public class SettingsFragment extends PreferenceFragmentCompat implements Prefer
 										ImageLoader.getInstance().clearMemoryCache();
 										ImageLoader.getInstance().clearDiskCache();
 
+										Toast.makeText(SettingsFragment.this.getActivity(), R.string.encrypt_progress_warning, Toast.LENGTH_LONG).show();
+
 										// make sure encrypt mode is definitely enabled
 										((SwitchPreferenceCompat)preference).setChecked(true);
 										findPreference("failsafe").setEnabled(true);
@@ -412,6 +414,8 @@ public class SettingsFragment extends PreferenceFragmentCompat implements Prefer
 									new DecryptTask().executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR, plant.getImages());
 								}
 							}
+
+							Toast.makeText(SettingsFragment.this.getActivity(), R.string.decrypt_progress_warning, Toast.LENGTH_LONG).show();
 
 							// make sure the preferences is definitely turned off
 							((SwitchPreferenceCompat)preference).setChecked(false);

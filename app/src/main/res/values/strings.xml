@@ -326,6 +326,8 @@
 	<string name="translations_title">Thank you to the following</string>
 	<string name="translations_by">Translations by</string>
 	<string name="help_translate">Help translate</string>
+	<string name="encrypt_progress_warning">Encrypting data and images, this may take a while…</string>
+	<string name="decrypt_progress_warning">Decrypting data and images, this may take a while…</string>
 
 	<!-- Add your name here! -->
 	<string-array name="translators" translatable="false">
