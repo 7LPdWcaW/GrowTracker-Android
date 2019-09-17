@@ -90,7 +90,7 @@ public class PlantListFragment extends Fragment
 		}
 
 		((MainActivity)getActivity()).toolbarLayout.removeViews(1, ((MainActivity)getActivity()).toolbarLayout.getChildCount() - 1);
-		getActivity().setTitle(getString(R.string.list_title, getString(R.string.all)));
+		getActivity().setTitle(getString(R.string.all_list_title));
 
 		adapter = new PlantAdapter(getActivity());
 
