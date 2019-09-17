@@ -7,6 +7,8 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.util.ArrayList;
 
+import javax.crypto.Cipher;
+
 import me.anon.grow.MainApplication;
 import me.anon.lib.stream.DecryptInputStream;
 
@@ -19,17 +21,21 @@ import me.anon.lib.stream.DecryptInputStream;
  */
 public class DecryptTask extends AsyncTask<ArrayList<String>, Void, Void>
 {
+	private Cipher cipher = DecryptInputStream.createCipher(MainApplication.getKey());
+
 	@Override protected Void doInBackground(ArrayList<String>... params)
 	{
 		for (String filePath : params[0])
 		{
+			if (!new File(filePath).exists()) continue;
+
 			FileOutputStream fos = null;
 			DecryptInputStream dis = null;
 			try
 			{
 				new File(filePath).renameTo(new File(filePath + ".temp"));
 
-				dis = new DecryptInputStream(MainApplication.getKey(), new File(filePath + ".temp"));
+				dis = new DecryptInputStream(cipher, new File(filePath + ".temp"));
 				fos = new FileOutputStream(new File(filePath));
 
 				byte[] buffer = new byte[8192];
