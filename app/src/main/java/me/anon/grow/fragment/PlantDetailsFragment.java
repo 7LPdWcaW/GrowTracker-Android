@@ -315,7 +315,10 @@ public class PlantDetailsFragment extends Fragment
 
 		for (Plant plant : PlantManager.getInstance().getPlants())
 		{
-			strains.add(plant.getStrain());
+			if (!TextUtils.isEmpty(plant.getStrain()))
+			{
+				strains.add(plant.getStrain());
+			}
 		}
 
 		strain.setAdapter(new ArrayAdapter<String>(getActivity(), android.R.layout.simple_list_item_1, strains.toArray(new String[strains.size()])));
