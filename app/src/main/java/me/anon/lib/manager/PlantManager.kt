@@ -10,7 +10,6 @@ import android.widget.Toast
 import com.squareup.moshi.JsonDataException
 import com.squareup.moshi.Types
 import me.anon.grow.MainApplication
-import me.anon.lib.helper.AddonHelper
 import me.anon.lib.helper.BackupHelper
 import me.anon.lib.helper.MoshiHelper
 import me.anon.lib.stream.DecryptInputStream
@@ -274,7 +273,7 @@ class PlantManager private constructor()
 							isSaving.set(false)
 						}
 
-						AddonHelper.broadcastPlantList(context)
+//						AddonHelper.broadcastPlantList(context)
 					}
 				})
 

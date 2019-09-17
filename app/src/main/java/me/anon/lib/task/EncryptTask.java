@@ -44,9 +44,9 @@ public class EncryptTask extends AsyncTask<ArrayList<String>, Void, Void>
 
 				eos.flush();
 			}
-			catch (IOException e)
+			catch (Exception e)
 			{
-				e.printStackTrace();
+				//e.printStackTrace();
 			}
 			finally
 			{
@@ -61,7 +61,7 @@ public class EncryptTask extends AsyncTask<ArrayList<String>, Void, Void>
 						e.printStackTrace();
 					}
 				}
-				
+
 				if (eos != null)
 				{
 					try
