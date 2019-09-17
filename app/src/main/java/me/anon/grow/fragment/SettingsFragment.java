@@ -282,7 +282,7 @@ public class SettingsFragment extends PreferenceFragmentCompat implements Prefer
 				.apply();
 			((EditTextPreference)preference).setText(currentBackup);
 			BackupHelper.limitBackups(currentBackup);
-			findPreference("backup_size").setSummary(getString(R.string.settings_backup_size, currentBackup, lengthToString(BackupHelper.backupSize())));
+			findPreference("backup_size").setSummary(Html.fromHtml(getString(R.string.settings_backup_size, currentBackup, lengthToString(BackupHelper.backupSize()))));
 		}
 		else if ("encrypt".equals(preference.getKey()))
 		{
