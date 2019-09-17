@@ -8,7 +8,6 @@ import android.os.Bundle;
 import android.preference.PreferenceManager;
 import android.text.Html;
 import android.util.Base64;
-import android.widget.Toast;
 
 import java.io.File;
 import java.util.ArrayList;
@@ -120,7 +119,7 @@ public class BootActivity extends AppCompatActivity
 			check.setTitle(getString(R.string.passphrase_title));
 			check.setOnDialogConfirmed(new PinDialogFragment.OnDialogConfirmed()
 			{
-				@Override public void onDialogConfirmed(String input)
+				@Override public void onDialogConfirmed(DialogInterface dialog, String input)
 				{
 					String integrityCheck = PreferenceManager.getDefaultSharedPreferences(BootActivity.this).getString("encryption_check_key", "");
 					String failsafeCheck = PreferenceManager.getDefaultSharedPreferences(BootActivity.this).getString("failsafe_check_key", "");
@@ -130,6 +129,7 @@ public class BootActivity extends AppCompatActivity
 					{
 						MainApplication.setFailsafe(true);
 						start();
+						dialog.dismiss();
 					}
 					else if (inputCheck.equals(integrityCheck))
 					{
@@ -138,13 +138,11 @@ public class BootActivity extends AppCompatActivity
 						PlantManager.getInstance().load();
 
 						start();
+						dialog.dismiss();
 					}
 					else
 					{
-						Toast.makeText(BootActivity.this, R.string.encrypt_passphrase_error, Toast.LENGTH_SHORT).show();
-
-						check.dismiss();
-						check.show(getSupportFragmentManager(), null);
+						check.getInput().setError(getString(R.string.encrypt_passphrase_error));
 					}
 				}
 			});

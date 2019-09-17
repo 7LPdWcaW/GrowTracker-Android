@@ -288,17 +288,26 @@ public class SettingsFragment extends PreferenceFragmentCompat implements Prefer
 							check1.setTitle(getString(R.string.add_passphrase_title));
 							check1.setOnDialogConfirmed(new PinDialogFragment.OnDialogConfirmed()
 							{
-								@Override public void onDialogConfirmed(String input)
+								@Override public void onDialogConfirmed(DialogInterface dialog, String input)
 								{
+									dialog.dismiss();
 									pin.append(input);
 									check2.show(((FragmentActivity)getActivity()).getSupportFragmentManager(), null);
+								}
+							});
+							check1.setOnDialogCancelled(new PinDialogFragment.OnDialogCancelled()
+							{
+								@Override public void onDialogCancelled()
+								{
+									// make sure the preferences is definitely turned off
+									((SwitchPreferenceCompat)preference).setChecked(false);
 								}
 							});
 
 							check2.setTitle(getString(R.string.readd_passphrase_title));
 							check2.setOnDialogConfirmed(new PinDialogFragment.OnDialogConfirmed()
 							{
-								@Override public void onDialogConfirmed(String input)
+								@Override public void onDialogConfirmed(DialogInterface dialog, String input)
 								{
 									if (pin.toString().equals(String.valueOf(input)))
 									{
@@ -323,13 +332,24 @@ public class SettingsFragment extends PreferenceFragmentCompat implements Prefer
 										ImageLoader.getInstance().clearMemoryCache();
 										ImageLoader.getInstance().clearDiskCache();
 
+										// make sure encrypt mode is definitely enabled
+										((SwitchPreferenceCompat)preference).setChecked(true);
 										findPreference("failsafe").setEnabled(true);
+										dialog.dismiss();
 									}
 									else
 									{
 										((SwitchPreferenceCompat)preference).setChecked(false);
-										Toast.makeText(getActivity(), getString(R.string.passphrase_error), Toast.LENGTH_SHORT).show();
+										check2.getInput().setError(getString(R.string.passphrase_error));
 									}
+								}
+							});
+							check2.setOnDialogCancelled(new PinDialogFragment.OnDialogCancelled()
+							{
+								@Override public void onDialogCancelled()
+								{
+									// make sure the preferences is definitely turned off
+									((SwitchPreferenceCompat)preference).setChecked(false);
 								}
 							});
 
@@ -358,12 +378,12 @@ public class SettingsFragment extends PreferenceFragmentCompat implements Prefer
 				check.setTitle(getString(R.string.passphrase_title));
 				check.setOnDialogConfirmed(new PinDialogFragment.OnDialogConfirmed()
 				{
-					@Override public void onDialogConfirmed(String input)
+					@Override public void onDialogConfirmed(DialogInterface dialog, String input)
 					{
-						String check = PreferenceManager.getDefaultSharedPreferences(getActivity()).getString("encryption_check_key", "");
+						String checkStr = PreferenceManager.getDefaultSharedPreferences(getActivity()).getString("encryption_check_key", "");
 						String inputCheck = Base64.encodeToString(EncryptionHelper.encrypt(input, input), Base64.NO_WRAP);
 
-						if (inputCheck.equals(check))
+						if (inputCheck.equals(checkStr))
 						{
 							// Decrypt plant data
 							PreferenceManager.getDefaultSharedPreferences(getActivity()).edit().remove("encryption_check_key").apply();
@@ -379,14 +399,24 @@ public class SettingsFragment extends PreferenceFragmentCompat implements Prefer
 								}
 							}
 
+							// make sure the preferences is definitely turned off
+							((SwitchPreferenceCompat)preference).setChecked(false);
 							ImageLoader.getInstance().clearMemoryCache();
 							ImageLoader.getInstance().clearDiskCache();
+							dialog.dismiss();
 						}
 						else
 						{
 							((SwitchPreferenceCompat)preference).setChecked(true);
-							Toast.makeText(getActivity(), R.string.passphrase_error, Toast.LENGTH_SHORT).show();
+							check.getInput().setError(getString(R.string.passphrase_error));
 						}
+					}
+				});
+				check.setOnDialogCancelled(new PinDialogFragment.OnDialogCancelled()
+				{
+					@Override public void onDialogCancelled()
+					{
+						((SwitchPreferenceCompat)preference).setChecked(true);
 					}
 				});
 
@@ -413,7 +443,7 @@ public class SettingsFragment extends PreferenceFragmentCompat implements Prefer
 							check1.setTitle(getString(R.string.passphrase_title));
 							check1.setOnDialogConfirmed(new PinDialogFragment.OnDialogConfirmed()
 							{
-								@Override public void onDialogConfirmed(String input)
+								@Override public void onDialogConfirmed(DialogInterface dialog, String input)
 								{
 									pin.append(input);
 									check2.show(((FragmentActivity)getActivity()).getSupportFragmentManager(), null);
@@ -423,7 +453,7 @@ public class SettingsFragment extends PreferenceFragmentCompat implements Prefer
 							check2.setTitle(getString(R.string.readd_passphrase_title));
 							check2.setOnDialogConfirmed(new PinDialogFragment.OnDialogConfirmed()
 							{
-								@Override public void onDialogConfirmed(String input)
+								@Override public void onDialogConfirmed(DialogInterface dialog, String input)
 								{
 									if (input.equals(pin.toString()))
 									{
