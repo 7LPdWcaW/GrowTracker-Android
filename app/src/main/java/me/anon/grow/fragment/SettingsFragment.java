@@ -78,8 +78,22 @@ public class SettingsFragment extends PreferenceFragmentCompat implements Prefer
 		setPreferencesFromResource(R.xml.preferences, rootKey);
 
 		int defaultGardenIndex = PreferenceManager.getDefaultSharedPreferences(getActivity()).getInt("default_garden", -1);
-		String defaultGarden = defaultGardenIndex > -1 ? GardenManager.getInstance().getGardens().get(defaultGardenIndex).getName() : getString(R.string.all);
+		String defaultGarden = getString(R.string.all);
+
+		if (defaultGardenIndex > -1 && defaultGardenIndex < GardenManager.getInstance().getGardens().size())
+		{
+			try
+			{
+				defaultGarden = GardenManager.getInstance().getGardens().get(defaultGardenIndex).getName();
+			}
+			catch (Exception e)
+			{
+				e.printStackTrace();
+			}
+		}
+
 		findPreference("default_garden").setSummary(Html.fromHtml(getString(R.string.settings_default_garden, defaultGarden)));
+
 		findPreference("delivery_unit").setSummary(Html.fromHtml(getString(R.string.settings_delivery, Unit.getSelectedDeliveryUnit(getActivity()).getLabel())));
 		findPreference("measurement_unit").setSummary(Html.fromHtml(getString(R.string.settings_measurement, Unit.getSelectedMeasurementUnit(getActivity()).getLabel())));
 		findPreference("temperature_unit").setSummary(Html.fromHtml(getString(R.string.settings_temperature, TempUnit.getSelectedTemperatureUnit(getActivity()).getLabel())));
