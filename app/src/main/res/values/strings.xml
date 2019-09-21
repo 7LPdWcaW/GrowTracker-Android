@@ -329,6 +329,16 @@
 	<string name="encrypt_progress_warning">Encrypting data and images, this may take a while…</string>
 	<string name="decrypt_progress_warning">Decrypting data and images, this may take a while…</string>
 
+	<!-- now = 1 second -->
+	<string name="now_abbr">1s</string>
+	<string name="second_abbr">s</string>
+	<string name="minute_abbr">m</string>
+	<string name="hour_abbr">h</string>
+	<string name="day_abbr">d</string>
+	<string name="week_abbr">w</string>
+	<string name="month_abbr">mo</string>
+	<string name="year_abbr">y</string>
+
 	<!-- Add your name here! -->
 	<string-array name="translators" translatable="false">
 		<item>Maxtille - fr</item>
