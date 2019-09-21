@@ -176,7 +176,7 @@
 	<string name="note">Note</string>
 	<string name="delete_event_dialog_title">Delete this event?</string>
 	<string name="confirm_delete_item_message">Are you sure you want to delete</string>
-	<string name="confirm_delete_photos_message" formatted="true">Are you sure you want to delete %s images, are you sure? You will not be able to recover these.</string>
+	<string name="confirm_delete_photos_message" formatted="true">Are you sure you want to delete %s images? You will not be able to recover these.</string>
 	<string name="edit">Edit</string>
 	<string name="stage">stage</string>
 	<string name="set">Set</string>
