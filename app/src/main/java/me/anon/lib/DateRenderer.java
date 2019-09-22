@@ -1,30 +1,28 @@
 package me.anon.lib;
 
+import android.content.Context;
+
 import java.math.BigDecimal;
 import java.math.RoundingMode;
 
+import me.anon.grow.R;
+
 public class DateRenderer
 {
-	public static final String SECONDS = "seconds";
-	public static final String MINUTES = "minutes";
-	public static final String HOURS = "hours";
-	public static final String DAYS = "days";
-	public static final String WEEKS = "weeks";
-	public static final String MONTHS = "months";
-	public static final String YEARS = "years";
-
+	private Context context;
 	private final String now, sec, min, hour, day, wk, mon, yr;
 
-	public DateRenderer()
+	public DateRenderer(Context context)
 	{
-		now = "1s";
-		sec = "s";
-		min = "m";
-		hour = "h";
-		day = "d";
-		wk = "w";
-		mon = "mo";
-		yr = "y";
+		this.context = context.getApplicationContext();
+		now = context.getString(R.string.now_abbr);
+		sec = context.getString(R.string.second_abbr);
+		min = context.getString(R.string.minute_abbr);
+		hour = context.getString(R.string.hour_abbr);
+		day = context.getString(R.string.day_abbr);
+		wk = context.getString(R.string.week_abbr);
+		mon = context.getString(R.string.month_abbr);
+		yr = context.getString(R.string.year_abbr); 
 	}
 
 	/**
@@ -44,13 +42,13 @@ public class DateRenderer
 
 		Unit[] units = new Unit[]
 		{
-			new Unit(SECONDS, sec, 60, 1),
-			new Unit(MINUTES, min, 3600, 60),
-			new Unit(HOURS, hour, 86400, 3600),
-			new Unit(DAYS, day, 604800, 86400),
-			new Unit(WEEKS, wk, 2629743, 604800),
-			new Unit(MONTHS, mon, 31556926, 2629743),
-			new Unit(YEARS, yr, 2629743, 31556926)
+			new Unit(R.plurals.time_second, sec, 60, 1),
+			new Unit(R.plurals.time_minute, min, 3600, 60),
+			new Unit(R.plurals.time_hour, hour, 86400, 3600),
+			new Unit(R.plurals.time_day, day, 604800, 86400),
+			new Unit(R.plurals.time_week, wk, 2629743, 604800),
+			new Unit(R.plurals.time_month, mon, 31556926, 2629743),
+			new Unit(R.plurals.time_year, yr, 2629743, 31556926)
 		};
 
 		long currentTime = System.currentTimeMillis();
@@ -116,7 +114,7 @@ public class DateRenderer
 	private String getLongFormattedDate(Unit unit, double difference)
 	{
 		int newDiff = (int)Math.floor(difference / unit.inSeconds);
-		return String.format("%s %s", newDiff, unit.type);
+		return String.format("%s %s", newDiff, context.getResources().getQuantityString(unit.pluralRes, newDiff));
 	}
 
 	public class TimeAgo
@@ -137,14 +135,14 @@ public class DateRenderer
 
 	public static class Unit
 	{
-		public String type;
+		public int pluralRes;
 		public String name;
 		public int limit;
 		public int inSeconds;
 
-		public Unit(String type, String name, int limit, int inSeconds)
+		public Unit(int pluralRes, String name, int limit, int inSeconds)
 		{
-			this.type = type;
+			this.pluralRes = pluralRes;
 			this.name = name;
 			this.limit = limit;
 			this.inSeconds = inSeconds;

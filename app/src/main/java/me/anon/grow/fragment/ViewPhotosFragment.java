@@ -160,6 +160,7 @@ public class ViewPhotosFragment extends Fragment
 						{
 							new AlertDialog.Builder(getActivity())
 								.setTitle(R.string.confirm_title)
+								.setMessage(getString(R.string.confirm_delete_photos_message, "" + adapter.getSelected().size()))
 								.setPositiveButton(R.string.yes, new DialogInterface.OnClickListener()
 								{
 									@Override public void onClick(DialogInterface dialog, int which)

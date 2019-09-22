@@ -176,7 +176,7 @@
 	<string name="note">Note</string>
 	<string name="delete_event_dialog_title">Delete this event?</string>
 	<string name="confirm_delete_item_message">Are you sure you want to delete</string>
-	<string name="confirm_delete_photos_message" formatted="true">Are you sure you want to delete %s images, are you sure? You will not be able to recover these.</string>
+	<string name="confirm_delete_photos_message" formatted="true">Are you sure you want to delete %s images? You will not be able to recover these.</string>
 	<string name="edit">Edit</string>
 	<string name="stage">stage</string>
 	<string name="set">Set</string>
@@ -328,6 +328,16 @@
 	<string name="help_translate">Help translate</string>
 	<string name="encrypt_progress_warning">Encrypting data and images, this may take a while…</string>
 	<string name="decrypt_progress_warning">Decrypting data and images, this may take a while…</string>
+
+	<!-- now = 1 second -->
+	<string name="now_abbr">1s</string>
+	<string name="second_abbr">s</string>
+	<string name="minute_abbr">m</string>
+	<string name="hour_abbr">h</string>
+	<string name="day_abbr">d</string>
+	<string name="week_abbr">w</string>
+	<string name="month_abbr">mo</string>
+	<string name="year_abbr">y</string>
 
 	<!-- Add your name here! -->
 	<string-array name="translators" translatable="false">
