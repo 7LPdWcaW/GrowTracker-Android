@@ -4,6 +4,7 @@ import android.content.Context;
 import android.graphics.Color;
 import android.widget.TextView;
 
+import com.github.mikephil.charting.charts.BarLineChartBase;
 import com.github.mikephil.charting.charts.LineChart;
 import com.github.mikephil.charting.components.MarkerView;
 import com.github.mikephil.charting.components.XAxis;
@@ -14,6 +15,7 @@ import com.github.mikephil.charting.data.LineDataSet;
 import com.github.mikephil.charting.formatter.ValueFormatter;
 import com.github.mikephil.charting.formatter.YAxisValueFormatter;
 import com.github.mikephil.charting.highlight.Highlight;
+import com.github.mikephil.charting.utils.ColorTemplate;
 import com.github.mikephil.charting.utils.ViewPortHandler;
 
 import java.util.ArrayList;
@@ -45,11 +47,16 @@ public class StatsHelper
 	{
 		@Override public String getFormattedValue(float value, Entry entry, int dataSetIndex, ViewPortHandler viewPortHandler)
 		{
+			if (value == (int)value)
+			{
+				return String.format("%s", value);
+			}
+
 			return String.format("%.2f", value);
 		}
 	};
 
-	public static void styleGraph(LineChart chart)
+	public static void styleGraph(BarLineChartBase chart)
 	{
 		Context context = new ContextThemeWrapper(chart.getContext(), R.style.AppTheme);
 		chart.setDrawGridBackground(false);
@@ -77,6 +84,18 @@ public class StatsHelper
 			}
 		});
 		chart.getAxisLeft().setStartAtZero(false);
+		chart.getAxisRight().setValueFormatter(new YAxisValueFormatter()
+		{
+			@Override public String getFormattedValue(float value, YAxis yAxis)
+			{
+				if (value == (int)value)
+				{
+					return String.format("%s", value);
+				}
+
+				return String.format("%.2f", value);
+			}
+		});
 		chart.setScaleYEnabled(false);
 		chart.setDescription("");
 		chart.getAxisLeft().setXOffset(8.0f);
@@ -289,13 +308,13 @@ public class StatsHelper
 		if (chart != null)
 		{
 			LineDataSet dataSet = new LineDataSet(inputVals, chart.getContext().getString(R.string.stat_input_ph));
-			styleDataset(chart.getContext(), dataSet, Color.parseColor(chart.getContext().getResources().getStringArray(R.array.stats_colours)[0]));
+			styleDataset(chart.getContext(), dataSet, ColorTemplate.COLORFUL_COLORS[0]);
 
 			LineDataSet runoffDataSet = new LineDataSet(runoffVals, chart.getContext().getString(R.string.stat_runoff_ph));
-			styleDataset(chart.getContext(), dataSet, Color.parseColor(chart.getContext().getResources().getStringArray(R.array.stats_colours)[1]));
+			styleDataset(chart.getContext(), dataSet, ColorTemplate.COLORFUL_COLORS[1]);
 
 			LineDataSet averageDataSet = new LineDataSet(averageVals, chart.getContext().getString(R.string.stat_average_ph));
-			styleDataset(chart.getContext(), dataSet, Color.parseColor(chart.getContext().getResources().getStringArray(R.array.stats_colours)[2]));
+			styleDataset(chart.getContext(), dataSet, ColorTemplate.COLORFUL_COLORS[2]);
 			averageDataSet.setValueFormatter(null);
 
 			ArrayList<LineDataSet> dataSets = new ArrayList<LineDataSet>();

@@ -1,5 +1,6 @@
 package me.anon.grow.fragment;
 
+import android.graphics.Color;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
 import android.view.LayoutInflater;
@@ -10,7 +11,16 @@ import android.view.WindowManager;
 import android.widget.PopupMenu;
 import android.widget.TextView;
 
+import com.github.mikephil.charting.charts.BarChart;
 import com.github.mikephil.charting.charts.LineChart;
+import com.github.mikephil.charting.components.YAxis;
+import com.github.mikephil.charting.data.BarData;
+import com.github.mikephil.charting.data.BarDataSet;
+import com.github.mikephil.charting.data.BarEntry;
+import com.github.mikephil.charting.data.Entry;
+import com.github.mikephil.charting.formatter.ValueFormatter;
+import com.github.mikephil.charting.formatter.YAxisValueFormatter;
+import com.github.mikephil.charting.utils.ViewPortHandler;
 
 import java.util.ArrayList;
 import java.util.HashSet;
@@ -51,6 +61,7 @@ public class StatisticsFragment extends Fragment
 	@Views.InjectView(R.id.input_ph) private LineChart inputPh;
 	@Views.InjectView(R.id.ppm) private LineChart ppm;
 	@Views.InjectView(R.id.temp) private LineChart temp;
+	@Views.InjectView(R.id.stage_chart) private BarChart stagesChart;
 
 	@Views.InjectView(R.id.grow_time) private TextView growTime;
 	@Views.InjectView(R.id.water_count) private TextView waterCount;
@@ -313,5 +324,66 @@ public class StatisticsFragment extends Fragment
 			cureTime.setText(getString(R.string.length_days, "" + (int)TimeHelper.toDays(stages.get(PlantStage.CURING))));
 			cureTimeContainer.setVisibility(View.VISIBLE);
 		}
+
+		stages.remove(PlantStage.HARVESTED);
+		ArrayList<BarEntry> entry = new ArrayList<>();
+		String[] labels = new String[stages.size()];
+		float[] yVals = new float[stages.size()];
+
+		String[] statsHex = getResources().getStringArray(R.array.stats_colours);
+		int[] statsColours = new int[statsHex.length];
+		for (int index = 0; index < statsHex.length; index++)
+		{
+			statsColours[index] = Color.parseColor(statsHex[index]);
+		}
+
+		int index = stages.size() - 1;
+
+		for (PlantStage plantStage : stages.keySet())
+		{
+			yVals[index] = Math.max((float)(int)TimeHelper.toDays(stages.get(plantStage)), 1f);
+			labels[index--] = plantStage.name();
+		}
+
+		entry.add(new BarEntry(yVals, 0));
+
+		BarDataSet set = new BarDataSet(entry, "");
+		set.setColors(statsColours);
+		set.setStackLabels(labels);
+		set.setValueTextSize(12.0f);
+		set.setHighlightEnabled(false);
+
+		BarData data = new BarData(new String[] { plant.getName() }, set);
+		data.setValueFormatter(new ValueFormatter()
+		{
+			@Override public String getFormattedValue(float value, Entry entry, int dataSetIndex, ViewPortHandler viewPortHandler)
+			{
+				return String.format("%s", "" + (int)value);
+			}
+		});
+
+		StatsHelper.styleGraph(stagesChart);
+
+		stagesChart.getXAxis().setLabelsToSkip(0);
+		stagesChart.getAxisLeft().setValueFormatter(new YAxisValueFormatter()
+		{
+			@Override public String getFormattedValue(float value, YAxis yAxis)
+			{
+				return "" + (int)value;
+			}
+		});
+		stagesChart.getAxisRight().setValueFormatter(new YAxisValueFormatter()
+		{
+			@Override public String getFormattedValue(float value, YAxis yAxis)
+			{
+				return "" + (int)value;
+			}
+		});
+//		stagesChart.setTouchEnabled(false);
+
+		stagesChart.setMarkerView(null);
+		stagesChart.setHighlightPerTapEnabled(false);
+		stagesChart.getAxisLeft().setStartAtZero(true);
+		stagesChart.setData(data);
 	}
 }
