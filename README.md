@@ -3,7 +3,7 @@
 Welcome to grow tracker. This app was created to help record data about growing plants in order to monitor the growing conditions to help make the plants grow better, and identify potential issues during the grow process.
 
 [![Latest Nightly](https://travis-ci.com/7LPdWcaW/GrowTracker-Android.svg?branch=alpha)](https://travis-ci.com/7LPdWcaW/GrowTracker-Android)
- 
+
 [Latest Nightly Build (Experimental!)](https://github.com/7LPdWcaW/GrowTracker-Android/releases/tag/alpha)
 
 [Latest APK: (MD5) 9dbd3d137cbf062d3d06b1918942fc10 v2.5.2](https://github.com/7LPdWcaW/GrowTracker-Android/releases/download/v2.5.2/v2.5.2-production.apk)
@@ -184,6 +184,21 @@ Note that this is **not** a guarantee form of encryption from law enforcement ag
 Encryption in the app uses basic AES for encryption using the provided passphrase. If the passphrase is less than 128 bits (16 UTF-8 chars), it will be padded with `0x0` bytes. You can view the key generator method [here](https://github.com/7LPdWcaW/GrowTracker-Android/blob/master/app/src/main/java/me/anon/lib/helper/EncryptionHelper.java#L27)
 
 You can decrypt your files using your passphrase either by writing a script that uses AES decryption, or an online tool such as [Online-Domain-Tools](http://aes.online-domain-tools.com/).
+
+# Translators
+
+Translations provided by;
+
+- Maxtille - fr ![FR - French](https://transifex-open-api.herokuapp.com/badge/growutils/project/growtracker/language/fr/translated.png)
+- Alex (Noxmiles) - de ![DE - German](https://transifex-open-api.herokuapp.com/badge/growutils/project/growtracker/language/de_DE/translated.png)
+- Basti B (Weltenesche) - de ![DE - German](https://transifex-open-api.herokuapp.com/badge/growutils/project/growtracker/language/de_DE/translated.png)
+- Sascha Zenglein (szenglein) - de ![DE - German](https://transifex-open-api.herokuapp.com/badge/growutils/project/growtracker/language/de_DE/translated.png)
+- W Q (williq) - de ![DE - German](https://transifex-open-api.herokuapp.com/badge/growutils/project/growtracker/language/de_DE/translated.png)
+- Patrick B (EukalyptusX) - de ![DE - German](https://transifex-open-api.herokuapp.com/badge/growutils/project/growtracker/language/de_DE/translated.png)
+- EmmanuelMess - es ![ES - Spanish](https://transifex-open-api.herokuapp.com/badge/growutils/project/growtracker/language/es/translated.png)
+- 9YbQiuEohUu1 - ru/uk ![UK - Ukrainian](https://transifex-open-api.herokuapp.com/badge/growutils/project/growtracker/language/uk/translated.png) ![RU - Russian](https://transifex-open-api.herokuapp.com/badge/growutils/project/growtracker/language/ru/translated.png)
+
+See [more](https://github.com/7LPdWcaW/GrowTracker-Android/issues/116) about translating GrowTracker
 
 # License
 
