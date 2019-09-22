@@ -14,7 +14,7 @@ public class DateRenderer
 
 	public DateRenderer(Context context)
 	{
-		context = context.getApplicationContext();
+		this.context = context.getApplicationContext();
 		now = context.getString(R.string.now_abbr);
 		sec = context.getString(R.string.second_abbr);
 		min = context.getString(R.string.minute_abbr);
@@ -22,7 +22,7 @@ public class DateRenderer
 		day = context.getString(R.string.day_abbr);
 		wk = context.getString(R.string.week_abbr);
 		mon = context.getString(R.string.month_abbr);
-		yr = context.getString(R.string.year_abbr);
+		yr = context.getString(R.string.year_abbr); 
 	}
 
 	/**
