@@ -110,7 +110,7 @@
 	<string name="new_plant_hint">Нова рослина</string>
 	<string name="plant_strain_label">Сорт рослини</string>
 	<string name="plant_strain_hint">Lemon Haze</string>
-	<string name="grow_details_title">Детальні умови</string>
+	<string name="grow_details_title">Подробиці</string>
 	<string name="plant_date_label">Дата рослини</string>
 	<string name="plant_medium_label">Середовище</string>
 
@@ -129,7 +129,7 @@
 	<string name="filter">Фільтр</string>
 	<string name="planted">Посів</string>
 	<string name="germination">Проростання</string>
-	<string name="cutting">Прорізання</string>
+	<string name="cutting">Зріз</string>
 	<string name="vegetation">Вегетація</string>
 	<string name="flowering">Цвітіння</string>
 	<string name="drying">Сушіння</string>
@@ -144,7 +144,7 @@
 
 	<string name="germination_label">Проростання:</string>
 	<string name="vegetation_label">Вегетація:</string>
-	<string name="cutting_label">Прорізання:</string>
+	<string name="cutting_label">Зріз:</string>
 	<string name="flower_label">Цвітіння:</string>
 	<string name="drying_label">Сушіння:</string>
 	<string name="curing_label">Витримка (пролічка):</string>
@@ -176,7 +176,7 @@
 	<string name="note">Нотатка</string>
 	<string name="delete_event_dialog_title">Видалити подію?</string>
 	<string name="confirm_delete_item_message">Дійсно видалити?</string>
-	<string name="confirm_delete_photos_message" formatted="true">Дійсно видалити %sзображень? Їх неможливо буде відновити.</string>
+	<string name="confirm_delete_photos_message" formatted="true">Дійсно видалити %s зображень? Їх неможливо буде відновити.</string>
 	<string name="edit">Редагувати</string>
 	<string name="stage">стадія</string>
 	<string name="set">Встановити</string>
@@ -199,7 +199,7 @@
 	<string name="done">Готово</string>
 	<string name="garden">Сад</string>
 	<string name="select_all">Обрати всі</string>
-	<string name="select_none">Вибрати жодну</string>
+	<string name="select_none">Прибрати виділення</string>
 	<string name="accept">Прийняти</string>
 	<string name="enable">Ввімкнути</string>
 	<string name="decline">Відхилити</string>
@@ -249,7 +249,7 @@
 	<string name="settings_delivery">Одиниця об\'єму за замовчуванням, наразі &lt;b&gt;%s&lt;/b&gt;</string>
 	<string name="settings_measurement">Одиниця об\'єму добавок за замовчуванням, наразі &lt;b&gt;%s&lt;/b&gt;</string>
 	<string name="settings_temperature">Одиниця температури за замовчуванням, наразі &lt;b&gt;%s&lt;/b&gt;</string>
-	<string name="settings_backup_size" formatted="true">Наразі &lt;b&gt;%sMB&lt;/b&gt; / Використано &lt;b&gt;%s&lt;/b&gt;</string>
+	<string name="settings_backup_size" formatted="true">Наразі &lt;b&gt;%sMiB&lt;/b&gt; / Використано &lt;b&gt;%s&lt;/b&gt;</string>
 	<string name="failsafe_message">Введіть цей пароль під час розшифрування щоб упередити завантаження даних</string>
 	<string name="warning">Увага</string>
 	<string name="encryption_message">Базова форма AES-шифрування на основі введеного пароля. Даний спосіб не гарантує захисту від правоохоронних органів.</string>
@@ -267,7 +267,7 @@
 
 	<string name="backed_up_to">Резервну копію збережено до</string>
 	<string name="no_backups">Немає резервних копій</string>
-	<string name="all_none">Усі/жодного</string>
+	<string name="all_none">Усі/жодна</string>
 
 	<string name="stat_input_ph">Вхідний pH</string>
 	<string name="stat_runoff_ph">pH стоків</string>
@@ -304,8 +304,8 @@
 	<string name="settings_autobackup_summary">Створювати резервну копію даних автоматично кожні 24 години</string>
 	<string name="settings_backupnow">Створити резервну копію зараз</string>
 	<string name="settings_backupsize_title">Обмеження розміру резервних копій</string>
-	<string name="settings_backupsize_hint">Розмір, MB</string>
-	<string name="settings_backupsize_dialogtitle">Максимальний розмір резервної копії (MB)</string>
+	<string name="settings_backupsize_hint">Розмір, MiB</string>
+	<string name="settings_backupsize_dialogtitle">Максимальний розмір резервної копії (MiB)</string>
 	<string name="settings_restore_backup">Відновити резервну копію</string>
 	<string name="settings_encrypt_title">Зашифрувати дані</string>
 	<string name="settings_encrypt_summary">Додати вхідний пін код та зашифрувати дані і зображення</string>
@@ -328,5 +328,15 @@
 	<string name="help_translate">Допомогти з перекладом</string>
 	<string name="encrypt_progress_warning">Зашифровую дані, це може тривати довго...</string>
 	<string name="decrypt_progress_warning">Розшифровую дані, це може тривати довго...</string>
+
+	<!-- now = 1 second -->
+	<string name="now_abbr">1с</string>
+	<string name="second_abbr">с</string>
+	<string name="minute_abbr">хв</string>
+	<string name="hour_abbr">г</string>
+	<string name="day_abbr">д</string>
+	<string name="week_abbr">т</string>
+	<string name="month_abbr">м</string>
+	<string name="year_abbr">р</string>
 
 	</resources>
