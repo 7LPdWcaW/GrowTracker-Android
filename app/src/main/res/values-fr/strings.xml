@@ -5,11 +5,11 @@
 	<string name="menu_settings">Paramètres</string>
 
 	<!-- Garden Plant list title "garden name plants" -->
-	<string name="list_title">%s plantes</string>
+	<string name="list_title">Plantes de %s </string>
 	<!-- All plants list -->
 	<string name="all_list_title">Toute les plantes</string>
 	<!-- All/everything -->
-	<string name="all">Toute les</string>
+	<string name="all">Tout</string>
 	<string name="snackbar_action_add">Actions ajoutées</string>
 	<string name="snackbar_note_add">Notes ajoutées</string>
 	<string name="snackbar_watering_add">Arrosage ajouté</string>
@@ -176,7 +176,7 @@
 	<string name="note">Note</string>
 	<string name="delete_event_dialog_title">Supprimer cet événement ?</string>
 	<string name="confirm_delete_item_message">Êtes-vous certain de vouloir supprimer </string>
-	<string name="confirm_delete_photos_message" formatted="true">Êtes-vous certain de vouloir supprimer ces %s images ? Vous ne serez plus en mesure de les récupérer.</string>
+	<string name="confirm_delete_photos_message" formatted="true">Êtes-vous sûre de vouloir supprimer ces %s images ? Vous ne pourrez pas les récupérer.</string>
 	<string name="edit">Modifier</string>
 	<string name="stage">état</string>
 	<string name="set">OK</string>
@@ -328,5 +328,15 @@
 	<string name="help_translate">Aider à traduire</string>
 	<string name="encrypt_progress_warning">Cryptage des données et images, ceci peut prendre un certain temps ...</string>
 	<string name="decrypt_progress_warning">Décryptage des données et images, ceci peut prendre un certain temps ...</string>
+
+	<!-- now = 1 second -->
+	<string name="now_abbr">1s</string>
+	<string name="second_abbr">s</string>
+	<string name="minute_abbr">m</string>
+	<string name="hour_abbr">h</string>
+	<string name="day_abbr">j</string>
+	<string name="week_abbr">sem</string>
+	<string name="month_abbr">mois</string>
+	<string name="year_abbr">année</string>
 
 	</resources>
