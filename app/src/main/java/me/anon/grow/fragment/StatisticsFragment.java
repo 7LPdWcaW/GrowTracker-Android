@@ -33,6 +33,7 @@ import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 import me.anon.grow.R;
 import me.anon.lib.Views;
+import me.anon.lib.ext.IntUtilsKt;
 import me.anon.lib.helper.StatsHelper;
 import me.anon.lib.helper.TimeHelper;
 import me.anon.model.Action;
@@ -342,7 +343,7 @@ public class StatisticsFragment extends Fragment
 		for (PlantStage plantStage : stages.keySet())
 		{
 			yVals[index] = Math.max((float)(int)TimeHelper.toDays(stages.get(plantStage)), 1f);
-			labels[index--] = plantStage.name();
+			labels[index--] = getString(plantStage.getPrintString());
 		}
 
 		entry.add(new BarEntry(yVals, 0));
@@ -351,14 +352,15 @@ public class StatisticsFragment extends Fragment
 		set.setColors(statsColours);
 		set.setStackLabels(labels);
 		set.setValueTextSize(12.0f);
+		set.setValueTextColor(IntUtilsKt.resolveColor(R.attr.chart_label, getActivity()));
 		set.setHighlightEnabled(false);
 
-		BarData data = new BarData(new String[] { plant.getName() }, set);
+		BarData data = new BarData(new String[] { "" }, set);
 		data.setValueFormatter(new ValueFormatter()
 		{
 			@Override public String getFormattedValue(float value, Entry entry, int dataSetIndex, ViewPortHandler viewPortHandler)
 			{
-				return String.format("%s", "" + (int)value);
+				return (int)value + getString(R.string.day_abbr);
 			}
 		});
 
