@@ -27,6 +27,7 @@
 			android:id="@+id/toolbar_layout"
 			app:elevation="4dp"
 			android:elevation="4dp"
+			app:drawerArrowStyle="@null"
 			android:theme="@style/Toolbar"
 			style="@style/Widget.MaterialComponents.ActionBar.Primary"
 		>
@@ -35,6 +36,7 @@
 				android:layout_height="wrap_content"
 				android:id="@+id/toolbar"
 				android:fitsSystemWindows="true"
+				app:drawerArrowStyle="@null"
 				app:popupTheme="@style/ThemeOverlay.AppCompat.DayNight"
 			/>
 		</com.google.android.material.appbar.AppBarLayout>

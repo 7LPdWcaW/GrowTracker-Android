@@ -213,7 +213,12 @@ public class MainActivity extends BaseActivity implements NavigationView.OnNavig
 
 	public void showDrawerToggle()
 	{
-		if (drawer != null)
+		if (MainApplication.isTablet())
+		{
+			getSupportActionBar().setDisplayHomeAsUpEnabled(false);
+			getSupportActionBar().setDisplayShowHomeEnabled(false);
+		}
+		else if (drawer != null)
 		{
 			ActionBarDrawerToggle drawerToggle = new ActionBarDrawerToggle(this, drawer, toolbar, 0, 0)
 			{
