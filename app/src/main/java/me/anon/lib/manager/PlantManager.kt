@@ -112,7 +112,10 @@ class PlantManager private constructor()
 
 			if (index < 0)
 			{
-				addPlant(plant)
+				if (!MainApplication.isFailsafe())
+				{
+					this.plants.add(plant)
+				}
 			}
 			else
 			{
