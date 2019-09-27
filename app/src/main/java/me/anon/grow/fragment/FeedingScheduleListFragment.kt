@@ -18,6 +18,7 @@ import me.anon.grow.R
 import me.anon.lib.SnackBar
 import me.anon.lib.helper.FabAnimator
 import me.anon.lib.manager.ScheduleManager
+import java.util.*
 
 /**
  * Fragment for displaying list of feeding schedules
@@ -61,6 +62,7 @@ class FeedingScheduleListFragment : Fragment()
 
 		adapter.onCopyCallback = { schedule ->
 			val newSchedule = Kryo().copy(schedule)
+			newSchedule.id = UUID.randomUUID().toString()
 			newSchedule.name += " (copy)"
 			ScheduleManager.instance.insert(newSchedule)
 			adapter.items = ScheduleManager.instance.schedules

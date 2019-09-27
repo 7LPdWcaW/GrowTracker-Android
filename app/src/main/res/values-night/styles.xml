@@ -6,6 +6,7 @@
 		<item name="colorOnSecondary">#97FFFFFF</item>
 		<item name="colorControlNormal">#555555</item>
 		<item name="colorSurface">#242424</item>
+		<item name="chart_label">#BEFFFFFF</item>
 		<item name="android:windowBackground">@drawable/dark_window</item>
 		<item name="windowActionModeOverlay">true</item>
 	</style>

@@ -1,7 +1,6 @@
 package me.anon.grow
 
 import android.os.Bundle
-import androidx.appcompat.app.AppCompatActivity
 import kotlinx.android.synthetic.main.fragment_holder.*
 import me.anon.grow.fragment.ScheduleDateDetailsFragment
 
@@ -27,9 +26,7 @@ class ScheduleDateDetailsActivity : BaseActivity()
 		{
 			supportFragmentManager.beginTransaction().replace(
 				R.id.fragment_holder,
-				ScheduleDateDetailsFragment.newInstance(
-					intent.extras?.getInt("schedule_index", -1) ?: -1,
-					intent.extras?.getInt("date_index", -1) ?: -1),
+				ScheduleDateDetailsFragment.newInstance(intent.extras!!),
 				TAG_FRAGMENT
 			).commit()
 		}

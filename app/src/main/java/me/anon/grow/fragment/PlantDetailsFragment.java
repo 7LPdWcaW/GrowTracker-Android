@@ -24,6 +24,8 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.WindowManager;
+import android.widget.ArrayAdapter;
+import android.widget.AutoCompleteTextView;
 import android.widget.Button;
 import android.widget.CheckBox;
 import android.widget.EditText;
@@ -48,7 +50,8 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Calendar;
 import java.util.Date;
-import java.util.Locale;
+import java.util.Set;
+import java.util.TreeSet;
 import java.util.UUID;
 
 import androidx.annotation.NonNull;
@@ -94,7 +97,7 @@ public class PlantDetailsFragment extends Fragment
 	@Views.InjectView(R.id.link_container) private View linkContainer;
 
 	@Views.InjectView(R.id.plant_name) private TextView name;
-	@Views.InjectView(R.id.plant_strain) private TextView strain;
+	@Views.InjectView(R.id.plant_strain) private AutoCompleteTextView strain;
 	@Views.InjectView(R.id.plant_stage) private TextView stage;
 	@Views.InjectView(R.id.plant_medium) private TextView medium;
 	@Views.InjectView(R.id.plant_medium_details) private EditText mediumDetails;
@@ -248,6 +251,7 @@ public class PlantDetailsFragment extends Fragment
 		// Always re-set stage incase order was changed in event list
 		if (plant != null && plant.getStage() != null)
 		{
+			stage.setTag(plant.getStage());
 			stage.setText(plant.getStage().getPrintString());
 		}
 	}
@@ -275,7 +279,7 @@ public class PlantDetailsFragment extends Fragment
 			DateFormat timeFormat = android.text.format.DateFormat.getTimeFormat(getActivity());
 			Date actionDate = new Date(lastWater.getDate());
 			lastFeedingFullDate.setText(dateFormat.format(actionDate) + " " + timeFormat.format(actionDate));
-			lastFeedingDate.setText(Html.fromHtml("<b>" + new DateRenderer().timeAgo(lastWater.getDate()).formattedDate + "</b> ago"));
+			lastFeedingDate.setText(Html.fromHtml("<b>" + new DateRenderer(getActivity()).timeAgo(lastWater.getDate()).formattedDate + "</b> ago"));
 
 			final Water finalLastWater = lastWater;
 			duplicateFeeding.setOnClickListener(new View.OnClickListener()
@@ -306,6 +310,18 @@ public class PlantDetailsFragment extends Fragment
 		String dateStr = dateFormat.format(new Date(plant.getPlantDate())) + " " + timeFormat.format(new Date(plant.getPlantDate()));
 		date.setText(dateStr);
 		clone.setChecked(plant.getClone());
+
+		Set<String> strains = new TreeSet<>(String.CASE_INSENSITIVE_ORDER);
+
+		for (Plant plant : PlantManager.getInstance().getPlants())
+		{
+			if (!TextUtils.isEmpty(plant.getStrain()))
+			{
+				strains.add(plant.getStrain());
+			}
+		}
+
+		strain.setAdapter(new ArrayAdapter<String>(getActivity(), android.R.layout.simple_list_item_1, strains.toArray(new String[strains.size()])));
 
 		dateContainer.setOnClickListener(new View.OnClickListener()
 		{
@@ -905,6 +921,7 @@ public class PlantDetailsFragment extends Fragment
 		{
 			@Override public void onStageUpdated(final StageChange action)
 			{
+				stage.setTag(action.getNewStage());
 				stage.setText(action.getNewStage().getPrintString());
 
 				if (plant != null)
@@ -938,9 +955,11 @@ public class PlantDetailsFragment extends Fragment
 								PlantManager.getInstance().upsert(plant);
 							}
 
-							if (plant.getStage() != null)
+							PlantStage plantStage = plant.getStage();
+							if (plantStage != null)
 							{
-								stage.setText(plant.getStage().getPrintString());
+								stage.setTag(plantStage);
+								stage.setText(plantStage.getPrintString());
 							}
 						}
 					});
@@ -985,7 +1004,7 @@ public class PlantDetailsFragment extends Fragment
 
 		plant.setMediumDetails(mediumDetails.getText().toString());
 
-		PlantStage newStage = PlantStage.valueOf(stage.getText().toString().toUpperCase(Locale.ENGLISH));
+		PlantStage newStage = (PlantStage)stage.getTag();
 		if (plant.getStage() != newStage || (plant == null && newStage == PlantStage.GERMINATION))
 		{
 			plant.getActions().add(new StageChange(newStage, System.currentTimeMillis(), null));

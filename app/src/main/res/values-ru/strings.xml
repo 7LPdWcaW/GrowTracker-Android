@@ -1,0 +1,342 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<resources>
+	<string name="version">Версия %s</string>
+	<string name="menu_settings">Настройки</string>
+
+	<!-- Garden Plant list title "garden name plants" -->
+	<string name="list_title">%s растения</string>
+	<!-- All plants list -->
+	<string name="all_list_title">Все растения</string>
+	<!-- All/everything -->
+	<string name="all">Все</string>
+	<string name="snackbar_action_add">Добавлено действие</string>
+	<string name="snackbar_note_add">Добавлены заметки</string>
+	<string name="snackbar_watering_add">Добавлен полив</string>
+	<string name="snackbar_garden_deleted">Добавлен сад</string>
+
+	<string name="dialog_garden_delete_body">Действительно удалить сад &lt;b&gt;\"%s\"&lt;/b&gt;? Растения не будут удалены.</string>
+	<string name="action_feed">Полить</string>
+	<string name="action_action">Действие</string>
+
+	<string name="widget_encrypt_error">Виджет недоступен при включенном шифровании</string>
+	<string name="new_plant_title">Добавить новое растение</string>
+	<string name="plant_details_title">Детали растения</string>
+	<string name="statistics_title">Статистика растения</string>
+	<!-- select from camera -->
+	<string name="photo_option_camera">Из камеры</string>
+	<!-- select from gallery -->
+	<string name="photo_option_gallery">Из галереи</string>
+	<string name="dialog_option_title">Выбрать вариант</string>
+	<string name="dialog_select_picture_title">Выбрать изображение</string>
+	<string name="snackbar_action_apply">Применить к другому растению</string>
+	<string name="dialog_select_plant_title">Выбрать растение</string>
+	<string name="snackbar_image_added">Изображение добавлено</string>
+	<string name="snackbar_action_take_another">Сделать ещё</string>
+
+	<string name="nav_feeding_schedule">Расписания</string>
+	<string name="schedule_details_title">Детали расписания</string>
+	<string name="schedule_date_title">Дата расписания</string>
+	<string name="schedule_name">Название</string>
+	<string name="schedule_name_hint">Лёгкая подкормка</string>
+	<string name="schedule_description">Описание</string>
+	<!-- an example of a feeding schedule -->
+	<string name="schedule_description_hint">Лёгкая подкормка с 2 неделями промывания</string>
+
+	<string name="schedules_new_feeding">+ Новая подкормка</string>
+	<string name="schedules_new_schedule">+ Новое расписание</string>
+	<string name="new_additive">+ Новая добавка</string>
+	<string name="additives">Добавки</string>
+	<string name="additive">Добавка</string>
+	<string name="from_date">От даты</string>
+	<string name="from_stage">От стадии</string>
+	<string name="to_date">До даты</string>
+	<string name="to_stage">До стадии</string>
+	<string name="populate_from_schedule">Заполнить из расписания</string>
+	<string name="populate_from_previous">Заполнить из предыдущего</string>
+	<string name="confirm_title">Уверены?</string>
+	<string name="confirm_copy_schedule">Скопировать выбранное расписание?</string>
+	<string name="confirm_delete_schedule">Удалить выбранное расписание?</string>
+	<string name="schedule_copied">Расписание скопировано</string>
+	<string name="schedule_deleted">Расписание удалено</string>
+	<string name="undo">Отменить</string>
+	<string name="feeding_schedules_title">Расписания подкормки</string>
+	<string name="feeding_schedule_title">Расписание подкормки</string>
+	<string name="update_dialog_title">Приложение обновлено</string>
+	<string name="update_dialog_message" formatted="true">Приложение было обновлено до версии %s</string>
+	<string name="update_dialog_view_changes_button">Просмотреть изменения</string>
+	<string name="update_dialog_dismiss_button">Отменить</string>
+
+	<!-- Feeding {plant name} -->
+	<string name="feeding_single_title" formatted="true">Полить %s</string>
+	<string name="feeding_multiple_title">Полить несколько растений</string>
+
+	<string name="action_dialog_notes">Заметки</string>
+	<string name="water_details_title">Детали полива</string>
+	<string name="water_ph_label">pH воды</string>
+	<string name="ppm_label">ppm</string>
+	<string name="runoff_label">Сток</string>
+	<string name="amount_label" formatted="true">Количество (%s)</string>
+	<string name="temp_label" formatted="true">Температура (º%s)</string>
+	<string name="date_and_time_header">Дата и время</string>
+	<string name="date_now">Сейчас</string>
+	<string name="date_label">Дата</string>
+	<string name="today">Сегодня</string>
+	<string name="length_cured">Пролечено %s дней</string>
+	<string name="length_days">%s дней</string>
+	<string name="length_days_inv">Дней %s</string>
+
+	<string name="filter_waterings">Поливы</string>
+	<string name="filter_stage_changes">Изменения стадии</string>
+
+	<string name="menu_duplicate">Дублировать</string>
+	<string name="menu_copy_to">Копировать в</string>
+	<string name="menu_edit_action">Редактировать действие</string>
+	<string name="menu_delete_action">Удалить действие</string>
+
+	<string name="garden_dialog_select">Выбрать растения</string>
+	<string name="nav_gardens">Сады</string>
+	<string name="nav_all_plants">Все растения</string>
+	<string name="nav_new_garden">+ Новый сад</string>
+	<string name="nav_additional">Дополнительно</string>
+	<string name="nav_settings">Настройки</string>
+	<string name="delete">Удалить</string>
+	<string name="share">Поделиться</string>
+	<string name="menu_photo">Фото</string>
+	<string name="last_watering_title">Последний полив</string>
+	<string name="feed_again">Полить снова</string>
+
+	<string name="plant_name_label">Название растения</string>
+	<string name="new_plant_hint">Новое растение</string>
+	<string name="plant_strain_label">Сорт</string>
+	<string name="plant_strain_hint">Lemon Haze</string>
+	<string name="grow_details_title">Подробности</string>
+	<string name="plant_date_label">Дата растения</string>
+	<string name="plant_medium_label">Среда</string>
+
+	<string name="medium_details_label">Детали среды</string>
+	<!-- Example of medium mix -->
+	<string name="medium_details_hint">Грунт, перлит 50/50</string>
+	<string name="from_clone_label">Клон?</string>
+	<string name="stage_details_title">Детали стадии</string>
+	<string name="plant_stage_label">Стадия растения</string>
+	<string name="view_photos">Просмотреть фото</string>
+	<string name="view_history">Просмотреть историю</string>
+	<string name="view_statistics">Просмотреть статистику</string>
+	<string name="view_photos_short">Фото</string>
+	<string name="view_history_short">История</string>
+	<string name="view_statistics_short">Статистика</string>
+	<string name="filter">Фильтр</string>
+	<string name="planted">Посев</string>
+	<string name="germination">Прорастание</string>
+	<string name="cutting">Срез</string>
+	<string name="vegetation">Вегетация</string>
+	<string name="flowering">Цветение</string>
+	<string name="drying">Сушка</string>
+	<string name="curing">Выдержка (пролечка)</string>
+	<string name="harvested">Сбор</string>
+	<!-- example "harvested 2 days ago" -->
+	<string name="harvested_ago" formatted="true">Собрано %s назад</string>
+	<string name="menu_export_garden">Экспортировать сад</string>
+	<string name="menu_edit_garden">Редактировать сад</string>
+	<string name="menu_delete_garden">Удалить сад</string>
+	<string name="menu_export">Экспортировать</string>
+
+	<string name="germination_label">Прорастание:</string>
+	<string name="vegetation_label">Вегетация:</string>
+	<string name="cutting_label">Срез:</string>
+	<string name="flower_label">Цветение:</string>
+	<string name="drying_label">Сушка:</string>
+	<string name="curing_label">Выдержка (пролечка):</string>
+	<string name="total_time_label">Общее время:</string>
+	<string name="total_waters_label">Всего поливов:</string>
+	<string name="total_flushes_label">Всего промываний:</string>
+	<string name="ave_time_between_water_label">Средний интервал между поливами:</string>
+	<string name="filter_additives">Филтр добавок:</string>
+	<string name="ph_title">pH</string>
+
+	<string name="min">Мин:</string>
+	<string name="max">Макс:</string>
+	<string name="ave">Сред:</string>
+	<string name="temperature_title">Температура</string>
+	<string name="general_title">Общие</string>
+	<string name="failed_to_load_plant">Не удалось загрузить растение</string>
+	<string name="action_fim">Fuck I Missed (FIM)</string>
+	<string name="action_flush">Промывание</string>
+	<string name="action_foliar_feed">Листовая подкормка</string>
+	<string name="action_lst">LST (низкострессовая тренировка)</string>
+	<string name="action_lolipop">Лоллипоп</string>
+	<string name="action_pesticide_application">Обработка пестицидами</string>
+	<string name="action_topped">Топпинг</string>
+	<string name="action_transplanted">Пересадка</string>
+	<string name="action_trim">Тримминг</string>
+	<string name="action_tuck">Применение ScrOG</string>
+
+	<string name="watered">Полито</string>
+	<string name="note">Заметка</string>
+	<string name="delete_event_dialog_title">Удалить событие?</string>
+	<string name="confirm_delete_item_message">Действительно удалить</string>
+	<string name="confirm_delete_photos_message" formatted="true">Действительно удалить %s изображений? Их нельзя будет восстановить.</string>
+	<string name="edit">Редактировать</string>
+	<string name="stage">стадия</string>
+	<string name="set">Готово</string>
+	<string name="change">Изменить</string>
+	<string name="add">Добавить</string>
+	<string name="cancel">Отменить</string>
+	<string name="action">действие</string>
+	<string name="ok">Ок</string>
+	<string name="field_required">Обязательное поле</string>
+	<string name="encrypt_passphrase_error">Ошибка - неправильный пароль</string>
+	<string name="edit_feeding">Редактировать полив</string>
+	<string name="added">добавлено</string>
+	<string name="action_duplicated">Действие продублировано</string>
+	<string name="multiple_plants">несколько растений</string>
+	<string name="added_to">Действие добавлено к</string>
+	<string name="note_updated">Заметка обновлена</string>
+	<string name="updated">обновлено</string>
+	<string name="stage_updated">Стадия обновлена</string>
+	<string name="event_deleted">Событие удалено</string>
+	<string name="done">Готово</string>
+	<string name="garden">Сад</string>
+	<string name="select_all">Выбрать все</string>
+	<string name="select_none">Убрать выделение</string>
+	<string name="accept">Принять</string>
+	<string name="enable">Включить</string>
+	<string name="decline">Отклонить</string>
+	<string name="seedling_label">Росток:</string>
+	<string name="seedling">Росток</string>
+
+	<string name="crash_title">Ой</string>
+	<string name="crash_message" formatted="true">Кажется, при прошлом использовании программы произошла ошибка. Хотите отправлять анонимные отчёты? Эти отчёты будут отправляться на &lt;a href=\"https://github.com/7LPdWcaW/GrowTracker-Android/issues\"&gt;github.com/7LPdWcaW/GrowTracker-Android/issues&lt;/a&gt; и не будут содержать личной информации. При желании вы также можете выборочно отправлять отчёты на &lt;a href=\"https://reddit.com/r/growutils\"&gt;reddit.com/r/growutils&lt;/a&gt; вручную. Отчёты сохраняются в &lt;i&gt;%s&lt;i&gt;</string>
+	<string name="yes">Да</string>
+	<string name="no">Нет</string>
+
+	<string name="passphrase_title">Введите Ваш пароль</string>
+	<string name="add_passphrase_title">Введите пароль</string>
+	<string name="readd_passphrase_title">Повторите пароль</string>
+	<string name="passphrase_error">Ошибка - пароли не совпадают</string>
+
+	<string name="fatal_error">Во время сохранения данных произошла ошибка. Пожалуйста, создайте резервную копию данных.</string>
+	<string name="taken">Готово</string>
+	<string name="ago" formatted="true">%s назад</string>
+	<string name="watered_ago" formatted="true">Полито &lt;b&gt;%s&lt;/b&gt; назад</string>
+	<string name="last_watered_ago" formatted="true">Последний полив &lt;b&gt;%s&lt;/b&gt; назад</string>
+	<string name="planted_ago" formatted="true">Посажено &lt;b&gt;%s&lt;/b&gt; назад</string>
+
+	<string name="permission_summary">Доступ к внешнему хранилищу необходим для сохранения фотографий. Никакие другие данные не используются программой</string>
+
+	<string name="waterings_added">Добавлены поливы</string>
+	<string name="delete_plant_message">Действительно удалить &lt;b&gt;%s&lt;/b&gt; и все связанные изображения? Это действие нельзя будет отменить.</string>
+	<string name="delete_plant_progress">Удаляю растение...</string>
+
+	<string name="plant_duplicated">Растение продублировано</string>
+	<string name="open">Открыть</string>
+
+	<string name="export_progress">Экспортирую журнал...</string>
+	<string name="garden_export">Экспортирую журнал сада...</string>
+	<string name="action_added" formatted="true">%s добавлено</string>
+	<string name="name_input_error">Поле названия не может быть пустым</string>
+	<string name="exporting" formatted="true">Экспортирую %s</string>
+
+	<string name="soil">Грунт</string>
+	<string name="hydroponics">Гидропоника</string>
+	<string name="coco_coir">Кокосовое волокно</string>
+	<string name="aeroponics">Аэропоника</string>
+	<string name="hide_images">Скрыть изображения</string>
+	<string name="show_images">Показать изображения</string>
+
+	<string name="settings_default_garden">Сад для показа по умолчанию, сейчас: &lt;b&gt;%s&lt;/b&gt;</string>
+	<string name="settings_delivery">Используемая единица объёма, сейчас: &lt;b&gt;%s&lt;/b&gt;</string>
+	<string name="settings_measurement">Используемая единица объёма для удобрений, сейчас: &lt;b&gt;%s&lt;/b&gt;</string>
+	<string name="settings_temperature">Используемая единица температуры, сейчас: &lt;b&gt;%s&lt;/b&gt;</string>
+	<string name="settings_backup_size" formatted="true">Сейчас: &lt;b&gt;%s MiB&lt;/b&gt; / Используется &lt;b&gt;%s&lt;/b&gt;</string>
+	<string name="failsafe_message">Используйте этот пароль на стадии расшифровки чтобы не допустить загрузки данных</string>
+	<string name="warning">Внимание</string>
+	<string name="encryption_message">Базовая форма AES-шифрования на основе введённого пароля. Не гарантирует защиту от доступа правоохранительными органами.</string>
+	<string name="backup_enable_toast">Включено резервное копирование. Резервные копии будут храниться в /sdcard/backups/GrowTracker/</string>
+	<string name="restore_complete" formatted="true">Восстановление в %s завершено</string>
+	<string name="restore_error" formatted="true">Не удалось восстановить резервную копию %s. Возможно файл %s</string>
+	<string name="encrypted">зашифрован</string>
+	<string name="unencrypted">расшифрован</string>
+
+	<string name="select_measurement_title">Выберите единицу измерения</string>
+	<string name="select_temperature_title">Выбрать температуру</string>
+	<string name="select_garden_title">Выбрать сад</string>
+	<string name="select_backup_title">Выбрать резервную копию</string>
+	<string name="backup_restore_error">Для восстановления этой резервной копии необходимо включить шифрование с тем же паролем</string>
+
+	<string name="backed_up_to">Сохранено в </string>
+	<string name="no_backups">Нет резервных копий для востановления</string>
+	<string name="all_none">Все/ни одного</string>
+
+	<string name="stat_input_ph">Входной pH</string>
+	<string name="stat_runoff_ph">pH стока</string>
+	<string name="stat_average_ph">Средний pH</string>
+
+	<string name="photos_title">Фото растения</string>
+
+	<string name="plant_summary_ph">Входной pH:</string>
+	<string name="plant_summary_out_ph">Выходной pH:</string>
+	<string name="plant_summary_amount">Количество:</string>
+	<string name="plant_summary_temp">Температура:</string>
+	<string name="plant_summary_additives">Добавки:</string>
+	<string name="plant_summary_ec">EC:</string>
+	<string name="plant_summary_ppm">ppm:</string>
+
+	<string name="select_schedule_title">Выбрать расписание:</string>
+	<string name="actions">Действия:</string>
+	<string name="settings_dark_title">Принудительно включить тёмную тему</string>
+	<string name="settings_dark_summary">Использовать тёмную тему независимо от настроек системы</string>
+	<string name="settings_harvest_title">Спрятать собранные</string>
+	<string name="settings_harvest_summary">Спрятать все собранные растения</string>
+	<string name="settings_reverse_title">Обратный порядок растений</string>
+	<string name="settings_reverse_summary">Показать растения в обратном порядке (требуется перезапуск)</string>
+	<string name="settings_garden_title">Сад по умолчанию</string>
+
+	<string name="settings_units">Единицы</string>
+	<string name="settings_delivery_title">Единица объёма</string>
+	<string name="settings_measurement_title">Единица измерения</string>
+	<string name="settings_temp_title">Единицы температуры</string>
+	<string name="settings_tds_title">Использовать EC вместо ppm</string>
+	<string name="settings_tds_summary">Использовать базовое преобразование EC=((ppm * 2) / 1000)</string>
+	<string name="settings_data_management">Управление данными</string>
+	<string name="settings_autobackup_title">Автоматические резервные копии</string>
+	<string name="settings_autobackup_summary">Создавать резервную копию данных каждые 24 часа</string>
+	<string name="settings_backupnow">Создать резервную копию сейчас</string>
+	<string name="settings_backupsize_title">Максимальный размер резервной копии</string>
+	<string name="settings_backupsize_hint">Размер, MiB</string>
+	<string name="settings_backupsize_dialogtitle">Максимальный размер (MiB)</string>
+	<string name="settings_restore_backup">Восстановить резервную копию</string>
+	<string name="settings_encrypt_title">Зашифровать данные</string>
+	<string name="settings_encrypt_summary">Защитить паролем и зашифровать все данные и изображения</string>
+	<string name="settings_failsafe_title">Отказобезопасность</string>
+	<string name="settings_failsafe_summary">Установить отказобезопасный пароль для избежания доступа к данным</string>
+	<string name="settings_addons">Аддоны</string>
+	<string name="settings_about">О программе</string>
+	<string name="settings_readme">Read me</string>
+	<string name="settings_export">Экспортировать данные</string>
+	<string name="settings_cardstyle_title">Стиль карточки</string>
+	<string name="empty_plant_list">Нет растений для отображения</string>
+	<string name="empty_schedules">Нет расписаний</string>
+	<string name="empty_photos">Нет фотографий</string>
+	<string name="events_title">Прошлые действия</string>
+	<string name="show_hide_calendar">Показать/спрятать календарь</string>
+	<!-- "1 selected" -->
+	<string name="selected_len" formatted="true">%o выбрано</string>
+	<string name="translations_title">Благодарим за участие</string>
+	<string name="translations_by">Переведено</string>
+	<string name="help_translate">Помочь с переводом</string>
+	<string name="encrypt_progress_warning">Шифрование данных и изображений, может занять некоторое время...</string>
+	<string name="decrypt_progress_warning">Расшифровка данных и изображений, может занять некоторое время...</string>
+
+	<!-- now = 1 second -->
+	<string name="now_abbr">1с</string>
+	<string name="second_abbr">с</string>
+	<string name="minute_abbr">мин</string>
+	<string name="hour_abbr">ч</string>
+	<string name="day_abbr">д</string>
+	<string name="week_abbr">н</string>
+	<string name="month_abbr">м</string>
+	<string name="year_abbr">г</string>
+
+	</resources>

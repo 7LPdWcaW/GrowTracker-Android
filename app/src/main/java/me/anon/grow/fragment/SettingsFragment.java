@@ -31,6 +31,7 @@ import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 import java.text.DateFormat;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
@@ -78,8 +79,22 @@ public class SettingsFragment extends PreferenceFragmentCompat implements Prefer
 		setPreferencesFromResource(R.xml.preferences, rootKey);
 
 		int defaultGardenIndex = PreferenceManager.getDefaultSharedPreferences(getActivity()).getInt("default_garden", -1);
-		String defaultGarden = defaultGardenIndex > -1 ? GardenManager.getInstance().getGardens().get(defaultGardenIndex).getName() : getString(R.string.all);
+		String defaultGarden = getString(R.string.all);
+
+		if (defaultGardenIndex > -1 && defaultGardenIndex < GardenManager.getInstance().getGardens().size())
+		{
+			try
+			{
+				defaultGarden = GardenManager.getInstance().getGardens().get(defaultGardenIndex).getName();
+			}
+			catch (Exception e)
+			{
+				e.printStackTrace();
+			}
+		}
+
 		findPreference("default_garden").setSummary(Html.fromHtml(getString(R.string.settings_default_garden, defaultGarden)));
+
 		findPreference("delivery_unit").setSummary(Html.fromHtml(getString(R.string.settings_delivery, Unit.getSelectedDeliveryUnit(getActivity()).getLabel())));
 		findPreference("measurement_unit").setSummary(Html.fromHtml(getString(R.string.settings_measurement, Unit.getSelectedMeasurementUnit(getActivity()).getLabel())));
 		findPreference("temperature_unit").setSummary(Html.fromHtml(getString(R.string.settings_temperature, TempUnit.getSelectedTemperatureUnit(getActivity()).getLabel())));
@@ -258,7 +273,6 @@ public class SettingsFragment extends PreferenceFragmentCompat implements Prefer
 		{
 			PreferenceManager.getDefaultSharedPreferences(getActivity()).edit().putBoolean("force_dark", (boolean)newValue).apply();
 			AppCompatDelegate.setDefaultNightMode((boolean)newValue ? AppCompatDelegate.MODE_NIGHT_YES : AppCompatDelegate.MODE_NIGHT_FOLLOW_SYSTEM);
-			getActivity().recreate();
 		}
 		else if ("backup_size".equals(preference.getKey()))
 		{
@@ -268,7 +282,7 @@ public class SettingsFragment extends PreferenceFragmentCompat implements Prefer
 				.apply();
 			((EditTextPreference)preference).setText(currentBackup);
 			BackupHelper.limitBackups(currentBackup);
-			findPreference("backup_size").setSummary(getString(R.string.settings_backup_size, currentBackup, lengthToString(BackupHelper.backupSize())));
+			findPreference("backup_size").setSummary(Html.fromHtml(getString(R.string.settings_backup_size, currentBackup, lengthToString(BackupHelper.backupSize()))));
 		}
 		else if ("encrypt".equals(preference.getKey()))
 		{
@@ -288,17 +302,26 @@ public class SettingsFragment extends PreferenceFragmentCompat implements Prefer
 							check1.setTitle(getString(R.string.add_passphrase_title));
 							check1.setOnDialogConfirmed(new PinDialogFragment.OnDialogConfirmed()
 							{
-								@Override public void onDialogConfirmed(String input)
+								@Override public void onDialogConfirmed(DialogInterface dialog, String input)
 								{
+									dialog.dismiss();
 									pin.append(input);
 									check2.show(((FragmentActivity)getActivity()).getSupportFragmentManager(), null);
+								}
+							});
+							check1.setOnDialogCancelled(new PinDialogFragment.OnDialogCancelled()
+							{
+								@Override public void onDialogCancelled()
+								{
+									// make sure the preferences is definitely turned off
+									((SwitchPreferenceCompat)preference).setChecked(false);
 								}
 							});
 
 							check2.setTitle(getString(R.string.readd_passphrase_title));
 							check2.setOnDialogConfirmed(new PinDialogFragment.OnDialogConfirmed()
 							{
-								@Override public void onDialogConfirmed(String input)
+								@Override public void onDialogConfirmed(DialogInterface dialog, String input)
 								{
 									if (pin.toString().equals(String.valueOf(input)))
 									{
@@ -312,24 +335,39 @@ public class SettingsFragment extends PreferenceFragmentCompat implements Prefer
 										PlantManager.getInstance().save();
 
 										// Encrypt images
+										ArrayList<String> images = new ArrayList<>();
 										for (Plant plant : PlantManager.getInstance().getPlants())
 										{
 											if (plant != null && plant.getImages() != null)
 											{
-												new EncryptTask().executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR, plant.getImages());
+												images.addAll(plant.getImages());
 											}
 										}
 
+										new EncryptTask().executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR, images);
 										ImageLoader.getInstance().clearMemoryCache();
 										ImageLoader.getInstance().clearDiskCache();
 
+										Toast.makeText(SettingsFragment.this.getActivity(), R.string.encrypt_progress_warning, Toast.LENGTH_LONG).show();
+
+										// make sure encrypt mode is definitely enabled
+										((SwitchPreferenceCompat)preference).setChecked(true);
 										findPreference("failsafe").setEnabled(true);
+										dialog.dismiss();
 									}
 									else
 									{
 										((SwitchPreferenceCompat)preference).setChecked(false);
-										Toast.makeText(getActivity(), getString(R.string.passphrase_error), Toast.LENGTH_SHORT).show();
+										check2.getInput().setError(getString(R.string.passphrase_error));
 									}
+								}
+							});
+							check2.setOnDialogCancelled(new PinDialogFragment.OnDialogCancelled()
+							{
+								@Override public void onDialogCancelled()
+								{
+									// make sure the preferences is definitely turned off
+									((SwitchPreferenceCompat)preference).setChecked(false);
 								}
 							});
 
@@ -358,12 +396,12 @@ public class SettingsFragment extends PreferenceFragmentCompat implements Prefer
 				check.setTitle(getString(R.string.passphrase_title));
 				check.setOnDialogConfirmed(new PinDialogFragment.OnDialogConfirmed()
 				{
-					@Override public void onDialogConfirmed(String input)
+					@Override public void onDialogConfirmed(DialogInterface dialog, String input)
 					{
-						String check = PreferenceManager.getDefaultSharedPreferences(getActivity()).getString("encryption_check_key", "");
+						String checkStr = PreferenceManager.getDefaultSharedPreferences(getActivity()).getString("encryption_check_key", "");
 						String inputCheck = Base64.encodeToString(EncryptionHelper.encrypt(input, input), Base64.NO_WRAP);
 
-						if (inputCheck.equals(check))
+						if (inputCheck.equals(checkStr))
 						{
 							// Decrypt plant data
 							PreferenceManager.getDefaultSharedPreferences(getActivity()).edit().remove("encryption_check_key").apply();
@@ -371,22 +409,36 @@ public class SettingsFragment extends PreferenceFragmentCompat implements Prefer
 							PlantManager.getInstance().save();
 
 							// Decrypt images
+							ArrayList<String> images = new ArrayList<>();
 							for (Plant plant : PlantManager.getInstance().getPlants())
 							{
 								if (plant != null && plant.getImages() != null)
 								{
-									new DecryptTask().executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR, plant.getImages());
+									images.addAll(plant.getImages());
 								}
 							}
 
+							new DecryptTask().executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR, images);
+							Toast.makeText(SettingsFragment.this.getActivity(), R.string.decrypt_progress_warning, Toast.LENGTH_LONG).show();
+
+							// make sure the preferences is definitely turned off
+							((SwitchPreferenceCompat)preference).setChecked(false);
 							ImageLoader.getInstance().clearMemoryCache();
 							ImageLoader.getInstance().clearDiskCache();
+							dialog.dismiss();
 						}
 						else
 						{
 							((SwitchPreferenceCompat)preference).setChecked(true);
-							Toast.makeText(getActivity(), R.string.passphrase_error, Toast.LENGTH_SHORT).show();
+							check.getInput().setError(getString(R.string.passphrase_error));
 						}
+					}
+				});
+				check.setOnDialogCancelled(new PinDialogFragment.OnDialogCancelled()
+				{
+					@Override public void onDialogCancelled()
+					{
+						((SwitchPreferenceCompat)preference).setChecked(true);
 					}
 				});
 
@@ -413,7 +465,7 @@ public class SettingsFragment extends PreferenceFragmentCompat implements Prefer
 							check1.setTitle(getString(R.string.passphrase_title));
 							check1.setOnDialogConfirmed(new PinDialogFragment.OnDialogConfirmed()
 							{
-								@Override public void onDialogConfirmed(String input)
+								@Override public void onDialogConfirmed(DialogInterface dialog, String input)
 								{
 									pin.append(input);
 									check2.show(((FragmentActivity)getActivity()).getSupportFragmentManager(), null);
@@ -423,7 +475,7 @@ public class SettingsFragment extends PreferenceFragmentCompat implements Prefer
 							check2.setTitle(getString(R.string.readd_passphrase_title));
 							check2.setOnDialogConfirmed(new PinDialogFragment.OnDialogConfirmed()
 							{
-								@Override public void onDialogConfirmed(String input)
+								@Override public void onDialogConfirmed(DialogInterface dialog, String input)
 								{
 									if (input.equals(pin.toString()))
 									{
@@ -703,7 +755,14 @@ public class SettingsFragment extends PreferenceFragmentCompat implements Prefer
 					}
 					catch (NumberFormatException e)
 					{
-						date = new Date(backupFile.lastModified());
+						try
+						{
+							date = new SimpleDateFormat("yyyy-MM-dd-hh-mm-ss").parse(parts[0]);
+						}
+						catch (Exception e2)
+						{
+							date = new Date(backupFile.lastModified());
+						}
 					}
 
 					if (parts.length == 2)

@@ -5,6 +5,7 @@ import android.content.Intent;
 import android.graphics.Rect;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
+import android.util.Log;
 import android.util.TypedValue;
 import android.view.LayoutInflater;
 import android.view.Menu;
@@ -64,6 +65,7 @@ public class PlantListFragment extends Fragment
 	@Views.InjectView(R.id.empty) private View empty;
 
 	private ArrayList<PlantStage> filterList = null;
+	private boolean reverse = false;
 
 	@Override public void onCreate(Bundle savedInstanceState)
 	{
@@ -84,17 +86,18 @@ public class PlantListFragment extends Fragment
 	{
 		super.onActivityCreated(savedInstanceState);
 
+		reverse = PreferenceManager.getDefaultSharedPreferences(getActivity()).getBoolean("reverse_order", false);
 		if (savedInstanceState != null)
 		{
 			filterList = savedInstanceState.getParcelableArrayList("filter");
 		}
 
 		((MainActivity)getActivity()).toolbarLayout.removeViews(1, ((MainActivity)getActivity()).toolbarLayout.getChildCount() - 1);
-		getActivity().setTitle(getString(R.string.list_title, getString(R.string.all)));
+		getActivity().setTitle(getString(R.string.all_list_title));
 
 		adapter = new PlantAdapter(getActivity());
 
-		if (MainApplication.isTablet())
+		if (MainApplication.isTablet() && getResources().getBoolean(R.bool.is_portrait) == false)
 		{
 			GridLayoutManager layoutManager = new GridLayoutManager(getActivity(), 2);
 			RecyclerView.ItemDecoration spacesItemDecoration = new RecyclerView.ItemDecoration()
@@ -104,12 +107,6 @@ public class PlantListFragment extends Fragment
 				@Override
 				public void getItemOffsets(Rect outRect, View view, RecyclerView parent, RecyclerView.State state)
 				{
-					if (parent.getPaddingLeft() != space)
-					{
-						parent.setPadding(space, space, space, space);
-						parent.setClipToPadding(false);
-					}
-
 					outRect.top = space;
 					outRect.bottom = space;
 					outRect.left = space;
@@ -122,19 +119,17 @@ public class PlantListFragment extends Fragment
 		}
 		else
 		{
-			boolean reverse = PreferenceManager.getDefaultSharedPreferences(getActivity()).getBoolean("reverse_order", false);
-			LinearLayoutManager layoutManager = new LinearLayoutManager(getActivity(), RecyclerView.VERTICAL, reverse);
-			layoutManager.setStackFromEnd(reverse);
+			LinearLayoutManager layoutManager = new LinearLayoutManager(getActivity());
 			recycler.setLayoutManager(layoutManager);
+			recycler.addItemDecoration(new SomeDividerItemDecoration(getActivity(), SomeDividerItemDecoration.VERTICAL, R.drawable.divider_8dp, new Function3<Integer, RecyclerView.ViewHolder, RecyclerView.Adapter<RecyclerView.ViewHolder>, Boolean>()
+			{
+				@Override public Boolean invoke(Integer integer, RecyclerView.ViewHolder viewHolder, RecyclerView.Adapter<RecyclerView.ViewHolder> viewHolderAdapter)
+				{
+					return viewHolderAdapter.getItemViewType(integer) != 0;
+				}
+			}));
 		}
 
-		recycler.addItemDecoration(new SomeDividerItemDecoration(getActivity(), SomeDividerItemDecoration.VERTICAL, R.drawable.divider_8dp, new Function3<Integer, RecyclerView.ViewHolder, RecyclerView.Adapter<RecyclerView.ViewHolder>, Boolean>()
-		{
-			@Override public Boolean invoke(Integer integer, RecyclerView.ViewHolder viewHolder, RecyclerView.Adapter<RecyclerView.ViewHolder> viewHolderAdapter)
-			{
-				return viewHolderAdapter.getItemViewType(integer) != 0;
-			}
-		}));
 		recycler.setAdapter(adapter);
 
 		ItemTouchHelper.Callback callback = new SimpleItemTouchHelperCallback(adapter)
@@ -213,6 +208,7 @@ public class PlantListFragment extends Fragment
 	{
 		super.onResume();
 
+		Log.e("TEST", "resume");
 		filter();
 	}
 
@@ -232,6 +228,11 @@ public class PlantListFragment extends Fragment
 	{
 		ArrayList<Plant> plants = (ArrayList<Plant>)adapter.getPlants();
 
+		if (reverse)
+		{
+			Collections.reverse(plants);
+		}
+
 		PlantManager.getInstance().setPlants(plants);
 		PlantManager.getInstance().save();
 	}
@@ -249,7 +250,7 @@ public class PlantListFragment extends Fragment
 		int index = 0;
 		for (Plant plant : adapter.getPlants())
 		{
-			plants[index] = PlantManager.getInstance().getPlants().indexOf(plant);
+			plants[index] = PlantManager.getInstance().indexOf(plant);
 			index++;
 		}
 
@@ -347,6 +348,7 @@ public class PlantListFragment extends Fragment
 		{
 			Plant plant = data.getParcelableExtra("plant");
 			PlantManager.getInstance().upsert(plant);
+			Log.e("TEST", "result " + plant);
 			PlantWidgetProvider.triggerUpdateAll(getActivity());
 		}
 
@@ -443,7 +445,8 @@ public class PlantListFragment extends Fragment
 		{
 			stageOrdinals.add(plantStage.ordinal() + "");
 		}
-		androidx.preference.PreferenceManager.getDefaultSharedPreferences(getActivity()).edit()
+
+		PreferenceManager.getDefaultSharedPreferences(getActivity()).edit()
 			.putStringSet("filter_list", stageOrdinals)
 			.apply();
 
@@ -457,7 +460,13 @@ public class PlantListFragment extends Fragment
 
 	private void filter()
 	{
+		Log.e("TEST", "filtering");
 		ArrayList<Plant> plantList = PlantManager.getInstance().getSortedPlantList(null);
+		if (reverse)
+		{
+			Collections.reverse(plantList);
+		}
+
 		adapter.setPlants(plantList);
 
 		ArrayList<String> plants = new ArrayList<>();
@@ -490,5 +499,10 @@ public class PlantListFragment extends Fragment
 			empty.setVisibility(View.GONE);
 			recycler.setVisibility(View.VISIBLE);
 		}
+	}
+
+	@Override public void startActivityForResult(Intent intent, int requestCode)
+	{
+		getActivity().startActivityForResult(intent, requestCode);
 	}
 }

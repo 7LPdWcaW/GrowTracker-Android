@@ -1,10 +1,9 @@
 package me.anon.lib
 
-import android.app.Activity
-import androidx.annotation.StringRes
-import com.google.android.material.snackbar.Snackbar
 import android.view.View
+import androidx.annotation.StringRes
 import androidx.fragment.app.FragmentActivity
+import com.google.android.material.snackbar.Snackbar
 
 abstract class SnackBarListener
 {
@@ -33,7 +32,7 @@ class SnackBar
 		}
 
 		@JvmStatic
-		public fun show(context: FragmentActivity, @StringRes message: Int, listener: SnackBarListener)
+		public fun show(context: FragmentActivity, @StringRes message: Int, listener: SnackBarListener?)
 		{
 			show(context, context.getString(message), listener)
 		}

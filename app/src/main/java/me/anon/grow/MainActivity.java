@@ -9,8 +9,11 @@ import android.content.pm.PackageManager;
 import android.net.Uri;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
+import android.text.Html;
+import android.text.TextUtils;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.SubMenu;
 import android.view.View;
 import android.view.inputmethod.InputMethodManager;
 
@@ -210,7 +213,12 @@ public class MainActivity extends BaseActivity implements NavigationView.OnNavig
 
 	public void showDrawerToggle()
 	{
-		if (drawer != null)
+		if (MainApplication.isTablet())
+		{
+			getSupportActionBar().setDisplayHomeAsUpEnabled(false);
+			getSupportActionBar().setDisplayShowHomeEnabled(false);
+		}
+		else if (drawer != null)
 		{
 			ActionBarDrawerToggle drawerToggle = new ActionBarDrawerToggle(this, drawer, toolbar, 0, 0)
 			{
@@ -256,6 +264,23 @@ public class MainActivity extends BaseActivity implements NavigationView.OnNavig
 			Intent view = new Intent(Intent.ACTION_VIEW);
 			view.setData(Uri.parse("http://github.com/7lpdwcaw/"));
 			startActivity(view);
+		}
+		else if (item.getItemId() == R.id.translations)
+		{
+			new AlertDialog.Builder(this)
+				.setTitle(R.string.translations_title)
+				.setMessage(Html.fromHtml(TextUtils.join("<br />", getResources().getStringArray(R.array.translators))))
+				.setPositiveButton(R.string.help_translate, new DialogInterface.OnClickListener()
+				{
+					@Override public void onClick(DialogInterface dialogInterface, int i)
+					{
+						Intent view = new Intent(Intent.ACTION_VIEW);
+						view.setData(Uri.parse("https://github.com/7LPdWcaW/GrowTracker-Android/issues/116"));
+						startActivity(view);
+					}
+				})
+				.setNegativeButton(R.string.cancel, null)
+				.show();
 		}
 		else if (item.getItemId() == R.id.add)
 		{
@@ -314,6 +339,13 @@ public class MainActivity extends BaseActivity implements NavigationView.OnNavig
 		}
 		else if (item.getItemId() == R.id.all)
 		{
+			SubMenu menu = navigation.getMenu().findItem(R.id.garden_menu).getSubMenu();
+			for (int index = 0; index < menu.size(); index++)
+			{
+				menu.getItem(index).setChecked(false);
+			}
+
+			navigation.getMenu().findItem(R.id.garden_menu).getSubMenu().findItem(R.id.all).setChecked(true);
 			selectedItem = item.getItemId();
 			getSupportFragmentManager().beginTransaction().replace(R.id.fragment_holder, PlantListFragment.newInstance(), TAG_FRAGMENT).commit();
 		}

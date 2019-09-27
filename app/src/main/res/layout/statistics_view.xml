@@ -353,6 +353,13 @@
 					</LinearLayout>
 				</LinearLayout>
 			</LinearLayout>
+
+			<com.github.mikephil.charting.charts.HorizontalBarChart
+				android:layout_width="match_parent"
+				android:layout_height="120dp"
+				android:id="@+id/stage_chart"
+				android:layout_marginBottom="16dp"
+			/>
 		</LinearLayout>
 
 		<androidx.constraintlayout.widget.ConstraintLayout

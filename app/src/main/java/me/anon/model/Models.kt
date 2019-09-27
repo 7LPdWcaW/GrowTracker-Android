@@ -19,7 +19,7 @@ import java.util.*
 @Parcelize
 @JsonClass(generateAdapter = true)
 class FeedingSchedule(
-	val id: String = UUID.randomUUID().toString(),
+	var id: String = UUID.randomUUID().toString(),
 	var name: String = "",
 	var description: String = "",
 	@field:Json(name = "schedules") var _schedules: ArrayList<FeedingScheduleDate>
@@ -44,7 +44,7 @@ class FeedingSchedule(
 @Parcelize
 @JsonClass(generateAdapter = true)
 class FeedingScheduleDate(
-	val id: String = UUID.randomUUID().toString(),
+	var id: String = UUID.randomUUID().toString(),
 	var dateRange: Array<Int>,
 	var stageRange: Array<PlantStage>,
 	var additives: ArrayList<Additive> = arrayListOf()
@@ -72,7 +72,8 @@ abstract class Action(
 		PESTICIDE_APPLICATION(R.string.action_pesticide_application, -0x65106566),
 		TOP(R.string.action_topped, -0x6543555c),
 		TRANSPLANTED(R.string.action_transplanted, -0x65000073),
-		TRIM(R.string.action_trim, -0x6500546f);
+		TRIM(R.string.action_trim, -0x6500546f),
+		TUCK(R.string.action_tuck, -0x65800046);
 
 		companion object
 		{
@@ -225,10 +226,10 @@ class Plant(
 		if (stage == PlantStage.HARVESTED)
 		{
 			val stageDate = stageTimes[stage] ?: 0
-			val harvested = DateRenderer().timeAgo((System.currentTimeMillis() - stageDate).toDouble(), -1)
+			val harvested = DateRenderer(context).timeAgo((System.currentTimeMillis() - stageDate).toDouble(), -1)
 			val harvestedDays = TimeHelper.toDays(stageDate).toInt()
 
-			summary.add(context.getString(R.string.harvested_ago, "${harvested.time.toInt()} ${harvested.unit.type}") +
+			summary.add(context.getString(R.string.harvested_ago, "${harvested.time.toInt()} ${context.resources.getQuantityString(harvested.unit.pluralRes, harvested.time.toInt())}") +
 				when (verbosity)
 				{
 					0, 1 -> ""
@@ -244,16 +245,16 @@ class Plant(
 		}
 		else
 		{
-			val planted = DateRenderer().timeAgo(plantDate.toDouble(), -1)
-			val plantedDays = DateRenderer().timeAgo(plantDate.toDouble(), 3)
+			val planted = DateRenderer(context).timeAgo(plantDate.toDouble(), -1)
+			val plantedDays = DateRenderer(context).timeAgo(plantDate.toDouble(), 3)
 			summary.add(when (verbosity)
 			{
 				0, 1 -> "${plantedDays.time.toInt()}" + currentStageTime?.let {"/$it"}
-				else -> context.getString(R.string.planted_ago, "${planted.time.toInt()} ${planted.unit.type}") + currentStageTime?.let {", $it"}
+				else -> context.getString(R.string.planted_ago, "${planted.time.toInt()} ${context.resources.getQuantityString(planted.unit.pluralRes, planted.time.toInt())}") + currentStageTime?.let {", $it"}
 			})
 
 			lastWater?.let {
-				summary.add(context.getString(R.string.last_watered_ago, DateRenderer().timeAgo(it.date.toDouble()).let { time ->
+				summary.add(context.getString(R.string.last_watered_ago, DateRenderer(context).timeAgo(it.date.toDouble()).let { time ->
 					when (verbosity)
 					{
 						0, 1 -> time.formattedDate
@@ -458,19 +459,6 @@ enum class PlantStage private constructor(val printString: Int) : Parcelable
 			}
 
 			return names.toTypedArray()
-		}
-
-		public fun valueOfPrintString(context: Context, printString: String): PlantStage?
-		{
-			for (plantStage in values())
-			{
-				if (context.getString(plantStage.printString) == printString)
-				{
-					return plantStage
-				}
-			}
-
-			return null
 		}
 	}
 }
