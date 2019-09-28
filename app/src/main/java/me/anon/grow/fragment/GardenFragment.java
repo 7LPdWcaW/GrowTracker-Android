@@ -3,9 +3,11 @@ package me.anon.grow.fragment;
 import android.app.Activity;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.graphics.Rect;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
 import android.text.Html;
+import android.util.TypedValue;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -26,6 +28,7 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AlertDialog;
 import androidx.fragment.app.Fragment;
+import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.ItemTouchHelper;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
@@ -35,6 +38,7 @@ import me.anon.controller.adapter.SimpleItemTouchHelperCallback;
 import me.anon.controller.provider.PlantWidgetProvider;
 import me.anon.grow.AddWateringActivity;
 import me.anon.grow.MainActivity;
+import me.anon.grow.MainApplication;
 import me.anon.grow.PlantDetailsActivity;
 import me.anon.grow.R;
 import me.anon.grow.service.ExportService;
@@ -121,21 +125,42 @@ public class GardenFragment extends Fragment
 		adapter = new PlantAdapter(getActivity());
 		//name.setText(garden.getName());
 
-		boolean reverse = PreferenceManager.getDefaultSharedPreferences(getActivity()).getBoolean("reverse_order", false);
-		LinearLayoutManager layoutManager = new LinearLayoutManager(getActivity(), LinearLayoutManager.VERTICAL, reverse);
-		layoutManager.setStackFromEnd(reverse);
-		recycler.setLayoutManager(layoutManager);
-		recycler.setAdapter(adapter);
+		if (MainApplication.isTablet() && getResources().getBoolean(R.bool.is_portrait) == false)
+		{
+			GridLayoutManager layoutManager = new GridLayoutManager(getActivity(), 2);
+			RecyclerView.ItemDecoration spacesItemDecoration = new RecyclerView.ItemDecoration()
+			{
+				private int space = (int)(TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, 12, getResources().getDisplayMetrics()) / 2f);
 
-		recycler.addItemDecoration(new SomeDividerItemDecoration(getActivity(), SomeDividerItemDecoration.VERTICAL, R.drawable.divider_8dp, new Function3<Integer, RecyclerView.ViewHolder, RecyclerView.Adapter<RecyclerView.ViewHolder>, Boolean>()
+				@Override
+				public void getItemOffsets(Rect outRect, View view, RecyclerView parent, RecyclerView.State state)
+				{
+					outRect.top = space;
+					outRect.bottom = space;
+					outRect.left = space;
+					outRect.right = space;
+				}
+			};
+
+			recycler.setLayoutManager(layoutManager);
+			recycler.addItemDecoration(spacesItemDecoration);
+			recycler.smoothScrollToPosition(0);
+		}
+		else
+		{
+			LinearLayoutManager layoutManager = new LinearLayoutManager(getActivity());
+			recycler.setLayoutManager(layoutManager);
+			recycler.addItemDecoration(new SomeDividerItemDecoration(getActivity(), SomeDividerItemDecoration.VERTICAL, R.drawable.divider_8dp, new Function3<Integer, RecyclerView.ViewHolder, RecyclerView.Adapter<RecyclerView.ViewHolder>, Boolean>()
 		{
 			@Override public Boolean invoke(Integer integer, RecyclerView.ViewHolder viewHolder, RecyclerView.Adapter<RecyclerView.ViewHolder> viewHolderAdapter)
 			{
 				return viewHolderAdapter.getItemViewType(integer) != 0;
 			}
 		}));
+		}
 
 		recycler.setNestedScrollingEnabled(false);
+		recycler.setAdapter(adapter);
 
 		ItemTouchHelper.Callback callback = new SimpleItemTouchHelperCallback(adapter)
 		{
@@ -262,7 +287,7 @@ public class GardenFragment extends Fragment
 		int index = 0;
 		for (Plant plant : adapter.getPlants())
 		{
-			plants[index] = PlantManager.getInstance().getPlants().indexOf(plant);
+			plants[index] = PlantManager.getInstance().indexOf(plant);
 			index++;
 		}
 
@@ -580,5 +605,10 @@ public class GardenFragment extends Fragment
 			empty.setVisibility(View.GONE);
 			recycler.setVisibility(View.VISIBLE);
 		}
+	}
+
+	@Override public void startActivityForResult(Intent intent, int requestCode)
+	{
+		getActivity().startActivityForResult(intent, requestCode);
 	}
 }

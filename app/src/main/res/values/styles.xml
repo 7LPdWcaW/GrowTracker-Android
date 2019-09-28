@@ -9,6 +9,7 @@
 		<item name="colorSecondary">#ffb71c1c</item>
 		<item name="colorControlNormal">#4AA74E</item>
 		<item name="colorOnSecondary">#ffffff</item>
+		<item name="chart_label">#000000</item>
 
 		<item name="actionModeBackground">?colorPrimary</item>
 		<item name="android:actionModeBackground">?colorPrimary</item>

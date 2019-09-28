@@ -7,6 +7,9 @@ import me.anon.lib.ext.toSafeInt
 import me.anon.lib.manager.FileManager
 import me.anon.lib.manager.PlantManager
 import java.io.File
+import java.text.SimpleDateFormat
+import java.util.*
+import kotlin.collections.ArrayList
 
 /**
  * Helper class for backing up data files
@@ -22,7 +25,7 @@ object BackupHelper
 		if (MainApplication.isFailsafe()) return null
 
 		val isEncrypted = MainApplication.isEncrypted()
-		val time = System.currentTimeMillis()
+		val time = SimpleDateFormat("yyyy-MM-dd-hh-mm-ss").format(Date())
 		val ext = isEncrypted T "dat" ?: "bak"
 		val backupPath = File(FILES_PATH)
 		backupPath.mkdirs()

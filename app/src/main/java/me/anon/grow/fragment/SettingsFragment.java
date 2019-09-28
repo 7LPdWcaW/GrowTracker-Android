@@ -31,6 +31,7 @@ import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 import java.text.DateFormat;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
@@ -754,7 +755,14 @@ public class SettingsFragment extends PreferenceFragmentCompat implements Prefer
 					}
 					catch (NumberFormatException e)
 					{
-						date = new Date(backupFile.lastModified());
+						try
+						{
+							date = new SimpleDateFormat("yyyy-MM-dd-hh-mm-ss").parse(parts[0]);
+						}
+						catch (Exception e2)
+						{
+							date = new Date(backupFile.lastModified());
+						}
 					}
 
 					if (parts.length == 2)

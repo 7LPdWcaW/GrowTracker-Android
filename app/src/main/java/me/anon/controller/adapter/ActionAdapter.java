@@ -339,7 +339,7 @@ public class ActionAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>
 			Calendar actionCalendar = GregorianCalendar.getInstance();
 			actionCalendar.setTime(actionDate);
 			String fullDateStr = dateFormat.format(actionDate) + " " + timeFormat.format(actionDate);
-			String dateStr = "<b>" + new DateRenderer().timeAgo(action.getDate()).formattedDate + "</b> ago";
+			String dateStr = "<b>" + new DateRenderer(viewHolder.itemView.getContext()).timeAgo(action.getDate()).formattedDate + "</b> ago";
 
 			if (index > 0)
 			{
