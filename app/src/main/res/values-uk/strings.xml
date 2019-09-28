@@ -45,9 +45,9 @@
 
 	<string name="schedules_new_feeding">+ Нове підживлення</string>
 	<string name="schedules_new_schedule">+ Новий розклад</string>
-	<string name="new_additive">+ Нова добавка</string>
-	<string name="additives">Добавки</string>
-	<string name="additive">Добавка</string>
+	<string name="new_additive">+ Нове добриво</string>
+	<string name="additives">Добрива</string>
+	<string name="additive">Добриво</string>
 	<string name="from_date">Від дати</string>
 	<string name="from_stage">Від стадії</string>
 	<string name="to_date">До дати</string>
@@ -152,7 +152,7 @@
 	<string name="total_waters_label">Всього поливів:</string>
 	<string name="total_flushes_label">Всього промивань:</string>
 	<string name="ave_time_between_water_label">Середній час між поливами:</string>
-	<string name="filter_additives">Фільтр добавок:</string>
+	<string name="filter_additives">Фільтр добрив</string>
 	<string name="ph_title">pH</string>
 
 	<string name="min">Мін:</string>
@@ -245,14 +245,16 @@
 	<string name="hide_images">Приховати зображення</string>
 	<string name="show_images">Показати зображення</string>
 
-	<string name="settings_default_garden">Сад що буде відображатися за замовчуванням, наразі: &lt;b&gt;%s&lt;/b&gt;</string>
-	<string name="settings_delivery">Одиниця об\'єму за замовчуванням, наразі: &lt;b&gt;%s&lt;/b&gt;</string>
-	<string name="settings_measurement">Одиниця об\'єму добавок за замовчуванням, наразі: &lt;b&gt;%s&lt;/b&gt;</string>
-	<string name="settings_temperature">Одиниця температури за замовчуванням, наразі: &lt;b&gt;%s&lt;/b&gt;</string>
-	<string name="settings_backup_size" formatted="true">Наразі: &lt;b&gt;%sMiB&lt;/b&gt; / Використано &lt;b&gt;%s&lt;/b&gt;</string>
+	<string name="settings_default_garden">Сад для показу за замовчуванням, наразі &lt;b&gt;%s&lt;/b&gt;</string>
+	<string name="settings_card_style">Обрати тип картки, наразі: %s</string>
+	<string name="settings_delivery">Одиниця вимірювання об\'єму, наразі: &lt;b&gt;%s&lt;/b&gt;</string>
+	<string name="settings_measurement">Одиниця вимірювання добрив, наразі: &lt;b&gt;%s&lt;/b&gt;</string>
+	<string name="settings_temperature">Одиниця вимірювання температури, наразі: &lt;b&gt;%s&lt;/b&gt;</string>
+	<string name="settings_backup_size" formatted="true">Наразі: &lt;b&gt;%s MiB&lt;/b&gt; / Використовується &lt;b&gt;%s&lt;/b&gt;</string>
+
 	<string name="failsafe_message">Введіть цей пароль під час розшифрування щоб упередити завантаження даних</string>
 	<string name="warning">Увага</string>
-	<string name="encryption_message">Базова форма AES-шифрування на основі введеного пароля. Даний спосіб не гарантує захисту від правоохоронних органів.</string>
+	<string name="encryption_message">Використовується базова форма AES-шифрування на основі введеного пароля. Даний спосіб не гарантує захисту від правоохоронних органів.</string>
 	<string name="backup_enable_toast">Резервне копіювання ввімкнено. Резервні копії будуть зберігатися в /sdcard/backups/GrowTracker/</string>
 	<string name="restore_complete" formatted="true">Відновлення до %s завершено</string>
 	<string name="restore_error" formatted="true">Не вдалося відновити з копії %s. Можливо файл %s</string>
@@ -279,13 +281,13 @@
 	<string name="plant_summary_out_ph">Вихідний pH:</string>
 	<string name="plant_summary_amount">Кількість:</string>
 	<string name="plant_summary_temp">Температура:</string>
-	<string name="plant_summary_additives">Добавки:</string>
+	<string name="plant_summary_additives">Добрива:</string>
 	<string name="plant_summary_ec">EC</string>
 	<string name="plant_summary_ppm">ppm</string>
 
 	<string name="select_schedule_title">Обрати розклад</string>
 	<string name="actions">Дії</string>
-	<string name="settings_dark_title">Ввімкнути темну тему</string>
+	<string name="settings_dark_title">Темна тема</string>
 	<string name="settings_dark_summary">Примусово використовувати темну тему незалежно від налаштувань пристрою</string>
 	<string name="settings_harvest_title">Приховати зібрані</string>
 	<string name="settings_harvest_summary">Приховати всі рослини які були зібрані</string>
@@ -295,7 +297,7 @@
 
 	<string name="settings_units">Одиниці вимірювання</string>
 	<string name="settings_delivery_title">Одиниця об\'єму</string>
-	<string name="settings_measurement_title">Одиниця об\'єму добавок:</string>
+	<string name="settings_measurement_title">Одиниця об\'єму добрив</string>
 	<string name="settings_temp_title">Одиниці температури</string>
 	<string name="settings_tds_title">Використовувати EC замість ppm</string>
 	<string name="settings_tds_summary">Використовуватиметься формула ((ppm * 2) / 1000)</string>
@@ -324,7 +326,7 @@
 	<!-- "1 selected" -->
 	<string name="selected_len" formatted="true">%o обрано</string>
 	<string name="translations_title">Дякуємо за участь</string>
-	<string name="translations_by">Перекладено</string>
+	<string name="translations_by">Переклади</string>
 	<string name="help_translate">Допомогти з перекладом</string>
 	<string name="encrypt_progress_warning">Зашифровую дані, це може тривати довго...</string>
 	<string name="decrypt_progress_warning">Розшифровую дані, це може тривати довго...</string>
