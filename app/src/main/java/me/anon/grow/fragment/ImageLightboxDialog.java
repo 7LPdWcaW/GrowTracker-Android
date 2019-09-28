@@ -209,7 +209,7 @@ public class ImageLightboxDialog extends FragmentActivity
 				}
 
 				String dateStr = dateFormat.format(date) + " " + timeFormat.format(date);
-				((TextView)imageLayout.findViewById(R.id.taken)).setText(Html.fromHtml("<b>" + getString(R.string.taken) + "</b>: " + dateStr + stageDayStr + " (" + getString(R.string.ago,  new DateRenderer().timeAgo(date.getTime()).formattedDate) + ")"));
+				((TextView)imageLayout.findViewById(R.id.taken)).setText(Html.fromHtml("<b>" + getString(R.string.taken) + "</b>: " + dateStr + stageDayStr + " (" + getString(R.string.ago,  new DateRenderer(view.getContext()).timeAgo(date.getTime()).formattedDate) + ")"));
 
 				try
 				{

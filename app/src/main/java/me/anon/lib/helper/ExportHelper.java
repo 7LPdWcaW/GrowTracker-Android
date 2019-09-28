@@ -506,11 +506,9 @@ public class ExportHelper
 		{
 			protected NotificationCompat.Builder exportNotification;
 			protected NotificationManager notificationManager;
-			protected int plantIndex;
 
 			@Override protected void onPreExecute()
 			{
-				plantIndex = PlantManager.getInstance().getPlants().indexOf(plant);
 				NotificationHelper.createExportChannel(appContext);
 
 				notificationManager = (NotificationManager)appContext.getSystemService(Context.NOTIFICATION_SERVICE);

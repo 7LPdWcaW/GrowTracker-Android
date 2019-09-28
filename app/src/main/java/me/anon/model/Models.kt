@@ -226,10 +226,10 @@ class Plant(
 		if (stage == PlantStage.HARVESTED)
 		{
 			val stageDate = stageTimes[stage] ?: 0
-			val harvested = DateRenderer().timeAgo((System.currentTimeMillis() - stageDate).toDouble(), -1)
+			val harvested = DateRenderer(context).timeAgo((System.currentTimeMillis() - stageDate).toDouble(), -1)
 			val harvestedDays = TimeHelper.toDays(stageDate).toInt()
 
-			summary.add(context.getString(R.string.harvested_ago, "${harvested.time.toInt()} ${harvested.unit.type}") +
+			summary.add(context.getString(R.string.harvested_ago, "${harvested.time.toInt()} ${context.resources.getQuantityString(harvested.unit.pluralRes, harvested.time.toInt())}") +
 				when (verbosity)
 				{
 					0, 1 -> ""
@@ -245,16 +245,16 @@ class Plant(
 		}
 		else
 		{
-			val planted = DateRenderer().timeAgo(plantDate.toDouble(), -1)
-			val plantedDays = DateRenderer().timeAgo(plantDate.toDouble(), 3)
+			val planted = DateRenderer(context).timeAgo(plantDate.toDouble(), -1)
+			val plantedDays = DateRenderer(context).timeAgo(plantDate.toDouble(), 3)
 			summary.add(when (verbosity)
 			{
 				0, 1 -> "${plantedDays.time.toInt()}" + currentStageTime?.let {"/$it"}
-				else -> context.getString(R.string.planted_ago, "${planted.time.toInt()} ${planted.unit.type}") + currentStageTime?.let {", $it"}
+				else -> context.getString(R.string.planted_ago, "${planted.time.toInt()} ${context.resources.getQuantityString(planted.unit.pluralRes, planted.time.toInt())}") + currentStageTime?.let {", $it"}
 			})
 
 			lastWater?.let {
-				summary.add(context.getString(R.string.last_watered_ago, DateRenderer().timeAgo(it.date.toDouble()).let { time ->
+				summary.add(context.getString(R.string.last_watered_ago, DateRenderer(context).timeAgo(it.date.toDouble()).let { time ->
 					when (verbosity)
 					{
 						0, 1 -> time.formattedDate

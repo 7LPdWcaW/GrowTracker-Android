@@ -2,10 +2,13 @@
 
 <resources>
 	<string name="version">Version %s</string>
-	<string name="menu_settings">Parametre</string>
+	<string name="menu_settings">Paramètres</string>
 
-	<!-- Plant list title "All plants" -->
-	<string name="list_title">%s plantes</string>
+	<!-- Garden Plant list title "garden name plants" -->
+	<string name="list_title">Plantes de %s </string>
+	<!-- All plants list -->
+	<string name="all_list_title">Toute les plantes</string>
+	<!-- All/everything -->
 	<string name="all">Tout</string>
 	<string name="snackbar_action_add">Actions ajoutées</string>
 	<string name="snackbar_note_add">Notes ajoutées</string>
@@ -49,8 +52,8 @@
 	<string name="from_stage">Depuis l\'état</string>
 	<string name="to_date">Jusqu\'à (date)</string>
 	<string name="to_stage">Jusqu\'à l\'état</string>
-	<string name="populate_from_schedule">Peupler depuis le planning</string>
-	<string name="populate_from_previous">Peupler sur base du précédent</string>
+	<string name="populate_from_schedule">Remplir depuis le planning</string>
+	<string name="populate_from_previous">Remplir sur base du précédent</string>
 	<string name="confirm_title">Êtes-vous certain ?</string>
 	<string name="confirm_copy_schedule">Copier le planning sélectionné ?</string>
 	<string name="confirm_delete_schedule">Suprimer le planning sélectionné ?</string>
@@ -72,7 +75,7 @@
 	<string name="water_details_title">Détails de l\'eau</string>
 	<string name="water_ph_label">pH de l\'eau</string>
 	<string name="ppm_label">PPM</string>
-	<string name="runoff_label">Écoulement</string>
+	<string name="runoff_label">Écoulement pH</string>
 	<string name="amount_label" formatted="true">Quantité (%s)</string>
 	<string name="temp_label" formatted="true">Température (º%s)</string>
 	<string name="date_and_time_header">Date et heure</string>
@@ -126,7 +129,7 @@
 	<string name="filter">Filtrer</string>
 	<string name="planted">Planté</string>
 	<string name="germination">Germination</string>
-	<string name="cutting">Récolte</string>
+	<string name="cutting">Bouturage (coupe sur plan mère)</string>
 	<string name="vegetation">Végétatif / croissance</string>
 	<string name="flowering">Floraison</string>
 	<string name="drying">Séchage</string>
@@ -141,7 +144,7 @@
 
 	<string name="germination_label">Germination:</string>
 	<string name="vegetation_label">Vegetatif:</string>
-	<string name="cutting_label">Coupe:</string>
+	<string name="cutting_label">Coupe pour bouture:</string>
 	<string name="flower_label">Floraison:</string>
 	<string name="drying_label">Séchage:</string>
 	<string name="curing_label">Curing:</string>
@@ -156,12 +159,12 @@
 	<string name="max">Max:</string>
 	<string name="ave">Moy:</string>
 	<string name="temperature_title">Temperature</string>
-	<string name="general_title">General</string>
+	<string name="general_title">Général</string>
 	<string name="failed_to_load_plant">Echec lors du chargement des plantes</string>
 	<string name="action_fim">Putain j\'ai oublié (PJO)</string>
 	<string name="action_flush">Rinçage</string>
 	<string name="action_foliar_feed">Arrosage foliaire</string>
-	<string name="action_lst">palissage</string>
+	<string name="action_lst">Palissage</string>
 	<string name="action_lolipop">Lollipop ( taille des feuilles inférieures ombragées )</string>
 	<string name="action_pesticide_application">Application de pesticide </string>
 	<string name="action_topped">Apex taillé</string>
@@ -173,7 +176,7 @@
 	<string name="note">Note</string>
 	<string name="delete_event_dialog_title">Supprimer cet événement ?</string>
 	<string name="confirm_delete_item_message">Êtes-vous certain de vouloir supprimer </string>
-	<string name="confirm_delete_photos_message" formatted="true">Êtes-vous certain de vouloir supprimer ces %s images ? Vous ne serez plus en mesure de les récupérer.</string>
+	<string name="confirm_delete_photos_message" formatted="true">Êtes-vous sûre de vouloir supprimer ces %s images ? Vous ne pourrez pas les récupérer.</string>
 	<string name="edit">Modifier</string>
 	<string name="stage">état</string>
 	<string name="set">OK</string>
@@ -242,11 +245,12 @@
 	<string name="hide_images">Cacher les images</string>
 	<string name="show_images">Montrer les images</string>
 
-	<string name="settings_default_garden">Jardin à ouvrir par défaut, actuellement &lt;b&gt;%s&lt;/b&gt;</string>
+	<string name="settings_default_garden">Jardin par défaut à l\'ouverture, actuellement : &lt;b&gt;%s&lt;/b&gt;</string>
+	<string name="settings_card_style">Sélectionner un style de carte, actuellement : %s</string>
 	<string name="settings_delivery">Unité de mesure de volume par défaut, actuellement &lt;b&gt;%s&lt;/b&gt;</string>
 	<string name="settings_measurement">Unité de mesure de volume d\'engrais par défaut, actuellement &lt;b&gt;%s&lt;/b&gt;</string>
-	<string name="settings_temperature">Unité de température, actuellement &lt;b&gt;%s&lt;/b&gt;</string>
-	<string name="settings_backup_size" formatted="true">Actuellement &lt;b&gt;%s MiB&lt;/b&gt; / Et &lt;b&gt;%s&lt;/b&gt;</string>
+	<string name="settings_temperature">Unité de température par défaut, actuellement &lt;b&gt;%s&lt;/b&gt;</string>
+	<string name="settings_backup_size" formatted="true">Actuellement : &lt;b&gt;%s MiB&lt;/b&gt; / utilisant &lt;b&gt;%s&lt;/b&gt;</string>
 	<string name="failsafe_message">Fournir ce password pendant la phase de décryptage pour éviter de charger les données </string>
 	<string name="warning">Attention</string>
 	<string name="encryption_message">Il s\'agit d\'une forme basique d\'encryptage AES sur base d\'une phrase de passe fournie par l\'utilisateur. Ne pas considérer comme une forme de protection absolue contre le gouvernement ou toute agence de surveillance.</string>
@@ -267,7 +271,7 @@
 	<string name="all_none">Tous/Aucun</string>
 
 	<string name="stat_input_ph">pH de la solution nutritive</string>
-	<string name="stat_runoff_ph">pH du trop plein (surplus)</string>
+	<string name="stat_runoff_ph">pH du surplus</string>
 	<string name="stat_average_ph">pH moyen</string>
 
 	<string name="photos_title">Photos de la plante</string>
@@ -301,16 +305,16 @@
 	<string name="settings_autobackup_summary">Auto backup des données toute les 24 heures</string>
 	<string name="settings_backupnow">Backup maintenant</string>
 	<string name="settings_backupsize_title">Taille limite pour les backup</string>
-	<string name="settings_backupsize_hint">Taille en MB</string>
-	<string name="settings_backupsize_dialogtitle">Limite des Backups (MB)</string>
+	<string name="settings_backupsize_hint">Taille en MiB</string>
+	<string name="settings_backupsize_dialogtitle">Limite des Backups (MiB)</string>
 	<string name="settings_restore_backup">Restaurer depuis le backup</string>
 	<string name="settings_encrypt_title">Crypter les données</string>
 	<string name="settings_encrypt_summary">Ajouter un PIN pour verrouiller l\'application et crypter toute les données et images.</string>
 	<string name="settings_failsafe_title">Mode sans échec</string>
-	<string name="settings_failsafe_summary">Définir le mot de passe du mode sans échec pour empêcher l\'accès aux données</string>
+	<string name="settings_failsafe_summary">Définir le mot de passe du mode sans échec qui permettra de révéler de fausses données</string>
 	<string name="settings_addons">Plugins</string>
 	<string name="settings_about">À propos</string>
-	<string name="settings_readme">Read me</string>
+	<string name="settings_readme">Lisez-moi</string>
 	<string name="settings_export">Exporter les données</string>
 	<string name="settings_cardstyle_title">Icônes</string>
 	<string name="empty_plant_list">Aucune plante à montrer</string>
@@ -318,18 +322,22 @@
 	<string name="empty_photos">Aucune photo à montrer</string>
 	<string name="events_title">Actions passées</string>
 	<string name="show_hide_calendar">Montrer/Cacher le calendrier</string>
+	<!-- "1 selected" -->
 	<string name="selected_len" formatted="true">%o Selectionné</string>
 	<string name="translations_title">Remerciements :</string>
 	<string name="translations_by">Traduction par</string>
 	<string name="help_translate">Aider à traduire</string>
+	<string name="encrypt_progress_warning">Cryptage des données et images, ceci peut prendre un certain temps ...</string>
+	<string name="decrypt_progress_warning">Décryptage des données et images, ceci peut prendre un certain temps ...</string>
 
-	<!-- Add your name here! -->
-	<string-array name="translators">
-		<item>Maxtille - fr</item>
-		<item>Alex (Noxmiles) - de</item>
-		<item>basti b (Weltenesche) - de</item>
-		<item>Sascha Zenglein (szenglein) - de </item>
-		<item>W Q (williq) - de</item>
-		<item>EmmanuelMess - es</item>
-	</string-array>
-</resources>
+	<!-- now = 1 second -->
+	<string name="now_abbr">1s</string>
+	<string name="second_abbr">s</string>
+	<string name="minute_abbr">m</string>
+	<string name="hour_abbr">h</string>
+	<string name="day_abbr">j</string>
+	<string name="week_abbr">sem</string>
+	<string name="month_abbr">mois</string>
+	<string name="year_abbr">année</string>
+
+	</resources>
