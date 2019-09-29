@@ -136,6 +136,12 @@ public class MainActivity extends BaseActivity implements NavigationView.OnNavig
 	@Override protected void onResume()
 	{
 		super.onResume();
+
+		if (getSupportActionBar() != null)
+		{
+			getSupportActionBar().setDisplayHomeAsUpEnabled(!MainApplication.isTablet());
+		}
+
 		showDrawerToggle();
 	}
 

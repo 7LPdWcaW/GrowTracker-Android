@@ -55,7 +55,7 @@ public class BaseActivity extends AppCompatActivity
 
 		if (getSupportActionBar() != null)
 		{
-			getSupportActionBar().setDisplayHomeAsUpEnabled(MainApplication.isTablet());
+			getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 		}
 
 		Intent otherIntents = new Intent("me.anon.grow.ACTION_UPDATER");
