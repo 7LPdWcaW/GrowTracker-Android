@@ -60,11 +60,10 @@
 			app:summary="Default temperature unit to use, currently C"
 		/>
 
-		<SwitchPreferenceCompat
-			app:key="tds_ec"
+		<Preference
+			app:key="tds_unit"
 			app:title="@string/settings_tds_title"
-			app:summary="@string/settings_tds_summary"
-			android:defaultValue="false"
+			app:summary="Default tds unit to use, currently PPM500"
 		/>
 	</PreferenceCategory>
 

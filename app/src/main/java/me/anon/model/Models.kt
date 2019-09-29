@@ -8,6 +8,7 @@ import com.squareup.moshi.JsonClass
 import kotlinx.android.parcel.Parcelize
 import me.anon.grow.R
 import me.anon.lib.DateRenderer
+import me.anon.lib.TdsUnit
 import me.anon.lib.TempUnit
 import me.anon.lib.Unit
 import me.anon.lib.helper.TimeHelper
@@ -466,7 +467,7 @@ enum class PlantStage private constructor(val printString: Int) : Parcelable
 @Parcelize
 @JsonClass(generateAdapter = true)
 class Water(
-	var ppm: Double? = null,
+	var tds: Tds? = null,
 	var ph: Double? = null,
 	var runoff: Double? = null,
 	var amount: Double? = null,
@@ -479,6 +480,8 @@ class Water(
 {
 	public var type: String = "Water"
 
+	@Deprecated("")
+	public var ppm: Double? = null
 	@Deprecated("")
 	public var nutrient: Nutrient? = null
 	@Deprecated("")
@@ -582,6 +585,13 @@ class Water(
 		return summary
 	}
 }
+
+@Parcelize
+@JsonClass(generateAdapter = true)
+class Tds(
+	var amount: Double? = null,
+	var type: TdsUnit = TdsUnit.PPM500
+) : Parcelable
 
 @Parcelize
 @JsonClass(generateAdapter = true)

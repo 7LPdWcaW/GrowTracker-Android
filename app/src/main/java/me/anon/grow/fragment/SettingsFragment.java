@@ -56,6 +56,7 @@ import me.anon.grow.MainApplication;
 import me.anon.grow.R;
 import me.anon.lib.SnackBar;
 import me.anon.lib.SnackBarListener;
+import me.anon.lib.TdsUnit;
 import me.anon.lib.TempUnit;
 import me.anon.lib.Unit;
 import me.anon.lib.helper.AddonHelper;
@@ -98,6 +99,7 @@ public class SettingsFragment extends PreferenceFragmentCompat implements Prefer
 		findPreference("delivery_unit").setSummary(Html.fromHtml(getString(R.string.settings_delivery, Unit.getSelectedDeliveryUnit(getActivity()).getLabel())));
 		findPreference("measurement_unit").setSummary(Html.fromHtml(getString(R.string.settings_measurement, Unit.getSelectedMeasurementUnit(getActivity()).getLabel())));
 		findPreference("temperature_unit").setSummary(Html.fromHtml(getString(R.string.settings_temperature, TempUnit.getSelectedTemperatureUnit(getActivity()).getLabel())));
+		findPreference("tds_unit").setSummary(Html.fromHtml(getString(R.string.settings_tds_summary, getString(TdsUnit.getSelectedTdsUnit(getActivity()).getStrRes()))));
 
 		try
 		{
@@ -122,6 +124,7 @@ public class SettingsFragment extends PreferenceFragmentCompat implements Prefer
 		findPreference("delivery_unit").setOnPreferenceClickListener(this);
 		findPreference("measurement_unit").setOnPreferenceClickListener(this);
 		findPreference("temperature_unit").setOnPreferenceClickListener(this);
+		findPreference("tds_unit").setOnPreferenceClickListener(this);
 		findPreference("backup_now").setOnPreferenceClickListener(this);
 		findPreference("restore").setOnPreferenceClickListener(this);
 
@@ -561,6 +564,34 @@ public class SettingsFragment extends PreferenceFragmentCompat implements Prefer
 							.apply();
 
 						findPreference("delivery_unit").setSummary(Html.fromHtml(getString(R.string.settings_delivery, Unit.getSelectedDeliveryUnit(getActivity()).getLabel())));
+					}
+				})
+				.show();
+
+			return true;
+		}
+		else if ("tds_unit".equals(preference.getKey()))
+		{
+			final String[] options = new String[TdsUnit.values().length];
+			int index = 0, selectedIndex = TdsUnit.getSelectedTdsUnit(getActivity()).ordinal();
+			for (TdsUnit unit : TdsUnit.values())
+			{
+				options[index++] = getString(unit.getStrRes()) + " (" + unit.getLabel() + ")";
+			}
+
+			new AlertDialog.Builder(getActivity())
+				.setTitle(R.string.settings_tds_title)
+				.setSingleChoiceItems(options, selectedIndex, new DialogInterface.OnClickListener()
+				{
+					@Override public void onClick(DialogInterface dialogInterface, int index)
+					{
+						dialogInterface.dismiss();
+
+						PreferenceManager.getDefaultSharedPreferences(getActivity()).edit()
+							.putInt("tds_unit", index)
+							.apply();
+
+						findPreference("tds_unit").setSummary(Html.fromHtml(getString(R.string.settings_tds_summary, getString(TdsUnit.getSelectedTdsUnit(getActivity()).getStrRes()))));
 					}
 				})
 				.show();
