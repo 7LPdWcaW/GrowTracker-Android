@@ -131,13 +131,13 @@ public class StatisticsFragment extends Fragment
 		setStatistics();
 
 		String[] inputAdditional = new String[3];
-		StatsHelper.setInputData(plant, inputPh, inputAdditional);
+		StatsHelper.setInputData(plant, getActivity(), inputPh, inputAdditional);
 		minInputPh.setText(inputAdditional[0].equals(String.valueOf(Float.MAX_VALUE)) ? "0" : inputAdditional[0]);
 		maxInputPh.setText(inputAdditional[1].equals(String.valueOf(Float.MIN_VALUE)) ? "0" : inputAdditional[1]);
 		aveInputPh.setText(inputAdditional[2]);
 
 		String[] ppmAdditional = new String[3];
-		StatsHelper.setPpmData(plant, ppm, ppmAdditional, usingEc);
+		StatsHelper.setPpmData(plant, getActivity(), ppm, ppmAdditional, usingEc);
 		minppm.setText(ppmAdditional[0].equals(String.valueOf(Long.MAX_VALUE)) ? "0" : ppmAdditional[0]);
 		maxppm.setText(ppmAdditional[1].equals(String.valueOf(Long.MIN_VALUE)) ? "0" : ppmAdditional[1]);
 		aveppm.setText(ppmAdditional[2]);
@@ -152,7 +152,7 @@ public class StatisticsFragment extends Fragment
 		tempContainer.setVisibility(View.VISIBLE);
 
 		String[] tempAdditional = new String[3];
-		StatsHelper.setTempData(plant, temp, tempAdditional);
+		StatsHelper.setTempData(plant, getActivity(), temp, tempAdditional);
 		mintemp.setText(tempAdditional[0].equals("100.0") ? "-" : tempAdditional[0]);
 		maxtemp.setText(tempAdditional[1].equals("-100.0") ? "-" : tempAdditional[1]);
 		avetemp.setText(tempAdditional[2]);
@@ -185,7 +185,7 @@ public class StatisticsFragment extends Fragment
 			checkedAdditives.addAll(additiveNames);
 		}
 
-		StatsHelper.setAdditiveData(plant, additives, checkedAdditives);
+		StatsHelper.setAdditiveData(plant, getActivity(), additives, checkedAdditives);
 		additives.notifyDataSetChanged();
 		additives.postInvalidate();
 

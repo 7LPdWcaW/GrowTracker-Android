@@ -13,7 +13,6 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import com.github.mikephil.charting.charts.LineChart;
-import com.squareup.moshi.Types;
 
 import net.lingala.zip4j.core.ZipFile;
 import net.lingala.zip4j.exception.ZipException;
@@ -39,7 +38,6 @@ import androidx.core.app.NotificationCompat;
 import me.anon.grow.R;
 import me.anon.lib.ExportCallback;
 import me.anon.lib.Unit;
-import me.anon.lib.manager.PlantManager;
 import me.anon.model.Action;
 import me.anon.model.Additive;
 import me.anon.model.EmptyAction;
@@ -185,7 +183,7 @@ public class ExportHelper
 				plantDetails.append(NEW_LINE);
 
 				String[] avePh = new String[3];
-				StatsHelper.setInputData(plant, null, avePh);
+				StatsHelper.setInputData(plant, context, null, avePh);
 				plantDetails.append(" - *Minimum input pH*: ").append(avePh[0]);
 				plantDetails.append(NEW_LINE);
 				plantDetails.append(" - *Maximum input pH*: ").append(avePh[1]);
@@ -194,7 +192,7 @@ public class ExportHelper
 				plantDetails.append(NEW_LINE);
 
 				String[] avePpm = new String[3];
-				StatsHelper.setPpmData(plant, null, avePpm, usingEc);
+				StatsHelper.setPpmData(plant, context, null, avePpm, usingEc);
 				plantDetails.append(" - *Minimum input " + (usingEc ? "EC" : "ppm") + "*: ").append(avePpm[0]);
 				plantDetails.append(NEW_LINE);
 				plantDetails.append(" - *Maximum input " + (usingEc ? "EC" : "ppm") + "*: ").append(avePpm[1]);
@@ -203,7 +201,7 @@ public class ExportHelper
 				plantDetails.append(NEW_LINE);
 
 				String[] aveTemp = new String[3];
-				StatsHelper.setTempData(plant, null, aveTemp);
+				StatsHelper.setTempData(plant, context, null, aveTemp);
 				plantDetails.append(" - *Minimum input temperature*: ").append(aveTemp[0]);
 				plantDetails.append(NEW_LINE);
 				plantDetails.append(" - *Maximum input temperature*: ").append(aveTemp[1]);
@@ -339,7 +337,7 @@ public class ExportHelper
 
 				plantDetails.append("## Raw plant data");
 				plantDetails.append(NEW_LINE);
-				plantDetails.append("```").append("\r\n").append(MoshiHelper.toJson(plant, Types.newParameterizedType(ArrayList.class, Plant.class))).append("\r\n").append("```");
+				plantDetails.append("```").append("\r\n").append(MoshiHelper.toJson(plant, Plant.class)).append("\r\n").append("```");
 				plantDetails.append(NEW_LINE);
 				plantDetails.append("Generated using [Grow Tracker](https://github.com/7LPdWcaW/GrowTracker-Android)");
 
@@ -373,7 +371,7 @@ public class ExportHelper
 					additives.measure(widthMeasureSpec, heightMeasureSpec);
 					additives.requestLayout();
 					additives.layout(0, 0, width, height);
-					StatsHelper.setAdditiveData(plant, additives, additiveNames);
+					StatsHelper.setAdditiveData(plant, context, additives, additiveNames);
 					additives.getData().setDrawValues(true);
 
 					try
@@ -403,7 +401,7 @@ public class ExportHelper
 					inputPh.measure(widthMeasureSpec, heightMeasureSpec);
 					inputPh.requestLayout();
 					inputPh.layout(0, 0, width, height);
-					StatsHelper.setInputData(plant, inputPh, null);
+					StatsHelper.setInputData(plant, context, inputPh, null);
 					inputPh.getData().setDrawValues(true);
 
 					try
@@ -433,7 +431,7 @@ public class ExportHelper
 					ppm.measure(widthMeasureSpec, heightMeasureSpec);
 					ppm.requestLayout();
 					ppm.layout(0, 0, width, height);
-					StatsHelper.setPpmData(plant, ppm, null, usingEc);
+					StatsHelper.setPpmData(plant, context, ppm, null, usingEc);
 					ppm.getData().setDrawValues(true);
 
 					try
@@ -463,7 +461,7 @@ public class ExportHelper
 					temp.measure(widthMeasureSpec, heightMeasureSpec);
 					temp.requestLayout();
 					temp.layout(0, 0, width, height);
-					StatsHelper.setTempData(plant, temp, null);
+					StatsHelper.setTempData(plant, context, temp, null);
 					temp.getData().setDrawValues(true);
 
 					try
