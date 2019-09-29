@@ -5,7 +5,6 @@ import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
-import android.preference.PreferenceManager;
 import android.text.Editable;
 import android.text.Html;
 import android.text.TextUtils;
@@ -38,6 +37,7 @@ import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
 import me.anon.controller.provider.PlantWidgetProvider;
 import me.anon.grow.R;
+import me.anon.lib.TdsUnit;
 import me.anon.lib.TempUnit;
 import me.anon.lib.Unit;
 import me.anon.lib.Views;
@@ -48,6 +48,7 @@ import me.anon.model.Additive;
 import me.anon.model.FeedingSchedule;
 import me.anon.model.FeedingScheduleDate;
 import me.anon.model.Plant;
+import me.anon.model.Tds;
 import me.anon.model.Water;
 
 import static me.anon.lib.TempUnit.CELCIUS;
@@ -82,7 +83,7 @@ public class WateringFragment extends Fragment
 	private Water water;
 	private Unit selectedMeasurementUnit, selectedDeliveryUnit;
 	private TempUnit selectedTemperatureUnit;
-	private boolean usingEc = false;
+	private TdsUnit selectedTdsUnit;
 	private TextWatcher deliveryTextChangeListener = new TextWatcher()
 	{
 		@Override public void beforeTextChanged(CharSequence s, int start, int count, int after){}
@@ -131,7 +132,7 @@ public class WateringFragment extends Fragment
 		selectedMeasurementUnit = Unit.getSelectedMeasurementUnit(getActivity());
 		selectedDeliveryUnit = Unit.getSelectedDeliveryUnit(getActivity());
 		selectedTemperatureUnit = TempUnit.getSelectedTemperatureUnit(getActivity());
-		usingEc = PreferenceManager.getDefaultSharedPreferences(getActivity()).getBoolean("tds_ec", false);
+		selectedTdsUnit = TdsUnit.getSelectedTdsUnit(getActivity());
 
 		if (savedInstanceState != null)
 		{
@@ -290,11 +291,8 @@ public class WateringFragment extends Fragment
 		amount.setHint("250" + selectedDeliveryUnit.getLabel());
 		tempLabel.setText(getString(R.string.temp_label, selectedTemperatureUnit.getLabel()));
 
-		if (usingEc)
-		{
-			waterPpm.setHint("1.0 " + (usingEc ? "EC" : "PPM"));
-			((TextView)((ViewGroup)waterPpm.getParent()).findViewById(R.id.ppm_label)).setText(usingEc ? "EC" : "PPM");
-		}
+		waterPpm.setHint(selectedTdsUnit.getLabel());
+		((TextView)((ViewGroup)waterPpm.getParent()).findViewById(R.id.ppm_label)).setText(selectedTdsUnit.getStrRes());
 
 		if (water != null)
 		{
@@ -333,9 +331,9 @@ public class WateringFragment extends Fragment
 						phCount++;
 					}
 
-					if (hint.getPpm() != null)
+					if (hint.getTds() != null)
 					{
-						averagePpm += hint.getPpm();
+						averagePpm += hint.getTds().getAmount();
 						ppmCount++;
 					}
 
@@ -371,12 +369,12 @@ public class WateringFragment extends Fragment
 
 				if (!averagePpm.isNaN())
 				{
-					if (usingEc)
+					if (selectedTdsUnit.getDecimalPlaces() == 2)
 					{
-						averagePpm = Unit.toTwoDecimalPlaces((averagePpm * 2d) / 1000d);
+						averagePpm = Unit.toTwoDecimalPlaces(averagePpm);
 					}
 
-					waterPpm.setHint(String.valueOf(averagePpm) + " " + (usingEc ? "EC" : "PPM"));
+					waterPpm.setHint(String.valueOf(averagePpm) + " " + selectedTdsUnit.getLabel());
 				}
 
 				if (!averageRunoff.isNaN())
@@ -455,12 +453,12 @@ public class WateringFragment extends Fragment
 				waterPh.setText(String.valueOf(water.getPh()));
 			}
 
-			if (water.getPpm() != null)
+			if (water.getTds() != null)
 			{
-				String ppm = String.valueOf(water.getPpm().longValue());
-				if (usingEc)
+				String ppm = String.valueOf(water.getTds().getAmount());
+				if (selectedTdsUnit.getDecimalPlaces() == 2)
 				{
-					ppm = String.valueOf((water.getPpm() * 2d) / 1000d);
+					ppm = "" + Unit.toTwoDecimalPlaces(water.getTds().getAmount());
 				}
 
 				waterPpm.setText(ppm);
@@ -635,15 +633,20 @@ public class WateringFragment extends Fragment
 		Double amount = TextUtils.isEmpty(this.amount.getText()) ? null : Double.valueOf(this.amount.getText().toString());
 		Double temp = TextUtils.isEmpty(this.temp.getText()) ? null : Double.valueOf(this.temp.getText().toString());
 
-		if (usingEc && ppm != null)
-		{
-			ppm = (ppm * 1000d) / 2d;
-		}
-
 		water.setPh(waterPh);
-		water.setPpm(ppm);
 		water.setRunoff(runoffPh);
 		water.setAmount(amount == null ? null : selectedDeliveryUnit.to(ML, amount));
+
+		if (water.getTds() == null && ppm != null)
+		{
+			water.setTds(new Tds());
+			water.getTds().setType(selectedTdsUnit);
+		}
+
+		if (water.getTds() != null)
+		{
+			water.getTds().setAmount(ppm);
+		}
 
 		if (temp != null)
 		{

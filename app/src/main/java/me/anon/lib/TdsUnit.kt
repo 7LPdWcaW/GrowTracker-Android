@@ -9,11 +9,11 @@ import java.math.RoundingMode
 /**
  * Unit class used for conditivity measurement
  */
-enum class TdsUnit private constructor(val strRes: Int, val label: String)
+enum class TdsUnit private constructor(val strRes: Int, val label: String, val decimalPlaces: Int = 0)
 {
-	PPM500(R.string.ppm500_description, "ppm"),
-	PPM700(R.string.ppm700_description, "ppm"),
-	EC(R.string.ec_description, "mS/cm");
+	PPM500(R.string.ppm500_description, "ppm", 0),
+	PPM700(R.string.ppm700_description, "ppm", 0),
+	EC(R.string.ec_description, "mS/cm", 2);
 
 	companion object
 	{
