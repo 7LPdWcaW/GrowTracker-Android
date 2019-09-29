@@ -27,6 +27,7 @@ import java.util.Random;
 import java.util.Set;
 
 import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 import androidx.appcompat.view.ContextThemeWrapper;
 import androidx.core.graphics.ColorUtils;
 import androidx.core.util.Pair;
@@ -102,7 +103,7 @@ public class StatsHelper
 		chart.getLegend().setWordWrapEnabled(true);
 		chart.setTouchEnabled(true);
 		chart.setHighlightPerTapEnabled(true);
-		chart.setMarkerView(new MarkerView(chart.getContext(), R.layout.chart_marker)
+		chart.setMarkerView(new MarkerView(context, R.layout.chart_marker)
 		{
 			@Override
 			public void refreshContent(Entry e, Highlight highlight)
@@ -142,7 +143,7 @@ public class StatsHelper
 		data.setValueFormatter(formatter);
 	}
 
-	public static void setAdditiveData(Plant plant, LineChart chart, @NonNull Set<String> checkedAdditives)
+	public static void setAdditiveData(Plant plant, @NonNull Context context, @Nullable LineChart chart, @NonNull Set<String> checkedAdditives)
 	{
 		ArrayList<Action> actions = plant.getActions();
 		ArrayList<Pair<String, ArrayList<Entry>>> vals = new ArrayList<>();
@@ -182,7 +183,7 @@ public class StatsHelper
 				long difference = action.getDate() - changeDate;
 				if (stage != null)
 				{
-					xVals.add(((int)TimeHelper.toDays(difference) + "" + chart.getContext().getString(stage.getPrintString()).charAt(0)).toLowerCase());
+					xVals.add(((int)TimeHelper.toDays(difference) + "" + context.getString(stage.getPrintString()).charAt(0)).toLowerCase());
 				}
 				else
 				{
@@ -218,7 +219,7 @@ public class StatsHelper
 
 			String[] colours = chart.getResources().getStringArray(R.array.stats_colours);
 			ArrayList<String> namesList = new ArrayList<>(additiveNames);
-			StatsHelper.styleDataset(chart.getContext(), dataSet, dataSets.size() < colours.length ? Color.parseColor(colours[namesList.indexOf(additiveName)]) : (additiveName.hashCode() + new Random().nextInt(0xffffff)));
+			StatsHelper.styleDataset(context, dataSet, dataSets.size() < colours.length ? Color.parseColor(colours[namesList.indexOf(additiveName)]) : (additiveName.hashCode() + new Random().nextInt(0xffffff)));
 
 			dataSet.setValueFormatter(StatsHelper.formatter);
 			dataSets.add(dataSet);
@@ -226,7 +227,7 @@ public class StatsHelper
 
 		LineData lineData = new LineData(xVals, dataSets);
 		lineData.setValueFormatter(StatsHelper.formatter);
-		lineData.setValueTextColor(IntUtilsKt.resolveColor(android.R.attr.textColorSecondary, chart.getContext()));
+		lineData.setValueTextColor(IntUtilsKt.resolveColor(android.R.attr.textColorSecondary, context));
 
 		styleGraph(chart);
 
@@ -240,7 +241,7 @@ public class StatsHelper
 	 * @param chart The chart to set the data
 	 * @param additionalRef Pass-by-reference value for min/max/ave for the generated values. Must be length of 3 if not null
 	 */
-	public static void setInputData(Plant plant, LineChart chart, String[] additionalRef)
+	public static void setInputData(Plant plant, @NonNull Context context, @Nullable LineChart chart, String[] additionalRef)
 	{
 		ArrayList<Entry> inputVals = new ArrayList<>();
 		ArrayList<Entry> runoffVals = new ArrayList<>();
@@ -294,7 +295,7 @@ public class StatsHelper
 				long difference = action.getDate() - changeDate;
 				if (stage != null)
 				{
-					xVals.add(((int)TimeHelper.toDays(difference) + "" + chart.getContext().getString(stage.getPrintString()).charAt(0)).toLowerCase());
+					xVals.add(((int)TimeHelper.toDays(difference) + "" + context.getString(stage.getPrintString()).charAt(0)).toLowerCase());
 				}
 				else
 				{
@@ -307,14 +308,14 @@ public class StatsHelper
 
 		if (chart != null)
 		{
-			LineDataSet dataSet = new LineDataSet(inputVals, chart.getContext().getString(R.string.stat_input_ph));
-			styleDataset(chart.getContext(), dataSet, ColorTemplate.COLORFUL_COLORS[0]);
+			LineDataSet dataSet = new LineDataSet(inputVals, context.getString(R.string.stat_input_ph));
+			styleDataset(context, dataSet, ColorTemplate.COLORFUL_COLORS[0]);
 
-			LineDataSet runoffDataSet = new LineDataSet(runoffVals, chart.getContext().getString(R.string.stat_runoff_ph));
-			styleDataset(chart.getContext(), dataSet, ColorTemplate.COLORFUL_COLORS[1]);
+			LineDataSet runoffDataSet = new LineDataSet(runoffVals, context.getString(R.string.stat_runoff_ph));
+			styleDataset(context, dataSet, ColorTemplate.COLORFUL_COLORS[1]);
 
-			LineDataSet averageDataSet = new LineDataSet(averageVals, chart.getContext().getString(R.string.stat_average_ph));
-			styleDataset(chart.getContext(), dataSet, ColorTemplate.COLORFUL_COLORS[2]);
+			LineDataSet averageDataSet = new LineDataSet(averageVals, context.getString(R.string.stat_average_ph));
+			styleDataset(context, dataSet, ColorTemplate.COLORFUL_COLORS[2]);
 			averageDataSet.setValueFormatter(null);
 
 			ArrayList<LineDataSet> dataSets = new ArrayList<LineDataSet>();
@@ -347,7 +348,7 @@ public class StatsHelper
 	 * @param additionalRef Pass-by-reference value for min/max/ave for the generated values. Must be length of 3 if not null
 	 * @param usingEc If using EC measurements = (ppm * 1000d) / 2d
 	 */
-	public static void setPpmData(Plant plant, LineChart chart, String[] additionalRef, boolean usingEc)
+	public static void setPpmData(Plant plant, @NonNull Context context, @Nullable LineChart chart, String[] additionalRef, boolean usingEc)
 	{
 		ArrayList<Entry> vals = new ArrayList<>();
 		ArrayList<String> xVals = new ArrayList<>();
@@ -389,7 +390,7 @@ public class StatsHelper
 				long difference = action.getDate() - changeDate;
 				if (stage != null)
 				{
-					xVals.add(((int)TimeHelper.toDays(difference) + "" + chart.getContext().getString(stage.getPrintString()).charAt(0)).toLowerCase());
+					xVals.add(((int)TimeHelper.toDays(difference) + "" + context.getString(stage.getPrintString()).charAt(0)).toLowerCase());
 				}
 				else
 				{
@@ -405,9 +406,9 @@ public class StatsHelper
 		if (chart != null)
 		{
 			LineDataSet dataSet = new LineDataSet(vals, usingEc ? "EC" : "PPM");
-			styleDataset(chart.getContext(), dataSet, Color.parseColor(chart.getContext().getResources().getStringArray(R.array.stats_colours)[0]));
+			styleDataset(context, dataSet, Color.parseColor(context.getResources().getStringArray(R.array.stats_colours)[0]));
 			styleGraph(chart);
-			chart.setMarkerView(new MarkerView(chart.getContext(), R.layout.chart_marker)
+			chart.setMarkerView(new MarkerView(context, R.layout.chart_marker)
 			{
 				@Override
 				public void refreshContent(Entry e, Highlight highlight)
@@ -475,7 +476,7 @@ public class StatsHelper
 	 * @param chart The chart to set the data
 	 * @param additionalRef Pass-by-reference value for min/max/ave for the generated values. Must be length of 3 if not null
 	 */
-	public static void setTempData(Plant plant, LineChart chart, String[] additionalRef)
+	public static void setTempData(Plant plant, @NonNull Context context, @Nullable LineChart chart, String[] additionalRef)
 	{
 		ArrayList<Entry> vals = new ArrayList<>();
 		ArrayList<String> xVals = new ArrayList<>();
@@ -508,7 +509,7 @@ public class StatsHelper
 				long difference = action.getDate() - changeDate;
 				if (stage != null)
 				{
-					xVals.add(((int)TimeHelper.toDays(difference) + "" + chart.getContext().getString(stage.getPrintString()).charAt(0)).toLowerCase());
+					xVals.add(((int)TimeHelper.toDays(difference) + "" + context.getString(stage.getPrintString()).charAt(0)).toLowerCase());
 				}
 				else
 				{
@@ -523,8 +524,8 @@ public class StatsHelper
 
 		if (chart != null)
 		{
-			LineDataSet dataSet = new LineDataSet(vals, chart.getContext().getString(R.string.stat_temerature));
-			styleDataset(chart.getContext(), dataSet, Color.parseColor(chart.getContext().getResources().getStringArray(R.array.stats_colours)[0]));
+			LineDataSet dataSet = new LineDataSet(vals, context.getString(R.string.stat_temerature));
+			styleDataset(context, dataSet, Color.parseColor(context.getResources().getStringArray(R.array.stats_colours)[0]));
 
 			LineData lineData = new LineData(xVals, dataSet);
 			lineData.setValueFormatter(formatter);
