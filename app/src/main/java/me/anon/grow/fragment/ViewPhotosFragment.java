@@ -51,7 +51,6 @@ import me.anon.lib.SnackBarListener;
 import me.anon.lib.Views;
 import me.anon.lib.helper.AddonHelper;
 import me.anon.lib.helper.ExportHelper;
-import me.anon.lib.helper.FabAnimator;
 import me.anon.lib.helper.PermissionHelper;
 import me.anon.lib.helper.TimeHelper;
 import me.anon.lib.manager.PlantManager;
@@ -176,7 +175,13 @@ public class ViewPhotosFragment extends Fragment
 										PlantManager.getInstance().upsert(plant);
 										setAdapter();
 										adapter.notifyDataSetChanged();
+										setEmpty();
 										mode.finish();
+
+										Intent intent = new Intent();
+										intent.putExtra("plant", plant);
+										getActivity().setIntent(intent);
+										getActivity().setResult(Activity.RESULT_OK, intent);
 									}
 								})
 								.setNegativeButton(R.string.no, null)
@@ -298,6 +303,11 @@ public class ViewPhotosFragment extends Fragment
 
 		recycler.setAdapter(sectionedAdapter);
 
+		setEmpty();
+	}
+
+	private void setEmpty()
+	{
 		if (adapter.getItemCount() == 0)
 		{
 			empty.setVisibility(View.VISIBLE);
@@ -455,10 +465,12 @@ public class ViewPhotosFragment extends Fragment
 		}
 
 		// both photo options
+		setEmpty();
 		if ((requestCode == 1 || requestCode == 3) && resultCode != Activity.RESULT_CANCELED)
 		{
 			Intent intent = new Intent();
 			intent.putExtra("plant", plant);
+			getActivity().setIntent(intent);
 			getActivity().setResult(Activity.RESULT_OK, intent);
 
 			if (getActivity() != null)
@@ -472,21 +484,8 @@ public class ViewPhotosFragment extends Fragment
 
 				SnackBar.show(getActivity(), R.string.snackbar_image_added, R.string.snackbar_action_take_another, new SnackBarListener()
 				{
-					@Override public void onSnackBarStarted(Object o)
-					{
-						if (getView() != null)
-						{
-							FabAnimator.animateUp(getView().findViewById(R.id.fab_photo));
-						}
-					}
-
-					@Override public void onSnackBarFinished(Object o)
-					{
-						if (getView() != null)
-						{
-							FabAnimator.animateDown(getView().findViewById(R.id.fab_photo));
-						}
-					}
+					@Override public void onSnackBarStarted(Object o){}
+					@Override public void onSnackBarFinished(Object o){}
 
 					@Override public void onSnackBarAction(View v)
 					{

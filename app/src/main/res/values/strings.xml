@@ -351,4 +351,6 @@
 		<item>EmmanuelMess - es</item>
 		<item>9YbQiuEohUu1 - ru/uk</item>
 	</string-array>
+
+	<string name="view_details_short">Details</string>
 </resources>

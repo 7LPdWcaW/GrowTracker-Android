@@ -224,7 +224,7 @@ public class PlantDetailsFragment extends Fragment
 
 			((PlantDetailsActivity)getActivity()).getToolbarLayout().addView(LayoutInflater.from(getActivity()).inflate(R.layout.action_buttons_stub, ((PlantDetailsActivity)getActivity()).getToolbarLayout(), false));
 			Views.inject(this, ((PlantDetailsActivity)getActivity()).getToolbarLayout());
-			linkContainer.setVisibility(View.VISIBLE);
+			//linkContainer.setVisibility(View.VISIBLE);
 
 			name.setText(plant.getName());
 
@@ -1024,8 +1024,9 @@ public class PlantDetailsFragment extends Fragment
 
 		Intent intent = new Intent();
 		intent.putExtra("plant", plant);
+		getActivity().setIntent(intent);
 		getActivity().setResult(Activity.RESULT_OK, intent);
-		getActivity().finish();
+//		getActivity().finish();
 	}
 
 	/**
