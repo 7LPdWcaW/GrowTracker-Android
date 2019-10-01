@@ -525,28 +525,50 @@
 			</LinearLayout>
 		</LinearLayout>
 
-		<LinearLayout
+		<androidx.constraintlayout.widget.ConstraintLayout
 			android:layout_width="match_parent"
 			android:layout_height="wrap_content"
 			android:orientation="vertical"
 			android:layout_marginTop="8dp"
 			android:elevation="4dp"
+			android:paddingBottom="12dp"
+			android:paddingTop="0dp"
 			style="@style/PaperCard"
 		>
 			<TextView
 				android:layout_width="wrap_content"
 				android:layout_height="wrap_content"
-				android:id="@+id/ppm_title"
-				android:text="@string/ppm_title"
+				android:id="@+id/tds_title"
+				android:paddingBottom="8dp"
+				android:paddingTop="16dp"
 				style="@style/SectionTitle"
+			/>
+
+			<TextView
+				android:layout_width="wrap_content"
+				android:layout_height="wrap_content"
+				android:id="@+id/tds_selector"
+				android:textColor="?android:textColorPrimary"
+				app:layout_constraintTop_toTopOf="parent"
+				app:layout_constraintEnd_toEndOf="parent"
+				android:drawableEnd="@drawable/ic_dropdown"
+				android:drawableTint="?android:textColorPrimary"
+				android:drawablePadding="8dp"
+				android:padding="8dp"
+				android:layout_marginEnd="8dp"
+				android:layout_marginTop="8dp"
+				android:clickable="true"
+				android:focusable="true"
+				android:background="?selectableItemBackground"
 			/>
 
 			<com.github.mikephil.charting.charts.LineChart
 				android:layout_width="match_parent"
 				android:layout_height="300dp"
-				android:id="@+id/ppm"
-				android:padding="16dp"
+				android:id="@+id/tds"
 				android:layout_marginTop="24dp"
+				android:padding="16dp"
+				app:layout_constraintTop_toBottomOf="@id/tds_selector"
 			/>
 
 			<LinearLayout
@@ -554,6 +576,7 @@
 				android:layout_height="wrap_content"
 				android:orientation="horizontal"
 				android:padding="16dp"
+				app:layout_constraintTop_toBottomOf="@id/tds"
 			>
 				<LinearLayout
 					android:layout_width="0dp"
@@ -573,7 +596,7 @@
 					<TextView
 						android:layout_width="wrap_content"
 						android:layout_height="wrap_content"
-						android:id="@+id/min_ppm"
+						android:id="@+id/min_tds"
 						android:textSize="14sp"
 						android:layout_marginLeft="8dp"
 						android:fontFamily="sans-serif-light"
@@ -600,7 +623,7 @@
 					<TextView
 						android:layout_width="wrap_content"
 						android:layout_height="wrap_content"
-						android:id="@+id/max_ppm"
+						android:id="@+id/max_tds"
 						android:textSize="14sp"
 						android:layout_marginLeft="8dp"
 						android:fontFamily="sans-serif-light"
@@ -627,7 +650,7 @@
 					<TextView
 						android:layout_width="wrap_content"
 						android:layout_height="wrap_content"
-						android:id="@+id/ave_ppm"
+						android:id="@+id/ave_tds"
 						android:textSize="14sp"
 						android:textColor="?android:textColorPrimary"
 						android:layout_marginLeft="8dp"
@@ -636,7 +659,7 @@
 					/>
 				</LinearLayout>
 			</LinearLayout>
-		</LinearLayout>
+		</androidx.constraintlayout.widget.ConstraintLayout>
 
 		<LinearLayout
 			android:layout_width="match_parent"
