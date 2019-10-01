@@ -32,7 +32,23 @@ class PlantDetailsActivity : BaseActivity()
 			supportActionBar?.setHomeAsUpIndicator(R.drawable.ic_done_white_24dp)
 
 			supportFragmentManager.findFragmentByTag(TAG_FRAGMENT) ?: let {
-				supportFragmentManager.beginTransaction().replace(R.id.fragment_holder, PlantDetailsFragment.newInstance(intent.extras), TAG_FRAGMENT).commit()
+				val fragment = when (intent.extras?.get("forward"))
+				{
+					"photos" -> {
+						tabs.selectedItemId = R.id.view_photos
+						ViewPhotosFragment.newInstance(intent.extras)
+					}
+					"events" -> {
+						tabs.selectedItemId = R.id.view_history
+						EventListFragment.newInstance(intent.extras)
+					}
+					"statistics" -> {
+						tabs.selectedItemId = R.id.view_statistics
+						StatisticsFragment.newInstance(intent.extras)
+					}
+					else -> PlantDetailsFragment.newInstance(intent.extras)
+				}
+				supportFragmentManager.beginTransaction().replace(R.id.fragment_holder, fragment, TAG_FRAGMENT).commit()
 			}
 
 			tabs.visibility = View.GONE
