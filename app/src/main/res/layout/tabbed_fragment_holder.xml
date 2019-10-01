@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<androidx.constraintlayout.widget.ConstraintLayout
+	xmlns:android="http://schemas.android.com/apk/res/android"
+	xmlns:app="http://schemas.android.com/apk/res-auto"
+	android:layout_width="match_parent"
+	android:layout_height="match_parent"
+>
+	<com.google.android.material.appbar.AppBarLayout
+		android:layout_width="match_parent"
+		android:layout_height="wrap_content"
+		android:id="@+id/toolbar_layout"
+		app:elevation="4dp"
+		android:elevation="4dp"
+		android:theme="@style/Toolbar"
+		app:layout_constraintTop_toTopOf="parent"
+		style="@style/Widget.MaterialComponents.ActionBar.Primary"
+	>
+		<com.google.android.material.appbar.MaterialToolbar
+			android:layout_width="match_parent"
+			android:layout_height="wrap_content"
+			android:id="@+id/toolbar"
+			android:fitsSystemWindows="true"
+			app:popupTheme="@style/ThemeOverlay.AppCompat.DayNight"
+		/>
+	</com.google.android.material.appbar.AppBarLayout>
+
+	<androidx.coordinatorlayout.widget.CoordinatorLayout
+		android:layout_width="match_parent"
+		android:layout_height="0dp"
+		app:layout_constraintTop_toBottomOf="@id/toolbar_layout"
+		app:layout_constraintBottom_toTopOf="@id/tabs"
+	>
+		<FrameLayout
+			android:layout_width="match_parent"
+			android:layout_height="match_parent"
+			android:id="@+id/fragment_holder"
+			android:layout_above="@+id/tabs"
+		/>
+	</androidx.coordinatorlayout.widget.CoordinatorLayout>
+
+	<com.google.android.material.bottomnavigation.BottomNavigationView
+		android:layout_width="match_parent"
+		android:layout_height="wrap_content"
+		android:id="@+id/tabs"
+		app:menu="@menu/plant_details_menu"
+		app:layout_constraintBottom_toBottomOf="parent"
+	/>
+</androidx.constraintlayout.widget.ConstraintLayout>

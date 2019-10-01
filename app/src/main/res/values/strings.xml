@@ -355,4 +355,6 @@
 	<string name="ppm500_description">PPM500 scale</string>
 	<string name="ppm700_description">PPM700 scale</string>
 	<string name="ec_description">EC scale</string>
+
+	<string name="view_details_short">Details</string>
 </resources>

@@ -11,7 +11,6 @@ import android.os.Bundle;
 import android.preference.PreferenceManager;
 import android.text.Html;
 import android.text.TextUtils;
-import android.view.Menu;
 import android.view.MenuItem;
 import android.view.SubMenu;
 import android.view.View;
@@ -136,6 +135,12 @@ public class MainActivity extends BaseActivity implements NavigationView.OnNavig
 	@Override protected void onResume()
 	{
 		super.onResume();
+
+		if (getSupportActionBar() != null)
+		{
+			getSupportActionBar().setDisplayHomeAsUpEnabled(!MainApplication.isTablet());
+		}
+
 		showDrawerToggle();
 	}
 
@@ -237,24 +242,6 @@ public class MainActivity extends BaseActivity implements NavigationView.OnNavig
 			drawer.setDrawerListener(drawerToggle);
 			drawerToggle.syncState();
 		}
-	}
-
-	@Override public boolean onCreateOptionsMenu(Menu menu)
-	{
-		menu.add(1, 1, 1, R.string.menu_settings);
-
-		return super.onCreateOptionsMenu(menu);
-	}
-
-	@Override public boolean onOptionsItemSelected(MenuItem item)
-	{
-		if (item.getItemId() == 1)
-		{
-			Intent settings = new Intent(this, SettingsActivity.class);
-			startActivityForResult(settings, 5);
-		}
-
-		return super.onOptionsItemSelected(item);
 	}
 
 	@Override public boolean onNavigationItemSelected(MenuItem item)
