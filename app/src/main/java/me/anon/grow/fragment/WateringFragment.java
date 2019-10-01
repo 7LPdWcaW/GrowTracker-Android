@@ -366,16 +366,6 @@ public class WateringFragment extends Fragment
 				}
 
 				averagePh = Unit.toTwoDecimalPlaces(averagePh / phCount);
-
-				if (selectedTdsUnit.getDecimalPlaces() == 2)
-				{
-
-				}
-				else
-				{
-					selectedTdsAverage = selectedTdsAverage / (double)averagePpm.size();
-				}
-
 				selectedTdsAverage = Unit.toTwoDecimalPlaces(selectedTdsAverage / (double)averagePpm.size());
 				averageRunoff = Unit.toTwoDecimalPlaces(averageRunoff / runoffCount);
 				averageAmount = Unit.toTwoDecimalPlaces(averageAmount / amountCount);
@@ -390,11 +380,11 @@ public class WateringFragment extends Fragment
 				{
 					if (selectedTdsUnit.getDecimalPlaces() == 0)
 					{
-						waterPpm.setHint(averagePh.intValue() + " " + selectedTdsUnit.getLabel());
+						waterPpm.setHint(selectedTdsAverage.intValue() + " " + selectedTdsUnit.getLabel());
 					}
 					else
 					{
-						waterPpm.setHint(averagePh + " " + selectedTdsUnit.getLabel());
+						waterPpm.setHint(selectedTdsAverage + " " + selectedTdsUnit.getLabel());
 					}
 				}
 
