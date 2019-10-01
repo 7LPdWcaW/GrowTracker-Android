@@ -7,7 +7,6 @@ import android.content.Intent;
 import android.graphics.Bitmap;
 import android.os.AsyncTask;
 import android.os.Environment;
-import android.preference.PreferenceManager;
 import android.text.TextUtils;
 import android.view.View;
 import android.view.ViewGroup;
@@ -31,12 +30,14 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.SortedMap;
+import java.util.TreeSet;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.core.app.NotificationCompat;
 import me.anon.grow.R;
 import me.anon.lib.ExportCallback;
+import me.anon.lib.TdsUnit;
 import me.anon.lib.Unit;
 import me.anon.model.Action;
 import me.anon.model.Additive;
@@ -65,7 +66,6 @@ public class ExportHelper
 		String folderPath = "";
 		Unit measureUnit = Unit.getSelectedMeasurementUnit(context);
 		Unit deliveryUnit = Unit.getSelectedDeliveryUnit(context);
-		boolean usingEc = PreferenceManager.getDefaultSharedPreferences(context).getBoolean("tds_ec", false);
 
 		if (Environment.getExternalStorageDirectory() != null)
 		{
@@ -191,14 +191,26 @@ public class ExportHelper
 				plantDetails.append(" - *Average input pH*: ").append(avePh[2]);
 				plantDetails.append(NEW_LINE);
 
-				String[] avePpm = new String[3];
-				StatsHelper.setPpmData(plant, context, null, avePpm, usingEc);
-				plantDetails.append(" - *Minimum input " + (usingEc ? "EC" : "ppm") + "*: ").append(avePpm[0]);
-				plantDetails.append(NEW_LINE);
-				plantDetails.append(" - *Maximum input " + (usingEc ? "EC" : "ppm") + "*: ").append(avePpm[1]);
-				plantDetails.append(NEW_LINE);
-				plantDetails.append(" - *Average input " + (usingEc ? "EC" : "ppm") + "*: ").append(avePpm[2]);
-				plantDetails.append(NEW_LINE);
+				final Set<TdsUnit> tdsNames = new TreeSet<>();
+				for (Action action : plant.getActions())
+				{
+					if (action instanceof Water && ((Water)action).getTds() != null)
+					{
+						tdsNames.add(((Water)action).getTds().getType());
+					}
+				}
+
+				for (TdsUnit value : tdsNames)
+				{
+					String[] avePpm = new String[3];
+					StatsHelper.setTdsData(plant, context, null, avePpm, value);
+					plantDetails.append(" - *Minimum input " + context.getString(value.getStrRes()) + "*: ").append(avePpm[0]).append(value.getLabel());
+					plantDetails.append(NEW_LINE);
+					plantDetails.append(" - *Maximum input " + context.getString(value.getStrRes()) + "*: ").append(avePpm[1]).append(value.getLabel());
+					plantDetails.append(NEW_LINE);
+					plantDetails.append(" - *Average input " + context.getString(value.getStrRes()) + "*: ").append(avePpm[2]).append(value.getLabel());
+					plantDetails.append(NEW_LINE);
+				}
 
 				String[] aveTemp = new String[3];
 				StatsHelper.setTempData(plant, context, null, aveTemp);
@@ -423,34 +435,37 @@ public class ExportHelper
 						e.printStackTrace();
 					}
 
-					LineChart ppm = new LineChart(context);
-					ppm.setPadding(100, 100, 100, 100);
-					ppm.setLayoutParams(new ViewGroup.LayoutParams(width, height));
-					ppm.setMinimumWidth(width);
-					ppm.setMinimumHeight(height);
-					ppm.measure(widthMeasureSpec, heightMeasureSpec);
-					ppm.requestLayout();
-					ppm.layout(0, 0, width, height);
-					StatsHelper.setPpmData(plant, context, ppm, null, usingEc);
-					ppm.getData().setDrawValues(true);
-
-					try
+					for (TdsUnit tdsName : tdsNames)
 					{
-						ZipParameters parameters = new ZipParameters();
-						parameters.setCompressionMethod(Zip4jConstants.COMP_DEFLATE);
-						parameters.setFileNameInZip(zipPathPrefix + (usingEc ? "ec" : "ppm") + ".jpg");
-						parameters.setSourceExternalStream(true);
+						LineChart tds = new LineChart(context);
+						tds.setPadding(100, 100, 100, 100);
+						tds.setLayoutParams(new ViewGroup.LayoutParams(width, height));
+						tds.setMinimumWidth(width);
+						tds.setMinimumHeight(height);
+						tds.measure(widthMeasureSpec, heightMeasureSpec);
+						tds.requestLayout();
+						tds.layout(0, 0, width, height);
+						StatsHelper.setTdsData(plant, context, tds, null, tdsName);
+						tds.getData().setDrawValues(true);
 
-						ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
-						ppm.getChartBitmap().compress(Bitmap.CompressFormat.JPEG, 100, outputStream);
-						ByteArrayInputStream stream = new ByteArrayInputStream(outputStream.toByteArray());
-						outFile.addStream(stream, parameters);
+						try
+						{
+							ZipParameters parameters = new ZipParameters();
+							parameters.setCompressionMethod(Zip4jConstants.COMP_DEFLATE);
+							parameters.setFileNameInZip(zipPathPrefix + context.getString(tdsName.getStrRes()) + ".jpg");
+							parameters.setSourceExternalStream(true);
 
-						stream.close();
-					}
-					catch (Exception e)
-					{
-						e.printStackTrace();
+							ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
+							tds.getChartBitmap().compress(Bitmap.CompressFormat.JPEG, 100, outputStream);
+							ByteArrayInputStream stream = new ByteArrayInputStream(outputStream.toByteArray());
+							outFile.addStream(stream, parameters);
+
+							stream.close();
+						}
+						catch (Exception e)
+						{
+							e.printStackTrace();
+						}
 					}
 
 					LineChart temp = new LineChart(context);

@@ -8,6 +8,7 @@ import com.squareup.moshi.JsonClass
 import kotlinx.android.parcel.Parcelize
 import me.anon.grow.R
 import me.anon.lib.DateRenderer
+import me.anon.lib.TdsUnit
 import me.anon.lib.TempUnit
 import me.anon.lib.Unit
 import me.anon.lib.helper.TimeHelper
@@ -281,9 +282,12 @@ class Plant(
 						waterStr += "<b>${Unit.ML.to(deliveryUnit, amount)}${deliveryUnit.label}</b> "
 					}
 
-					it.ppm?.let { ppm ->
-						val ppm = if (usingEc) "${Unit.toTwoDecimalPlaces((ppm * 2.0 / 1000.0))}" else "${ppm.toInt()}"
-						waterStr += "<b>@$ppm</b> "
+					it.tds?.let { tds ->
+						var ppm = tds.amount ?: 0.0
+						waterStr += "<b>@"
+						waterStr += if (tds.type.decimalPlaces == 0) ppm.toInt() else TdsUnit.toTwoDecimalPlaces(ppm)
+						waterStr += tds.type.label
+						waterStr += "</b> "
 					}
 
 					it.temp?.let { temp ->
@@ -466,7 +470,7 @@ enum class PlantStage private constructor(val printString: Int) : Parcelable
 @Parcelize
 @JsonClass(generateAdapter = true)
 class Water(
-	var ppm: Double? = null,
+	var tds: Tds? = null,
 	var ph: Double? = null,
 	var runoff: Double? = null,
 	var amount: Double? = null,
@@ -480,6 +484,8 @@ class Water(
 	public var type: String = "Water"
 
 	@Deprecated("")
+	public var ppm: Double? = null
+	@Deprecated("")
 	public var nutrient: Nutrient? = null
 	@Deprecated("")
 	public var mlpl: Double? = null
@@ -489,7 +495,6 @@ class Water(
 		val measureUnit = Unit.getSelectedMeasurementUnit(context)
 		val deliveryUnit = Unit.getSelectedDeliveryUnit(context)
 		val tempUnit = TempUnit.getSelectedTemperatureUnit(context)
-		val usingEc = PreferenceManager.getDefaultSharedPreferences(context).getBoolean("tds_ec", false)
 
 		var summary = ""
 		var waterStr = StringBuilder()
@@ -514,23 +519,13 @@ class Water(
 
 		waterStr = StringBuilder()
 
-		ppm?.let {
-			var ppm = it.toLong().toString()
-			if (usingEc)
-			{
-				waterStr.append("<b>")
-				waterStr.append(context.getString(R.string.plant_summary_ec))
-				waterStr.append("</b> ")
-				ppm = (it * 2.0 / 1000.0).toString()
-			}
-			else
-			{
-				waterStr.append("<b>")
-				waterStr.append(context.getString(R.string.plant_summary_ppm))
-				waterStr.append("</b> ")
-			}
-
-			waterStr.append(ppm)
+		tds?.let {
+			var ppm = it.amount ?: 0.0
+			waterStr.append("<b>")
+			waterStr.append(context.getString(it.type.strRes))
+			waterStr.append("</b> ")
+			waterStr.append(if (it.type.decimalPlaces == 0) ppm.toInt() else TdsUnit.toTwoDecimalPlaces(ppm))
+			waterStr.append(it.type.label)
 			waterStr.append(", ")
 		}
 
@@ -582,6 +577,13 @@ class Water(
 		return summary
 	}
 }
+
+@Parcelize
+@JsonClass(generateAdapter = true)
+class Tds(
+	var amount: Double? = null,
+	var type: TdsUnit = TdsUnit.PPM500
+) : Parcelable
 
 @Parcelize
 @JsonClass(generateAdapter = true)

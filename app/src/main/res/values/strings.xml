@@ -246,7 +246,7 @@
 	<string name="show_images">Show images</string>
 
 	<string name="settings_default_garden">Default garden to show on open, currently: &lt;b&gt;%s&lt;/b&gt;</string>
-	<string name="settings_card_style">Select card style, currently: %s</string>
+	<string name="settings_card_style">Select card style, currently: &lt;b&gt;%s&lt;/b&gt;</string>
 	<string name="settings_delivery">Default delivery measurement unit to use, currently: &lt;b&gt;%s&lt;/b&gt;</string>
 	<string name="settings_measurement">Default additive measurement unit to use, currently: &lt;b&gt;%s&lt;/b&gt;</string>
 	<string name="settings_temperature">Default temperature unit to use, currently: &lt;b&gt;%s&lt;/b&gt;</string>
@@ -298,8 +298,8 @@
 	<string name="settings_delivery_title">Delivery unit</string>
 	<string name="settings_measurement_title">Measurement unit</string>
 	<string name="settings_temp_title">Temperature unit</string>
-	<string name="settings_tds_title">Use EC instead of ppm</string>
-	<string name="settings_tds_summary">Uses basic EC conversion ((ppm * 2) / 1000) instead</string>
+	<string name="settings_tds_title">TDS unit</string>
+	<string name="settings_tds_summary" formatted="true">Default tds unit to use, currently: &lt;b&gt;%s&lt;/b&gt;</string>
 	<string name="settings_data_management">Data management</string>
 	<string name="settings_autobackup_title">Auto backup</string>
 	<string name="settings_autobackup_summary">Auto backup your plant data every 24 hours</string>
@@ -351,6 +351,10 @@
 		<item>EmmanuelMess - es</item>
 		<item>9YbQiuEohUu1 - ru/uk</item>
 	</string-array>
+
+	<string name="ppm500_description">PPM500</string>
+	<string name="ppm700_description">PPM700</string>
+	<string name="ec_description">EC</string>
 
 	<string name="view_details_short">Details</string>
 </resources>

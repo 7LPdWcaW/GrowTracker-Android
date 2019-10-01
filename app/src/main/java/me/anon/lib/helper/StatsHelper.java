@@ -32,6 +32,7 @@ import androidx.appcompat.view.ContextThemeWrapper;
 import androidx.core.graphics.ColorUtils;
 import androidx.core.util.Pair;
 import me.anon.grow.R;
+import me.anon.lib.TdsUnit;
 import me.anon.lib.ext.IntUtilsKt;
 import me.anon.model.Action;
 import me.anon.model.Additive;
@@ -346,9 +347,8 @@ public class StatsHelper
 	 * @param plant The plant
 	 * @param chart The chart to set the data
 	 * @param additionalRef Pass-by-reference value for min/max/ave for the generated values. Must be length of 3 if not null
-	 * @param usingEc If using EC measurements = (ppm * 1000d) / 2d
 	 */
-	public static void setPpmData(Plant plant, @NonNull Context context, @Nullable LineChart chart, String[] additionalRef, boolean usingEc)
+	public static void setTdsData(Plant plant, @NonNull Context context, @Nullable LineChart chart, String[] additionalRef, TdsUnit selectedUnit)
 	{
 		ArrayList<Entry> vals = new ArrayList<>();
 		ArrayList<String> xVals = new ArrayList<>();
@@ -362,15 +362,9 @@ public class StatsHelper
 		int index = 0;
 		for (Action action : plant.getActions())
 		{
-			if (action instanceof Water && ((Water)action).getPpm() != null)
+			if (action instanceof Water && ((Water)action).getTds() != null && ((Water)action).getTds().getType() == selectedUnit)
 			{
-				float value = ((Water)action).getPpm().floatValue();
-
-				if (usingEc)
-				{
-					// PPM -> EC
-					value = (value * 2.0f) / 1000.0f;
-				}
+				float value = ((Water)action).getTds().getAmount().floatValue();
 
 				vals.add(new Entry(value, index++));
 				PlantStage stage = null;
@@ -405,7 +399,7 @@ public class StatsHelper
 
 		if (chart != null)
 		{
-			LineDataSet dataSet = new LineDataSet(vals, usingEc ? "EC" : "PPM");
+			LineDataSet dataSet = new LineDataSet(vals, selectedUnit.getLabel());
 			styleDataset(context, dataSet, Color.parseColor(context.getResources().getStringArray(R.array.stats_colours)[0]));
 			styleGraph(chart);
 			chart.setMarkerView(new MarkerView(context, R.layout.chart_marker)

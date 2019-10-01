@@ -2,7 +2,6 @@ package me.anon.grow.fragment;
 
 import android.graphics.Color;
 import android.os.Bundle;
-import android.preference.PreferenceManager;
 import android.view.LayoutInflater;
 import android.view.MenuItem;
 import android.view.View;
@@ -32,6 +31,7 @@ import java.util.TreeSet;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 import me.anon.grow.R;
+import me.anon.lib.TdsUnit;
 import me.anon.lib.Views;
 import me.anon.lib.ext.IntUtilsKt;
 import me.anon.lib.helper.StatsHelper;
@@ -60,7 +60,8 @@ public class StatisticsFragment extends Fragment
 	@Views.InjectView(R.id.additives) private LineChart additives;
 	@Views.InjectView(R.id.additive_selector) private TextView additivesSpinner;
 	@Views.InjectView(R.id.input_ph) private LineChart inputPh;
-	@Views.InjectView(R.id.ppm) private LineChart ppm;
+	@Views.InjectView(R.id.tds_selector) private TextView tdsSpinner;
+	@Views.InjectView(R.id.tds) private LineChart tds;
 	@Views.InjectView(R.id.temp) private LineChart temp;
 	@Views.InjectView(R.id.stage_chart) private BarChart stagesChart;
 
@@ -89,10 +90,11 @@ public class StatisticsFragment extends Fragment
 	@Views.InjectView(R.id.max_input_ph) private TextView maxInputPh;
 	@Views.InjectView(R.id.ave_input_ph) private TextView aveInputPh;
 
-	@Views.InjectView(R.id.ppm_title) private TextView ppmTitle;
-	@Views.InjectView(R.id.min_ppm) private TextView minppm;
-	@Views.InjectView(R.id.max_ppm) private TextView maxppm;
-	@Views.InjectView(R.id.ave_ppm) private TextView aveppm;
+	@Views.InjectView(R.id.tds_title) private TextView ppmTitle;
+	@Views.InjectView(R.id.min_tds) private TextView mintds;
+	@Views.InjectView(R.id.max_tds) private TextView maxtds;
+	@Views.InjectView(R.id.ave_tds) private TextView avetds;
+	private TdsUnit selectedTdsUnit;
 
 	@Views.InjectView(R.id.temp_container) private View tempContainer;
 	@Views.InjectView(R.id.min_temp) private TextView mintemp;
@@ -100,7 +102,6 @@ public class StatisticsFragment extends Fragment
 	@Views.InjectView(R.id.ave_temp) private TextView avetemp;
 
 	private Set<String> checkedAdditives = null;
-	private boolean usingEc = false;
 
 	@Nullable @Override public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState)
 	{
@@ -119,7 +120,6 @@ public class StatisticsFragment extends Fragment
 			checkedAdditives = new HashSet<>(savedInstanceState.getStringArrayList("checked_additives"));
 		}
 
-		usingEc = PreferenceManager.getDefaultSharedPreferences(getActivity()).getBoolean("tds_ec", false);
 		getActivity().setTitle(R.string.statistics_title);
 
 		if (getArguments() != null)
@@ -128,6 +128,7 @@ public class StatisticsFragment extends Fragment
 			getActivity().getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_ALWAYS_HIDDEN);
 		}
 
+		selectedTdsUnit = TdsUnit.getSelectedTdsUnit(getActivity());
 		setStatistics();
 
 		String[] inputAdditional = new String[3];
@@ -136,17 +137,7 @@ public class StatisticsFragment extends Fragment
 		maxInputPh.setText(inputAdditional[1].equals(String.valueOf(Float.MIN_VALUE)) ? "0" : inputAdditional[1]);
 		aveInputPh.setText(inputAdditional[2]);
 
-		String[] ppmAdditional = new String[3];
-		StatsHelper.setPpmData(plant, getActivity(), ppm, ppmAdditional, usingEc);
-		minppm.setText(ppmAdditional[0].equals(String.valueOf(Long.MAX_VALUE)) ? "0" : ppmAdditional[0]);
-		maxppm.setText(ppmAdditional[1].equals(String.valueOf(Long.MIN_VALUE)) ? "0" : ppmAdditional[1]);
-		aveppm.setText(ppmAdditional[2]);
-
-		if (usingEc)
-		{
-			ppmTitle.setText("EC");
-		}
-
+		setTdsStats();
 		setAdditiveStats();
 
 		tempContainer.setVisibility(View.VISIBLE);
@@ -162,6 +153,52 @@ public class StatisticsFragment extends Fragment
 	{
 		super.onSaveInstanceState(outState);
 		outState.putStringArrayList("checked_additives", new ArrayList<String>(checkedAdditives));
+	}
+
+	private void setTdsStats()
+	{
+		final Set<TdsUnit> tdsNames = new TreeSet<>();
+		for (Action action : plant.getActions())
+		{
+			if (action instanceof Water && ((Water)action).getTds() != null)
+			{
+				tdsNames.add(((Water)action).getTds().getType());
+			}
+		}
+
+		tdsSpinner.setText(selectedTdsUnit.getStrRes());
+		tdsSpinner.setOnClickListener(new View.OnClickListener()
+		{
+			@Override public void onClick(View v)
+			{
+				PopupMenu menu = new PopupMenu(v.getContext(), v);
+				for (TdsUnit tdsName : tdsNames)
+				{
+					menu.getMenu().add(0, tdsName.ordinal(), 0, tdsName.getStrRes());
+				}
+
+				menu.setOnMenuItemClickListener(new PopupMenu.OnMenuItemClickListener()
+				{
+					@Override public boolean onMenuItemClick(MenuItem item)
+					{
+						selectedTdsUnit = TdsUnit.values()[item.getItemId()];
+						setTdsStats();
+						return true;
+					}
+				});
+
+				menu.show();
+			}
+		});
+
+		String[] tdsAdditional = new String[3];
+		StatsHelper.setTdsData(plant, getActivity(), tds, tdsAdditional, selectedTdsUnit);
+		tds.notifyDataSetChanged();
+		tds.postInvalidate();
+		mintds.setText(tdsAdditional[0].equals(String.valueOf(Long.MAX_VALUE)) ? "0" : tdsAdditional[0]);
+		maxtds.setText(tdsAdditional[1].equals(String.valueOf(Long.MIN_VALUE)) ? "0" : tdsAdditional[1]);
+		avetds.setText(tdsAdditional[2]);
+		ppmTitle.setText(selectedTdsUnit.getStrRes());
 	}
 
 	private void setAdditiveStats()
