@@ -319,8 +319,8 @@ public class WateringFragment extends Fragment
 			{
 				Double averagePh = 0.0;
 				int phCount = 0;
-				Double averagePpm = 0.0;
-				int ppmCount = 0;
+				ArrayList<Tds> averagePpm = new ArrayList<>();
+				Double selectedTdsAverage = 0.0;
 				Double averageRunoff = 0.0;
 				int runoffCount = 0;
 				Double averageAmount = 0.0;
@@ -338,8 +338,12 @@ public class WateringFragment extends Fragment
 
 					if (hint.getTds() != null)
 					{
-						averagePpm += hint.getTds().getAmount();
-						ppmCount++;
+						Tds tds = new Tds(hint.getTds().getAmount(), hint.getTds().getType());
+						if (hint.getTds().getType() == selectedTdsUnit)
+						{
+							selectedTdsAverage += hint.getTds().getAmount();
+							averagePpm.add(tds);
+						}
 					}
 
 					if (hint.getRunoff() != null)
@@ -362,7 +366,17 @@ public class WateringFragment extends Fragment
 				}
 
 				averagePh = Unit.toTwoDecimalPlaces(averagePh / phCount);
-				averagePpm = Unit.toTwoDecimalPlaces(averagePpm / ppmCount);
+
+				if (selectedTdsUnit.getDecimalPlaces() == 2)
+				{
+
+				}
+				else
+				{
+					selectedTdsAverage = selectedTdsAverage / (double)averagePpm.size();
+				}
+
+				selectedTdsAverage = Unit.toTwoDecimalPlaces(selectedTdsAverage / (double)averagePpm.size());
 				averageRunoff = Unit.toTwoDecimalPlaces(averageRunoff / runoffCount);
 				averageAmount = Unit.toTwoDecimalPlaces(averageAmount / amountCount);
 				averageTemp = Unit.toTwoDecimalPlaces(averageTemp / tempCount);
@@ -372,14 +386,16 @@ public class WateringFragment extends Fragment
 					waterPh.setHint(String.valueOf(averagePh));
 				}
 
-				if (!averagePpm.isNaN())
+				if (!selectedTdsAverage.isNaN())
 				{
-					if (selectedTdsUnit.getDecimalPlaces() == 2)
+					if (selectedTdsUnit.getDecimalPlaces() == 0)
 					{
-						averagePpm = Unit.toTwoDecimalPlaces(averagePpm);
+						waterPpm.setHint(averagePh.intValue() + " " + selectedTdsUnit.getLabel());
 					}
-
-					waterPpm.setHint(String.valueOf(averagePpm) + " " + selectedTdsUnit.getLabel());
+					else
+					{
+						waterPpm.setHint(averagePh + " " + selectedTdsUnit.getLabel());
+					}
 				}
 
 				if (!averageRunoff.isNaN())
@@ -460,7 +476,7 @@ public class WateringFragment extends Fragment
 
 			if (water.getTds() != null)
 			{
-				String ppm = String.valueOf(water.getTds().getAmount());
+				String ppm = String.valueOf(water.getTds().getAmount().intValue());
 				if (selectedTdsUnit.getDecimalPlaces() == 2)
 				{
 					ppm = "" + Unit.toTwoDecimalPlaces(water.getTds().getAmount());
