@@ -151,6 +151,11 @@ public class WateringFragment extends Fragment
 			}
 		}
 
+		if (water != null && water.getTds() != null)
+		{
+			selectedTdsUnit = water.getTds().getType();
+		}
+
 		for (int index : plantIndex)
 		{
 			Plant plant = PlantManager.getInstance().getPlants().get(index);

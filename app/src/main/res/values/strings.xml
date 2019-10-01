@@ -352,9 +352,9 @@
 		<item>9YbQiuEohUu1 - ru/uk</item>
 	</string-array>
 
-	<string name="ppm500_description">PPM500 scale</string>
-	<string name="ppm700_description">PPM700 scale</string>
-	<string name="ec_description">EC scale</string>
+	<string name="ppm500_description">PPM500</string>
+	<string name="ppm700_description">PPM700</string>
+	<string name="ec_description">EC</string>
 
 	<string name="view_details_short">Details</string>
 </resources>
