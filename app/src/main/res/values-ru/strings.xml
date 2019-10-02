@@ -127,7 +127,7 @@
 	<string name="view_history_short">История</string>
 	<string name="view_statistics_short">Статистика</string>
 	<string name="filter">Фильтр</string>
-	<string name="planted">Посев</string>
+	<string name="planted">Посажено</string>
 	<string name="germination">Прорастание</string>
 	<string name="cutting">Срез</string>
 	<string name="vegetation">Вегетация</string>
@@ -175,7 +175,7 @@
 	<string name="watered">Полито</string>
 	<string name="note">Заметка</string>
 	<string name="delete_event_dialog_title">Удалить событие?</string>
-	<string name="confirm_delete_item_message">Действительно удалить</string>
+	<string name="confirm_delete_item_message">Действительно удалить </string>
 	<string name="confirm_delete_photos_message" formatted="true">Действительно удалить %s изображений? Их нельзя будет восстановить.</string>
 	<string name="edit">Редактировать</string>
 	<string name="stage">стадия</string>
@@ -246,7 +246,7 @@
 	<string name="show_images">Показать изображения</string>
 
 	<string name="settings_default_garden">Сад для показа по умолчанию, сейчас: &lt;b&gt;%s&lt;/b&gt;</string>
-	<string name="settings_card_style">Выбрать стиль карточек, сейчас: %s</string>
+	<string name="settings_card_style">Выбрать стиль карточек, сейчас: &lt;b&gt;%s&lt;/b&gt;</string>
 	<string name="settings_delivery">Единица измерения по умолчанию, сейчас: &lt;b&gt;%s&lt;/b&gt;</string>
 	<string name="settings_measurement">Единица измерения удобрений по умолчанию, сейчас &lt;b&gt;%s&lt;/b&gt;</string>
 	<string name="settings_temperature">Единица температуры, сейчас: &lt;b&gt;%s&lt;/b&gt;</string>
@@ -298,8 +298,8 @@
 	<string name="settings_delivery_title">Единица объёма</string>
 	<string name="settings_measurement_title">Единица измерения</string>
 	<string name="settings_temp_title">Единицы температуры</string>
-	<string name="settings_tds_title">Использовать EC вместо ppm</string>
-	<string name="settings_tds_summary">Использовать базовое преобразование EC=((ppm * 2) / 1000)</string>
+	<string name="settings_tds_title">Единица общей минерализации</string>
+	<string name="settings_tds_summary" formatted="true">Единица общей минерализации, сейчас: &lt;b&gt;%s&lt;/b&gt;</string>
 	<string name="settings_data_management">Управление данными</string>
 	<string name="settings_autobackup_title">Автоматические резервные копии</string>
 	<string name="settings_autobackup_summary">Создавать резервную копию данных каждые 24 часа</string>
@@ -339,6 +339,10 @@
 	<string name="week_abbr">н</string>
 	<string name="month_abbr">м</string>
 	<string name="year_abbr">г</string>
+
+	<string name="ppm500_description">ppm 500</string>
+	<string name="ppm700_description">ppm 700</string>
+	<string name="ec_description">EC</string>
 
 	<string name="view_details_short">Детали</string>
 </resources>
