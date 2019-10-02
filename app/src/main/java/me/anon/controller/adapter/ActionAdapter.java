@@ -4,7 +4,6 @@ import android.annotation.SuppressLint;
 import android.content.DialogInterface;
 import android.os.Parcel;
 import android.os.Parcelable;
-import android.preference.PreferenceManager;
 import android.text.Html;
 import android.text.TextUtils;
 import android.view.Gravity;
@@ -328,8 +327,6 @@ public class ActionAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>
 				tempUnit = TempUnit.getSelectedTemperatureUnit(viewHolder.itemView.getContext());
 			}
 
-			usingEc = PreferenceManager.getDefaultSharedPreferences(viewHolder.itemView.getContext()).getBoolean("tds_ec", false);
-
 			if (action == null) return;
 
 			dateDay = viewHolder.getDateDay();
@@ -339,14 +336,14 @@ public class ActionAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>
 			Calendar actionCalendar = GregorianCalendar.getInstance();
 			actionCalendar.setTime(actionDate);
 			String fullDateStr = dateFormat.format(actionDate) + " " + timeFormat.format(actionDate);
-			String dateStr = "<b>" + new DateRenderer(viewHolder.itemView.getContext()).timeAgo(action.getDate()).formattedDate + "</b> ago";
+			String dateStr = vh.itemView.getContext().getString(R.string.ago, "<b>" + new DateRenderer(viewHolder.itemView.getContext()).timeAgo(action.getDate()).formattedDate + "</b>");
 
 			if (index > 0)
 			{
 				long difference = actions.get(index - 1).getDate() - action.getDate();
 				int days = (int)Math.round(((double)difference / 60d / 60d / 24d / 1000d));
 
-				dateStr += " (-" + days + "d)";
+				dateStr += " (-" + days + vh.itemView.getContext().getString(R.string.day_abbr) + ")";
 			}
 
 			viewHolder.getFullDate().setText(Html.fromHtml(fullDateStr));
