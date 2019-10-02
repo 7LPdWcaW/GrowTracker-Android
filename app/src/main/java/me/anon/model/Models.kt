@@ -265,7 +265,7 @@ class Plant(
 
 				if (verbosity > 0)
 				{
-					var waterStr: String? = null
+					var waterStr: String = ""
 
 					it.ph?.let { ph ->
 						waterStr = "<b>$ph pH</b> "
@@ -295,7 +295,10 @@ class Plant(
 						waterStr += "<b>$temp</b> "
 					}
 
-					waterStr?.let { summary.add(it) }
+					if (waterStr.isNotEmpty())
+					{
+						summary.add(waterStr)
+					}
 
 					if (it.additives.isNotEmpty())
 					{
