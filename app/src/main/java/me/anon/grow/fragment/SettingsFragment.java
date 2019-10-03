@@ -114,6 +114,8 @@ public class SettingsFragment extends PreferenceFragmentCompat implements Prefer
 		}
 
 		findPreference("encrypt").setOnPreferenceChangeListener(this);
+		findPreference("encrypt").setEnabled(!MainApplication.dataTaskRunning.get());
+
 		findPreference("failsafe").setOnPreferenceChangeListener(this);
 		findPreference("auto_backup").setOnPreferenceChangeListener(this);
 		findPreference("backup_size").setOnPreferenceChangeListener(this);
@@ -361,12 +363,14 @@ public class SettingsFragment extends PreferenceFragmentCompat implements Prefer
 
 										// make sure encrypt mode is definitely enabled
 										((SwitchPreferenceCompat)preference).setChecked(true);
+										((SwitchPreferenceCompat)preference).setEnabled(false);
 										findPreference("failsafe").setEnabled(true);
 										dialog.dismiss();
 									}
 									else
 									{
 										((SwitchPreferenceCompat)preference).setChecked(false);
+										((SwitchPreferenceCompat)preference).setEnabled(true);
 										check2.getInput().setError(getString(R.string.passphrase_error));
 									}
 								}
@@ -377,6 +381,7 @@ public class SettingsFragment extends PreferenceFragmentCompat implements Prefer
 								{
 									// make sure the preferences is definitely turned off
 									((SwitchPreferenceCompat)preference).setChecked(false);
+									((SwitchPreferenceCompat)preference).setEnabled(true);
 								}
 							});
 
@@ -432,6 +437,7 @@ public class SettingsFragment extends PreferenceFragmentCompat implements Prefer
 
 							// make sure the preferences is definitely turned off
 							((SwitchPreferenceCompat)preference).setChecked(false);
+							((SwitchPreferenceCompat)preference).setEnabled(false);
 							ImageLoader.getInstance().clearMemoryCache();
 							ImageLoader.getInstance().clearDiskCache();
 							dialog.dismiss();
@@ -439,6 +445,7 @@ public class SettingsFragment extends PreferenceFragmentCompat implements Prefer
 						else
 						{
 							((SwitchPreferenceCompat)preference).setChecked(true);
+							((SwitchPreferenceCompat)preference).setEnabled(true);
 							check.getInput().setError(getString(R.string.passphrase_error));
 						}
 					}
@@ -448,6 +455,7 @@ public class SettingsFragment extends PreferenceFragmentCompat implements Prefer
 					@Override public void onDialogCancelled()
 					{
 						((SwitchPreferenceCompat)preference).setChecked(true);
+						((SwitchPreferenceCompat)preference).setEnabled(true);
 					}
 				});
 

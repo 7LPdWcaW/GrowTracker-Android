@@ -25,6 +25,7 @@ public class EncryptTask extends AsyncTask<ArrayList<String>, Void, Void>
 
 	@Override protected Void doInBackground(ArrayList<String>... params)
 	{
+		MainApplication.dataTaskRunning.set(true);
 		for (String filePath : params[0])
 		{
 			if (!new File(filePath).exists()) continue;
@@ -82,6 +83,7 @@ public class EncryptTask extends AsyncTask<ArrayList<String>, Void, Void>
 			}
 		}
 
+		MainApplication.dataTaskRunning.set(false);
 		return null;
 	}
 }

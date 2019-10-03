@@ -22,6 +22,7 @@ import java.io.InputStream;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.util.concurrent.TimeUnit;
+import java.util.concurrent.atomic.AtomicBoolean;
 
 import me.anon.controller.receiver.BackupService;
 import me.anon.lib.handler.ExceptionHandler;
@@ -91,6 +92,7 @@ public class MainApplication extends Application
 		return isTablet;
 	}
 
+	public static AtomicBoolean dataTaskRunning = new AtomicBoolean(false);
 	private static Context context;
 	public static SharedPreferences getDefaultPreferences()
 	{
