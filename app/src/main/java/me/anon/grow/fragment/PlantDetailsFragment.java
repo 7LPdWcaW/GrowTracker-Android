@@ -49,6 +49,7 @@ import java.text.DateFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Calendar;
+import java.util.Collections;
 import java.util.Date;
 import java.util.Set;
 import java.util.TreeSet;
@@ -600,15 +601,30 @@ public class PlantDetailsFragment extends Fragment
 		{
 			if (resultCode != Activity.RESULT_CANCELED)
 			{
-				if (data != null && data.getData() != null)
+				if (data == null) return;
+
+				ArrayList<Uri> images = new ArrayList<>();
+				if (data.getData() != null)
 				{
-					Uri selectedUri = data.getData();
+					images.add(data.getData());
+				}
+				else if (data.getClipData() != null)
+				{
+					for (int index = 0; index < data.getClipData().getItemCount(); index++)
+					{
+						images.add(data.getClipData().getItemAt(index).getUri());
+					}
+				}
+				images.removeAll(Collections.singleton(null));
+
+				for (Uri image : images)
+				{
 					if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT)
 					{
-						getActivity().grantUriPermission(getActivity().getPackageName(), selectedUri, Intent.FLAG_GRANT_READ_URI_PERMISSION);
+						getActivity().grantUriPermission(getActivity().getPackageName(), image, Intent.FLAG_GRANT_READ_URI_PERMISSION);
 
 						final int takeFlags = data.getFlags() & (Intent.FLAG_GRANT_READ_URI_PERMISSION);
-						getActivity().getContentResolver().takePersistableUriPermission(selectedUri, takeFlags);
+						getActivity().getContentResolver().takePersistableUriPermission(image, takeFlags);
 					}
 
 					File path = new File(Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DCIM).getPath() + "/GrowTracker/" + plant.getId() + "/");
@@ -622,12 +638,10 @@ public class PlantDetailsFragment extends Fragment
 
 					File out = new File(path, System.currentTimeMillis() + ".jpg");
 
-					copyImage(selectedUri, out);
-
+					copyImage(image, out);
 					if (out.exists() && out.length() > 0)
 					{
 						plant.getImages().add(out.getAbsolutePath());
-						PlantManager.getInstance().upsert(plant);
 						AddonHelper.broadcastImage(getActivity(), out.getAbsolutePath(), false);
 					}
 					else
@@ -635,6 +649,8 @@ public class PlantDetailsFragment extends Fragment
 						out.delete();
 					}
 				}
+
+				PlantManager.getInstance().upsert(plant);
 			}
 		}
 		else if (requestCode == ACTIVITY_REQUEST_LAST_WATER)
