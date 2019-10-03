@@ -4,14 +4,12 @@ import android.content.Context;
 import android.content.SharedPreferences;
 import android.preference.PreferenceManager;
 
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.Comparator;
-
+import me.anon.lib.TdsUnit;
+import me.anon.lib.Unit;
 import me.anon.lib.manager.PlantManager;
 import me.anon.model.Action;
-import me.anon.model.Additive;
 import me.anon.model.Plant;
+import me.anon.model.Tds;
 import me.anon.model.Water;
 
 /**
@@ -23,10 +21,8 @@ public class MigrationHelper
 	{
 		try
 		{
-			int currentVersion = context.getPackageManager().getPackageInfo(context.getPackageName(), 0).versionCode;
 			SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(context);
-
-			return !preferences.contains("migration_" + currentVersion);
+			return !preferences.contains("migration_tds");
 		}
 		catch (Exception e)
 		{
@@ -41,80 +37,37 @@ public class MigrationHelper
 		try
 		{
 			SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(context);
-			int currentVersion = context.getPackageManager().getPackageInfo(context.getPackageName(), 0).versionCode;
-
-			// reverse versions
-			ArrayList<Integer> versions = new ArrayList<>();
-
-			for (String key : preferences.getAll().keySet())
+			if (!preferences.getBoolean("migration_tds", false))
 			{
-				if (key.startsWith("migration_"))
+				// migrate ppm to tds
+				boolean usingEc = preferences.getBoolean("tds_ec", false);
+				for (Plant plant : PlantManager.getInstance().getPlants())
 				{
-					versions.add(preferences.getInt(key, 0));
-				}
-			}
-
-			if (versions.size() == 0)
-			{
-				versions.add(0);
-			}
-
-			Collections.sort(versions, new Comparator<Integer>()
-			{
-				@Override public int compare(Integer left, Integer right)
-				{
-					return left.compareTo(right);
-				}
-			});
-
-			for (Integer version : versions)
-			{
-				// (* < 2.0) -> 2.0
-				if (version < 6)
-				{
-					// migrate feedings to waterings
-					//		-> nutrient object to additive
-					for (Plant plant : PlantManager.getInstance().getPlants())
+					for (Action action : plant.getActions())
 					{
-						for (Action action : plant.getActions())
+						if (action instanceof Water && ((Water)action).getPpm() != null)
 						{
-							if (action instanceof Water && ((Water)action).getNutrient() != null)
+							Tds replacement = new Tds();
+							if (usingEc)
 							{
-								Additive replacement = new Additive();
-								replacement.setAmount(((Water)action).getMlpl());
-
-								String nutrientStr = "";
-								nutrientStr += ((Water)action).getNutrient().getNpc() == null ? "-" : ((Water)action).getNutrient().getNpc();
-								nutrientStr += " : ";
-								nutrientStr += ((Water)action).getNutrient().getPpc() == null ? "-" : ((Water)action).getNutrient().getPpc();
-								nutrientStr += " : ";
-								nutrientStr += ((Water)action).getNutrient().getKpc() == null ? "-" : ((Water)action).getNutrient().getKpc();
-
-								if (((Water)action).getNutrient().getCapc() != null
-								|| ((Water)action).getNutrient().getSpc() != null
-								|| ((Water)action).getNutrient().getMgpc() != null)
-								{
-									nutrientStr += "/";
-									nutrientStr += ((Water)action).getNutrient().getCapc() == null ? "-" : ((Water)action).getNutrient().getCapc();
-									nutrientStr += " : ";
-									nutrientStr += ((Water)action).getNutrient().getSpc() == null ? "-" : ((Water)action).getNutrient().getSpc();
-									nutrientStr += " : ";
-									nutrientStr += ((Water)action).getNutrient().getMgpc() == null ? "-" : ((Water)action).getNutrient().getMgpc();
-								}
-
-								replacement.setDescription(nutrientStr);
-								((Water)action).getAdditives().add(replacement);
-								((Water)action).setNutrient(null);
-								((Water)action).setMlpl(null);
+								replacement.setAmount(Unit.toTwoDecimalPlaces((((Water)action).getPpm() * 2d) / 1000d));
+								replacement.setType(TdsUnit.EC);
 							}
+							else
+							{
+								replacement.setAmount(((Water)action).getPpm());
+								replacement.setType(TdsUnit.PPM500);
+							}
+
+							((Water)action).setTds(replacement);
+							((Water)action).setPpm(null);
 						}
 					}
-
-					PlantManager.getInstance().save();
 				}
-			}
 
-			preferences.edit().putInt("migration_" + currentVersion, currentVersion).apply();
+				preferences.edit().putBoolean("migration_tds", true).apply();
+				PlantManager.getInstance().save();
+			}
 		}
 		catch (Exception e)
 		{
