@@ -2,6 +2,7 @@ package me.anon.lib.helper;
 
 import android.content.Context;
 import android.graphics.Color;
+import android.nfc.FormatException;
 import android.widget.TextView;
 
 import com.github.mikephil.charting.charts.BarLineChartBase;
@@ -18,7 +19,9 @@ import com.github.mikephil.charting.highlight.Highlight;
 import com.github.mikephil.charting.utils.ColorTemplate;
 import com.github.mikephil.charting.utils.ViewPortHandler;
 
+import java.text.DateFormat;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.HashSet;
 import java.util.LinkedHashMap;
 import java.util.List;
@@ -33,11 +36,14 @@ import androidx.core.graphics.ColorUtils;
 import androidx.core.util.Pair;
 import me.anon.grow.R;
 import me.anon.lib.TdsUnit;
+import me.anon.lib.TempUnit;
 import me.anon.lib.ext.IntUtilsKt;
 import me.anon.model.Action;
 import me.anon.model.Additive;
+import me.anon.model.Garden;
 import me.anon.model.Plant;
 import me.anon.model.PlantStage;
+import me.anon.model.TemperatureChange;
 import me.anon.model.Water;
 
 /**
@@ -535,6 +541,105 @@ public class StatsHelper
 			additionalRef[0] = String.valueOf(min);
 			additionalRef[1] = String.valueOf(max);
 			additionalRef[2] = String.format("%1$,.2f", (total / (double)vals.size()));
+		}
+	}
+
+	/**
+	 * Generates and sets the temperature data from the given Garden
+	 *
+	 * @param garden The garden
+	 * @param chart The chart to set the data
+	 * @param additionalRef Pass-by-reference value for min/max/ave for the generated values. Must be length of 3 if not null
+	 */
+	public static void setTempData(Garden garden, @NonNull Context context, @Nullable LineChart chart, String[] additionalRef)
+	{
+		ArrayList<Entry> vals = new ArrayList<>();
+		ArrayList<String> xVals = new ArrayList<>();
+		LineData data = new LineData();
+		float min = 100f;
+		float max = -100f;
+		float total = 0;
+
+		int index = 0;
+		DateFormat dateFormat = android.text.format.DateFormat.getDateFormat(context);
+		DateFormat timeFormat = android.text.format.DateFormat.getTimeFormat(context);
+		final TempUnit tempUnit = TempUnit.getSelectedTemperatureUnit(context);
+
+		for (Action action : garden.getActions())
+		{
+			if (action instanceof TemperatureChange)
+			{
+				String date = dateFormat.format(new Date(action.getDate())) + "\n" + timeFormat.format(new Date(action.getDate()));
+
+				vals.add(new Entry((float)((TemperatureChange)action).getTemp(), index++));
+				xVals.add(date);
+
+				min = (float)Math.min(min, ((TemperatureChange)action).getTemp());
+				max = (float)Math.max(max, ((TemperatureChange)action).getTemp());
+				total += ((TemperatureChange)action).getTemp();
+			}
+		}
+
+		if (chart != null)
+		{
+			LineDataSet dataSet = new LineDataSet(vals, context.getString(R.string.stat_temerature));
+			styleDataset(context, dataSet, Color.parseColor(context.getResources().getStringArray(R.array.stats_colours)[0]));
+
+			LineData lineData = new LineData(xVals, dataSet);
+			lineData.setValueFormatter(new ValueFormatter()
+			{
+				@Override public String getFormattedValue(float value, Entry entry, int dataSetIndex, ViewPortHandler viewPortHandler)
+				{
+					return formatter.getFormattedValue(value, entry, dataSetIndex, viewPortHandler) + "°" + tempUnit.getLabel();
+				}
+			});
+
+			chart.getAxisLeft().setAxisMinValue(min - 5f);
+			chart.getAxisLeft().setAxisMaxValue(max + 5f);
+			styleGraph(chart);
+			chart.setData(lineData);
+			chart.getAxisLeft().setValueFormatter(new YAxisValueFormatter()
+			{
+				@Override public String getFormattedValue(float value, YAxis yAxis)
+				{
+					return String.format("%s°%s", (int)value, tempUnit.getLabel());
+				}
+			});
+
+			chart.getAxisRight().setValueFormatter(new YAxisValueFormatter()
+			{
+				@Override public String getFormattedValue(float value, YAxis yAxis)
+				{
+					return String.format("%s°%s", (int)value, tempUnit.getLabel());
+				}
+			});
+
+			chart.setMarkerView(new MarkerView(context, R.layout.chart_marker)
+			{
+				@Override
+				public void refreshContent(Entry e, Highlight highlight)
+				{
+					((TextView)findViewById(R.id.content)).setText((int)e.getVal() + "°" + tempUnit.getLabel());
+					((TextView)findViewById(R.id.content)).setTextColor(IntUtilsKt.resolveColor(R.attr.colorAccent, findViewById(R.id.content).getContext()));
+				}
+
+				@Override public int getXOffset(float xpos)
+				{
+					return -(getWidth() / 2);
+				}
+
+				@Override public int getYOffset(float ypos)
+				{
+					return -getHeight();
+				}
+			});
+		}
+
+		if (additionalRef != null)
+		{
+			additionalRef[0] = String.valueOf(min);
+			additionalRef[1] = String.valueOf(max);
+			additionalRef[2] = String.valueOf((int)(total / (double)vals.size()));
 		}
 	}
 }

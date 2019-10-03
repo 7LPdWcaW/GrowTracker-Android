@@ -29,7 +29,7 @@ class TemperatureDialogFragment(var action: TemperatureChange? = null, val callb
 		dialog.setTitle(R.string.temperature_title)
 		dialog.setPositiveButton(if (newAction) R.string.add else R.string.edit) { dialog, which ->
 			action?.let {
-				it.temperature = view.findViewById<EditText>(R.id.temperature_input).text.toString().toDouble()
+				it.temp = view.findViewById<EditText>(R.id.temperature_input).text.toString().toDouble()
 
 				if (view.findViewById<EditText>(R.id.notes).text.isNotEmpty())
 				{
@@ -49,7 +49,7 @@ class TemperatureDialogFragment(var action: TemperatureChange? = null, val callb
 		view.findViewById<EditText>(R.id.temperature_input).setHint("32°" + tempUnit.label)
 		if (!newAction)
 		{
-			view.findViewById<EditText>(R.id.temperature_input).setText("${action!!.temperature}")
+			view.findViewById<EditText>(R.id.temperature_input).setText("${action!!.temp}")
 		}
 
 		val date = Calendar.getInstance()

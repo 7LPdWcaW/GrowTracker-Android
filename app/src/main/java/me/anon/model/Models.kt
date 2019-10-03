@@ -600,7 +600,7 @@ class Garden(
 @Parcelize
 @JsonClass(generateAdapter = true)
 class TemperatureChange(
-	var temperature: Double = 0.0,
+	var temp: Double = 0.0,
 
 	override var date: Long = System.currentTimeMillis(),
 	override var notes: String? = null
