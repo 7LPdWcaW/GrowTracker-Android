@@ -30,6 +30,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 import androidx.annotation.NonNull;
@@ -418,15 +419,30 @@ public class ViewPhotosFragment extends Fragment
 		{
 			if (resultCode != Activity.RESULT_CANCELED)
 			{
-				if (data != null && data.getData() != null)
+				if (data == null) return;
+
+				ArrayList<Uri> images = new ArrayList<>();
+				if (data.getData() != null)
 				{
-					Uri selectedUri = data.getData();
+					images.add(data.getData());
+				}
+				else if (data.getClipData() != null)
+				{
+					for (int index = 0; index < data.getClipData().getItemCount(); index++)
+					{
+						images.add(data.getClipData().getItemAt(index).getUri());
+					}
+				}
+				images.removeAll(Collections.singleton(null));
+
+				for (Uri image : images)
+				{
 					if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT)
 					{
-						getActivity().grantUriPermission(getActivity().getPackageName(), selectedUri, Intent.FLAG_GRANT_READ_URI_PERMISSION);
+						getActivity().grantUriPermission(getActivity().getPackageName(), image, Intent.FLAG_GRANT_READ_URI_PERMISSION);
 
 						final int takeFlags = data.getFlags() & (Intent.FLAG_GRANT_READ_URI_PERMISSION);
-						getActivity().getContentResolver().takePersistableUriPermission(selectedUri, takeFlags);
+						getActivity().getContentResolver().takePersistableUriPermission(image, takeFlags);
 					}
 
 					File path = new File(Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DCIM).getPath() + "/GrowTracker/" + plant.getId() + "/");
@@ -440,27 +456,25 @@ public class ViewPhotosFragment extends Fragment
 
 					File out = new File(path, System.currentTimeMillis() + ".jpg");
 
-					copyImage(selectedUri, out);
-
+					copyImage(image, out);
 					if (out.exists() && out.length() > 0)
 					{
 						plant.getImages().add(out.getAbsolutePath());
-
-						PlantManager.getInstance().upsert(plant);
 
 						if (plant.getImages().size() - 1 > 0)
 						{
 							AddonHelper.broadcastImage(getActivity(), plant.getImages().get(plant.getImages().size() - 1), false);
 						}
-
-						setAdapter();
-						adapter.notifyDataSetChanged();
 					}
 					else
 					{
 						out.delete();
 					}
 				}
+
+				PlantManager.getInstance().upsert(plant);
+				setAdapter();
+				adapter.notifyDataSetChanged();
 			}
 		}
 
