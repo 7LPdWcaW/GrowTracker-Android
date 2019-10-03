@@ -104,7 +104,7 @@ public class MainApplication extends Application
 		context = this;
 		ExceptionHandler.getInstance().register(this);
 
-		encrypted = PreferenceManager.getDefaultSharedPreferences(this).getBoolean("encrypt", false);
+		encrypted = PreferenceManager.getDefaultSharedPreferences(this).getBoolean("encrypt", false); //|| PlantManager.isFileEncrypted();
 		isTablet = getResources().getBoolean(R.bool.is_tablet);
 
 		PlantManager.getInstance().initialise(this);
