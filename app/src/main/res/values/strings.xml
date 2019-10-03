@@ -395,4 +395,6 @@
 
 	<string name="confirm_quit">You will lose any unsaved changes</string>
 	<string name="accept_quit">Quit</string>
+	<string name="plants">Plants</string>
+	<string name="humidity">Humidity</string>
 </resources>

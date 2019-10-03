@@ -115,13 +115,6 @@ class EmptyAction(
 
 @Parcelize
 @JsonClass(generateAdapter = true)
-class Garden(
-	var name: String = "",
-	var plantIds: ArrayList<String> = arrayListOf()
-) : Parcelable
-
-@Parcelize
-@JsonClass(generateAdapter = true)
 class NoteAction(
 	override var date: Long = System.currentTimeMillis(),
 	override var notes: String? = null
@@ -594,3 +587,36 @@ class Additive(
 	var amount: Double? = null,
 	var description: String? = null
 ) : Parcelable
+
+@Parcelize
+@JsonClass(generateAdapter = true)
+class Garden(
+	var id: String = UUID.randomUUID().toString(),
+	var name: String = "",
+	var plantIds: ArrayList<String> = arrayListOf(),
+	var actions: ArrayList<Action> = arrayListOf()
+) : Parcelable
+
+@Parcelize
+@JsonClass(generateAdapter = true)
+class TemperatureChange(
+	var temperature: Double = 0.0,
+
+	override var date: Long = System.currentTimeMillis(),
+	override var notes: String? = null
+) : Action(date, notes)
+{
+	public var type: String = "TemperatureChange"
+}
+
+@Parcelize
+@JsonClass(generateAdapter = true)
+class HumidityChange(
+	var temperature: Int = 0,
+
+	override var date: Long = System.currentTimeMillis(),
+	override var notes: String? = null
+) : Action(date, notes)
+{
+	public var type: String = "HumidityChange"
+}

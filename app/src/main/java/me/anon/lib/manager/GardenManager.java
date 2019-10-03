@@ -118,6 +118,30 @@ public class GardenManager
 		}
 	}
 
+	public void upsert(Garden garden)
+	{
+		int pos = -1;
+		for (int index = 0, mGardensSize = mGardens.size(); index < mGardensSize; index++)
+		{
+			Garden mGarden = mGardens.get(index);
+			if (mGarden.getId().equals(garden.getId()))
+			{
+				pos = index;
+				break;
+			}
+		}
+
+		if (pos > -1)
+		{
+			mGardens.set(pos, garden);
+			save();
+		}
+		else
+		{
+			insert(garden);
+		}
+	}
+
 	public void insert(Garden garden)
 	{
 		mGardens.add(garden);
