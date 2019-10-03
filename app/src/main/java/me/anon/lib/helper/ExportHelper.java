@@ -595,9 +595,13 @@ public class ExportHelper
 					}
 				}
 
-				notificationManager.cancel(0);
 				callback.onCallback(appContext, finalFile.getFile());
 				return null;
+			}
+
+			@Override protected void onPostExecute(File file)
+			{
+				notificationManager.cancel(0);
 			}
 		}.executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR, plant.toArray(new Plant[0]));
 	}

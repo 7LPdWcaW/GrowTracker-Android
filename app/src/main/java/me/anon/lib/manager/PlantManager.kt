@@ -35,6 +35,11 @@ class PlantManager private constructor()
 	private lateinit var context: Context
 	private val saveTask = ConcurrentLinkedQueue<SaveAsyncTask>()
 	private val isSaving = AtomicBoolean(false)
+	public val fileExt: String
+		get() {
+			if (MainApplication.isEncrypted()) return "dat"
+			else return "json"
+		}
 
 	public fun initialise(context: Context)
 	{
@@ -135,12 +140,12 @@ class PlantManager private constructor()
 		}
 
 		// redundancy check
-		if (File(FILES_DIR, "/plants.json").lastModified() < File(FILES_DIR, "/plants.json.bak").lastModified())
+		if (File(FILES_DIR, "/plants.$fileExt").lastModified() < File(FILES_DIR, "/plants.$fileExt.bak").lastModified())
 		{
-			FileManager.getInstance().copyFile("$FILES_DIR/plants.json.bak", "$FILES_DIR/plants.json")
+			FileManager.getInstance().copyFile("$FILES_DIR/plants.$fileExt.bak", "$FILES_DIR/plants.$fileExt")
 		}
 
-		if (FileManager.getInstance().fileExists("$FILES_DIR/plants.json"))
+		if (FileManager.getInstance().fileExists("$FILES_DIR/plants.$fileExt"))
 		{
 			try
 			{
@@ -151,7 +156,7 @@ class PlantManager private constructor()
 						return false
 					}
 
-					val stream = DecryptInputStream(MainApplication.getKey(), File(FILES_DIR, "/plants.json"))
+					val stream = DecryptInputStream(MainApplication.getKey(), File(FILES_DIR, "/plants.$fileExt"))
 
 					plants.clear()
 					plants.addAll(MoshiHelper.parse(stream, Types.newParameterizedType(ArrayList::class.java, Plant::class.java)))
@@ -161,7 +166,7 @@ class PlantManager private constructor()
 				else
 				{
 					plants.clear()
-					plants.addAll(MoshiHelper.parse(File(FILES_DIR, "/plants.json"), Types.newParameterizedType(ArrayList::class.java, Plant::class.java)))
+					plants.addAll(MoshiHelper.parse(File(FILES_DIR, "/plants.$fileExt"), Types.newParameterizedType(ArrayList::class.java, Plant::class.java)))
 					MainApplication.setFailsafe(false)
 					MainApplication.isPanic = false
 				}
@@ -214,7 +219,7 @@ class PlantManager private constructor()
 				{
 					override fun doInBackground(vararg params: Void?): Int
 					{
-						FileManager.getInstance().copyFile("$FILES_DIR/plants.json", "$FILES_DIR/plants.json.bak")
+						FileManager.getInstance().copyFile("$FILES_DIR/plants.$fileExt", "$FILES_DIR/plants.$fileExt.bak")
 
 						try
 						{
@@ -227,11 +232,11 @@ class PlantManager private constructor()
 									return 1
 								}
 
-								outstream = EncryptOutputStream(MainApplication.getKey(), File("$FILES_DIR/plants.json"))
+								outstream = EncryptOutputStream(MainApplication.getKey(), File("$FILES_DIR/plants.$fileExt"))
 							}
 							else
 							{
-								outstream = FileOutputStream(File("$FILES_DIR/plants.json"))
+								outstream = FileOutputStream(File("$FILES_DIR/plants.$fileExt"))
 							}
 
 							val output = MoshiHelper.toJson(plants, Types.newParameterizedType(ArrayList::class.java, Plant::class.java))
@@ -252,7 +257,7 @@ class PlantManager private constructor()
 					{
 						callback?.callback()
 
-						if (File("$FILES_DIR/plants.json").length() == 0L || !File("$FILES_DIR/plants.json").exists())
+						if (File("$FILES_DIR/plants.$fileExt").length() == 0L || !File("$FILES_DIR/plants.$fileExt").exists())
 						{
 							Toast.makeText(context, "There was a fatal problem saving the plant data, please backup this data", Toast.LENGTH_LONG).show()
 							val sendData = MoshiHelper.toJson(this.plants, Types.newParameterizedType(ArrayList::class.java, Plant::class.java))
@@ -309,5 +314,8 @@ class PlantManager private constructor()
 		val instance = PlantManager()
 		@JvmField
 		var FILES_DIR: String = ""
+
+		@JvmStatic
+		public fun isFileEncrypted(): Boolean = File(FILES_DIR, "plants.dat").exists() && !File(FILES_DIR, "plants.json").exists()
 	}
 }

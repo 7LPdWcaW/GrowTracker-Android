@@ -5,7 +5,9 @@ import me.anon.grow.MainApplication
 import me.anon.lib.ext.T
 import me.anon.lib.ext.toSafeInt
 import me.anon.lib.manager.FileManager
+import me.anon.lib.manager.GardenManager
 import me.anon.lib.manager.PlantManager
+import me.anon.lib.manager.ScheduleManager
 import java.io.File
 import java.text.SimpleDateFormat
 import java.util.*
@@ -25,15 +27,14 @@ object BackupHelper
 		if (MainApplication.isFailsafe()) return null
 
 		val isEncrypted = MainApplication.isEncrypted()
-		val time = SimpleDateFormat("yyyy-MM-dd-hh-mm-ss").format(Date())
-		val ext = isEncrypted T "dat" ?: "bak"
+		val time = SimpleDateFormat("yyyy-MM-dd-HH-mm-ss").format(Date())
 		val backupPath = File(FILES_PATH)
 		backupPath.mkdirs()
 		limitBackups()
 
-		FileManager.getInstance().copyFile("${PlantManager.FILES_DIR}/plants.json", "$FILES_PATH/$time.plants.json.$ext")
-		FileManager.getInstance().copyFile("${PlantManager.FILES_DIR}/schedules.json", "$FILES_PATH/$time.schedules.json.$ext")
-		FileManager.getInstance().copyFile("${PlantManager.FILES_DIR}/gardens.json", "$FILES_PATH/$time.gardens.json.$ext")
+		FileManager.getInstance().copyFile("${PlantManager.FILES_DIR}/plants.${PlantManager.instance.fileExt}", "$FILES_PATH/$time.plants.${PlantManager.instance.fileExt}.bak")
+		FileManager.getInstance().copyFile("${PlantManager.FILES_DIR}/schedules.${ScheduleManager.instance.fileExt}", "$FILES_PATH/$time.schedules.${ScheduleManager.instance.fileExt}.bak")
+		FileManager.getInstance().copyFile("${PlantManager.FILES_DIR}/gardens.${GardenManager.getInstance().fileExt}", "$FILES_PATH/$time.gardens.${GardenManager.getInstance().fileExt}.bak")
 
 		return backupPath
 	}

@@ -493,7 +493,7 @@ public class ViewPhotosFragment extends Fragment
 				{
 					ArrayList<String> image = new ArrayList<>();
 					image.add(plant.getImages().get(plant.getImages().size() - 1));
-					new EncryptTask().executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR, image);
+					new EncryptTask(getActivity()).executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR, image);
 				}
 
 				SnackBar.show(getActivity(), R.string.snackbar_image_added, R.string.snackbar_action_take_another, new SnackBarListener()
