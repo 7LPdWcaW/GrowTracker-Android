@@ -340,10 +340,6 @@
 	<string name="month_abbr">м</string>
 	<string name="year_abbr">г</string>
 
-	<string name="ppm500_description">ppm 500</string>
-	<string name="ppm700_description">ppm 700</string>
-	<string name="ec_description">EC</string>
-
 	<string name="view_details_short">Детали</string>
 
 	<plurals name="time_second">

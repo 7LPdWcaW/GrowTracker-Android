@@ -340,10 +340,6 @@
 	<string name="month_abbr">mois</string>
 	<string name="year_abbr">année</string>
 
-	<string name="ppm500_description">PPM500</string>
-	<string name="ppm700_description">PPM700</string>
-	<string name="ec_description">EC</string>
-
 	<string name="view_details_short">Détails</string>
 
 	<plurals name="time_second">

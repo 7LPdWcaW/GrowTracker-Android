@@ -342,19 +342,20 @@
 
 	<!-- Add your name here! -->
 	<string-array name="translators" translatable="false">
-		<item>Maxtille - fr</item>
 		<item>Alex (Noxmiles) - de</item>
 		<item>Basti B (Weltenesche) - de</item>
-		<item>Sascha Zenglein (szenglein) - de</item>
-		<item>W Q (williq) - de</item>
-		<item>Patrick B (EukalyptusX) - de</item>
 		<item>EmmanuelMess - es</item>
+		<item>Maxtille - fr</item>
+		<item>Patrick B (EukalyptusX) - de</item>
+		<item>Sascha Zenglein (szenglein) - de</item>
+		<item>Vexatos - de</item>
+		<item>W Q (williq) - de</item>
 		<item>9YbQiuEohUu1 - ru/uk</item>
 	</string-array>
 
-	<string name="ppm500_description">PPM500</string>
-	<string name="ppm700_description">PPM700</string>
-	<string name="ec_description">EC</string>
+	<string name="ppm500_description" translatable="false">PPM500</string>
+	<string name="ppm700_description" translatable="false">PPM700</string>
+	<string name="ec_description" translatable="false">EC</string>
 
 	<string name="view_details_short">Details</string>
 
