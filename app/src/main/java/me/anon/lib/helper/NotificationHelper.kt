@@ -34,6 +34,25 @@ object NotificationHelper
 	}
 
 	@JvmStatic
+	public fun sendDataTaskNotification(context: Context, title: String, message: String)
+	{
+		val notificationManager = context.getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
+		notificationManager.cancel(1)
+
+		val exportNotification = NotificationCompat.Builder(context, "export")
+			.setContentText(title)
+			.setContentTitle("Data task")
+			.setContentIntent(PendingIntent.getActivity(context, 0, Intent(), PendingIntent.FLAG_UPDATE_CURRENT))
+			.setTicker(message)
+			.setVisibility(NotificationCompat.VISIBILITY_PUBLIC)
+			.setSmallIcon(R.drawable.ic_stat_name)
+			.setSound(null)
+			.build()
+
+		notificationManager.notify(1, exportNotification)
+	}
+
+	@JvmStatic
 	public fun sendExportNotification(context: Context, title: String, message: String)
 	{
 		val notificationManager = context.getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager

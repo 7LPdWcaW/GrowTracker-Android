@@ -65,6 +65,7 @@ import me.anon.lib.Unit;
 import me.anon.lib.helper.AddonHelper;
 import me.anon.lib.helper.BackupHelper;
 import me.anon.lib.helper.EncryptionHelper;
+import me.anon.lib.helper.NotificationHelper;
 import me.anon.lib.manager.FileManager;
 import me.anon.lib.manager.GardenManager;
 import me.anon.lib.manager.PlantManager;
@@ -294,6 +295,8 @@ public class SettingsFragment extends PreferenceFragmentCompat implements Prefer
 		}
 		else if ("encrypt".equals(preference.getKey()))
 		{
+			NotificationHelper.createExportChannel(getActivity());
+
 			if ((Boolean)newValue == true)
 			{
 				new AlertDialog.Builder(getActivity())
@@ -352,7 +355,8 @@ public class SettingsFragment extends PreferenceFragmentCompat implements Prefer
 											}
 										}
 
-										new EncryptTask().executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR, images);
+										NotificationHelper.sendDataTaskNotification(getActivity(), getString(R.string.app_name), getString(R.string.encrypt_progress_warning));
+										new EncryptTask(getActivity()).executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR, images);
 										ImageLoader.getInstance().clearMemoryCache();
 										ImageLoader.getInstance().clearDiskCache();
 										FileManager.getInstance().removeFile(PlantManager.FILES_DIR + "/plants.json");
@@ -432,7 +436,8 @@ public class SettingsFragment extends PreferenceFragmentCompat implements Prefer
 								}
 							}
 
-							new DecryptTask().executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR, images);
+							NotificationHelper.sendDataTaskNotification(getActivity(), getString(R.string.app_name), getString(R.string.decrypt_progress_warning));
+							new DecryptTask(getActivity()).executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR, images);
 							Toast.makeText(SettingsFragment.this.getActivity(), R.string.decrypt_progress_warning, Toast.LENGTH_LONG).show();
 
 							// make sure the preferences is definitely turned off
