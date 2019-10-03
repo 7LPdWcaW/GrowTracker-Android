@@ -246,7 +246,7 @@
 	<string name="show_images">Montrer les images</string>
 
 	<string name="settings_default_garden">Jardin par défaut à l\'ouverture, actuellement : &lt;b&gt;%s&lt;/b&gt;</string>
-	<string name="settings_card_style">Sélectionner un style de carte, actuellement : %s</string>
+	<string name="settings_card_style">sélectionner un style de carte, actuellement : &lt;b&gt;%s&lt;/b&gt;</string>
 	<string name="settings_delivery">Unité de mesure de volume par défaut, actuellement &lt;b&gt;%s&lt;/b&gt;</string>
 	<string name="settings_measurement">Unité de mesure de volume d\'engrais par défaut, actuellement &lt;b&gt;%s&lt;/b&gt;</string>
 	<string name="settings_temperature">Unité de température par défaut, actuellement &lt;b&gt;%s&lt;/b&gt;</string>
@@ -298,8 +298,8 @@
 	<string name="settings_delivery_title">Unité de mesure de volume</string>
 	<string name="settings_measurement_title">Unité de mesure</string>
 	<string name="settings_temp_title">Unité de température</string>
-	<string name="settings_tds_title">Utiliser l\'Électro-Conductivité (EC) plutôt que la concentration en PartieParMillion (PPM)</string>
-	<string name="settings_tds_summary">Réalise la conversion basique suivante EC = ((ppm*2)/1000)</string>
+	<string name="settings_tds_title">Unité de concentration TDS</string>
+	<string name="settings_tds_summary" formatted="true">Unité TDS à utiliser par défaut, actuellement : &lt;b&gt;%s&lt;/b&gt;</string>
 	<string name="settings_data_management">Gérer les données</string>
 	<string name="settings_autobackup_title">Auto backup</string>
 	<string name="settings_autobackup_summary">Auto backup des données toute les 24 heures</string>
@@ -340,4 +340,44 @@
 	<string name="month_abbr">mois</string>
 	<string name="year_abbr">année</string>
 
-	</resources>
+	<string name="ppm500_description">PPM500</string>
+	<string name="ppm700_description">PPM700</string>
+	<string name="ec_description">EC</string>
+
+	<string name="view_details_short">Détails</string>
+
+	<plurals name="time_second">
+		<item quantity="one">secondes</item>
+		<item quantity="other">secondes</item>
+	</plurals>
+
+	<plurals name="time_minute">
+		<item quantity="one">minutes</item>
+		<item quantity="other">minutes</item>
+	</plurals>
+
+	<plurals name="time_hour">
+		<item quantity="one">heures</item>
+		<item quantity="other">heures</item>
+	</plurals>
+
+	<plurals name="time_day">
+		<item quantity="one">jour</item>
+		<item quantity="other">jours</item>
+	</plurals>
+
+	<plurals name="time_week">
+		<item quantity="one">semaine</item>
+		<item quantity="other">semaines</item>
+	</plurals>
+
+	<plurals name="time_month">
+		<item quantity="one">moi</item>
+		<item quantity="other">mois</item>
+	</plurals>
+
+	<plurals name="time_year">
+		<item quantity="one">an</item>
+		<item quantity="other">ans</item>
+	</plurals>
+</resources>
