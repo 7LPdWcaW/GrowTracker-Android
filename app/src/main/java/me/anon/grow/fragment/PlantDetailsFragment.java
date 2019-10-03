@@ -297,6 +297,7 @@ public class PlantDetailsFragment extends Fragment
 					Intent editWater = new Intent(v.getContext(), EditWateringActivity.class);
 					editWater.putExtra("plant_index", PlantManager.getInstance().indexOf(plant));
 					editWater.putExtra("action_index", plant.getActions().size() - 1);
+					editWater.putExtra("new_water", true);
 					startActivityForResult(editWater, 4);
 				}
 			});
