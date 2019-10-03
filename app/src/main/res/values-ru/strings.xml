@@ -10,10 +10,10 @@
 	<string name="all_list_title">Все растения</string>
 	<!-- All/everything -->
 	<string name="all">Все</string>
-	<string name="snackbar_action_add">Добавлено действие</string>
+	<string name="snackbar_action_add">Добавлены действия</string>
 	<string name="snackbar_note_add">Добавлены заметки</string>
 	<string name="snackbar_watering_add">Добавлен полив</string>
-	<string name="snackbar_garden_deleted">Добавлен сад</string>
+	<string name="snackbar_garden_deleted">Сад удалён</string>
 
 	<string name="dialog_garden_delete_body">Действительно удалить сад &lt;b&gt;\"%s\"&lt;/b&gt;? Растения не будут удалены.</string>
 	<string name="action_feed">Полить</string>
@@ -84,7 +84,7 @@
 	<string name="today">Сегодня</string>
 	<string name="length_cured">Пролечено %s дней</string>
 	<string name="length_days">%s дней</string>
-	<string name="length_days_inv">Дней %s</string>
+	<string name="length_days_inv">дней %s</string>
 
 	<string name="filter_waterings">Поливы</string>
 	<string name="filter_stage_changes">Изменения стадии</string>
@@ -111,7 +111,7 @@
 	<string name="plant_strain_label">Сорт</string>
 	<string name="plant_strain_hint">Lemon Haze</string>
 	<string name="grow_details_title">Подробности</string>
-	<string name="plant_date_label">Посажено</string>
+	<string name="plant_date_label">Дата посадки</string>
 	<string name="plant_medium_label">Среда</string>
 
 	<string name="medium_details_label">Детали среды</string>
@@ -152,7 +152,7 @@
 	<string name="total_waters_label">Всего поливов:</string>
 	<string name="total_flushes_label">Всего промываний:</string>
 	<string name="ave_time_between_water_label">Средний интервал между поливами:</string>
-	<string name="filter_additives">Фильтр удобрений:</string>
+	<string name="filter_additives">Фильтр удобрений</string>
 	<string name="ph_title">pH</string>
 
 	<string name="min">Мин:</string>
@@ -178,7 +178,7 @@
 	<string name="confirm_delete_item_message">Действительно удалить </string>
 	<string name="confirm_delete_photos_message" formatted="true">Действительно удалить %s изображений? Их нельзя будет восстановить.</string>
 	<string name="edit">Редактировать</string>
-	<string name="stage">стадия</string>
+	<string name="stage">стадию</string>
 	<string name="set">Готово</string>
 	<string name="change">Изменить</string>
 	<string name="add">Добавить</string>
@@ -260,7 +260,7 @@
 	<string name="encrypted">зашифрован</string>
 	<string name="unencrypted">расшифрован</string>
 
-	<string name="select_measurement_title">Выберите единицу измерения</string>
+	<string name="select_measurement_title">Выбрать единицу измерения</string>
 	<string name="select_temperature_title">Выбрать температуру</string>
 	<string name="select_garden_title">Выбрать сад</string>
 	<string name="select_backup_title">Выбрать резервную копию</string>
@@ -285,7 +285,7 @@
 	<string name="plant_summary_ppm">ppm:</string>
 
 	<string name="select_schedule_title">Выбрать расписание:</string>
-	<string name="actions">Действия:</string>
+	<string name="actions">Действия</string>
 	<string name="settings_dark_title">Тёмная тема</string>
 	<string name="settings_dark_summary">Использовать тёмную тему независимо от настроек системы</string>
 	<string name="settings_harvest_title">Спрятать собранные</string>
@@ -340,10 +340,6 @@
 	<string name="month_abbr">м</string>
 	<string name="year_abbr">г</string>
 
-	<string name="ppm500_description">ppm 500</string>
-	<string name="ppm700_description">ppm 700</string>
-	<string name="ec_description">EC</string>
-
 	<string name="view_details_short">Детали</string>
 
 	<plurals name="time_second">
@@ -394,4 +390,7 @@
 		<item quantity="many">лет</item>
 		<item quantity="other">лет</item>
 	</plurals>
+
+	<string name="confirm_quit">Все несохранённые изменения будут утеряны</string>
+	<string name="accept_quit">Выход</string>
 </resources>
