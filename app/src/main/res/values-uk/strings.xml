@@ -111,7 +111,7 @@
 	<string name="plant_strain_label">Сорт рослини</string>
 	<string name="plant_strain_hint">Lemon Haze</string>
 	<string name="grow_details_title">Подробиці</string>
-	<string name="plant_date_label">Дата рослини</string>
+	<string name="plant_date_label">Посаджено</string>
 	<string name="plant_medium_label">Середовище</string>
 
 	<string name="medium_details_label">Деталі середовища</string>
@@ -127,14 +127,14 @@
 	<string name="view_history_short">Історія</string>
 	<string name="view_statistics_short">Статистика</string>
 	<string name="filter">Фільтр</string>
-	<string name="planted">Посів</string>
+	<string name="planted">Посаджено</string>
 	<string name="germination">Проростання</string>
 	<string name="cutting">Зріз</string>
 	<string name="vegetation">Вегетація</string>
 	<string name="flowering">Цвітіння</string>
 	<string name="drying">Сушіння</string>
 	<string name="curing">Витримка (пролічка)</string>
-	<string name="harvested">Збір</string>
+	<string name="harvested">Зібрано</string>
 	<!-- example "harvested 2 days ago" -->
 	<string name="harvested_ago" formatted="true">Зібрано %s тому</string>
 	<string name="menu_export_garden">Експортувати сад</string>
@@ -175,7 +175,7 @@
 	<string name="watered">Полито</string>
 	<string name="note">Нотатка</string>
 	<string name="delete_event_dialog_title">Видалити подію?</string>
-	<string name="confirm_delete_item_message">Дійсно видалити?</string>
+	<string name="confirm_delete_item_message">Дійсно видалити </string>
 	<string name="confirm_delete_photos_message" formatted="true">Дійсно видалити %s зображень? Їх неможливо буде відновити.</string>
 	<string name="edit">Редагувати</string>
 	<string name="stage">стадія</string>
@@ -245,13 +245,12 @@
 	<string name="hide_images">Приховати зображення</string>
 	<string name="show_images">Показати зображення</string>
 
-	<string name="settings_default_garden">Сад для показу за замовчуванням, наразі &lt;b&gt;%s&lt;/b&gt;</string>
-	<string name="settings_card_style">Обрати тип картки, наразі: %s</string>
-	<string name="settings_delivery">Одиниця вимірювання об\'єму, наразі: &lt;b&gt;%s&lt;/b&gt;</string>
-	<string name="settings_measurement">Одиниця вимірювання добрив, наразі: &lt;b&gt;%s&lt;/b&gt;</string>
-	<string name="settings_temperature">Одиниця вимірювання температури, наразі: &lt;b&gt;%s&lt;/b&gt;</string>
+	<string name="settings_default_garden">Сад для показу за замовчуванням, зараз: &lt;b&gt;%s&lt;/b&gt;</string>
+	<string name="settings_card_style">Обрати тип картки, зараз: &lt;b&gt;%s&lt;/b&gt;</string>
+	<string name="settings_delivery">Одиниця вимірювання об\'єму, зараз: &lt;b&gt;%s&lt;/b&gt;</string>
+	<string name="settings_measurement">Одиниця вимірювання добрив, зараз: &lt;b&gt;%s&lt;/b&gt;</string>
+	<string name="settings_temperature">Одиниця вимірювання температури, зараз: &lt;b&gt;%s&lt;/b&gt;</string>
 	<string name="settings_backup_size" formatted="true">Наразі: &lt;b&gt;%s MiB&lt;/b&gt; / Використовується &lt;b&gt;%s&lt;/b&gt;</string>
-
 	<string name="failsafe_message">Введіть цей пароль під час розшифрування щоб упередити завантаження даних</string>
 	<string name="warning">Увага</string>
 	<string name="encryption_message">Використовується базова форма AES-шифрування на основі введеного пароля. Даний спосіб не гарантує захисту від правоохоронних органів.</string>
@@ -269,7 +268,7 @@
 
 	<string name="backed_up_to">Резервну копію збережено до</string>
 	<string name="no_backups">Немає резервних копій</string>
-	<string name="all_none">Усі/жодна</string>
+	<string name="all_none">Усі/жодного</string>
 
 	<string name="stat_input_ph">Вхідний pH</string>
 	<string name="stat_runoff_ph">pH стоків</string>
@@ -299,8 +298,8 @@
 	<string name="settings_delivery_title">Одиниця об\'єму</string>
 	<string name="settings_measurement_title">Одиниця об\'єму добрив</string>
 	<string name="settings_temp_title">Одиниці температури</string>
-	<string name="settings_tds_title">Використовувати EC замість ppm</string>
-	<string name="settings_tds_summary">Використовуватиметься формула ((ppm * 2) / 1000)</string>
+	<string name="settings_tds_title">Одиниця мінералізації</string>
+	<string name="settings_tds_summary" formatted="true">Одиниця мінералізації води, зараз: &lt;b&gt;%s&lt;/b&gt;</string>
 	<string name="settings_data_management">Керування даними</string>
 	<string name="settings_autobackup_title">Автоматичні резервні копії</string>
 	<string name="settings_autobackup_summary">Створювати резервну копію даних автоматично кожні 24 години</string>
@@ -341,4 +340,58 @@
 	<string name="month_abbr">м</string>
 	<string name="year_abbr">р</string>
 
-	</resources>
+	<string name="ppm500_description">ppm 500</string>
+	<string name="ppm700_description">ppm 700</string>
+	<string name="ec_description">EC</string>
+
+	<string name="view_details_short">Деталі</string>
+
+	<plurals name="time_second">
+		<item quantity="one">секунда</item>
+		<item quantity="few">секунди</item>
+		<item quantity="many">секунд</item>
+		<item quantity="other">секунд</item>
+	</plurals>
+
+	<plurals name="time_minute">
+		<item quantity="one">хвилина</item>
+		<item quantity="few">хвилини</item>
+		<item quantity="many">хвилин</item>
+		<item quantity="other">хвилин</item>
+	</plurals>
+
+	<plurals name="time_hour">
+		<item quantity="one">година</item>
+		<item quantity="few">години</item>
+		<item quantity="many">годин</item>
+		<item quantity="other">годин</item>
+	</plurals>
+
+	<plurals name="time_day">
+		<item quantity="one">день</item>
+		<item quantity="few">дні</item>
+		<item quantity="many">днів</item>
+		<item quantity="other">днів</item>
+	</plurals>
+
+	<plurals name="time_week">
+		<item quantity="one">тиждень</item>
+		<item quantity="few">тижні</item>
+		<item quantity="many">тижнів</item>
+		<item quantity="other">тижнів</item>
+	</plurals>
+
+	<plurals name="time_month">
+		<item quantity="one">місяць</item>
+		<item quantity="few">місяці</item>
+		<item quantity="many">місяців</item>
+		<item quantity="other">місяців</item>
+	</plurals>
+
+	<plurals name="time_year">
+		<item quantity="one">рік</item>
+		<item quantity="few">роки</item>
+		<item quantity="many">років</item>
+		<item quantity="other">років</item>
+	</plurals>
+</resources>
