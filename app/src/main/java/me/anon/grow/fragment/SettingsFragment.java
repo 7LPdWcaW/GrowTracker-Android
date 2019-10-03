@@ -788,7 +788,7 @@ public class SettingsFragment extends PreferenceFragmentCompat implements Prefer
 					{
 						try
 						{
-							date = new SimpleDateFormat("yyyy-MM-dd-hh-mm-ss").parse(parts[0]);
+							date = new SimpleDateFormat("yyyy-MM-dd-HH-mm-ss").parse(parts[0]);
 						}
 						catch (Exception e2)
 						{
