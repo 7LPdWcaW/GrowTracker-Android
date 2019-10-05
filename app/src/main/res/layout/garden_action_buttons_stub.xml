@@ -51,5 +51,6 @@
 		android:text="@string/menu_note"
 		android:textColor="#ffffff"
 		android:background="?selectableItemBackground"
+		android:visibility="gone"
 	/>
 </LinearLayout>

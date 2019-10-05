@@ -87,6 +87,15 @@ class GardenTrackerFragment : Fragment()
 			dialogFragment.show(childFragmentManager, null)
 		}
 
+		(activity as MainActivity).toolbarLayout.findViewById<View>(R.id.note).setOnClickListener {
+			val dialogFragment = NoteDialogFragment()
+			dialogFragment.setOnDialogConfirmed {
+				garden.actions.add(NoteAction(notes = it))
+				updateDataReferences()
+			}
+			dialogFragment.show(childFragmentManager, null)
+		}
+
 		setUi()
 	}
 
