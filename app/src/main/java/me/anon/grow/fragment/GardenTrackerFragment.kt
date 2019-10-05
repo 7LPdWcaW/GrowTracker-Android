@@ -88,7 +88,7 @@ class GardenTrackerFragment : Fragment()
 			if (it.off.isEmpty()) return@let
 			val lightOnTime = LocalTime.parse(it.on, DateTimeFormatter.ofPattern("HH:mm"))
 			val lightOffTime = LocalTime.parse(it.off, DateTimeFormatter.ofPattern("HH:mm"))
-			var diff = (Duration.between(lightOnTime, lightOffTime).toMinutes() / 15.0)
+			var diff = (Math.abs(Duration.between(lightOnTime, lightOffTime).toMinutes()) / 15.0)
 			if (diff == 0.0) diff = 96.0
 			light_ratio.progress = diff.toInt()
 
