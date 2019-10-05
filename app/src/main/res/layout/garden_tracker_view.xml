@@ -25,14 +25,15 @@
 				style="@style/SectionTitle"
 			/>
 
-			<LinearLayout
+			<com.google.android.flexbox.FlexboxLayout
 				android:layout_width="match_parent"
 				android:layout_height="wrap_content"
+				android:id="@+id/data_container"
 				android:padding="16dp"
 				android:orientation="vertical"
-			>
-
-			</LinearLayout>
+				app:showDivider="middle"
+				app:dividerDrawable="@drawable/divider_8dp"
+			/>
 		</LinearLayout>
 
 		<LinearLayout

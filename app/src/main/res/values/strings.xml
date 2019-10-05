@@ -397,4 +397,5 @@
 	<string name="accept_quit">Quit</string>
 	<string name="plants">Plants</string>
 	<string name="humidity">Humidity</string>
+	<string name="current_temp">Current Temp:</string>
 </resources>

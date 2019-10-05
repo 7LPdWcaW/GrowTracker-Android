@@ -5,13 +5,16 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
+import kotlinx.android.synthetic.main.data_label_stub.view.*
 import kotlinx.android.synthetic.main.garden_tracker_view.*
 import me.anon.grow.MainActivity
 import me.anon.grow.R
 import me.anon.lib.TempUnit
+import me.anon.lib.ext.inflate
 import me.anon.lib.helper.StatsHelper
 import me.anon.lib.manager.GardenManager
 import me.anon.model.Garden
+import me.anon.model.TemperatureChange
 
 class GardenTrackerFragment : Fragment()
 {
@@ -44,6 +47,14 @@ class GardenTrackerFragment : Fragment()
 	{
 		val tempUnit = TempUnit.getSelectedTemperatureUnit(activity!!)
 		val tempAdditional = arrayOfNulls<String>(3)
+		(garden.actions.lastOrNull { it is TemperatureChange } as TemperatureChange?)?.let {
+			val view = data_container.findViewById<View?>(R.id.stats_temp) ?: data_container.inflate(R.layout.data_label_stub)
+			view.label.setText(R.string.current_temp)
+			view.data.text = "${TempUnit.CELCIUS.to(tempUnit, it.temp)}°${tempUnit.label}"
+			view.id = R.id.stats_temp
+
+			if (data_container.findViewById<View?>(R.id.stats_temp) == null) data_container.addView(view)
+		}
 		StatsHelper.setTempData(garden, activity!!, temp, tempAdditional)
 		min_temp.text = if (tempAdditional[0] == "100") "-" else "${tempAdditional[0]}°${tempUnit.label}"
 		max_temp.text = if (tempAdditional[1] == "-100") "-" else "${tempAdditional[0]}°${tempUnit.label}"
