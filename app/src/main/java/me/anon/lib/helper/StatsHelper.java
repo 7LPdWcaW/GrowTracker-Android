@@ -2,7 +2,6 @@ package me.anon.lib.helper;
 
 import android.content.Context;
 import android.graphics.Color;
-import android.nfc.FormatException;
 import android.widget.TextView;
 
 import com.github.mikephil.charting.charts.BarLineChartBase;
@@ -485,13 +484,16 @@ public class StatsHelper
 		float min = 100f;
 		float max = -100f;
 		float total = 0;
+		final TempUnit tempUnit = TempUnit.getSelectedTemperatureUnit(context);
 
 		int index = 0;
 		for (Action action : plant.getActions())
 		{
 			if (action instanceof Water && ((Water)action).getTemp() != null)
 			{
-				vals.add(new Entry(((Water)action).getTemp().floatValue(), index++));
+				float temperature = (float)TempUnit.CELCIUS.to(tempUnit, ((Water)action).getTemp());
+
+				vals.add(new Entry(temperature, index++));
 				PlantStage stage = null;
 				long changeDate = 0;
 				ListIterator<PlantStage> iterator = new ArrayList(stageTimes.keySet()).listIterator(stageTimes.size());
@@ -516,9 +518,9 @@ public class StatsHelper
 					xVals.add("");
 				}
 
-				min = Math.min(min, ((Water)action).getTemp().floatValue());
-				max = Math.max(max, ((Water)action).getTemp().floatValue());
-				total += ((Water)action).getTemp().floatValue();
+				min = Math.min(min, temperature);
+				max = Math.max(max, temperature);
+				total += temperature;
 			}
 		}
 
@@ -538,9 +540,9 @@ public class StatsHelper
 
 		if (additionalRef != null)
 		{
-			additionalRef[0] = String.valueOf(min);
-			additionalRef[1] = String.valueOf(max);
-			additionalRef[2] = String.format("%1$,.2f", (total / (double)vals.size()));
+			additionalRef[0] = String.valueOf((int)min);
+			additionalRef[1] = String.valueOf((int)max);
+			additionalRef[2] = String.valueOf((int)(total / (double)vals.size()));
 		}
 	}
 
@@ -569,14 +571,16 @@ public class StatsHelper
 		{
 			if (action instanceof TemperatureChange)
 			{
-				String date = dateFormat.format(new Date(action.getDate())) + "\n" + timeFormat.format(new Date(action.getDate()));
+				String date = dateFormat.format(new Date(action.getDate()));
+				double temperature = TempUnit.CELCIUS.to(tempUnit, ((TemperatureChange)action).getTemp());
 
-				vals.add(new Entry((float)((TemperatureChange)action).getTemp(), index++));
+				vals.add(new Entry((float)temperature, index++));
+				vals.get(0).setData(action);
 				xVals.add(date);
 
-				min = (float)Math.min(min, ((TemperatureChange)action).getTemp());
-				max = (float)Math.max(max, ((TemperatureChange)action).getTemp());
-				total += ((TemperatureChange)action).getTemp();
+				min = (float)Math.min(min, temperature);
+				max = (float)Math.max(max, temperature);
+				total += temperature;
 			}
 		}
 
@@ -619,7 +623,13 @@ public class StatsHelper
 				@Override
 				public void refreshContent(Entry e, Highlight highlight)
 				{
-					((TextView)findViewById(R.id.content)).setText((int)e.getVal() + "°" + tempUnit.getLabel());
+					Action action = (Action)e.getData();
+					String date = "";
+
+					if (action != null) date = "\n" + timeFormat.format(new Date(action.getDate()));
+
+					((TextView)findViewById(R.id.content)).setGravity(CENTER_HORIZONTAL);
+					((TextView)findViewById(R.id.content)).setText((int)e.getVal() + "°" + tempUnit.getLabel() + date);
 					((TextView)findViewById(R.id.content)).setTextColor(IntUtilsKt.resolveColor(R.attr.colorAccent, findViewById(R.id.content).getContext()));
 				}
 
@@ -633,12 +643,14 @@ public class StatsHelper
 					return -getHeight();
 				}
 			});
+
+			chart.setExtraOffsets(0, 0, 30, 0);
 		}
 
 		if (additionalRef != null)
 		{
-			additionalRef[0] = String.valueOf(min);
-			additionalRef[1] = String.valueOf(max);
+			additionalRef[0] = String.valueOf((int)min);
+			additionalRef[1] = String.valueOf((int)max);
 			additionalRef[2] = String.valueOf((int)(total / (double)vals.size()));
 		}
 	}

@@ -32,6 +32,7 @@ import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 import me.anon.grow.R;
 import me.anon.lib.TdsUnit;
+import me.anon.lib.TempUnit;
 import me.anon.lib.Views;
 import me.anon.lib.ext.IntUtilsKt;
 import me.anon.lib.helper.StatsHelper;
@@ -142,11 +143,12 @@ public class StatisticsFragment extends Fragment
 
 		tempContainer.setVisibility(View.VISIBLE);
 
+		TempUnit tempUnit = TempUnit.getSelectedTemperatureUnit(getActivity());
 		String[] tempAdditional = new String[3];
 		StatsHelper.setTempData(plant, getActivity(), temp, tempAdditional);
-		mintemp.setText(tempAdditional[0].equals("100.0") ? "-" : tempAdditional[0]);
-		maxtemp.setText(tempAdditional[1].equals("-100.0") ? "-" : tempAdditional[1]);
-		avetemp.setText(tempAdditional[2]);
+		mintemp.setText(tempAdditional[0].equals("100") ? "-" : tempAdditional[0] + "°" + tempUnit.getLabel());
+		maxtemp.setText(tempAdditional[1].equals("-100") ? "-" : tempAdditional[1] + "°" + tempUnit.getLabel());
+		avetemp.setText(tempAdditional[2] + "°" + tempUnit.getLabel());
 	}
 
 	@Override public void onSaveInstanceState(Bundle outState)

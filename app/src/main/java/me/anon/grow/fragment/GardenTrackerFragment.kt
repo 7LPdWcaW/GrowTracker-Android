@@ -1,22 +1,16 @@
 package me.anon.grow.fragment
 
-import android.content.DialogInterface
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import kotlinx.android.synthetic.main.garden_tracker_view.*
-import me.anon.controller.provider.PlantWidgetProvider
 import me.anon.grow.MainActivity
 import me.anon.grow.R
-import me.anon.lib.SnackBar
-import me.anon.lib.SnackBarListener
-import me.anon.lib.helper.FabAnimator
+import me.anon.lib.TempUnit
 import me.anon.lib.helper.StatsHelper
 import me.anon.lib.manager.GardenManager
-import me.anon.lib.manager.PlantManager
-import me.anon.model.EmptyAction
 import me.anon.model.Garden
 
 class GardenTrackerFragment : Fragment()
@@ -48,11 +42,12 @@ class GardenTrackerFragment : Fragment()
 
 	private fun setStatistics()
 	{
+		val tempUnit = TempUnit.getSelectedTemperatureUnit(activity!!)
 		val tempAdditional = arrayOfNulls<String>(3)
 		StatsHelper.setTempData(garden, activity!!, temp, tempAdditional)
-		min_temp.setText(if (tempAdditional[0] == "100.0") "-" else tempAdditional[0])
-		max_temp.setText(if (tempAdditional[1] == "-100.0") "-" else tempAdditional[1])
-		ave_temp.setText(tempAdditional[2])
+		min_temp.text = if (tempAdditional[0] == "100") "-" else "${tempAdditional[0]}°${tempUnit.label}"
+		max_temp.text = if (tempAdditional[1] == "-100") "-" else "${tempAdditional[0]}°${tempUnit.label}"
+		ave_temp.text = "${tempAdditional[2]}°${tempUnit.label}"
 	}
 
 	private fun updateDataReferences()

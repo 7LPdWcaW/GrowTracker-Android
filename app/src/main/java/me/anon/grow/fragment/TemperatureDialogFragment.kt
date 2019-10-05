@@ -1,19 +1,14 @@
 package me.anon.grow.fragment
 
 import android.app.Dialog
-import android.content.DialogInterface
 import android.os.Bundle
-import android.text.TextUtils
 import android.view.LayoutInflater
-import android.view.View
 import android.widget.EditText
 import android.widget.TextView
 import androidx.appcompat.app.AlertDialog
 import androidx.fragment.app.DialogFragment
-import kotlinx.android.synthetic.main.temperature_dialog.*
 import me.anon.grow.R
 import me.anon.lib.TempUnit
-import me.anon.lib.Views
 import me.anon.model.TemperatureChange
 import java.util.*
 
@@ -29,7 +24,7 @@ class TemperatureDialogFragment(var action: TemperatureChange? = null, val callb
 		dialog.setTitle(R.string.temperature_title)
 		dialog.setPositiveButton(if (newAction) R.string.add else R.string.edit) { dialog, which ->
 			action?.let {
-				it.temp = view.findViewById<EditText>(R.id.temperature_input).text.toString().toDouble()
+				it.temp = tempUnit.to(TempUnit.CELCIUS, view.findViewById<EditText>(R.id.temperature_input).text.toString().toDouble())
 
 				if (view.findViewById<EditText>(R.id.notes).text.isNotEmpty())
 				{
@@ -46,10 +41,10 @@ class TemperatureDialogFragment(var action: TemperatureChange? = null, val callb
 		}
 
 		view.findViewById<EditText>(R.id.notes).setText(action?.notes)
-		view.findViewById<EditText>(R.id.temperature_input).setHint("32°" + tempUnit.label)
+		view.findViewById<EditText>(R.id.temperature_input).hint = "32°" + tempUnit.label
 		if (!newAction)
 		{
-			view.findViewById<EditText>(R.id.temperature_input).setText("${action!!.temp}")
+			view.findViewById<EditText>(R.id.temperature_input).setText("${TempUnit.CELCIUS.to(tempUnit, action!!.temp)}")
 		}
 
 		val date = Calendar.getInstance()
@@ -60,7 +55,7 @@ class TemperatureDialogFragment(var action: TemperatureChange? = null, val callb
 
 		val dateStr = dateFormat.format(Date(action!!.date)) + " " + timeFormat.format(Date(action!!.date))
 
-		view.findViewById<TextView>(R.id.date).setText(dateStr)
+		view.findViewById<TextView>(R.id.date).text = dateStr
 		view.findViewById<TextView>(R.id.date).setOnClickListener {
 			val fragment = DateDialogFragment(action!!.date)
 			fragment.setOnDateSelected(object : DateDialogFragment.OnDateSelectedListener
@@ -68,7 +63,7 @@ class TemperatureDialogFragment(var action: TemperatureChange? = null, val callb
 				override fun onDateSelected(date: Calendar)
 				{
 					val dateStr = dateFormat.format(date.time) + " " + timeFormat.format(date.time)
-					view.findViewById<TextView>(R.id.date).setText(dateStr)
+					view.findViewById<TextView>(R.id.date).text = dateStr
 
 					action!!.date = date.timeInMillis
 					onCancelled()
