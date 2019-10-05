@@ -28,7 +28,7 @@ import androidx.appcompat.app.ActionBarDrawerToggle;
 import androidx.appcompat.app.AlertDialog;
 import androidx.drawerlayout.widget.DrawerLayout;
 import me.anon.grow.fragment.GardenDialogFragment;
-import me.anon.grow.fragment.GardenFragment;
+import me.anon.grow.fragment.GardenHostFragment;
 import me.anon.grow.fragment.PlantListFragment;
 import me.anon.lib.Views;
 import me.anon.lib.event.GardenChangeEvent;
@@ -349,7 +349,7 @@ public class MainActivity extends BaseActivity implements NavigationView.OnNavig
 			selectedItem = item.getItemId();
 			item.setChecked(true);
 			int gardenIndex = item.getItemId() - 100;
-			getSupportFragmentManager().beginTransaction().replace(R.id.fragment_holder, GardenFragment.newInstance(GardenManager.getInstance().getGardens().get(gardenIndex)), TAG_FRAGMENT).commit();
+			getSupportFragmentManager().beginTransaction().replace(R.id.fragment_holder, GardenHostFragment.newInstance(GardenManager.getInstance().getGardens().get(gardenIndex)), TAG_FRAGMENT).commit();
 		}
 
 		if (drawer != null)

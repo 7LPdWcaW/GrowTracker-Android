@@ -402,4 +402,11 @@
 
 	<string name="confirm_quit">You will lose any unsaved changes</string>
 	<string name="accept_quit">Quit</string>
+	<string name="plants">Plants</string>
+	<string name="humidity">Humidity</string>
+	<string name="current_temp">Current Temp:</string>
+	<string name="current_humidity">Current Humidity:</string>
+	<string name="lighting_title">Lighting Schedule</string>
+	<string name="delete_item_dialog_title">Delete this item?</string>
+	<string name="confirm_delete_item_message_holder">Are you sure you want to delete &lt;b&gt;%s&lt;/b&gt;?</string>
 </resources>
