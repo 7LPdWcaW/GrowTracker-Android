@@ -612,7 +612,7 @@ class TemperatureChange(
 @Parcelize
 @JsonClass(generateAdapter = true)
 class HumidityChange(
-	var temperature: Int = 0,
+	var humidity: Double? = null,
 
 	override var date: Long = System.currentTimeMillis(),
 	override var notes: String? = null

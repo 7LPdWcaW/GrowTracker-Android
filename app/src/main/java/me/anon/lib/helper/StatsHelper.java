@@ -40,6 +40,7 @@ import me.anon.lib.ext.IntUtilsKt;
 import me.anon.model.Action;
 import me.anon.model.Additive;
 import me.anon.model.Garden;
+import me.anon.model.HumidityChange;
 import me.anon.model.Plant;
 import me.anon.model.PlantStage;
 import me.anon.model.TemperatureChange;
@@ -574,8 +575,9 @@ public class StatsHelper
 				String date = dateFormat.format(new Date(action.getDate()));
 				double temperature = TempUnit.CELCIUS.to(tempUnit, ((TemperatureChange)action).getTemp());
 
-				vals.add(new Entry((float)temperature, index++));
-				vals.get(0).setData(action);
+				Entry entry = new Entry((float)temperature, index++);
+				entry.setData(action);
+				vals.add(entry);
 				xVals.add(date);
 
 				min = (float)Math.min(min, temperature);
@@ -644,6 +646,117 @@ public class StatsHelper
 				}
 			});
 
+			chart.getXAxis().setYOffset(15.0f);
+			chart.setExtraOffsets(0, 0, 30, 0);
+		}
+
+		if (additionalRef != null)
+		{
+			additionalRef[0] = String.valueOf((int)min);
+			additionalRef[1] = String.valueOf((int)max);
+			additionalRef[2] = String.valueOf((int)(total / (double)vals.size()));
+		}
+	}
+
+	/**
+	 * Generates and sets the humidity data from the given Garden
+	 *
+	 * @param garden The garden
+	 * @param chart The chart to set the data
+	 * @param additionalRef Pass-by-reference value for min/max/ave for the generated values. Must be length of 3 if not null
+	 */
+	public static void setHumidityData(Garden garden, @NonNull Context context, @Nullable LineChart chart, String[] additionalRef)
+	{
+		ArrayList<Entry> vals = new ArrayList<>();
+		ArrayList<String> xVals = new ArrayList<>();
+		LineData data = new LineData();
+		float min = 100f;
+		float max = -100f;
+		float total = 0;
+
+		int index = 0;
+		DateFormat dateFormat = android.text.format.DateFormat.getDateFormat(context);
+		DateFormat timeFormat = android.text.format.DateFormat.getTimeFormat(context);
+
+		for (Action action : garden.getActions())
+		{
+			if (action instanceof HumidityChange)
+			{
+				String date = dateFormat.format(new Date(action.getDate()));
+				double humidity = ((HumidityChange)action).getHumidity();
+
+				Entry entry = new Entry((float)humidity, index++);
+				entry.setData(action);
+				vals.add(entry);
+				xVals.add(date);
+
+				min = (float)Math.min(min, humidity);
+				max = (float)Math.max(max, humidity);
+				total += humidity;
+			}
+		}
+
+		if (chart != null)
+		{
+			LineDataSet dataSet = new LineDataSet(vals, "%");
+			styleDataset(context, dataSet, Color.parseColor(context.getResources().getStringArray(R.array.stats_colours)[2]));
+
+			LineData lineData = new LineData(xVals, dataSet);
+			lineData.setValueFormatter(new ValueFormatter()
+			{
+				@Override public String getFormattedValue(float value, Entry entry, int dataSetIndex, ViewPortHandler viewPortHandler)
+				{
+					return formatter.getFormattedValue(value, entry, dataSetIndex, viewPortHandler) + "%";
+				}
+			});
+
+			chart.getAxisLeft().setAxisMinValue(min - 5f);
+			chart.getAxisLeft().setAxisMaxValue(max + 5f);
+			styleGraph(chart);
+			chart.setData(lineData);
+			chart.getAxisLeft().setValueFormatter(new YAxisValueFormatter()
+			{
+				@Override public String getFormattedValue(float value, YAxis yAxis)
+				{
+					return (int)value + "%";
+				}
+			});
+
+			chart.getAxisRight().setValueFormatter(new YAxisValueFormatter()
+			{
+				@Override public String getFormattedValue(float value, YAxis yAxis)
+				{
+					return (int)value + "%";
+				}
+			});
+
+			chart.setMarkerView(new MarkerView(context, R.layout.chart_marker)
+			{
+				@Override
+				public void refreshContent(Entry e, Highlight highlight)
+				{
+					Action action = (Action)e.getData();
+					String date = "";
+
+					if (action != null) date = "\n" + timeFormat.format(new Date(action.getDate()));
+
+					((TextView)findViewById(R.id.content)).setGravity(CENTER_HORIZONTAL);
+					((TextView)findViewById(R.id.content)).setText((int)e.getVal() + "%" + date);
+					((TextView)findViewById(R.id.content)).setTextColor(IntUtilsKt.resolveColor(R.attr.colorAccent, findViewById(R.id.content).getContext()));
+				}
+
+				@Override public int getXOffset(float xpos)
+				{
+					return -(getWidth() / 2);
+				}
+
+				@Override public int getYOffset(float ypos)
+				{
+					return -getHeight();
+				}
+			});
+
+			chart.getXAxis().setYOffset(15.0f);
 			chart.setExtraOffsets(0, 0, 30, 0);
 		}
 

@@ -8,24 +8,22 @@ import android.widget.TextView
 import androidx.appcompat.app.AlertDialog
 import androidx.fragment.app.DialogFragment
 import me.anon.grow.R
-import me.anon.lib.TempUnit
 import me.anon.lib.ext.formatWhole
-import me.anon.model.TemperatureChange
+import me.anon.model.HumidityChange
 import java.util.*
 
-class TemperatureDialogFragment(var action: TemperatureChange? = null, val callback: (action: TemperatureChange) -> Unit = {}) : DialogFragment()
+class HumidityDialogFragment(var action: HumidityChange? = null, val callback: (action: HumidityChange) -> Unit = {}) : DialogFragment()
 {
 	private val newAction = action == null
 
 	override fun onCreateDialog(savedInstanceState: Bundle?): Dialog
 	{
-		val tempUnit = TempUnit.getSelectedTemperatureUnit(context!!)
-		val view = LayoutInflater.from(activity).inflate(R.layout.temperature_dialog, null)
+		val view = LayoutInflater.from(activity).inflate(R.layout.humidity_dialog, null)
 		val dialog = AlertDialog.Builder(context!!)
-		dialog.setTitle(R.string.temperature_title)
+		dialog.setTitle(R.string.humidity)
 		dialog.setPositiveButton(if (newAction) R.string.add else R.string.edit) { dialog, which ->
 			action?.let {
-				it.temp = tempUnit.to(TempUnit.CELCIUS, view.findViewById<EditText>(R.id.temperature_input).text.toString().toDouble())
+				it.humidity = view.findViewById<EditText>(R.id.humidity_input).text.toString().toDouble()
 
 				if (view.findViewById<EditText>(R.id.notes).text.isNotEmpty())
 				{
@@ -38,14 +36,14 @@ class TemperatureDialogFragment(var action: TemperatureChange? = null, val callb
 
 		if (action == null)
 		{
-			action = TemperatureChange()
+			action = HumidityChange()
 		}
 
 		view.findViewById<EditText>(R.id.notes).setText(action?.notes)
-		view.findViewById<EditText>(R.id.temperature_input).hint = "32°" + tempUnit.label
+		view.findViewById<EditText>(R.id.humidity_input).hint = "32%"
 		if (!newAction)
 		{
-			view.findViewById<EditText>(R.id.temperature_input).setText("${TempUnit.CELCIUS.to(tempUnit, action!!.temp).formatWhole()}")
+			view.findViewById<EditText>(R.id.humidity_input).setText("${action!!.humidity?.formatWhole()}")
 		}
 
 		val date = Calendar.getInstance()

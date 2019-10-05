@@ -1,12 +1,18 @@
 package me.anon.grow.fragment
 
 import android.app.TimePickerDialog
+import android.content.DialogInterface
 import android.os.Bundle
+import android.text.Html
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.SeekBar
+import androidx.appcompat.app.AlertDialog
 import androidx.fragment.app.Fragment
+import com.github.mikephil.charting.data.Entry
+import com.github.mikephil.charting.highlight.Highlight
+import com.github.mikephil.charting.listener.OnChartValueSelectedListener
 import kotlinx.android.synthetic.main.data_label_stub.view.*
 import kotlinx.android.synthetic.main.garden_tracker_view.*
 import me.anon.grow.MainActivity
@@ -17,10 +23,7 @@ import me.anon.lib.ext.inflate
 import me.anon.lib.ext.round
 import me.anon.lib.helper.StatsHelper
 import me.anon.lib.manager.GardenManager
-import me.anon.model.Action
-import me.anon.model.Garden
-import me.anon.model.LightingChange
-import me.anon.model.TemperatureChange
+import me.anon.model.*
 import org.threeten.bp.Duration
 import org.threeten.bp.LocalTime
 import org.threeten.bp.format.DateTimeFormatter
@@ -34,6 +37,13 @@ class GardenTrackerFragment : Fragment()
 	{
 		transactions.find { it.javaClass == action.javaClass }?.let {
 			transactions.remove(it)
+		}
+
+		val lastLightingChange = garden.actions.findLast { it is LightingChange } as LightingChange?
+		val newLightingChange = transactions.find { it is LightingChange } as LightingChange?
+		if (lastLightingChange != null && newLightingChange != null)
+		{
+			if (lastLightingChange.on == newLightingChange.on && lastLightingChange.off == newLightingChange.off) return
 		}
 
 		transactions.add(action)
@@ -62,7 +72,15 @@ class GardenTrackerFragment : Fragment()
 		(activity as MainActivity).toolbarLayout.addView(LayoutInflater.from(activity).inflate(R.layout.garden_action_buttons_stub, (activity as MainActivity).toolbarLayout, false))
 
 		(activity as MainActivity).toolbarLayout.findViewById<View>(R.id.temp).setOnClickListener {
-			val dialogFragment = TemperatureDialogFragment() {
+			val dialogFragment = TemperatureDialogFragment {
+				garden.actions.add(it)
+				updateDataReferences()
+			}
+			dialogFragment.show(childFragmentManager, null)
+		}
+
+		(activity as MainActivity).toolbarLayout.findViewById<View>(R.id.humidity).setOnClickListener {
+			val dialogFragment = HumidityDialogFragment {
 				garden.actions.add(it)
 				updateDataReferences()
 			}
@@ -176,15 +194,113 @@ class GardenTrackerFragment : Fragment()
 		(garden.actions.lastOrNull { it is TemperatureChange } as TemperatureChange?)?.let {
 			val view = data_container.findViewById<View?>(R.id.stats_temp) ?: data_container.inflate(R.layout.data_label_stub)
 			view.label.setText(R.string.current_temp)
-			view.data.text = "${TempUnit.CELCIUS.to(tempUnit, it.temp)}°${tempUnit.label}"
+			view.data.text = "${TempUnit.CELCIUS.to(tempUnit, it.temp).formatWhole()}°${tempUnit.label}"
 			view.id = R.id.stats_temp
 
 			if (data_container.findViewById<View?>(R.id.stats_temp) == null) data_container.addView(view)
 		}
 		StatsHelper.setTempData(garden, activity!!, temp, tempAdditional)
+		temp.notifyDataSetChanged()
+		temp.postInvalidate()
 		min_temp.text = if (tempAdditional[0] == "100") "-" else "${tempAdditional[0]}°${tempUnit.label}"
 		max_temp.text = if (tempAdditional[1] == "-100") "-" else "${tempAdditional[0]}°${tempUnit.label}"
 		ave_temp.text = "${tempAdditional[2]}°${tempUnit.label}"
+
+		val humidityAdditional = arrayOfNulls<String>(3)
+		(garden.actions.lastOrNull { it is HumidityChange } as HumidityChange?)?.let {
+			val view = data_container.findViewById<View?>(R.id.stats_humidity) ?: data_container.inflate(R.layout.data_label_stub)
+			view.label.setText(R.string.current_humidity)
+			view.data.text = "${it.humidity?.formatWhole() ?: 0}%"
+			view.id = R.id.stats_humidity
+
+			if (data_container.findViewById<View?>(R.id.stats_humidity) == null) data_container.addView(view)
+		}
+		StatsHelper.setHumidityData(garden, activity!!, humidity, humidityAdditional)
+		humidity.notifyDataSetChanged()
+		humidity.postInvalidate()
+		min_humidity.text = if (humidityAdditional[0] == "100") "-" else "${humidityAdditional[0]}%"
+		max_humidity.text = if (humidityAdditional[1] == "-100") "-" else "${humidityAdditional[0]}%"
+		ave_humidity.text = "${humidityAdditional[2]}°${tempUnit.label}"
+
+		humidity.setOnChartValueSelectedListener(object : OnChartValueSelectedListener
+		{
+			override fun onNothingSelected()
+			{
+				edit_humidity.visibility = View.GONE
+				delete_humidity.visibility = View.GONE
+			}
+
+			override fun onValueSelected(e: Entry?, dataSetIndex: Int, h: Highlight?)
+			{
+				edit_humidity.visibility = View.VISIBLE
+				delete_humidity.visibility = View.VISIBLE
+
+				edit_humidity.setOnClickListener {
+					(e?.data as HumidityChange?)?.let { current ->
+						val dialogFragment = HumidityDialogFragment(current) { action ->
+							val index = garden.actions.indexOfLast { it.date == current.date }
+							if (index > -1) garden.actions[index] = action
+							updateDataReferences()
+						}
+						dialogFragment.show(childFragmentManager, null)
+					}
+				}
+
+				delete_humidity.setOnClickListener {
+					AlertDialog.Builder(it.context)
+						.setTitle(R.string.delete_item_dialog_title)
+						.setMessage(Html.fromHtml(getString(R.string.confirm_delete_item_message_holder, getString(R.string.humidity))))
+						.setPositiveButton(R.string.delete, DialogInterface.OnClickListener { dialogInterface, i ->
+							(e?.data as HumidityChange?)?.let { current ->
+								garden.actions.removeAll { it.date == current.date }
+								updateDataReferences()
+							}
+						})
+						.setNegativeButton(R.string.cancel, null)
+						.show()
+				}
+			}
+		})
+
+		temp.setOnChartValueSelectedListener(object : OnChartValueSelectedListener
+		{
+			override fun onNothingSelected()
+			{
+				edit_temp.visibility = View.GONE
+				delete_temp.visibility = View.GONE
+			}
+
+			override fun onValueSelected(e: Entry?, dataSetIndex: Int, h: Highlight?)
+			{
+				edit_temp.visibility = View.VISIBLE
+				delete_temp.visibility = View.VISIBLE
+
+				edit_temp.setOnClickListener {
+					(e?.data as TemperatureChange?)?.let { current ->
+						val dialogFragment = TemperatureDialogFragment(current) { action ->
+							val index = garden.actions.indexOfLast { it.date == current.date }
+							if (index > -1) garden.actions[index] = action
+							updateDataReferences()
+						}
+						dialogFragment.show(childFragmentManager, null)
+					}
+				}
+
+				delete_temp.setOnClickListener {
+					AlertDialog.Builder(it.context)
+						.setTitle(R.string.delete_item_dialog_title)
+						.setMessage(Html.fromHtml(getString(R.string.confirm_delete_item_message_holder, getString(R.string.temperature_title))))
+						.setPositiveButton(R.string.delete, DialogInterface.OnClickListener { dialogInterface, i ->
+							(e?.data as TemperatureChange?)?.let { current ->
+								garden.actions.removeAll { it.date == current.date }
+								updateDataReferences()
+							}
+						})
+						.setNegativeButton(R.string.cancel, null)
+						.show()
+				}
+			}
+		})
 	}
 
 	private fun updateDataReferences()

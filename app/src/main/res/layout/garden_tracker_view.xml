@@ -160,20 +160,51 @@
 			</androidx.constraintlayout.widget.ConstraintLayout>
 		</LinearLayout>
 
-		<LinearLayout
+		<androidx.constraintlayout.widget.ConstraintLayout
 			android:layout_width="match_parent"
 			android:layout_height="wrap_content"
 			android:id="@+id/temp_container"
 			android:orientation="vertical"
 			android:layout_marginTop="8dp"
 			android:elevation="4dp"
+			android:paddingTop="0dp"
 			style="@style/PaperCard"
 		>
 			<TextView
 				android:layout_width="wrap_content"
 				android:layout_height="wrap_content"
+				android:id="@+id/temperature_title_label"
 				android:text="@string/temperature_title"
+				android:layout_marginTop="16dp"
+				app:layout_constraintTop_toTopOf="parent"
+				app:layout_constraintStart_toStartOf="parent"
 				style="@style/SectionTitle"
+			/>
+
+			<Button
+				android:layout_width="wrap_content"
+				android:layout_height="wrap_content"
+				android:id="@+id/edit_temp"
+				android:text="@string/edit"
+				app:layout_constraintEnd_toEndOf="parent"
+				app:layout_constraintTop_toTopOf="@id/temperature_title_label"
+				app:layout_constraintBottom_toBottomOf="@id/temperature_title_label"
+				android:layout_marginTop="4dp"
+				android:visibility="gone"
+				style="?borderlessButtonStyle"
+			/>
+
+			<Button
+				android:layout_width="wrap_content"
+				android:layout_height="wrap_content"
+				android:id="@+id/delete_temp"
+				android:text="@string/delete"
+				app:layout_constraintEnd_toStartOf="@id/edit_temp"
+				app:layout_constraintTop_toTopOf="@id/temperature_title_label"
+				app:layout_constraintBottom_toBottomOf="@id/temperature_title_label"
+				android:layout_marginTop="4dp"
+				android:visibility="gone"
+				style="?borderlessButtonStyle"
 			/>
 
 			<com.github.mikephil.charting.charts.LineChart
@@ -182,6 +213,7 @@
 				android:id="@+id/temp"
 				android:padding="16dp"
 				android:layout_marginTop="24dp"
+				app:layout_constraintTop_toBottomOf="@id/temperature_title_label"
 			/>
 
 			<LinearLayout
@@ -189,6 +221,7 @@
 				android:layout_height="wrap_content"
 				android:orientation="horizontal"
 				android:padding="16dp"
+				app:layout_constraintTop_toBottomOf="@id/temp"
 			>
 				<LinearLayout
 					android:layout_width="0dp"
@@ -271,6 +304,152 @@
 					/>
 				</LinearLayout>
 			</LinearLayout>
-		</LinearLayout>
+		</androidx.constraintlayout.widget.ConstraintLayout>
+
+		<androidx.constraintlayout.widget.ConstraintLayout
+			android:layout_width="match_parent"
+			android:layout_height="wrap_content"
+			android:id="@+id/humidity_container"
+			android:orientation="vertical"
+			android:layout_marginTop="8dp"
+			android:elevation="4dp"
+			android:paddingTop="0dp"
+			style="@style/PaperCard"
+		>
+			<TextView
+				android:layout_width="wrap_content"
+				android:layout_height="wrap_content"
+				android:id="@+id/humidity_label"
+				android:text="@string/humidity"
+				android:layout_marginTop="16dp"
+				app:layout_constraintTop_toTopOf="parent"
+				app:layout_constraintStart_toStartOf="parent"
+				style="@style/SectionTitle"
+			/>
+
+			<Button
+				android:layout_width="wrap_content"
+				android:layout_height="wrap_content"
+				android:id="@+id/edit_humidity"
+				android:text="@string/edit"
+				app:layout_constraintEnd_toEndOf="parent"
+				app:layout_constraintTop_toTopOf="@id/humidity_label"
+				app:layout_constraintBottom_toBottomOf="@id/humidity_label"
+				android:layout_marginTop="4dp"
+				android:visibility="gone"
+				style="?borderlessButtonStyle"
+			/>
+
+			<Button
+				android:layout_width="wrap_content"
+				android:layout_height="wrap_content"
+				android:id="@+id/delete_humidity"
+				android:text="@string/delete"
+				app:layout_constraintEnd_toStartOf="@id/edit_humidity"
+				app:layout_constraintTop_toTopOf="@id/humidity_label"
+				app:layout_constraintBottom_toBottomOf="@id/humidity_label"
+				android:layout_marginTop="4dp"
+				android:visibility="gone"
+				style="?borderlessButtonStyle"
+			/>
+
+			<com.github.mikephil.charting.charts.LineChart
+				android:layout_width="match_parent"
+				android:layout_height="300dp"
+				android:id="@+id/humidity"
+				android:padding="16dp"
+				app:layout_constraintTop_toBottomOf="@id/humidity_label"
+				android:layout_marginTop="24dp"
+			/>
+
+			<LinearLayout
+				android:layout_width="match_parent"
+				android:layout_height="wrap_content"
+				android:orientation="horizontal"
+				android:padding="16dp"
+				app:layout_constraintTop_toBottomOf="@id/humidity"
+			>
+				<LinearLayout
+					android:layout_width="0dp"
+					android:layout_height="wrap_content"
+					android:orientation="horizontal"
+					android:layout_weight="1"
+				>
+					<TextView
+						android:layout_width="wrap_content"
+						android:layout_height="wrap_content"
+						android:text="@string/min"
+						android:gravity="center_vertical"
+						style="@style/SubsectionTitle"
+						android:textColor="?android:textColorPrimary"
+					/>
+
+					<TextView
+						android:layout_width="wrap_content"
+						android:layout_height="wrap_content"
+						android:id="@+id/min_humidity"
+						android:textSize="14sp"
+						android:layout_marginLeft="8dp"
+						android:fontFamily="sans-serif-light"
+						android:gravity="center_vertical"
+						android:textColor="?android:textColorPrimary"
+					/>
+				</LinearLayout>
+
+				<LinearLayout
+					android:layout_width="0dp"
+					android:layout_height="wrap_content"
+					android:orientation="horizontal"
+					android:layout_weight="1"
+				>
+					<TextView
+						android:layout_width="wrap_content"
+						android:layout_height="wrap_content"
+						android:text="@string/max"
+						android:gravity="center_vertical"
+						style="@style/SubsectionTitle"
+						android:textColor="?android:textColorPrimary"
+					/>
+
+					<TextView
+						android:layout_width="wrap_content"
+						android:layout_height="wrap_content"
+						android:id="@+id/max_humidity"
+						android:textSize="14sp"
+						android:layout_marginLeft="8dp"
+						android:fontFamily="sans-serif-light"
+						android:gravity="center_vertical"
+						android:textColor="?android:textColorPrimary"
+					/>
+				</LinearLayout>
+
+				<LinearLayout
+					android:layout_width="0dp"
+					android:layout_height="wrap_content"
+					android:orientation="horizontal"
+					android:layout_weight="1"
+				>
+					<TextView
+						android:layout_width="wrap_content"
+						android:layout_height="wrap_content"
+						android:text="@string/ave"
+						android:gravity="center_vertical"
+						style="@style/SubsectionTitle"
+						android:textColor="?android:textColorPrimary"
+					/>
+
+					<TextView
+						android:layout_width="wrap_content"
+						android:layout_height="wrap_content"
+						android:id="@+id/ave_humidity"
+						android:textSize="14sp"
+						android:textColor="?android:textColorPrimary"
+						android:layout_marginLeft="8dp"
+						android:fontFamily="sans-serif-light"
+						android:gravity="center_vertical"
+					/>
+				</LinearLayout>
+			</LinearLayout>
+		</androidx.constraintlayout.widget.ConstraintLayout>
 	</LinearLayout>
 </ScrollView>
