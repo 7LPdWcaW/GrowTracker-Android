@@ -44,7 +44,7 @@ public class ActionJsonAdapter : JsonAdapter<Action>()
 			"Note" -> value = noteActionAdapter.fromJson(reader)
 			"StageChange" -> value = stageChangeAdapter.fromJson(reader)
 			"TemperatureChange" -> value = temperatureChangeAdapter.fromJson(reader)
-			"LightingChange" -> value = temperatureChangeAdapter.fromJson(reader)
+			"LightingChange" -> value = lightingChangeAdapter.fromJson(reader)
 			else -> throw JsonDataException("Action $type not recognised")
 		}
 

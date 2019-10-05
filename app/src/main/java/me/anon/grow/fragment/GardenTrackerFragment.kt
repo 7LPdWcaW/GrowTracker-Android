@@ -17,15 +17,37 @@ import me.anon.lib.ext.inflate
 import me.anon.lib.ext.round
 import me.anon.lib.helper.StatsHelper
 import me.anon.lib.manager.GardenManager
+import me.anon.model.Action
 import me.anon.model.Garden
 import me.anon.model.LightingChange
 import me.anon.model.TemperatureChange
+import org.threeten.bp.Duration
 import org.threeten.bp.LocalTime
 import org.threeten.bp.format.DateTimeFormatter
 
 class GardenTrackerFragment : Fragment()
 {
 	protected lateinit var garden: Garden
+	private val transactions: ArrayList<Action> = arrayListOf()
+
+	private fun addTransaction(action: Action)
+	{
+		transactions.find { it.javaClass == action.javaClass }?.let {
+			transactions.remove(it)
+		}
+
+		transactions.add(action)
+	}
+
+	private fun commitTransaction()
+	{
+		transactions.forEach { action ->
+			garden.actions.add(action)
+		}
+
+		transactions.clear()
+		save()
+	}
 
 	override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View?
 	{
@@ -50,10 +72,35 @@ class GardenTrackerFragment : Fragment()
 		setUi()
 	}
 
+	override fun onDestroy()
+	{
+		commitTransaction()
+		super.onDestroy()
+	}
+
 	private fun setUi()
 	{
+		var currentLighting = (transactions.lastOrNull { it is LightingChange } ?: garden.actions.lastOrNull { it is LightingChange }) as LightingChange?
+		currentLighting?.let {
+			lighton_input.text = it.on
+			lightoff_input.text = it.off
+
+			if (it.off.isEmpty()) return@let
+			val lightOnTime = LocalTime.parse(it.on, DateTimeFormatter.ofPattern("HH:mm"))
+			val lightOffTime = LocalTime.parse(it.off, DateTimeFormatter.ofPattern("HH:mm"))
+			var diff = (Duration.between(lightOnTime, lightOffTime).toMinutes() / 15.0)
+			if (diff == 0.0) diff = 96.0
+			light_ratio.progress = diff.toInt()
+
+			val on = ((light_ratio.progress.toDouble() * 15.0) / 60.0).round(2).formatWhole()
+			val off = ((1440.0 - (light_ratio.progress.toDouble() * 15.0)) / 60.0).round(2).formatWhole()
+			progresson_label.text = "$on" + getString(R.string.hour_abbr)
+			progressoff_label.text = "$off" + getString(R.string.hour_abbr)
+		}
+
 		lightson_container.setOnClickListener {
-			val currentLighting = garden.actions.lastOrNull { it is LightingChange } as LightingChange? ?: LightingChange()
+			val currentLighting = (transactions.lastOrNull { it is LightingChange } ?: garden.actions.lastOrNull { it is LightingChange }) as LightingChange? ?: LightingChange()
+
 			val lightOnTime = LocalTime.parse(currentLighting.on, DateTimeFormatter.ofPattern("HH:mm"))
 			val dialog = TimePickerDialog(activity, TimePickerDialog.OnTimeSetListener { view, hourOfDay, minute ->
 				val currentProgress = light_ratio.progress
@@ -61,7 +108,33 @@ class GardenTrackerFragment : Fragment()
 
 				lighton_input.text = LocalTime.of(hourOfDay, minute).format(DateTimeFormatter.ofPattern("HH:mm"))
 				lightoff_input.text = timeOff.format(DateTimeFormatter.ofPattern("HH:mm"))
+
+				currentLighting.on = lighton_input.text.toString()
+				currentLighting.off = lightoff_input.text.toString()
+				currentLighting.date = System.currentTimeMillis()
+
+				addTransaction(currentLighting)
 			}, lightOnTime.hour, lightOnTime.minute, true)
+			dialog.show()
+		}
+
+		lightsoff_container.setOnClickListener {
+			val currentLighting = (transactions.lastOrNull { it is LightingChange } ?: garden.actions.lastOrNull { it is LightingChange }) as LightingChange? ?: LightingChange()
+
+			val lightOffTime = LocalTime.parse(currentLighting.off, DateTimeFormatter.ofPattern("HH:mm"))
+			val dialog = TimePickerDialog(activity, TimePickerDialog.OnTimeSetListener { view, hourOfDay, minute ->
+				val currentProgress = light_ratio.progress
+				val timeOn = LocalTime.of(hourOfDay, minute).minusMinutes(currentProgress.toLong() * 15)
+
+				lightoff_input.text = LocalTime.of(hourOfDay, minute).format(DateTimeFormatter.ofPattern("HH:mm"))
+				lighton_input.text = timeOn.format(DateTimeFormatter.ofPattern("HH:mm"))
+
+				currentLighting.on = lighton_input.text.toString()
+				currentLighting.off = lightoff_input.text.toString()
+				currentLighting.date = System.currentTimeMillis()
+
+				addTransaction(currentLighting)
+			}, lightOffTime.hour, lightOffTime.minute, true)
 			dialog.show()
 		}
 
@@ -82,7 +155,15 @@ class GardenTrackerFragment : Fragment()
 			}
 
 			override fun onStartTrackingTouch(p0: SeekBar?){}
-			override fun onStopTrackingTouch(p0: SeekBar?){}
+			override fun onStopTrackingTouch(p0: SeekBar?)
+			{
+				val currentLighting = (transactions.lastOrNull { it is LightingChange } ?: garden.actions.lastOrNull { it is LightingChange }) as LightingChange? ?: LightingChange()
+				currentLighting.on = lighton_input.text.toString()
+				currentLighting.off = lightoff_input.text.toString()
+				currentLighting.date = System.currentTimeMillis()
+
+				addTransaction(currentLighting)
+			}
 		})
 
 		setStatistics()
@@ -109,7 +190,11 @@ class GardenTrackerFragment : Fragment()
 	private fun updateDataReferences()
 	{
 		setStatistics()
+		save()
+	}
 
+	private fun save()
+	{
 		if (parentFragment is GardenHostFragment)
 		{
 			GardenManager.getInstance().upsert(garden)
