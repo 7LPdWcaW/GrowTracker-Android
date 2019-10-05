@@ -12,6 +12,7 @@ public class ActionJsonAdapter : JsonAdapter<Action>()
 	private val noteActionAdapter = NoteActionJsonAdapter(moshi)
 	private val stageChangeAdapter = StageChangeJsonAdapter(moshi)
 	private val temperatureChangeAdapter = TemperatureChangeJsonAdapter(moshi)
+	private val lightingChangeAdapter = LightingChangeJsonAdapter(moshi)
 	private val waterAdapter = WaterJsonAdapter(moshi)
 
 	@Throws(IOException::class)
@@ -43,6 +44,7 @@ public class ActionJsonAdapter : JsonAdapter<Action>()
 			"Note" -> value = noteActionAdapter.fromJson(reader)
 			"StageChange" -> value = stageChangeAdapter.fromJson(reader)
 			"TemperatureChange" -> value = temperatureChangeAdapter.fromJson(reader)
+			"LightingChange" -> value = temperatureChangeAdapter.fromJson(reader)
 			else -> throw JsonDataException("Action $type not recognised")
 		}
 
@@ -59,6 +61,7 @@ public class ActionJsonAdapter : JsonAdapter<Action>()
 			is NoteAction -> noteActionAdapter.toJson(writer, value)
 			is StageChange -> stageChangeAdapter.toJson(writer, value)
 			is TemperatureChange -> temperatureChangeAdapter.toJson(writer, value)
+			is LightingChange -> lightingChangeAdapter.toJson(writer, value)
 		}
 	}
 }

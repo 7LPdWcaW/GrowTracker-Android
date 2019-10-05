@@ -620,3 +620,15 @@ class HumidityChange(
 {
 	public var type: String = "HumidityChange"
 }
+
+@Parcelize
+@JsonClass(generateAdapter = true)
+class LightingChange(
+	var on: String = "00:00",
+	var off: String = "18:00",
+
+	override var date: Long = System.currentTimeMillis()
+) : Action(date, null)
+{
+	public var type: String = "LightingChange"
+}

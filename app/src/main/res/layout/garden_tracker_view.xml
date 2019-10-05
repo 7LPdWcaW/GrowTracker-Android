@@ -34,6 +34,130 @@
 				app:showDivider="middle"
 				app:dividerDrawable="@drawable/divider_8dp"
 			/>
+
+			<TextView
+				android:layout_width="wrap_content"
+				android:layout_height="wrap_content"
+				android:text="@string/lighting_title"
+				android:layout_marginTop="12dp"
+				style="@style/SectionTitle"
+			/>
+
+			<LinearLayout
+				android:layout_width="match_parent"
+				android:layout_height="wrap_content"
+				android:orientation="horizontal"
+				android:divider="@drawable/vertical_full_divider"
+				android:showDividers="middle"
+				android:paddingStart="16dp"
+				android:paddingEnd="16dp"
+				android:layout_marginTop="16dp"
+				android:weightSum="2"
+			>
+				<LinearLayout
+					android:layout_width="0dp"
+					android:layout_height="wrap_content"
+					android:id="@+id/lightson_container"
+					android:orientation="vertical"
+					android:layout_weight="1"
+					android:background="?selectableItemBackground"
+					android:clickable="true"
+					android:focusable="true"
+				>
+					<TextView
+						android:layout_width="match_parent"
+						android:layout_height="wrap_content"
+						android:id="@+id/lighton_label"
+						android:text="Lights on"
+						style="@style/SubsectionTitle"
+					/>
+
+					<TextView
+						android:layout_width="match_parent"
+						android:layout_height="wrap_content"
+						android:id="@+id/lighton_input"
+						android:hint="00:00"
+						android:inputType="none"
+						android:paddingTop="8dp"
+						android:paddingBottom="8dp"
+						style="@style/SubsectionSubTitle"
+					/>
+				</LinearLayout>
+
+				<LinearLayout
+					android:layout_width="0dp"
+					android:layout_height="wrap_content"
+					android:id="@+id/lightsoff_container"
+					android:clickable="true"
+					android:focusable="true"
+					android:orientation="vertical"
+					android:layout_weight="1"
+					android:background="?selectableItemBackground"
+				>
+					<TextView
+						android:layout_width="match_parent"
+						android:layout_height="wrap_content"
+						android:id="@+id/lightoff_label"
+						android:text="Lights off"
+						style="@style/SubsectionTitle"
+					/>
+
+					<TextView
+						android:layout_width="match_parent"
+						android:layout_height="wrap_content"
+						android:id="@+id/lightoff_input"
+						android:hint="18:00"
+						android:inputType="none"
+						android:paddingTop="8dp"
+						android:paddingBottom="8dp"
+						style="@style/SubsectionSubTitle"
+					/>
+				</LinearLayout>
+			</LinearLayout>
+
+			<androidx.constraintlayout.widget.ConstraintLayout
+				android:layout_width="match_parent"
+				android:layout_height="wrap_content"
+				android:paddingLeft="16dp"
+				android:paddingRight="16dp"
+				android:paddingTop="16dp"
+				android:paddingBottom="16dp"
+			>
+				<TextView
+					android:layout_width="wrap_content"
+					android:layout_height="wrap_content"
+					android:id="@+id/progresson_label"
+					android:text="18h"
+					android:drawableStart="@drawable/ic_sun"
+					android:drawablePadding="4dp"
+					android:gravity="center_vertical"
+					app:layout_constraintTop_toTopOf="parent"
+					app:layout_constraintStart_toStartOf="parent"
+				/>
+
+				<TextView
+					android:layout_width="wrap_content"
+					android:layout_height="wrap_content"
+					android:id="@+id/progressoff_label"
+					android:text="6h"
+					android:drawablePadding="4dp"
+					android:drawableEnd="@drawable/ic_moon"
+					android:gravity="center_vertical"
+					app:layout_constraintTop_toTopOf="parent"
+					app:layout_constraintEnd_toEndOf="parent"
+				/>
+
+				<SeekBar
+					android:layout_width="0dp"
+					android:layout_height="wrap_content"
+					android:id="@+id/light_ratio"
+					app:layout_constraintStart_toStartOf="parent"
+					app:layout_constraintEnd_toEndOf="parent"
+					app:layout_constraintTop_toBottomOf="@id/progresson_label"
+					android:max="96"
+					android:progress="72"
+				/>
+			</androidx.constraintlayout.widget.ConstraintLayout>
 		</LinearLayout>
 
 		<LinearLayout
