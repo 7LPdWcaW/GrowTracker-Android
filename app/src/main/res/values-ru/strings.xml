@@ -246,7 +246,7 @@
 	<string name="show_images">Показать изображения</string>
 
 	<string name="settings_default_garden">Сад для показа по умолчанию, сейчас: &lt;b&gt;%s&lt;/b&gt;</string>
-	<string name="settings_card_style">Выбрать стиль карточек, сейчас: &lt;b&gt;%s&lt;/b&gt;</string>
+	<string name="settings_card_style">Выбрать стиль галереи, сейчас: %s</string>
 	<string name="settings_delivery">Единица измерения по умолчанию, сейчас: &lt;b&gt;%s&lt;/b&gt;</string>
 	<string name="settings_measurement">Единица измерения удобрений по умолчанию, сейчас &lt;b&gt;%s&lt;/b&gt;</string>
 	<string name="settings_temperature">Единица температуры, сейчас: &lt;b&gt;%s&lt;/b&gt;</string>
@@ -391,6 +391,12 @@
 		<item quantity="other">лет</item>
 	</plurals>
 
+	<string-array name="settings_card_entries">
+		<item>Оригинальный</item>
+		<item>Компактный</item>
+		<item>Расширенный</item>
+	</string-array>
+
 	<string name="confirm_quit">Все несохранённые изменения будут утеряны</string>
-	<string name="accept_quit">Выход</string>
+	<string name="accept_quit">Выйти</string>
 </resources>
