@@ -246,7 +246,7 @@
 	<string name="show_images">Показати зображення</string>
 
 	<string name="settings_default_garden">Сад для показу за замовчуванням, зараз: &lt;b&gt;%s&lt;/b&gt;</string>
-	<string name="settings_card_style">Обрати тип картки, зараз: &lt;b&gt;%s&lt;/b&gt;</string>
+	<string name="settings_card_style">Обрати тип картки, зараз: %s</string>
 	<string name="settings_delivery">Одиниця вимірювання об\'єму, зараз: &lt;b&gt;%s&lt;/b&gt;</string>
 	<string name="settings_measurement">Одиниця вимірювання добрив, зараз: &lt;b&gt;%s&lt;/b&gt;</string>
 	<string name="settings_temperature">Одиниця вимірювання температури, зараз: &lt;b&gt;%s&lt;/b&gt;</string>

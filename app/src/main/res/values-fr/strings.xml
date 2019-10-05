@@ -246,7 +246,7 @@
 	<string name="show_images">Montrer les images</string>
 
 	<string name="settings_default_garden">Jardin par défaut à l\'ouverture, actuellement : &lt;b&gt;%s&lt;/b&gt;</string>
-	<string name="settings_card_style">sélectionner un style de carte, actuellement : &lt;b&gt;%s&lt;/b&gt;</string>
+	<string name="settings_card_style">sélectionner un style de carte, actuellement : %s</string>
 	<string name="settings_delivery">Unité de mesure de volume par défaut, actuellement &lt;b&gt;%s&lt;/b&gt;</string>
 	<string name="settings_measurement">Unité de mesure de volume d\'engrais par défaut, actuellement &lt;b&gt;%s&lt;/b&gt;</string>
 	<string name="settings_temperature">Unité de température par défaut, actuellement &lt;b&gt;%s&lt;/b&gt;</string>
