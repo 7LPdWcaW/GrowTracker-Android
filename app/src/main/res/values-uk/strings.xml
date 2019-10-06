@@ -399,4 +399,11 @@
 
 	<string name="confirm_quit">Всі незбережені зміни будуть втрачені</string>
 	<string name="accept_quit">Вийти</string>
+	<string name="plants">Рослини</string>
+	<string name="humidity">Вологість</string>
+	<string name="current_temp">Поточна температура:</string>
+	<string name="current_humidity">Поточна вологість:</string>
+	<string name="lighting_title">Розклад освітлення</string>
+	<string name="delete_item_dialog_title">Видалити елемент?</string>
+	<string name="confirm_delete_item_message_holder">Дійсно видалити &lt;b&gt;%s&lt;/b&gt;?</string>
 </resources>
