@@ -399,4 +399,11 @@
 
 	<string name="confirm_quit">Все несохранённые изменения будут утеряны</string>
 	<string name="accept_quit">Выйти</string>
+	<string name="plants">Растения</string>
+	<string name="humidity">Влажность</string>
+	<string name="current_temp">Текущая температура:</string>
+	<string name="current_humidity">Текущая влажность:</string>
+	<string name="lighting_title">График освещения</string>
+	<string name="delete_item_dialog_title">Удалить?</string>
+	<string name="confirm_delete_item_message_holder">Действительно удалить &lt;b&gt;%s&lt;/b&gt;?</string>
 </resources>
