@@ -80,7 +80,6 @@ public class ActionAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>
 	private List<Action> actions = new ArrayList<>();
 	private Unit measureUnit, deliveryUnit;
 	private TempUnit tempUnit;
-	private boolean usingEc = false;
 	private boolean showDate = true;
 	private boolean showActions = true;
 	private CalendarDay selectedFilterDate = null;

@@ -409,4 +409,6 @@
 	<string name="lighting_title">Lighting Schedule</string>
 	<string name="delete_item_dialog_title">Delete this item?</string>
 	<string name="confirm_delete_item_message_holder">Are you sure you want to delete &lt;b&gt;%s&lt;/b&gt;?</string>
+	<string name="show">Show</string>
+	<string name="hide">Hide</string>
 </resources>
