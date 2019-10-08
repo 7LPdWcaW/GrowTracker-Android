@@ -10,14 +10,18 @@ import android.view.ViewGroup
 import android.widget.SeekBar
 import androidx.appcompat.app.AlertDialog
 import androidx.fragment.app.Fragment
+import androidx.recyclerview.widget.LinearLayoutManager
+import com.esotericsoftware.kryo.Kryo
 import com.github.mikephil.charting.data.Entry
 import com.github.mikephil.charting.highlight.Highlight
 import com.github.mikephil.charting.listener.OnChartValueSelectedListener
 import kotlinx.android.synthetic.main.data_label_stub.view.*
 import kotlinx.android.synthetic.main.garden_tracker_view.*
+import me.anon.controller.adapter.GardenActionAdapter
 import me.anon.grow.MainActivity
 import me.anon.grow.R
 import me.anon.lib.TempUnit
+import me.anon.lib.ext.T
 import me.anon.lib.ext.formatWhole
 import me.anon.lib.ext.inflate
 import me.anon.lib.ext.round
@@ -27,6 +31,7 @@ import me.anon.model.*
 import org.threeten.bp.Duration
 import org.threeten.bp.LocalTime
 import org.threeten.bp.format.DateTimeFormatter
+import kotlin.math.abs
 
 class GardenTrackerFragment : Fragment()
 {
@@ -39,11 +44,10 @@ class GardenTrackerFragment : Fragment()
 			transactions.remove(it)
 		}
 
-		val lastLightingChange = garden.actions.findLast { it is LightingChange } as LightingChange?
-		val newLightingChange = transactions.find { it is LightingChange } as LightingChange?
-		if (lastLightingChange != null && newLightingChange != null)
+		val lastLightingChange = (garden.actions.findLast { it is LightingChange }) as LightingChange?
+		if (lastLightingChange != null && action is LightingChange)
 		{
-			if (lastLightingChange.on == newLightingChange.on && lastLightingChange.off == newLightingChange.off) return
+			if (lastLightingChange.on == action.on && lastLightingChange.off == action.off) return
 		}
 
 		transactions.add(action)
@@ -115,7 +119,7 @@ class GardenTrackerFragment : Fragment()
 			if (it.off.isEmpty()) return@let
 			val lightOnTime = LocalTime.parse(it.on, DateTimeFormatter.ofPattern("HH:mm"))
 			val lightOffTime = LocalTime.parse(it.off, DateTimeFormatter.ofPattern("HH:mm"))
-			var diff = (Math.abs(Duration.between(lightOnTime, lightOffTime).toMinutes()) / 15.0)
+			var diff = (abs(Duration.between(lightOnTime, lightOffTime).toMinutes()) / 15.0)
 			if (diff == 0.0) diff = 96.0
 			light_ratio.progress = diff.toInt()
 
@@ -126,10 +130,11 @@ class GardenTrackerFragment : Fragment()
 		}
 
 		lightson_container.setOnClickListener {
-			val currentLighting = (transactions.lastOrNull { it is LightingChange } ?: garden.actions.lastOrNull { it is LightingChange }) as LightingChange? ?: LightingChange()
+			val currentLighting = (transactions.lastOrNull { it is LightingChange } ?: Kryo().copy(garden.actions.lastOrNull { it is LightingChange })) as LightingChange? ?: LightingChange()
 
 			val lightOnTime = LocalTime.parse(currentLighting.on, DateTimeFormatter.ofPattern("HH:mm"))
 			val dialog = TimePickerDialog(activity, TimePickerDialog.OnTimeSetListener { view, hourOfDay, minute ->
+				light_ratio.isEnabled = true
 				val currentProgress = light_ratio.progress
 				val timeOff = LocalTime.of(hourOfDay, minute).plusMinutes(currentProgress.toLong() * 15)
 
@@ -146,10 +151,11 @@ class GardenTrackerFragment : Fragment()
 		}
 
 		lightsoff_container.setOnClickListener {
-			val currentLighting = (transactions.lastOrNull { it is LightingChange } ?: garden.actions.lastOrNull { it is LightingChange }) as LightingChange? ?: LightingChange()
+			val currentLighting = (transactions.lastOrNull { it is LightingChange } ?: Kryo().copy(garden.actions.lastOrNull { it is LightingChange })) as LightingChange? ?: LightingChange()
 
 			val lightOffTime = LocalTime.parse(currentLighting.off, DateTimeFormatter.ofPattern("HH:mm"))
 			val dialog = TimePickerDialog(activity, TimePickerDialog.OnTimeSetListener { view, hourOfDay, minute ->
+				light_ratio.isEnabled = true
 				val currentProgress = light_ratio.progress
 				val timeOn = LocalTime.of(hourOfDay, minute).minusMinutes(currentProgress.toLong() * 15)
 
@@ -165,6 +171,7 @@ class GardenTrackerFragment : Fragment()
 			dialog.show()
 		}
 
+		light_ratio.isEnabled = currentLighting != null
 		light_ratio.setOnSeekBarChangeListener(object : SeekBar.OnSeekBarChangeListener
 		{
 			override fun onProgressChanged(p0: SeekBar?, progress: Int, p2: Boolean)
@@ -184,16 +191,85 @@ class GardenTrackerFragment : Fragment()
 			override fun onStartTrackingTouch(p0: SeekBar?){}
 			override fun onStopTrackingTouch(p0: SeekBar?)
 			{
-				val currentLighting = (transactions.lastOrNull { it is LightingChange } ?: garden.actions.lastOrNull { it is LightingChange }) as LightingChange? ?: LightingChange()
-				currentLighting.on = lighton_input.text.toString()
-				currentLighting.off = lightoff_input.text.toString()
-				currentLighting.date = System.currentTimeMillis()
-
-				addTransaction(currentLighting)
+				val currentLighting = (transactions.lastOrNull { it is LightingChange } ?: garden.actions.lastOrNull { it is LightingChange }) as LightingChange?
+				currentLighting?.let {
+					currentLighting.on = lighton_input.text.toString()
+					currentLighting.off = lightoff_input.text.toString()
+				}
 			}
 		})
 
-		setStatistics()
+		toggle_actions.setOnClickListener {
+			var expanded = actions_recycler.visibility == View.VISIBLE
+			toggle_actions.setText(!expanded T R.string.hide ?: R.string.show)
+			actions_recycler.visibility = !expanded T View.VISIBLE ?: View.GONE
+		}
+
+		actions_recycler.adapter = GardenActionAdapter()
+		actions_recycler.layoutManager = LinearLayoutManager(activity!!)
+
+		updateDataReferences()
+
+		(actions_recycler.adapter as GardenActionAdapter?)?.let {
+			it.editListener = ::editAction
+			it.deleteListener = ::deleteAction
+		}
+	}
+
+	private fun editAction(action: Action)
+	{
+		val index = garden.actions.indexOfLast { it.date == action.date }
+		when (action)
+		{
+			is HumidityChange -> {
+				val dialogFragment = HumidityDialogFragment(action) {
+					if (index > -1) garden.actions[index] = action
+					updateDataReferences()
+				}
+				dialogFragment.show(childFragmentManager, null)
+			}
+
+			is TemperatureChange -> {
+				val dialogFragment = TemperatureDialogFragment(action) { action ->
+					if (index > -1) garden.actions[index] = action
+					updateDataReferences()
+				}
+				dialogFragment.show(childFragmentManager, null)
+			}
+
+			is NoteAction -> {
+				val dialogFragment = NoteDialogFragment(action)
+				dialogFragment.setOnDialogConfirmed { notes ->
+					if (index > -1) garden.actions[index].notes = notes
+					updateDataReferences()
+				}
+				dialogFragment.show(childFragmentManager, null)
+			}
+		}
+
+		updateDataReferences()
+	}
+
+	private fun deleteAction(action: Action)
+	{
+		val title = when (action)
+		{
+			is HumidityChange -> R.string.humidity
+			is TemperatureChange -> R.string.temperature_title
+			is NoteAction -> R.string.note
+			is LightingChange -> R.string.lighting_title
+			else -> -1
+		}
+
+		AlertDialog.Builder(activity!!)
+			.setTitle(R.string.delete_item_dialog_title)
+			.setMessage(Html.fromHtml(getString(R.string.confirm_delete_item_message_holder, getString(title))))
+			.setPositiveButton(R.string.delete, DialogInterface.OnClickListener { dialogInterface, i ->
+				garden.actions.removeAll { it.date == action.date }
+				updateDataReferences()
+			})
+			.setNegativeButton(R.string.cancel, null)
+			.show()
 	}
 
 	private fun setStatistics()
@@ -229,7 +305,7 @@ class GardenTrackerFragment : Fragment()
 		humidity.postInvalidate()
 		min_humidity.text = if (humidityAdditional[0] == "100") "-" else "${humidityAdditional[0]}%"
 		max_humidity.text = if (humidityAdditional[1] == "-100") "-" else "${humidityAdditional[0]}%"
-		ave_humidity.text = "${humidityAdditional[2]}°${tempUnit.label}"
+		ave_humidity.text = "${humidityAdditional[2]}%"
 
 		humidity.setOnChartValueSelectedListener(object : OnChartValueSelectedListener
 		{
@@ -246,27 +322,14 @@ class GardenTrackerFragment : Fragment()
 
 				edit_humidity.setOnClickListener {
 					(e?.data as HumidityChange?)?.let { current ->
-						val dialogFragment = HumidityDialogFragment(current) { action ->
-							val index = garden.actions.indexOfLast { it.date == current.date }
-							if (index > -1) garden.actions[index] = action
-							updateDataReferences()
-						}
-						dialogFragment.show(childFragmentManager, null)
+						editAction(current)
 					}
 				}
 
 				delete_humidity.setOnClickListener {
-					AlertDialog.Builder(it.context)
-						.setTitle(R.string.delete_item_dialog_title)
-						.setMessage(Html.fromHtml(getString(R.string.confirm_delete_item_message_holder, getString(R.string.humidity))))
-						.setPositiveButton(R.string.delete, DialogInterface.OnClickListener { dialogInterface, i ->
-							(e?.data as HumidityChange?)?.let { current ->
-								garden.actions.removeAll { it.date == current.date }
-								updateDataReferences()
-							}
-						})
-						.setNegativeButton(R.string.cancel, null)
-						.show()
+					(e?.data as Action?)?.let {
+						deleteAction(it)
+					}
 				}
 			}
 		})
@@ -286,27 +349,14 @@ class GardenTrackerFragment : Fragment()
 
 				edit_temp.setOnClickListener {
 					(e?.data as TemperatureChange?)?.let { current ->
-						val dialogFragment = TemperatureDialogFragment(current) { action ->
-							val index = garden.actions.indexOfLast { it.date == current.date }
-							if (index > -1) garden.actions[index] = action
-							updateDataReferences()
-						}
-						dialogFragment.show(childFragmentManager, null)
+						editAction(current)
 					}
 				}
 
 				delete_temp.setOnClickListener {
-					AlertDialog.Builder(it.context)
-						.setTitle(R.string.delete_item_dialog_title)
-						.setMessage(Html.fromHtml(getString(R.string.confirm_delete_item_message_holder, getString(R.string.temperature_title))))
-						.setPositiveButton(R.string.delete, DialogInterface.OnClickListener { dialogInterface, i ->
-							(e?.data as TemperatureChange?)?.let { current ->
-								garden.actions.removeAll { it.date == current.date }
-								updateDataReferences()
-							}
-						})
-						.setNegativeButton(R.string.cancel, null)
-						.show()
+					(e?.data as Action?)?.let { current ->
+						deleteAction(current)
+					}
 				}
 			}
 		})
@@ -314,6 +364,10 @@ class GardenTrackerFragment : Fragment()
 
 	private fun updateDataReferences()
 	{
+		(actions_recycler.adapter as GardenActionAdapter?)?.let {
+			it.items = garden.actions
+		}
+
 		setStatistics()
 		save()
 	}

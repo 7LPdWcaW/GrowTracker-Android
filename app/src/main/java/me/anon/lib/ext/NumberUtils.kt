@@ -12,5 +12,5 @@ public fun Double.round(decimals: Int): Double
 public fun Double.formatWhole(): String
 {
 	if (this.toDouble() - this.toInt().toDouble() == 0.0) return "${this.toInt()}"
-	return "${this}"
+	return "${this.round(2)}"
 }

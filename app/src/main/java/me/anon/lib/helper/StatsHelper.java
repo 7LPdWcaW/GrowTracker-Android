@@ -37,6 +37,7 @@ import me.anon.grow.R;
 import me.anon.lib.TdsUnit;
 import me.anon.lib.TempUnit;
 import me.anon.lib.ext.IntUtilsKt;
+import me.anon.lib.ext.NumberUtilsKt;
 import me.anon.model.Action;
 import me.anon.model.Additive;
 import me.anon.model.Garden;
@@ -608,7 +609,7 @@ public class StatsHelper
 			{
 				@Override public String getFormattedValue(float value, YAxis yAxis)
 				{
-					return String.format("%s°%s", (int)value, tempUnit.getLabel());
+					return String.format("%s°%s", NumberUtilsKt.formatWhole(value), tempUnit.getLabel());
 				}
 			});
 
@@ -616,7 +617,7 @@ public class StatsHelper
 			{
 				@Override public String getFormattedValue(float value, YAxis yAxis)
 				{
-					return String.format("%s°%s", (int)value, tempUnit.getLabel());
+					return String.format("%s°%s", NumberUtilsKt.formatWhole(value), tempUnit.getLabel());
 				}
 			});
 
@@ -631,7 +632,7 @@ public class StatsHelper
 					if (action != null) date = "\n" + timeFormat.format(new Date(action.getDate()));
 
 					((TextView)findViewById(R.id.content)).setGravity(CENTER_HORIZONTAL);
-					((TextView)findViewById(R.id.content)).setText((int)e.getVal() + "°" + tempUnit.getLabel() + date);
+					((TextView)findViewById(R.id.content)).setText(NumberUtilsKt.formatWhole(e.getVal()) + "°" + tempUnit.getLabel() + date);
 					((TextView)findViewById(R.id.content)).setTextColor(IntUtilsKt.resolveColor(R.attr.colorAccent, findViewById(R.id.content).getContext()));
 				}
 
@@ -652,9 +653,9 @@ public class StatsHelper
 
 		if (additionalRef != null)
 		{
-			additionalRef[0] = String.valueOf((int)min);
-			additionalRef[1] = String.valueOf((int)max);
-			additionalRef[2] = String.valueOf((int)(total / (double)vals.size()));
+			additionalRef[0] = String.valueOf(NumberUtilsKt.formatWhole(min));
+			additionalRef[1] = String.valueOf(NumberUtilsKt.formatWhole(max));
+			additionalRef[2] = String.valueOf(NumberUtilsKt.formatWhole(total / (double)vals.size()));
 		}
 	}
 

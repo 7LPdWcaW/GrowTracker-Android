@@ -68,7 +68,7 @@
 						android:layout_width="match_parent"
 						android:layout_height="wrap_content"
 						android:id="@+id/lighton_label"
-						android:text="Lights on"
+						android:text="@string/lights_on"
 						style="@style/SubsectionTitle"
 					/>
 
@@ -98,7 +98,7 @@
 						android:layout_width="match_parent"
 						android:layout_height="wrap_content"
 						android:id="@+id/lightoff_label"
-						android:text="Lights off"
+						android:text="@string/lights_off"
 						style="@style/SubsectionTitle"
 					/>
 
@@ -127,7 +127,6 @@
 					android:layout_width="wrap_content"
 					android:layout_height="wrap_content"
 					android:id="@+id/progresson_label"
-					android:text="18h"
 					android:drawableStart="@drawable/ic_sun"
 					android:drawablePadding="4dp"
 					android:gravity="center_vertical"
@@ -139,7 +138,6 @@
 					android:layout_width="wrap_content"
 					android:layout_height="wrap_content"
 					android:id="@+id/progressoff_label"
-					android:text="6h"
 					android:drawablePadding="4dp"
 					android:drawableEnd="@drawable/ic_moon"
 					android:gravity="center_vertical"
@@ -189,7 +187,7 @@
 				app:layout_constraintEnd_toEndOf="parent"
 				app:layout_constraintTop_toTopOf="@id/temperature_title_label"
 				app:layout_constraintBottom_toBottomOf="@id/temperature_title_label"
-				android:layout_marginTop="4dp"
+				android:layout_marginEnd="4dp"
 				android:visibility="gone"
 				style="?borderlessButtonStyle"
 			/>
@@ -202,7 +200,6 @@
 				app:layout_constraintEnd_toStartOf="@id/edit_temp"
 				app:layout_constraintTop_toTopOf="@id/temperature_title_label"
 				app:layout_constraintBottom_toBottomOf="@id/temperature_title_label"
-				android:layout_marginTop="4dp"
 				android:visibility="gone"
 				style="?borderlessButtonStyle"
 			/>
@@ -335,7 +332,7 @@
 				app:layout_constraintEnd_toEndOf="parent"
 				app:layout_constraintTop_toTopOf="@id/humidity_label"
 				app:layout_constraintBottom_toBottomOf="@id/humidity_label"
-				android:layout_marginTop="4dp"
+				android:layout_marginEnd="4dp"
 				android:visibility="gone"
 				style="?borderlessButtonStyle"
 			/>
@@ -348,7 +345,6 @@
 				app:layout_constraintEnd_toStartOf="@id/edit_humidity"
 				app:layout_constraintTop_toTopOf="@id/humidity_label"
 				app:layout_constraintBottom_toBottomOf="@id/humidity_label"
-				android:layout_marginTop="4dp"
 				android:visibility="gone"
 				style="?borderlessButtonStyle"
 			/>
@@ -450,6 +446,54 @@
 					/>
 				</LinearLayout>
 			</LinearLayout>
+		</androidx.constraintlayout.widget.ConstraintLayout>
+
+		<androidx.constraintlayout.widget.ConstraintLayout
+			android:layout_width="match_parent"
+			android:layout_height="wrap_content"
+			android:id="@+id/actions_container"
+			android:orientation="vertical"
+			android:elevation="4dp"
+			android:paddingTop="0dp"
+			android:layout_marginTop="8dp"
+			android:layout_marginBottom="24dp"
+			style="@style/PaperCard"
+		>
+			<TextView
+				android:layout_width="wrap_content"
+				android:layout_height="wrap_content"
+				android:id="@+id/actions_label"
+				android:text="@string/actions"
+				android:layout_marginTop="16dp"
+				app:layout_constraintTop_toTopOf="parent"
+				app:layout_constraintStart_toStartOf="parent"
+				style="@style/SectionTitle"
+			/>
+
+			<Button
+				android:layout_width="wrap_content"
+				android:layout_height="wrap_content"
+				android:id="@+id/toggle_actions"
+				android:text="@string/show"
+				app:layout_constraintEnd_toEndOf="parent"
+				app:layout_constraintTop_toTopOf="parent"
+				android:layout_marginEnd="4dp"
+				style="?borderlessButtonStyle"
+			/>
+
+			<androidx.recyclerview.widget.RecyclerView
+				android:layout_width="0dp"
+				android:layout_height="wrap_content"
+				android:id="@+id/actions_recycler"
+				android:visibility="gone"
+				android:padding="8dp"
+				android:clipToPadding="false"
+				android:clipChildren="false"
+				android:nestedScrollingEnabled="false"
+				app:layout_constraintStart_toStartOf="parent"
+				app:layout_constraintEnd_toEndOf="parent"
+				app:layout_constraintTop_toBottomOf="@id/toggle_actions"
+			/>
 		</androidx.constraintlayout.widget.ConstraintLayout>
 	</LinearLayout>
 </ScrollView>

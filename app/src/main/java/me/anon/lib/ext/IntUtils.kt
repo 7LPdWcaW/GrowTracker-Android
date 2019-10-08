@@ -5,6 +5,7 @@ import android.graphics.drawable.Drawable
 import android.util.TypedValue
 import androidx.annotation.AttrRes
 import androidx.annotation.ColorInt
+import androidx.annotation.ColorRes
 import androidx.annotation.DrawableRes
 import androidx.core.content.res.ResourcesCompat
 
@@ -50,6 +51,12 @@ public fun @receiver:AttrRes Int.resolveRes(themedContext: Context?): Int
  */
 @ColorInt
 public fun @receiver:AttrRes Int.resolveColor(themedContext: Context?): Int = this.resolveInt(themedContext)
+
+/**
+ * Resolves a colour int from an color res.
+ */
+@ColorInt
+public fun @receiver:ColorRes Int.getColor(themedContext: Context): Int = themedContext.resources.getColor(this, themedContext.theme)
 
 /**
  * Resolves a drawable object from a drawable res
