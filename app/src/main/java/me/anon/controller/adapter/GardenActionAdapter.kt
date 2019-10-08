@@ -1,12 +1,14 @@
 package me.anon.controller.adapter
 
+import android.content.DialogInterface
 import android.text.Html
 import android.text.TextUtils
-import android.view.LayoutInflater
-import android.view.View
-import android.view.ViewGroup
+import android.view.*
 import android.widget.TextView
+import androidx.appcompat.app.AlertDialog
+import androidx.appcompat.widget.PopupMenu
 import androidx.recyclerview.widget.RecyclerView
+import com.esotericsoftware.kryo.Kryo
 import me.anon.grow.R
 import me.anon.lib.TempUnit
 import me.anon.lib.ext.formatWhole
@@ -31,6 +33,9 @@ class GardenActionAdapter : RecyclerView.Adapter<ActionHolder>()
 			}
 			notifyDataSetChanged()
 		}
+
+	public var editListener: (Action) -> Unit = {}
+	public var deleteListener: (Action) -> Unit = {}
 
 	override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ActionHolder
 	{
@@ -85,7 +90,7 @@ class GardenActionAdapter : RecyclerView.Adapter<ActionHolder>()
 
 			is NoteAction -> {
 				holder.getName().setText(R.string.note)
-				holder.getCard().setCardBackgroundColor(R.attr.colorSurface.resolveColor(holder.itemView.getContext()))
+				holder.getCard().setCardBackgroundColor(0xffe5e5e5.toInt())
 			}
 		}
 
@@ -105,6 +110,32 @@ class GardenActionAdapter : RecyclerView.Adapter<ActionHolder>()
 			holder.getSummary().text = Html.fromHtml(summary)
 			holder.getSummary().setVisibility(View.VISIBLE)
 		}
+
+		holder.getOverflow().setVisibility(View.VISIBLE)
+		holder.getOverflow().setOnClickListener(View.OnClickListener { v ->
+			val menu = PopupMenu(v.context, v, Gravity.BOTTOM)
+			menu.inflate(R.menu.event_overflow)
+			menu.menu.removeItem(R.id.duplicate)
+			menu.menu.removeItem(R.id.copy)
+			menu.setOnMenuItemClickListener(PopupMenu.OnMenuItemClickListener { item ->
+				when (item.itemId)
+				{
+					R.id.edit -> {
+						editListener(action)
+						return@OnMenuItemClickListener true
+					}
+
+					R.id.delete -> {
+						deleteListener(action)
+						return@OnMenuItemClickListener true
+					}
+				}
+
+				false
+			})
+
+			menu.show()
+		})
 
 		if (!lastDateStr.equals(dateDayStr, ignoreCase = true))
 		{

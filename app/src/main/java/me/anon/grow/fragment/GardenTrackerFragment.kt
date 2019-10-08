@@ -204,17 +204,70 @@ class GardenTrackerFragment : Fragment()
 			var expanded = actions_recycler.visibility == View.VISIBLE
 			toggle_actions.setText(!expanded T R.string.hide ?: R.string.show)
 			actions_recycler.visibility = !expanded T View.VISIBLE ?: View.GONE
-
-			if (!expanded)
-			{
-				actions_recycler.adapter = GardenActionAdapter().also {
-					it.items = garden.actions
-				}
-				actions_recycler.layoutManager = LinearLayoutManager(activity!!)
-			}
 		}
 
-		setStatistics()
+		actions_recycler.adapter = GardenActionAdapter()
+		actions_recycler.layoutManager = LinearLayoutManager(activity!!)
+
+		updateDataReferences()
+
+		(actions_recycler.adapter as GardenActionAdapter?)?.let {
+			it.editListener = ::editAction
+			it.deleteListener = ::deleteAction
+		}
+	}
+
+	private fun editAction(action: Action)
+	{
+		val index = garden.actions.indexOfLast { it.date == action.date }
+		when (action)
+		{
+			is HumidityChange -> {
+				val dialogFragment = HumidityDialogFragment(action) {
+					if (index > -1) garden.actions[index] = action
+					updateDataReferences()
+				}
+				dialogFragment.show(childFragmentManager, null)
+			}
+
+			is TemperatureChange -> {
+				val dialogFragment = TemperatureDialogFragment(action) { action ->
+					if (index > -1) garden.actions[index] = action
+					updateDataReferences()
+				}
+				dialogFragment.show(childFragmentManager, null)
+			}
+
+			is NoteAction -> {
+				val dialogFragment = NoteDialogFragment(action)
+				dialogFragment.setOnDialogConfirmed { notes ->
+					if (index > -1) garden.actions[index].notes = notes
+					updateDataReferences()
+				}
+				dialogFragment.show(childFragmentManager, null)
+			}
+		}
+	}
+
+	private fun deleteAction(action: Action)
+	{
+		val title = when (action)
+		{
+			is HumidityChange -> R.string.humidity
+			is TemperatureChange -> R.string.temperature_title
+			is NoteAction -> R.string.note
+			else -> -1
+		}
+
+		AlertDialog.Builder(activity!!)
+			.setTitle(R.string.delete_item_dialog_title)
+			.setMessage(Html.fromHtml(getString(R.string.confirm_delete_item_message_holder, getString(title))))
+			.setPositiveButton(R.string.delete, DialogInterface.OnClickListener { dialogInterface, i ->
+				garden.actions.removeAll { it.date == action.date }
+				updateDataReferences()
+			})
+			.setNegativeButton(R.string.cancel, null)
+			.show()
 	}
 
 	private fun setStatistics()
@@ -267,27 +320,14 @@ class GardenTrackerFragment : Fragment()
 
 				edit_humidity.setOnClickListener {
 					(e?.data as HumidityChange?)?.let { current ->
-						val dialogFragment = HumidityDialogFragment(current) { action ->
-							val index = garden.actions.indexOfLast { it.date == current.date }
-							if (index > -1) garden.actions[index] = action
-							updateDataReferences()
-						}
-						dialogFragment.show(childFragmentManager, null)
+						editAction(current)
 					}
 				}
 
 				delete_humidity.setOnClickListener {
-					AlertDialog.Builder(it.context)
-						.setTitle(R.string.delete_item_dialog_title)
-						.setMessage(Html.fromHtml(getString(R.string.confirm_delete_item_message_holder, getString(R.string.humidity))))
-						.setPositiveButton(R.string.delete, DialogInterface.OnClickListener { dialogInterface, i ->
-							(e?.data as HumidityChange?)?.let { current ->
-								garden.actions.removeAll { it.date == current.date }
-								updateDataReferences()
-							}
-						})
-						.setNegativeButton(R.string.cancel, null)
-						.show()
+					(e?.data as Action?)?.let {
+						deleteAction(it)
+					}
 				}
 			}
 		})
@@ -307,27 +347,14 @@ class GardenTrackerFragment : Fragment()
 
 				edit_temp.setOnClickListener {
 					(e?.data as TemperatureChange?)?.let { current ->
-						val dialogFragment = TemperatureDialogFragment(current) { action ->
-							val index = garden.actions.indexOfLast { it.date == current.date }
-							if (index > -1) garden.actions[index] = action
-							updateDataReferences()
-						}
-						dialogFragment.show(childFragmentManager, null)
+						editAction(current)
 					}
 				}
 
 				delete_temp.setOnClickListener {
-					AlertDialog.Builder(it.context)
-						.setTitle(R.string.delete_item_dialog_title)
-						.setMessage(Html.fromHtml(getString(R.string.confirm_delete_item_message_holder, getString(R.string.temperature_title))))
-						.setPositiveButton(R.string.delete, DialogInterface.OnClickListener { dialogInterface, i ->
-							(e?.data as TemperatureChange?)?.let { current ->
-								garden.actions.removeAll { it.date == current.date }
-								updateDataReferences()
-							}
-						})
-						.setNegativeButton(R.string.cancel, null)
-						.show()
+					(e?.data as Action?)?.let { current ->
+						deleteAction(current)
+					}
 				}
 			}
 		})

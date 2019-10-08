@@ -189,7 +189,6 @@
 				app:layout_constraintEnd_toEndOf="parent"
 				app:layout_constraintTop_toTopOf="@id/temperature_title_label"
 				app:layout_constraintBottom_toBottomOf="@id/temperature_title_label"
-				android:layout_marginTop="4dp"
 				android:layout_marginEnd="4dp"
 				android:visibility="gone"
 				style="?borderlessButtonStyle"
@@ -203,7 +202,6 @@
 				app:layout_constraintEnd_toStartOf="@id/edit_temp"
 				app:layout_constraintTop_toTopOf="@id/temperature_title_label"
 				app:layout_constraintBottom_toBottomOf="@id/temperature_title_label"
-				android:layout_marginTop="4dp"
 				android:visibility="gone"
 				style="?borderlessButtonStyle"
 			/>
@@ -336,7 +334,6 @@
 				app:layout_constraintEnd_toEndOf="parent"
 				app:layout_constraintTop_toTopOf="@id/humidity_label"
 				app:layout_constraintBottom_toBottomOf="@id/humidity_label"
-				android:layout_marginTop="4dp"
 				android:layout_marginEnd="4dp"
 				android:visibility="gone"
 				style="?borderlessButtonStyle"
@@ -350,7 +347,6 @@
 				app:layout_constraintEnd_toStartOf="@id/edit_humidity"
 				app:layout_constraintTop_toTopOf="@id/humidity_label"
 				app:layout_constraintBottom_toBottomOf="@id/humidity_label"
-				android:layout_marginTop="4dp"
 				android:visibility="gone"
 				style="?borderlessButtonStyle"
 			/>
@@ -462,7 +458,7 @@
 			android:elevation="4dp"
 			android:paddingTop="0dp"
 			android:layout_marginTop="8dp"
-			android:layout_marginBottom="12dp"
+			android:layout_marginBottom="24dp"
 			style="@style/PaperCard"
 		>
 			<TextView
@@ -483,7 +479,6 @@
 				android:text="@string/show"
 				app:layout_constraintEnd_toEndOf="parent"
 				app:layout_constraintTop_toTopOf="parent"
-				android:layout_marginTop="4dp"
 				android:layout_marginEnd="4dp"
 				style="?borderlessButtonStyle"
 			/>
@@ -496,6 +491,7 @@
 				android:padding="8dp"
 				android:clipToPadding="false"
 				android:clipChildren="false"
+				android:nestedScrollingEnabled="false"
 				app:layout_constraintStart_toStartOf="parent"
 				app:layout_constraintEnd_toEndOf="parent"
 				app:layout_constraintTop_toBottomOf="@id/toggle_actions"
