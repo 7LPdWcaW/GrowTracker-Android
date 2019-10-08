@@ -14,10 +14,7 @@ import me.anon.lib.TempUnit
 import me.anon.lib.ext.formatWhole
 import me.anon.lib.ext.getColor
 import me.anon.lib.ext.resolveColor
-import me.anon.model.Action
-import me.anon.model.HumidityChange
-import me.anon.model.NoteAction
-import me.anon.model.TemperatureChange
+import me.anon.model.*
 import me.anon.view.ActionHolder
 import me.anon.view.ImageActionHolder
 import java.util.*
@@ -92,6 +89,15 @@ class GardenActionAdapter : RecyclerView.Adapter<ActionHolder>()
 				holder.getName().setText(R.string.note)
 				holder.getCard().setCardBackgroundColor(0xffe5e5e5.toInt())
 			}
+
+			is LightingChange -> {
+				holder.getName().setText(R.string.lighting_title)
+				holder.getCard().setCardBackgroundColor(0xFFFFF176.toInt())
+				summary += "<b>" + holder.itemView.context.getString(R.string.lights_on) + ":</b> "
+				summary += action.on + "<br/>"
+				summary += "<b>" + holder.itemView.context.getString(R.string.lights_off) + ":</b> "
+				summary += action.off
+			}
 		}
 
 		if (action.notes?.isNotEmpty() == true)
@@ -117,6 +123,12 @@ class GardenActionAdapter : RecyclerView.Adapter<ActionHolder>()
 			menu.inflate(R.menu.event_overflow)
 			menu.menu.removeItem(R.id.duplicate)
 			menu.menu.removeItem(R.id.copy)
+
+			if (action is LightingChange)
+			{
+				menu.menu.removeItem(R.id.edit)
+			}
+
 			menu.setOnMenuItemClickListener(PopupMenu.OnMenuItemClickListener { item ->
 				when (item.itemId)
 				{

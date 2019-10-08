@@ -68,7 +68,7 @@
 						android:layout_width="match_parent"
 						android:layout_height="wrap_content"
 						android:id="@+id/lighton_label"
-						android:text="Lights on"
+						android:text="@string/lights_on"
 						style="@style/SubsectionTitle"
 					/>
 
@@ -98,7 +98,7 @@
 						android:layout_width="match_parent"
 						android:layout_height="wrap_content"
 						android:id="@+id/lightoff_label"
-						android:text="Lights off"
+						android:text="@string/lights_off"
 						style="@style/SubsectionTitle"
 					/>
 
@@ -127,7 +127,6 @@
 					android:layout_width="wrap_content"
 					android:layout_height="wrap_content"
 					android:id="@+id/progresson_label"
-					android:text="18h"
 					android:drawableStart="@drawable/ic_sun"
 					android:drawablePadding="4dp"
 					android:gravity="center_vertical"
@@ -139,7 +138,6 @@
 					android:layout_width="wrap_content"
 					android:layout_height="wrap_content"
 					android:id="@+id/progressoff_label"
-					android:text="6h"
 					android:drawablePadding="4dp"
 					android:drawableEnd="@drawable/ic_moon"
 					android:gravity="center_vertical"

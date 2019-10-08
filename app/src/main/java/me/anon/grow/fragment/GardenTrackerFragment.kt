@@ -11,6 +11,7 @@ import android.widget.SeekBar
 import androidx.appcompat.app.AlertDialog
 import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.LinearLayoutManager
+import com.esotericsoftware.kryo.Kryo
 import com.github.mikephil.charting.data.Entry
 import com.github.mikephil.charting.highlight.Highlight
 import com.github.mikephil.charting.listener.OnChartValueSelectedListener
@@ -43,11 +44,10 @@ class GardenTrackerFragment : Fragment()
 			transactions.remove(it)
 		}
 
-		val lastLightingChange = garden.actions.findLast { it is LightingChange } as LightingChange?
-		val newLightingChange = transactions.find { it is LightingChange } as LightingChange?
-		if (lastLightingChange != null && newLightingChange != null)
+		val lastLightingChange = (garden.actions.findLast { it is LightingChange }) as LightingChange?
+		if (lastLightingChange != null && action is LightingChange)
 		{
-			if (lastLightingChange.on == newLightingChange.on && lastLightingChange.off == newLightingChange.off) return
+			if (lastLightingChange.on == action.on && lastLightingChange.off == action.off) return
 		}
 
 		transactions.add(action)
@@ -130,7 +130,7 @@ class GardenTrackerFragment : Fragment()
 		}
 
 		lightson_container.setOnClickListener {
-			val currentLighting = (transactions.lastOrNull { it is LightingChange } ?: garden.actions.lastOrNull { it is LightingChange }) as LightingChange? ?: LightingChange()
+			val currentLighting = (transactions.lastOrNull { it is LightingChange } ?: Kryo().copy(garden.actions.lastOrNull { it is LightingChange })) as LightingChange? ?: LightingChange()
 
 			val lightOnTime = LocalTime.parse(currentLighting.on, DateTimeFormatter.ofPattern("HH:mm"))
 			val dialog = TimePickerDialog(activity, TimePickerDialog.OnTimeSetListener { view, hourOfDay, minute ->
@@ -151,7 +151,7 @@ class GardenTrackerFragment : Fragment()
 		}
 
 		lightsoff_container.setOnClickListener {
-			val currentLighting = (transactions.lastOrNull { it is LightingChange } ?: garden.actions.lastOrNull { it is LightingChange }) as LightingChange? ?: LightingChange()
+			val currentLighting = (transactions.lastOrNull { it is LightingChange } ?: Kryo().copy(garden.actions.lastOrNull { it is LightingChange })) as LightingChange? ?: LightingChange()
 
 			val lightOffTime = LocalTime.parse(currentLighting.off, DateTimeFormatter.ofPattern("HH:mm"))
 			val dialog = TimePickerDialog(activity, TimePickerDialog.OnTimeSetListener { view, hourOfDay, minute ->
@@ -191,12 +191,11 @@ class GardenTrackerFragment : Fragment()
 			override fun onStartTrackingTouch(p0: SeekBar?){}
 			override fun onStopTrackingTouch(p0: SeekBar?)
 			{
-				val currentLighting = (transactions.lastOrNull { it is LightingChange } ?: garden.actions.lastOrNull { it is LightingChange }) as LightingChange? ?: LightingChange()
-				currentLighting.on = lighton_input.text.toString()
-				currentLighting.off = lightoff_input.text.toString()
-				currentLighting.date = System.currentTimeMillis()
-
-				addTransaction(currentLighting)
+				val currentLighting = (transactions.lastOrNull { it is LightingChange } ?: garden.actions.lastOrNull { it is LightingChange }) as LightingChange?
+				currentLighting?.let {
+					currentLighting.on = lighton_input.text.toString()
+					currentLighting.off = lightoff_input.text.toString()
+				}
 			}
 		})
 
@@ -247,6 +246,8 @@ class GardenTrackerFragment : Fragment()
 				dialogFragment.show(childFragmentManager, null)
 			}
 		}
+
+		updateDataReferences()
 	}
 
 	private fun deleteAction(action: Action)
@@ -256,6 +257,7 @@ class GardenTrackerFragment : Fragment()
 			is HumidityChange -> R.string.humidity
 			is TemperatureChange -> R.string.temperature_title
 			is NoteAction -> R.string.note
+			is LightingChange -> R.string.lighting_title
 			else -> -1
 		}
 
