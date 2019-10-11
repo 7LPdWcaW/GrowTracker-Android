@@ -404,6 +404,10 @@
 	<string name="current_temp">Текущая температура:</string>
 	<string name="current_humidity">Текущая влажность:</string>
 	<string name="lighting_title">График освещения</string>
-	<string name="delete_item_dialog_title">Удалить?</string>
+	<string name="delete_item_dialog_title">Удалить элемент?</string>
 	<string name="confirm_delete_item_message_holder">Действительно удалить &lt;b&gt;%s&lt;/b&gt;?</string>
+	<string name="show">Показать</string>
+	<string name="hide">Спрятать</string>
+	<string name="lights_on">Свет вкл.</string>
+	<string name="lights_off">Свет выкл.</string>
 </resources>
