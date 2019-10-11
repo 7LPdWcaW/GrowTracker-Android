@@ -406,4 +406,8 @@
 	<string name="lighting_title">Розклад освітлення</string>
 	<string name="delete_item_dialog_title">Видалити елемент?</string>
 	<string name="confirm_delete_item_message_holder">Дійсно видалити &lt;b&gt;%s&lt;/b&gt;?</string>
+	<string name="show">Показати</string>
+	<string name="hide">Сховати</string>
+	<string name="lights_on">Світло увімк</string>
+	<string name="lights_off">Світло вимк.</string>
 </resources>
