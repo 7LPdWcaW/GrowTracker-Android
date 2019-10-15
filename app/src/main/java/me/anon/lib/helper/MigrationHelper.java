@@ -7,6 +7,7 @@ import android.preference.PreferenceManager;
 import me.anon.lib.TdsUnit;
 import me.anon.lib.Unit;
 import me.anon.lib.manager.PlantManager;
+import me.anon.lib.task.AsyncCallback;
 import me.anon.model.Action;
 import me.anon.model.Plant;
 import me.anon.model.Tds;
@@ -32,7 +33,7 @@ public class MigrationHelper
 		return false;
 	}
 
-	public static void performMigration(Context context)
+	public static boolean performMigration(Context context, final AsyncCallback callback)
 	{
 		try
 		{
@@ -48,7 +49,7 @@ public class MigrationHelper
 						if (action instanceof Water && ((Water)action).getPpm() != null)
 						{
 							Tds replacement = new Tds();
-							if (usingEc)
+							if (usingEc && ((Water)action).getPpm() < 25)
 							{
 								replacement.setAmount(Unit.toTwoDecimalPlaces((((Water)action).getPpm() * 2d) / 1000d));
 								replacement.setType(TdsUnit.EC);
@@ -66,12 +67,14 @@ public class MigrationHelper
 				}
 
 				preferences.edit().putBoolean("migration_tds", true).apply();
-				PlantManager.getInstance().save();
+				PlantManager.getInstance().save(callback);
+				return true;
 			}
 		}
 		catch (Exception e)
 		{
 			e.printStackTrace();
 		}
+		return false;
 	}
 }
