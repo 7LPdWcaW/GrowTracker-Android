@@ -124,6 +124,7 @@ public class StatsHelper
 		data.setValueTextColor(IntUtilsKt.resolveColor(R.attr.colorAccent, context));
 		data.setCircleColor(IntUtilsKt.resolveColor(R.attr.colorAccent, context));
 		data.setDrawCubic(true);
+		data.setCubicIntensity(0.05f);
 		data.setLineWidth(2.0f);
 		data.setDrawCircleHole(true);
 		data.setColor(colour);
