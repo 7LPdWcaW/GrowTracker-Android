@@ -3,4 +3,5 @@
 <resources>
 	<color name="blue">#2196F3</color>
 	<color name="light_blue">#BBDEFB</color>
+	<color name="light_yellow">#FFFFF176</color>
 </resources>

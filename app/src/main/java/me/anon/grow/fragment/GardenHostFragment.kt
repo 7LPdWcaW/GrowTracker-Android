@@ -6,10 +6,8 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import kotlinx.android.synthetic.main.tabbed_fragment_holder.*
-import me.anon.grow.PlantDetailsActivity
 import me.anon.grow.R
 import me.anon.model.Garden
-import me.anon.model.Plant
 
 class GardenHostFragment : Fragment()
 {
@@ -23,6 +21,10 @@ class GardenHostFragment : Fragment()
 	override fun onActivityCreated(savedInstanceState: Bundle?)
 	{
 		super.onActivityCreated(savedInstanceState)
+
+		savedInstanceState?.let {
+			garden = it.getParcelable("garden")!!
+		}
 
 		childFragmentManager.findFragmentByTag("child_fragment") ?: let {
 			childFragmentManager.beginTransaction().replace(R.id.child_fragment_holder, GardenFragment.newInstance(garden), "child_fragment").commit()
@@ -41,6 +43,12 @@ class GardenHostFragment : Fragment()
 
 			return@setOnNavigationItemSelectedListener true
 		}
+	}
+
+	override fun onSaveInstanceState(outState: Bundle)
+	{
+		outState.putParcelable("garden", garden)
+		super.onSaveInstanceState(outState)
 	}
 
 	companion object

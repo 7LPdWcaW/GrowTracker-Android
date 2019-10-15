@@ -1,14 +1,15 @@
 package me.anon.controller.adapter
 
-import android.content.DialogInterface
 import android.text.Html
 import android.text.TextUtils
-import android.view.*
+import android.text.format.DateFormat
+import android.view.Gravity
+import android.view.LayoutInflater
+import android.view.View
+import android.view.ViewGroup
 import android.widget.TextView
-import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.widget.PopupMenu
 import androidx.recyclerview.widget.RecyclerView
-import com.esotericsoftware.kryo.Kryo
 import me.anon.grow.R
 import me.anon.lib.TempUnit
 import me.anon.lib.ext.formatWhole
@@ -16,9 +17,7 @@ import me.anon.lib.ext.getColor
 import me.anon.lib.ext.resolveColor
 import me.anon.model.*
 import me.anon.view.ActionHolder
-import me.anon.view.ImageActionHolder
 import java.util.*
-import kotlin.collections.ArrayList
 
 class GardenActionAdapter : RecyclerView.Adapter<ActionHolder>()
 {
@@ -31,24 +30,27 @@ class GardenActionAdapter : RecyclerView.Adapter<ActionHolder>()
 			notifyDataSetChanged()
 		}
 
+	private var dateFormat: java.text.DateFormat? = null
+	private var timeFormat: java.text.DateFormat? = null
+	private var tempUnit: TempUnit? = null
 	public var editListener: (Action) -> Unit = {}
 	public var deleteListener: (Action) -> Unit = {}
 
 	override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ActionHolder
 	{
-		return ActionHolder(LayoutInflater.from(parent.getContext()).inflate(R.layout.action_item, parent, false))
+		return ActionHolder(LayoutInflater.from(parent.context).inflate(R.layout.action_item, parent, false))
 	}
 
 	override fun getItemCount(): Int = items.size
 
 	override fun onBindViewHolder(holder: ActionHolder, position: Int)
 	{
-		val action = items.get(position)
-		val tempUnit = TempUnit.getSelectedTemperatureUnit(holder.itemView.context)
-		val dateFormat = android.text.format.DateFormat.getDateFormat(holder.itemView.getContext())
-		val timeFormat = android.text.format.DateFormat.getTimeFormat(holder.itemView.getContext())
+		val action = items[position]
+		val tempUnit = tempUnit ?: TempUnit.getSelectedTemperatureUnit(holder.itemView.context).also { tempUnit = it }
+		val dateFormat = dateFormat ?: DateFormat.getDateFormat(holder.itemView.context).also { dateFormat = it }
+		val timeFormat = timeFormat ?: DateFormat.getTimeFormat(holder.itemView.context).also { timeFormat = it }
 
-		var dateDay: TextView = holder.getDateDay()
+		var dateDay: TextView = holder.dateDay
 
 		// plant date & stage
 		val actionDate = Date(action.date)
@@ -61,14 +63,14 @@ class GardenActionAdapter : RecyclerView.Adapter<ActionHolder>()
 
 		if (position - 1 >= 0)
 		{
-			val lastActionDate = Date(items.get(position - 1).date)
+			val lastActionDate = Date(items[position - 1].date)
 			val lastActionCalendar = GregorianCalendar.getInstance()
 			lastActionCalendar.time = lastActionDate
 			lastDateStr = lastActionCalendar.get(Calendar.DAY_OF_MONTH).toString() + " " + lastActionCalendar.getDisplayName(Calendar.MONTH, Calendar.SHORT, Locale.getDefault())
 		}
 
-		holder.getCard().setCardBackgroundColor(R.attr.colorSurface.resolveColor(holder.itemView.getContext()))
-		holder.getFullDate().setText(Html.fromHtml(fullDateStr))
+		holder.card.setCardBackgroundColor(R.attr.colorSurface.resolveColor(holder.itemView.context))
+		holder.fullDate.text = Html.fromHtml(fullDateStr)
 
 		var summary = ""
 		when (action)
@@ -76,23 +78,23 @@ class GardenActionAdapter : RecyclerView.Adapter<ActionHolder>()
 			is TemperatureChange -> {
 				holder.name.setText(R.string.temperature_title)
 				summary += action.temp.formatWhole() + "°" + tempUnit.label
-				holder.getCard().setCardBackgroundColor(-0x654c6225)
+				holder.card.setCardBackgroundColor(-0x654c6225)
 			}
 
 			is HumidityChange -> {
 				holder.name.setText(R.string.humidity)
 				summary += action.humidity?.formatWhole() + "%"
-				holder.getCard().setCardBackgroundColor(R.color.light_blue.getColor(holder.itemView.context))
+				holder.card.setCardBackgroundColor(R.color.light_blue.getColor(holder.itemView.context))
 			}
 
 			is NoteAction -> {
-				holder.getName().setText(R.string.note)
-				holder.getCard().setCardBackgroundColor(0xffe5e5e5.toInt())
+				holder.name.setText(R.string.note)
+				holder.card.setCardBackgroundColor(0xffe5e5e5.toInt())
 			}
 
 			is LightingChange -> {
-				holder.getName().setText(R.string.lighting_title)
-				holder.getCard().setCardBackgroundColor(0xFFFFF176.toInt())
+				holder.name.setText(R.string.lighting_title)
+				holder.card.setCardBackgroundColor(R.color.light_yellow.getColor(holder.itemView.context))
 				summary += "<b>" + holder.itemView.context.getString(R.string.lights_on) + ":</b> "
 				summary += action.on + "<br/>"
 				summary += "<b>" + holder.itemView.context.getString(R.string.lights_off) + ":</b> "
@@ -102,7 +104,7 @@ class GardenActionAdapter : RecyclerView.Adapter<ActionHolder>()
 
 		if (action.notes?.isNotEmpty() == true)
 		{
-			summary += if (summary.length > 0) "<br/><br/>" else ""
+			summary += if (summary.isNotEmpty()) "<br/><br/>" else ""
 			summary += action.notes
 		}
 
@@ -113,12 +115,12 @@ class GardenActionAdapter : RecyclerView.Adapter<ActionHolder>()
 
 		if (!TextUtils.isEmpty(summary))
 		{
-			holder.getSummary().text = Html.fromHtml(summary)
-			holder.getSummary().setVisibility(View.VISIBLE)
+			holder.summary.text = Html.fromHtml(summary)
+			holder.summary.visibility = View.VISIBLE
 		}
 
-		holder.getOverflow().setVisibility(View.VISIBLE)
-		holder.getOverflow().setOnClickListener(View.OnClickListener { v ->
+		holder.overflow.visibility = View.VISIBLE
+		holder.overflow.setOnClickListener(View.OnClickListener { v ->
 			val menu = PopupMenu(v.context, v, Gravity.BOTTOM)
 			menu.inflate(R.menu.event_overflow)
 			menu.menu.removeItem(R.id.duplicate)
