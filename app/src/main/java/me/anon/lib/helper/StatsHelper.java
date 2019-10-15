@@ -56,12 +56,7 @@ public class StatsHelper
 	{
 		@Override public String getFormattedValue(float value, Entry entry, int dataSetIndex, ViewPortHandler viewPortHandler)
 		{
-			if (value == (int)value)
-			{
-				return String.format("%s", value);
-			}
-
-			return String.format("%.2f", value);
+			return NumberUtilsKt.formatWhole(value);
 		}
 	};
 
@@ -84,12 +79,7 @@ public class StatsHelper
 		{
 			@Override public String getFormattedValue(float value, YAxis yAxis)
 			{
-				if (value == (int)value)
-				{
-					return String.format("%s", value);
-				}
-
-				return String.format("%.2f", value);
+				return NumberUtilsKt.formatWhole(value);
 			}
 		});
 		chart.getAxisLeft().setStartAtZero(false);
@@ -97,12 +87,7 @@ public class StatsHelper
 		{
 			@Override public String getFormattedValue(float value, YAxis yAxis)
 			{
-				if (value == (int)value)
-				{
-					return String.format("%s", value);
-				}
-
-				return String.format("%.2f", value);
+				return NumberUtilsKt.formatWhole(value);
 			}
 		});
 		chart.setScaleYEnabled(false);
@@ -342,9 +327,9 @@ public class StatsHelper
 
 		if (additionalRef != null)
 		{
-			additionalRef[0] = String.valueOf(min);
-			additionalRef[1] = String.valueOf(max);
-			additionalRef[2] = String.format("%1$,.2f", (totalIn / (double)inputVals.size()));
+			additionalRef[0] = NumberUtilsKt.formatWhole(min);
+			additionalRef[1] = NumberUtilsKt.formatWhole(max);
+			additionalRef[2] = NumberUtilsKt.formatWhole(totalIn / (double)inputVals.size());
 		}
 	}
 
@@ -464,9 +449,9 @@ public class StatsHelper
 
 		if (additionalRef != null)
 		{
-			additionalRef[0] = String.valueOf(min);
-			additionalRef[1] = String.valueOf(max);
-			additionalRef[2] = String.format("%1$,.2f", (total / (double)vals.size()));
+			additionalRef[0] = NumberUtilsKt.formatWhole(min);
+			additionalRef[1] = NumberUtilsKt.formatWhole(max);
+			additionalRef[2] = NumberUtilsKt.formatWhole(total / (double)vals.size());
 		}
 	}
 
@@ -653,9 +638,9 @@ public class StatsHelper
 
 		if (additionalRef != null)
 		{
-			additionalRef[0] = String.valueOf(NumberUtilsKt.formatWhole(min));
-			additionalRef[1] = String.valueOf(NumberUtilsKt.formatWhole(max));
-			additionalRef[2] = String.valueOf(NumberUtilsKt.formatWhole(total / (double)vals.size()));
+			additionalRef[0] = NumberUtilsKt.formatWhole(min);
+			additionalRef[1] = NumberUtilsKt.formatWhole(max);
+			additionalRef[2] = NumberUtilsKt.formatWhole(total / (double)vals.size());
 		}
 	}
 
@@ -763,9 +748,9 @@ public class StatsHelper
 
 		if (additionalRef != null)
 		{
-			additionalRef[0] = String.valueOf((int)min);
-			additionalRef[1] = String.valueOf((int)max);
-			additionalRef[2] = String.valueOf((int)(total / (double)vals.size()));
+			additionalRef[0] = NumberUtilsKt.formatWhole((int)min);
+			additionalRef[1] = NumberUtilsKt.formatWhole((int)max);
+			additionalRef[2] = NumberUtilsKt.formatWhole((int)(total / (double)vals.size()));
 		}
 	}
 }
