@@ -9,8 +9,13 @@ public fun Double.round(decimals: Int): Double
 	return round(this * multiplier) / multiplier
 }
 
-public fun Double.formatWhole(): String
+public fun Number.formatWhole(): String
 {
 	if (this.toDouble() - this.toInt().toDouble() == 0.0) return "${this.toInt()}"
-	return "${this.round(2)}"
+	return when (this)
+	{
+		is Double -> "${this.round(2)}"
+		is Float -> "${this.toDouble().round(2)}"
+		else -> "${this.toInt()}"
+	}
 }

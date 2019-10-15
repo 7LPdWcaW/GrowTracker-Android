@@ -20,6 +20,7 @@ import com.github.mikephil.charting.data.Entry;
 import com.github.mikephil.charting.formatter.ValueFormatter;
 import com.github.mikephil.charting.formatter.YAxisValueFormatter;
 import com.github.mikephil.charting.utils.ViewPortHandler;
+import com.google.android.flexbox.FlexboxLayout;
 
 import java.util.ArrayList;
 import java.util.HashSet;
@@ -35,6 +36,7 @@ import me.anon.lib.TdsUnit;
 import me.anon.lib.TempUnit;
 import me.anon.lib.Views;
 import me.anon.lib.ext.IntUtilsKt;
+import me.anon.lib.ext.NumberUtilsKt;
 import me.anon.lib.helper.StatsHelper;
 import me.anon.lib.helper.TimeHelper;
 import me.anon.model.Action;
@@ -66,26 +68,28 @@ public class StatisticsFragment extends Fragment
 	@Views.InjectView(R.id.temp) private LineChart temp;
 	@Views.InjectView(R.id.stage_chart) private BarChart stagesChart;
 
-	@Views.InjectView(R.id.grow_time) private TextView growTime;
-	@Views.InjectView(R.id.water_count) private TextView waterCount;
-	@Views.InjectView(R.id.flush_count) private TextView flushCount;
+//	@Views.InjectView(R.id.grow_time) private TextView growTime;
+//	@Views.InjectView(R.id.water_count) private TextView waterCount;
+//	@Views.InjectView(R.id.flush_count) private TextView flushCount;
+//
+//	@Views.InjectView(R.id.germ_time) private TextView germTime;
+//	@Views.InjectView(R.id.germ_time_container) private View germTimeContainer;
+//	@Views.InjectView(R.id.veg_time) private TextView vegTime;
+//	@Views.InjectView(R.id.veg_time_container) private View vegTimeContainer;
+//	@Views.InjectView(R.id.seedling_time) private TextView seedlingTime;
+//	@Views.InjectView(R.id.seedling_time_container) private View seedlingTimeContainer;
+//	@Views.InjectView(R.id.cutting_time) private TextView cuttingTime;
+//	@Views.InjectView(R.id.cutting_time_container) private View cuttingTimeContainer;
+//	@Views.InjectView(R.id.flower_time) private TextView flowerTime;
+//	@Views.InjectView(R.id.flower_time_container) private View flowerTimeContainer;
+//	@Views.InjectView(R.id.dry_time) private TextView dryTime;
+//	@Views.InjectView(R.id.dry_time_container) private View dryTimeContainer;
+//	@Views.InjectView(R.id.cure_time) private TextView cureTime;
+//	@Views.InjectView(R.id.cure_time_container) private View cureTimeContainer;
+//
+//	@Views.InjectView(R.id.ave_water) private TextView aveWater;
 
-	@Views.InjectView(R.id.germ_time) private TextView germTime;
-	@Views.InjectView(R.id.germ_time_container) private View germTimeContainer;
-	@Views.InjectView(R.id.veg_time) private TextView vegTime;
-	@Views.InjectView(R.id.veg_time_container) private View vegTimeContainer;
-	@Views.InjectView(R.id.seedling_time) private TextView seedlingTime;
-	@Views.InjectView(R.id.seedling_time_container) private View seedlingTimeContainer;
-	@Views.InjectView(R.id.cutting_time) private TextView cuttingTime;
-	@Views.InjectView(R.id.cutting_time_container) private View cuttingTimeContainer;
-	@Views.InjectView(R.id.flower_time) private TextView flowerTime;
-	@Views.InjectView(R.id.flower_time_container) private View flowerTimeContainer;
-	@Views.InjectView(R.id.dry_time) private TextView dryTime;
-	@Views.InjectView(R.id.dry_time_container) private View dryTimeContainer;
-	@Views.InjectView(R.id.cure_time) private TextView cureTime;
-	@Views.InjectView(R.id.cure_time_container) private View cureTimeContainer;
-
-	@Views.InjectView(R.id.ave_water) private TextView aveWater;
+	@Views.InjectView(R.id.stats_container) private FlexboxLayout statsContainer;
 
 	@Views.InjectView(R.id.min_input_ph) private TextView minInputPh;
 	@Views.InjectView(R.id.max_input_ph) private TextView maxInputPh;
@@ -281,7 +285,6 @@ public class StatisticsFragment extends Fragment
 	{
 		long startDate = plant.getPlantDate();
 		long endDate = System.currentTimeMillis();
-		long feedDifference = 0L;
 		long waterDifference = 0L;
 		long lastWater = 0L;
 		int totalWater = 0, totalFlush = 0;
@@ -313,57 +316,42 @@ public class StatisticsFragment extends Fragment
 			}
 		}
 
+		SortedMap<PlantStage, Long> stages = plant.calculateStageTime();
+		statsContainer.removeAllViews();
+
+		for (PlantStage value : PlantStage.values())
+		{
+			if (stages.containsKey(value) && value != PlantStage.HARVESTED)
+			{
+				View dataView = LayoutInflater.from(getActivity()).inflate(R.layout.data_label_stub, statsContainer, false);
+				((TextView)dataView.findViewById(R.id.label)).setText(getString(value.getPrintString()) + ":");
+				((TextView)dataView.findViewById(R.id.data)).setText(getString(R.string.length_days, "" + (int)TimeHelper.toDays(stages.get(value))));
+				statsContainer.addView(dataView);
+			}
+		}
+
 		long seconds = ((endDate - startDate) / 1000);
 		double days = (double)seconds * 0.0000115741d;
 
-		growTime.setText(getString(R.string.length_days, String.format("%1$,.2f", days)));
-		waterCount.setText(String.valueOf(totalWater));
-		flushCount.setText(String.valueOf(totalFlush));
-		aveWater.setText(getString(R.string.length_days, String.format("%1$,.2f", (TimeHelper.toDays(waterDifference) / (double)totalWater))));
+		View growTime = LayoutInflater.from(getActivity()).inflate(R.layout.data_label_stub, statsContainer, false);
+		((TextView)growTime.findViewById(R.id.label)).setText(R.string.total_time_label);
+		((TextView)growTime.findViewById(R.id.data)).setText(getString(R.string.length_days, "" + NumberUtilsKt.formatWhole(days)));
+		statsContainer.addView(growTime);
 
-		SortedMap<PlantStage, Long> stages = plant.calculateStageTime();
+		View waterCount = LayoutInflater.from(getActivity()).inflate(R.layout.data_label_stub, statsContainer, false);
+		((TextView)waterCount.findViewById(R.id.label)).setText(R.string.total_waters_label);
+		((TextView)waterCount.findViewById(R.id.data)).setText(NumberUtilsKt.formatWhole(totalWater));
+		statsContainer.addView(waterCount);
 
-		if (stages.containsKey(PlantStage.GERMINATION))
-		{
-			germTime.setText(getString(R.string.length_days, "" + (int)TimeHelper.toDays(stages.get(PlantStage.GERMINATION))));
-			germTimeContainer.setVisibility(View.VISIBLE);
-		}
+		View flushCount = LayoutInflater.from(getActivity()).inflate(R.layout.data_label_stub, statsContainer, false);
+		((TextView)flushCount.findViewById(R.id.label)).setText(R.string.total_flushes_label);
+		((TextView)flushCount.findViewById(R.id.data)).setText(NumberUtilsKt.formatWhole(totalFlush));
+		statsContainer.addView(flushCount);
 
-		if (stages.containsKey(PlantStage.VEGETATION))
-		{
-			vegTime.setText(getString(R.string.length_days, "" + (int)TimeHelper.toDays(stages.get(PlantStage.VEGETATION))));
-			vegTimeContainer.setVisibility(View.VISIBLE);
-		}
-
-		if (stages.containsKey(PlantStage.SEEDLING))
-		{
-			seedlingTime.setText(getString(R.string.length_days, "" + (int)TimeHelper.toDays(stages.get(PlantStage.SEEDLING))));
-			seedlingTimeContainer.setVisibility(View.VISIBLE);
-		}
-
-		if (stages.containsKey(PlantStage.CUTTING))
-		{
-			cuttingTime.setText(getString(R.string.length_days, "" + (int)TimeHelper.toDays(stages.get(PlantStage.CUTTING))));
-			cuttingTimeContainer.setVisibility(View.VISIBLE);
-		}
-
-		if (stages.containsKey(PlantStage.FLOWER))
-		{
-			flowerTime.setText(getString(R.string.length_days, "" + (int)TimeHelper.toDays(stages.get(PlantStage.FLOWER))));
-			flowerTimeContainer.setVisibility(View.VISIBLE);
-		}
-
-		if (stages.containsKey(PlantStage.DRYING))
-		{
-			dryTime.setText(getString(R.string.length_days, "" + (int)TimeHelper.toDays(stages.get(PlantStage.DRYING))));
-			dryTimeContainer.setVisibility(View.VISIBLE);
-		}
-
-		if (stages.containsKey(PlantStage.CURING))
-		{
-			cureTime.setText(getString(R.string.length_days, "" + (int)TimeHelper.toDays(stages.get(PlantStage.CURING))));
-			cureTimeContainer.setVisibility(View.VISIBLE);
-		}
+		View aveWater = LayoutInflater.from(getActivity()).inflate(R.layout.data_label_stub, statsContainer, false);
+		((TextView)aveWater.findViewById(R.id.label)).setText(R.string.ave_time_between_water_label);
+		((TextView)aveWater.findViewById(R.id.data)).setText(getString(R.string.length_days, NumberUtilsKt.formatWhole(TimeHelper.toDays(waterDifference) / (double)totalWater)));
+		statsContainer.addView(aveWater);
 
 		stages.remove(PlantStage.HARVESTED);
 		ArrayList<BarEntry> entry = new ArrayList<>();

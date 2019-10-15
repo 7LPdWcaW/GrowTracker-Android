@@ -10,7 +10,6 @@
 		android:layout_width="match_parent"
 		android:layout_height="wrap_content"
 		android:orientation="vertical"
-		android:paddingBottom="12dp"
 	>
 		<androidx.cardview.widget.CardView
 			android:layout_width="match_parent"
@@ -303,6 +302,7 @@
 			android:orientation="vertical"
 			android:elevation="4dp"
 			android:layout_marginTop="12dp"
+			android:layout_marginBottom="24dp"
 			style="@style/PaperCard"
 		>
 			<TextView

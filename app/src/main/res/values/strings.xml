@@ -142,12 +142,6 @@
 	<string name="menu_delete_garden">Delete garden</string>
 	<string name="menu_export">Export</string>
 
-	<string name="germination_label">Germination:</string>
-	<string name="vegetation_label">Vegetation:</string>
-	<string name="cutting_label">Cutting:</string>
-	<string name="flower_label">Flower:</string>
-	<string name="drying_label">Drying:</string>
-	<string name="curing_label">Curing:</string>
 	<string name="total_time_label">Total time:</string>
 	<string name="total_waters_label">Total waters:</string>
 	<string name="total_flushes_label">Total flushes:</string>
