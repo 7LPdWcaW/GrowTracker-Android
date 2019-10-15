@@ -36,6 +36,7 @@ import androidx.core.util.Pair;
 import me.anon.grow.R;
 import me.anon.lib.TdsUnit;
 import me.anon.lib.TempUnit;
+import me.anon.lib.Unit;
 import me.anon.lib.ext.IntUtilsKt;
 import me.anon.lib.ext.NumberUtilsKt;
 import me.anon.model.Action;
@@ -102,7 +103,7 @@ public class StatsHelper
 			public void refreshContent(Entry e, Highlight highlight)
 			{
 				((TextView)findViewById(R.id.content)).setText("" + e.getVal());
-				((TextView)findViewById(R.id.content)).setTextColor(IntUtilsKt.resolveColor(R.attr.colorAccent, findViewById(R.id.content).getContext()));
+//				((TextView)findViewById(R.id.content)).setTextColor(IntUtilsKt.resolveColor(R.attr.colorAccent, findViewById(R.id.content).getContext()));
 			}
 
 			@Override public int getXOffset(float xpos)
@@ -138,6 +139,9 @@ public class StatsHelper
 
 	public static void setAdditiveData(Plant plant, @NonNull Context context, @Nullable LineChart chart, @NonNull Set<String> checkedAdditives)
 	{
+		final Unit measurement = Unit.getSelectedMeasurementUnit(context);
+		final Unit delivery = Unit.getSelectedDeliveryUnit(context);
+
 		ArrayList<Action> actions = plant.getActions();
 		ArrayList<Pair<String, ArrayList<Entry>>> vals = new ArrayList<>();
 		ArrayList<String> xVals = new ArrayList<>();
@@ -154,9 +158,10 @@ public class StatsHelper
 				List<Additive> actionAdditives = ((Water)action).getAdditives();
 				for (Additive additive : actionAdditives)
 				{
+					double amount = Unit.ML.to(measurement, additive.getAmount());
 					additiveNames.add(additive.getDescription());
-					min = Math.min(min, additive.getAmount());
-					max = Math.max(max, additive.getAmount());
+					min = Math.min(min, amount);
+					max = Math.max(max, amount);
 				}
 
 				PlantStage stage = null;
@@ -185,22 +190,27 @@ public class StatsHelper
 			}
 		}
 
+		ArrayList<String> namesList = new ArrayList<>(additiveNames);
 		ArrayList<LineDataSet> dataSets = new ArrayList<>();
+		final String[] colours = chart.getResources().getStringArray(R.array.stats_colours);
 		for (String additiveName : checkedAdditives)
 		{
 			int index = 0;
+			int color = dataSets.size() < colours.length ? Color.parseColor(colours[namesList.indexOf(additiveName)]) : (additiveName.hashCode() + new Random().nextInt(0xffffff));
 			ArrayList<Entry> additiveValues = new ArrayList<>();
 			for (Action action : actions)
 			{
 				if (action instanceof Water)
 				{
-					boolean found = false;
 					for (Additive additive : ((Water)action).getAdditives())
 					{
 						if (additiveName.equals(additive.getDescription()))
 						{
-							found = true;
-							additiveValues.add(new Entry(additive.getAmount().floatValue(), index));
+							double amount = Unit.ML.to(measurement, additive.getAmount());
+
+							Entry entry = new Entry((float)amount, index);
+							entry.setData(color);
+							additiveValues.add(entry);
 						}
 					}
 
@@ -210,9 +220,7 @@ public class StatsHelper
 
 			LineDataSet dataSet = new LineDataSet(additiveValues, additiveName);
 
-			String[] colours = chart.getResources().getStringArray(R.array.stats_colours);
-			ArrayList<String> namesList = new ArrayList<>(additiveNames);
-			StatsHelper.styleDataset(context, dataSet, dataSets.size() < colours.length ? Color.parseColor(colours[namesList.indexOf(additiveName)]) : (additiveName.hashCode() + new Random().nextInt(0xffffff)));
+			StatsHelper.styleDataset(context, dataSet, color);
 
 			dataSet.setValueFormatter(StatsHelper.formatter);
 			dataSets.add(dataSet);
@@ -223,6 +231,35 @@ public class StatsHelper
 		lineData.setValueTextColor(IntUtilsKt.resolveColor(android.R.attr.textColorSecondary, context));
 
 		styleGraph(chart);
+
+		chart.setMarkerView(new MarkerView(context, R.layout.chart_marker)
+		{
+			@Override
+			public void refreshContent(Entry e, Highlight highlight)
+			{
+				String val = NumberUtilsKt.formatWhole(e.getVal());
+
+				((TextView)findViewById(R.id.content)).setText(val + measurement.getLabel() + "/" + delivery.getLabel());
+
+				int color = IntUtilsKt.resolveColor(R.attr.colorPrimary, context);
+				if (e.getData() instanceof Integer)
+				{
+					color = (int)e.getData();
+				}
+
+				((TextView)findViewById(R.id.content)).setTextColor(color);
+			}
+
+			@Override public int getXOffset(float xpos)
+			{
+				return -(getWidth() / 2);
+			}
+
+			@Override public int getYOffset(float ypos)
+			{
+				return -getHeight();
+			}
+		});
 
 		chart.setData(lineData);
 	}
@@ -347,9 +384,9 @@ public class StatsHelper
 		LineData data = new LineData();
 		LinkedHashMap<PlantStage, Action> stageTimes = plant.getStages();
 
-		long min = Long.MAX_VALUE;
-		long max = Long.MIN_VALUE;
-		long total = 0;
+		float min = Float.MAX_VALUE;
+		float max = Float.MIN_VALUE;
+		float total = 0f;
 
 		int index = 0;
 		for (Action action : plant.getActions())
@@ -383,8 +420,8 @@ public class StatsHelper
 					xVals.add("");
 				}
 
-				min = Math.min(min, (long)value);
-				max = Math.max(max, (long)value);
+				min = Math.min(min, value);
+				max = Math.max(max, value);
 				total += value;
 			}
 		}
@@ -399,14 +436,10 @@ public class StatsHelper
 				@Override
 				public void refreshContent(Entry e, Highlight highlight)
 				{
-					String val = String.format("%.2f", e.getVal());
-					if (e.getVal() == (int)e.getVal())
-					{
-						val = String.format("%s", (int)e.getVal());
-					}
+					String val = NumberUtilsKt.formatWhole(e.getVal());
 
 					((TextView)findViewById(R.id.content)).setText(val);
-					((TextView)findViewById(R.id.content)).setTextColor(IntUtilsKt.resolveColor(R.attr.colorAccent, findViewById(R.id.content).getContext()));
+//					((TextView)findViewById(R.id.content)).setTextColor(IntUtilsKt.resolveColor(R.attr.colorAccent, findViewById(R.id.content).getContext()));
 				}
 
 				@Override public int getXOffset(float xpos)
@@ -423,24 +456,14 @@ public class StatsHelper
 			{
 				@Override public String getFormattedValue(float value, YAxis yAxis)
 				{
-					if (value == (int)value)
-					{
-						return String.format("%s", (int)value);
-					}
-
-					return String.format("%.2f", value);
+					return NumberUtilsKt.formatWhole(value);
 				}
 			});
 			dataSet.setValueFormatter(new ValueFormatter()
 			{
 				@Override public String getFormattedValue(float value, Entry entry, int dataSetIndex, ViewPortHandler viewPortHandler)
 				{
-					if (value == (int)value)
-					{
-						return String.format("%s", (int)value);
-					}
-
-					return String.format("%.2f", value);
+					return NumberUtilsKt.formatWhole(value);
 				}
 			});
 
@@ -527,9 +550,9 @@ public class StatsHelper
 
 		if (additionalRef != null)
 		{
-			additionalRef[0] = String.valueOf((int)min);
-			additionalRef[1] = String.valueOf((int)max);
-			additionalRef[2] = String.valueOf((int)(total / (double)vals.size()));
+			additionalRef[0] = NumberUtilsKt.formatWhole((int)min);
+			additionalRef[1] = NumberUtilsKt.formatWhole((int)max);
+			additionalRef[2] = NumberUtilsKt.formatWhole((int)(total / (double)vals.size()));
 		}
 	}
 
@@ -616,9 +639,9 @@ public class StatsHelper
 
 					if (action != null) date = "\n" + timeFormat.format(new Date(action.getDate()));
 
-					((TextView)findViewById(R.id.content)).setGravity(CENTER_HORIZONTAL);
+//					((TextView)findViewById(R.id.content)).setGravity(CENTER_HORIZONTAL);
 					((TextView)findViewById(R.id.content)).setText(NumberUtilsKt.formatWhole(e.getVal()) + "°" + tempUnit.getLabel() + date);
-					((TextView)findViewById(R.id.content)).setTextColor(IntUtilsKt.resolveColor(R.attr.colorAccent, findViewById(R.id.content).getContext()));
+//					((TextView)findViewById(R.id.content)).setTextColor(IntUtilsKt.resolveColor(R.attr.colorAccent, findViewById(R.id.content).getContext()));
 				}
 
 				@Override public int getXOffset(float xpos)
@@ -726,9 +749,9 @@ public class StatsHelper
 
 					if (action != null) date = "\n" + timeFormat.format(new Date(action.getDate()));
 
-					((TextView)findViewById(R.id.content)).setGravity(CENTER_HORIZONTAL);
+//					((TextView)findViewById(R.id.content)).setGravity(CENTER_HORIZONTAL);
 					((TextView)findViewById(R.id.content)).setText((int)e.getVal() + "%" + date);
-					((TextView)findViewById(R.id.content)).setTextColor(IntUtilsKt.resolveColor(R.attr.colorAccent, findViewById(R.id.content).getContext()));
+//					((TextView)findViewById(R.id.content)).setTextColor(IntUtilsKt.resolveColor(R.attr.colorAccent, findViewById(R.id.content).getContext()));
 				}
 
 				@Override public int getXOffset(float xpos)
