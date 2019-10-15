@@ -24,8 +24,6 @@ import android.widget.Toast;
 import com.google.android.material.snackbar.Snackbar;
 import com.nostra13.universalimageloader.core.ImageLoader;
 
-import org.jetbrains.annotations.NotNull;
-
 import java.io.BufferedInputStream;
 import java.io.File;
 import java.io.IOException;
@@ -39,10 +37,7 @@ import java.util.Comparator;
 import java.util.Date;
 import java.util.List;
 
-import javax.xml.validation.Schema;
-
 import androidx.appcompat.app.AlertDialog;
-import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.app.AppCompatDelegate;
 import androidx.core.content.FileProvider;
 import androidx.fragment.app.FragmentActivity;
@@ -54,11 +49,9 @@ import androidx.preference.PreferenceGroup;
 import androidx.preference.PreferenceManager;
 import androidx.preference.SwitchPreferenceCompat;
 import me.anon.controller.receiver.BackupService;
-import me.anon.grow.BootActivity;
 import me.anon.grow.MainApplication;
 import me.anon.grow.R;
 import me.anon.lib.SnackBar;
-import me.anon.lib.SnackBarListener;
 import me.anon.lib.TdsUnit;
 import me.anon.lib.TempUnit;
 import me.anon.lib.Unit;
@@ -104,6 +97,7 @@ public class SettingsFragment extends PreferenceFragmentCompat implements Prefer
 		findPreference("measurement_unit").setSummary(Html.fromHtml(getString(R.string.settings_measurement, Unit.getSelectedMeasurementUnit(getActivity()).getLabel())));
 		findPreference("temperature_unit").setSummary(Html.fromHtml(getString(R.string.settings_temperature, TempUnit.getSelectedTemperatureUnit(getActivity()).getLabel())));
 		findPreference("tds_unit").setSummary(Html.fromHtml(getString(R.string.settings_tds_summary, getString(TdsUnit.getSelectedTdsUnit(getActivity()).getStrRes()))));
+		findPreference("backup_now").setSummary(Html.fromHtml(getString(R.string.settings_lastbackup_summary, BackupHelper.getLastBackup())));
 
 		try
 		{
@@ -536,17 +530,15 @@ public class SettingsFragment extends PreferenceFragmentCompat implements Prefer
 		}
 		else if ("auto_backup".equalsIgnoreCase(preference.getKey()))
 		{
+			Intent backupIntent = new Intent(getActivity(), BackupService.class);
+			AlarmManager alarmManager = (AlarmManager)getActivity().getSystemService(Context.ALARM_SERVICE);
+			alarmManager.cancel(PendingIntent.getBroadcast(getActivity(), 0, backupIntent, 0));
+
 			if ((Boolean)newValue)
 			{
 				PreferenceManager.getDefaultSharedPreferences(getActivity()).edit().putBoolean("auto_backup", true).apply();
 				((MainApplication)getActivity().getApplication()).registerBackupService();
 				Toast.makeText(getActivity(), R.string.backup_enable_toast, Toast.LENGTH_LONG).show();
-			}
-			else
-			{
-				Intent backupIntent = new Intent(getActivity(), BackupService.class);
-				AlarmManager alarmManager = (AlarmManager)getActivity().getSystemService(Context.ALARM_SERVICE);
-				alarmManager.cancel(PendingIntent.getBroadcast(getActivity(), 0, backupIntent, 0));
 			}
 
 			return true;
@@ -747,6 +739,7 @@ public class SettingsFragment extends PreferenceFragmentCompat implements Prefer
 			String currentBackup = findPreference("backup_size").getSharedPreferences().getString("backup_size", "20");
 			Toast.makeText(getActivity(), getString(R.string.backed_up_to) + BackupHelper.backupJson().getPath(), Toast.LENGTH_SHORT).show();
 			findPreference("backup_size").setSummary(Html.fromHtml(getString(R.string.settings_backup_size, currentBackup, lengthToString(BackupHelper.backupSize()))));
+			findPreference("backup_now").setSummary(Html.fromHtml(getString(R.string.settings_lastbackup_summary, BackupHelper.getLastBackup())));
 		}
 		else if ("restore".equals(preference.getKey()))
 		{
