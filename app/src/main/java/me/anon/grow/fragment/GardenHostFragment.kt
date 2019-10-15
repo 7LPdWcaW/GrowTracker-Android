@@ -24,6 +24,10 @@ class GardenHostFragment : Fragment()
 	{
 		super.onActivityCreated(savedInstanceState)
 
+		savedInstanceState?.let {
+			garden = it.getParcelable("garden")!!
+		}
+
 		childFragmentManager.findFragmentByTag("child_fragment") ?: let {
 			childFragmentManager.beginTransaction().replace(R.id.child_fragment_holder, GardenFragment.newInstance(garden), "child_fragment").commit()
 		}
@@ -41,6 +45,12 @@ class GardenHostFragment : Fragment()
 
 			return@setOnNavigationItemSelectedListener true
 		}
+	}
+
+	override fun onSaveInstanceState(outState: Bundle)
+	{
+		outState.putParcelable("garden", garden)
+		super.onSaveInstanceState(outState)
 	}
 
 	companion object

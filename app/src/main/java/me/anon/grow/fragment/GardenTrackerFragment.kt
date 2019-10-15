@@ -72,6 +72,10 @@ class GardenTrackerFragment : Fragment()
 	{
 		super.onActivityCreated(savedInstanceState)
 
+		savedInstanceState?.let {
+			garden = it.getParcelable("garden")!!
+		}
+
 		(activity as MainActivity).toolbarLayout.removeViews(1, (activity as MainActivity).toolbarLayout.childCount - 1)
 		(activity as MainActivity).toolbarLayout.addView(LayoutInflater.from(activity).inflate(R.layout.garden_action_buttons_stub, (activity as MainActivity).toolbarLayout, false))
 
@@ -101,6 +105,12 @@ class GardenTrackerFragment : Fragment()
 		}
 
 		setUi()
+	}
+
+	override fun onSaveInstanceState(outState: Bundle)
+	{
+		outState.putParcelable("garden", garden)
+		super.onSaveInstanceState(outState)
 	}
 
 	override fun onDestroy()
