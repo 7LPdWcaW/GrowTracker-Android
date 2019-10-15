@@ -6,10 +6,8 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import kotlinx.android.synthetic.main.tabbed_fragment_holder.*
-import me.anon.grow.PlantDetailsActivity
 import me.anon.grow.R
 import me.anon.model.Garden
-import me.anon.model.Plant
 
 class GardenHostFragment : Fragment()
 {

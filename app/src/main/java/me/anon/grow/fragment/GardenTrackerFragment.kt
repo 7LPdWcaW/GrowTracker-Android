@@ -21,7 +21,6 @@ import me.anon.controller.adapter.GardenActionAdapter
 import me.anon.grow.MainActivity
 import me.anon.grow.R
 import me.anon.lib.TempUnit
-import me.anon.lib.ext.T
 import me.anon.lib.ext.formatWhole
 import me.anon.lib.ext.inflate
 import me.anon.lib.ext.round
@@ -209,14 +208,22 @@ class GardenTrackerFragment : Fragment()
 			}
 		})
 
-		toggle_actions.setOnClickListener {
-			var expanded = actions_recycler.visibility == View.VISIBLE
-			toggle_actions.setText(!expanded T R.string.hide ?: R.string.show)
-			actions_recycler.visibility = !expanded T View.VISIBLE ?: View.GONE
+		fake_toggle_actions.setOnClickListener {
+			actions_container.visibility = View.VISIBLE
+			details_container.visibility = View.GONE
 		}
 
-		actions_recycler.adapter = GardenActionAdapter()
-		actions_recycler.layoutManager = LinearLayoutManager(activity!!)
+		toggle_actions.setOnClickListener {
+			actions_container.visibility = View.GONE
+			details_container.visibility = View.VISIBLE
+		}
+
+		actions_recycler.adapter ?: let {
+			actions_recycler.adapter = GardenActionAdapter().also {
+				it.setHasStableIds(true)
+			}
+			actions_recycler.layoutManager = LinearLayoutManager(activity!!)
+		}
 
 		updateDataReferences()
 
