@@ -91,8 +91,8 @@ class GardenActionAdapter : RecyclerView.Adapter<ActionHolder>()
 			}
 
 			is LightingChange -> {
-				holder.getName().setText(R.string.lighting_title)
-				holder.getCard().setCardBackgroundColor(0xFFFFF176.toInt())
+				holder.name.setText(R.string.lighting_title)
+				holder.card.setCardBackgroundColor(R.color.light_yellow.getColor(holder.itemView.context))
 				summary += "<b>" + holder.itemView.context.getString(R.string.lights_on) + ":</b> "
 				summary += action.on + "<br/>"
 				summary += "<b>" + holder.itemView.context.getString(R.string.lights_off) + ":</b> "
