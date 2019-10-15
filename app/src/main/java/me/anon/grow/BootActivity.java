@@ -21,6 +21,7 @@ import me.anon.lib.handler.ExceptionHandler;
 import me.anon.lib.helper.EncryptionHelper;
 import me.anon.lib.helper.MigrationHelper;
 import me.anon.lib.manager.PlantManager;
+import me.anon.lib.task.AsyncCallback;
 
 public class BootActivity extends AppCompatActivity
 {
@@ -166,8 +167,13 @@ public class BootActivity extends AppCompatActivity
 	{
 		if (MigrationHelper.needsMigration(this))
 		{
-			MigrationHelper.performMigration(this);
-			start();
+			MigrationHelper.performMigration(this, new AsyncCallback()
+			{
+				@Override public void callback()
+				{
+					start();
+				}
+			});
 		}
 		else
 		{
