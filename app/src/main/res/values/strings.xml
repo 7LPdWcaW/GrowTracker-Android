@@ -407,4 +407,6 @@
 	<string name="hide">Hide</string>
 	<string name="lights_on">Lights on</string>
 	<string name="lights_off">Lights off</string>
+
+	<string name="settings_lastbackup_summary" formatted="true">Last backed up: &lt;b&gt;%s&lt;/b&gt;</string>
 </resources>
