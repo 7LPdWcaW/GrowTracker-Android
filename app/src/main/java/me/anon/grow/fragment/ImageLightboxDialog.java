@@ -23,12 +23,12 @@ import android.widget.TextView;
 
 import com.davemorrissey.labs.subscaleview.ImageSource;
 import com.davemorrissey.labs.subscaleview.SubsamplingScaleImageView;
-import com.davemorrissey.labs.subscaleview.decoder.DecoderFactory;
 import com.davemorrissey.labs.subscaleview.decoder.ImageDecoder;
-import com.davemorrissey.labs.subscaleview.decoder.SkiaImageDecoder;
 
 import java.io.File;
+import java.io.FileInputStream;
 import java.io.IOException;
+import java.io.InputStream;
 import java.text.DateFormat;
 import java.util.Date;
 
@@ -42,6 +42,8 @@ import me.anon.lib.DateRenderer;
 import me.anon.lib.Views;
 import me.anon.lib.helper.TimeHelper;
 import me.anon.lib.stream.DecryptInputStream;
+import me.anon.lib.stream.InputStreamImageDecoder;
+import me.anon.lib.stream.InputStreamImageRegionDecoder;
 import me.anon.model.Action;
 import me.anon.model.Plant;
 import me.anon.model.StageChange;
@@ -273,20 +275,26 @@ public class ImageLightboxDialog extends FragmentActivity
 			final SubsamplingScaleImageView imageView = (SubsamplingScaleImageView)v.findViewById(R.id.image);
 			imageView.setDoubleTapZoomScale(1.5f);
 
-			imageView.setBitmapDecoderFactory(new DecoderFactory<ImageDecoder>()
+			try
 			{
-				@Override public ImageDecoder make() throws IllegalAccessException, InstantiationException
+				InputStream stream;
+				if (MainApplication.isEncrypted())
 				{
-					if (MainApplication.isEncrypted())
-					{
-						return new EncryptedImageDecoder();
-					}
-
-					return new SkiaImageDecoder();
+					stream = new DecryptInputStream(MainApplication.getKey(), new File(images[position]));
 				}
-			});
+				else
+				{
+					stream = new FileInputStream(new File(images[position]));
+				}
 
-			imageView.setImage(ImageSource.uri("file://" + images[position]));
+				imageView.setBitmapDecoderFactory(new InputStreamImageDecoder.Factory(stream));
+				imageView.setRegionDecoderFactory(new InputStreamImageRegionDecoder.Factory(stream));
+
+				imageView.setImage(ImageSource.uri("file://" + images[position]));
+			}
+			catch (Exception e)
+			{
+			}
 		}
 
 		@Override public boolean isViewFromObject(View view, Object object)
