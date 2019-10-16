@@ -67,7 +67,7 @@ public class MigrationHelper
 				}
 
 				preferences.edit().putBoolean("migration_tds", true).apply();
-				PlantManager.getInstance().save(callback);
+				PlantManager.getInstance().save(callback, true);
 				return true;
 			}
 		}
