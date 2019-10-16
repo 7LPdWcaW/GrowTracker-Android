@@ -135,7 +135,6 @@ public class MainApplication extends Application
 		ImageLoader.getInstance().init(new ImageLoaderConfiguration.Builder(this)
 			.threadPoolSize(6)
 			.diskCacheExtraOptions(512, 512, null)
-
 			.imageDecoder(new BaseImageDecoder(false)
 			{
 				@Override protected InputStream getImageStream(ImageDecodingInfo decodingInfo) throws IOException

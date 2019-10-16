@@ -277,23 +277,14 @@ public class ImageLightboxDialog extends FragmentActivity
 
 			try
 			{
-				InputStream stream;
-				if (MainApplication.isEncrypted())
-				{
-					stream = new DecryptInputStream(MainApplication.getKey(), new File(images[position]));
-				}
-				else
-				{
-					stream = new FileInputStream(new File(images[position]));
-				}
-
-				imageView.setBitmapDecoderFactory(new InputStreamImageDecoder.Factory(stream));
-				imageView.setRegionDecoderFactory(new InputStreamImageRegionDecoder.Factory(stream));
+				imageView.setBitmapDecoderFactory(new InputStreamImageDecoder.Factory());
+				imageView.setRegionDecoderFactory(new InputStreamImageRegionDecoder.Factory());
 
 				imageView.setImage(ImageSource.uri("file://" + images[position]));
 			}
 			catch (Exception e)
 			{
+				e.printStackTrace();
 			}
 		}
 
