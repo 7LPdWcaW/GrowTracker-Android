@@ -32,7 +32,20 @@ public class PathHelper
 			{
 				final String docId = DocumentsContract.getDocumentId(uri);
 				final String[] split = docId.split(":");
-				return Environment.getExternalStorageDirectory() + "/" + split[1];
+
+				if ("primary".equalsIgnoreCase(split[0]))
+				{
+					try
+					{
+						return Environment.getExternalStorageDirectory() + "/" + split[1];
+					}
+					catch (ArrayIndexOutOfBoundsException e)
+					{
+						return Environment.getExternalStorageDirectory() + "/";
+					}
+				}
+
+				return "/storage/" + split[0] + "/" + split[1];
 			}
 			else if (isDownloadsDocument(uri))
 			{
