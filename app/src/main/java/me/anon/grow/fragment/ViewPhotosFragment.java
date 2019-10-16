@@ -10,7 +10,6 @@ import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Build;
 import android.os.Bundle;
-import android.os.ParcelFileDescriptor;
 import android.provider.MediaStore;
 import android.view.ActionMode;
 import android.view.LayoutInflater;
@@ -20,15 +19,8 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.view.WindowManager;
 
-import java.io.BufferedInputStream;
-import java.io.BufferedOutputStream;
 import java.io.File;
-import java.io.FileDescriptor;
-import java.io.FileInputStream;
-import java.io.FileOutputStream;
 import java.io.IOException;
-import java.io.InputStream;
-import java.io.OutputStream;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
@@ -42,6 +34,7 @@ import androidx.core.content.FileProvider;
 import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
+import kotlin.Pair;
 import me.anon.controller.adapter.ImageAdapter;
 import me.anon.controller.adapter.SectionedGridRecyclerViewAdapter;
 import me.anon.grow.BuildConfig;
@@ -52,11 +45,14 @@ import me.anon.lib.SnackBarListener;
 import me.anon.lib.Views;
 import me.anon.lib.helper.AddonHelper;
 import me.anon.lib.helper.ExportHelper;
+import me.anon.lib.helper.NotificationHelper;
 import me.anon.lib.helper.PermissionHelper;
 import me.anon.lib.helper.TimeHelper;
 import me.anon.lib.manager.FileManager;
 import me.anon.lib.manager.PlantManager;
+import me.anon.lib.task.AsyncCallback;
 import me.anon.lib.task.EncryptTask;
+import me.anon.lib.task.ImportTask;
 import me.anon.model.Action;
 import me.anon.model.Plant;
 import me.anon.model.StageChange;
@@ -445,37 +441,20 @@ public class ViewPhotosFragment extends Fragment
 						final int takeFlags = data.getFlags() & (Intent.FLAG_GRANT_READ_URI_PERMISSION);
 						getActivity().getContentResolver().takePersistableUriPermission(image, takeFlags);
 					}
-
-					File path = new File(FileManager.IMAGE_PATH + plant.getId() + "/");
-					path.mkdirs();
-
-					try
-					{
-						new File(path, ".nomedia").createNewFile();
-					}
-					catch (IOException e){}
-
-					File out = new File(path, System.currentTimeMillis() + ".jpg");
-
-					copyImage(image, out);
-					if (out.exists() && out.length() > 0)
-					{
-						plant.getImages().add(out.getAbsolutePath());
-
-						if (plant.getImages().size() - 1 > 0)
-						{
-							AddonHelper.broadcastImage(getActivity(), plant.getImages().get(plant.getImages().size() - 1), false);
-						}
-					}
-					else
-					{
-						out.delete();
-					}
 				}
 
-				PlantManager.getInstance().upsert(plant);
-				setAdapter();
-				adapter.notifyDataSetChanged();
+				NotificationHelper.sendDataTaskNotification(getActivity(), getString(R.string.app_name), getString(R.string.import_progress_warning));
+				new ImportTask(getActivity(), new AsyncCallback()
+				{
+					@Override public void callback()
+					{
+						if (getActivity() != null && !getActivity().isFinishing())
+						{
+							setAdapter();
+							adapter.notifyDataSetChanged();
+						}
+					}
+				}).executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR, new Pair<>(plant.getId(), images));
 			}
 		}
 
@@ -508,65 +487,6 @@ public class ViewPhotosFragment extends Fragment
 					}
 				});
 			}
-		}
-	}
-
-	public void copyImage(Uri imageUri, File newLocation)
-	{
-		try
-		{
-			if (imageUri.getScheme().startsWith("content"))
-			{
-				if (!newLocation.exists())
-				{
-					newLocation.createNewFile();
-				}
-
-				ParcelFileDescriptor parcelFileDescriptor = getActivity().getContentResolver().openFileDescriptor(imageUri, "r");
-				FileDescriptor fileDescriptor = parcelFileDescriptor.getFileDescriptor();
-
-
-				InputStream streamIn = new BufferedInputStream(new FileInputStream(fileDescriptor), 524288);
-				OutputStream streamOut = new BufferedOutputStream(new FileOutputStream(newLocation), 524288);
-
-				int len = 0;
-				byte[] buffer = new byte[524288];
-				while ((len = streamIn.read(buffer)) != -1)
-				{
-					streamOut.write(buffer, 0, len);
-				}
-
-				streamIn.close();
-				streamOut.flush();
-				streamOut.close();
-			}
-			else if (imageUri.getScheme().startsWith("file"))
-			{
-				if (!newLocation.exists())
-				{
-					newLocation.createNewFile();
-				}
-
-				String image = imageUri.getPath();
-
-				InputStream streamIn = new BufferedInputStream(new FileInputStream(new File(image)), 524288);
-				OutputStream streamOut = new BufferedOutputStream(new FileOutputStream(newLocation), 524288);
-
-				int len = 0;
-				byte[] buffer = new byte[524288];
-				while ((len = streamIn.read(buffer)) != -1)
-				{
-					streamOut.write(buffer, 0, len);
-				}
-
-				streamIn.close();
-				streamOut.flush();
-				streamOut.close();
-			}
-		}
-		catch (Exception e)
-		{
-			e.printStackTrace();
 		}
 	}
 }

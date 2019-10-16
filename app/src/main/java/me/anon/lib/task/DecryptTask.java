@@ -65,28 +65,29 @@ public class DecryptTask extends AsyncTask<ArrayList<String>, Integer, Void>
 		int total = params[0].size();
 		for (String filePath : params[0])
 		{
-			if (!new File(filePath).exists()) continue;
+			File file = new File(filePath);
+			File temp = new File(filePath + ".temp");
+			if (!file.exists()) continue;
 
 			FileOutputStream fos = null;
 			DecryptInputStream dis = null;
 			try
 			{
-				new File(filePath).renameTo(new File(filePath + ".temp"));
+				file.renameTo(temp);
 
-				dis = new DecryptInputStream(cipher, new File(filePath + ".temp"));
-				fos = new FileOutputStream(new File(filePath));
+				dis = new DecryptInputStream(cipher, temp);
+				fos = new FileOutputStream(file);
 
-				byte[] buffer = new byte[8192];
-				int len = 0;
+				byte[] buffer = new byte[524288];
+				int len;
 
 				while ((len = dis.read(buffer)) != -1)
 				{
 					fos.write(buffer, 0, len);
 				}
 
-				new File(filePath + ".temp").delete();
-
 				fos.flush();
+				temp.delete();
 			}
 			catch (IOException e)
 			{
@@ -129,16 +130,29 @@ public class DecryptTask extends AsyncTask<ArrayList<String>, Integer, Void>
 	@Override protected void onPostExecute(Void aVoid)
 	{
 		notificationManager.cancel(1);
+		appContext = null;
 	}
 
 	@Override protected void onProgressUpdate(Integer... values)
 	{
-		if (values[1] == values[0])
+		if (values[1].equals(values[0]))
 		{
-			notificationManager.cancel(1);
+			notification = new NotificationCompat.Builder(appContext, "export")
+				.setContentText(appContext.getString(R.string.app_name))
+				.setContentTitle(appContext.getString(R.string.data_task))
+				.setContentIntent(PendingIntent.getActivity(appContext, 0, new Intent(), PendingIntent.FLAG_UPDATE_CURRENT))
+				.setTicker(appContext.getString(R.string.task_complete))
+				.setSmallIcon(R.drawable.ic_floting_done)
+				.setPriority(NotificationCompat.PRIORITY_LOW)
+				.setAutoCancel(false)
+				.setOngoing(false)
+				.setSound(null)
+				.setProgress(0, 0, false);
+			notificationManager.notify(1, notification.build());
 		}
 		else
 		{
+			notification.setTicker(values[0] + "/" + values[1]);
 			notification.setProgress(values[1], values[0], false);
 			notificationManager.notify(1, notification.build());
 		}
