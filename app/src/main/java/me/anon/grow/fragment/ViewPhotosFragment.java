@@ -5,6 +5,7 @@ import android.app.Activity;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.pm.PackageManager;
+import android.content.res.Configuration;
 import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Build;
@@ -231,7 +232,7 @@ public class ViewPhotosFragment extends Fragment
 
 		recycler.setHasFixedSize(true);
 
-		if (MainApplication.isTablet())
+		if (MainApplication.isTablet() || getResources().getConfiguration().orientation == Configuration.ORIENTATION_LANDSCAPE)
 		{
 			recycler.setLayoutManager(new GridLayoutManager(getActivity(), 6));
 		}
