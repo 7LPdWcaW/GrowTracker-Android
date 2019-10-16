@@ -79,6 +79,12 @@
 		/>
 
 		<Preference
+			android:key="image_location"
+			android:title="Image storage location"
+			android:summary="Currently /var/"
+		/>
+
+		<Preference
 			app:key="backup_now"
 			app:title="@string/settings_backupnow"
 		/>

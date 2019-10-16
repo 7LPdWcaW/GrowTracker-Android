@@ -1,5 +1,6 @@
 package me.anon.lib.manager;
 
+import android.os.Environment;
 import android.text.TextUtils;
 
 import java.io.BufferedInputStream;
@@ -23,6 +24,7 @@ import me.anon.lib.stream.EncryptOutputStream;
 
 public class FileManager
 {
+	public static String IMAGE_PATH = Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DCIM).getPath() + "/GrowTracker/";
 	private static FileManager instance;
 
 	/**

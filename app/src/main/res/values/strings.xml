@@ -409,4 +409,6 @@
 	<string name="lights_off">Lights off</string>
 
 	<string name="settings_lastbackup_summary" formatted="true">Last backed up: &lt;b&gt;%s&lt;/b&gt;</string>
+	<string name="settings_image_location_summary" formatted="true">Image storage location, currently &lt;b&gt;%s&lt;/b&gt;</string>
+	<string name="settings_image_location_error">Failed to set image location</string>
 </resources>

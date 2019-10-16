@@ -13,13 +13,14 @@ import android.content.pm.ResolveInfo;
 import android.graphics.drawable.Drawable;
 import android.net.Uri;
 import android.os.AsyncTask;
+import android.os.Build;
 import android.os.Bundle;
 import android.os.Environment;
+import android.provider.DocumentsContract;
 import android.text.Html;
 import android.text.TextUtils;
 import android.util.Base64;
 import android.view.View;
-import android.widget.Toast;
 
 import com.google.android.material.snackbar.Snackbar;
 import com.nostra13.universalimageloader.core.ImageLoader;
@@ -28,6 +29,7 @@ import java.io.BufferedInputStream;
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
+import java.net.URISyntaxException;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -40,6 +42,7 @@ import java.util.List;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatDelegate;
 import androidx.core.content.FileProvider;
+import androidx.documentfile.provider.DocumentFile;
 import androidx.fragment.app.FragmentActivity;
 import androidx.preference.EditTextPreference;
 import androidx.preference.Preference;
@@ -59,6 +62,7 @@ import me.anon.lib.helper.AddonHelper;
 import me.anon.lib.helper.BackupHelper;
 import me.anon.lib.helper.EncryptionHelper;
 import me.anon.lib.helper.NotificationHelper;
+import me.anon.lib.helper.PathHelper;
 import me.anon.lib.manager.FileManager;
 import me.anon.lib.manager.GardenManager;
 import me.anon.lib.manager.PlantManager;
@@ -71,6 +75,7 @@ import me.anon.model.Plant;
 public class SettingsFragment extends PreferenceFragmentCompat implements Preference.OnPreferenceClickListener, Preference.OnPreferenceChangeListener
 {
 	private static final int REQUEST_UNINSTALL = 0x01;
+	private static final int REQUEST_PICK_DOCUMENT = 0x02;
 
 	@Override public void onCreatePreferences(Bundle savedInstanceState, String rootKey)
 	{
@@ -98,6 +103,7 @@ public class SettingsFragment extends PreferenceFragmentCompat implements Prefer
 		findPreference("temperature_unit").setSummary(Html.fromHtml(getString(R.string.settings_temperature, TempUnit.getSelectedTemperatureUnit(getActivity()).getLabel())));
 		findPreference("tds_unit").setSummary(Html.fromHtml(getString(R.string.settings_tds_summary, getString(TdsUnit.getSelectedTdsUnit(getActivity()).getStrRes()))));
 		findPreference("backup_now").setSummary(Html.fromHtml(getString(R.string.settings_lastbackup_summary, BackupHelper.getLastBackup())));
+		findPreference("image_location").setSummary(Html.fromHtml(getString(R.string.settings_image_location_summary, FileManager.IMAGE_PATH)));
 
 		try
 		{
@@ -109,14 +115,22 @@ public class SettingsFragment extends PreferenceFragmentCompat implements Prefer
 		}
 
 		findPreference("encrypt").setOnPreferenceChangeListener(this);
-		findPreference("encrypt").setEnabled(!MainApplication.dataTaskRunning.get());
+		findPreference("encrypt").setEnabled(!MainApplication.dataTaskRunning.get() && MainApplication.isEncrypted());
 
 		findPreference("failsafe").setOnPreferenceChangeListener(this);
 		findPreference("auto_backup").setOnPreferenceChangeListener(this);
 		findPreference("backup_size").setOnPreferenceChangeListener(this);
 		findPreference("force_dark").setOnPreferenceChangeListener(this);
 		String currentBackup = findPreference("backup_size").getSharedPreferences().getString("backup_size", "20");
-		findPreference("backup_size").setSummary(Html.fromHtml(getString(R.string.settings_backup_size, currentBackup, lengthToString(BackupHelper.backupSize()))));
+
+		if (Build.VERSION.SDK_INT >= 21)
+		{
+			findPreference("backup_size").setSummary(Html.fromHtml(getString(R.string.settings_backup_size, currentBackup, lengthToString(BackupHelper.backupSize()))));
+		}
+		else
+		{
+			findPreference("backup_size").setEnabled(false);
+		}
 
 		findPreference("readme").setOnPreferenceClickListener(this);
 		findPreference("export").setOnPreferenceClickListener(this);
@@ -127,6 +141,7 @@ public class SettingsFragment extends PreferenceFragmentCompat implements Prefer
 		findPreference("tds_unit").setOnPreferenceClickListener(this);
 		findPreference("backup_now").setOnPreferenceClickListener(this);
 		findPreference("restore").setOnPreferenceClickListener(this);
+		findPreference("image_location").setOnPreferenceClickListener(this);
 
 		findPreference("failsafe").setEnabled(((SwitchPreferenceCompat)findPreference("encrypt")).isChecked());
 
@@ -357,7 +372,7 @@ public class SettingsFragment extends PreferenceFragmentCompat implements Prefer
 										FileManager.getInstance().removeFile(PlantManager.FILES_DIR + "/plants.json.bak");
 										FileManager.getInstance().removeFile(PlantManager.FILES_DIR + "/plants.temp");
 
-										Toast.makeText(SettingsFragment.this.getActivity(), R.string.encrypt_progress_warning, Toast.LENGTH_LONG).show();
+										SnackBar.show(getActivity(), getString(R.string.encrypt_progress_warning), Snackbar.LENGTH_LONG, null);
 
 										// make sure encrypt mode is definitely enabled
 										((SwitchPreferenceCompat)preference).setChecked(true);
@@ -432,7 +447,8 @@ public class SettingsFragment extends PreferenceFragmentCompat implements Prefer
 
 							NotificationHelper.sendDataTaskNotification(getActivity(), getString(R.string.app_name), getString(R.string.decrypt_progress_warning));
 							new DecryptTask(getActivity()).executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR, images);
-							Toast.makeText(SettingsFragment.this.getActivity(), R.string.decrypt_progress_warning, Toast.LENGTH_LONG).show();
+
+							SnackBar.show(getActivity(), getString(R.string.decrypt_progress_warning), Snackbar.LENGTH_LONG, null);
 
 							// make sure the preferences is definitely turned off
 							((SwitchPreferenceCompat)preference).setChecked(false);
@@ -502,7 +518,8 @@ public class SettingsFragment extends PreferenceFragmentCompat implements Prefer
 									else
 									{
 										((SwitchPreferenceCompat)preference).setChecked(false);
-										Toast.makeText(getActivity(), R.string.passphrase_error, Toast.LENGTH_SHORT).show();
+
+										SnackBar.show(getActivity(), getString(R.string.passphrase_error), Snackbar.LENGTH_LONG, null);
 									}
 								}
 							});
@@ -538,7 +555,7 @@ public class SettingsFragment extends PreferenceFragmentCompat implements Prefer
 			{
 				PreferenceManager.getDefaultSharedPreferences(getActivity()).edit().putBoolean("auto_backup", true).apply();
 				((MainApplication)getActivity().getApplication()).registerBackupService();
-				Toast.makeText(getActivity(), R.string.backup_enable_toast, Toast.LENGTH_LONG).show();
+				SnackBar.show(getActivity(), getString(R.string.backup_enable_toast), Snackbar.LENGTH_LONG, null);
 			}
 
 			return true;
@@ -737,7 +754,7 @@ public class SettingsFragment extends PreferenceFragmentCompat implements Prefer
 		else if ("backup_now".equals(preference.getKey()))
 		{
 			String currentBackup = findPreference("backup_size").getSharedPreferences().getString("backup_size", "20");
-			Toast.makeText(getActivity(), getString(R.string.backed_up_to) + BackupHelper.backupJson().getPath(), Toast.LENGTH_SHORT).show();
+			SnackBar.show(getActivity(), getString(R.string.backed_up_to) + BackupHelper.backupJson().getPath(), Snackbar.LENGTH_LONG, null);
 			findPreference("backup_size").setSummary(Html.fromHtml(getString(R.string.settings_backup_size, currentBackup, lengthToString(BackupHelper.backupSize()))));
 			findPreference("backup_now").setSummary(Html.fromHtml(getString(R.string.settings_lastbackup_summary, BackupHelper.getLastBackup())));
 		}
@@ -749,7 +766,7 @@ public class SettingsFragment extends PreferenceFragmentCompat implements Prefer
 
 			if (backupFiles == null || backupFiles.length == 0)
 			{
-				Toast.makeText(getActivity(), R.string.no_backups, Toast.LENGTH_LONG).show();
+				SnackBar.show(getActivity(), getString(R.string.no_backups), Snackbar.LENGTH_LONG, null);
 				return false;
 			}
 
@@ -974,6 +991,14 @@ public class SettingsFragment extends PreferenceFragmentCompat implements Prefer
 				})
 				.show();
 		}
+		else if ("image_location".equals(preference.getKey()))
+		{
+			if (Build.VERSION.SDK_INT >= 21)
+			{
+				Intent intent = new Intent(Intent.ACTION_OPEN_DOCUMENT_TREE);
+				startActivityForResult(intent, REQUEST_PICK_DOCUMENT);
+			}
+		}
 
 		return false;
 	}
@@ -1011,7 +1036,7 @@ public class SettingsFragment extends PreferenceFragmentCompat implements Prefer
 		}
 		else
 		{
-			Toast.makeText(getActivity(), getString(R.string.restore_complete, selectedBackup.toString()), Toast.LENGTH_LONG).show();
+			SnackBar.show(getActivity(), getString(R.string.restore_complete, selectedBackup.toString()), Snackbar.LENGTH_LONG, null);
 			getActivity().recreate();
 		}
 
@@ -1027,8 +1052,44 @@ public class SettingsFragment extends PreferenceFragmentCompat implements Prefer
 		if (requestCode == REQUEST_UNINSTALL)
 		{
 			// refresh addons
-			Toast.makeText(getActivity(), "Addon successfully uninstalled", Toast.LENGTH_SHORT).show();
+			SnackBar.show(getActivity(), "Addon successfully uninstalled", Snackbar.LENGTH_SHORT, null);
 			populateAddons();
+		}
+		else if (requestCode == REQUEST_PICK_DOCUMENT && Build.VERSION.SDK_INT >= 19)
+		{
+			if (resultCode == Activity.RESULT_OK)
+			{
+				Uri treeUri = data.getData();
+				DocumentFile pickedDir = DocumentFile.fromTreeUri(getActivity(), treeUri);
+
+				Uri docUri = DocumentsContract.buildDocumentUriUsingTree(treeUri, DocumentsContract.getTreeDocumentId(treeUri));
+
+				if (pickedDir != null)
+				{
+					String filePath = null;
+					try
+					{
+						filePath = PathHelper.getPath(getActivity(), docUri);
+
+						if (!TextUtils.isEmpty(filePath) && new File(filePath).exists())
+						{
+							if (!filePath.endsWith("/")) filePath = filePath + "/";
+							findPreference("image_location").getSharedPreferences().edit().putString("image_location", filePath).apply();
+							findPreference("image_location").setSummary(Html.fromHtml(getString(R.string.settings_image_location_summary, filePath)));
+
+							return;
+						}
+					}
+					catch (URISyntaxException e)
+					{
+					}
+				}
+			}
+
+			if (resultCode != Activity.RESULT_CANCELED)
+			{
+				SnackBar.show(getActivity(), getString(R.string.settings_image_location_error), Snackbar.LENGTH_LONG, null);
+			}
 		}
 	}
 
