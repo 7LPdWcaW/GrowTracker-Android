@@ -142,12 +142,6 @@
 	<string name="menu_delete_garden">Удалить сад</string>
 	<string name="menu_export">Экспортировать</string>
 
-	<string name="germination_label">Прорастание:</string>
-	<string name="vegetation_label">Вегетация:</string>
-	<string name="cutting_label">Срез:</string>
-	<string name="flower_label">Цветение:</string>
-	<string name="drying_label">Сушка:</string>
-	<string name="curing_label">Выдержка (пролечка):</string>
 	<string name="total_time_label">Общее время:</string>
 	<string name="total_waters_label">Всего поливов:</string>
 	<string name="total_flushes_label">Всего промываний:</string>
@@ -410,4 +404,6 @@
 	<string name="hide">Спрятать</string>
 	<string name="lights_on">Свет вкл.</string>
 	<string name="lights_off">Свет выкл.</string>
+
+	<string name="settings_lastbackup_summary" formatted="true">Последняя резервная копия: &lt;b&gt;%s&lt;/b&gt;</string>
 </resources>
