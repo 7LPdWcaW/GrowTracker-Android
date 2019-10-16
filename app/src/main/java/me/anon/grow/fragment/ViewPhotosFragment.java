@@ -450,6 +450,7 @@ public class ViewPhotosFragment extends Fragment
 					{
 						if (getActivity() != null && !getActivity().isFinishing())
 						{
+							plant = PlantManager.getInstance().getPlant(plant.getId());
 							setAdapter();
 							adapter.notifyDataSetChanged();
 						}
