@@ -142,12 +142,6 @@
 	<string name="menu_delete_garden">Видалити сад</string>
 	<string name="menu_export">Експортувати</string>
 
-	<string name="germination_label">Проростання:</string>
-	<string name="vegetation_label">Вегетація:</string>
-	<string name="cutting_label">Зріз:</string>
-	<string name="flower_label">Цвітіння:</string>
-	<string name="drying_label">Сушіння:</string>
-	<string name="curing_label">Витримка (пролічка):</string>
 	<string name="total_time_label">Загальний час:</string>
 	<string name="total_waters_label">Всього поливів:</string>
 	<string name="total_flushes_label">Всього промивань:</string>
@@ -408,6 +402,8 @@
 	<string name="confirm_delete_item_message_holder">Дійсно видалити &lt;b&gt;%s&lt;/b&gt;?</string>
 	<string name="show">Показати</string>
 	<string name="hide">Сховати</string>
-	<string name="lights_on">Світло увімк</string>
+	<string name="lights_on">Світло увімк.</string>
 	<string name="lights_off">Світло вимк.</string>
+
+	<string name="settings_lastbackup_summary" formatted="true">Остання резервна копія: &lt;b&gt;%s&lt;/b&gt;</string>
 </resources>
