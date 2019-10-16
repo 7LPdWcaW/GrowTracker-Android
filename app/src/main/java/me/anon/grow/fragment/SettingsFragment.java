@@ -52,6 +52,7 @@ import androidx.preference.PreferenceGroup;
 import androidx.preference.PreferenceManager;
 import androidx.preference.SwitchPreferenceCompat;
 import me.anon.controller.receiver.BackupService;
+import me.anon.grow.BootActivity;
 import me.anon.grow.MainApplication;
 import me.anon.grow.R;
 import me.anon.lib.SnackBar;
@@ -115,7 +116,8 @@ public class SettingsFragment extends PreferenceFragmentCompat implements Prefer
 		}
 
 		findPreference("encrypt").setOnPreferenceChangeListener(this);
-		findPreference("encrypt").setEnabled(!MainApplication.dataTaskRunning.get() && MainApplication.isEncrypted());
+		findPreference("encrypt").setEnabled(!MainApplication.dataTaskRunning.get());
+		((SwitchPreferenceCompat)findPreference("encrypt")).setChecked(MainApplication.isEncrypted());
 
 		findPreference("failsafe").setOnPreferenceChangeListener(this);
 		findPreference("auto_backup").setOnPreferenceChangeListener(this);
@@ -133,6 +135,7 @@ public class SettingsFragment extends PreferenceFragmentCompat implements Prefer
 		}
 
 		findPreference("readme").setOnPreferenceClickListener(this);
+		findPreference("clear_image_cache").setOnPreferenceClickListener(this);
 		findPreference("export").setOnPreferenceClickListener(this);
 		findPreference("default_garden").setOnPreferenceClickListener(this);
 		findPreference("delivery_unit").setOnPreferenceClickListener(this);
@@ -425,7 +428,7 @@ public class SettingsFragment extends PreferenceFragmentCompat implements Prefer
 				{
 					@Override public void onDialogConfirmed(DialogInterface dialog, String input)
 					{
-						String checkStr = PreferenceManager.getDefaultSharedPreferences(getActivity()).getString("encryption_check_key", "");
+						String checkStr = android.preference.PreferenceManager.getDefaultSharedPreferences(getActivity()).getString("encryption_check_key", Base64.encodeToString(EncryptionHelper.encrypt(input, input), Base64.NO_WRAP));
 						String inputCheck = Base64.encodeToString(EncryptionHelper.encrypt(input, input), Base64.NO_WRAP);
 
 						if (inputCheck.equals(checkStr))
@@ -998,6 +1001,12 @@ public class SettingsFragment extends PreferenceFragmentCompat implements Prefer
 				Intent intent = new Intent(Intent.ACTION_OPEN_DOCUMENT_TREE);
 				startActivityForResult(intent, REQUEST_PICK_DOCUMENT);
 			}
+		}
+		else if ("clear_image_cache".equals(preference.getKey()))
+		{
+			ImageLoader.getInstance().clearDiskCache();
+			ImageLoader.getInstance().clearMemoryCache();
+			SnackBar.show(getActivity(), getString(R.string.cache_cleared), Snackbar.LENGTH_SHORT, null);
 		}
 
 		return false;

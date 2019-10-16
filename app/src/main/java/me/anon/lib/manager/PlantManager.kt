@@ -45,11 +45,11 @@ class PlantManager private constructor()
 	{
 		this.context = context.applicationContext
 		FILES_DIR = this.context.getExternalFilesDir(null)!!.absolutePath
-
-		load()
 	}
 
 	public fun indexOf(plant: Plant) = plants.indexOfFirst { it.id == plant.id }
+
+	public fun getPlant(id: String) = plants.find { it.id == id }
 
 	public fun getSortedPlantList(garden: Garden?): ArrayList<Plant>
 	{

@@ -109,6 +109,7 @@ public class MainApplication extends Application
 		context = this;
 		ExceptionHandler.getInstance().register(this);
 
+		PlantManager.getInstance().initialise(this);
 		encrypted = PreferenceManager.getDefaultSharedPreferences(this).getBoolean("encrypt", false) || PlantManager.isFileEncrypted();
 
 		FileManager.IMAGE_PATH = PreferenceManager.getDefaultSharedPreferences(this).getString("image_location", "");
@@ -117,7 +118,7 @@ public class MainApplication extends Application
 
 		isTablet = getResources().getBoolean(R.bool.is_tablet);
 
-		PlantManager.getInstance().initialise(this);
+		PlantManager.getInstance().load();
 		GardenManager.getInstance().initialise(this);
 		ScheduleManager.instance.initialise(this);
 		registerBackupService();
@@ -127,12 +128,14 @@ public class MainApplication extends Application
 			.cacheOnDisk(true)
 			.showImageOnLoading(R.drawable.ic_image)
 			.showImageOnFail(R.drawable.default_plant)
-			.imageScaleType(ImageScaleType.IN_SAMPLE_POWER_OF_2)
+			.imageScaleType(ImageScaleType.EXACTLY)
 			.bitmapConfig(Bitmap.Config.RGB_565)
+			.considerExifParams(true)
 			.build();
 
 		ImageLoader.getInstance().init(new ImageLoaderConfiguration.Builder(this)
 			.threadPoolSize(6)
+			.diskCacheExtraOptions(512, 512, null)
 			.imageDecoder(new BaseImageDecoder(false)
 			{
 				@Override protected InputStream getImageStream(ImageDecodingInfo decodingInfo) throws IOException
@@ -145,7 +148,7 @@ public class MainApplication extends Application
 						}
 						catch (URISyntaxException e)
 						{
-							e.printStackTrace();
+							//e.printStackTrace();
 						}
 					}
 

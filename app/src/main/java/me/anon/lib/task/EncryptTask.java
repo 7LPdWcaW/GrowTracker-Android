@@ -35,7 +35,7 @@ public class EncryptTask extends AsyncTask<ArrayList<String>, Integer, Void>
 
 	public EncryptTask(Context appContext)
 	{
-		this.appContext = appContext;
+		this.appContext = appContext.getApplicationContext();
 	}
 
 	@Override protected void onPreExecute()
@@ -46,12 +46,14 @@ public class EncryptTask extends AsyncTask<ArrayList<String>, Integer, Void>
 		notificationManager = (NotificationManager)appContext.getSystemService(Context.NOTIFICATION_SERVICE);
 
 		notification = new NotificationCompat.Builder(appContext, "export")
-			.setContentText(appContext.getString(R.string.app_name))
-			.setContentTitle("Data task")
+			.setContentText(appContext.getString(R.string.data_task))
+			.setContentTitle(appContext.getString(R.string.encrypt_progress_warning))
 			.setContentIntent(PendingIntent.getActivity(appContext, 0, new Intent(), PendingIntent.FLAG_UPDATE_CURRENT))
 			.setTicker(appContext.getString(R.string.encrypt_progress_warning))
 			.setSmallIcon(R.drawable.ic_stat_name)
 			.setPriority(NotificationCompat.PRIORITY_LOW)
+			.setAutoCancel(false)
+			.setOngoing(true)
 			.setSound(null);
 
 		notificationManager.notify(1, notification.build());
@@ -65,18 +67,20 @@ public class EncryptTask extends AsyncTask<ArrayList<String>, Integer, Void>
 		int total = params[0].size();
 		for (String filePath : params[0])
 		{
-			if (!new File(filePath).exists()) continue;
+			File file = new File(filePath);
+			File temp = new File(filePath + ".temp");
+			if (!file.exists()) continue;
 
 			FileInputStream fis = null;
 			EncryptOutputStream eos = null;
 			try
 			{
-				new File(filePath).renameTo(new File(filePath + ".temp"));
+				file.renameTo(temp);
 
-				fis = new FileInputStream(new File(filePath + ".temp"));
-				eos = new EncryptOutputStream(cipher, new File(filePath));
+				fis = new FileInputStream(temp);
+				eos = new EncryptOutputStream(cipher, file);
 
-				byte[] buffer = new byte[8192];
+				byte[] buffer = new byte[524288];
 				int len = 0;
 
 				while ((len = fis.read(buffer)) != -1)
@@ -84,9 +88,8 @@ public class EncryptTask extends AsyncTask<ArrayList<String>, Integer, Void>
 					eos.write(buffer, 0, len);
 				}
 
-				new File(filePath + ".temp").delete();
-
 				eos.flush();
+				temp.delete();
 			}
 			catch (Exception e)
 			{
@@ -128,17 +131,29 @@ public class EncryptTask extends AsyncTask<ArrayList<String>, Integer, Void>
 
 	@Override protected void onPostExecute(Void aVoid)
 	{
-		notificationManager.cancel(1);
+		appContext = null;
 	}
 
 	@Override protected void onProgressUpdate(Integer... values)
 	{
-		if (values[1] == values[0])
+		if (values[1].equals(values[0]))
 		{
-			notificationManager.cancel(1);
+			notification = new NotificationCompat.Builder(appContext, "export")
+				.setContentText(appContext.getString(R.string.data_task))
+				.setContentTitle(appContext.getString(R.string.task_complete))
+				.setContentIntent(PendingIntent.getActivity(appContext, 0, new Intent(), PendingIntent.FLAG_UPDATE_CURRENT))
+				.setTicker(appContext.getString(R.string.task_complete))
+				.setSmallIcon(R.drawable.ic_floting_done)
+				.setPriority(NotificationCompat.PRIORITY_LOW)
+				.setAutoCancel(false)
+				.setOngoing(false)
+				.setSound(null)
+				.setProgress(0, 0, false);
+			notificationManager.notify(1, notification.build());
 		}
 		else
 		{
+			notification.setTicker(values[0] + "/" + values[1]);
 			notification.setProgress(values[1], values[0], false);
 			notificationManager.notify(1, notification.build());
 		}
