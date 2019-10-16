@@ -51,6 +51,8 @@ class PlantManager private constructor()
 
 	public fun indexOf(plant: Plant) = plants.indexOfFirst { it.id == plant.id }
 
+	public fun getPlant(id: String) = plants.find { it.id == id }
+
 	public fun getSortedPlantList(garden: Garden?): ArrayList<Plant>
 	{
 		if (MainApplication.isFailsafe())
