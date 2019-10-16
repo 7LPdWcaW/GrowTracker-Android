@@ -133,6 +133,7 @@ public class SettingsFragment extends PreferenceFragmentCompat implements Prefer
 		}
 
 		findPreference("readme").setOnPreferenceClickListener(this);
+		findPreference("clear_image_cache").setOnPreferenceClickListener(this);
 		findPreference("export").setOnPreferenceClickListener(this);
 		findPreference("default_garden").setOnPreferenceClickListener(this);
 		findPreference("delivery_unit").setOnPreferenceClickListener(this);
@@ -998,6 +999,12 @@ public class SettingsFragment extends PreferenceFragmentCompat implements Prefer
 				Intent intent = new Intent(Intent.ACTION_OPEN_DOCUMENT_TREE);
 				startActivityForResult(intent, REQUEST_PICK_DOCUMENT);
 			}
+		}
+		else if ("clear_image_cache".equals(preference.getKey()))
+		{
+			ImageLoader.getInstance().clearDiskCache();
+			ImageLoader.getInstance().clearMemoryCache();
+			SnackBar.show(getActivity(), getString(R.string.cache_cleared), Snackbar.LENGTH_SHORT, null);
 		}
 
 		return false;

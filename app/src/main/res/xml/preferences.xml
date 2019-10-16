@@ -80,8 +80,13 @@
 
 		<Preference
 			android:key="image_location"
-			android:title="Image storage location"
+			android:title="@string/settings_image_location_title"
 			android:summary="Currently /var/"
+		/>
+
+		<Preference
+			android:key="clear_image_cache"
+			android:title="@string/settings_image_cache_title"
 		/>
 
 		<Preference
