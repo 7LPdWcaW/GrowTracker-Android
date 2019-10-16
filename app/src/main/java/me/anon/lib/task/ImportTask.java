@@ -59,8 +59,8 @@ public class ImportTask extends AsyncTask<Pair<String, ArrayList<Uri>>, Integer,
 		notificationManager = (NotificationManager)appContext.getSystemService(Context.NOTIFICATION_SERVICE);
 
 		notification = new NotificationCompat.Builder(appContext, "export")
-			.setContentText(appContext.getString(R.string.app_name))
-			.setContentTitle(appContext.getString(R.string.data_task))
+			.setContentText(appContext.getString(R.string.data_task))
+			.setContentTitle(appContext.getString(R.string.import_progress_warning))
 			.setContentIntent(PendingIntent.getActivity(appContext, 0, new Intent(), PendingIntent.FLAG_UPDATE_CURRENT))
 			.setTicker(appContext.getString(R.string.import_progress_warning))
 			.setSmallIcon(R.drawable.ic_stat_name)
@@ -170,7 +170,6 @@ public class ImportTask extends AsyncTask<Pair<String, ArrayList<Uri>>, Integer,
 
 	@Override protected void onPostExecute(Void aVoid)
 	{
-		notificationManager.cancel(1);
 		appContext = null;
 
 		if (callback != null)
@@ -184,8 +183,8 @@ public class ImportTask extends AsyncTask<Pair<String, ArrayList<Uri>>, Integer,
 		if (values[1].equals(values[0]))
 		{
 			notification = new NotificationCompat.Builder(appContext, "export")
-				.setContentText(appContext.getString(R.string.app_name))
-				.setContentTitle(appContext.getString(R.string.data_task))
+				.setContentText(appContext.getString(R.string.data_task))
+				.setContentTitle(appContext.getString(R.string.task_complete))
 				.setContentIntent(PendingIntent.getActivity(appContext, 0, new Intent(), PendingIntent.FLAG_UPDATE_CURRENT))
 				.setTicker(appContext.getString(R.string.task_complete))
 				.setSmallIcon(R.drawable.ic_floting_done)

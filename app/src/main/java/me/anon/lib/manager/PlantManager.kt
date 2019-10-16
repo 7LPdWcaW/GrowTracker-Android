@@ -45,8 +45,6 @@ class PlantManager private constructor()
 	{
 		this.context = context.applicationContext
 		FILES_DIR = this.context.getExternalFilesDir(null)!!.absolutePath
-
-		load()
 	}
 
 	public fun indexOf(plant: Plant) = plants.indexOfFirst { it.id == plant.id }

@@ -46,12 +46,14 @@ public class DecryptTask extends AsyncTask<ArrayList<String>, Integer, Void>
 		notificationManager = (NotificationManager)appContext.getSystemService(Context.NOTIFICATION_SERVICE);
 
 		notification = new NotificationCompat.Builder(appContext, "export")
-			.setContentText(appContext.getString(R.string.app_name))
-			.setContentTitle("Data task")
+			.setContentText(appContext.getString(R.string.data_task))
+			.setContentTitle(appContext.getString(R.string.decrypt_progress_warning))
 			.setContentIntent(PendingIntent.getActivity(appContext, 0, new Intent(), PendingIntent.FLAG_UPDATE_CURRENT))
 			.setTicker(appContext.getString(R.string.decrypt_progress_warning))
 			.setSmallIcon(R.drawable.ic_stat_name)
 			.setPriority(NotificationCompat.PRIORITY_LOW)
+			.setAutoCancel(false)
+			.setOngoing(true)
 			.setSound(null);
 
 		notificationManager.notify(1, notification.build());
@@ -129,7 +131,6 @@ public class DecryptTask extends AsyncTask<ArrayList<String>, Integer, Void>
 
 	@Override protected void onPostExecute(Void aVoid)
 	{
-		notificationManager.cancel(1);
 		appContext = null;
 	}
 
@@ -138,8 +139,8 @@ public class DecryptTask extends AsyncTask<ArrayList<String>, Integer, Void>
 		if (values[1].equals(values[0]))
 		{
 			notification = new NotificationCompat.Builder(appContext, "export")
-				.setContentText(appContext.getString(R.string.app_name))
-				.setContentTitle(appContext.getString(R.string.data_task))
+				.setContentText(appContext.getString(R.string.data_task))
+				.setContentTitle(appContext.getString(R.string.task_complete))
 				.setContentIntent(PendingIntent.getActivity(appContext, 0, new Intent(), PendingIntent.FLAG_UPDATE_CURRENT))
 				.setTicker(appContext.getString(R.string.task_complete))
 				.setSmallIcon(R.drawable.ic_floting_done)
