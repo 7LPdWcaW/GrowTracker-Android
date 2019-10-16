@@ -109,6 +109,7 @@ public class MainApplication extends Application
 		context = this;
 		ExceptionHandler.getInstance().register(this);
 
+		PlantManager.getInstance().initialise(this);
 		encrypted = PreferenceManager.getDefaultSharedPreferences(this).getBoolean("encrypt", false) || PlantManager.isFileEncrypted();
 
 		FileManager.IMAGE_PATH = PreferenceManager.getDefaultSharedPreferences(this).getString("image_location", "");
@@ -117,7 +118,7 @@ public class MainApplication extends Application
 
 		isTablet = getResources().getBoolean(R.bool.is_tablet);
 
-		PlantManager.getInstance().initialise(this);
+		PlantManager.getInstance().load();
 		GardenManager.getInstance().initialise(this);
 		ScheduleManager.instance.initialise(this);
 		registerBackupService();

@@ -122,7 +122,7 @@ public class BootActivity extends AppCompatActivity
 			{
 				@Override public void onDialogConfirmed(DialogInterface dialog, String input)
 				{
-					String integrityCheck = PreferenceManager.getDefaultSharedPreferences(BootActivity.this).getString("encryption_check_key", "");
+					String integrityCheck = PreferenceManager.getDefaultSharedPreferences(BootActivity.this).getString("encryption_check_key", Base64.encodeToString(EncryptionHelper.encrypt(input, input), Base64.NO_WRAP));
 					String failsafeCheck = PreferenceManager.getDefaultSharedPreferences(BootActivity.this).getString("failsafe_check_key", "");
 					String inputCheck = Base64.encodeToString(EncryptionHelper.encrypt(input, input), Base64.NO_WRAP);
 
