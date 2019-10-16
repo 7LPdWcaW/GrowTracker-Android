@@ -115,7 +115,7 @@ public class SettingsFragment extends PreferenceFragmentCompat implements Prefer
 		}
 
 		findPreference("encrypt").setOnPreferenceChangeListener(this);
-		findPreference("encrypt").setEnabled(!MainApplication.dataTaskRunning.get() && MainApplication.isEncrypted());
+		findPreference("encrypt").setEnabled(!MainApplication.dataTaskRunning.get());
 
 		findPreference("failsafe").setOnPreferenceChangeListener(this);
 		findPreference("auto_backup").setOnPreferenceChangeListener(this);
