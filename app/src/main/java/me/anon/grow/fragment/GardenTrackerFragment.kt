@@ -377,6 +377,9 @@ class GardenTrackerFragment : Fragment()
 				}
 			}
 		})
+
+		general_title.visibility = if (data_container.childCount > 0) View.VISIBLE else View.GONE
+		data_container.visibility = if (data_container.childCount > 0) View.VISIBLE else View.GONE
 	}
 
 	private fun updateDataReferences()
