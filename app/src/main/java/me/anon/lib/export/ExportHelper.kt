@@ -108,6 +108,7 @@ class ExportHelper(
 				val height = 512
 
 				saveGardenTempChart(tempWidth, height, garden, outFile)
+				saveGardenHumdityChart(humidityWidth, height, garden, outFile)
 			}
 
 			plants.forEach { plant ->
@@ -227,7 +228,90 @@ class ExportHelper(
 
 	private fun saveGardenTempChart(width: Int, height: Int, garden: Garden, outZip: ZipFile)
 	{
+		try
+		{
+			val widthMeasureSpec = View.MeasureSpec.makeMeasureSpec(width, View.MeasureSpec.EXACTLY)
+			val heightMeasureSpec = View.MeasureSpec.makeMeasureSpec(height, View.MeasureSpec.EXACTLY)
 
+			val temp = LineChart(context)
+			temp.setExtraOffsets(30f, 30f, 30f, 30f)
+			temp.setPadding(100, 100, 100, 100)
+			temp.layoutParams = ViewGroup.LayoutParams(width, height)
+			temp.minimumWidth = width
+			temp.minimumHeight = height
+			temp.measure(widthMeasureSpec, heightMeasureSpec)
+			temp.requestLayout()
+			temp.layout(0, 0, width, height)
+			StatsHelper.setTempData(garden, context, temp, null)
+			temp.data.setDrawValues(true)
+
+			try
+			{
+				val parameters = ZipParameters()
+				parameters.compressionMethod = Zip4jConstants.COMP_DEFLATE
+				parameters.fileNameInZip = "garden-temp.jpg"
+				parameters.isSourceExternalStream = true
+
+				val outputStream = ByteArrayOutputStream()
+				temp.chartBitmap.compress(Bitmap.CompressFormat.JPEG, 100, outputStream)
+				val stream = ByteArrayInputStream(outputStream.toByteArray())
+				outZip.addStream(stream, parameters)
+
+				stream.close()
+			}
+			catch (e: Exception)
+			{
+				e.printStackTrace()
+			}
+		}
+		catch (e: Exception)
+		{
+			e.printStackTrace()
+		}
+	}
+
+	private fun saveGardenHumdityChart(width: Int, height: Int, garden: Garden, outZip: ZipFile)
+	{
+		try
+		{
+			val widthMeasureSpec = View.MeasureSpec.makeMeasureSpec(width, View.MeasureSpec.EXACTLY)
+			val heightMeasureSpec = View.MeasureSpec.makeMeasureSpec(height, View.MeasureSpec.EXACTLY)
+
+			val chart = LineChart(context)
+			chart.setExtraOffsets(30f, 30f, 30f, 30f)
+			chart.setPadding(100, 100, 100, 100)
+			chart.layoutParams = ViewGroup.LayoutParams(width, height)
+			chart.minimumWidth = width
+			chart.minimumHeight = height
+			chart.measure(widthMeasureSpec, heightMeasureSpec)
+			chart.requestLayout()
+			chart.layout(0, 0, width, height)
+			StatsHelper.setHumidityData(garden, context, chart, null)
+			chart.data.setDrawValues(true)
+
+			try
+			{
+				val parameters = ZipParameters()
+				parameters.compressionMethod = Zip4jConstants.COMP_DEFLATE
+				parameters.fileNameInZip = "garden-humidity.jpg"
+				parameters.isSourceExternalStream = true
+
+				val outputStream = ByteArrayOutputStream()
+				chart.chartBitmap.compress(Bitmap.CompressFormat.JPEG, 100, outputStream)
+				val stream = ByteArrayInputStream(outputStream.toByteArray())
+				outZip.addStream(stream, parameters)
+
+				stream.close()
+			}
+			catch (e: Exception)
+			{
+				e.printStackTrace()
+			}
+		}
+		catch (e: Exception)
+		{
+			e.printStackTrace()
+		}
 	}
 
 	private fun saveTempChart(width: Int, height: Int, plant: Plant, pathPrefix: String, outZip: ZipFile)
@@ -238,6 +322,7 @@ class ExportHelper(
 			val heightMeasureSpec = View.MeasureSpec.makeMeasureSpec(height, View.MeasureSpec.EXACTLY)
 
 			val temp = LineChart(context)
+			temp.setExtraOffsets(30f, 30f, 30f, 30f)
 			temp.setPadding(100, 100, 100, 100)
 			temp.layoutParams = ViewGroup.LayoutParams(width, height)
 			temp.minimumWidth = width
@@ -290,6 +375,7 @@ class ExportHelper(
 		for (tdsName in tdsNames)
 		{
 			val tds = LineChart(context)
+			tds.setExtraOffsets(30f, 30f, 30f, 30f)
 			tds.setPadding(100, 100, 100, 100)
 			tds.layoutParams = ViewGroup.LayoutParams(width, height)
 			tds.minimumWidth = width
@@ -329,6 +415,7 @@ class ExportHelper(
 			val heightMeasureSpec = View.MeasureSpec.makeMeasureSpec(height, View.MeasureSpec.EXACTLY)
 
 			val inputPh = LineChart(context)
+			inputPh.setExtraOffsets(30f, 30f, 30f, 30f)
 			inputPh.setPadding(100, 100, 100, 100)
 			inputPh.layoutParams = ViewGroup.LayoutParams(width, height)
 			inputPh.minimumWidth = width
@@ -378,6 +465,7 @@ class ExportHelper(
 			val heightMeasureSpec = View.MeasureSpec.makeMeasureSpec(height, View.MeasureSpec.EXACTLY)
 
 			val additives = LineChart(context)
+			additives.setExtraOffsets(30f, 30f, 30f, 30f)
 			additives.setPadding(100, 100, 100, 100)
 			additives.layoutParams = ViewGroup.LayoutParams(width, height)
 			additives.minimumWidth = width
