@@ -100,7 +100,6 @@ public class ExportHelper
 
 				long startDate = plant.getPlantDate();
 				long endDate = System.currentTimeMillis();
-				long feedDifference = 0L;
 				long waterDifference = 0L;
 				long lastWater = 0L;
 				int totalWater = 0, totalFlush = 0;
