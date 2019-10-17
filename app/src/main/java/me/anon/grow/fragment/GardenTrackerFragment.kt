@@ -386,6 +386,17 @@ class GardenTrackerFragment : Fragment()
 	{
 		(actions_recycler.adapter as GardenActionAdapter?)?.let {
 			it.items = garden.actions
+
+			if (it.items.size > 0)
+			{
+				actions_recycler.visibility = View.VISIBLE
+				empty.visibility = View.GONE
+			}
+			else
+			{
+				actions_recycler.visibility = View.GONE
+				empty.visibility = View.VISIBLE
+			}
 		}
 
 		setStatistics()

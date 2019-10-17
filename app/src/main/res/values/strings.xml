@@ -417,4 +417,5 @@
 	<string name="import_progress_warning">Importing images, this may take a while…</string>
 	<string name="data_task">Data task</string>
 	<string name="task_complete">Task completed</string>
+	<string name="empty_actions_list">There are no actions to show</string>
 </resources>

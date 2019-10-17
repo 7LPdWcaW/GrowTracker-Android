@@ -535,5 +535,36 @@
 			app:layout_constraintBottom_toBottomOf="parent"
 			app:layout_constraintTop_toBottomOf="@id/toggle_actions"
 		/>
+
+		<LinearLayout
+			android:layout_width="0dp"
+			android:layout_height="wrap_content"
+			android:id="@+id/empty"
+			android:layout_gravity="center"
+			android:orientation="vertical"
+			app:layout_constraintTop_toBottomOf="@id/toggle_actions"
+			app:layout_constraintBottom_toBottomOf="parent"
+			app:layout_constraintStart_toStartOf="parent"
+			app:layout_constraintEnd_toEndOf="parent"
+		>
+			<ImageView
+				android:layout_width="256dp"
+				android:layout_height="256dp"
+				app:srcCompat="@drawable/ic_cog"
+				app:tint="?android:textColorTertiary"
+				android:layout_gravity="center_horizontal"
+				android:alpha="0.2"
+			/>
+
+			<TextView
+				android:layout_width="wrap_content"
+				android:layout_height="wrap_content"
+				android:gravity="center_horizontal"
+				android:text="@string/empty_actions_list"
+				android:textColor="?android:textColorTertiary"
+				android:layout_marginTop="12dp"
+				android:layout_gravity="center_horizontal"
+			/>
+		</LinearLayout>
 	</androidx.constraintlayout.widget.ConstraintLayout>
 </FrameLayout>
