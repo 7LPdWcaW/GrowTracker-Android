@@ -264,7 +264,7 @@ public class ActionsListFragment extends Fragment implements ActionAdapter.OnAct
 				PlantManager.getInstance().upsert(plant);
 				setResult();
 
-				SnackBar.show(getActivity(), action.getAction().getPrintString() + " " + getString(R.string.added), getString(R.string.undo), new SnackBarListener()
+				SnackBar.show(getActivity(), getString(action.getAction().getPrintString()) + " " + getString(R.string.added), getString(R.string.undo), new SnackBarListener()
 				{
 					@Override public void onSnackBarStarted(Object o){}
 

@@ -176,7 +176,7 @@
 	<string name="note">Нотатка</string>
 	<string name="delete_event_dialog_title">Видалити подію?</string>
 	<string name="confirm_delete_item_message">Дійсно видалити </string>
-	<string name="confirm_delete_photos_message" formatted="true">Дійсно видалити %s зображень? Їх неможливо буде відновити.</string>
+	<string name="confirm_delete_photos_message" formatted="true">Дійсно видалити &lt;b&gt;%s&lt;/b&gt; зображень? Їх неможливо буде відновити.</string>
 	<string name="edit">Редагувати</string>
 	<string name="stage">стадія</string>
 	<string name="set">Встановити</string>
