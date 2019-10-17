@@ -12,6 +12,7 @@ import android.widget.TextView;
 
 import com.github.mikephil.charting.charts.BarChart;
 import com.github.mikephil.charting.charts.LineChart;
+import com.github.mikephil.charting.components.MarkerView;
 import com.github.mikephil.charting.components.YAxis;
 import com.github.mikephil.charting.data.BarData;
 import com.github.mikephil.charting.data.BarDataSet;
@@ -19,6 +20,7 @@ import com.github.mikephil.charting.data.BarEntry;
 import com.github.mikephil.charting.data.Entry;
 import com.github.mikephil.charting.formatter.ValueFormatter;
 import com.github.mikephil.charting.formatter.YAxisValueFormatter;
+import com.github.mikephil.charting.highlight.Highlight;
 import com.github.mikephil.charting.utils.ViewPortHandler;
 import com.google.android.flexbox.FlexboxLayout;
 
@@ -34,6 +36,7 @@ import androidx.fragment.app.Fragment;
 import me.anon.grow.R;
 import me.anon.lib.TdsUnit;
 import me.anon.lib.TempUnit;
+import me.anon.lib.Unit;
 import me.anon.lib.Views;
 import me.anon.lib.ext.IntUtilsKt;
 import me.anon.lib.ext.NumberUtilsKt;
@@ -208,6 +211,38 @@ public class StatisticsFragment extends Fragment
 		}
 
 		StatsHelper.setAdditiveData(plant, getActivity(), additives, checkedAdditives);
+		final Unit measurement = Unit.getSelectedMeasurementUnit(getActivity());
+		final Unit delivery = Unit.getSelectedDeliveryUnit(getActivity());
+
+		additives.setMarkerView(new MarkerView(getActivity(), R.layout.chart_marker)
+		{
+			@Override
+			public void refreshContent(Entry e, Highlight highlight)
+			{
+				String val = NumberUtilsKt.formatWhole(e.getVal());
+
+				((TextView)findViewById(R.id.content)).setText(val + measurement.getLabel() + "/" + delivery.getLabel());
+
+				int color = IntUtilsKt.resolveColor(R.attr.colorPrimary, getActivity());
+				if (e.getData() instanceof Integer)
+				{
+					color = (int)e.getData();
+				}
+
+				((TextView)findViewById(R.id.content)).setTextColor(color);
+			}
+
+			@Override public int getXOffset(float xpos)
+			{
+				return -(getWidth() / 2);
+			}
+
+			@Override public int getYOffset(float ypos)
+			{
+				return -getHeight();
+			}
+		});
+
 		additives.notifyDataSetChanged();
 		additives.postInvalidate();
 

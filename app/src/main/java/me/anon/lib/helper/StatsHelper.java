@@ -233,35 +233,6 @@ public class StatsHelper
 
 		styleGraph(chart);
 
-		chart.setMarkerView(new MarkerView(context, R.layout.chart_marker)
-		{
-			@Override
-			public void refreshContent(Entry e, Highlight highlight)
-			{
-				String val = NumberUtilsKt.formatWhole(e.getVal());
-
-				((TextView)findViewById(R.id.content)).setText(val + measurement.getLabel() + "/" + delivery.getLabel());
-
-				int color = IntUtilsKt.resolveColor(R.attr.colorPrimary, context);
-				if (e.getData() instanceof Integer)
-				{
-					color = (int)e.getData();
-				}
-
-				((TextView)findViewById(R.id.content)).setTextColor(color);
-			}
-
-			@Override public int getXOffset(float xpos)
-			{
-				return -(getWidth() / 2);
-			}
-
-			@Override public int getYOffset(float ypos)
-			{
-				return -getHeight();
-			}
-		});
-
 		chart.setData(lineData);
 	}
 

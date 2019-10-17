@@ -45,7 +45,7 @@ class ExportHelper(
 		intent.putStringArrayListExtra("plants", ArrayList(plants.map { it.id }))
 
 		plants.firstOrNull()?.let {
-			intent.putExtra("title", it.name.replace("[^a-zA-Z0-9]+", "-"))
+			intent.putExtra("title", it.name.replace("[^a-zA-Z0-9]+".toRegex(), "-"))
 			intent.putExtra("name", it.name)
 		}
 
@@ -82,10 +82,10 @@ class ExportHelper(
 			Environment.DIRECTORY_DOWNLOADS
 		}
 
-//		val exportFolder = File("$folderPath/GrowLogs/$exportInt")
-//		exportFolder.mkdirs()
+		val exportFolder = File("$folderPath/GrowLogs/")
+		exportFolder.mkdirs()
 
-		val finalFile = File("$folderPath/GrowLogs/$outputName.zip")
+		val finalFile = File(exportFolder, "$outputName.zip")
 		if (finalFile.exists())
 		{
 			finalFile.delete()
@@ -105,7 +105,14 @@ class ExportHelper(
 				// do processor stuff
 
 				// do chart stuff
-				saveAdditiveChart(plant, zipPathPrefix, outFile)
+				val totalWater = plant.actions?.sumBy { if (it is Water) 1 else 0 } ?: 0
+				val width = 1024 + (totalWater * 20)
+				val height = 512
+
+				saveTempChart(width, height, plant, zipPathPrefix, outFile)
+				saveTdsCharts(width, height, plant, zipPathPrefix, outFile)
+				saveInputPhChart(width, height, plant, zipPathPrefix, outFile)
+				saveAdditiveChart(width, height, plant, zipPathPrefix, outFile)
 
 				// do image stuff
 				if (includeImages)
@@ -206,19 +213,150 @@ class ExportHelper(
 		}.executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR, *plant.toTypedArray())
 	}
 
-	private fun saveAdditiveChart(plant: Plant, pathPrefix: String, outZip: ZipFile)
+	private fun saveTempChart(width: Int, height: Int, plant: Plant, pathPrefix: String, outZip: ZipFile)
 	{
 		try
 		{
-			val totalWater = plant.actions?.sumBy { if (it is Water) 1 else 0 } ?: 0
+			val widthMeasureSpec = View.MeasureSpec.makeMeasureSpec(width, View.MeasureSpec.EXACTLY)
+			val heightMeasureSpec = View.MeasureSpec.makeMeasureSpec(height, View.MeasureSpec.EXACTLY)
+
+			val temp = LineChart(context)
+			temp.setPadding(100, 100, 100, 100)
+			temp.layoutParams = ViewGroup.LayoutParams(width, height)
+			temp.minimumWidth = width
+			temp.minimumHeight = height
+			temp.measure(widthMeasureSpec, heightMeasureSpec)
+			temp.requestLayout()
+			temp.layout(0, 0, width, height)
+			StatsHelper.setTempData(plant, context, temp, null)
+			temp.data.setDrawValues(true)
+
+			try
+			{
+				val parameters = ZipParameters()
+				parameters.compressionMethod = Zip4jConstants.COMP_DEFLATE
+				parameters.fileNameInZip = pathPrefix + "temp.jpg"
+				parameters.isSourceExternalStream = true
+
+				val outputStream = ByteArrayOutputStream()
+				temp.chartBitmap.compress(Bitmap.CompressFormat.JPEG, 100, outputStream)
+				val stream = ByteArrayInputStream(outputStream.toByteArray())
+				outZip.addStream(stream, parameters)
+
+				stream.close()
+			}
+			catch (e: Exception)
+			{
+				e.printStackTrace()
+			}
+		}
+		catch (e: Exception)
+		{
+			e.printStackTrace()
+		}
+	}
+
+	private fun saveTdsCharts(width: Int, height: Int, plant: Plant, pathPrefix: String, outZip: ZipFile)
+	{
+		val tdsNames = TreeSet<TdsUnit>()
+		for (action in plant.actions!!)
+		{
+			if (action is Water && action.tds != null)
+			{
+				tdsNames.add(action.tds!!.type)
+			}
+		}
+
+		val widthMeasureSpec = View.MeasureSpec.makeMeasureSpec(width, View.MeasureSpec.EXACTLY)
+		val heightMeasureSpec = View.MeasureSpec.makeMeasureSpec(height, View.MeasureSpec.EXACTLY)
+
+		for (tdsName in tdsNames)
+		{
+			val tds = LineChart(context)
+			tds.setPadding(100, 100, 100, 100)
+			tds.layoutParams = ViewGroup.LayoutParams(width, height)
+			tds.minimumWidth = width
+			tds.minimumHeight = height
+			tds.measure(widthMeasureSpec, heightMeasureSpec)
+			tds.requestLayout()
+			tds.layout(0, 0, width, height)
+			StatsHelper.setTdsData(plant, context, tds, null, tdsName)
+			tds.data.setDrawValues(true)
+
+			try
+			{
+				val parameters = ZipParameters()
+				parameters.compressionMethod = Zip4jConstants.COMP_DEFLATE
+				parameters.fileNameInZip = pathPrefix + context.getString(tdsName.strRes) + ".jpg"
+				parameters.isSourceExternalStream = true
+
+				val outputStream = ByteArrayOutputStream()
+				tds.chartBitmap.compress(Bitmap.CompressFormat.JPEG, 100, outputStream)
+				val stream = ByteArrayInputStream(outputStream.toByteArray())
+				outZip.addStream(stream, parameters)
+
+				stream.close()
+			}
+			catch (e: Exception)
+			{
+				e.printStackTrace()
+			}
+		}
+	}
+
+	private fun saveInputPhChart(width: Int, height: Int, plant: Plant, pathPrefix: String, outZip: ZipFile)
+	{
+		try
+		{
+			val widthMeasureSpec = View.MeasureSpec.makeMeasureSpec(width, View.MeasureSpec.EXACTLY)
+			val heightMeasureSpec = View.MeasureSpec.makeMeasureSpec(height, View.MeasureSpec.EXACTLY)
+
+			val inputPh = LineChart(context)
+			inputPh.setPadding(100, 100, 100, 100)
+			inputPh.layoutParams = ViewGroup.LayoutParams(width, height)
+			inputPh.minimumWidth = width
+			inputPh.minimumHeight = height
+			inputPh.measure(widthMeasureSpec, heightMeasureSpec)
+			inputPh.requestLayout()
+			inputPh.layout(0, 0, width, height)
+			StatsHelper.setInputData(plant, context, inputPh, null)
+			inputPh.data.setDrawValues(true)
+
+			try
+			{
+				val parameters = ZipParameters()
+				parameters.compressionMethod = Zip4jConstants.COMP_DEFLATE
+				parameters.fileNameInZip = pathPrefix + "input-ph.jpg"
+				parameters.isSourceExternalStream = true
+
+				val outputStream = ByteArrayOutputStream()
+				inputPh.chartBitmap.compress(Bitmap.CompressFormat.JPEG, 100, outputStream)
+				val stream = ByteArrayInputStream(outputStream.toByteArray())
+				outZip.addStream(stream, parameters)
+
+				stream.close()
+			}
+			catch (e: Exception)
+			{
+				e.printStackTrace()
+			}
+		}
+		catch (e: Exception)
+		{
+			e.printStackTrace()
+		}
+	}
+
+	private fun saveAdditiveChart(width: Int, height: Int, plant: Plant, pathPrefix: String, outZip: ZipFile)
+	{
+		try
+		{
 			val additiveNames = hashSetOf<String>()
 			plant.actions?.filter { it is Water }?.forEach {
 				additiveNames.addAll((it as Water).additives.map { it.description ?: "" })
 			}
 			additiveNames.removeAll { it == "" }
 
-			val width = 1024 + (totalWater * 20)
-			val height = 512
 			val widthMeasureSpec = View.MeasureSpec.makeMeasureSpec(width, View.MeasureSpec.EXACTLY)
 			val heightMeasureSpec = View.MeasureSpec.makeMeasureSpec(height, View.MeasureSpec.EXACTLY)
 
