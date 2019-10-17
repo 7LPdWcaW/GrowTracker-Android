@@ -59,6 +59,8 @@ class ExportHelper(
 		intent.putStringArrayListExtra("plants", ArrayList(garden.plantIds))
 		intent.putExtra("processor", exportProcessor)
 		intent.putExtra("garden", garden)
+		intent.putExtra("title", garden.name.replace("[^a-zA-Z0-9]+".toRegex(), "-"))
+		intent.putExtra("name", garden.name)
 		intent.putExtra("include_images", includeImages)
 		context.startService(intent)
 	}
