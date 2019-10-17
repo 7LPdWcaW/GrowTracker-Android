@@ -377,12 +377,26 @@ class GardenTrackerFragment : Fragment()
 				}
 			}
 		})
+
+		general_title.visibility = if (data_container.childCount > 0) View.VISIBLE else View.GONE
+		data_container.visibility = if (data_container.childCount > 0) View.VISIBLE else View.GONE
 	}
 
 	private fun updateDataReferences()
 	{
 		(actions_recycler.adapter as GardenActionAdapter?)?.let {
 			it.items = garden.actions
+
+			if (it.items.size > 0)
+			{
+				actions_recycler.visibility = View.VISIBLE
+				empty.visibility = View.GONE
+			}
+			else
+			{
+				actions_recycler.visibility = View.GONE
+				empty.visibility = View.VISIBLE
+			}
 		}
 
 		setStatistics()

@@ -176,7 +176,7 @@
 	<string name="note">Заметка</string>
 	<string name="delete_event_dialog_title">Удалить событие?</string>
 	<string name="confirm_delete_item_message">Действительно удалить </string>
-	<string name="confirm_delete_photos_message" formatted="true">Действительно удалить %s изображений? Их нельзя будет восстановить.</string>
+	<string name="confirm_delete_photos_message" formatted="true">Действительно удалить &lt;b&gt;%s&lt;/b&gt; изображений? Их нельзя будет восстановить.</string>
 	<string name="edit">Редактировать</string>
 	<string name="stage">стадия</string>
 	<string name="set">Готово</string>
@@ -323,7 +323,7 @@
 	<string name="events_title">Прошлые действия</string>
 	<string name="show_hide_calendar">Показать/спрятать календарь</string>
 	<!-- "1 selected" -->
-	<string name="selected_len" formatted="true">%o выбрано</string>
+	<string name="selected_len" formatted="true">%d выбрано</string>
 	<string name="translations_title">Благодарим за участие</string>
 	<string name="translations_by">Переводы</string>
 	<string name="help_translate">Помочь с переводом</string>

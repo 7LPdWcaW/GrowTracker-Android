@@ -283,8 +283,6 @@ public class StatsHelper
 		float min = Float.MAX_VALUE;
 		float max = Float.MIN_VALUE;
 		float totalIn = 0;
-		float totalOut = 0;
-		float ave = 0;
 
 		int index = 0;
 		for (Action action : plant.getActions())
@@ -305,8 +303,6 @@ public class StatsHelper
 					runoffVals.add(new Entry(((Water)action).getRunoff().floatValue(), index));
 					min = Math.min(min, ((Water)action).getRunoff().floatValue());
 					max = Math.max(max, ((Water)action).getRunoff().floatValue());
-
-					totalOut += ((Water)action).getRunoff().floatValue();
 				}
 
 				PlantStage stage = null;
@@ -365,8 +361,8 @@ public class StatsHelper
 
 		if (additionalRef != null)
 		{
-			additionalRef[0] = NumberUtilsKt.formatWhole(min);
-			additionalRef[1] = NumberUtilsKt.formatWhole(max);
+			additionalRef[0] = min == Float.MAX_VALUE ? "-" : NumberUtilsKt.formatWhole(min);
+			additionalRef[1] = max == Float.MIN_VALUE ? "-" : NumberUtilsKt.formatWhole(max);
 			additionalRef[2] = NumberUtilsKt.formatWhole(totalIn / (double)inputVals.size());
 		}
 	}
@@ -473,8 +469,8 @@ public class StatsHelper
 
 		if (additionalRef != null)
 		{
-			additionalRef[0] = NumberUtilsKt.formatWhole(min);
-			additionalRef[1] = NumberUtilsKt.formatWhole(max);
+			additionalRef[0] = min == Float.MAX_VALUE ? "-" : NumberUtilsKt.formatWhole(min);
+			additionalRef[1] = max == Float.MIN_VALUE ? "-" : NumberUtilsKt.formatWhole(max);
 			additionalRef[2] = NumberUtilsKt.formatWhole(total / (double)vals.size());
 		}
 	}
@@ -492,8 +488,8 @@ public class StatsHelper
 		ArrayList<String> xVals = new ArrayList<>();
 		LineData data = new LineData();
 		LinkedHashMap<PlantStage, Action> stageTimes = plant.getStages();
-		float min = 100f;
-		float max = -100f;
+		float min = Float.MAX_VALUE;
+		float max = Float.MIN_VALUE;
 		float total = 0;
 		final TempUnit tempUnit = TempUnit.getSelectedTemperatureUnit(context);
 
@@ -551,8 +547,8 @@ public class StatsHelper
 
 		if (additionalRef != null)
 		{
-			additionalRef[0] = NumberUtilsKt.formatWhole((int)min);
-			additionalRef[1] = NumberUtilsKt.formatWhole((int)max);
+			additionalRef[0] = min == Float.MAX_VALUE ? "-" : NumberUtilsKt.formatWhole((int)min);
+			additionalRef[1] = max == Float.MIN_VALUE ? "-" : NumberUtilsKt.formatWhole((int)max);
 			additionalRef[2] = NumberUtilsKt.formatWhole((int)(total / (double)vals.size()));
 		}
 	}
@@ -569,8 +565,8 @@ public class StatsHelper
 		ArrayList<Entry> vals = new ArrayList<>();
 		ArrayList<String> xVals = new ArrayList<>();
 		LineData data = new LineData();
-		float min = 100f;
-		float max = -100f;
+		float min = Float.MAX_VALUE;
+		float max = Float.MIN_VALUE;
 		float total = 0;
 
 		int index = 0;
@@ -662,8 +658,8 @@ public class StatsHelper
 
 		if (additionalRef != null)
 		{
-			additionalRef[0] = NumberUtilsKt.formatWhole(min);
-			additionalRef[1] = NumberUtilsKt.formatWhole(max);
+			additionalRef[0] = min == Float.MAX_VALUE ? "-" : NumberUtilsKt.formatWhole(min);
+			additionalRef[1] = max == Float.MIN_VALUE ? "-" : NumberUtilsKt.formatWhole(max);
 			additionalRef[2] = NumberUtilsKt.formatWhole(total / (double)vals.size());
 		}
 	}
@@ -680,8 +676,8 @@ public class StatsHelper
 		ArrayList<Entry> vals = new ArrayList<>();
 		ArrayList<String> xVals = new ArrayList<>();
 		LineData data = new LineData();
-		float min = 100f;
-		float max = -100f;
+		float min = Float.MAX_VALUE;
+		float max = Float.MIN_VALUE;
 		float total = 0;
 
 		int index = 0;
@@ -772,8 +768,8 @@ public class StatsHelper
 
 		if (additionalRef != null)
 		{
-			additionalRef[0] = NumberUtilsKt.formatWhole((int)min);
-			additionalRef[1] = NumberUtilsKt.formatWhole((int)max);
+			additionalRef[0] = min == Float.MAX_VALUE ? "-" : NumberUtilsKt.formatWhole((int)min);
+			additionalRef[1] = max == Float.MIN_VALUE ? "-" : NumberUtilsKt.formatWhole((int)max);
 			additionalRef[2] = NumberUtilsKt.formatWhole((int)(total / (double)vals.size()));
 		}
 	}

@@ -11,6 +11,7 @@ import android.os.AsyncTask;
 import android.os.Build;
 import android.os.Bundle;
 import android.provider.MediaStore;
+import android.text.Html;
 import android.view.ActionMode;
 import android.view.LayoutInflater;
 import android.view.Menu;
@@ -43,7 +44,6 @@ import me.anon.grow.R;
 import me.anon.lib.SnackBar;
 import me.anon.lib.SnackBarListener;
 import me.anon.lib.Views;
-import me.anon.lib.helper.AddonHelper;
 import me.anon.lib.helper.ExportHelper;
 import me.anon.lib.helper.NotificationHelper;
 import me.anon.lib.helper.PermissionHelper;
@@ -157,17 +157,16 @@ public class ViewPhotosFragment extends Fragment
 						{
 							new AlertDialog.Builder(getActivity())
 								.setTitle(R.string.confirm_title)
-								.setMessage(getString(R.string.confirm_delete_photos_message, "" + adapter.getSelected().size()))
+								.setMessage(Html.fromHtml(getString(R.string.confirm_delete_photos_message, "" + adapter.getSelected().size())))
 								.setPositiveButton(R.string.yes, new DialogInterface.OnClickListener()
 								{
 									@Override public void onClick(DialogInterface dialog, int which)
 									{
-										for (Integer integer : adapter.getSelected())
+										for (String integer : adapter.getSelected())
 										{
-											String image = adapter.getImages().get(integer);
+											String image = adapter.getImages().get(Integer.parseInt(integer));
 											new File(image).delete();
 											plant.getImages().remove(image);
-											AddonHelper.broadcastImage(getActivity(), image, true);
 										}
 
 										PlantManager.getInstance().upsert(plant);
@@ -195,9 +194,9 @@ public class ViewPhotosFragment extends Fragment
 
 							ArrayList<Uri> files = new ArrayList<Uri>();
 
-							for (Integer integer : adapter.getSelected())
+							for (String integer : adapter.getSelected())
 							{
-								String image = adapter.getImages().get(integer);
+								String image = adapter.getImages().get(Integer.parseInt(integer));
 								File file = new File(image);
 								Uri uri = FileProvider.getUriForFile(getActivity(), getActivity().getPackageName() + ".provider", file);
 								files.add(uri);
@@ -406,7 +405,6 @@ public class ViewPhotosFragment extends Fragment
 			else
 			{
 				PlantManager.getInstance().upsert(plant);
-				AddonHelper.broadcastImage(getActivity(), plant.getImages().get(plant.getImages().size() - 1), false);
 
 				setAdapter();
 				adapter.notifyDataSetChanged();

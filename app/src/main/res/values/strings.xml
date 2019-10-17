@@ -170,7 +170,7 @@
 	<string name="note">Note</string>
 	<string name="delete_event_dialog_title">Delete this event?</string>
 	<string name="confirm_delete_item_message">Are you sure you want to delete</string>
-	<string name="confirm_delete_photos_message" formatted="true">Are you sure you want to delete %s images? You will not be able to recover these.</string>
+	<string name="confirm_delete_photos_message" formatted="true">Are you sure you want to delete &lt;b&gt;%s&lt;/b&gt; images? You will not be able to recover these.</string>
 	<string name="edit">Edit</string>
 	<string name="stage">stage</string>
 	<string name="set">Set</string>
@@ -317,7 +317,7 @@
 	<string name="events_title">Past actions</string>
 	<string name="show_hide_calendar">Show/hide calendar</string>
 	<!-- "1 selected" -->
-	<string name="selected_len" formatted="true">%o Selected</string>
+	<string name="selected_len" formatted="true">%d Selected</string>
 	<string name="translations_title">Thank you to the following</string>
 	<string name="translations_by">Translations by</string>
 	<string name="help_translate">Help translate</string>
@@ -417,4 +417,5 @@
 	<string name="import_progress_warning">Importing images, this may take a while…</string>
 	<string name="data_task">Data task</string>
 	<string name="task_complete">Task completed</string>
+	<string name="empty_actions_list">There are no actions to show</string>
 </resources>

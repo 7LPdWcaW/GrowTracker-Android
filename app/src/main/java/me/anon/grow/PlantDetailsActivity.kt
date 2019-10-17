@@ -9,7 +9,7 @@ import com.google.android.material.appbar.AppBarLayout
 import kotlinx.android.synthetic.main.fragment_holder.toolbar
 import kotlinx.android.synthetic.main.fragment_holder.toolbar_layout
 import kotlinx.android.synthetic.main.tabbed_fragment_holder.*
-import me.anon.grow.fragment.EventListFragment
+import me.anon.grow.fragment.ActionsListFragment
 import me.anon.grow.fragment.PlantDetailsFragment
 import me.anon.grow.fragment.StatisticsFragment
 import me.anon.grow.fragment.ViewPhotosFragment
@@ -40,7 +40,7 @@ class PlantDetailsActivity : BaseActivity()
 					}
 					"events" -> {
 						tabs.selectedItemId = R.id.view_history
-						EventListFragment.newInstance(intent.extras)
+						ActionsListFragment.newInstance(intent.extras)
 					}
 					"statistics" -> {
 						tabs.selectedItemId = R.id.view_statistics
@@ -48,7 +48,7 @@ class PlantDetailsActivity : BaseActivity()
 					}
 					else -> PlantDetailsFragment.newInstance(intent.extras)
 				}
-				supportFragmentManager.beginTransaction().replace(R.id.fragment_holder, fragment, TAG_FRAGMENT).commit()
+				supportFragmentManager.beginTransaction().replace(R.id.coordinator, fragment, TAG_FRAGMENT).commit()
 			}
 
 			tabs.visibility = View.GONE
@@ -58,7 +58,7 @@ class PlantDetailsActivity : BaseActivity()
 				tabs.visibility = View.VISIBLE
 				tabs.setOnNavigationItemSelectedListener {
 					plant = intent.extras?.get("plant") as Plant
-					val fragment = supportFragmentManager.findFragmentById(R.id.fragment_holder)
+					val fragment = supportFragmentManager.findFragmentById(R.id.coordinator)
 
 					if (fragment is PlantDetailsFragment)
 					{
@@ -68,10 +68,10 @@ class PlantDetailsActivity : BaseActivity()
 					toolbarLayout.removeViews(1, toolbarLayout.childCount - 1)
 					supportFragmentManager.beginTransaction()
 						.setCustomAnimations(R.anim.fade_in, R.anim.fade_out)
-						.replace(R.id.fragment_holder, when (it.itemId)
+						.replace(R.id.coordinator, when (it.itemId)
 						{
 							R.id.view_details -> PlantDetailsFragment.newInstance(intent.extras)
-							R.id.view_history -> EventListFragment.newInstance(intent.extras)
+							R.id.view_history -> ActionsListFragment.newInstance(intent.extras)
 							R.id.view_photos -> ViewPhotosFragment.newInstance(intent.extras)
 							R.id.view_statistics -> StatisticsFragment.newInstance(intent.extras)
 							else -> Fragment()
@@ -96,7 +96,7 @@ class PlantDetailsActivity : BaseActivity()
 	{
 		if (item.itemId == android.R.id.home)
 		{
-			val fragment = supportFragmentManager.findFragmentById(R.id.fragment_holder)
+			val fragment = supportFragmentManager.findFragmentById(R.id.coordinator)
 
 			if (fragment is PlantDetailsFragment)
 			{

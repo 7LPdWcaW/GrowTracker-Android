@@ -436,7 +436,7 @@ public class ActionAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>
 								{
 									new AlertDialog.Builder(v.getContext())
 										.setTitle(R.string.delete_event_dialog_title)
-										.setMessage(v.getContext().getString(R.string.confirm_delete_item_message) + viewHolder.getName().getText())
+										.setMessage(Html.fromHtml(v.getContext().getString(R.string.confirm_delete_item_message) + " <b>" + viewHolder.getName().getText() + "</b>?"))
 										.setPositiveButton(R.string.confirm_positive, new DialogInterface.OnClickListener()
 										{
 											@Override public void onClick(DialogInterface dialog, int which)

@@ -4,6 +4,7 @@ import android.view.View
 import androidx.annotation.StringRes
 import androidx.fragment.app.FragmentActivity
 import com.google.android.material.snackbar.Snackbar
+import me.anon.grow.R
 
 abstract class SnackBarListener
 {
@@ -96,7 +97,7 @@ class SnackBar
 		action: (View) -> kotlin.Unit = {}
 	)
 	{
-		val snackbar = Snackbar.make(context.findViewById(android.R.id.content), message, length)
+		val snackbar = Snackbar.make(context.findViewById(R.id.coordinator), message, length)
 		var actionText = actionText
 		var action = action
 

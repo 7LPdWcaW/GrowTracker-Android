@@ -68,27 +68,6 @@ public class StatisticsFragment extends Fragment
 	@Views.InjectView(R.id.temp) private LineChart temp;
 	@Views.InjectView(R.id.stage_chart) private BarChart stagesChart;
 
-//	@Views.InjectView(R.id.grow_time) private TextView growTime;
-//	@Views.InjectView(R.id.water_count) private TextView waterCount;
-//	@Views.InjectView(R.id.flush_count) private TextView flushCount;
-//
-//	@Views.InjectView(R.id.germ_time) private TextView germTime;
-//	@Views.InjectView(R.id.germ_time_container) private View germTimeContainer;
-//	@Views.InjectView(R.id.veg_time) private TextView vegTime;
-//	@Views.InjectView(R.id.veg_time_container) private View vegTimeContainer;
-//	@Views.InjectView(R.id.seedling_time) private TextView seedlingTime;
-//	@Views.InjectView(R.id.seedling_time_container) private View seedlingTimeContainer;
-//	@Views.InjectView(R.id.cutting_time) private TextView cuttingTime;
-//	@Views.InjectView(R.id.cutting_time_container) private View cuttingTimeContainer;
-//	@Views.InjectView(R.id.flower_time) private TextView flowerTime;
-//	@Views.InjectView(R.id.flower_time_container) private View flowerTimeContainer;
-//	@Views.InjectView(R.id.dry_time) private TextView dryTime;
-//	@Views.InjectView(R.id.dry_time_container) private View dryTimeContainer;
-//	@Views.InjectView(R.id.cure_time) private TextView cureTime;
-//	@Views.InjectView(R.id.cure_time_container) private View cureTimeContainer;
-//
-//	@Views.InjectView(R.id.ave_water) private TextView aveWater;
-
 	@Views.InjectView(R.id.stats_container) private FlexboxLayout statsContainer;
 
 	@Views.InjectView(R.id.min_input_ph) private TextView minInputPh;
@@ -408,7 +387,6 @@ public class StatisticsFragment extends Fragment
 				return "" + (int)value;
 			}
 		});
-//		stagesChart.setTouchEnabled(false);
 
 		stagesChart.setMarkerView(null);
 		stagesChart.setHighlightPerTapEnabled(false);

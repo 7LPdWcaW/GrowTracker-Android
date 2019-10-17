@@ -176,7 +176,7 @@
 	<string name="note">Note</string>
 	<string name="delete_event_dialog_title">Supprimer cet événement ?</string>
 	<string name="confirm_delete_item_message">Êtes-vous certain de vouloir supprimer </string>
-	<string name="confirm_delete_photos_message" formatted="true">Êtes-vous sûre de vouloir supprimer ces %s images ? Vous ne pourrez pas les récupérer.</string>
+	<string name="confirm_delete_photos_message" formatted="true">Êtes-vous sûre de vouloir supprimer ces &lt;b&gt;%s&lt;/b&gt; images ? Vous ne pourrez pas les récupérer.</string>
 	<string name="edit">Modifier</string>
 	<string name="stage">état</string>
 	<string name="set">OK</string>
@@ -323,7 +323,7 @@
 	<string name="events_title">Actions passées</string>
 	<string name="show_hide_calendar">Montrer/Cacher le calendrier</string>
 	<!-- "1 selected" -->
-	<string name="selected_len" formatted="true">%o Selectionné</string>
+	<string name="selected_len" formatted="true">%d Selectionné</string>
 	<string name="translations_title">Remerciements :</string>
 	<string name="translations_by">Traduction par</string>
 	<string name="help_translate">Aider à traduire</string>
