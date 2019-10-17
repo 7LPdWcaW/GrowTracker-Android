@@ -323,7 +323,7 @@
 	<string name="events_title">Прошлые действия</string>
 	<string name="show_hide_calendar">Показать/спрятать календарь</string>
 	<!-- "1 selected" -->
-	<string name="selected_len" formatted="true">%o выбрано</string>
+	<string name="selected_len" formatted="true">%d выбрано</string>
 	<string name="translations_title">Благодарим за участие</string>
 	<string name="translations_by">Переводы</string>
 	<string name="help_translate">Помочь с переводом</string>

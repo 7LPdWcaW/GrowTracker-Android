@@ -323,7 +323,7 @@
 	<string name="events_title">Actions passées</string>
 	<string name="show_hide_calendar">Montrer/Cacher le calendrier</string>
 	<!-- "1 selected" -->
-	<string name="selected_len" formatted="true">%o Selectionné</string>
+	<string name="selected_len" formatted="true">%d Selectionné</string>
 	<string name="translations_title">Remerciements :</string>
 	<string name="translations_by">Traduction par</string>
 	<string name="help_translate">Aider à traduire</string>

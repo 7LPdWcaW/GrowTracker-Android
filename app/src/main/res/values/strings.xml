@@ -317,7 +317,7 @@
 	<string name="events_title">Past actions</string>
 	<string name="show_hide_calendar">Show/hide calendar</string>
 	<!-- "1 selected" -->
-	<string name="selected_len" formatted="true">%o Selected</string>
+	<string name="selected_len" formatted="true">%d Selected</string>
 	<string name="translations_title">Thank you to the following</string>
 	<string name="translations_by">Translations by</string>
 	<string name="help_translate">Help translate</string>
