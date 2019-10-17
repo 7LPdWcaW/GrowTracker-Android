@@ -115,7 +115,7 @@ class ExportHelper(
 
 			plants.forEach { plant ->
 				// temp folder to write to
-				val zipPathPrefix = if (plants.size == 1) "" else plant.name + "/"
+				val zipPathPrefix = garden?.let { plant.name.replace("[^a-zA-Z0-9]+".toRegex(), "-") + "/"} ?: ""
 
 				// do processor stuff
 
@@ -128,16 +128,16 @@ class ExportHelper(
 				saveTdsCharts(width, height, plant, zipPathPrefix, outFile)
 				saveInputPhChart(width, height, plant, zipPathPrefix, outFile)
 				saveAdditiveChart(width, height, plant, zipPathPrefix, outFile)
+			}
 
-				// do image stuff
-				if (includeImages)
-				{
-					copyImagesAndFinish(plants, outFile, notificationTitle, callback)
-				}
-				else
-				{
-					callback(outFile.file, context)
-				}
+			// do image stuff
+			if (includeImages)
+			{
+				copyImagesAndFinish(plants, garden, outFile, notificationTitle, callback)
+			}
+			else
+			{
+				callback(outFile.file, context)
 			}
 		}
 		catch (e: Exception)
@@ -147,12 +147,13 @@ class ExportHelper(
 	}
 
 	@SuppressLint("StaticFieldLeak")
-	private fun copyImagesAndFinish(plant: ArrayList<Plant>, finalFile: ZipFile, notificationTitle: String, callback: (File, Context) -> Unit)
+	private fun copyImagesAndFinish(plant: ArrayList<Plant>, garden: Garden?, finalFile: ZipFile, notificationTitle: String, callback: (File, Context) -> Unit)
 	{
 		val appContext = context.applicationContext
 
 		object : AsyncTask<Plant?, Int?, File?>()
 		{
+			val usePrefix = garden != null
 			protected val notificationManager: NotificationManager = appContext.getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
 			protected lateinit var exportNotification: NotificationCompat.Builder
 
@@ -186,7 +187,7 @@ class ExportHelper(
 				for (index in params.indices)
 				{
 					val plant = params[index]
-					val zipPathPrefix = if (params.size == 1) "" else plant!!.name + "/"
+					val zipPathPrefix = if (usePrefix) plant!!.name.replace("[^a-zA-Z0-9]+".toRegex(), "-") + "/" else ""
 
 					// Copy images to dir
 					for (filePath in plant!!.images!!)

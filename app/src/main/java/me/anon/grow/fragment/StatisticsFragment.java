@@ -181,6 +181,26 @@ public class StatisticsFragment extends Fragment
 
 		String[] tdsAdditional = new String[3];
 		StatsHelper.setTdsData(plant, getActivity(), tds, tdsAdditional, selectedTdsUnit);
+		tds.setMarkerView(new MarkerView(getActivity(), R.layout.chart_marker)
+		{
+			@Override
+			public void refreshContent(Entry e, Highlight highlight)
+			{
+				String val = NumberUtilsKt.formatWhole(e.getVal());
+
+				((TextView)findViewById(R.id.content)).setText(val);
+			}
+
+			@Override public int getXOffset(float xpos)
+			{
+				return -(getWidth() / 2);
+			}
+
+			@Override public int getYOffset(float ypos)
+			{
+				return -getHeight();
+			}
+		});
 		tds.notifyDataSetChanged();
 		tds.postInvalidate();
 		mintds.setText(tdsAdditional[0].equals(String.valueOf(Long.MAX_VALUE)) ? "0" : tdsAdditional[0]);

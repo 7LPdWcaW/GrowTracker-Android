@@ -103,7 +103,6 @@ public class StatsHelper
 			public void refreshContent(Entry e, Highlight highlight)
 			{
 				((TextView)findViewById(R.id.content)).setText("" + e.getVal());
-//				((TextView)findViewById(R.id.content)).setTextColor(IntUtilsKt.resolveColor(R.attr.colorAccent, findViewById(R.id.content).getContext()));
 			}
 
 			@Override public int getXOffset(float xpos)
@@ -399,27 +398,7 @@ public class StatsHelper
 			LineDataSet dataSet = new LineDataSet(vals, selectedUnit.getLabel());
 			styleDataset(context, dataSet, Color.parseColor(context.getResources().getStringArray(R.array.stats_colours)[0]));
 			styleGraph(chart);
-			chart.setMarkerView(new MarkerView(context, R.layout.chart_marker)
-			{
-				@Override
-				public void refreshContent(Entry e, Highlight highlight)
-				{
-					String val = NumberUtilsKt.formatWhole(e.getVal());
 
-					((TextView)findViewById(R.id.content)).setText(val);
-//					((TextView)findViewById(R.id.content)).setTextColor(IntUtilsKt.resolveColor(R.attr.colorAccent, findViewById(R.id.content).getContext()));
-				}
-
-				@Override public int getXOffset(float xpos)
-				{
-					return -(getWidth() / 2);
-				}
-
-				@Override public int getYOffset(float ypos)
-				{
-					return -getHeight();
-				}
-			});
 			chart.getAxisLeft().setValueFormatter(new YAxisValueFormatter()
 			{
 				@Override public String getFormattedValue(float value, YAxis yAxis)
@@ -597,32 +576,6 @@ public class StatsHelper
 				}
 			});
 
-			chart.setMarkerView(new MarkerView(context, R.layout.chart_marker)
-			{
-				@Override
-				public void refreshContent(Entry e, Highlight highlight)
-				{
-					Action action = (Action)e.getData();
-					String date = "";
-
-					if (action != null) date = "\n" + timeFormat.format(new Date(action.getDate()));
-
-//					((TextView)findViewById(R.id.content)).setGravity(CENTER_HORIZONTAL);
-					((TextView)findViewById(R.id.content)).setText(NumberUtilsKt.formatWhole(e.getVal()) + "°" + tempUnit.getLabel() + date);
-//					((TextView)findViewById(R.id.content)).setTextColor(IntUtilsKt.resolveColor(R.attr.colorAccent, findViewById(R.id.content).getContext()));
-				}
-
-				@Override public int getXOffset(float xpos)
-				{
-					return -(getWidth() / 2);
-				}
-
-				@Override public int getYOffset(float ypos)
-				{
-					return -getHeight();
-				}
-			});
-
 			chart.getXAxis().setYOffset(15.0f);
 			chart.setExtraOffsets(0, 0, 30, 0);
 		}
@@ -704,32 +657,6 @@ public class StatsHelper
 				@Override public String getFormattedValue(float value, YAxis yAxis)
 				{
 					return (int)value + "%";
-				}
-			});
-
-			chart.setMarkerView(new MarkerView(context, R.layout.chart_marker)
-			{
-				@Override
-				public void refreshContent(Entry e, Highlight highlight)
-				{
-					Action action = (Action)e.getData();
-					String date = "";
-
-					if (action != null) date = "\n" + timeFormat.format(new Date(action.getDate()));
-
-//					((TextView)findViewById(R.id.content)).setGravity(CENTER_HORIZONTAL);
-					((TextView)findViewById(R.id.content)).setText((int)e.getVal() + "%" + date);
-//					((TextView)findViewById(R.id.content)).setTextColor(IntUtilsKt.resolveColor(R.attr.colorAccent, findViewById(R.id.content).getContext()));
-				}
-
-				@Override public int getXOffset(float xpos)
-				{
-					return -(getWidth() / 2);
-				}
-
-				@Override public int getYOffset(float ypos)
-				{
-					return -getHeight();
 				}
 			});
 
