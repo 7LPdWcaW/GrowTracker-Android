@@ -57,7 +57,7 @@ import me.anon.controller.provider.PlantWidgetProvider;
 import me.anon.grow.AddWateringActivity;
 import me.anon.grow.BuildConfig;
 import me.anon.grow.EditWateringActivity;
-import me.anon.grow.EventsActivity;
+import me.anon.grow.ActionsActivity;
 import me.anon.grow.MainApplication;
 import me.anon.grow.PlantDetailsActivity;
 import me.anon.grow.R;
@@ -68,7 +68,6 @@ import me.anon.lib.DateRenderer;
 import me.anon.lib.SnackBar;
 import me.anon.lib.SnackBarListener;
 import me.anon.lib.Views;
-import me.anon.lib.helper.AddonHelper;
 import me.anon.lib.helper.FabAnimator;
 import me.anon.lib.helper.NotificationHelper;
 import me.anon.lib.helper.PermissionHelper;
@@ -515,10 +514,6 @@ public class PlantDetailsFragment extends Fragment
 			{
 				PlantManager.getInstance().upsert(plant);
 				PlantWidgetProvider.triggerUpdateAll(getActivity());
-				if (plant.getImages().size() - 1 > 0)
-				{
-					AddonHelper.broadcastImage(getActivity(), plant.getImages().get(plant.getImages().size() - 1), false);
-				}
 			}
 		}
 		else if (requestCode == ACTIVITY_REQUEST_FEEDING)
@@ -838,7 +833,7 @@ public class PlantDetailsFragment extends Fragment
 
 	@Views.OnClick public void onViewHistoryClick()
 	{
-		Intent events = new Intent(getActivity(), EventsActivity.class);
+		Intent events = new Intent(getActivity(), ActionsActivity.class);
 		events.putExtra("plant", plant);
 		startActivityForResult(events, 5);
 	}

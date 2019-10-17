@@ -56,13 +56,14 @@ import me.anon.model.Water;
 import me.anon.view.ActionHolder;
 
 @Views.Injectable
-public class EventListFragment extends Fragment implements ActionAdapter.OnActionSelectListener
+public class ActionsListFragment extends Fragment implements ActionAdapter.OnActionSelectListener
 {
 	private ActionAdapter adapter;
 
 	@Views.InjectView(R.id.fab_add) private View fabAdd;
 	@Views.InjectView(R.id.recycler_view) private RecyclerView recycler;
 	@Views.InjectView(R.id.calendar) private MaterialCalendarView calendar;
+	@Views.InjectView(R.id.empty) private View empty;
 
 	private Plant plant;
 
@@ -74,9 +75,9 @@ public class EventListFragment extends Fragment implements ActionAdapter.OnActio
 
 	public static final int REQUEST_WATERING = 3;
 
-	public static EventListFragment newInstance(Bundle args)
+	public static ActionsListFragment newInstance(Bundle args)
 	{
-		EventListFragment fragment = new EventListFragment();
+		ActionsListFragment fragment = new ActionsListFragment();
 		fragment.setArguments(args);
 
 		return fragment;
@@ -84,7 +85,7 @@ public class EventListFragment extends Fragment implements ActionAdapter.OnActio
 
 	@Nullable @Override public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState)
 	{
-		View view = inflater.inflate(R.layout.event_list_view, container, false);
+		View view = inflater.inflate(R.layout.actions_list_view, container, false);
 		Views.inject(this, view);
 
 		return view;
@@ -101,7 +102,6 @@ public class EventListFragment extends Fragment implements ActionAdapter.OnActio
 		super.onActivityCreated(savedInstanceState);
 
 		getActivity().setTitle(R.string.events_title);
-
 
 		if (savedInstanceState != null)
 		{
@@ -222,6 +222,17 @@ public class EventListFragment extends Fragment implements ActionAdapter.OnActio
 		Collections.reverse(actions);
 		actions.removeAll(Collections.singleton(null));
 		adapter.setActions(plant, actions);
+
+		if (adapter.getItemCount() > 0)
+		{
+			recycler.setVisibility(View.VISIBLE);
+			empty.setVisibility(View.GONE);
+		}
+		else
+		{
+			recycler.setVisibility(View.GONE);
+			empty.setVisibility(View.VISIBLE);
+		}
 	}
 
 	@Override public void onActivityResult(int requestCode, int resultCode, Intent data)

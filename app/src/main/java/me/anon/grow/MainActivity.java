@@ -123,13 +123,13 @@ public class MainActivity extends BaseActivity implements NavigationView.OnNavig
 		{
 			if (navigation.getMenu().findItem(selectedItem).isCheckable())
 			{
-				getSupportFragmentManager().beginTransaction().remove(getSupportFragmentManager().findFragmentById(R.id.fragment_holder)).commit();
+				getSupportFragmentManager().beginTransaction().remove(getSupportFragmentManager().findFragmentById(R.id.coordinator)).commit();
 				navigation.getMenu().findItem(selectedItem).setChecked(true);
 				onNavigationItemSelected(navigation.getMenu().findItem(selectedItem));
 			}
 		}
 
-		getSupportFragmentManager().findFragmentById(R.id.fragment_holder).onActivityResult(requestCode, resultCode, data);
+		getSupportFragmentManager().findFragmentById(R.id.coordinator).onActivityResult(requestCode, resultCode, data);
 	}
 
 	@Override protected void onResume()
@@ -334,7 +334,7 @@ public class MainActivity extends BaseActivity implements NavigationView.OnNavig
 
 			navigation.getMenu().findItem(R.id.garden_menu).getSubMenu().findItem(R.id.all).setChecked(true);
 			selectedItem = item.getItemId();
-			getSupportFragmentManager().beginTransaction().replace(R.id.fragment_holder, PlantListFragment.newInstance(), TAG_FRAGMENT).commit();
+			getSupportFragmentManager().beginTransaction().replace(R.id.coordinator, PlantListFragment.newInstance(), TAG_FRAGMENT).commit();
 		}
 		else if (item.getItemId() >= 100 && item.getItemId() < Integer.MAX_VALUE)
 		{
@@ -349,7 +349,7 @@ public class MainActivity extends BaseActivity implements NavigationView.OnNavig
 			selectedItem = item.getItemId();
 			item.setChecked(true);
 			int gardenIndex = item.getItemId() - 100;
-			getSupportFragmentManager().beginTransaction().replace(R.id.fragment_holder, GardenHostFragment.newInstance(GardenManager.getInstance().getGardens().get(gardenIndex)), TAG_FRAGMENT).commit();
+			getSupportFragmentManager().beginTransaction().replace(R.id.coordinator, GardenHostFragment.newInstance(GardenManager.getInstance().getGardens().get(gardenIndex)), TAG_FRAGMENT).commit();
 		}
 
 		if (drawer != null)

@@ -1,6 +1,5 @@
 package me.anon.grow
 
-import android.content.DialogInterface
 import android.os.Bundle
 import android.view.View
 import androidx.appcompat.app.AlertDialog
@@ -39,7 +38,7 @@ class EditWateringActivity : BaseActivity()
 		if (supportFragmentManager.findFragmentByTag("fragment") == null)
 		{
 			supportFragmentManager.beginTransaction()
-				.replace(R.id.fragment_holder, WateringFragment.newInstance(intArrayOf(plantIndex), feedingIndex), "fragment")
+				.replace(R.id.coordinator, WateringFragment.newInstance(intArrayOf(plantIndex), feedingIndex), "fragment")
 				.commit()
 		}
 	}
