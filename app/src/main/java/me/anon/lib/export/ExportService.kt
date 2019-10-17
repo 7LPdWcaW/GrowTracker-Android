@@ -9,6 +9,7 @@ import me.anon.grow.R
 import me.anon.grow.fragment.PlantDetailsFragment
 import me.anon.lib.helper.NotificationHelper
 import me.anon.lib.manager.PlantManager
+import me.anon.model.Garden
 
 /**
  * Service for exporting
@@ -26,13 +27,14 @@ class ExportService : Service()
 			val processor: Class<out ExportProcessor> = (it.getSerializableExtra("processor") as Class<ExportProcessor>?) ?: MarkdownProcessor::class.java
 			val title = it.getStringExtra("title") ?: ""
 			val name = it.getStringExtra("name") ?: ""
+			val garden = it.getParcelableExtra<Garden?>("garden")
 			val includeImages = it.getBooleanExtra("include_images", true)
 
 			NotificationHelper.createExportChannel(this)
 			NotificationHelper.sendExportNotification(this, getString(R.string.exporting_start, name), getString(R.string.exporting_start, name))
 
 			ExportHelper(this, processor, includeImages)
-				.executeExport(plants, title, name) { file, context ->
+				.executeExport(plants, garden, title, name) { file, context ->
 					NotificationHelper.sendExportCompleteNotification(context, getString(R.string.exporting_complete, name), getString(R.string.exporting_path, name, file.absolutePath), file)
 
 					if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT)

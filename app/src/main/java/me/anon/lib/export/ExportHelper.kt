@@ -17,9 +17,7 @@ import me.anon.lib.TdsUnit
 import me.anon.lib.TempUnit
 import me.anon.lib.helper.NotificationHelper
 import me.anon.lib.helper.StatsHelper
-import me.anon.model.Garden
-import me.anon.model.Plant
-import me.anon.model.Water
+import me.anon.model.*
 import net.lingala.zip4j.core.ZipFile
 import net.lingala.zip4j.model.ZipParameters
 import net.lingala.zip4j.util.Zip4jConstants
@@ -60,11 +58,12 @@ class ExportHelper(
 		val intent = Intent(context, ExportService::class.java)
 		intent.putStringArrayListExtra("plants", ArrayList(garden.plantIds))
 		intent.putExtra("processor", exportProcessor)
+		intent.putExtra("garden", garden)
 		intent.putExtra("include_images", includeImages)
 		context.startService(intent)
 	}
 
-	public fun executeExport(plants: ArrayList<Plant>, outputName: String, notificationTitle: String, callback: (File, Context) -> Unit)
+	public fun executeExport(plants: ArrayList<Plant>, garden: Garden? = null, outputName: String, notificationTitle: String, callback: (File, Context) -> Unit)
 	{
 		val exportInt = "" + System.currentTimeMillis()
 
@@ -97,6 +96,19 @@ class ExportHelper(
 			val params = ZipParameters()
 			params.compressionMethod = Zip4jConstants.COMP_DEFLATE
 			params.compressionLevel = Zip4jConstants.DEFLATE_LEVEL_NORMAL
+
+			garden?.let {
+				// do processor stuff
+
+				// do chart stuff
+				val humidityCount = it.actions.sumBy { if (it is HumidityChange) 1 else 0 }
+				val tempCount = it.actions.sumBy { if (it is TemperatureChange) 1 else 0 }
+				val humidityWidth = 1024 + (humidityCount * 20)
+				val tempWidth = 1024 + (tempCount * 20)
+				val height = 512
+
+				saveGardenTempChart(tempWidth, height, garden, outFile)
+			}
 
 			plants.forEach { plant ->
 				// temp folder to write to
@@ -211,6 +223,11 @@ class ExportHelper(
 				callback(finalFile.file, appContext)
 			}
 		}.executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR, *plant.toTypedArray())
+	}
+
+	private fun saveGardenTempChart(width: Int, height: Int, garden: Garden, outZip: ZipFile)
+	{
+
 	}
 
 	private fun saveTempChart(width: Int, height: Int, plant: Plant, pathPrefix: String, outZip: ZipFile)
