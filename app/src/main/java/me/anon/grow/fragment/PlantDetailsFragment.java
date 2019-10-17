@@ -53,21 +53,24 @@ import androidx.cardview.widget.CardView;
 import androidx.core.content.FileProvider;
 import androidx.fragment.app.Fragment;
 import kotlin.Pair;
+import kotlin.Unit;
+import kotlin.jvm.functions.Function2;
 import me.anon.controller.provider.PlantWidgetProvider;
+import me.anon.grow.ActionsActivity;
 import me.anon.grow.AddWateringActivity;
 import me.anon.grow.BuildConfig;
 import me.anon.grow.EditWateringActivity;
-import me.anon.grow.ActionsActivity;
 import me.anon.grow.MainApplication;
 import me.anon.grow.PlantDetailsActivity;
 import me.anon.grow.R;
 import me.anon.grow.StatisticsActivity;
 import me.anon.grow.ViewPhotosActivity;
-import me.anon.grow.service.ExportService;
 import me.anon.lib.DateRenderer;
 import me.anon.lib.SnackBar;
 import me.anon.lib.SnackBarListener;
 import me.anon.lib.Views;
+import me.anon.lib.export.ExportHelper;
+import me.anon.lib.export.ExportProcessor;
 import me.anon.lib.helper.FabAnimator;
 import me.anon.lib.helper.NotificationHelper;
 import me.anon.lib.helper.PermissionHelper;
@@ -768,8 +771,15 @@ public class PlantDetailsFragment extends Fragment
 		}
 		else if (item.getItemId() == R.id.export)
 		{
-			Toast.makeText(getActivity(), R.string.export_progress, Toast.LENGTH_SHORT).show();
-			ExportService.export(getActivity(),new ArrayList<>(Arrays.asList(plant)), plant.getName().replaceAll("[^a-zA-Z0-9]+", "-"), plant.getName());
+			new ExportDialogFragment(new Function2<Class<? extends ExportProcessor>, Boolean, Unit>()
+			{
+				@Override public Unit invoke(Class<? extends ExportProcessor> processor, Boolean includeImages)
+				{
+					Toast.makeText(getActivity(), R.string.export_progress, Toast.LENGTH_SHORT).show();
+					new ExportHelper(getActivity(), processor, includeImages).exportPlants(new ArrayList<>(Arrays.asList(plant)));
+					return null;
+				}
+			}).show(getFragmentManager(), "export_dialog");
 
 			return true;
 		}

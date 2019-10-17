@@ -418,4 +418,10 @@
 	<string name="data_task">Data task</string>
 	<string name="task_complete">Task completed</string>
 	<string name="empty_actions_list">There are no actions to show</string>
+
+	<string name="exporting_start">Exporting grow log for %s</string>
+	<string name="exporting_complete">Export of %s complete</string>
+	<string name="exporting_path">Exported %s to %s</string>
+	<string name="export_complete">Export complete</string>
+	<string name="export_dialog_label">Include images?</string>
 </resources>

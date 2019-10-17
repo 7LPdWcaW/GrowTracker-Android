@@ -25,7 +25,7 @@
 			/>
 		</provider>
 
-		<service android:name=".service.ExportService" android:enabled="true" android:exported="false" />
+		<service android:name="me.anon.lib.export.ExportService" android:enabled="true" android:exported="false" />
 		<receiver android:name="me.anon.controller.receiver.BackupService" />
 
 		<receiver android:name="me.anon.controller.provider.PlantWidgetProvider">

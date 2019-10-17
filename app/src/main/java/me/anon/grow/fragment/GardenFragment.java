@@ -41,7 +41,6 @@ import me.anon.grow.MainActivity;
 import me.anon.grow.MainApplication;
 import me.anon.grow.PlantDetailsActivity;
 import me.anon.grow.R;
-import me.anon.grow.service.ExportService;
 import me.anon.lib.SnackBar;
 import me.anon.lib.SnackBarListener;
 import me.anon.lib.Views;
@@ -477,7 +476,7 @@ public class GardenFragment extends Fragment
 			NotificationHelper.sendExportNotification(getActivity(), getString(R.string.garden_export), "Exporting " + garden.getName());
 
 			ArrayList<Plant> export = new ArrayList<>(adapter.getPlants());
-			ExportService.export(getActivity(), export, garden.getName().replaceAll("[^a-zA-Z0-9]+", "-"), garden.getName());
+//			ExportService.export(getActivity(), export, garden.getName().replaceAll("[^a-zA-Z0-9]+", "-"), garden.getName());
 		}
 		else if (item.getItemId() == R.id.delete_garden)
 		{
