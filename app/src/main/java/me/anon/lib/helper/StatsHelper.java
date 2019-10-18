@@ -18,6 +18,10 @@ import com.github.mikephil.charting.highlight.Highlight;
 import com.github.mikephil.charting.utils.ColorTemplate;
 import com.github.mikephil.charting.utils.ViewPortHandler;
 
+import org.threeten.bp.DateTimeUtils;
+import org.threeten.bp.format.DateTimeFormatter;
+
+import java.sql.Timestamp;
 import java.text.DateFormat;
 import java.util.ArrayList;
 import java.util.Date;
@@ -473,7 +477,7 @@ public class StatsHelper
 				long difference = action.getDate() - changeDate;
 				if (stage != null)
 				{
-					xVals.add(((int)TimeHelper.toDays(difference) + "" + context.getString(stage.getPrintString()).charAt(0)).toLowerCase());
+					xVals.add(((int)TimeHelper.toDays(difference) + "" + (context != null ? context.getString(stage.getPrintString()) : stage.getEnString()).charAt(0)).toLowerCase());
 				}
 				else
 				{
@@ -517,6 +521,19 @@ public class StatsHelper
 	 */
 	public static void setTempData(Garden garden, @NonNull Context context, @Nullable LineChart chart, String[] additionalRef)
 	{
+		final TempUnit tempUnit = TempUnit.getSelectedTemperatureUnit(context);
+		setTempData(garden, context, tempUnit, chart, additionalRef);
+	}
+
+	/**
+	 * Generates and sets the temperature data from the given Garden
+	 *
+	 * @param garden The garden
+	 * @param chart The chart to set the data
+	 * @param additionalRef Pass-by-reference value for min/max/ave for the generated values. Must be length of 3 if not null
+	 */
+	public static void setTempData(Garden garden, @Nullable Context context, TempUnit tempUnit, @Nullable LineChart chart, String[] additionalRef)
+	{
 		ArrayList<Entry> vals = new ArrayList<>();
 		ArrayList<String> xVals = new ArrayList<>();
 		LineData data = new LineData();
@@ -525,15 +542,28 @@ public class StatsHelper
 		float total = 0;
 
 		int index = 0;
-		DateFormat dateFormat = android.text.format.DateFormat.getDateFormat(context);
-		DateFormat timeFormat = android.text.format.DateFormat.getTimeFormat(context);
-		final TempUnit tempUnit = TempUnit.getSelectedTemperatureUnit(context);
+		DateFormat dateFormat = null;
+
+		if (context != null)
+		{
+			dateFormat = android.text.format.DateFormat.getDateFormat(context);
+		}
 
 		for (Action action : garden.getActions())
 		{
 			if (action instanceof TemperatureChange)
 			{
-				String date = dateFormat.format(new Date(action.getDate()));
+				String date = "";
+
+				if (dateFormat != null)
+				{
+					date = dateFormat.format(new Date(action.getDate()));
+				}
+				else
+				{
+					date = DateTimeUtils.toLocalDateTime(new Timestamp(action.getDate())).format(DateTimeFormatter.ofPattern("yyyy/mm/dd"));
+				}
+
 				double temperature = TempUnit.CELCIUS.to(tempUnit, ((TemperatureChange)action).getTemp());
 
 				Entry entry = new Entry((float)temperature, index++);
@@ -600,7 +630,7 @@ public class StatsHelper
 	 * @param chart The chart to set the data
 	 * @param additionalRef Pass-by-reference value for min/max/ave for the generated values. Must be length of 3 if not null
 	 */
-	public static void setHumidityData(Garden garden, @NonNull Context context, @Nullable LineChart chart, String[] additionalRef)
+	public static void setHumidityData(Garden garden, @Nullable Context context, @Nullable LineChart chart, String[] additionalRef)
 	{
 		ArrayList<Entry> vals = new ArrayList<>();
 		ArrayList<String> xVals = new ArrayList<>();
@@ -610,14 +640,28 @@ public class StatsHelper
 		float total = 0;
 
 		int index = 0;
-		DateFormat dateFormat = android.text.format.DateFormat.getDateFormat(context);
-		DateFormat timeFormat = android.text.format.DateFormat.getTimeFormat(context);
+		DateFormat dateFormat = null;
+
+		if (context != null)
+		{
+			dateFormat = android.text.format.DateFormat.getDateFormat(context);
+		}
 
 		for (Action action : garden.getActions())
 		{
 			if (action instanceof HumidityChange)
 			{
-				String date = dateFormat.format(new Date(action.getDate()));
+				String date = "";
+
+				if (dateFormat != null)
+				{
+					date = dateFormat.format(new Date(action.getDate()));
+				}
+				else
+				{
+					date = DateTimeUtils.toLocalDateTime(new Timestamp(action.getDate())).format(DateTimeFormatter.ofPattern("yyyy/mm/dd"));
+				}
+
 				double humidity = ((HumidityChange)action).getHumidity();
 
 				Entry entry = new Entry((float)humidity, index++);
@@ -631,7 +675,7 @@ public class StatsHelper
 			}
 		}
 
-		if (chart != null)
+		if (chart != null && context != null)
 		{
 			LineDataSet dataSet = new LineDataSet(vals, "%");
 			styleDataset(context, dataSet, Color.parseColor(context.getResources().getStringArray(R.array.stats_colours)[2]));

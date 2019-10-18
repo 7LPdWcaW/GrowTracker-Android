@@ -17,7 +17,7 @@ open abstract class ExportProcessor
 	public var selectedDelivery: Unit? = null
 	public var selectedTemp: TempUnit? = null
 
-	open abstract fun beginDocument()
+	open abstract fun beginDocument(isPlant: Boolean = true)
 	open abstract fun endDocument(zipFile: ZipFile, zipPathPrefix: String = "")
 
 	open abstract fun printPlantDetails(plant: Plant)

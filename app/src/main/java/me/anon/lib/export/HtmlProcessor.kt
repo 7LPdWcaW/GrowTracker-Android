@@ -9,7 +9,7 @@ import net.lingala.zip4j.core.ZipFile
  */
 class HtmlProcessor : ExportProcessor()
 {
-	override fun beginDocument()
+	override fun beginDocument(isPlant: Boolean)
 	{
 		TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
 	}

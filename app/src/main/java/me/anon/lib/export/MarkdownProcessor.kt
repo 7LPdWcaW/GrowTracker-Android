@@ -1,6 +1,7 @@
 package me.anon.lib.export
 
 import me.anon.lib.TdsUnit
+import me.anon.lib.TempUnit
 import me.anon.lib.Unit
 import me.anon.lib.ext.formatWhole
 import me.anon.lib.helper.MoshiHelper
@@ -24,12 +25,21 @@ class MarkdownProcessor : ExportProcessor()
 {
 	private val NEW_LINE = "\r\n"
 
-	private val documentName = "growlog.md"
+	private var documentName = "growlog.md"
 	private val documentBuilder = StringBuilder()
 
-	override fun beginDocument()
+	override fun beginDocument(isPlant: Boolean)
 	{
-		documentBuilder.append("# Grow Log")
+		if (!isPlant)
+		{
+			documentName = "garden.md"
+			documentBuilder.append("# Garden")
+		}
+		else
+		{
+			documentBuilder.append("# Grow Log")
+		}
+
 		documentBuilder.append(NEW_LINE + NEW_LINE)
 	}
 
@@ -157,8 +167,17 @@ class MarkdownProcessor : ExportProcessor()
 				val actionAdditives = action.additives
 				for (additive in actionAdditives)
 				{
-					if (!additives.containsKey(additive.description)) additives[additive.description ?: ""] = 0.0
-					additives[additive.description ?: ""] = additives[additive.description]!! + (additive.amount ?: 0.0)
+					val delivery: Double = action.amount ?: 1.0
+
+					if (!additives.containsKey(additive.description))
+					{
+						additives.put(additive.description ?: "", 0.0)
+					}
+
+					val totalDelivery = Unit.ML.to(selectedDelivery, delivery)
+					val additiveAmount = Unit.ML.to(selectedMeasurement, additive.amount!!)
+
+					additives.put(additive.description ?: "", additives[additive.description]!! + (additiveAmount * totalDelivery))
 				}
 
 				if (action.tds != null)
@@ -202,9 +221,9 @@ class MarkdownProcessor : ExportProcessor()
 		val avePh = arrayOfNulls<String>(3)
 		StatsHelper.setInputData(plant, null, null, avePh)
 		documentBuilder.append("### Input/runoff pH").append(NEW_LINE + NEW_LINE)
-		documentBuilder.append(" - *Minimum input pH:** ").append(avePh[0]).append(NEW_LINE)
-		documentBuilder.append(" - *Maximum input pH:** ").append(avePh[1]).append(NEW_LINE)
-		documentBuilder.append(" - *Average input pH:** ").append(avePh[2]).append(NEW_LINE + NEW_LINE)
+		documentBuilder.append(" - **Minimum input pH:** ").append(avePh[0]).append(NEW_LINE)
+		documentBuilder.append(" - **Maximum input pH:** ").append(avePh[1]).append(NEW_LINE)
+		documentBuilder.append(" - **Average input pH:** ").append(avePh[2]).append(NEW_LINE + NEW_LINE)
 		documentBuilder.append("![pH Chart](input-ph.jpg)").append(NEW_LINE + NEW_LINE)
 
 		tdsNames.forEach { tds ->
@@ -213,16 +232,18 @@ class MarkdownProcessor : ExportProcessor()
 
 			val tdsArr = arrayOfNulls<String>(3)
 			StatsHelper.setTdsData(plant, null, null, tdsArr, tds)
-			documentBuilder.append(" - *Minimum input ${tds.enStr}*: ").append(tdsArr[0]).append(tds.label).append(NEW_LINE)
-			documentBuilder.append(" - *Maximum input ${tds.enStr}*: ").append(tdsArr[1]).append(tds.label).append(NEW_LINE)
-			documentBuilder.append(" - *Average input ${tds.enStr}*: ").append(tdsArr[2]).append(tds.label).append(NEW_LINE + NEW_LINE)
+			documentBuilder.append(" - **Minimum input ${tds.enStr}**: ").append(tdsArr[0]).append(tds.label).append(NEW_LINE)
+			documentBuilder.append(" - **Maximum input ${tds.enStr}**: ").append(tdsArr[1]).append(tds.label).append(NEW_LINE)
+			documentBuilder.append(" - **Average input ${tds.enStr}**: ").append(tdsArr[2]).append(tds.label).append(NEW_LINE + NEW_LINE)
 		}
 
 		val aveTemp = arrayOfNulls<String>(3)
 		StatsHelper.setTempData(plant, null, selectedTemp, null, aveTemp)
-		documentBuilder.append(" - *Minimum input temperature*: ").append(aveTemp[0]).append("°${selectedTemp!!.label}").append(NEW_LINE)
-		documentBuilder.append(" - *Maximum input temperature*: ").append(aveTemp[1]).append("°${selectedTemp!!.label}").append(NEW_LINE)
-		documentBuilder.append(" - *Average input temperature*: ").append(aveTemp[2]).append("°${selectedTemp!!.label}").append(NEW_LINE + NEW_LINE)
+		documentBuilder.append("### Temperature (°${selectedTemp!!.label})").append(NEW_LINE + NEW_LINE)
+		documentBuilder.append(" - **Minimum input temperature**: ").append(aveTemp[0]).append("°${selectedTemp!!.label}").append(NEW_LINE)
+		documentBuilder.append(" - **Maximum input temperature**: ").append(aveTemp[1]).append("°${selectedTemp!!.label}").append(NEW_LINE)
+		documentBuilder.append(" - **Average input temperature**: ").append(aveTemp[2]).append("°${selectedTemp!!.label}").append(NEW_LINE + NEW_LINE)
+		documentBuilder.append("![Temp](temp.jpg)").append(NEW_LINE + NEW_LINE)
 	}
 
 	override fun printPlantActions(plant: Plant)
@@ -284,7 +305,7 @@ class MarkdownProcessor : ExportProcessor()
 					{
 						documentBuilder.append(" / ")
 						action.additives.forEach { additive ->
-							documentBuilder.append("**${additive.description ?: ""}:** ").append(Unit.ML.to(selectedMeasurement, additive.amount ?: 0.0).formatWhole()).append(selectedMeasurement!!.label).append(" / ")
+							documentBuilder.append("**${additive.description ?: ""}:** ").append(Unit.ML.to(selectedMeasurement, additive.amount ?: 0.0).formatWhole()).append(selectedMeasurement!!.label).append("/").append(selectedDelivery!!.label).append(" -- ")
 						}
 					}
 				}
@@ -314,14 +335,74 @@ class MarkdownProcessor : ExportProcessor()
 
 	override fun printGardenDetails(garden: Garden)
 	{
+		documentBuilder.append("## Garden details")
+		documentBuilder.append(NEW_LINE + NEW_LINE)
+
+		documentBuilder.append("**Name:** ").append(garden.name)
+		documentBuilder.append(NEW_LINE + NEW_LINE)
 	}
 
 	override fun printGardenStats(garden: Garden)
 	{
+		val aveTemp = arrayOfNulls<String>(3)
+		StatsHelper.setTempData(garden, null, selectedTemp, null, aveTemp)
+		documentBuilder.append("### Temperature (°${selectedTemp!!.label})").append(NEW_LINE + NEW_LINE)
+		documentBuilder.append(" - **Minimum temperature**: ").append(aveTemp[0]).append("°${selectedTemp!!.label}").append(NEW_LINE)
+		documentBuilder.append(" - **Maximum temperature**: ").append(aveTemp[1]).append("°${selectedTemp!!.label}").append(NEW_LINE)
+		documentBuilder.append(" - **Average temperature**: ").append(aveTemp[2]).append("°${selectedTemp!!.label}").append(NEW_LINE + NEW_LINE)
+		documentBuilder.append("![Temp](garden-temp.jpg)").append(NEW_LINE + NEW_LINE)
+
+		val aveHumidity = arrayOfNulls<String>(3)
+		StatsHelper.setHumidityData(garden, null, null, aveHumidity)
+		documentBuilder.append("### Humidity").append(NEW_LINE + NEW_LINE)
+		documentBuilder.append(" - **Minimum humidity**: ").append(aveHumidity[0]).append("%").append(NEW_LINE)
+		documentBuilder.append(" - **Maximum humidity**: ").append(aveHumidity[1]).append("%").append(NEW_LINE)
+		documentBuilder.append(" - **Average humidity**: ").append(aveHumidity[2]).append("%").append(NEW_LINE + NEW_LINE)
+		documentBuilder.append("![Humidity](garden-humidity.jpg)").append(NEW_LINE + NEW_LINE)
 	}
 
 	override fun printGardenActions(garden: Garden)
 	{
+		if (garden.actions.isNullOrEmpty()) return
+
+		documentBuilder.append("## Actions").append(NEW_LINE + NEW_LINE)
+		documentBuilder.append("| Date | Action | Details | Notes |").append(NEW_LINE)
+		documentBuilder.append("| ---- | ------ | ------- | ----- |").append(NEW_LINE)
+
+		garden.actions.asReversed().forEach { action ->
+			val actionDate = DateTimeUtils.toLocalDateTime(Timestamp(action.date))
+
+			documentBuilder.append("| ")
+			documentBuilder.append(actionDate.format(DateTimeFormatter.ofPattern("yyyy-mm-dd HH:mm")))
+			documentBuilder.append(" | ")
+			documentBuilder.append(action.getTypeStr())
+			documentBuilder.append(" | ")
+
+			when (action)
+			{
+				is TemperatureChange -> {
+					documentBuilder.append(TempUnit.CELCIUS.to(selectedTemp, action.temp).formatWhole()).append("°${selectedTemp!!.label}")
+				}
+
+				is HumidityChange -> {
+					documentBuilder.append(action.humidity.formatWhole()).append("%")
+				}
+
+				is LightingChange -> {
+					documentBuilder.append("**Lights on:** ").append(action.on).append(" **Lights off:**: ").append(action.off)
+				}
+
+				else -> documentBuilder.append(" ")
+			}
+
+			documentBuilder.append(" | ")
+			documentBuilder.append((action.notes ?: "").replace("\r", "").replace("\n", ""))
+			documentBuilder.append(" |").append(NEW_LINE)
+		}
+
+		documentBuilder.append(NEW_LINE)
+		documentBuilder.append("## Raw garden data").append(NEW_LINE).append(NEW_LINE)
+		documentBuilder.append("```").append("\r\n").append(MoshiHelper.toJson(garden, Garden::class.java)).append("\r\n").append("```").append(NEW_LINE).append(NEW_LINE)
 	}
 
 	override fun printRaw(plant: Plant)
