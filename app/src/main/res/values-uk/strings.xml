@@ -102,7 +102,7 @@
 	<string name="nav_settings">Налаштування</string>
 	<string name="delete">Видалити</string>
 	<string name="share">Поділитися</string>
-	<string name="menu_photo">Світлини</string>
+	<string name="menu_photo">Світлина</string>
 	<string name="last_watering_title">Останній полив</string>
 	<string name="feed_again">Полити знову</string>
 
@@ -170,7 +170,7 @@
 	<string name="note">Нотатка</string>
 	<string name="delete_event_dialog_title">Видалити подію?</string>
 	<string name="confirm_delete_item_message">Дійсно видалити </string>
-	<string name="confirm_delete_photos_message" formatted="true">Дійсно видалити %s зображень? Їх неможливо буде відновити.</string>
+	<string name="confirm_delete_photos_message" formatted="true">Дійсно видалити &lt;b&gt;%s&lt;/b&gt; зображень? Їх неможливо буде відновити.</string>
 	<string name="edit">Редагувати</string>
 	<string name="stage">стадію</string>
 	<string name="set">Встановити</string>
@@ -317,7 +317,7 @@
 	<string name="events_title">Попередні дії</string>
 	<string name="show_hide_calendar">Показати/приховати календар</string>
 	<!-- "1 selected" -->
-	<string name="selected_len" formatted="true">%o обрано</string>
+	<string name="selected_len" formatted="true">%d обрано</string>
 	<string name="translations_title">Дякуємо за участь</string>
 	<string name="translations_by">Переклади</string>
 	<string name="help_translate">Допомогти з перекладом</string>
@@ -414,4 +414,11 @@
 	<string name="import_progress_warning">Імпортую зображення, це може тривати довго...</string>
 	<string name="data_task">Завдання даних</string>
 	<string name="task_complete">Завдання виконано</string>
+	<string name="empty_actions_list">Немає дій для показу</string>
+
+	<string name="exporting_start">Експортую журнал для %s</string>
+	<string name="exporting_complete">Експорт %s завершено</string>
+	<string name="exporting_path">Експорт %s до %s</string>
+	<string name="export_complete">Експорт завершено</string>
+	<string name="export_dialog_label">Включити зображення?</string>
 </resources>
