@@ -107,7 +107,7 @@ class ExportHelper(
 					this.selectedTds = tdsUnit
 				}
 
-				processor.beginDocument()
+				processor.beginDocument(false)
 
 				// do processor stuff
 				processor.printGardenDetails(it)

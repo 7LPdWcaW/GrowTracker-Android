@@ -305,7 +305,8 @@ class MarkdownProcessor : ExportProcessor()
 					{
 						documentBuilder.append(" / ")
 						action.additives.forEach { additive ->
-							documentBuilder.append("**${additive.description ?: ""}:** ").append(Unit.ML.to(selectedMeasurement, additive.amount ?: 0.0).formatWhole()).append(selectedMeasurement!!.label).append("/").append(selectedDelivery!!.label).append(" -- ")
+							documentBuilder.append("**${additive.description ?: ""}:** ").append(Unit.ML.to(selectedMeasurement, additive.amount ?: 0.0).formatWhole()).append(selectedMeasurement!!.label).append("/").append(selectedDelivery!!.label)
+							if (action.additives.last() != additive) documentBuilder.append(" -- ")
 						}
 					}
 				}
