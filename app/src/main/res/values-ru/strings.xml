@@ -170,7 +170,7 @@
 	<string name="note">Заметка</string>
 	<string name="delete_event_dialog_title">Удалить событие?</string>
 	<string name="confirm_delete_item_message">Действительно удалить </string>
-	<string name="confirm_delete_photos_message" formatted="true">Действительно удалить %s изображений? Их нельзя будет восстановить.</string>
+	<string name="confirm_delete_photos_message" formatted="true">Действительно удалить &lt;b&gt;%s&lt;/b&gt; изображений? Их нельзя будет восстановить.</string>
 	<string name="edit">Редактировать</string>
 	<string name="stage">стадию</string>
 	<string name="set">Готово</string>
@@ -311,13 +311,13 @@
 	<string name="settings_readme">Read me</string>
 	<string name="settings_export">Экспортировать данные</string>
 	<string name="settings_cardstyle_title">Стиль карточки</string>
-	<string name="empty_plant_list">Нет растений для отображения</string>
+	<string name="empty_plant_list">Нет растений</string>
 	<string name="empty_schedules">Нет расписаний</string>
 	<string name="empty_photos">Нет фотографий</string>
 	<string name="events_title">Прошлые действия</string>
 	<string name="show_hide_calendar">Показать/спрятать календарь</string>
 	<!-- "1 selected" -->
-	<string name="selected_len" formatted="true">%o выбрано</string>
+	<string name="selected_len" formatted="true">%d выбрано</string>
 	<string name="translations_title">Благодарим за участие</string>
 	<string name="translations_by">Переводы</string>
 	<string name="help_translate">Помочь с переводом</string>
@@ -414,4 +414,11 @@
 	<string name="import_progress_warning">Импорт изображений, может занять некоторое время...</string>
 	<string name="data_task">Задание данных</string>
 	<string name="task_complete">Задание выполнено</string>
+	<string name="empty_actions_list">Нет действий</string>
+
+	<string name="exporting_start">Экспортирую журнал для %s</string>
+	<string name="exporting_complete">Экспорт %s завершён</string>
+	<string name="exporting_path">%s экспортировано в %s</string>
+	<string name="export_complete">Экспорт завершён</string>
+	<string name="export_dialog_label">Включить изображения?</string>
 </resources>
