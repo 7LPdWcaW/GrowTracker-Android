@@ -8,10 +8,12 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.SeekBar
+import android.widget.TextView
 import androidx.appcompat.app.AlertDialog
 import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.esotericsoftware.kryo.Kryo
+import com.github.mikephil.charting.components.MarkerView
 import com.github.mikephil.charting.data.Entry
 import com.github.mikephil.charting.highlight.Highlight
 import com.github.mikephil.charting.listener.OnChartValueSelectedListener
@@ -30,6 +32,7 @@ import me.anon.model.*
 import org.threeten.bp.Duration
 import org.threeten.bp.LocalTime
 import org.threeten.bp.format.DateTimeFormatter
+import java.util.*
 import kotlin.math.abs
 
 class GardenTrackerFragment : Fragment()
@@ -302,6 +305,29 @@ class GardenTrackerFragment : Fragment()
 			if (data_container.findViewById<View?>(R.id.stats_temp) == null) data_container.addView(view)
 		}
 		StatsHelper.setTempData(garden, activity!!, temp, tempAdditional)
+		temp.markerView = object : MarkerView(context, R.layout.chart_marker)
+		{
+			override fun refreshContent(e: Entry, highlight: Highlight)
+			{
+				val timeFormat = android.text.format.DateFormat.getTimeFormat(context)
+				val action = e.data as Action
+				var date = ""
+
+				if (action != null) date = "\n" + timeFormat.format(Date(action.date))
+
+				(findViewById<View>(R.id.content) as TextView).text = e.getVal().formatWhole() + "°" + tempUnit.label + date
+			}
+
+			override fun getXOffset(xpos: Float): Int
+			{
+				return -(width / 2)
+			}
+
+			override fun getYOffset(ypos: Float): Int
+			{
+				return -height
+			}
+		}
 		temp.notifyDataSetChanged()
 		temp.postInvalidate()
 		min_temp.text = if (tempAdditional[0] == "100") "-" else "${tempAdditional[0]}°${tempUnit.label}"
@@ -318,6 +344,28 @@ class GardenTrackerFragment : Fragment()
 			if (data_container.findViewById<View?>(R.id.stats_humidity) == null) data_container.addView(view)
 		}
 		StatsHelper.setHumidityData(garden, activity!!, humidity, humidityAdditional)
+		humidity.markerView = object : MarkerView(context, R.layout.chart_marker)
+		{
+			override fun refreshContent(e: Entry, highlight: Highlight)
+			{
+				val timeFormat = android.text.format.DateFormat.getTimeFormat(context)
+				val action = e.data as Action
+				var date = ""
+
+				if (action != null) date = "\n" + timeFormat.format(Date(action.date))
+				(findViewById<View>(R.id.content) as TextView).text = e.getVal().toInt().toString() + "%" + date
+			}
+
+			override fun getXOffset(xpos: Float): Int
+			{
+				return -(width / 2)
+			}
+
+			override fun getYOffset(ypos: Float): Int
+			{
+				return -height
+			}
+		}
 		humidity.notifyDataSetChanged()
 		humidity.postInvalidate()
 		min_humidity.text = if (humidityAdditional[0] == "100") "-" else "${humidityAdditional[0]}%"

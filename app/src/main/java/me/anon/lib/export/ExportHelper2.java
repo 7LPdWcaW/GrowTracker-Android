@@ -1,4 +1,4 @@
-package me.anon.lib.helper;
+package me.anon.lib.export;
 
 import android.app.NotificationManager;
 import android.app.PendingIntent;
@@ -39,6 +39,10 @@ import me.anon.grow.R;
 import me.anon.lib.ExportCallback;
 import me.anon.lib.TdsUnit;
 import me.anon.lib.Unit;
+import me.anon.lib.helper.MoshiHelper;
+import me.anon.lib.helper.NotificationHelper;
+import me.anon.lib.helper.StatsHelper;
+import me.anon.lib.helper.TimeHelper;
 import me.anon.model.Action;
 import me.anon.model.Additive;
 import me.anon.model.EmptyAction;
@@ -53,7 +57,7 @@ import static me.anon.lib.Unit.ML;
 /**
  * Helper class for exporting plant data into a Tarball file
  */
-public class ExportHelper
+public class ExportHelper2
 {
 	private static final String NEW_LINE = "\r\n\r\n";
 

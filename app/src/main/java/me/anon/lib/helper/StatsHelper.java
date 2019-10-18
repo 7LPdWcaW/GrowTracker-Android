@@ -18,6 +18,10 @@ import com.github.mikephil.charting.highlight.Highlight;
 import com.github.mikephil.charting.utils.ColorTemplate;
 import com.github.mikephil.charting.utils.ViewPortHandler;
 
+import org.threeten.bp.DateTimeUtils;
+import org.threeten.bp.format.DateTimeFormatter;
+
+import java.sql.Timestamp;
 import java.text.DateFormat;
 import java.util.ArrayList;
 import java.util.Date;
@@ -103,7 +107,6 @@ public class StatsHelper
 			public void refreshContent(Entry e, Highlight highlight)
 			{
 				((TextView)findViewById(R.id.content)).setText("" + e.getVal());
-//				((TextView)findViewById(R.id.content)).setTextColor(IntUtilsKt.resolveColor(R.attr.colorAccent, findViewById(R.id.content).getContext()));
 			}
 
 			@Override public int getXOffset(float xpos)
@@ -233,35 +236,6 @@ public class StatsHelper
 
 		styleGraph(chart);
 
-		chart.setMarkerView(new MarkerView(context, R.layout.chart_marker)
-		{
-			@Override
-			public void refreshContent(Entry e, Highlight highlight)
-			{
-				String val = NumberUtilsKt.formatWhole(e.getVal());
-
-				((TextView)findViewById(R.id.content)).setText(val + measurement.getLabel() + "/" + delivery.getLabel());
-
-				int color = IntUtilsKt.resolveColor(R.attr.colorPrimary, context);
-				if (e.getData() instanceof Integer)
-				{
-					color = (int)e.getData();
-				}
-
-				((TextView)findViewById(R.id.content)).setTextColor(color);
-			}
-
-			@Override public int getXOffset(float xpos)
-			{
-				return -(getWidth() / 2);
-			}
-
-			@Override public int getYOffset(float ypos)
-			{
-				return -getHeight();
-			}
-		});
-
 		chart.setData(lineData);
 	}
 
@@ -272,7 +246,7 @@ public class StatsHelper
 	 * @param chart The chart to set the data
 	 * @param additionalRef Pass-by-reference value for min/max/ave for the generated values. Must be length of 3 if not null
 	 */
-	public static void setInputData(Plant plant, @NonNull Context context, @Nullable LineChart chart, String[] additionalRef)
+	public static void setInputData(Plant plant, @Nullable Context context, @Nullable LineChart chart, String[] additionalRef)
 	{
 		ArrayList<Entry> inputVals = new ArrayList<>();
 		ArrayList<Entry> runoffVals = new ArrayList<>();
@@ -322,7 +296,7 @@ public class StatsHelper
 				long difference = action.getDate() - changeDate;
 				if (stage != null)
 				{
-					xVals.add(((int)TimeHelper.toDays(difference) + "" + context.getString(stage.getPrintString()).charAt(0)).toLowerCase());
+					xVals.add(((int)TimeHelper.toDays(difference) + "" + (context != null ? context.getString(stage.getPrintString()) : stage.getEnString()).charAt(0)).toLowerCase());
 				}
 				else
 				{
@@ -333,7 +307,7 @@ public class StatsHelper
 			}
 		}
 
-		if (chart != null)
+		if (chart != null && context != null)
 		{
 			LineDataSet dataSet = new LineDataSet(inputVals, context.getString(R.string.stat_input_ph));
 			styleDataset(context, dataSet, ColorTemplate.COLORFUL_COLORS[0]);
@@ -374,7 +348,7 @@ public class StatsHelper
 	 * @param chart The chart to set the data
 	 * @param additionalRef Pass-by-reference value for min/max/ave for the generated values. Must be length of 3 if not null
 	 */
-	public static void setTdsData(Plant plant, @NonNull Context context, @Nullable LineChart chart, String[] additionalRef, TdsUnit selectedUnit)
+	public static void setTdsData(Plant plant, @Nullable Context context, @Nullable LineChart chart, String[] additionalRef, TdsUnit selectedUnit)
 	{
 		ArrayList<Entry> vals = new ArrayList<>();
 		ArrayList<String> xVals = new ArrayList<>();
@@ -410,7 +384,7 @@ public class StatsHelper
 				long difference = action.getDate() - changeDate;
 				if (stage != null)
 				{
-					xVals.add(((int)TimeHelper.toDays(difference) + "" + context.getString(stage.getPrintString()).charAt(0)).toLowerCase());
+					xVals.add(((int)TimeHelper.toDays(difference) + "" + (context != null ? context.getString(stage.getPrintString()) : stage.getEnString()).charAt(0)).toLowerCase());
 				}
 				else
 				{
@@ -423,32 +397,12 @@ public class StatsHelper
 			}
 		}
 
-		if (chart != null)
+		if (chart != null && context != null)
 		{
 			LineDataSet dataSet = new LineDataSet(vals, selectedUnit.getLabel());
 			styleDataset(context, dataSet, Color.parseColor(context.getResources().getStringArray(R.array.stats_colours)[0]));
 			styleGraph(chart);
-			chart.setMarkerView(new MarkerView(context, R.layout.chart_marker)
-			{
-				@Override
-				public void refreshContent(Entry e, Highlight highlight)
-				{
-					String val = NumberUtilsKt.formatWhole(e.getVal());
 
-					((TextView)findViewById(R.id.content)).setText(val);
-//					((TextView)findViewById(R.id.content)).setTextColor(IntUtilsKt.resolveColor(R.attr.colorAccent, findViewById(R.id.content).getContext()));
-				}
-
-				@Override public int getXOffset(float xpos)
-				{
-					return -(getWidth() / 2);
-				}
-
-				@Override public int getYOffset(float ypos)
-				{
-					return -getHeight();
-				}
-			});
 			chart.getAxisLeft().setValueFormatter(new YAxisValueFormatter()
 			{
 				@Override public String getFormattedValue(float value, YAxis yAxis)
@@ -484,6 +438,12 @@ public class StatsHelper
 	 */
 	public static void setTempData(Plant plant, @NonNull Context context, @Nullable LineChart chart, String[] additionalRef)
 	{
+		final TempUnit tempUnit = TempUnit.getSelectedTemperatureUnit(context);
+		setTempData(plant, context, tempUnit, chart, additionalRef);
+	}
+
+	public static void setTempData(Plant plant, @Nullable Context context, TempUnit tempUnit, @Nullable LineChart chart, String[] additionalRef)
+	{
 		ArrayList<Entry> vals = new ArrayList<>();
 		ArrayList<String> xVals = new ArrayList<>();
 		LineData data = new LineData();
@@ -491,7 +451,6 @@ public class StatsHelper
 		float min = Float.MAX_VALUE;
 		float max = Float.MIN_VALUE;
 		float total = 0;
-		final TempUnit tempUnit = TempUnit.getSelectedTemperatureUnit(context);
 
 		int index = 0;
 		for (Action action : plant.getActions())
@@ -518,7 +477,7 @@ public class StatsHelper
 				long difference = action.getDate() - changeDate;
 				if (stage != null)
 				{
-					xVals.add(((int)TimeHelper.toDays(difference) + "" + context.getString(stage.getPrintString()).charAt(0)).toLowerCase());
+					xVals.add(((int)TimeHelper.toDays(difference) + "" + (context != null ? context.getString(stage.getPrintString()) : stage.getEnString()).charAt(0)).toLowerCase());
 				}
 				else
 				{
@@ -562,6 +521,19 @@ public class StatsHelper
 	 */
 	public static void setTempData(Garden garden, @NonNull Context context, @Nullable LineChart chart, String[] additionalRef)
 	{
+		final TempUnit tempUnit = TempUnit.getSelectedTemperatureUnit(context);
+		setTempData(garden, context, tempUnit, chart, additionalRef);
+	}
+
+	/**
+	 * Generates and sets the temperature data from the given Garden
+	 *
+	 * @param garden The garden
+	 * @param chart The chart to set the data
+	 * @param additionalRef Pass-by-reference value for min/max/ave for the generated values. Must be length of 3 if not null
+	 */
+	public static void setTempData(Garden garden, @Nullable Context context, TempUnit tempUnit, @Nullable LineChart chart, String[] additionalRef)
+	{
 		ArrayList<Entry> vals = new ArrayList<>();
 		ArrayList<String> xVals = new ArrayList<>();
 		LineData data = new LineData();
@@ -570,15 +542,28 @@ public class StatsHelper
 		float total = 0;
 
 		int index = 0;
-		DateFormat dateFormat = android.text.format.DateFormat.getDateFormat(context);
-		DateFormat timeFormat = android.text.format.DateFormat.getTimeFormat(context);
-		final TempUnit tempUnit = TempUnit.getSelectedTemperatureUnit(context);
+		DateFormat dateFormat = null;
+
+		if (context != null)
+		{
+			dateFormat = android.text.format.DateFormat.getDateFormat(context);
+		}
 
 		for (Action action : garden.getActions())
 		{
 			if (action instanceof TemperatureChange)
 			{
-				String date = dateFormat.format(new Date(action.getDate()));
+				String date = "";
+
+				if (dateFormat != null)
+				{
+					date = dateFormat.format(new Date(action.getDate()));
+				}
+				else
+				{
+					date = DateTimeUtils.toLocalDateTime(new Timestamp(action.getDate())).format(DateTimeFormatter.ofPattern("yyyy/mm/dd"));
+				}
+
 				double temperature = TempUnit.CELCIUS.to(tempUnit, ((TemperatureChange)action).getTemp());
 
 				Entry entry = new Entry((float)temperature, index++);
@@ -626,32 +611,6 @@ public class StatsHelper
 				}
 			});
 
-			chart.setMarkerView(new MarkerView(context, R.layout.chart_marker)
-			{
-				@Override
-				public void refreshContent(Entry e, Highlight highlight)
-				{
-					Action action = (Action)e.getData();
-					String date = "";
-
-					if (action != null) date = "\n" + timeFormat.format(new Date(action.getDate()));
-
-//					((TextView)findViewById(R.id.content)).setGravity(CENTER_HORIZONTAL);
-					((TextView)findViewById(R.id.content)).setText(NumberUtilsKt.formatWhole(e.getVal()) + "°" + tempUnit.getLabel() + date);
-//					((TextView)findViewById(R.id.content)).setTextColor(IntUtilsKt.resolveColor(R.attr.colorAccent, findViewById(R.id.content).getContext()));
-				}
-
-				@Override public int getXOffset(float xpos)
-				{
-					return -(getWidth() / 2);
-				}
-
-				@Override public int getYOffset(float ypos)
-				{
-					return -getHeight();
-				}
-			});
-
 			chart.getXAxis().setYOffset(15.0f);
 			chart.setExtraOffsets(0, 0, 30, 0);
 		}
@@ -671,7 +630,7 @@ public class StatsHelper
 	 * @param chart The chart to set the data
 	 * @param additionalRef Pass-by-reference value for min/max/ave for the generated values. Must be length of 3 if not null
 	 */
-	public static void setHumidityData(Garden garden, @NonNull Context context, @Nullable LineChart chart, String[] additionalRef)
+	public static void setHumidityData(Garden garden, @Nullable Context context, @Nullable LineChart chart, String[] additionalRef)
 	{
 		ArrayList<Entry> vals = new ArrayList<>();
 		ArrayList<String> xVals = new ArrayList<>();
@@ -681,14 +640,28 @@ public class StatsHelper
 		float total = 0;
 
 		int index = 0;
-		DateFormat dateFormat = android.text.format.DateFormat.getDateFormat(context);
-		DateFormat timeFormat = android.text.format.DateFormat.getTimeFormat(context);
+		DateFormat dateFormat = null;
+
+		if (context != null)
+		{
+			dateFormat = android.text.format.DateFormat.getDateFormat(context);
+		}
 
 		for (Action action : garden.getActions())
 		{
 			if (action instanceof HumidityChange)
 			{
-				String date = dateFormat.format(new Date(action.getDate()));
+				String date = "";
+
+				if (dateFormat != null)
+				{
+					date = dateFormat.format(new Date(action.getDate()));
+				}
+				else
+				{
+					date = DateTimeUtils.toLocalDateTime(new Timestamp(action.getDate())).format(DateTimeFormatter.ofPattern("yyyy/mm/dd"));
+				}
+
 				double humidity = ((HumidityChange)action).getHumidity();
 
 				Entry entry = new Entry((float)humidity, index++);
@@ -702,7 +675,7 @@ public class StatsHelper
 			}
 		}
 
-		if (chart != null)
+		if (chart != null && context != null)
 		{
 			LineDataSet dataSet = new LineDataSet(vals, "%");
 			styleDataset(context, dataSet, Color.parseColor(context.getResources().getStringArray(R.array.stats_colours)[2]));
@@ -733,32 +706,6 @@ public class StatsHelper
 				@Override public String getFormattedValue(float value, YAxis yAxis)
 				{
 					return (int)value + "%";
-				}
-			});
-
-			chart.setMarkerView(new MarkerView(context, R.layout.chart_marker)
-			{
-				@Override
-				public void refreshContent(Entry e, Highlight highlight)
-				{
-					Action action = (Action)e.getData();
-					String date = "";
-
-					if (action != null) date = "\n" + timeFormat.format(new Date(action.getDate()));
-
-//					((TextView)findViewById(R.id.content)).setGravity(CENTER_HORIZONTAL);
-					((TextView)findViewById(R.id.content)).setText((int)e.getVal() + "%" + date);
-//					((TextView)findViewById(R.id.content)).setTextColor(IntUtilsKt.resolveColor(R.attr.colorAccent, findViewById(R.id.content).getContext()));
-				}
-
-				@Override public int getXOffset(float xpos)
-				{
-					return -(getWidth() / 2);
-				}
-
-				@Override public int getYOffset(float ypos)
-				{
-					return -getHeight();
 				}
 			});
 
