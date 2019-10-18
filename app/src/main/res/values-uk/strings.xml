@@ -406,4 +406,12 @@
 	<string name="lights_off">Світло вимк.</string>
 
 	<string name="settings_lastbackup_summary" formatted="true">Остання резервна копія: &lt;b&gt;%s&lt;/b&gt;</string>
+	<string name="settings_image_location_summary" formatted="true">Розташування зображень, зараз &lt;b&gt;%s&lt;/b&gt;</string>
+	<string name="settings_image_location_error">Не вдалося встановити розташування зображень</string>
+	<string name="settings_image_location_title">Розташування зображень</string>
+	<string name="settings_image_cache_title">Очистити кеш зображень</string>
+	<string name="cache_cleared">Кеш зображень очищено</string>
+	<string name="import_progress_warning">Імпортую зображення, це може тривати довго...</string>
+	<string name="data_task">Завдання даних</string>
+	<string name="task_complete">Завдання виконано</string>
 </resources>
