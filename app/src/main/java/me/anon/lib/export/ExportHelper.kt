@@ -240,41 +240,45 @@ class ExportHelper(
 					val zipPathPrefix = if (usePrefix) plant!!.name.replace("[^a-zA-Z0-9]+".toRegex(), "-") + "/" else ""
 
 					// Copy images to dir
-					for (filePath in plant!!.images!!)
-					{
-						try
-						{
-							val currentImage = File(filePath)
-							var fileDate = java.lang.Long.parseLong(currentImage.name.replace("[^0-9]".toRegex(), ""))
-
-							if (fileDate == 0L)
+					plant?.images?.let {
+						it.forEach{ filePath ->
+							try
 							{
-								fileDate = currentImage.lastModified()
+								val currentImage = File(filePath)
+								var fileDate = java.lang.Long.parseLong(currentImage.name.replace("[^0-9]".toRegex(), ""))
+
+								if (fileDate == 0L)
+								{
+									fileDate = currentImage.lastModified()
+								}
+
+								val parameters = ZipParameters()
+								parameters.compressionMethod = Zip4jConstants.COMP_DEFLATE
+								parameters.fileNameInZip = zipPathPrefix + "images/" + dateFolder(appContext, fileDate) + "/" + fileDate + ".jpg"
+								parameters.isSourceExternalStream = true
+
+								val fis = FileInputStream(currentImage)
+								finalFile.addStream(fis, parameters)
+							}
+							catch (e: Exception)
+							{
+								e.printStackTrace()
 							}
 
-							val parameters = ZipParameters()
-							parameters.compressionMethod = Zip4jConstants.COMP_DEFLATE
-							parameters.fileNameInZip = zipPathPrefix + "images/" + dateFolder(appContext, fileDate) + "/" + fileDate + ".jpg"
-							parameters.isSourceExternalStream = true
-
-							val fis = FileInputStream(currentImage)
-							finalFile.addStream(fis, parameters)
+							publishProgress(++count, total)
 						}
-						catch (e: Exception)
-						{
-							e.printStackTrace()
-						}
-
-						publishProgress(++count, total)
 					}
 				}
 
-				return null
+				publishProgress(total, total)
+				return finalFile.file
 			}
 
 			override fun onPostExecute(file: File?)
 			{
-				callback(finalFile.file, appContext)
+				file?.let {
+					callback(file, appContext)
+				}
 			}
 		}.executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR, *plant.toTypedArray())
 	}

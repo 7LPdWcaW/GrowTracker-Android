@@ -63,7 +63,7 @@ abstract class Action(
 	open var notes: String? = null
 ) : Parcelable
 {
-	abstract val type: String
+	public abstract fun getTypeStr(): String
 
 	enum class ActionName private constructor(val printString: Int, val colour: Int, val enString: String)
 	{
@@ -112,7 +112,8 @@ class EmptyAction(
 	override var notes: String? = null
 ) : Action(date, notes)
 {
-	public override val type: String = "Action"
+	public var type: String = "Action"
+	public override fun getTypeStr(): String = type
 }
 
 @Parcelize
@@ -122,7 +123,8 @@ class NoteAction(
 	override var notes: String? = null
 ) : Action(date, notes)
 {
-	public override val type: String = "Note"
+	public var type: String = "Note"
+	public override fun getTypeStr(): String = type
 }
 
 @Parcelize
@@ -134,7 +136,8 @@ class StageChange(
 	override var notes: String? = null
 ) : Action(date, notes)
 {
-	public override val type: String = "StageChange"
+	public var type: String = "StageChange"
+	public override fun getTypeStr(): String = type
 }
 
 /**
@@ -479,7 +482,8 @@ class Water(
 	override var notes: String? = null
 ) : Action(date, notes), Parcelable
 {
-	public override val type: String = "Water"
+	public var type: String = "Water"
+	public override fun getTypeStr(): String = type
 
 	@Deprecated("")
 	public var ppm: Double? = null
@@ -608,7 +612,8 @@ class TemperatureChange(
 	override var notes: String? = null
 ) : Action(date, notes)
 {
-	public override val type: String = "TemperatureChange"
+	public var type: String = "TemperatureChange"
+	public override fun getTypeStr(): String = type
 }
 
 @Parcelize
@@ -620,7 +625,8 @@ class HumidityChange(
 	override var notes: String? = null
 ) : Action(date, notes)
 {
-	public override val type: String = "HumidityChange"
+	public var type: String = "HumidityChange"
+	public override fun getTypeStr(): String = type
 }
 
 @Parcelize
@@ -632,5 +638,6 @@ class LightingChange(
 	override var date: Long = System.currentTimeMillis()
 ) : Action(date, null)
 {
-	public override val type: String = "LightingChange"
+	public var type: String = "LightingChange"
+	public override fun getTypeStr(): String = type
 }

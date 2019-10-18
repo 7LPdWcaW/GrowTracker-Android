@@ -58,22 +58,22 @@ class MarkdownProcessor : ExportProcessor()
 		documentBuilder.append("## Grow details")
 		documentBuilder.append(NEW_LINE + NEW_LINE)
 
-		documentBuilder.append("*Name:* ").append(plant.name)
+		documentBuilder.append("**Name:** ").append(plant.name)
 		documentBuilder.append(NEW_LINE + NEW_LINE)
 
 		plant.strain?.let {
-			documentBuilder.append("*Strain:* ").append(it)
+			documentBuilder.append("**Strain:** ").append(it)
 			documentBuilder.append(NEW_LINE + NEW_LINE)
 		}
 
 		val planted = DateTimeUtils.toLocalDateTime(Timestamp(plant.plantDate))
-		documentBuilder.append("*Planted:* ").append(planted.format(DateTimeFormatter.ofPattern("yyyy-mm-dd HH:mm")))
+		documentBuilder.append("**Planted:** ").append(planted.format(DateTimeFormatter.ofPattern("yyyy-mm-dd HH:mm")))
 		documentBuilder.append(NEW_LINE + NEW_LINE)
 
-		documentBuilder.append("*From clone?:* ").append(plant.clone)
+		documentBuilder.append("**From clone?:** ").append(plant.clone)
 		documentBuilder.append(NEW_LINE + NEW_LINE)
 
-		documentBuilder.append("*Medium:* ").append(plant.medium.enString)
+		documentBuilder.append("**Medium:** ").append(plant.medium.enString)
 		documentBuilder.append(NEW_LINE + NEW_LINE)
 
 		if (plant.mediumDetails?.isNotEmpty() == true)
@@ -94,24 +94,25 @@ class MarkdownProcessor : ExportProcessor()
 			val stageDate = stageTimes[currentStage] ?: 0
 			val harvested = DateTimeUtils.toLocalDateTime(Timestamp(stageDate))
 
-			documentBuilder.append("*Harvested:* ").append(harvested.format(DateTimeFormatter.ofPattern("yyyy-mm-dd HH:mm")))
+			documentBuilder.append("**Harvested:** ").append(harvested.format(DateTimeFormatter.ofPattern("yyyy-mm-dd HH:mm")))
 		}
 
 		documentBuilder.append("## Stages")
 		documentBuilder.append(NEW_LINE + NEW_LINE)
 
-		plantStages.forEach { stage ->
-			val stageTime = stageTimes[stage.key]
-			val stageDate = stage.value.date
+		plantStages.keys.reversed().forEach { key ->
+			val value = plantStages[key]!!
+			val stageTime = stageTimes[key]
+			val stageDate = value.date
 			val stageDateTime = DateTimeUtils.toLocalDateTime(Timestamp(stageDate))
-			val notes = stage.value.notes
-			val stageName = stage.key.enString
+			val notes = value.notes
+			val stageName = key.enString
 
 			documentBuilder.append(" - ").append(stageName).append(NEW_LINE + NEW_LINE)
-			documentBuilder.append("\t - ").append("*Set on:* ").append(stageDateTime.format(DateTimeFormatter.ofPattern("yyyy-mm-dd HH:mm"))).append(NEW_LINE)
+			documentBuilder.append("\t - ").append("**Set on:** ").append(stageDateTime.format(DateTimeFormatter.ofPattern("yyyy-mm-dd HH:mm"))).append(NEW_LINE)
 
 			stageTime?.let {
-				documentBuilder.append("\t - ").append("*In stage for:* ").append(TimeHelper.toDays(stageTime).formatWhole()).append(" days").append(NEW_LINE)
+				documentBuilder.append("\t - ").append("**In stage for:** ").append(TimeHelper.toDays(stageTime).formatWhole()).append(" days").append(NEW_LINE)
 			}
 
 			if (notes?.isNotEmpty() == true)
@@ -130,6 +131,7 @@ class MarkdownProcessor : ExportProcessor()
 		var waterDifference = 0L
 		var lastWater = 0L
 		var totalWater = 0
+		var totalWaterUsed = 0.0
 		var totalFlush = 0
 		val additives = HashMap<String, Double>()
 		val tdsNames = TreeSet<TdsUnit>()
@@ -143,18 +145,20 @@ class MarkdownProcessor : ExportProcessor()
 				}
 			}
 
-			if (action.javaClass == Water::class.java)
+			if (action is Water)
 			{
 				if (lastWater != 0L)
 				{
 					waterDifference += Math.abs(action.date - lastWater)
 				}
 
-				val actionAdditives = (action as Water).additives
+				totalWaterUsed += action.amount ?: 0.0
+
+				val actionAdditives = action.additives
 				for (additive in actionAdditives)
 				{
 					if (!additives.containsKey(additive.description)) additives[additive.description ?: ""] = 0.0
-					additives[additive.description]!!.plus(additive.amount ?: 0.0)
+					additives[additive.description ?: ""] = additives[additive.description]!! + (additive.amount ?: 0.0)
 				}
 
 				if (action.tds != null)
@@ -176,10 +180,11 @@ class MarkdownProcessor : ExportProcessor()
 		val days = seconds.toDouble() * 0.0000115741
 
 		documentBuilder.append("## Stats").append(NEW_LINE + NEW_LINE)
-		documentBuilder.append(" - *Total grow time:* ").append(String.format("%1$,.2f days", days)).append(NEW_LINE)
-		documentBuilder.append(" - *Total waters:* ").append(totalWater.toString()).append(NEW_LINE )
-		documentBuilder.append(" - *Total flushes:* ").append(totalFlush.toString()).append(NEW_LINE)
-		documentBuilder.append(" - *Average time between watering:* ").append(String.format("%1$,.2f days", TimeHelper.toDays(waterDifference) / totalWater.toDouble())).append(NEW_LINE + NEW_LINE)
+		documentBuilder.append(" - **Total grow time:** ").append(String.format("%1$,.2f days", days)).append(NEW_LINE)
+		documentBuilder.append(" - **Total waters:** ").append(totalWater.toString()).append(NEW_LINE)
+		documentBuilder.append(" - **Total water used:** ").append(Unit.ML.to(selectedDelivery, totalWaterUsed).formatWhole()).append(selectedDelivery!!.label).append(NEW_LINE)
+		documentBuilder.append(" - **Total flushes:** ").append(totalFlush.toString()).append(NEW_LINE)
+		documentBuilder.append(" - **Average time between watering:** ").append(String.format("%1$,.2f days", TimeHelper.toDays(waterDifference) / totalWater.toDouble())).append(NEW_LINE + NEW_LINE)
 
 		if (additives.isNotEmpty())
 		{
@@ -197,9 +202,9 @@ class MarkdownProcessor : ExportProcessor()
 		val avePh = arrayOfNulls<String>(3)
 		StatsHelper.setInputData(plant, null, null, avePh)
 		documentBuilder.append("### Input/runoff pH").append(NEW_LINE + NEW_LINE)
-		documentBuilder.append(" - *Minimum input pH:* ").append(avePh[0]).append(NEW_LINE)
-		documentBuilder.append(" - *Maximum input pH:* ").append(avePh[1]).append(NEW_LINE)
-		documentBuilder.append(" - *Average input pH:* ").append(avePh[2]).append(NEW_LINE + NEW_LINE)
+		documentBuilder.append(" - *Minimum input pH:** ").append(avePh[0]).append(NEW_LINE)
+		documentBuilder.append(" - *Maximum input pH:** ").append(avePh[1]).append(NEW_LINE)
+		documentBuilder.append(" - *Average input pH:** ").append(avePh[2]).append(NEW_LINE + NEW_LINE)
 		documentBuilder.append("![pH Chart](input-ph.jpg)").append(NEW_LINE + NEW_LINE)
 
 		tdsNames.forEach { tds ->
@@ -225,8 +230,8 @@ class MarkdownProcessor : ExportProcessor()
 		if (plant.actions.isNullOrEmpty()) return
 
 		documentBuilder.append("## Actions").append(NEW_LINE + NEW_LINE)
-		documentBuilder.append("| Date | Action | Details | Notes |").append(NEW_LINE)
-		documentBuilder.append("| ---- | ------ | ------- | ----- |").append(NEW_LINE)
+		documentBuilder.append("| Date | Stage | Action | Details | Notes |").append(NEW_LINE)
+		documentBuilder.append("| ---- | ----- | ------ | ------- | ----- |").append(NEW_LINE)
 
 		plant.actions?.asReversed()?.forEach { action ->
 			val actionDate = DateTimeUtils.toLocalDateTime(Timestamp(action.date))
@@ -234,22 +239,52 @@ class MarkdownProcessor : ExportProcessor()
 			documentBuilder.append("| ")
 			documentBuilder.append(actionDate.format(DateTimeFormatter.ofPattern("yyyy-mm-dd HH:mm")))
 			documentBuilder.append(" | ")
-			documentBuilder.append(action.type)
+
+			// stage date
+			var lastChange: StageChange? = null
+			val currentChangeDate = action.date
+
+			for (index in plant.actions!!.size - 1 downTo 0)
+			{
+				val action = plant.actions!![index]
+				if (action is StageChange)
+				{
+					if (action.date < currentChangeDate && lastChange == null)
+					{
+						lastChange = action
+						break
+					}
+				}
+			}
+
+			lastChange?.let {
+				val totalDays = TimeHelper.toDays(Math.abs(currentChangeDate - plant.plantDate)).toInt()
+				documentBuilder.append(if (totalDays == 0) 1 else totalDays)
+
+				var currentDays = TimeHelper.toDays(Math.abs(currentChangeDate - it.date)).toInt()
+				currentDays = if (currentDays == 0) 1 else currentDays
+				documentBuilder.append("/" + currentDays + it.newStage.enString.substring(0, 1).toLowerCase())
+			} ?: let {
+				documentBuilder.append(" ")
+			}
+
+			documentBuilder.append(" | ")
+			documentBuilder.append(action.getTypeStr())
 			documentBuilder.append(" | ")
 
 			when (action)
 			{
 				is Water -> {
-					action.ph?.let { documentBuilder.append("*pH:* ").append(it.formatWhole()).append(" ") }
-					action.runoff?.let { documentBuilder.append("*Runoff:* ").append(it.formatWhole()).append(" ") }
-					action.amount?.let { documentBuilder.append("*amount:* ").append(it.formatWhole()).append(" ") }
-					action.tds?.let { documentBuilder.append("*${selectedTds!!.enStr}:* ").append(it.amount.formatWhole()).append(" ") }
+					action.ph?.let { documentBuilder.append("**pH:** ").append(it.formatWhole()).append(" ") }
+					action.runoff?.let { documentBuilder.append("**Runoff:** ").append(it.formatWhole()).append(" ") }
+					action.amount?.let { documentBuilder.append("**amount:** ").append(Unit.ML.to(selectedDelivery, it).formatWhole()).append(selectedDelivery!!.label).append(" ") }
+					action.tds?.let { documentBuilder.append("**${it.type.enStr}:** ").append(it.amount.formatWhole()).append(it.type.label).append(" ") }
 
 					if (action.additives.isNotEmpty())
 					{
 						documentBuilder.append(" / ")
 						action.additives.forEach { additive ->
-							documentBuilder.append("*${additive.description ?: ""}:* ").append(additive.amount.formatWhole()).append(" / ")
+							documentBuilder.append("**${additive.description ?: ""}:** ").append(Unit.ML.to(selectedMeasurement, additive.amount ?: 0.0).formatWhole()).append(selectedMeasurement!!.label).append(" / ")
 						}
 					}
 				}

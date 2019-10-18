@@ -120,7 +120,7 @@ public class DateRenderer
 	private String getFormattedDate(Unit unit, double difference)
 	{
 		int newDiff = (int)Math.floor(difference / unit.inSeconds);
-		return String.format("%s %s", newDiff, unit.name);
+		return String.format("%s%s", newDiff, unit.name);
 	}
 
 	private String getLongFormattedDate(Unit unit, double difference)
