@@ -242,7 +242,7 @@ public class StatsHelper
 	 * @param chart The chart to set the data
 	 * @param additionalRef Pass-by-reference value for min/max/ave for the generated values. Must be length of 3 if not null
 	 */
-	public static void setInputData(Plant plant, @NonNull Context context, @Nullable LineChart chart, String[] additionalRef)
+	public static void setInputData(Plant plant, @Nullable Context context, @Nullable LineChart chart, String[] additionalRef)
 	{
 		ArrayList<Entry> inputVals = new ArrayList<>();
 		ArrayList<Entry> runoffVals = new ArrayList<>();
@@ -292,7 +292,7 @@ public class StatsHelper
 				long difference = action.getDate() - changeDate;
 				if (stage != null)
 				{
-					xVals.add(((int)TimeHelper.toDays(difference) + "" + context.getString(stage.getPrintString()).charAt(0)).toLowerCase());
+					xVals.add(((int)TimeHelper.toDays(difference) + "" + (context != null ? context.getString(stage.getPrintString()) : stage.getEnString()).charAt(0)).toLowerCase());
 				}
 				else
 				{
@@ -303,7 +303,7 @@ public class StatsHelper
 			}
 		}
 
-		if (chart != null)
+		if (chart != null && context != null)
 		{
 			LineDataSet dataSet = new LineDataSet(inputVals, context.getString(R.string.stat_input_ph));
 			styleDataset(context, dataSet, ColorTemplate.COLORFUL_COLORS[0]);
@@ -344,7 +344,7 @@ public class StatsHelper
 	 * @param chart The chart to set the data
 	 * @param additionalRef Pass-by-reference value for min/max/ave for the generated values. Must be length of 3 if not null
 	 */
-	public static void setTdsData(Plant plant, @NonNull Context context, @Nullable LineChart chart, String[] additionalRef, TdsUnit selectedUnit)
+	public static void setTdsData(Plant plant, @Nullable Context context, @Nullable LineChart chart, String[] additionalRef, TdsUnit selectedUnit)
 	{
 		ArrayList<Entry> vals = new ArrayList<>();
 		ArrayList<String> xVals = new ArrayList<>();
@@ -380,7 +380,7 @@ public class StatsHelper
 				long difference = action.getDate() - changeDate;
 				if (stage != null)
 				{
-					xVals.add(((int)TimeHelper.toDays(difference) + "" + context.getString(stage.getPrintString()).charAt(0)).toLowerCase());
+					xVals.add(((int)TimeHelper.toDays(difference) + "" + (context != null ? context.getString(stage.getPrintString()) : stage.getEnString()).charAt(0)).toLowerCase());
 				}
 				else
 				{
@@ -393,7 +393,7 @@ public class StatsHelper
 			}
 		}
 
-		if (chart != null)
+		if (chart != null && context != null)
 		{
 			LineDataSet dataSet = new LineDataSet(vals, selectedUnit.getLabel());
 			styleDataset(context, dataSet, Color.parseColor(context.getResources().getStringArray(R.array.stats_colours)[0]));
@@ -434,6 +434,12 @@ public class StatsHelper
 	 */
 	public static void setTempData(Plant plant, @NonNull Context context, @Nullable LineChart chart, String[] additionalRef)
 	{
+		final TempUnit tempUnit = TempUnit.getSelectedTemperatureUnit(context);
+		setTempData(plant, context, tempUnit, chart, additionalRef);
+	}
+
+	public static void setTempData(Plant plant, @Nullable Context context, TempUnit tempUnit, @Nullable LineChart chart, String[] additionalRef)
+	{
 		ArrayList<Entry> vals = new ArrayList<>();
 		ArrayList<String> xVals = new ArrayList<>();
 		LineData data = new LineData();
@@ -441,7 +447,6 @@ public class StatsHelper
 		float min = Float.MAX_VALUE;
 		float max = Float.MIN_VALUE;
 		float total = 0;
-		final TempUnit tempUnit = TempUnit.getSelectedTemperatureUnit(context);
 
 		int index = 0;
 		for (Action action : plant.getActions())

@@ -63,18 +63,20 @@ abstract class Action(
 	open var notes: String? = null
 ) : Parcelable
 {
-	enum class ActionName private constructor(val printString: Int, val colour: Int)
+	abstract val type: String
+
+	enum class ActionName private constructor(val printString: Int, val colour: Int, val enString: String)
 	{
-		FIM(R.string.action_fim, -0x65003380),
-		FLUSH(R.string.action_flush, -0x65001f7e),
-		FOLIAR_FEED(R.string.action_foliar_feed, -0x65191164),
-		LST(R.string.action_lst, -0x65000a63),
-		LOLLIPOP(R.string.action_lolipop, -0x65002e80),
-		PESTICIDE_APPLICATION(R.string.action_pesticide_application, -0x65106566),
-		TOP(R.string.action_topped, -0x6543555c),
-		TRANSPLANTED(R.string.action_transplanted, -0x65000073),
-		TRIM(R.string.action_trim, -0x6500546f),
-		TUCK(R.string.action_tuck, -0x65800046);
+		FIM(R.string.action_fim, -0x65003380, "Fuck I Missed (FIM)"),
+		FLUSH(R.string.action_flush, -0x65001f7e, "Flush"),
+		FOLIAR_FEED(R.string.action_foliar_feed, -0x65191164, "Foliar Feed"),
+		LST(R.string.action_lst, -0x65000a63, "Low Stress Training"),
+		LOLLIPOP(R.string.action_lolipop, -0x65002e80, "Lollipop"),
+		PESTICIDE_APPLICATION(R.string.action_pesticide_application, -0x65106566, "Pesticide Application"),
+		TOP(R.string.action_topped, -0x6543555c, "Topped"),
+		TRANSPLANTED(R.string.action_transplanted, -0x65000073, "Transplanted"),
+		TRIM(R.string.action_trim, -0x6500546f, "Trim"),
+		TUCK(R.string.action_tuck, -0x65800046, "ScrOG Tuck");
 
 		companion object
 		{
@@ -110,7 +112,7 @@ class EmptyAction(
 	override var notes: String? = null
 ) : Action(date, notes)
 {
-	public var type: String = "Action"
+	public override val type: String = "Action"
 }
 
 @Parcelize
@@ -120,7 +122,7 @@ class NoteAction(
 	override var notes: String? = null
 ) : Action(date, notes)
 {
-	public var type: String = "Note"
+	public override val type: String = "Note"
 }
 
 @Parcelize
@@ -132,7 +134,7 @@ class StageChange(
 	override var notes: String? = null
 ) : Action(date, notes)
 {
-	public var type: String = "StageChange"
+	public override val type: String = "StageChange"
 }
 
 /**
@@ -415,12 +417,12 @@ class Plant(
 	}
 }
 
-enum class PlantMedium private constructor(val printString: Int)
+enum class PlantMedium private constructor(val printString: Int, val enString: String)
 {
-	SOIL(R.string.soil),
-	HYDRO(R.string.hydroponics),
-	COCO(R.string.coco_coir),
-	AERO(R.string.aeroponics);
+	SOIL(R.string.soil, "Soil"),
+	HYDRO(R.string.hydroponics, "Hydroponics"),
+	COCO(R.string.coco_coir, "Coco Coir"),
+	AERO(R.string.aeroponics, "Aeroponics");
 
 	companion object
 	{
@@ -437,17 +439,17 @@ enum class PlantMedium private constructor(val printString: Int)
 }
 
 @Parcelize
-enum class PlantStage private constructor(val printString: Int) : Parcelable
+enum class PlantStage private constructor(val printString: Int, val enString: String) : Parcelable
 {
-	PLANTED(R.string.planted),
-	GERMINATION(R.string.germination),
-	SEEDLING(R.string.seedling),
-	CUTTING(R.string.cutting),
-	VEGETATION(R.string.vegetation),
-	FLOWER(R.string.flowering),
-	DRYING(R.string.drying),
-	CURING(R.string.curing),
-	HARVESTED(R.string.harvested);
+	PLANTED(R.string.planted, "Planted"),
+	GERMINATION(R.string.germination, "Germination"),
+	SEEDLING(R.string.seedling, "Seedling"),
+	CUTTING(R.string.cutting, "Cutting"),
+	VEGETATION(R.string.vegetation, "Vegetation"),
+	FLOWER(R.string.flowering, "Flowering"),
+	DRYING(R.string.drying, "Drying"),
+	CURING(R.string.curing, "Curing"),
+	HARVESTED(R.string.harvested, "Harvested");
 
 	companion object
 	{
@@ -477,7 +479,7 @@ class Water(
 	override var notes: String? = null
 ) : Action(date, notes), Parcelable
 {
-	public var type: String = "Water"
+	public override val type: String = "Water"
 
 	@Deprecated("")
 	public var ppm: Double? = null
@@ -606,7 +608,7 @@ class TemperatureChange(
 	override var notes: String? = null
 ) : Action(date, notes)
 {
-	public var type: String = "TemperatureChange"
+	public override val type: String = "TemperatureChange"
 }
 
 @Parcelize
@@ -618,7 +620,7 @@ class HumidityChange(
 	override var notes: String? = null
 ) : Action(date, notes)
 {
-	public var type: String = "HumidityChange"
+	public override val type: String = "HumidityChange"
 }
 
 @Parcelize
@@ -630,5 +632,5 @@ class LightingChange(
 	override var date: Long = System.currentTimeMillis()
 ) : Action(date, null)
 {
-	public var type: String = "LightingChange"
+	public override val type: String = "LightingChange"
 }

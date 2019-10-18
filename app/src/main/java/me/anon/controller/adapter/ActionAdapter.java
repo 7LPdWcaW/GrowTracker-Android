@@ -16,6 +16,7 @@ import android.widget.TextView;
 import com.esotericsoftware.kryo.Kryo;
 import com.prolificinteractive.materialcalendarview.CalendarDay;
 
+import org.jetbrains.annotations.NotNull;
 import org.threeten.bp.Instant;
 import org.threeten.bp.LocalDate;
 import org.threeten.bp.ZoneId;
@@ -95,6 +96,11 @@ public class ActionAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>
 	@SuppressLint("ParcelCreator") @Parcelize
 	private static class ImageAction extends Action implements Parcelable
 	{
+		@NotNull @Override public String getType()
+		{
+			return "image";
+		}
+
 		public ArrayList<String> images = new ArrayList<>();
 
 		@Override public long getDate()

@@ -100,7 +100,19 @@ class ExportHelper(
 			params.compressionLevel = Zip4jConstants.DEFLATE_LEVEL_NORMAL
 
 			garden?.let {
+				val processor = exportProcessor.newInstance().apply {
+					this.selectedDelivery = deliveryUnit
+					this.selectedMeasurement = measureUnit
+					this.selectedTemp = tempUnit
+					this.selectedTds = tdsUnit
+				}
+
+				processor.beginDocument()
+
 				// do processor stuff
+				processor.printGardenDetails(it)
+				processor.printGardenActions(it)
+				processor.printGardenStats(it)
 
 				// do chart stuff
 				val humidityCount = it.actions.sumBy { if (it is HumidityChange) 1 else 0 }
@@ -111,13 +123,48 @@ class ExportHelper(
 
 				saveGardenTempChart(tempWidth, height, garden, outFile)
 				saveGardenHumdityChart(humidityWidth, height, garden, outFile)
+				processor.endDocument(outFile)
 			}
 
 			plants.forEach { plant ->
+				val processor = exportProcessor.newInstance().apply {
+					this.selectedDelivery = deliveryUnit
+					this.selectedMeasurement = measureUnit
+					this.selectedTemp = tempUnit
+					this.selectedTds = tdsUnit
+				}
+				processor.beginDocument()
+
 				// temp folder to write to
 				val zipPathPrefix = garden?.let { plant.name.replace("[^a-zA-Z0-9]+".toRegex(), "-") + "/"} ?: ""
 
 				// do processor stuff
+				processor.printPlantDetails(plant)
+				processor.printPlantStages(plant)
+				processor.printPlantStats(plant)
+				processor.printPlantActions(plant)
+
+				val imagePaths = arrayListOf<String>()
+				for (filePath in plant.images!!)
+				{
+					try
+					{
+						val currentImage = File(filePath)
+						var fileDate = java.lang.Long.parseLong(currentImage.name.replace("[^0-9]".toRegex(), ""))
+
+						if (fileDate == 0L)
+						{
+							fileDate = currentImage.lastModified()
+						}
+
+						imagePaths.add(zipPathPrefix + "images/" + dateFolder(context, fileDate) + "/" + fileDate + ".jpg")
+					}
+					catch (e: java.lang.Exception)
+					{
+						e.printStackTrace()
+					}
+				}
+				processor.printPlantImages(imagePaths)
 
 				// do chart stuff
 				val totalWater = plant.actions?.sumBy { if (it is Water) 1 else 0 } ?: 0
@@ -128,6 +175,9 @@ class ExportHelper(
 				saveTdsCharts(width, height, plant, zipPathPrefix, outFile)
 				saveInputPhChart(width, height, plant, zipPathPrefix, outFile)
 				saveAdditiveChart(width, height, plant, zipPathPrefix, outFile)
+
+				processor.printRaw(plant)
+				processor.endDocument(outFile, zipPathPrefix)
 			}
 
 			// do image stuff
@@ -393,7 +443,7 @@ class ExportHelper(
 			{
 				val parameters = ZipParameters()
 				parameters.compressionMethod = Zip4jConstants.COMP_DEFLATE
-				parameters.fileNameInZip = pathPrefix + context.getString(tdsName.strRes) + ".jpg"
+				parameters.fileNameInZip = pathPrefix + tdsName.enStr + ".jpg"
 				parameters.isSourceExternalStream = true
 
 				val outputStream = ByteArrayOutputStream()
