@@ -142,12 +142,6 @@
 	<string name="menu_delete_garden">Supprimer le jardin</string>
 	<string name="menu_export">Exporter</string>
 
-	<string name="germination_label">Germination:</string>
-	<string name="vegetation_label">Vegetatif:</string>
-	<string name="cutting_label">Coupe pour bouture:</string>
-	<string name="flower_label">Floraison:</string>
-	<string name="drying_label">Séchage:</string>
-	<string name="curing_label">Curing:</string>
 	<string name="total_time_label">Temps total</string>
 	<string name="total_waters_label">Arrosage total</string>
 	<string name="total_flushes_label">Rinçage total:</string>
@@ -176,7 +170,7 @@
 	<string name="note">Note</string>
 	<string name="delete_event_dialog_title">Supprimer cet événement ?</string>
 	<string name="confirm_delete_item_message">Êtes-vous certain de vouloir supprimer </string>
-	<string name="confirm_delete_photos_message" formatted="true">Êtes-vous sûre de vouloir supprimer ces %s images ? Vous ne pourrez pas les récupérer.</string>
+	<string name="confirm_delete_photos_message" formatted="true">Êtes-vous sûre de vouloir supprimer ces &lt;b&gt;%s&lt;/b&gt; images ? Vous ne pourrez pas les récupérer.</string>
 	<string name="edit">Modifier</string>
 	<string name="stage">état</string>
 	<string name="set">OK</string>
@@ -246,7 +240,7 @@
 	<string name="show_images">Montrer les images</string>
 
 	<string name="settings_default_garden">Jardin par défaut à l\'ouverture, actuellement : &lt;b&gt;%s&lt;/b&gt;</string>
-	<string name="settings_card_style">sélectionner un style de carte, actuellement : &lt;b&gt;%s&lt;/b&gt;</string>
+	<string name="settings_card_style">Choisir le style de carte, actuellement : %s</string>
 	<string name="settings_delivery">Unité de mesure de volume par défaut, actuellement &lt;b&gt;%s&lt;/b&gt;</string>
 	<string name="settings_measurement">Unité de mesure de volume d\'engrais par défaut, actuellement &lt;b&gt;%s&lt;/b&gt;</string>
 	<string name="settings_temperature">Unité de température par défaut, actuellement &lt;b&gt;%s&lt;/b&gt;</string>
@@ -323,7 +317,7 @@
 	<string name="events_title">Actions passées</string>
 	<string name="show_hide_calendar">Montrer/Cacher le calendrier</string>
 	<!-- "1 selected" -->
-	<string name="selected_len" formatted="true">%o Selectionné</string>
+	<string name="selected_len" formatted="true">%d Sélectionné</string>
 	<string name="translations_title">Remerciements :</string>
 	<string name="translations_by">Traduction par</string>
 	<string name="help_translate">Aider à traduire</string>
@@ -340,24 +334,20 @@
 	<string name="month_abbr">mois</string>
 	<string name="year_abbr">année</string>
 
-	<string name="ppm500_description">PPM500</string>
-	<string name="ppm700_description">PPM700</string>
-	<string name="ec_description">EC</string>
-
 	<string name="view_details_short">Détails</string>
 
 	<plurals name="time_second">
-		<item quantity="one">secondes</item>
+		<item quantity="one">seconde</item>
 		<item quantity="other">secondes</item>
 	</plurals>
 
 	<plurals name="time_minute">
-		<item quantity="one">minutes</item>
+		<item quantity="one">minute</item>
 		<item quantity="other">minutes</item>
 	</plurals>
 
 	<plurals name="time_hour">
-		<item quantity="one">heures</item>
+		<item quantity="one">heure</item>
 		<item quantity="other">heures</item>
 	</plurals>
 
@@ -380,4 +370,41 @@
 		<item quantity="one">an</item>
 		<item quantity="other">ans</item>
 	</plurals>
+
+	<string-array name="settings_card_entries">
+		<item>Original</item>
+		<item>Compacte</item>
+		<item>Extrème</item>
+	</string-array>
+
+	<string name="confirm_quit">Vous perdrez tout changement non sauvegardé</string>
+	<string name="accept_quit">Quitter</string>
+	<string name="plants">Plantes</string>
+	<string name="humidity">Humidité</string>
+	<string name="current_temp">Température actuelle :</string>
+	<string name="current_humidity">Humidité actuelle :</string>
+	<string name="lighting_title">cycles lumineux</string>
+	<string name="delete_item_dialog_title">Supprimer cet élément ?</string>
+	<string name="confirm_delete_item_message_holder">Êtes-vous certain de vouloir supprimer &lt;b&gt;%s&lt;/b&gt;?</string>
+	<string name="show">Montrer</string>
+	<string name="hide">Cacher</string>
+	<string name="lights_on">Allumage lampe</string>
+	<string name="lights_off">Extinction lampe</string>
+
+	<string name="settings_lastbackup_summary" formatted="true">Dernier back up: &lt;b&gt;%s&lt;/b&gt;</string>
+	<string name="settings_image_location_summary" formatted="true">Dossier de stockage des images, actuellement &lt;b&gt;%s&lt;/b&gt;</string>
+	<string name="settings_image_location_error">Erreur durant l\'initialisation du dossier de stockage des images</string>
+	<string name="settings_image_location_title">Dossier de stockage des images</string>
+	<string name="settings_image_cache_title">Vider le cache des images</string>
+	<string name="cache_cleared">Mémoire cache pour le chargement des images nettoyée</string>
+	<string name="import_progress_warning">Import des images, ceci peut prendre un certain temps ...</string>
+	<string name="data_task">Détail de la tâche</string>
+	<string name="task_complete">Tâche effectuée </string>
+	<string name="empty_actions_list">Aucune action à montrer</string>
+
+	<string name="exporting_start">Export du log de culture pour %s</string>
+	<string name="exporting_complete">Export de %s complet.</string>
+	<string name="exporting_path"> %s exporté à %s</string>
+	<string name="export_complete">Export complet</string>
+	<string name="export_dialog_label">Inclure les images ?</string>
 </resources>
