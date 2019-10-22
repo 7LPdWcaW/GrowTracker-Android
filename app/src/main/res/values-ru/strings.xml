@@ -83,8 +83,6 @@
 	<string name="date_label">Дата</string>
 	<string name="today">Сегодня</string>
 	<string name="length_cured">Пролечено %s дней</string>
-	<string name="length_days">%s дней</string>
-	<string name="length_days_inv">дней %s</string>
 
 	<string name="filter_waterings">Поливы</string>
 	<string name="filter_stage_changes">Изменения стадии</string>
@@ -421,4 +419,5 @@
 	<string name="exporting_path">%s экспортировано в %s</string>
 	<string name="export_complete">Экспорт завершён</string>
 	<string name="export_dialog_label">Включить изображения?</string>
+	<string name="no_data">Данные отсутствуют</string>
 </resources>
