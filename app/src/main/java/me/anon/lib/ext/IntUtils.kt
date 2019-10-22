@@ -7,6 +7,7 @@ import androidx.annotation.AttrRes
 import androidx.annotation.ColorInt
 import androidx.annotation.ColorRes
 import androidx.annotation.DrawableRes
+import androidx.core.content.ContextCompat
 import androidx.core.content.res.ResourcesCompat
 
 public fun String?.toSafeInt(): Int
@@ -56,7 +57,10 @@ public fun @receiver:AttrRes Int.resolveColor(themedContext: Context?): Int = th
  * Resolves a colour int from an color res.
  */
 @ColorInt
-public fun @receiver:ColorRes Int.getColor(themedContext: Context): Int = themedContext.resources.getColor(this, themedContext.theme)
+public fun @receiver:ColorRes Int.getColor(themedContext: Context): Int
+{
+	return ContextCompat.getColor(themedContext, this)
+}
 
 /**
  * Resolves a drawable object from a drawable res
