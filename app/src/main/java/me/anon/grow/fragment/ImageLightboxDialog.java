@@ -2,6 +2,8 @@ package me.anon.grow.fragment;
 
 import android.content.Context;
 import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
+import android.net.Uri;
 import android.os.Bundle;
 import android.os.Parcelable;
 import android.text.Html;
@@ -21,9 +23,9 @@ import android.widget.TextView;
 
 import com.davemorrissey.labs.subscaleview.ImageSource;
 import com.davemorrissey.labs.subscaleview.SubsamplingScaleImageView;
-import com.nostra13.universalimageloader.core.ImageLoader;
-import com.nostra13.universalimageloader.core.listener.SimpleImageLoadingListener;
+import com.davemorrissey.labs.subscaleview.decoder.ImageDecoder;
 
+import java.io.File;
 import java.io.IOException;
 import java.text.DateFormat;
 import java.util.Date;
@@ -32,10 +34,14 @@ import androidx.exifinterface.media.ExifInterface;
 import androidx.fragment.app.FragmentActivity;
 import androidx.viewpager.widget.PagerAdapter;
 import androidx.viewpager.widget.ViewPager;
+import me.anon.grow.MainApplication;
 import me.anon.grow.R;
 import me.anon.lib.DateRenderer;
 import me.anon.lib.Views;
 import me.anon.lib.helper.TimeHelper;
+import me.anon.lib.stream.DecryptInputStream;
+import me.anon.lib.stream.InputStreamImageDecoder;
+import me.anon.lib.stream.InputStreamImageRegionDecoder;
 import me.anon.model.Action;
 import me.anon.model.Plant;
 import me.anon.model.StageChange;
@@ -267,13 +273,17 @@ public class ImageLightboxDialog extends FragmentActivity
 			final SubsamplingScaleImageView imageView = (SubsamplingScaleImageView)v.findViewById(R.id.image);
 			imageView.setDoubleTapZoomScale(1.5f);
 
-			ImageLoader.getInstance().loadImage("file://" + images[position], new SimpleImageLoadingListener()
+			try
 			{
-				@Override public void onLoadingComplete(String imageUri, View view, Bitmap loadedImage)
-				{
-					imageView.setImage(ImageSource.bitmap(loadedImage));
-				}
-			});
+				imageView.setBitmapDecoderFactory(new InputStreamImageDecoder.Factory());
+				imageView.setRegionDecoderFactory(new InputStreamImageRegionDecoder.Factory());
+
+				imageView.setImage(ImageSource.uri("file://" + images[position]));
+			}
+			catch (Exception e)
+			{
+				e.printStackTrace();
+			}
 		}
 
 		@Override public boolean isViewFromObject(View view, Object object)
@@ -292,6 +302,17 @@ public class ImageLightboxDialog extends FragmentActivity
 
 		@Override public void startUpdate(View container)
 		{
+		}
+	}
+
+	public static class EncryptedImageDecoder implements ImageDecoder
+	{
+		@Override public Bitmap decode(Context context, Uri uri) throws Exception
+		{
+			BitmapFactory.Options options = new BitmapFactory.Options();
+			options.inPreferredConfig = Bitmap.Config.RGB_565;
+
+			return BitmapFactory.decodeStream(new DecryptInputStream(MainApplication.getKey(), new File(uri.getPath())), null, options);
 		}
 	}
 }

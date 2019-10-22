@@ -12,8 +12,6 @@ import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Build;
 import android.os.Bundle;
-import android.os.Environment;
-import android.os.ParcelFileDescriptor;
 import android.provider.MediaStore;
 import android.text.Html;
 import android.text.TextUtils;
@@ -36,19 +34,13 @@ import com.esotericsoftware.kryo.Kryo;
 
 import org.jetbrains.annotations.NotNull;
 
-import java.io.BufferedInputStream;
-import java.io.BufferedOutputStream;
 import java.io.File;
-import java.io.FileDescriptor;
-import java.io.FileInputStream;
-import java.io.FileOutputStream;
 import java.io.IOException;
-import java.io.InputStream;
-import java.io.OutputStream;
 import java.text.DateFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Calendar;
+import java.util.Collections;
 import java.util.Date;
 import java.util.Set;
 import java.util.TreeSet;
@@ -60,28 +52,34 @@ import androidx.appcompat.app.AlertDialog;
 import androidx.cardview.widget.CardView;
 import androidx.core.content.FileProvider;
 import androidx.fragment.app.Fragment;
+import kotlin.Pair;
+import kotlin.Unit;
+import kotlin.jvm.functions.Function2;
 import me.anon.controller.provider.PlantWidgetProvider;
+import me.anon.grow.ActionsActivity;
 import me.anon.grow.AddWateringActivity;
 import me.anon.grow.BuildConfig;
 import me.anon.grow.EditWateringActivity;
-import me.anon.grow.EventsActivity;
 import me.anon.grow.MainApplication;
 import me.anon.grow.PlantDetailsActivity;
 import me.anon.grow.R;
 import me.anon.grow.StatisticsActivity;
 import me.anon.grow.ViewPhotosActivity;
-import me.anon.grow.service.ExportService;
 import me.anon.lib.DateRenderer;
 import me.anon.lib.SnackBar;
 import me.anon.lib.SnackBarListener;
 import me.anon.lib.Views;
-import me.anon.lib.helper.AddonHelper;
+import me.anon.lib.export.ExportHelper;
+import me.anon.lib.export.ExportProcessor;
 import me.anon.lib.helper.FabAnimator;
+import me.anon.lib.helper.NotificationHelper;
 import me.anon.lib.helper.PermissionHelper;
+import me.anon.lib.manager.FileManager;
 import me.anon.lib.manager.GardenManager;
 import me.anon.lib.manager.PlantManager;
 import me.anon.lib.task.AsyncCallback;
 import me.anon.lib.task.EncryptTask;
+import me.anon.lib.task.ImportTask;
 import me.anon.model.Action;
 import me.anon.model.EmptyAction;
 import me.anon.model.NoteAction;
@@ -224,7 +222,7 @@ public class PlantDetailsFragment extends Fragment
 
 			((PlantDetailsActivity)getActivity()).getToolbarLayout().addView(LayoutInflater.from(getActivity()).inflate(R.layout.action_buttons_stub, ((PlantDetailsActivity)getActivity()).getToolbarLayout(), false));
 			Views.inject(this, ((PlantDetailsActivity)getActivity()).getToolbarLayout());
-			linkContainer.setVisibility(View.VISIBLE);
+			//linkContainer.setVisibility(View.VISIBLE);
 
 			name.setText(plant.getName());
 
@@ -296,6 +294,7 @@ public class PlantDetailsFragment extends Fragment
 					Intent editWater = new Intent(v.getContext(), EditWateringActivity.class);
 					editWater.putExtra("plant_index", PlantManager.getInstance().indexOf(plant));
 					editWater.putExtra("action_index", plant.getActions().size() - 1);
+					editWater.putExtra("new_water", true);
 					startActivityForResult(editWater, 4);
 				}
 			});
@@ -443,7 +442,7 @@ public class PlantDetailsFragment extends Fragment
 					{
 						Intent intent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
 
-						File path = new File(Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DCIM).getPath() + "/GrowTracker/" + plant.getId() + "/");
+						File path = new File(FileManager.IMAGE_PATH + plant.getId() + "/");
 						path.mkdirs();
 
 						try
@@ -518,10 +517,6 @@ public class PlantDetailsFragment extends Fragment
 			{
 				PlantManager.getInstance().upsert(plant);
 				PlantWidgetProvider.triggerUpdateAll(getActivity());
-				if (plant.getImages().size() - 1 > 0)
-				{
-					AddonHelper.broadcastImage(getActivity(), plant.getImages().get(plant.getImages().size() - 1), false);
-				}
 			}
 		}
 		else if (requestCode == ACTIVITY_REQUEST_FEEDING)
@@ -600,41 +595,35 @@ public class PlantDetailsFragment extends Fragment
 		{
 			if (resultCode != Activity.RESULT_CANCELED)
 			{
-				if (data != null && data.getData() != null)
+				if (data == null) return;
+
+				ArrayList<Uri> images = new ArrayList<>();
+				if (data.getData() != null)
 				{
-					Uri selectedUri = data.getData();
-					if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT)
+					images.add(data.getData());
+				}
+				else if (data.getClipData() != null)
+				{
+					for (int index = 0; index < data.getClipData().getItemCount(); index++)
 					{
-						getActivity().grantUriPermission(getActivity().getPackageName(), selectedUri, Intent.FLAG_GRANT_READ_URI_PERMISSION);
-
-						final int takeFlags = data.getFlags() & (Intent.FLAG_GRANT_READ_URI_PERMISSION);
-						getActivity().getContentResolver().takePersistableUriPermission(selectedUri, takeFlags);
-					}
-
-					File path = new File(Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DCIM).getPath() + "/GrowTracker/" + plant.getId() + "/");
-					path.mkdirs();
-
-					try
-					{
-						new File(path, ".nomedia").createNewFile();
-					}
-					catch (IOException e){}
-
-					File out = new File(path, System.currentTimeMillis() + ".jpg");
-
-					copyImage(selectedUri, out);
-
-					if (out.exists() && out.length() > 0)
-					{
-						plant.getImages().add(out.getAbsolutePath());
-						PlantManager.getInstance().upsert(plant);
-						AddonHelper.broadcastImage(getActivity(), out.getAbsolutePath(), false);
-					}
-					else
-					{
-						out.delete();
+						images.add(data.getClipData().getItemAt(index).getUri());
 					}
 				}
+				images.removeAll(Collections.singleton(null));
+
+				for (Uri image : images)
+				{
+					if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT)
+					{
+						getActivity().grantUriPermission(getActivity().getPackageName(), image, Intent.FLAG_GRANT_READ_URI_PERMISSION);
+
+						final int takeFlags = data.getFlags() & (Intent.FLAG_GRANT_READ_URI_PERMISSION);
+						getActivity().getContentResolver().takePersistableUriPermission(image, takeFlags);
+					}
+				}
+
+				NotificationHelper.sendDataTaskNotification(getActivity(), getString(R.string.app_name), getString(R.string.import_progress_warning));
+				new ImportTask(getActivity(), null).executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR, new Pair<>(plant.getId(), images));
 			}
 		}
 		else if (requestCode == ACTIVITY_REQUEST_LAST_WATER)
@@ -651,7 +640,7 @@ public class PlantDetailsFragment extends Fragment
 				{
 					ArrayList<String> image = new ArrayList<>();
 					image.add(plant.getImages().get(plant.getImages().size() - 1));
-					new EncryptTask().executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR, image);
+					new EncryptTask(getActivity()).executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR, image);
 				}
 
 				SnackBar.show(getActivity(), R.string.snackbar_image_added, R.string.snackbar_action_take_another, new SnackBarListener()
@@ -689,62 +678,7 @@ public class PlantDetailsFragment extends Fragment
 		super.onActivityResult(requestCode, resultCode, data);
 	}
 
-	public void copyImage(Uri imageUri, File newLocation)
-	{
-		try
-		{
-			if (imageUri.getScheme().startsWith("content"))
-			{
-				if (!newLocation.exists())
-				{
-					newLocation.createNewFile();
-				}
 
-				ParcelFileDescriptor parcelFileDescriptor = getActivity().getContentResolver().openFileDescriptor(imageUri, "r");
-				FileDescriptor fileDescriptor = parcelFileDescriptor.getFileDescriptor();
-				InputStream streamIn = new BufferedInputStream(new FileInputStream(fileDescriptor), 524288);
-				OutputStream streamOut = new BufferedOutputStream(new FileOutputStream(newLocation), 524288);
-
-				int len;
-				byte[] buffer = new byte[524288];
-				while ((len = streamIn.read(buffer)) != -1)
-				{
-					streamOut.write(buffer, 0, len);
-				}
-
-				streamIn.close();
-				streamOut.flush();
-				streamOut.close();
-			}
-			else if (imageUri.getScheme().startsWith("file"))
-			{
-				if (!newLocation.exists())
-				{
-					newLocation.createNewFile();
-				}
-
-				String image = imageUri.getPath();
-
-				InputStream streamIn = new BufferedInputStream(new FileInputStream(new File(image)), 524288);
-				OutputStream streamOut = new BufferedOutputStream(new FileOutputStream(newLocation), 524288);
-
-				int len;
-				byte[] buffer = new byte[524288];
-				while ((len = streamIn.read(buffer)) != -1)
-				{
-					streamOut.write(buffer, 0, len);
-				}
-
-				streamIn.close();
-				streamOut.flush();
-				streamOut.close();
-			}
-		}
-		catch (Exception e)
-		{
-			e.printStackTrace();
-		}
-	}
 
 	@Override public void onCreateOptionsMenu(Menu menu, MenuInflater inflater)
 	{
@@ -837,8 +771,15 @@ public class PlantDetailsFragment extends Fragment
 		}
 		else if (item.getItemId() == R.id.export)
 		{
-			Toast.makeText(getActivity(), R.string.export_progress, Toast.LENGTH_SHORT).show();
-			ExportService.export(getActivity(),new ArrayList<>(Arrays.asList(plant)), plant.getName().replaceAll("[^a-zA-Z0-9]+", "-"), plant.getName());
+			new ExportDialogFragment(new Function2<Class<? extends ExportProcessor>, Boolean, Unit>()
+			{
+				@Override public Unit invoke(Class<? extends ExportProcessor> processor, Boolean includeImages)
+				{
+					Toast.makeText(getActivity(), R.string.export_progress, Toast.LENGTH_SHORT).show();
+					new ExportHelper(getActivity(), processor, includeImages).exportPlants(new ArrayList<>(Arrays.asList(plant)));
+					return null;
+				}
+			}).show(getFragmentManager(), "export_dialog");
 
 			return true;
 		}
@@ -902,7 +843,7 @@ public class PlantDetailsFragment extends Fragment
 
 	@Views.OnClick public void onViewHistoryClick()
 	{
-		Intent events = new Intent(getActivity(), EventsActivity.class);
+		Intent events = new Intent(getActivity(), ActionsActivity.class);
 		events.putExtra("plant", plant);
 		startActivityForResult(events, 5);
 	}
@@ -1024,8 +965,9 @@ public class PlantDetailsFragment extends Fragment
 
 		Intent intent = new Intent();
 		intent.putExtra("plant", plant);
+		getActivity().setIntent(intent);
 		getActivity().setResult(Activity.RESULT_OK, intent);
-		getActivity().finish();
+//		getActivity().finish();
 	}
 
 	/**

@@ -45,7 +45,6 @@ import me.anon.lib.SnackBar;
 import me.anon.lib.SnackBarListener;
 import me.anon.lib.Views;
 import me.anon.lib.ext.IntUtilsKt;
-import me.anon.lib.helper.FabAnimator;
 import me.anon.lib.manager.PlantManager;
 import me.anon.model.Action;
 import me.anon.model.EmptyAction;
@@ -57,13 +56,14 @@ import me.anon.model.Water;
 import me.anon.view.ActionHolder;
 
 @Views.Injectable
-public class EventListFragment extends Fragment implements ActionAdapter.OnActionSelectListener
+public class ActionsListFragment extends Fragment implements ActionAdapter.OnActionSelectListener
 {
 	private ActionAdapter adapter;
 
 	@Views.InjectView(R.id.fab_add) private View fabAdd;
 	@Views.InjectView(R.id.recycler_view) private RecyclerView recycler;
 	@Views.InjectView(R.id.calendar) private MaterialCalendarView calendar;
+	@Views.InjectView(R.id.empty) private View empty;
 
 	private Plant plant;
 
@@ -75,9 +75,9 @@ public class EventListFragment extends Fragment implements ActionAdapter.OnActio
 
 	public static final int REQUEST_WATERING = 3;
 
-	public static EventListFragment newInstance(Bundle args)
+	public static ActionsListFragment newInstance(Bundle args)
 	{
-		EventListFragment fragment = new EventListFragment();
+		ActionsListFragment fragment = new ActionsListFragment();
 		fragment.setArguments(args);
 
 		return fragment;
@@ -85,7 +85,7 @@ public class EventListFragment extends Fragment implements ActionAdapter.OnActio
 
 	@Nullable @Override public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState)
 	{
-		View view = inflater.inflate(R.layout.event_list_view, container, false);
+		View view = inflater.inflate(R.layout.actions_list_view, container, false);
 		Views.inject(this, view);
 
 		return view;
@@ -102,7 +102,6 @@ public class EventListFragment extends Fragment implements ActionAdapter.OnActio
 		super.onActivityCreated(savedInstanceState);
 
 		getActivity().setTitle(R.string.events_title);
-
 
 		if (savedInstanceState != null)
 		{
@@ -223,6 +222,17 @@ public class EventListFragment extends Fragment implements ActionAdapter.OnActio
 		Collections.reverse(actions);
 		actions.removeAll(Collections.singleton(null));
 		adapter.setActions(plant, actions);
+
+		if (adapter.getItemCount() > 0)
+		{
+			recycler.setVisibility(View.VISIBLE);
+			empty.setVisibility(View.GONE);
+		}
+		else
+		{
+			recycler.setVisibility(View.GONE);
+			empty.setVisibility(View.VISIBLE);
+		}
 	}
 
 	@Override public void onActivityResult(int requestCode, int resultCode, Intent data)
@@ -254,21 +264,14 @@ public class EventListFragment extends Fragment implements ActionAdapter.OnActio
 				PlantManager.getInstance().upsert(plant);
 				setResult();
 
-				SnackBar.show(getActivity(), action.getAction().getPrintString() + " " + getString(R.string.added), getString(R.string.undo), new SnackBarListener()
+				SnackBar.show(getActivity(), getString(action.getAction().getPrintString()) + " " + getString(R.string.added), getString(R.string.undo), new SnackBarListener()
 				{
-					@Override public void onSnackBarStarted(Object o)
-					{
-						if (getView() != null)
-						{
-							FabAnimator.animateUp(getView().findViewById(R.id.fab_add));
-						}
-					}
+					@Override public void onSnackBarStarted(Object o){}
 
 					@Override public void onSnackBarFinished(Object o)
 					{
 						if (getView() != null)
 						{
-							FabAnimator.animateDown(getView().findViewById(R.id.fab_add));
 							PlantWidgetProvider.triggerUpdateAll(getView().getContext());
 						}
 					}
@@ -300,19 +303,12 @@ public class EventListFragment extends Fragment implements ActionAdapter.OnActio
 
 		SnackBar.show(getActivity(), getString(R.string.action_duplicated), getString(R.string.undo), new SnackBarListener()
 		{
-			@Override public void onSnackBarStarted(Object o)
-			{
-				if (getView() != null)
-				{
-					FabAnimator.animateUp(getView().findViewById(R.id.fab_add));
-				}
-			}
+			@Override public void onSnackBarStarted(Object o){}
 
 			@Override public void onSnackBarFinished(Object o)
 			{
 				if (getView() != null)
 				{
-					FabAnimator.animateDown(getView().findViewById(R.id.fab_add));
 					PlantWidgetProvider.triggerUpdateAll(getView().getContext());
 				}
 			}
@@ -351,19 +347,12 @@ public class EventListFragment extends Fragment implements ActionAdapter.OnActio
 
 				SnackBar.show(getActivity(), getString(R.string.added_to) + plantName, getString(R.string.undo), new SnackBarListener()
 				{
-					@Override public void onSnackBarStarted(Object o)
-					{
-						if (getView() != null)
-						{
-							FabAnimator.animateUp(getView().findViewById(R.id.fab_add));
-						}
-					}
+					@Override public void onSnackBarStarted(Object o){}
 
 					@Override public void onSnackBarFinished(Object o)
 					{
 						if (getView() != null)
 						{
-							FabAnimator.animateDown(getView().findViewById(R.id.fab_add));
 							PlantWidgetProvider.triggerUpdateAll(getView().getContext());
 						}
 					}
@@ -414,19 +403,12 @@ public class EventListFragment extends Fragment implements ActionAdapter.OnActio
 
 					SnackBar.show(getActivity(), getString(R.string.note_updated), getString(R.string.undo), new SnackBarListener()
 					{
-						@Override public void onSnackBarStarted(Object o)
-						{
-							if (getView() != null)
-							{
-								FabAnimator.animateUp(getView().findViewById(R.id.fab_add));
-							}
-						}
+						@Override public void onSnackBarStarted(Object o){}
 
 						@Override public void onSnackBarFinished(Object o)
 						{
 							if (getView() != null)
 							{
-								FabAnimator.animateDown(getView().findViewById(R.id.fab_add));
 								PlantWidgetProvider.triggerUpdateAll(getView().getContext());
 							}
 						}
@@ -457,21 +439,8 @@ public class EventListFragment extends Fragment implements ActionAdapter.OnActio
 
 					SnackBar.show(getActivity(), action.getAction().getPrintString() + " " + getString(R.string.updated), getString(R.string.undo), new SnackBarListener()
 					{
-						@Override public void onSnackBarStarted(Object o)
-						{
-							if (getView() != null)
-							{
-								FabAnimator.animateUp(getView().findViewById(R.id.fab_add));
-							}
-						}
-
-						@Override public void onSnackBarFinished(Object o)
-						{
-							if (getView() != null)
-							{
-								FabAnimator.animateDown(getView().findViewById(R.id.fab_add));
-							}
-						}
+						@Override public void onSnackBarStarted(Object o){}
+						@Override public void onSnackBarFinished(Object o){}
 
 						@Override public void onSnackBarAction(View v)
 						{
@@ -504,19 +473,12 @@ public class EventListFragment extends Fragment implements ActionAdapter.OnActio
 
 					SnackBar.show(getActivity(), getString(R.string.stage_updated), getString(R.string.undo), new SnackBarListener()
 					{
-						@Override public void onSnackBarStarted(Object o)
-						{
-							if (getView() != null)
-							{
-								FabAnimator.animateUp(getView().findViewById(R.id.fab_add));
-							}
-						}
+						@Override public void onSnackBarStarted(Object o){}
 
 						@Override public void onSnackBarFinished(Object o)
 						{
 							if (getView() != null)
 							{
-								FabAnimator.animateDown(getView().findViewById(R.id.fab_add));
 								PlantWidgetProvider.triggerUpdateAll(getView().getContext());
 							}
 						}
@@ -546,19 +508,12 @@ public class EventListFragment extends Fragment implements ActionAdapter.OnActio
 
 		SnackBar.show(getActivity(), getString(R.string.event_deleted), getString(R.string.undo), new SnackBarListener()
 		{
-			@Override public void onSnackBarStarted(Object o)
-			{
-				if (getView() != null)
-				{
-					FabAnimator.animateUp(getView().findViewById(R.id.fab_add));
-				}
-			}
+			@Override public void onSnackBarStarted(Object o){}
 
 			@Override public void onSnackBarFinished(Object o)
 			{
 				if (getView() != null)
 				{
-					FabAnimator.animateDown(getView().findViewById(R.id.fab_add));
 					PlantWidgetProvider.triggerUpdateAll(getView().getContext());
 				}
 			}
@@ -578,6 +533,7 @@ public class EventListFragment extends Fragment implements ActionAdapter.OnActio
 	{
 		Intent intent = new Intent();
 		intent.putExtra("plant", plant);
+		getActivity().setIntent(intent);
 		getActivity().setResult(Activity.RESULT_OK, intent);
 	}
 

@@ -18,7 +18,7 @@ public enum TempUnit
 			switch (to)
 			{
 				case CELCIUS: return toTwoDecimalPlaces(fromValue + 273.15d);
-				case FARENHEIT: return toTwoDecimalPlaces((fromValue * (9d / 5d)) - 459.67);
+				case FARENHEIT: return toTwoDecimalPlaces((fromValue * (9.0d / 5.0d)) - 459.67);
 			}
 
 			return fromValue;
@@ -43,7 +43,7 @@ public enum TempUnit
 		{
 			switch (to)
 			{
-				case KELVIN: return toTwoDecimalPlaces((fromValue + 459.67) * (5d / 9d));
+				case KELVIN: return toTwoDecimalPlaces((fromValue + 459.67) * (5.0d / 9.0d));
 				case CELCIUS: return toTwoDecimalPlaces((fromValue - 32) / 1.8d);
 			}
 

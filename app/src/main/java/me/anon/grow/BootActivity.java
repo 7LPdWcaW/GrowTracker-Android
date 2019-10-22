@@ -21,6 +21,7 @@ import me.anon.lib.handler.ExceptionHandler;
 import me.anon.lib.helper.EncryptionHelper;
 import me.anon.lib.helper.MigrationHelper;
 import me.anon.lib.manager.PlantManager;
+import me.anon.lib.task.AsyncCallback;
 
 public class BootActivity extends AppCompatActivity
 {
@@ -121,7 +122,7 @@ public class BootActivity extends AppCompatActivity
 			{
 				@Override public void onDialogConfirmed(DialogInterface dialog, String input)
 				{
-					String integrityCheck = PreferenceManager.getDefaultSharedPreferences(BootActivity.this).getString("encryption_check_key", "");
+					String integrityCheck = PreferenceManager.getDefaultSharedPreferences(BootActivity.this).getString("encryption_check_key", Base64.encodeToString(EncryptionHelper.encrypt(input, input), Base64.NO_WRAP));
 					String failsafeCheck = PreferenceManager.getDefaultSharedPreferences(BootActivity.this).getString("failsafe_check_key", "");
 					String inputCheck = Base64.encodeToString(EncryptionHelper.encrypt(input, input), Base64.NO_WRAP);
 
@@ -166,8 +167,13 @@ public class BootActivity extends AppCompatActivity
 	{
 		if (MigrationHelper.needsMigration(this))
 		{
-			MigrationHelper.performMigration(this);
-			start();
+			MigrationHelper.performMigration(this, new AsyncCallback()
+			{
+				@Override public void callback()
+				{
+					start();
+				}
+			});
 		}
 		else
 		{

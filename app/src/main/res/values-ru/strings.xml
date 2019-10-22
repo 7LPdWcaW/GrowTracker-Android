@@ -10,10 +10,10 @@
 	<string name="all_list_title">Все растения</string>
 	<!-- All/everything -->
 	<string name="all">Все</string>
-	<string name="snackbar_action_add">Добавлено действие</string>
+	<string name="snackbar_action_add">Добавлены действия</string>
 	<string name="snackbar_note_add">Добавлены заметки</string>
 	<string name="snackbar_watering_add">Добавлен полив</string>
-	<string name="snackbar_garden_deleted">Добавлен сад</string>
+	<string name="snackbar_garden_deleted">Сад удалён</string>
 
 	<string name="dialog_garden_delete_body">Действительно удалить сад &lt;b&gt;\"%s\"&lt;/b&gt;? Растения не будут удалены.</string>
 	<string name="action_feed">Полить</string>
@@ -83,8 +83,6 @@
 	<string name="date_label">Дата</string>
 	<string name="today">Сегодня</string>
 	<string name="length_cured">Пролечено %s дней</string>
-	<string name="length_days">%s дней</string>
-	<string name="length_days_inv">Дней %s</string>
 
 	<string name="filter_waterings">Поливы</string>
 	<string name="filter_stage_changes">Изменения стадии</string>
@@ -111,7 +109,7 @@
 	<string name="plant_strain_label">Сорт</string>
 	<string name="plant_strain_hint">Lemon Haze</string>
 	<string name="grow_details_title">Подробности</string>
-	<string name="plant_date_label">Дата растения</string>
+	<string name="plant_date_label">Дата посадки</string>
 	<string name="plant_medium_label">Среда</string>
 
 	<string name="medium_details_label">Детали среды</string>
@@ -127,14 +125,14 @@
 	<string name="view_history_short">История</string>
 	<string name="view_statistics_short">Статистика</string>
 	<string name="filter">Фильтр</string>
-	<string name="planted">Посев</string>
+	<string name="planted">Посажено</string>
 	<string name="germination">Прорастание</string>
 	<string name="cutting">Срез</string>
 	<string name="vegetation">Вегетация</string>
 	<string name="flowering">Цветение</string>
 	<string name="drying">Сушка</string>
 	<string name="curing">Выдержка (пролечка)</string>
-	<string name="harvested">Сбор</string>
+	<string name="harvested">Собрано</string>
 	<!-- example "harvested 2 days ago" -->
 	<string name="harvested_ago" formatted="true">Собрано %s назад</string>
 	<string name="menu_export_garden">Экспортировать сад</string>
@@ -142,17 +140,11 @@
 	<string name="menu_delete_garden">Удалить сад</string>
 	<string name="menu_export">Экспортировать</string>
 
-	<string name="germination_label">Прорастание:</string>
-	<string name="vegetation_label">Вегетация:</string>
-	<string name="cutting_label">Срез:</string>
-	<string name="flower_label">Цветение:</string>
-	<string name="drying_label">Сушка:</string>
-	<string name="curing_label">Выдержка (пролечка):</string>
 	<string name="total_time_label">Общее время:</string>
 	<string name="total_waters_label">Всего поливов:</string>
 	<string name="total_flushes_label">Всего промываний:</string>
 	<string name="ave_time_between_water_label">Средний интервал между поливами:</string>
-	<string name="filter_additives">Фильтр удобрений:</string>
+	<string name="filter_additives">Фильтр удобрений</string>
 	<string name="ph_title">pH</string>
 
 	<string name="min">Мин:</string>
@@ -175,10 +167,10 @@
 	<string name="watered">Полито</string>
 	<string name="note">Заметка</string>
 	<string name="delete_event_dialog_title">Удалить событие?</string>
-	<string name="confirm_delete_item_message">Действительно удалить</string>
-	<string name="confirm_delete_photos_message" formatted="true">Действительно удалить %s изображений? Их нельзя будет восстановить.</string>
+	<string name="confirm_delete_item_message">Действительно удалить </string>
+	<string name="confirm_delete_photos_message" formatted="true">Действительно удалить &lt;b&gt;%s&lt;/b&gt; изображений? Их нельзя будет восстановить.</string>
 	<string name="edit">Редактировать</string>
-	<string name="stage">стадия</string>
+	<string name="stage">стадию</string>
 	<string name="set">Готово</string>
 	<string name="change">Изменить</string>
 	<string name="add">Добавить</string>
@@ -246,11 +238,10 @@
 	<string name="show_images">Показать изображения</string>
 
 	<string name="settings_default_garden">Сад для показа по умолчанию, сейчас: &lt;b&gt;%s&lt;/b&gt;</string>
-	<string name="settings_card_style">Выбрать стиль карточек, сейчас: %s</string>
+	<string name="settings_card_style">Выбрать стиль галереи, сейчас: %s</string>
 	<string name="settings_delivery">Единица измерения по умолчанию, сейчас: &lt;b&gt;%s&lt;/b&gt;</string>
 	<string name="settings_measurement">Единица измерения удобрений по умолчанию, сейчас &lt;b&gt;%s&lt;/b&gt;</string>
 	<string name="settings_temperature">Единица температуры, сейчас: &lt;b&gt;%s&lt;/b&gt;</string>
-
 	<string name="settings_backup_size" formatted="true">Сейчас: &lt;b&gt;%s MiB&lt;/b&gt; / Используется &lt;b&gt;%s&lt;/b&gt;</string>
 	<string name="failsafe_message">Используйте этот пароль на стадии расшифровки чтобы не допустить загрузки данных</string>
 	<string name="warning">Внимание</string>
@@ -261,7 +252,7 @@
 	<string name="encrypted">зашифрован</string>
 	<string name="unencrypted">расшифрован</string>
 
-	<string name="select_measurement_title">Выберите единицу измерения</string>
+	<string name="select_measurement_title">Выбрать единицу измерения</string>
 	<string name="select_temperature_title">Выбрать температуру</string>
 	<string name="select_garden_title">Выбрать сад</string>
 	<string name="select_backup_title">Выбрать резервную копию</string>
@@ -286,7 +277,7 @@
 	<string name="plant_summary_ppm">ppm:</string>
 
 	<string name="select_schedule_title">Выбрать расписание:</string>
-	<string name="actions">Действия:</string>
+	<string name="actions">Действия</string>
 	<string name="settings_dark_title">Тёмная тема</string>
 	<string name="settings_dark_summary">Использовать тёмную тему независимо от настроек системы</string>
 	<string name="settings_harvest_title">Спрятать собранные</string>
@@ -299,8 +290,8 @@
 	<string name="settings_delivery_title">Единица объёма</string>
 	<string name="settings_measurement_title">Единица измерения</string>
 	<string name="settings_temp_title">Единицы температуры</string>
-	<string name="settings_tds_title">Использовать EC вместо ppm</string>
-	<string name="settings_tds_summary">Использовать базовое преобразование EC=((ppm * 2) / 1000)</string>
+	<string name="settings_tds_title">Единица общей минерализации</string>
+	<string name="settings_tds_summary" formatted="true">Единица общей минерализации, сейчас: &lt;b&gt;%s&lt;/b&gt;</string>
 	<string name="settings_data_management">Управление данными</string>
 	<string name="settings_autobackup_title">Автоматические резервные копии</string>
 	<string name="settings_autobackup_summary">Создавать резервную копию данных каждые 24 часа</string>
@@ -318,13 +309,13 @@
 	<string name="settings_readme">Read me</string>
 	<string name="settings_export">Экспортировать данные</string>
 	<string name="settings_cardstyle_title">Стиль карточки</string>
-	<string name="empty_plant_list">Нет растений для отображения</string>
+	<string name="empty_plant_list">Нет растений</string>
 	<string name="empty_schedules">Нет расписаний</string>
 	<string name="empty_photos">Нет фотографий</string>
 	<string name="events_title">Прошлые действия</string>
 	<string name="show_hide_calendar">Показать/спрятать календарь</string>
 	<!-- "1 selected" -->
-	<string name="selected_len" formatted="true">%o выбрано</string>
+	<string name="selected_len" formatted="true">%d выбрано</string>
 	<string name="translations_title">Благодарим за участие</string>
 	<string name="translations_by">Переводы</string>
 	<string name="help_translate">Помочь с переводом</string>
@@ -341,4 +332,92 @@
 	<string name="month_abbr">м</string>
 	<string name="year_abbr">г</string>
 
-	</resources>
+	<string name="view_details_short">Детали</string>
+
+	<plurals name="time_second">
+		<item quantity="one">секунда</item>
+		<item quantity="few">секунды</item>
+		<item quantity="many">секунд</item>
+		<item quantity="other">секунд</item>
+	</plurals>
+
+	<plurals name="time_minute">
+		<item quantity="one">минута</item>
+		<item quantity="few">минуты</item>
+		<item quantity="many">минут</item>
+		<item quantity="other">минут</item>
+	</plurals>
+
+	<plurals name="time_hour">
+		<item quantity="one">час</item>
+		<item quantity="few">часа</item>
+		<item quantity="many">часов</item>
+		<item quantity="other">часов</item>
+	</plurals>
+
+	<plurals name="time_day">
+		<item quantity="one">день</item>
+		<item quantity="few">дня</item>
+		<item quantity="many">дней</item>
+		<item quantity="other">дней</item>
+	</plurals>
+
+	<plurals name="time_week">
+		<item quantity="one">неделя</item>
+		<item quantity="few">недели</item>
+		<item quantity="many">недель</item>
+		<item quantity="other">недель</item>
+	</plurals>
+
+	<plurals name="time_month">
+		<item quantity="one">месяц</item>
+		<item quantity="few">месяца</item>
+		<item quantity="many">месяцев</item>
+		<item quantity="other">месяцев</item>
+	</plurals>
+
+	<plurals name="time_year">
+		<item quantity="one">год</item>
+		<item quantity="few">года</item>
+		<item quantity="many">лет</item>
+		<item quantity="other">лет</item>
+	</plurals>
+
+	<string-array name="settings_card_entries">
+		<item>Оригинальный</item>
+		<item>Компактный</item>
+		<item>Расширенный</item>
+	</string-array>
+
+	<string name="confirm_quit">Все несохранённые изменения будут утеряны</string>
+	<string name="accept_quit">Выйти</string>
+	<string name="plants">Растения</string>
+	<string name="humidity">Влажность</string>
+	<string name="current_temp">Текущая температура:</string>
+	<string name="current_humidity">Текущая влажность:</string>
+	<string name="lighting_title">График освещения</string>
+	<string name="delete_item_dialog_title">Удалить элемент?</string>
+	<string name="confirm_delete_item_message_holder">Действительно удалить &lt;b&gt;%s&lt;/b&gt;?</string>
+	<string name="show">Показать</string>
+	<string name="hide">Спрятать</string>
+	<string name="lights_on">Свет вкл.</string>
+	<string name="lights_off">Свет выкл.</string>
+
+	<string name="settings_lastbackup_summary" formatted="true">Последняя резервная копия: &lt;b&gt;%s&lt;/b&gt;</string>
+	<string name="settings_image_location_summary" formatted="true">Размещение изображений, сейчас &lt;b&gt;%s&lt;/b&gt;</string>
+	<string name="settings_image_location_error">Не удалось установить размещение изображений</string>
+	<string name="settings_image_location_title">Размещение изображений</string>
+	<string name="settings_image_cache_title">Очистить кеш изображений</string>
+	<string name="cache_cleared">Кеш изображений очищен</string>
+	<string name="import_progress_warning">Импорт изображений, может занять некоторое время...</string>
+	<string name="data_task">Задание данных</string>
+	<string name="task_complete">Задание выполнено</string>
+	<string name="empty_actions_list">Нет действий</string>
+
+	<string name="exporting_start">Экспортирую журнал для %s</string>
+	<string name="exporting_complete">Экспорт %s завершён</string>
+	<string name="exporting_path">%s экспортировано в %s</string>
+	<string name="export_complete">Экспорт завершён</string>
+	<string name="export_dialog_label">Включить изображения?</string>
+	<string name="no_data">Данные отсутствуют</string>
+</resources>

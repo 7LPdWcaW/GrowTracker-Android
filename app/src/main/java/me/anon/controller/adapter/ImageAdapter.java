@@ -37,7 +37,7 @@ public class ImageAdapter extends RecyclerView.Adapter<ImageHolder>
 	public OnItemSelectedListener onItemSelectedListener = null;
 	public Plant plant = null;
 	private List<String> images = new ArrayList<>();
-	private List<Integer> selected = new ArrayList<>();
+	private List<String> selected = new ArrayList<>();
 	private View.OnLongClickListener onLongClickListener;
 	private boolean inActionMode = false;
 
@@ -46,7 +46,7 @@ public class ImageAdapter extends RecyclerView.Adapter<ImageHolder>
 		return images;
 	}
 
-	public List<Integer> getSelected()
+	public List<String> getSelected()
 	{
 		return selected;
 	}
@@ -90,14 +90,14 @@ public class ImageAdapter extends RecyclerView.Adapter<ImageHolder>
 				}
 				else
 				{
-					if (selected.contains((Integer)position))
+					if (selected.contains("" + position))
 					{
-						selected.remove((Integer)position);
+						selected.remove("" + position);
 						viewHolder.getSelection().setChecked(false);
 					}
 					else
 					{
-						selected.add(position);
+						selected.add("" + position);
 						viewHolder.getSelection().setChecked(true);
 					}
 
@@ -106,7 +106,7 @@ public class ImageAdapter extends RecyclerView.Adapter<ImageHolder>
 			}
 		});
 
-		viewHolder.getSelection().setChecked(selected.contains((Integer)position));
+		viewHolder.getSelection().setChecked(selected.contains("" + position));
 		viewHolder.getSelection().setVisibility(inActionMode ? View.VISIBLE : View.GONE);
 
 		if (onLongClickListener != null && !inActionMode)
@@ -115,7 +115,7 @@ public class ImageAdapter extends RecyclerView.Adapter<ImageHolder>
 			{
 				@Override public boolean onLongClick(View v)
 				{
-					selected.add(position);
+					selected.add("" + position);
 					viewHolder.getSelection().setChecked(true);
 					return onLongClickListener.onLongClick(v);
 				}

@@ -1,0 +1,53 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<LinearLayout
+	xmlns:android="http://schemas.android.com/apk/res/android"
+	android:layout_width="match_parent"
+	android:layout_height="match_parent"
+	android:orientation="vertical"
+	android:padding="16dp"
+>
+	<EditText
+		android:layout_width="match_parent"
+		android:layout_height="wrap_content"
+		android:id="@+id/humidity_input"
+		android:inputType="numberDecimal"
+		android:hint="32%"
+	/>
+
+	<TextView
+		android:layout_width="match_parent"
+		android:layout_height="wrap_content"
+		android:layout_gravity="center_vertical"
+		android:text="@string/action_dialog_date"
+		android:layout_marginTop="16dp"
+		style="@style/SubsectionTitle"
+	/>
+
+	<TextView
+		android:layout_width="match_parent"
+		android:layout_height="wrap_content"
+		android:id="@+id/date"
+		android:layout_marginTop="8dp"
+		style="@style/SubsectionSubTitle"
+	/>
+
+	<TextView
+		android:layout_width="match_parent"
+		android:layout_height="wrap_content"
+		android:layout_gravity="center_vertical"
+		android:text="@string/action_dialog_notes"
+		android:layout_marginTop="24dp"
+		style="@style/SubsectionTitle"
+	/>
+
+	<EditText
+		android:layout_width="match_parent"
+		android:layout_height="wrap_content"
+		android:id="@+id/notes"
+		android:lines="2"
+		android:gravity="top"
+		android:inputType="textCapSentences"
+		android:layout_marginTop="8dp"
+	/>
+</LinearLayout>

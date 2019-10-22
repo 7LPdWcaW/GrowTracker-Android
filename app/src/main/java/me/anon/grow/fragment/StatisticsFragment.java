@@ -2,7 +2,6 @@ package me.anon.grow.fragment;
 
 import android.graphics.Color;
 import android.os.Bundle;
-import android.preference.PreferenceManager;
 import android.view.LayoutInflater;
 import android.view.MenuItem;
 import android.view.View;
@@ -13,6 +12,7 @@ import android.widget.TextView;
 
 import com.github.mikephil.charting.charts.BarChart;
 import com.github.mikephil.charting.charts.LineChart;
+import com.github.mikephil.charting.components.MarkerView;
 import com.github.mikephil.charting.components.YAxis;
 import com.github.mikephil.charting.data.BarData;
 import com.github.mikephil.charting.data.BarDataSet;
@@ -20,7 +20,9 @@ import com.github.mikephil.charting.data.BarEntry;
 import com.github.mikephil.charting.data.Entry;
 import com.github.mikephil.charting.formatter.ValueFormatter;
 import com.github.mikephil.charting.formatter.YAxisValueFormatter;
+import com.github.mikephil.charting.highlight.Highlight;
 import com.github.mikephil.charting.utils.ViewPortHandler;
+import com.google.android.flexbox.FlexboxLayout;
 
 import java.util.ArrayList;
 import java.util.HashSet;
@@ -32,8 +34,12 @@ import java.util.TreeSet;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 import me.anon.grow.R;
+import me.anon.lib.TdsUnit;
+import me.anon.lib.TempUnit;
+import me.anon.lib.Unit;
 import me.anon.lib.Views;
 import me.anon.lib.ext.IntUtilsKt;
+import me.anon.lib.ext.NumberUtilsKt;
 import me.anon.lib.helper.StatsHelper;
 import me.anon.lib.helper.TimeHelper;
 import me.anon.model.Action;
@@ -60,39 +66,22 @@ public class StatisticsFragment extends Fragment
 	@Views.InjectView(R.id.additives) private LineChart additives;
 	@Views.InjectView(R.id.additive_selector) private TextView additivesSpinner;
 	@Views.InjectView(R.id.input_ph) private LineChart inputPh;
-	@Views.InjectView(R.id.ppm) private LineChart ppm;
+	@Views.InjectView(R.id.tds_selector) private TextView tdsSpinner;
+	@Views.InjectView(R.id.tds) private LineChart tds;
 	@Views.InjectView(R.id.temp) private LineChart temp;
 	@Views.InjectView(R.id.stage_chart) private BarChart stagesChart;
 
-	@Views.InjectView(R.id.grow_time) private TextView growTime;
-	@Views.InjectView(R.id.water_count) private TextView waterCount;
-	@Views.InjectView(R.id.flush_count) private TextView flushCount;
-
-	@Views.InjectView(R.id.germ_time) private TextView germTime;
-	@Views.InjectView(R.id.germ_time_container) private View germTimeContainer;
-	@Views.InjectView(R.id.veg_time) private TextView vegTime;
-	@Views.InjectView(R.id.veg_time_container) private View vegTimeContainer;
-	@Views.InjectView(R.id.seedling_time) private TextView seedlingTime;
-	@Views.InjectView(R.id.seedling_time_container) private View seedlingTimeContainer;
-	@Views.InjectView(R.id.cutting_time) private TextView cuttingTime;
-	@Views.InjectView(R.id.cutting_time_container) private View cuttingTimeContainer;
-	@Views.InjectView(R.id.flower_time) private TextView flowerTime;
-	@Views.InjectView(R.id.flower_time_container) private View flowerTimeContainer;
-	@Views.InjectView(R.id.dry_time) private TextView dryTime;
-	@Views.InjectView(R.id.dry_time_container) private View dryTimeContainer;
-	@Views.InjectView(R.id.cure_time) private TextView cureTime;
-	@Views.InjectView(R.id.cure_time_container) private View cureTimeContainer;
-
-	@Views.InjectView(R.id.ave_water) private TextView aveWater;
+	@Views.InjectView(R.id.stats_container) private FlexboxLayout statsContainer;
 
 	@Views.InjectView(R.id.min_input_ph) private TextView minInputPh;
 	@Views.InjectView(R.id.max_input_ph) private TextView maxInputPh;
 	@Views.InjectView(R.id.ave_input_ph) private TextView aveInputPh;
 
-	@Views.InjectView(R.id.ppm_title) private TextView ppmTitle;
-	@Views.InjectView(R.id.min_ppm) private TextView minppm;
-	@Views.InjectView(R.id.max_ppm) private TextView maxppm;
-	@Views.InjectView(R.id.ave_ppm) private TextView aveppm;
+	@Views.InjectView(R.id.tds_title) private TextView ppmTitle;
+	@Views.InjectView(R.id.min_tds) private TextView mintds;
+	@Views.InjectView(R.id.max_tds) private TextView maxtds;
+	@Views.InjectView(R.id.ave_tds) private TextView avetds;
+	private TdsUnit selectedTdsUnit;
 
 	@Views.InjectView(R.id.temp_container) private View tempContainer;
 	@Views.InjectView(R.id.min_temp) private TextView mintemp;
@@ -100,7 +89,6 @@ public class StatisticsFragment extends Fragment
 	@Views.InjectView(R.id.ave_temp) private TextView avetemp;
 
 	private Set<String> checkedAdditives = null;
-	private boolean usingEc = false;
 
 	@Nullable @Override public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState)
 	{
@@ -119,7 +107,6 @@ public class StatisticsFragment extends Fragment
 			checkedAdditives = new HashSet<>(savedInstanceState.getStringArrayList("checked_additives"));
 		}
 
-		usingEc = PreferenceManager.getDefaultSharedPreferences(getActivity()).getBoolean("tds_ec", false);
 		getActivity().setTitle(R.string.statistics_title);
 
 		if (getArguments() != null)
@@ -128,40 +115,98 @@ public class StatisticsFragment extends Fragment
 			getActivity().getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_ALWAYS_HIDDEN);
 		}
 
+		selectedTdsUnit = TdsUnit.getSelectedTdsUnit(getActivity());
 		setStatistics();
 
 		String[] inputAdditional = new String[3];
-		StatsHelper.setInputData(plant, inputPh, inputAdditional);
+		StatsHelper.setInputData(plant, getActivity(), inputPh, inputAdditional);
 		minInputPh.setText(inputAdditional[0].equals(String.valueOf(Float.MAX_VALUE)) ? "0" : inputAdditional[0]);
 		maxInputPh.setText(inputAdditional[1].equals(String.valueOf(Float.MIN_VALUE)) ? "0" : inputAdditional[1]);
 		aveInputPh.setText(inputAdditional[2]);
 
-		String[] ppmAdditional = new String[3];
-		StatsHelper.setPpmData(plant, ppm, ppmAdditional, usingEc);
-		minppm.setText(ppmAdditional[0].equals(String.valueOf(Long.MAX_VALUE)) ? "0" : ppmAdditional[0]);
-		maxppm.setText(ppmAdditional[1].equals(String.valueOf(Long.MIN_VALUE)) ? "0" : ppmAdditional[1]);
-		aveppm.setText(ppmAdditional[2]);
-
-		if (usingEc)
-		{
-			ppmTitle.setText("EC");
-		}
-
+		setTdsStats();
 		setAdditiveStats();
 
 		tempContainer.setVisibility(View.VISIBLE);
 
+		TempUnit tempUnit = TempUnit.getSelectedTemperatureUnit(getActivity());
 		String[] tempAdditional = new String[3];
-		StatsHelper.setTempData(plant, temp, tempAdditional);
-		mintemp.setText(tempAdditional[0].equals("100.0") ? "-" : tempAdditional[0]);
-		maxtemp.setText(tempAdditional[1].equals("-100.0") ? "-" : tempAdditional[1]);
-		avetemp.setText(tempAdditional[2]);
+		StatsHelper.setTempData(plant, getActivity(), temp, tempAdditional);
+		mintemp.setText(tempAdditional[0].equals("100") ? "-" : tempAdditional[0] + "°" + tempUnit.getLabel());
+		maxtemp.setText(tempAdditional[1].equals("-100") ? "-" : tempAdditional[1] + "°" + tempUnit.getLabel());
+		avetemp.setText(tempAdditional[2] + "°" + tempUnit.getLabel());
 	}
 
 	@Override public void onSaveInstanceState(Bundle outState)
 	{
 		super.onSaveInstanceState(outState);
 		outState.putStringArrayList("checked_additives", new ArrayList<String>(checkedAdditives));
+	}
+
+	private void setTdsStats()
+	{
+		final Set<TdsUnit> tdsNames = new TreeSet<>();
+		for (Action action : plant.getActions())
+		{
+			if (action instanceof Water && ((Water)action).getTds() != null)
+			{
+				tdsNames.add(((Water)action).getTds().getType());
+			}
+		}
+
+		tdsSpinner.setText(selectedTdsUnit.getStrRes());
+		tdsSpinner.setOnClickListener(new View.OnClickListener()
+		{
+			@Override public void onClick(View v)
+			{
+				PopupMenu menu = new PopupMenu(v.getContext(), v);
+				for (TdsUnit tdsName : tdsNames)
+				{
+					menu.getMenu().add(0, tdsName.ordinal(), 0, tdsName.getStrRes());
+				}
+
+				menu.setOnMenuItemClickListener(new PopupMenu.OnMenuItemClickListener()
+				{
+					@Override public boolean onMenuItemClick(MenuItem item)
+					{
+						selectedTdsUnit = TdsUnit.values()[item.getItemId()];
+						setTdsStats();
+						return true;
+					}
+				});
+
+				menu.show();
+			}
+		});
+
+		String[] tdsAdditional = new String[3];
+		StatsHelper.setTdsData(plant, getActivity(), tds, tdsAdditional, selectedTdsUnit);
+		tds.setMarkerView(new MarkerView(getActivity(), R.layout.chart_marker)
+		{
+			@Override
+			public void refreshContent(Entry e, Highlight highlight)
+			{
+				String val = NumberUtilsKt.formatWhole(e.getVal());
+
+				((TextView)findViewById(R.id.content)).setText(val);
+			}
+
+			@Override public int getXOffset(float xpos)
+			{
+				return -(getWidth() / 2);
+			}
+
+			@Override public int getYOffset(float ypos)
+			{
+				return -getHeight();
+			}
+		});
+		tds.notifyDataSetChanged();
+		tds.postInvalidate();
+		mintds.setText(tdsAdditional[0].equals(String.valueOf(Long.MAX_VALUE)) ? "0" : tdsAdditional[0]);
+		maxtds.setText(tdsAdditional[1].equals(String.valueOf(Long.MIN_VALUE)) ? "0" : tdsAdditional[1]);
+		avetds.setText(tdsAdditional[2]);
+		ppmTitle.setText(selectedTdsUnit.getStrRes());
 	}
 
 	private void setAdditiveStats()
@@ -185,7 +230,39 @@ public class StatisticsFragment extends Fragment
 			checkedAdditives.addAll(additiveNames);
 		}
 
-		StatsHelper.setAdditiveData(plant, additives, checkedAdditives);
+		StatsHelper.setAdditiveData(plant, getActivity(), additives, checkedAdditives);
+		final Unit measurement = Unit.getSelectedMeasurementUnit(getActivity());
+		final Unit delivery = Unit.getSelectedDeliveryUnit(getActivity());
+
+		additives.setMarkerView(new MarkerView(getActivity(), R.layout.chart_marker)
+		{
+			@Override
+			public void refreshContent(Entry e, Highlight highlight)
+			{
+				String val = NumberUtilsKt.formatWhole(e.getVal());
+
+				((TextView)findViewById(R.id.content)).setText(val + measurement.getLabel() + "/" + delivery.getLabel());
+
+				int color = IntUtilsKt.resolveColor(R.attr.colorPrimary, getActivity());
+				if (e.getData() instanceof Integer)
+				{
+					color = (int)e.getData();
+				}
+
+				((TextView)findViewById(R.id.content)).setTextColor(color);
+			}
+
+			@Override public int getXOffset(float xpos)
+			{
+				return -(getWidth() / 2);
+			}
+
+			@Override public int getYOffset(float ypos)
+			{
+				return -getHeight();
+			}
+		});
+
 		additives.notifyDataSetChanged();
 		additives.postInvalidate();
 
@@ -242,7 +319,6 @@ public class StatisticsFragment extends Fragment
 	{
 		long startDate = plant.getPlantDate();
 		long endDate = System.currentTimeMillis();
-		long feedDifference = 0L;
 		long waterDifference = 0L;
 		long lastWater = 0L;
 		int totalWater = 0, totalFlush = 0;
@@ -274,57 +350,42 @@ public class StatisticsFragment extends Fragment
 			}
 		}
 
+		SortedMap<PlantStage, Long> stages = plant.calculateStageTime();
+		statsContainer.removeAllViews();
+
+		for (PlantStage value : PlantStage.values())
+		{
+			if (stages.containsKey(value) && value != PlantStage.HARVESTED)
+			{
+				View dataView = LayoutInflater.from(getActivity()).inflate(R.layout.data_label_stub, statsContainer, false);
+				((TextView)dataView.findViewById(R.id.label)).setText(getString(value.getPrintString()) + ":");
+				((TextView)dataView.findViewById(R.id.data)).setText(((int)TimeHelper.toDays(stages.get(value)) + " " + getResources().getQuantityString(R.plurals.time_day, (int)TimeHelper.toDays(stages.get(value)))));
+				statsContainer.addView(dataView);
+			}
+		}
+
 		long seconds = ((endDate - startDate) / 1000);
 		double days = (double)seconds * 0.0000115741d;
 
-		growTime.setText(getString(R.string.length_days, String.format("%1$,.2f", days)));
-		waterCount.setText(String.valueOf(totalWater));
-		flushCount.setText(String.valueOf(totalFlush));
-		aveWater.setText(getString(R.string.length_days, String.format("%1$,.2f", (TimeHelper.toDays(waterDifference) / (double)totalWater))));
+		View growTime = LayoutInflater.from(getActivity()).inflate(R.layout.data_label_stub, statsContainer, false);
+		((TextView)growTime.findViewById(R.id.label)).setText(R.string.total_time_label);
+		((TextView)growTime.findViewById(R.id.data)).setText(NumberUtilsKt.formatWhole(days) + " " + getResources().getQuantityString(R.plurals.time_day, (int)days));
+		statsContainer.addView(growTime);
 
-		SortedMap<PlantStage, Long> stages = plant.calculateStageTime();
+		View waterCount = LayoutInflater.from(getActivity()).inflate(R.layout.data_label_stub, statsContainer, false);
+		((TextView)waterCount.findViewById(R.id.label)).setText(R.string.total_waters_label);
+		((TextView)waterCount.findViewById(R.id.data)).setText(NumberUtilsKt.formatWhole(totalWater));
+		statsContainer.addView(waterCount);
 
-		if (stages.containsKey(PlantStage.GERMINATION))
-		{
-			germTime.setText(getString(R.string.length_days, "" + (int)TimeHelper.toDays(stages.get(PlantStage.GERMINATION))));
-			germTimeContainer.setVisibility(View.VISIBLE);
-		}
+		View flushCount = LayoutInflater.from(getActivity()).inflate(R.layout.data_label_stub, statsContainer, false);
+		((TextView)flushCount.findViewById(R.id.label)).setText(R.string.total_flushes_label);
+		((TextView)flushCount.findViewById(R.id.data)).setText(NumberUtilsKt.formatWhole(totalFlush));
+		statsContainer.addView(flushCount);
 
-		if (stages.containsKey(PlantStage.VEGETATION))
-		{
-			vegTime.setText(getString(R.string.length_days, "" + (int)TimeHelper.toDays(stages.get(PlantStage.VEGETATION))));
-			vegTimeContainer.setVisibility(View.VISIBLE);
-		}
-
-		if (stages.containsKey(PlantStage.SEEDLING))
-		{
-			seedlingTime.setText(getString(R.string.length_days, "" + (int)TimeHelper.toDays(stages.get(PlantStage.SEEDLING))));
-			seedlingTimeContainer.setVisibility(View.VISIBLE);
-		}
-
-		if (stages.containsKey(PlantStage.CUTTING))
-		{
-			cuttingTime.setText(getString(R.string.length_days, "" + (int)TimeHelper.toDays(stages.get(PlantStage.CUTTING))));
-			cuttingTimeContainer.setVisibility(View.VISIBLE);
-		}
-
-		if (stages.containsKey(PlantStage.FLOWER))
-		{
-			flowerTime.setText(getString(R.string.length_days, "" + (int)TimeHelper.toDays(stages.get(PlantStage.FLOWER))));
-			flowerTimeContainer.setVisibility(View.VISIBLE);
-		}
-
-		if (stages.containsKey(PlantStage.DRYING))
-		{
-			dryTime.setText(getString(R.string.length_days, "" + (int)TimeHelper.toDays(stages.get(PlantStage.DRYING))));
-			dryTimeContainer.setVisibility(View.VISIBLE);
-		}
-
-		if (stages.containsKey(PlantStage.CURING))
-		{
-			cureTime.setText(getString(R.string.length_days, "" + (int)TimeHelper.toDays(stages.get(PlantStage.CURING))));
-			cureTimeContainer.setVisibility(View.VISIBLE);
-		}
+		View aveWater = LayoutInflater.from(getActivity()).inflate(R.layout.data_label_stub, statsContainer, false);
+		((TextView)aveWater.findViewById(R.id.label)).setText(R.string.ave_time_between_water_label);
+		((TextView)aveWater.findViewById(R.id.data)).setText(NumberUtilsKt.formatWhole(TimeHelper.toDays(waterDifference) / (double)totalWater) + " " + getResources().getQuantityString(R.plurals.time_day, (int)(TimeHelper.toDays(waterDifference) / (double)totalWater)));
+		statsContainer.addView(aveWater);
 
 		stages.remove(PlantStage.HARVESTED);
 		ArrayList<BarEntry> entry = new ArrayList<>();
@@ -381,7 +442,6 @@ public class StatisticsFragment extends Fragment
 				return "" + (int)value;
 			}
 		});
-//		stagesChart.setTouchEnabled(false);
 
 		stagesChart.setMarkerView(null);
 		stagesChart.setHighlightPerTapEnabled(false);

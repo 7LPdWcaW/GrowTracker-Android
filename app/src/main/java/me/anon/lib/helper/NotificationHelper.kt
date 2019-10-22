@@ -34,19 +34,38 @@ object NotificationHelper
 	}
 
 	@JvmStatic
-	public fun sendExportNotification(context: Context, title: String, message: String)
+	public fun sendDataTaskNotification(context: Context, title: String, message: String)
 	{
 		val notificationManager = context.getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
-		notificationManager.cancel(0)
 
 		val exportNotification = NotificationCompat.Builder(context, "export")
 			.setContentText(title)
-			.setContentTitle("Exporting")
+			.setContentTitle(context.getString(R.string.data_task))
 			.setContentIntent(PendingIntent.getActivity(context, 0, Intent(), PendingIntent.FLAG_UPDATE_CURRENT))
 			.setTicker(message)
 			.setVisibility(NotificationCompat.VISIBILITY_PUBLIC)
 			.setSmallIcon(R.drawable.ic_stat_name)
 			.setSound(null)
+			.setProgress(0, 0, false)
+			.build()
+
+		notificationManager.notify(1, exportNotification)
+	}
+
+	@JvmStatic
+	public fun sendExportNotification(context: Context, title: String, message: String)
+	{
+		val notificationManager = context.getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
+
+		val exportNotification = NotificationCompat.Builder(context, "export")
+			.setContentText(title)
+			.setContentTitle(context.getString(R.string.export_progress))
+			.setContentIntent(PendingIntent.getActivity(context, 0, Intent(), PendingIntent.FLAG_UPDATE_CURRENT))
+			.setTicker(message)
+			.setVisibility(NotificationCompat.VISIBILITY_PUBLIC)
+			.setSmallIcon(R.drawable.ic_stat_name)
+			.setSound(null)
+			.setProgress(0, 0, false)
 			.build()
 
 		notificationManager.notify(0, exportNotification)
@@ -56,7 +75,6 @@ object NotificationHelper
 	public fun sendExportCompleteNotification(context: Context, title: String, message: String, file: File)
 	{
 		val notificationManager = context.getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
-		notificationManager.cancel(0)
 
 		val openIntent = Intent(Intent.ACTION_VIEW)
 		val apkURI = FileProvider.getUriForFile(context, context.applicationContext.packageName + ".provider", file)
@@ -66,7 +84,7 @@ object NotificationHelper
 		val finishNotification = NotificationCompat.Builder(context, "export")
 			.setContentText(message)
 			.setTicker(title)
-			.setContentTitle("Export Complete")
+			.setContentTitle(context.getString(R.string.export_complete))
 			.setContentIntent(PendingIntent.getActivity(context, 0, openIntent, PendingIntent.FLAG_CANCEL_CURRENT))
 			.setStyle(NotificationCompat.BigTextStyle()
 				.bigText(message)
@@ -76,6 +94,7 @@ object NotificationHelper
 			.setVisibility(NotificationCompat.VISIBILITY_PUBLIC)
 			.setAutoCancel(true)
 			.setSound(null)
+			.setProgress(0, 0, false)
 			.build()
 
 		notificationManager.notify(0, finishNotification)

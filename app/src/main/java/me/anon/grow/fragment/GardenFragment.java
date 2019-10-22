@@ -32,6 +32,8 @@ import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.ItemTouchHelper;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
+import kotlin.Unit;
+import kotlin.jvm.functions.Function2;
 import kotlin.jvm.functions.Function3;
 import me.anon.controller.adapter.PlantAdapter;
 import me.anon.controller.adapter.SimpleItemTouchHelperCallback;
@@ -41,15 +43,15 @@ import me.anon.grow.MainActivity;
 import me.anon.grow.MainApplication;
 import me.anon.grow.PlantDetailsActivity;
 import me.anon.grow.R;
-import me.anon.grow.service.ExportService;
 import me.anon.lib.SnackBar;
 import me.anon.lib.SnackBarListener;
 import me.anon.lib.Views;
 import me.anon.lib.event.GardenChangeEvent;
+import me.anon.lib.export.ExportHelper;
+import me.anon.lib.export.ExportProcessor;
 import me.anon.lib.ext.IntUtilsKt;
 import me.anon.lib.helper.BusHelper;
 import me.anon.lib.helper.FabAnimator;
-import me.anon.lib.helper.NotificationHelper;
 import me.anon.lib.manager.GardenManager;
 import me.anon.lib.manager.PlantManager;
 import me.anon.model.EmptyAction;
@@ -472,12 +474,18 @@ public class GardenFragment extends Fragment
 		}
 		else if (item.getItemId() == R.id.export_garden)
 		{
-			Toast.makeText(getActivity(), R.string.garden_export, Toast.LENGTH_SHORT).show();
-			NotificationHelper.createExportChannel(getActivity());
-			NotificationHelper.sendExportNotification(getActivity(), getString(R.string.garden_export), "Exporting " + garden.getName());
+			new ExportDialogFragment(new Function2<Class<? extends ExportProcessor>, Boolean, Unit>()
+			{
+				@Override public Unit invoke(Class<? extends ExportProcessor> processor, Boolean includeImages)
+				{
+//					NotificationHelper.createExportChannel(getActivity());
+//					NotificationHelper.sendExportNotification(getActivity(), getString(R.string.garden_export), getString(R.string.exporting, garden.getName()));
+					Toast.makeText(getActivity(), R.string.garden_export, Toast.LENGTH_SHORT).show();
 
-			ArrayList<Plant> export = new ArrayList<>(adapter.getPlants());
-			ExportService.export(getActivity(), export, garden.getName().replaceAll("[^a-zA-Z0-9]+", "-"), garden.getName());
+					new ExportHelper(getActivity(), processor, includeImages).exportGarden(garden);
+					return null;
+				}
+			}).show(getFragmentManager(), "export_dialog");
 		}
 		else if (item.getItemId() == R.id.delete_garden)
 		{

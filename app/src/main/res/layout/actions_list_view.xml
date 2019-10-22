@@ -1,0 +1,86 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<FrameLayout
+	xmlns:android="http://schemas.android.com/apk/res/android"
+	xmlns:app="http://schemas.android.com/apk/res-auto"
+	android:layout_width="match_parent"
+	android:layout_height="match_parent"
+>
+	<androidx.constraintlayout.widget.ConstraintLayout
+		android:layout_width="match_parent"
+		android:layout_height="match_parent"
+		android:orientation="vertical"
+	>
+		<com.prolificinteractive.materialcalendarview.MaterialCalendarView
+			android:layout_width="match_parent"
+			android:layout_height="300dp"
+			android:id="@+id/calendar"
+			android:layout_marginBottom="12dp"
+			app:layout_constraintTop_toTopOf="parent"
+			app:layout_constraintStart_toStartOf="parent"
+			app:layout_constraintEnd_toEndOf="parent"
+			app:layout_constraintBottom_toBottomOf="@id/recycler_view"
+			app:layout_constraintVertical_bias="0"
+			app:mcv_tileWidth="match_parent"
+			app:mcv_showOtherDates="other_months"
+			app:mcv_calendarMode="month"
+			app:mcv_dateTextAppearance="?textAppearanceBody1"
+		/>
+
+		<androidx.recyclerview.widget.RecyclerView
+			android:layout_width="match_parent"
+			android:layout_height="0dp"
+			android:id="@+id/recycler_view"
+			android:paddingLeft="8dp"
+			android:paddingRight="8dp"
+			android:paddingTop="8dp"
+			android:paddingBottom="88dp"
+			android:clipToPadding="false"
+			app:layout_constraintTop_toBottomOf="@id/calendar"
+			app:layout_constraintStart_toStartOf="parent"
+			app:layout_constraintEnd_toEndOf="parent"
+			app:layout_constraintBottom_toBottomOf="parent"
+		/>
+
+		<LinearLayout
+			android:layout_width="0dp"
+			android:layout_height="wrap_content"
+			android:id="@+id/empty"
+			android:layout_gravity="center"
+			android:orientation="vertical"
+			app:layout_constraintTop_toTopOf="parent"
+			app:layout_constraintBottom_toBottomOf="parent"
+			app:layout_constraintStart_toStartOf="parent"
+			app:layout_constraintEnd_toEndOf="parent"
+		>
+			<ImageView
+				android:layout_width="256dp"
+				android:layout_height="256dp"
+				app:srcCompat="@drawable/ic_cog"
+				app:tint="?android:textColorTertiary"
+				android:layout_gravity="center_horizontal"
+				android:alpha="0.2"
+			/>
+
+			<TextView
+				android:layout_width="wrap_content"
+				android:layout_height="wrap_content"
+				android:gravity="center_horizontal"
+				android:text="@string/empty_actions_list"
+				android:textColor="?android:textColorTertiary"
+				android:layout_marginTop="12dp"
+				android:layout_gravity="center_horizontal"
+			/>
+		</LinearLayout>
+	</androidx.constraintlayout.widget.ConstraintLayout>
+
+	<com.google.android.material.floatingactionbutton.FloatingActionButton
+		android:layout_width="wrap_content"
+		android:layout_height="wrap_content"
+		android:id="@+id/fab_add"
+		app:backgroundTint="#E10A19"
+		app:srcCompat="@drawable/ic_floting_add"
+		android:layout_gravity="bottom|end"
+		android:layout_margin="16dp"
+	/>
+</FrameLayout>

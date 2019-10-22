@@ -5,13 +5,13 @@ import android.app.Activity;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.pm.PackageManager;
+import android.content.res.Configuration;
 import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Build;
 import android.os.Bundle;
-import android.os.Environment;
-import android.os.ParcelFileDescriptor;
 import android.provider.MediaStore;
+import android.text.Html;
 import android.view.ActionMode;
 import android.view.LayoutInflater;
 import android.view.Menu;
@@ -20,16 +20,10 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.view.WindowManager;
 
-import java.io.BufferedInputStream;
-import java.io.BufferedOutputStream;
 import java.io.File;
-import java.io.FileDescriptor;
-import java.io.FileInputStream;
-import java.io.FileOutputStream;
 import java.io.IOException;
-import java.io.InputStream;
-import java.io.OutputStream;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 import androidx.annotation.NonNull;
@@ -41,6 +35,7 @@ import androidx.core.content.FileProvider;
 import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
+import kotlin.Pair;
 import me.anon.controller.adapter.ImageAdapter;
 import me.anon.controller.adapter.SectionedGridRecyclerViewAdapter;
 import me.anon.grow.BuildConfig;
@@ -49,13 +44,15 @@ import me.anon.grow.R;
 import me.anon.lib.SnackBar;
 import me.anon.lib.SnackBarListener;
 import me.anon.lib.Views;
-import me.anon.lib.helper.AddonHelper;
-import me.anon.lib.helper.ExportHelper;
-import me.anon.lib.helper.FabAnimator;
+import me.anon.lib.export.ExportHelper;
+import me.anon.lib.helper.NotificationHelper;
 import me.anon.lib.helper.PermissionHelper;
 import me.anon.lib.helper.TimeHelper;
+import me.anon.lib.manager.FileManager;
 import me.anon.lib.manager.PlantManager;
+import me.anon.lib.task.AsyncCallback;
 import me.anon.lib.task.EncryptTask;
+import me.anon.lib.task.ImportTask;
 import me.anon.model.Action;
 import me.anon.model.Plant;
 import me.anon.model.StageChange;
@@ -160,23 +157,28 @@ public class ViewPhotosFragment extends Fragment
 						{
 							new AlertDialog.Builder(getActivity())
 								.setTitle(R.string.confirm_title)
-								.setMessage(getString(R.string.confirm_delete_photos_message, "" + adapter.getSelected().size()))
+								.setMessage(Html.fromHtml(getString(R.string.confirm_delete_photos_message, "" + adapter.getSelected().size())))
 								.setPositiveButton(R.string.yes, new DialogInterface.OnClickListener()
 								{
 									@Override public void onClick(DialogInterface dialog, int which)
 									{
-										for (Integer integer : adapter.getSelected())
+										for (String integer : adapter.getSelected())
 										{
-											String image = adapter.getImages().get(integer);
+											String image = adapter.getImages().get(Integer.parseInt(integer));
 											new File(image).delete();
 											plant.getImages().remove(image);
-											AddonHelper.broadcastImage(getActivity(), image, true);
 										}
 
 										PlantManager.getInstance().upsert(plant);
 										setAdapter();
 										adapter.notifyDataSetChanged();
+										setEmpty();
 										mode.finish();
+
+										Intent intent = new Intent();
+										intent.putExtra("plant", plant);
+										getActivity().setIntent(intent);
+										getActivity().setResult(Activity.RESULT_OK, intent);
 									}
 								})
 								.setNegativeButton(R.string.no, null)
@@ -192,9 +194,9 @@ public class ViewPhotosFragment extends Fragment
 
 							ArrayList<Uri> files = new ArrayList<Uri>();
 
-							for (Integer integer : adapter.getSelected())
+							for (String integer : adapter.getSelected())
 							{
-								String image = adapter.getImages().get(integer);
+								String image = adapter.getImages().get(Integer.parseInt(integer));
 								File file = new File(image);
 								Uri uri = FileProvider.getUriForFile(getActivity(), getActivity().getPackageName() + ".provider", file);
 								files.add(uri);
@@ -225,7 +227,7 @@ public class ViewPhotosFragment extends Fragment
 
 		recycler.setHasFixedSize(true);
 
-		if (MainApplication.isTablet())
+		if (MainApplication.isTablet() || getResources().getConfiguration().orientation == Configuration.ORIENTATION_LANDSCAPE)
 		{
 			recycler.setLayoutManager(new GridLayoutManager(getActivity(), 6));
 		}
@@ -298,6 +300,11 @@ public class ViewPhotosFragment extends Fragment
 
 		recycler.setAdapter(sectionedAdapter);
 
+		setEmpty();
+	}
+
+	private void setEmpty()
+	{
 		if (adapter.getItemCount() == 0)
 		{
 			empty.setVisibility(View.VISIBLE);
@@ -338,7 +345,7 @@ public class ViewPhotosFragment extends Fragment
 					{
 						Intent intent = new Intent(android.provider.MediaStore.ACTION_IMAGE_CAPTURE);
 
-						File path = new File(Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DCIM).getPath() + "/GrowTracker/" + plant.getId() + "/");
+						File path = new File(FileManager.IMAGE_PATH + plant.getId() + "/");
 						path.mkdirs();
 
 						try
@@ -398,7 +405,6 @@ public class ViewPhotosFragment extends Fragment
 			else
 			{
 				PlantManager.getInstance().upsert(plant);
-				AddonHelper.broadcastImage(getActivity(), plant.getImages().get(plant.getImages().size() - 1), false);
 
 				setAdapter();
 				adapter.notifyDataSetChanged();
@@ -408,57 +414,56 @@ public class ViewPhotosFragment extends Fragment
 		{
 			if (resultCode != Activity.RESULT_CANCELED)
 			{
-				if (data != null && data.getData() != null)
+				if (data == null) return;
+
+				ArrayList<Uri> images = new ArrayList<>();
+				if (data.getData() != null)
 				{
-					Uri selectedUri = data.getData();
-					if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT)
+					images.add(data.getData());
+				}
+				else if (data.getClipData() != null)
+				{
+					for (int index = 0; index < data.getClipData().getItemCount(); index++)
 					{
-						getActivity().grantUriPermission(getActivity().getPackageName(), selectedUri, Intent.FLAG_GRANT_READ_URI_PERMISSION);
-
-						final int takeFlags = data.getFlags() & (Intent.FLAG_GRANT_READ_URI_PERMISSION);
-						getActivity().getContentResolver().takePersistableUriPermission(selectedUri, takeFlags);
-					}
-
-					File path = new File(Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DCIM).getPath() + "/GrowTracker/" + plant.getId() + "/");
-					path.mkdirs();
-
-					try
-					{
-						new File(path, ".nomedia").createNewFile();
-					}
-					catch (IOException e){}
-
-					File out = new File(path, System.currentTimeMillis() + ".jpg");
-
-					copyImage(selectedUri, out);
-
-					if (out.exists() && out.length() > 0)
-					{
-						plant.getImages().add(out.getAbsolutePath());
-
-						PlantManager.getInstance().upsert(plant);
-
-						if (plant.getImages().size() - 1 > 0)
-						{
-							AddonHelper.broadcastImage(getActivity(), plant.getImages().get(plant.getImages().size() - 1), false);
-						}
-
-						setAdapter();
-						adapter.notifyDataSetChanged();
-					}
-					else
-					{
-						out.delete();
+						images.add(data.getClipData().getItemAt(index).getUri());
 					}
 				}
+				images.removeAll(Collections.singleton(null));
+
+				for (Uri image : images)
+				{
+					if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT)
+					{
+						getActivity().grantUriPermission(getActivity().getPackageName(), image, Intent.FLAG_GRANT_READ_URI_PERMISSION);
+
+						final int takeFlags = data.getFlags() & (Intent.FLAG_GRANT_READ_URI_PERMISSION);
+						getActivity().getContentResolver().takePersistableUriPermission(image, takeFlags);
+					}
+				}
+
+				NotificationHelper.sendDataTaskNotification(getActivity(), getString(R.string.app_name), getString(R.string.import_progress_warning));
+				new ImportTask(getActivity(), new AsyncCallback()
+				{
+					@Override public void callback()
+					{
+						if (getActivity() != null && !getActivity().isFinishing())
+						{
+							plant = PlantManager.getInstance().getPlant(plant.getId());
+							setAdapter();
+							adapter.notifyDataSetChanged();
+						}
+					}
+				}).executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR, new Pair<>(plant.getId(), images));
 			}
 		}
 
 		// both photo options
+		setEmpty();
 		if ((requestCode == 1 || requestCode == 3) && resultCode != Activity.RESULT_CANCELED)
 		{
 			Intent intent = new Intent();
 			intent.putExtra("plant", plant);
+			getActivity().setIntent(intent);
 			getActivity().setResult(Activity.RESULT_OK, intent);
 
 			if (getActivity() != null)
@@ -467,26 +472,13 @@ public class ViewPhotosFragment extends Fragment
 				{
 					ArrayList<String> image = new ArrayList<>();
 					image.add(plant.getImages().get(plant.getImages().size() - 1));
-					new EncryptTask().executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR, image);
+					new EncryptTask(getActivity()).executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR, image);
 				}
 
 				SnackBar.show(getActivity(), R.string.snackbar_image_added, R.string.snackbar_action_take_another, new SnackBarListener()
 				{
-					@Override public void onSnackBarStarted(Object o)
-					{
-						if (getView() != null)
-						{
-							FabAnimator.animateUp(getView().findViewById(R.id.fab_photo));
-						}
-					}
-
-					@Override public void onSnackBarFinished(Object o)
-					{
-						if (getView() != null)
-						{
-							FabAnimator.animateDown(getView().findViewById(R.id.fab_photo));
-						}
-					}
+					@Override public void onSnackBarStarted(Object o){}
+					@Override public void onSnackBarFinished(Object o){}
 
 					@Override public void onSnackBarAction(View v)
 					{
@@ -494,65 +486,6 @@ public class ViewPhotosFragment extends Fragment
 					}
 				});
 			}
-		}
-	}
-
-	public void copyImage(Uri imageUri, File newLocation)
-	{
-		try
-		{
-			if (imageUri.getScheme().startsWith("content"))
-			{
-				if (!newLocation.exists())
-				{
-					newLocation.createNewFile();
-				}
-
-				ParcelFileDescriptor parcelFileDescriptor = getActivity().getContentResolver().openFileDescriptor(imageUri, "r");
-				FileDescriptor fileDescriptor = parcelFileDescriptor.getFileDescriptor();
-
-
-				InputStream streamIn = new BufferedInputStream(new FileInputStream(fileDescriptor), 524288);
-				OutputStream streamOut = new BufferedOutputStream(new FileOutputStream(newLocation), 524288);
-
-				int len = 0;
-				byte[] buffer = new byte[524288];
-				while ((len = streamIn.read(buffer)) != -1)
-				{
-					streamOut.write(buffer, 0, len);
-				}
-
-				streamIn.close();
-				streamOut.flush();
-				streamOut.close();
-			}
-			else if (imageUri.getScheme().startsWith("file"))
-			{
-				if (!newLocation.exists())
-				{
-					newLocation.createNewFile();
-				}
-
-				String image = imageUri.getPath();
-
-				InputStream streamIn = new BufferedInputStream(new FileInputStream(new File(image)), 524288);
-				OutputStream streamOut = new BufferedOutputStream(new FileOutputStream(newLocation), 524288);
-
-				int len = 0;
-				byte[] buffer = new byte[524288];
-				while ((len = streamIn.read(buffer)) != -1)
-				{
-					streamOut.write(buffer, 0, len);
-				}
-
-				streamIn.close();
-				streamOut.flush();
-				streamOut.close();
-			}
-		}
-		catch (Exception e)
-		{
-			e.printStackTrace();
 		}
 	}
 }
