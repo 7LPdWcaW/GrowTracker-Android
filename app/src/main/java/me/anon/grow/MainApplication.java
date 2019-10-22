@@ -7,7 +7,9 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.graphics.Bitmap;
+import android.os.Environment;
 import android.preference.PreferenceManager;
+import android.text.TextUtils;
 
 import com.nostra13.universalimageloader.core.DisplayImageOptions;
 import com.nostra13.universalimageloader.core.ImageLoader;
@@ -22,9 +24,11 @@ import java.io.InputStream;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.util.concurrent.TimeUnit;
+import java.util.concurrent.atomic.AtomicBoolean;
 
 import me.anon.controller.receiver.BackupService;
 import me.anon.lib.handler.ExceptionHandler;
+import me.anon.lib.manager.FileManager;
 import me.anon.lib.manager.GardenManager;
 import me.anon.lib.manager.PlantManager;
 import me.anon.lib.manager.ScheduleManager;
@@ -91,6 +95,7 @@ public class MainApplication extends Application
 		return isTablet;
 	}
 
+	public static AtomicBoolean dataTaskRunning = new AtomicBoolean(false);
 	private static Context context;
 	public static SharedPreferences getDefaultPreferences()
 	{
@@ -104,10 +109,16 @@ public class MainApplication extends Application
 		context = this;
 		ExceptionHandler.getInstance().register(this);
 
-		encrypted = PreferenceManager.getDefaultSharedPreferences(this).getBoolean("encrypt", false);
+		PlantManager.getInstance().initialise(this);
+		encrypted = PreferenceManager.getDefaultSharedPreferences(this).getBoolean("encrypt", false) || PlantManager.isFileEncrypted();
+
+		FileManager.IMAGE_PATH = PreferenceManager.getDefaultSharedPreferences(this).getString("image_location", "");
+		if (TextUtils.isEmpty(FileManager.IMAGE_PATH)) FileManager.IMAGE_PATH = Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DCIM).getPath() + "/GrowTracker/";
+		new File(FileManager.IMAGE_PATH).mkdir();
+
 		isTablet = getResources().getBoolean(R.bool.is_tablet);
 
-		PlantManager.getInstance().initialise(this);
+		PlantManager.getInstance().load();
 		GardenManager.getInstance().initialise(this);
 		ScheduleManager.instance.initialise(this);
 		registerBackupService();
@@ -117,12 +128,14 @@ public class MainApplication extends Application
 			.cacheOnDisk(true)
 			.showImageOnLoading(R.drawable.ic_image)
 			.showImageOnFail(R.drawable.default_plant)
-			.imageScaleType(ImageScaleType.IN_SAMPLE_POWER_OF_2)
+			.imageScaleType(ImageScaleType.EXACTLY)
 			.bitmapConfig(Bitmap.Config.RGB_565)
+			.considerExifParams(true)
 			.build();
 
 		ImageLoader.getInstance().init(new ImageLoaderConfiguration.Builder(this)
 			.threadPoolSize(6)
+			.diskCacheExtraOptions(512, 512, null)
 			.imageDecoder(new BaseImageDecoder(false)
 			{
 				@Override protected InputStream getImageStream(ImageDecodingInfo decodingInfo) throws IOException
@@ -135,7 +148,7 @@ public class MainApplication extends Application
 						}
 						catch (URISyntaxException e)
 						{
-							e.printStackTrace();
+							//e.printStackTrace();
 						}
 					}
 

@@ -10,8 +10,6 @@
 	app:cardUseCompatPadding="false"
 	android:clipChildren="false"
 	android:clipToPadding="false"
-	android:layout_marginEnd="8dp"
-	android:layout_marginBottom="8dp"
 	style="@style/Widget.MaterialComponents.CardView"
 >
 	<ImageView

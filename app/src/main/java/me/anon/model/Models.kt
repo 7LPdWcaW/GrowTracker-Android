@@ -8,6 +8,7 @@ import com.squareup.moshi.JsonClass
 import kotlinx.android.parcel.Parcelize
 import me.anon.grow.R
 import me.anon.lib.DateRenderer
+import me.anon.lib.TdsUnit
 import me.anon.lib.TempUnit
 import me.anon.lib.Unit
 import me.anon.lib.helper.TimeHelper
@@ -62,18 +63,20 @@ abstract class Action(
 	open var notes: String? = null
 ) : Parcelable
 {
-	enum class ActionName private constructor(val printString: Int, val colour: Int)
+	public abstract fun getTypeStr(): String
+
+	enum class ActionName private constructor(val printString: Int, val colour: Int, val enString: String)
 	{
-		FIM(R.string.action_fim, -0x65003380),
-		FLUSH(R.string.action_flush, -0x65001f7e),
-		FOLIAR_FEED(R.string.action_foliar_feed, -0x65191164),
-		LST(R.string.action_lst, -0x65000a63),
-		LOLLIPOP(R.string.action_lolipop, -0x65002e80),
-		PESTICIDE_APPLICATION(R.string.action_pesticide_application, -0x65106566),
-		TOP(R.string.action_topped, -0x6543555c),
-		TRANSPLANTED(R.string.action_transplanted, -0x65000073),
-		TRIM(R.string.action_trim, -0x6500546f),
-		TUCK(R.string.action_tuck, -0x65800046);
+		FIM(R.string.action_fim, -0x65003380, "Fuck I Missed (FIM)"),
+		FLUSH(R.string.action_flush, -0x65001f7e, "Flush"),
+		FOLIAR_FEED(R.string.action_foliar_feed, -0x65191164, "Foliar Feed"),
+		LST(R.string.action_lst, -0x65000a63, "Low Stress Training"),
+		LOLLIPOP(R.string.action_lolipop, -0x65002e80, "Lollipop"),
+		PESTICIDE_APPLICATION(R.string.action_pesticide_application, -0x65106566, "Pesticide Application"),
+		TOP(R.string.action_topped, -0x6543555c, "Topped"),
+		TRANSPLANTED(R.string.action_transplanted, -0x65000073, "Transplanted"),
+		TRIM(R.string.action_trim, -0x6500546f, "Trim"),
+		TUCK(R.string.action_tuck, -0x65800046, "ScrOG Tuck");
 
 		companion object
 		{
@@ -110,14 +113,8 @@ class EmptyAction(
 ) : Action(date, notes)
 {
 	public var type: String = "Action"
+	public override fun getTypeStr(): String = type
 }
-
-@Parcelize
-@JsonClass(generateAdapter = true)
-class Garden(
-	var name: String = "",
-	var plantIds: ArrayList<String> = arrayListOf()
-) : Parcelable
 
 @Parcelize
 @JsonClass(generateAdapter = true)
@@ -127,6 +124,7 @@ class NoteAction(
 ) : Action(date, notes)
 {
 	public var type: String = "Note"
+	public override fun getTypeStr(): String = type
 }
 
 @Parcelize
@@ -139,6 +137,7 @@ class StageChange(
 ) : Action(date, notes)
 {
 	public var type: String = "StageChange"
+	public override fun getTypeStr(): String = type
 }
 
 /**
@@ -219,7 +218,7 @@ class Plant(
 			currentStageTime = when (verbosity)
 			{
 				0, 1 -> TimeHelper.toDays(stageTimes[stage] ?: 0).toInt().toString() + context.getString(stage.printString).substring(0, 1).toLowerCase()
-				else -> "<b>${TimeHelper.toDays(stageTimes[stage] ?: 0).toInt()} ${context.getString(R.string.length_days_inv, context.getString(stage.printString))}</b>"
+				else -> "<b>${TimeHelper.toDays(stageTimes[stage] ?: 0).toInt()} ${context.resources.getQuantityString(R.plurals.time_day, TimeHelper.toDays(stageTimes[stage] ?: 0).toInt())} ${context.getString(stage.printString)}</b>"
 			}
 		}
 
@@ -233,7 +232,7 @@ class Plant(
 				when (verbosity)
 				{
 					0, 1 -> ""
-					else -> " (${context.getString(R.string.length_days, "" + harvestedDays)})"
+					else -> " (${harvestedDays} ${context.resources.getQuantityString(R.plurals.time_day, harvestedDays)})"
 				}
 			)
 
@@ -264,7 +263,7 @@ class Plant(
 
 				if (verbosity > 0)
 				{
-					var waterStr: String? = null
+					var waterStr: String = ""
 
 					it.ph?.let { ph ->
 						waterStr = "<b>$ph pH</b> "
@@ -281,9 +280,12 @@ class Plant(
 						waterStr += "<b>${Unit.ML.to(deliveryUnit, amount)}${deliveryUnit.label}</b> "
 					}
 
-					it.ppm?.let { ppm ->
-						val ppm = if (usingEc) "${Unit.toTwoDecimalPlaces((ppm * 2.0 / 1000.0))}" else "${ppm.toInt()}"
-						waterStr += "<b>@$ppm</b> "
+					it.tds?.let { tds ->
+						var ppm = tds.amount ?: 0.0
+						waterStr += "<b>@"
+						waterStr += if (tds.type.decimalPlaces == 0) ppm.toInt() else TdsUnit.toTwoDecimalPlaces(ppm)
+						waterStr += tds.type.label
+						waterStr += "</b> "
 					}
 
 					it.temp?.let { temp ->
@@ -291,7 +293,10 @@ class Plant(
 						waterStr += "<b>$temp</b> "
 					}
 
-					waterStr?.let { summary.add(it) }
+					if (waterStr.isNotEmpty())
+					{
+						summary.add(waterStr)
+					}
 
 					if (it.additives.isNotEmpty())
 					{
@@ -415,12 +420,12 @@ class Plant(
 	}
 }
 
-enum class PlantMedium private constructor(val printString: Int)
+enum class PlantMedium private constructor(val printString: Int, val enString: String)
 {
-	SOIL(R.string.soil),
-	HYDRO(R.string.hydroponics),
-	COCO(R.string.coco_coir),
-	AERO(R.string.aeroponics);
+	SOIL(R.string.soil, "Soil"),
+	HYDRO(R.string.hydroponics, "Hydroponics"),
+	COCO(R.string.coco_coir, "Coco Coir"),
+	AERO(R.string.aeroponics, "Aeroponics");
 
 	companion object
 	{
@@ -437,17 +442,17 @@ enum class PlantMedium private constructor(val printString: Int)
 }
 
 @Parcelize
-enum class PlantStage private constructor(val printString: Int) : Parcelable
+enum class PlantStage private constructor(val printString: Int, val enString: String) : Parcelable
 {
-	PLANTED(R.string.planted),
-	GERMINATION(R.string.germination),
-	SEEDLING(R.string.seedling),
-	CUTTING(R.string.cutting),
-	VEGETATION(R.string.vegetation),
-	FLOWER(R.string.flowering),
-	DRYING(R.string.drying),
-	CURING(R.string.curing),
-	HARVESTED(R.string.harvested);
+	PLANTED(R.string.planted, "Planted"),
+	GERMINATION(R.string.germination, "Germination"),
+	SEEDLING(R.string.seedling, "Seedling"),
+	CUTTING(R.string.cutting, "Cutting"),
+	VEGETATION(R.string.vegetation, "Vegetation"),
+	FLOWER(R.string.flowering, "Flowering"),
+	DRYING(R.string.drying, "Drying"),
+	CURING(R.string.curing, "Curing"),
+	HARVESTED(R.string.harvested, "Harvested");
 
 	companion object
 	{
@@ -466,7 +471,7 @@ enum class PlantStage private constructor(val printString: Int) : Parcelable
 @Parcelize
 @JsonClass(generateAdapter = true)
 class Water(
-	var ppm: Double? = null,
+	var tds: Tds? = null,
 	var ph: Double? = null,
 	var runoff: Double? = null,
 	var amount: Double? = null,
@@ -478,7 +483,10 @@ class Water(
 ) : Action(date, notes), Parcelable
 {
 	public var type: String = "Water"
+	public override fun getTypeStr(): String = type
 
+	@Deprecated("")
+	public var ppm: Double? = null
 	@Deprecated("")
 	public var nutrient: Nutrient? = null
 	@Deprecated("")
@@ -489,7 +497,6 @@ class Water(
 		val measureUnit = Unit.getSelectedMeasurementUnit(context)
 		val deliveryUnit = Unit.getSelectedDeliveryUnit(context)
 		val tempUnit = TempUnit.getSelectedTemperatureUnit(context)
-		val usingEc = PreferenceManager.getDefaultSharedPreferences(context).getBoolean("tds_ec", false)
 
 		var summary = ""
 		var waterStr = StringBuilder()
@@ -514,23 +521,13 @@ class Water(
 
 		waterStr = StringBuilder()
 
-		ppm?.let {
-			var ppm = it.toLong().toString()
-			if (usingEc)
-			{
-				waterStr.append("<b>")
-				waterStr.append(context.getString(R.string.plant_summary_ec))
-				waterStr.append("</b> ")
-				ppm = (it * 2.0 / 1000.0).toString()
-			}
-			else
-			{
-				waterStr.append("<b>")
-				waterStr.append(context.getString(R.string.plant_summary_ppm))
-				waterStr.append("</b> ")
-			}
-
-			waterStr.append(ppm)
+		tds?.let {
+			var ppm = it.amount ?: 0.0
+			waterStr.append("<b>")
+			waterStr.append(context.getString(it.type.strRes))
+			waterStr.append("</b> ")
+			waterStr.append(if (it.type.decimalPlaces == 0) ppm.toInt() else TdsUnit.toTwoDecimalPlaces(ppm))
+			waterStr.append(it.type.label)
 			waterStr.append(", ")
 		}
 
@@ -585,7 +582,62 @@ class Water(
 
 @Parcelize
 @JsonClass(generateAdapter = true)
+class Tds(
+	var amount: Double? = null,
+	var type: TdsUnit = TdsUnit.PPM500
+) : Parcelable
+
+@Parcelize
+@JsonClass(generateAdapter = true)
 class Additive(
 	var amount: Double? = null,
 	var description: String? = null
 ) : Parcelable
+
+@Parcelize
+@JsonClass(generateAdapter = true)
+class Garden(
+	var id: String = UUID.randomUUID().toString(),
+	var name: String = "",
+	var plantIds: ArrayList<String> = arrayListOf(),
+	var actions: ArrayList<Action> = arrayListOf()
+) : Parcelable
+
+@Parcelize
+@JsonClass(generateAdapter = true)
+class TemperatureChange(
+	var temp: Double = 0.0,
+
+	override var date: Long = System.currentTimeMillis(),
+	override var notes: String? = null
+) : Action(date, notes)
+{
+	public var type: String = "TemperatureChange"
+	public override fun getTypeStr(): String = type
+}
+
+@Parcelize
+@JsonClass(generateAdapter = true)
+class HumidityChange(
+	var humidity: Double? = null,
+
+	override var date: Long = System.currentTimeMillis(),
+	override var notes: String? = null
+) : Action(date, notes)
+{
+	public var type: String = "HumidityChange"
+	public override fun getTypeStr(): String = type
+}
+
+@Parcelize
+@JsonClass(generateAdapter = true)
+class LightingChange(
+	var on: String = "00:00",
+	var off: String = "18:00",
+
+	override var date: Long = System.currentTimeMillis()
+) : Action(date, null)
+{
+	public var type: String = "LightingChange"
+	public override fun getTypeStr(): String = type
+}

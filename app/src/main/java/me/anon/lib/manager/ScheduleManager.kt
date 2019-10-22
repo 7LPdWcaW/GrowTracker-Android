@@ -26,6 +26,12 @@ class ScheduleManager private constructor()
 		load()
 	}
 
+	public val fileExt: String
+		get() {
+			if (MainApplication.isEncrypted()) return "dat"
+			else return "json"
+		}
+
 	public fun indexOf(schedule: FeedingSchedule) = schedules.indexOfFirst { it.id == schedule.id }
 
 	public fun upsert(schedule: FeedingSchedule)
@@ -46,7 +52,7 @@ class ScheduleManager private constructor()
 
 	fun load()
 	{
-		if (FileManager.getInstance().fileExists("$FILES_DIR/schedules.json"))
+		if (FileManager.getInstance().fileExists("$FILES_DIR/schedules.${fileExt}"))
 		{
 			val scheduleData = if (MainApplication.isEncrypted())
 			{
@@ -55,11 +61,11 @@ class ScheduleManager private constructor()
 					return
 				}
 
-				EncryptionHelper.decrypt(MainApplication.getKey(), FileManager.getInstance().readFile("$FILES_DIR/schedules.json"))
+				EncryptionHelper.decrypt(MainApplication.getKey(), FileManager.getInstance().readFile("$FILES_DIR/schedules.${fileExt}"))
 			}
 			else
 			{
-				FileManager.getInstance().readFileAsString("$FILES_DIR/schedules.json")
+				FileManager.getInstance().readFileAsString("$FILES_DIR/schedules.${fileExt}")
 			}
 
 			try
@@ -88,14 +94,14 @@ class ScheduleManager private constructor()
 					return
 				}
 
-				FileManager.getInstance().writeFile("$FILES_DIR/schedules.json", EncryptionHelper.encrypt(MainApplication.getKey(), MoshiHelper.toJson(schedules, Types.newParameterizedType(ArrayList::class.java, FeedingSchedule::class.java))))
+				FileManager.getInstance().writeFile("$FILES_DIR/schedules.${fileExt}", EncryptionHelper.encrypt(MainApplication.getKey(), MoshiHelper.toJson(schedules, Types.newParameterizedType(ArrayList::class.java, FeedingSchedule::class.java))))
 			}
 			else
 			{
-				FileManager.getInstance().writeFile("$FILES_DIR/schedules.json", MoshiHelper.toJson(schedules, Types.newParameterizedType(ArrayList::class.java, FeedingSchedule::class.java)))
+				FileManager.getInstance().writeFile("$FILES_DIR/schedules.${fileExt}", MoshiHelper.toJson(schedules, Types.newParameterizedType(ArrayList::class.java, FeedingSchedule::class.java)))
 			}
 
-			if (File("$FILES_DIR/schedules.json").length() == 0L || !File("$FILES_DIR/schedules.json").exists())
+			if (File("$FILES_DIR/schedules.${fileExt}").length() == 0L || !File("$FILES_DIR/schedules.${fileExt}").exists())
 			{
 				Toast.makeText(context, "There was a fatal problem saving the schedule data, please backup this data", Toast.LENGTH_LONG).show()
 				val sendData = MoshiHelper.toJson(schedules, Types.newParameterizedType(ArrayList::class.java, FeedingSchedule::class.java))

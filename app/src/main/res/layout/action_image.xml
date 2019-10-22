@@ -37,7 +37,7 @@
 		android:id="@+id/image_container"
 		app:flexWrap="wrap"
 		app:flexDirection="row"
-		app:dividerDrawable="@drawable/divider_4dp"
+		app:dividerDrawable="@drawable/divider_8dp"
 		app:showDivider="middle"
 		android:clipChildren="false"
 		android:clipToPadding="false"

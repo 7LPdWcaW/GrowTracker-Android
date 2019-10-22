@@ -10,6 +10,7 @@ import com.squareup.moshi.Types;
 
 import java.io.File;
 import java.util.ArrayList;
+import java.util.Collection;
 
 import me.anon.grow.MainApplication;
 import me.anon.grow.R;
@@ -17,13 +18,6 @@ import me.anon.lib.helper.EncryptionHelper;
 import me.anon.lib.helper.MoshiHelper;
 import me.anon.model.Garden;
 
-/**
- * // TODO: Add class description
- *
- * @author 7LPdWcaW
- * @documentation // TODO Reference flow doc
- * @project GrowTracker
- */
 public class GardenManager
 {
 	private static final GardenManager instance = new GardenManager();
@@ -53,9 +47,15 @@ public class GardenManager
 		load();
 	}
 
+	public String getFileExt()
+	{
+		if (MainApplication.isEncrypted()) return "dat";
+		else return "json";
+	}
+
 	public void load()
 	{
-		if (FileManager.getInstance().fileExists(FILES_DIR + "/gardens.json"))
+		if (FileManager.getInstance().fileExists(FILES_DIR + "/gardens." + getFileExt()))
 		{
 			String gardenData;
 
@@ -66,11 +66,11 @@ public class GardenManager
 					return;
 				}
 
-				gardenData = EncryptionHelper.decrypt(MainApplication.getKey(), FileManager.getInstance().readFile(FILES_DIR + "/gardens.json"));
+				gardenData = EncryptionHelper.decrypt(MainApplication.getKey(), FileManager.getInstance().readFile(FILES_DIR + "/gardens." + getFileExt()));
 			}
 			else
 			{
-				gardenData = FileManager.getInstance().readFileAsString(FILES_DIR + "/gardens.json");
+				gardenData = FileManager.getInstance().readFileAsString(FILES_DIR + "/gardens." + getFileExt());
 			}
 
 			try
@@ -78,7 +78,7 @@ public class GardenManager
 				if (!TextUtils.isEmpty(gardenData))
 				{
 					mGardens.clear();
-					mGardens.addAll(MoshiHelper.parse(gardenData, Types.newParameterizedType(ArrayList.class, Garden.class)));
+					mGardens.addAll((Collection<? extends Garden>)MoshiHelper.parse(gardenData, Types.newParameterizedType(ArrayList.class, Garden.class)));
 				}
 			}
 			catch (JsonDataException e)
@@ -99,14 +99,14 @@ public class GardenManager
 					return;
 				}
 
-				FileManager.getInstance().writeFile(FILES_DIR + "/gardens.json", EncryptionHelper.encrypt(MainApplication.getKey(), MoshiHelper.toJson(mGardens, Types.newParameterizedType(ArrayList.class, Garden.class))));
+				FileManager.getInstance().writeFile(FILES_DIR + "/gardens." + getFileExt(), EncryptionHelper.encrypt(MainApplication.getKey(), MoshiHelper.toJson(mGardens, Types.newParameterizedType(ArrayList.class, Garden.class))));
 			}
 			else
 			{
-				FileManager.getInstance().writeFile(FILES_DIR + "/gardens.json", MoshiHelper.toJson(mGardens, Types.newParameterizedType(ArrayList.class, Garden.class)));
+				FileManager.getInstance().writeFile(FILES_DIR + "/gardens." + getFileExt(), MoshiHelper.toJson(mGardens, Types.newParameterizedType(ArrayList.class, Garden.class)));
 			}
 
-			if (new File(FILES_DIR + "/gardens.json").length() == 0 || !new File(FILES_DIR + "/gardens.json").exists())
+			if (new File(FILES_DIR + "/gardens." + getFileExt()).length() == 0 || !new File(FILES_DIR + "/gardens." + getFileExt()).exists())
 			{
 				Toast.makeText(context, R.string.fatal_error, Toast.LENGTH_LONG).show();
 				String sendData = MoshiHelper.toJson(mGardens, Types.newParameterizedType(ArrayList.class, Garden.class));
@@ -115,6 +115,30 @@ public class GardenManager
 				share.putExtra(Intent.EXTRA_TEXT, "== WARNING : PLEASE BACK UP THIS DATA == \r\n\r\n " + sendData);
 				context.startActivity(share);
 			}
+		}
+	}
+
+	public void upsert(Garden garden)
+	{
+		int pos = -1;
+		for (int index = 0, mGardensSize = mGardens.size(); index < mGardensSize; index++)
+		{
+			Garden mGarden = mGardens.get(index);
+			if (mGarden.getId().equals(garden.getId()))
+			{
+				pos = index;
+				break;
+			}
+		}
+
+		if (pos > -1)
+		{
+			mGardens.set(pos, garden);
+			save();
+		}
+		else
+		{
+			insert(garden);
 		}
 	}
 

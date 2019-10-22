@@ -112,13 +112,26 @@ Water action for waterings
 {
     "additives": [<Additive>],
     "ph": <Double>,
-    "ppm": <Long>,
+    "tds": <Tds>,
     "runoff": <Double>,
     "amount": <Double>,
     "date": 1431268453111,
     "type": "Water",
     "temp": <Double>,
     "notes": <String>
+}
+```
+
+### Tds object
+
+Type can be one one of,
+
+`PPM500`, `PPM700`, `EC`
+
+```js
+{
+    "amount": <Double>,
+    "type": <TdsUnit>
 }
 ```
 
@@ -189,13 +202,14 @@ You can decrypt your files using your passphrase either by writing a script that
 
 Translations provided by;
 
-- Maxtille - fr ![FR - French](https://transifex-open-api.herokuapp.com/badge/growutils/project/growtracker/language/fr/translated.png)
 - Alex (Noxmiles) - de ![DE - German](https://transifex-open-api.herokuapp.com/badge/growutils/project/growtracker/language/de_DE/translated.png)
 - Basti B (Weltenesche) - de ![DE - German](https://transifex-open-api.herokuapp.com/badge/growutils/project/growtracker/language/de_DE/translated.png)
-- Sascha Zenglein (szenglein) - de ![DE - German](https://transifex-open-api.herokuapp.com/badge/growutils/project/growtracker/language/de_DE/translated.png)
-- W Q (williq) - de ![DE - German](https://transifex-open-api.herokuapp.com/badge/growutils/project/growtracker/language/de_DE/translated.png)
-- Patrick B (EukalyptusX) - de ![DE - German](https://transifex-open-api.herokuapp.com/badge/growutils/project/growtracker/language/de_DE/translated.png)
 - EmmanuelMess - es ![ES - Spanish](https://transifex-open-api.herokuapp.com/badge/growutils/project/growtracker/language/es/translated.png)
+- Maxtille - fr ![FR - French](https://transifex-open-api.herokuapp.com/badge/growutils/project/growtracker/language/fr/translated.png)
+- Patrick B (EukalyptusX) - de ![DE - German](https://transifex-open-api.herokuapp.com/badge/growutils/project/growtracker/language/de_DE/translated.png)
+- Sascha Zenglein (szenglein) - de ![DE - German](https://transifex-open-api.herokuapp.com/badge/growutils/project/growtracker/language/de_DE/translated.png)
+- Vexatos - de ![DE - German](https://transifex-open-api.herokuapp.com/badge/growutils/project/growtracker/language/de_DE/translated.png)
+- W Q (williq) - de ![DE - German](https://transifex-open-api.herokuapp.com/badge/growutils/project/growtracker/language/de_DE/translated.png)
 - 9YbQiuEohUu1 - ru/uk ![UK - Ukrainian](https://transifex-open-api.herokuapp.com/badge/growutils/project/growtracker/language/uk/translated.png) ![RU - Russian](https://transifex-open-api.herokuapp.com/badge/growutils/project/growtracker/language/ru/translated.png)
 
 See [more](https://github.com/7LPdWcaW/GrowTracker-Android/issues/116) about translating GrowTracker

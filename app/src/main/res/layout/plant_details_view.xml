@@ -10,7 +10,6 @@
 		android:layout_width="match_parent"
 		android:layout_height="wrap_content"
 		android:orientation="vertical"
-		android:paddingBottom="12dp"
 	>
 		<androidx.cardview.widget.CardView
 			android:layout_width="match_parent"
@@ -303,6 +302,7 @@
 			android:orientation="vertical"
 			android:elevation="4dp"
 			android:layout_marginTop="12dp"
+			android:layout_marginBottom="24dp"
 			style="@style/PaperCard"
 		>
 			<TextView
@@ -344,53 +344,6 @@
 					/>
 				</LinearLayout>
 			</LinearLayout>
-		</LinearLayout>
-
-		<LinearLayout
-			android:layout_width="match_parent"
-			android:layout_height="wrap_content"
-			android:id="@+id/link_container"
-			android:orientation="vertical"
-			android:layout_marginTop="12dp"
-			android:divider="?android:listDivider"
-			android:showDividers="middle"
-			android:visibility="gone"
-			style="@style/PaperCard"
-			android:paddingTop="0dp"
-			android:paddingBottom="0dp"
-		>
-			<TextView
-				android:layout_width="match_parent"
-				android:layout_height="wrap_content"
-				android:id="@+id/view_photos"
-				android:layout_gravity="center_vertical"
-				android:text="@string/view_photos"
-				style="@style/SubsectionTitle"
-				android:padding="16dp"
-				android:background="?selectableItemBackground"
-			/>
-
-			<TextView
-				android:layout_width="match_parent"
-				android:layout_height="wrap_content"
-				android:id="@+id/view_history"
-				android:layout_gravity="center_vertical"
-				android:text="@string/view_history"
-				style="@style/SubsectionTitle"
-				android:padding="16dp"
-				android:background="?selectableItemBackground"
-			/>
-
-			<TextView
-				android:layout_width="match_parent"
-				android:layout_height="wrap_content"
-				android:id="@+id/view_statistics"
-				android:layout_gravity="center_vertical"
-				android:text="@string/view_statistics"
-				style="@style/SubsectionTitle"
-				android:padding="16dp"
-				android:background="?selectableItemBackground"
-			/>
 		</LinearLayout>
 	</LinearLayout>
 </ScrollView>

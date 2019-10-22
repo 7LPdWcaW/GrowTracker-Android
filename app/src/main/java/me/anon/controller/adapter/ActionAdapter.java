@@ -4,7 +4,6 @@ import android.annotation.SuppressLint;
 import android.content.DialogInterface;
 import android.os.Parcel;
 import android.os.Parcelable;
-import android.preference.PreferenceManager;
 import android.text.Html;
 import android.text.TextUtils;
 import android.view.Gravity;
@@ -17,6 +16,7 @@ import android.widget.TextView;
 import com.esotericsoftware.kryo.Kryo;
 import com.prolificinteractive.materialcalendarview.CalendarDay;
 
+import org.jetbrains.annotations.NotNull;
 import org.threeten.bp.Instant;
 import org.threeten.bp.LocalDate;
 import org.threeten.bp.ZoneId;
@@ -81,7 +81,6 @@ public class ActionAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>
 	private List<Action> actions = new ArrayList<>();
 	private Unit measureUnit, deliveryUnit;
 	private TempUnit tempUnit;
-	private boolean usingEc = false;
 	private boolean showDate = true;
 	private boolean showActions = true;
 	private CalendarDay selectedFilterDate = null;
@@ -97,6 +96,11 @@ public class ActionAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>
 	@SuppressLint("ParcelCreator") @Parcelize
 	private static class ImageAction extends Action implements Parcelable
 	{
+		@NotNull @Override public String getTypeStr()
+		{
+			return "image";
+		}
+
 		public ArrayList<String> images = new ArrayList<>();
 
 		@Override public long getDate()
@@ -328,8 +332,6 @@ public class ActionAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>
 				tempUnit = TempUnit.getSelectedTemperatureUnit(viewHolder.itemView.getContext());
 			}
 
-			usingEc = PreferenceManager.getDefaultSharedPreferences(viewHolder.itemView.getContext()).getBoolean("tds_ec", false);
-
 			if (action == null) return;
 
 			dateDay = viewHolder.getDateDay();
@@ -339,14 +341,14 @@ public class ActionAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>
 			Calendar actionCalendar = GregorianCalendar.getInstance();
 			actionCalendar.setTime(actionDate);
 			String fullDateStr = dateFormat.format(actionDate) + " " + timeFormat.format(actionDate);
-			String dateStr = "<b>" + new DateRenderer(viewHolder.itemView.getContext()).timeAgo(action.getDate()).formattedDate + "</b> ago";
+			String dateStr = vh.itemView.getContext().getString(R.string.ago, "<b>" + new DateRenderer(viewHolder.itemView.getContext()).timeAgo(action.getDate()).formattedDate + "</b>");
 
 			if (index > 0)
 			{
 				long difference = actions.get(index - 1).getDate() - action.getDate();
 				int days = (int)Math.round(((double)difference / 60d / 60d / 24d / 1000d));
 
-				dateStr += " (-" + days + "d)";
+				dateStr += " (-" + days + vh.itemView.getContext().getString(R.string.day_abbr) + ")";
 			}
 
 			viewHolder.getFullDate().setText(Html.fromHtml(fullDateStr));
@@ -440,7 +442,7 @@ public class ActionAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>
 								{
 									new AlertDialog.Builder(v.getContext())
 										.setTitle(R.string.delete_event_dialog_title)
-										.setMessage(v.getContext().getString(R.string.confirm_delete_item_message) + viewHolder.getName().getText())
+										.setMessage(Html.fromHtml(v.getContext().getString(R.string.confirm_delete_item_message) + " <b>" + viewHolder.getName().getText() + "</b>?"))
 										.setPositiveButton(R.string.confirm_positive, new DialogInterface.OnClickListener()
 										{
 											@Override public void onClick(DialogInterface dialog, int which)

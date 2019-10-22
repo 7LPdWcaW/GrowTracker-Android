@@ -34,324 +34,11 @@
 				<com.google.android.flexbox.FlexboxLayout
 					android:layout_width="match_parent"
 					android:layout_height="wrap_content"
+					android:id="@+id/stats_container"
 					app:flexWrap="wrap"
 					app:showDividerVertical="middle"
 					app:dividerDrawableVertical="@drawable/divider_8dp"
-				>
-					<LinearLayout
-						android:layout_width="wrap_content"
-						android:layout_height="wrap_content"
-						android:id="@+id/germ_time_container"
-						android:orientation="horizontal"
-						android:visibility="gone"
-					>
-						<TextView
-							android:layout_width="wrap_content"
-							android:layout_height="wrap_content"
-							android:text="@string/germination_label"
-							android:gravity="center_vertical"
-							android:ellipsize="end"
-							android:singleLine="true"
-							style="@style/SubsectionTitle"
-						/>
-
-						<TextView
-							android:layout_width="wrap_content"
-							android:layout_height="wrap_content"
-							android:id="@+id/germ_time"
-							android:textSize="14sp"
-							android:textColor="?android:textColorSecondary"
-							android:layout_marginLeft="8dp"
-							android:fontFamily="sans-serif-light"
-							android:gravity="center_vertical"
-						/>
-					</LinearLayout>
-
-					<LinearLayout
-						android:layout_width="wrap_content"
-						android:layout_height="wrap_content"
-						android:id="@+id/seedling_time_container"
-						android:orientation="horizontal"
-						android:visibility="gone"
-					>
-						<TextView
-							android:layout_width="wrap_content"
-							android:layout_height="wrap_content"
-							android:text="@string/seedling_label"
-							android:gravity="center_vertical"
-							android:ellipsize="end"
-							android:singleLine="true"
-							style="@style/SubsectionTitle"
-						/>
-
-						<TextView
-							android:layout_width="wrap_content"
-							android:layout_height="wrap_content"
-							android:id="@+id/seedling_time"
-							android:textSize="14sp"
-							android:textColor="?android:textColorSecondary"
-							android:layout_marginLeft="8dp"
-							android:fontFamily="sans-serif-light"
-							android:gravity="center_vertical"
-						/>
-					</LinearLayout>
-
-					<LinearLayout
-						android:layout_width="wrap_content"
-						android:layout_height="wrap_content"
-						android:id="@+id/cutting_time_container"
-						android:orientation="horizontal"
-						android:visibility="gone"
-					>
-						<TextView
-							android:layout_width="wrap_content"
-							android:layout_height="wrap_content"
-							android:text="@string/cutting_label"
-							android:gravity="center_vertical"
-							android:ellipsize="end"
-							android:singleLine="true"
-							style="@style/SubsectionTitle"
-						/>
-
-						<TextView
-							android:layout_width="wrap_content"
-							android:layout_height="wrap_content"
-							android:id="@+id/cutting_time"
-							android:textSize="14sp"
-							android:textColor="?android:textColorSecondary"
-							android:layout_marginLeft="8dp"
-							android:fontFamily="sans-serif-light"
-							android:gravity="center_vertical"
-						/>
-					</LinearLayout>
-
-					<LinearLayout
-						android:layout_width="wrap_content"
-						android:layout_height="wrap_content"
-						android:id="@+id/veg_time_container"
-						android:orientation="horizontal"
-						android:visibility="gone"
-					>
-						<TextView
-							android:layout_width="wrap_content"
-							android:layout_height="wrap_content"
-							android:text="@string/vegetation_label"
-							android:gravity="center_vertical"
-							android:ellipsize="end"
-							style="@style/SubsectionTitle"
-						/>
-
-						<TextView
-							android:layout_width="wrap_content"
-							android:layout_height="wrap_content"
-							android:id="@+id/veg_time"
-							android:textSize="14sp"
-							android:textColor="?android:textColorSecondary"
-							android:layout_marginLeft="8dp"
-							android:fontFamily="sans-serif-light"
-							android:gravity="center_vertical"
-						/>
-					</LinearLayout>
-
-					<LinearLayout
-						android:layout_width="wrap_content"
-						android:layout_height="wrap_content"
-						android:id="@+id/flower_time_container"
-						android:orientation="horizontal"
-						android:visibility="gone"
-					>
-						<TextView
-							android:layout_width="wrap_content"
-							android:layout_height="wrap_content"
-							android:text="@string/flower_label"
-							android:gravity="center_vertical"
-							style="@style/SubsectionTitle"
-						/>
-
-						<TextView
-							android:layout_width="wrap_content"
-							android:layout_height="wrap_content"
-							android:id="@+id/flower_time"
-							android:textSize="14sp"
-							android:textColor="?android:textColorSecondary"
-							android:layout_marginLeft="8dp"
-							android:fontFamily="sans-serif-light"
-							android:gravity="center_vertical"
-						/>
-					</LinearLayout>
-
-					<LinearLayout
-						android:layout_width="wrap_content"
-						android:layout_height="wrap_content"
-						android:id="@+id/dry_time_container"
-						android:orientation="horizontal"
-						android:visibility="gone"
-					>
-						<TextView
-							android:layout_width="wrap_content"
-							android:layout_height="wrap_content"
-							android:text="@string/drying_label"
-							android:gravity="center_vertical"
-							style="@style/SubsectionTitle"
-						/>
-
-						<TextView
-							android:layout_width="wrap_content"
-							android:layout_height="wrap_content"
-							android:id="@+id/dry_time"
-							android:textSize="14sp"
-							android:textColor="?android:textColorSecondary"
-							android:layout_marginLeft="8dp"
-							android:fontFamily="sans-serif-light"
-							android:gravity="center_vertical"
-						/>
-					</LinearLayout>
-
-					<LinearLayout
-						android:layout_width="wrap_content"
-						android:layout_height="wrap_content"
-						android:id="@+id/cure_time_container"
-						android:orientation="horizontal"
-						android:visibility="gone"
-					>
-						<TextView
-							android:layout_width="wrap_content"
-							android:layout_height="wrap_content"
-							android:text="@string/curing_label"
-							android:gravity="center_vertical"
-							style="@style/SubsectionTitle"
-						/>
-
-						<TextView
-							android:layout_width="wrap_content"
-							android:layout_height="wrap_content"
-							android:id="@+id/cure_time"
-							android:textSize="14sp"
-							android:textColor="?android:textColorSecondary"
-							android:layout_marginLeft="8dp"
-							android:fontFamily="sans-serif-light"
-							android:gravity="center_vertical"
-						/>
-					</LinearLayout>
-				</com.google.android.flexbox.FlexboxLayout>
-
-				<LinearLayout
-					android:layout_width="match_parent"
-					android:layout_height="wrap_content"
-					android:orientation="horizontal"
-				>
-					<TextView
-						android:layout_width="wrap_content"
-						android:layout_height="wrap_content"
-						android:text="@string/total_time_label"
-						android:gravity="center_vertical"
-						style="@style/SubsectionTitle"
-					/>
-
-					<TextView
-						android:layout_width="wrap_content"
-						android:layout_height="wrap_content"
-						android:id="@+id/grow_time"
-						android:textSize="14sp"
-						android:textColor="?android:textColorSecondary"
-						android:layout_marginLeft="8dp"
-						android:fontFamily="sans-serif-light"
-						android:gravity="center_vertical"
-					/>
-				</LinearLayout>
-
-				<LinearLayout
-					android:layout_width="match_parent"
-					android:layout_height="wrap_content"
-					android:orientation="horizontal"
-				>
-					<LinearLayout
-						android:layout_width="0dp"
-						android:layout_height="wrap_content"
-						android:orientation="horizontal"
-						android:layout_weight="1"
-					>
-						<TextView
-							android:layout_width="wrap_content"
-							android:layout_height="wrap_content"
-							android:text="@string/total_waters_label"
-							android:gravity="center_vertical"
-							style="@style/SubsectionTitle"
-						/>
-
-						<TextView
-							android:layout_width="wrap_content"
-							android:layout_height="wrap_content"
-							android:id="@+id/water_count"
-							android:textSize="14sp"
-							android:textColor="?android:textColorSecondary"
-							android:layout_marginLeft="8dp"
-							android:fontFamily="sans-serif-light"
-							android:gravity="center_vertical"
-						/>
-					</LinearLayout>
-
-					<LinearLayout
-						android:layout_width="0dp"
-						android:layout_height="wrap_content"
-						android:orientation="horizontal"
-						android:layout_weight="1"
-					>
-						<TextView
-							android:layout_width="wrap_content"
-							android:layout_height="wrap_content"
-							android:text="@string/total_flushes_label"
-							android:gravity="center_vertical"
-							style="@style/SubsectionTitle"
-						/>
-
-						<TextView
-							android:layout_width="wrap_content"
-							android:layout_height="wrap_content"
-							android:id="@+id/flush_count"
-							android:textSize="14sp"
-							android:textColor="?android:textColorSecondary"
-							android:layout_marginLeft="8dp"
-							android:fontFamily="sans-serif-light"
-							android:gravity="center_vertical"
-						/>
-					</LinearLayout>
-				</LinearLayout>
-
-				<LinearLayout
-					android:layout_width="match_parent"
-					android:layout_height="wrap_content"
-					android:orientation="horizontal"
-				>
-					<LinearLayout
-						android:layout_width="0dp"
-						android:layout_height="wrap_content"
-						android:orientation="horizontal"
-						android:layout_weight="1"
-					>
-						<TextView
-							android:layout_width="wrap_content"
-							android:layout_height="wrap_content"
-							android:text="@string/ave_time_between_water_label"
-							android:gravity="center"
-							style="@style/SubsectionTitle"
-							android:singleLine="false"
-							android:layout_gravity="center_vertical"
-						/>
-
-						<TextView
-							android:layout_width="wrap_content"
-							android:layout_height="match_parent"
-							android:id="@+id/ave_water"
-							android:textSize="14sp"
-							android:textColor="?android:textColorSecondary"
-							android:layout_marginLeft="8dp"
-							android:fontFamily="sans-serif-light"
-							android:gravity="center"
-							android:layout_gravity="center_vertical"
-						/>
-					</LinearLayout>
-				</LinearLayout>
+				/>
 			</LinearLayout>
 
 			<com.github.mikephil.charting.charts.HorizontalBarChart
@@ -525,28 +212,50 @@
 			</LinearLayout>
 		</LinearLayout>
 
-		<LinearLayout
+		<androidx.constraintlayout.widget.ConstraintLayout
 			android:layout_width="match_parent"
 			android:layout_height="wrap_content"
 			android:orientation="vertical"
 			android:layout_marginTop="8dp"
 			android:elevation="4dp"
+			android:paddingBottom="12dp"
+			android:paddingTop="0dp"
 			style="@style/PaperCard"
 		>
 			<TextView
 				android:layout_width="wrap_content"
 				android:layout_height="wrap_content"
-				android:id="@+id/ppm_title"
-				android:text="@string/ppm_title"
+				android:id="@+id/tds_title"
+				android:paddingBottom="8dp"
+				android:paddingTop="16dp"
 				style="@style/SectionTitle"
+			/>
+
+			<TextView
+				android:layout_width="wrap_content"
+				android:layout_height="wrap_content"
+				android:id="@+id/tds_selector"
+				android:textColor="?android:textColorPrimary"
+				app:layout_constraintTop_toTopOf="parent"
+				app:layout_constraintEnd_toEndOf="parent"
+				android:drawableEnd="@drawable/ic_dropdown"
+				android:drawableTint="?android:textColorPrimary"
+				android:drawablePadding="8dp"
+				android:padding="8dp"
+				android:layout_marginEnd="8dp"
+				android:layout_marginTop="8dp"
+				android:clickable="true"
+				android:focusable="true"
+				android:background="?selectableItemBackground"
 			/>
 
 			<com.github.mikephil.charting.charts.LineChart
 				android:layout_width="match_parent"
 				android:layout_height="300dp"
-				android:id="@+id/ppm"
-				android:padding="16dp"
+				android:id="@+id/tds"
 				android:layout_marginTop="24dp"
+				android:padding="16dp"
+				app:layout_constraintTop_toBottomOf="@id/tds_selector"
 			/>
 
 			<LinearLayout
@@ -554,6 +263,7 @@
 				android:layout_height="wrap_content"
 				android:orientation="horizontal"
 				android:padding="16dp"
+				app:layout_constraintTop_toBottomOf="@id/tds"
 			>
 				<LinearLayout
 					android:layout_width="0dp"
@@ -573,7 +283,7 @@
 					<TextView
 						android:layout_width="wrap_content"
 						android:layout_height="wrap_content"
-						android:id="@+id/min_ppm"
+						android:id="@+id/min_tds"
 						android:textSize="14sp"
 						android:layout_marginLeft="8dp"
 						android:fontFamily="sans-serif-light"
@@ -600,7 +310,7 @@
 					<TextView
 						android:layout_width="wrap_content"
 						android:layout_height="wrap_content"
-						android:id="@+id/max_ppm"
+						android:id="@+id/max_tds"
 						android:textSize="14sp"
 						android:layout_marginLeft="8dp"
 						android:fontFamily="sans-serif-light"
@@ -627,7 +337,7 @@
 					<TextView
 						android:layout_width="wrap_content"
 						android:layout_height="wrap_content"
-						android:id="@+id/ave_ppm"
+						android:id="@+id/ave_tds"
 						android:textSize="14sp"
 						android:textColor="?android:textColorPrimary"
 						android:layout_marginLeft="8dp"
@@ -636,7 +346,7 @@
 					/>
 				</LinearLayout>
 			</LinearLayout>
-		</LinearLayout>
+		</androidx.constraintlayout.widget.ConstraintLayout>
 
 		<LinearLayout
 			android:layout_width="match_parent"
@@ -644,6 +354,7 @@
 			android:id="@+id/temp_container"
 			android:orientation="vertical"
 			android:layout_marginTop="8dp"
+			android:layout_marginBottom="24dp"
 			android:elevation="4dp"
 			android:visibility="gone"
 			style="@style/PaperCard"

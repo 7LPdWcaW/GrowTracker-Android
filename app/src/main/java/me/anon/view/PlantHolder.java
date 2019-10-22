@@ -19,12 +19,9 @@ import java.util.ArrayList;
 
 import androidx.appcompat.widget.PopupMenu;
 import androidx.recyclerview.widget.RecyclerView;
-import me.anon.grow.EventsActivity;
 import me.anon.grow.MainApplication;
 import me.anon.grow.PlantDetailsActivity;
 import me.anon.grow.R;
-import me.anon.grow.StatisticsActivity;
-import me.anon.grow.ViewPhotosActivity;
 import me.anon.model.Plant;
 import me.anon.model.PlantStage;
 
@@ -165,15 +162,15 @@ public class PlantHolder extends RecyclerView.ViewHolder
 							}
 							else if (item.getItemId() == R.id.menu_photos)
 							{
-								intent = new Intent(view.getContext(), ViewPhotosActivity.class);
+								intent.putExtra("forward", "photos");
 							}
 							else if (item.getItemId() == R.id.menu_history)
 							{
-								intent = new Intent(view.getContext(), EventsActivity.class);
+								intent.putExtra("forward", "events");
 							}
 							else if (item.getItemId() == R.id.menu_statistics)
 							{
-								intent = new Intent(view.getContext(), StatisticsActivity.class);
+								intent.putExtra("forward", "statistics");
 							}
 							else
 							{

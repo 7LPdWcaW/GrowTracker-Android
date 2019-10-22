@@ -12,6 +12,18 @@ public class DateRenderer
 	private Context context;
 	private final String now, sec, min, hour, day, wk, mon, yr;
 
+	public DateRenderer()
+	{
+		now = "1s";
+		sec = "s";
+		min = "m";
+		hour = "h";
+		day = "d";
+		wk = "w";
+		mon = "mo";
+		yr = "y";
+	}
+
 	public DateRenderer(Context context)
 	{
 		this.context = context.getApplicationContext();
@@ -22,7 +34,7 @@ public class DateRenderer
 		day = context.getString(R.string.day_abbr);
 		wk = context.getString(R.string.week_abbr);
 		mon = context.getString(R.string.month_abbr);
-		yr = context.getString(R.string.year_abbr); 
+		yr = context.getString(R.string.year_abbr);
 	}
 
 	/**
@@ -42,13 +54,13 @@ public class DateRenderer
 
 		Unit[] units = new Unit[]
 		{
-			new Unit(R.plurals.time_second, sec, 60, 1),
-			new Unit(R.plurals.time_minute, min, 3600, 60),
-			new Unit(R.plurals.time_hour, hour, 86400, 3600),
-			new Unit(R.plurals.time_day, day, 604800, 86400),
-			new Unit(R.plurals.time_week, wk, 2629743, 604800),
-			new Unit(R.plurals.time_month, mon, 31556926, 2629743),
-			new Unit(R.plurals.time_year, yr, 2629743, 31556926)
+			new Unit(R.plurals.time_second, "seconds", sec, 60, 1),
+			new Unit(R.plurals.time_minute, "minutes", min, 3600, 60),
+			new Unit(R.plurals.time_hour, "hours", hour, 86400, 3600),
+			new Unit(R.plurals.time_day, "days", day, 604800, 86400),
+			new Unit(R.plurals.time_week, "weeks", wk, 2629743, 604800),
+			new Unit(R.plurals.time_month, "months", mon, 31556926, 2629743),
+			new Unit(R.plurals.time_year, "years", yr, 2629743, 31556926)
 		};
 
 		long currentTime = System.currentTimeMillis();
@@ -114,7 +126,13 @@ public class DateRenderer
 	private String getLongFormattedDate(Unit unit, double difference)
 	{
 		int newDiff = (int)Math.floor(difference / unit.inSeconds);
-		return String.format("%s %s", newDiff, context.getResources().getQuantityString(unit.pluralRes, newDiff));
+
+		if (context != null)
+		{
+			return String.format("%s %s", newDiff, context.getResources().getQuantityString(unit.pluralRes, newDiff));
+		}
+
+		return newDiff + " " + unit.enStr;
 	}
 
 	public class TimeAgo
@@ -136,13 +154,15 @@ public class DateRenderer
 	public static class Unit
 	{
 		public int pluralRes;
+		public String enStr;
 		public String name;
 		public int limit;
 		public int inSeconds;
 
-		public Unit(int pluralRes, String name, int limit, int inSeconds)
+		public Unit(int pluralRes, String enStr, String name, int limit, int inSeconds)
 		{
 			this.pluralRes = pluralRes;
+			this.enStr = enStr;
 			this.name = name;
 			this.limit = limit;
 			this.inSeconds = inSeconds;

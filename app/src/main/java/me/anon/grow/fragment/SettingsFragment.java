@@ -13,23 +13,23 @@ import android.content.pm.ResolveInfo;
 import android.graphics.drawable.Drawable;
 import android.net.Uri;
 import android.os.AsyncTask;
+import android.os.Build;
 import android.os.Bundle;
 import android.os.Environment;
+import android.provider.DocumentsContract;
 import android.text.Html;
 import android.text.TextUtils;
 import android.util.Base64;
 import android.view.View;
-import android.widget.Toast;
 
 import com.google.android.material.snackbar.Snackbar;
 import com.nostra13.universalimageloader.core.ImageLoader;
-
-import org.jetbrains.annotations.NotNull;
 
 import java.io.BufferedInputStream;
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
+import java.net.URISyntaxException;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -40,9 +40,9 @@ import java.util.Date;
 import java.util.List;
 
 import androidx.appcompat.app.AlertDialog;
-import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.app.AppCompatDelegate;
 import androidx.core.content.FileProvider;
+import androidx.documentfile.provider.DocumentFile;
 import androidx.fragment.app.FragmentActivity;
 import androidx.preference.EditTextPreference;
 import androidx.preference.Preference;
@@ -52,15 +52,18 @@ import androidx.preference.PreferenceGroup;
 import androidx.preference.PreferenceManager;
 import androidx.preference.SwitchPreferenceCompat;
 import me.anon.controller.receiver.BackupService;
+import me.anon.grow.BootActivity;
 import me.anon.grow.MainApplication;
 import me.anon.grow.R;
 import me.anon.lib.SnackBar;
-import me.anon.lib.SnackBarListener;
+import me.anon.lib.TdsUnit;
 import me.anon.lib.TempUnit;
 import me.anon.lib.Unit;
 import me.anon.lib.helper.AddonHelper;
 import me.anon.lib.helper.BackupHelper;
 import me.anon.lib.helper.EncryptionHelper;
+import me.anon.lib.helper.NotificationHelper;
+import me.anon.lib.helper.PathHelper;
 import me.anon.lib.manager.FileManager;
 import me.anon.lib.manager.GardenManager;
 import me.anon.lib.manager.PlantManager;
@@ -73,6 +76,7 @@ import me.anon.model.Plant;
 public class SettingsFragment extends PreferenceFragmentCompat implements Preference.OnPreferenceClickListener, Preference.OnPreferenceChangeListener
 {
 	private static final int REQUEST_UNINSTALL = 0x01;
+	private static final int REQUEST_PICK_DOCUMENT = 0x02;
 
 	@Override public void onCreatePreferences(Bundle savedInstanceState, String rootKey)
 	{
@@ -98,6 +102,9 @@ public class SettingsFragment extends PreferenceFragmentCompat implements Prefer
 		findPreference("delivery_unit").setSummary(Html.fromHtml(getString(R.string.settings_delivery, Unit.getSelectedDeliveryUnit(getActivity()).getLabel())));
 		findPreference("measurement_unit").setSummary(Html.fromHtml(getString(R.string.settings_measurement, Unit.getSelectedMeasurementUnit(getActivity()).getLabel())));
 		findPreference("temperature_unit").setSummary(Html.fromHtml(getString(R.string.settings_temperature, TempUnit.getSelectedTemperatureUnit(getActivity()).getLabel())));
+		findPreference("tds_unit").setSummary(Html.fromHtml(getString(R.string.settings_tds_summary, getString(TdsUnit.getSelectedTdsUnit(getActivity()).getStrRes()))));
+		findPreference("backup_now").setSummary(Html.fromHtml(getString(R.string.settings_lastbackup_summary, BackupHelper.getLastBackup())));
+		findPreference("image_location").setSummary(Html.fromHtml(getString(R.string.settings_image_location_summary, FileManager.IMAGE_PATH)));
 
 		try
 		{
@@ -109,21 +116,35 @@ public class SettingsFragment extends PreferenceFragmentCompat implements Prefer
 		}
 
 		findPreference("encrypt").setOnPreferenceChangeListener(this);
+		findPreference("encrypt").setEnabled(!MainApplication.dataTaskRunning.get());
+		((SwitchPreferenceCompat)findPreference("encrypt")).setChecked(MainApplication.isEncrypted());
+
 		findPreference("failsafe").setOnPreferenceChangeListener(this);
 		findPreference("auto_backup").setOnPreferenceChangeListener(this);
 		findPreference("backup_size").setOnPreferenceChangeListener(this);
 		findPreference("force_dark").setOnPreferenceChangeListener(this);
 		String currentBackup = findPreference("backup_size").getSharedPreferences().getString("backup_size", "20");
-		findPreference("backup_size").setSummary(Html.fromHtml(getString(R.string.settings_backup_size, currentBackup, lengthToString(BackupHelper.backupSize()))));
+
+		if (Build.VERSION.SDK_INT >= 21)
+		{
+			findPreference("backup_size").setSummary(Html.fromHtml(getString(R.string.settings_backup_size, currentBackup, lengthToString(BackupHelper.backupSize()))));
+		}
+		else
+		{
+			findPreference("backup_size").setEnabled(false);
+		}
 
 		findPreference("readme").setOnPreferenceClickListener(this);
+		findPreference("clear_image_cache").setOnPreferenceClickListener(this);
 		findPreference("export").setOnPreferenceClickListener(this);
 		findPreference("default_garden").setOnPreferenceClickListener(this);
 		findPreference("delivery_unit").setOnPreferenceClickListener(this);
 		findPreference("measurement_unit").setOnPreferenceClickListener(this);
 		findPreference("temperature_unit").setOnPreferenceClickListener(this);
+		findPreference("tds_unit").setOnPreferenceClickListener(this);
 		findPreference("backup_now").setOnPreferenceClickListener(this);
 		findPreference("restore").setOnPreferenceClickListener(this);
+		findPreference("image_location").setOnPreferenceClickListener(this);
 
 		findPreference("failsafe").setEnabled(((SwitchPreferenceCompat)findPreference("encrypt")).isChecked());
 
@@ -286,6 +307,8 @@ public class SettingsFragment extends PreferenceFragmentCompat implements Prefer
 		}
 		else if ("encrypt".equals(preference.getKey()))
 		{
+			NotificationHelper.createExportChannel(getActivity());
+
 			if ((Boolean)newValue == true)
 			{
 				new AlertDialog.Builder(getActivity())
@@ -344,20 +367,26 @@ public class SettingsFragment extends PreferenceFragmentCompat implements Prefer
 											}
 										}
 
-										new EncryptTask().executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR, images);
+										NotificationHelper.sendDataTaskNotification(getActivity(), getString(R.string.app_name), getString(R.string.encrypt_progress_warning));
+										new EncryptTask(getActivity()).executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR, images);
 										ImageLoader.getInstance().clearMemoryCache();
 										ImageLoader.getInstance().clearDiskCache();
+										FileManager.getInstance().removeFile(PlantManager.FILES_DIR + "/plants.json");
+										FileManager.getInstance().removeFile(PlantManager.FILES_DIR + "/plants.json.bak");
+										FileManager.getInstance().removeFile(PlantManager.FILES_DIR + "/plants.temp");
 
-										Toast.makeText(SettingsFragment.this.getActivity(), R.string.encrypt_progress_warning, Toast.LENGTH_LONG).show();
+										SnackBar.show(getActivity(), getString(R.string.encrypt_progress_warning), Snackbar.LENGTH_LONG, null);
 
 										// make sure encrypt mode is definitely enabled
 										((SwitchPreferenceCompat)preference).setChecked(true);
+										((SwitchPreferenceCompat)preference).setEnabled(false);
 										findPreference("failsafe").setEnabled(true);
 										dialog.dismiss();
 									}
 									else
 									{
 										((SwitchPreferenceCompat)preference).setChecked(false);
+										((SwitchPreferenceCompat)preference).setEnabled(true);
 										check2.getInput().setError(getString(R.string.passphrase_error));
 									}
 								}
@@ -368,6 +397,7 @@ public class SettingsFragment extends PreferenceFragmentCompat implements Prefer
 								{
 									// make sure the preferences is definitely turned off
 									((SwitchPreferenceCompat)preference).setChecked(false);
+									((SwitchPreferenceCompat)preference).setEnabled(true);
 								}
 							});
 
@@ -398,7 +428,7 @@ public class SettingsFragment extends PreferenceFragmentCompat implements Prefer
 				{
 					@Override public void onDialogConfirmed(DialogInterface dialog, String input)
 					{
-						String checkStr = PreferenceManager.getDefaultSharedPreferences(getActivity()).getString("encryption_check_key", "");
+						String checkStr = android.preference.PreferenceManager.getDefaultSharedPreferences(getActivity()).getString("encryption_check_key", Base64.encodeToString(EncryptionHelper.encrypt(input, input), Base64.NO_WRAP));
 						String inputCheck = Base64.encodeToString(EncryptionHelper.encrypt(input, input), Base64.NO_WRAP);
 
 						if (inputCheck.equals(checkStr))
@@ -418,11 +448,14 @@ public class SettingsFragment extends PreferenceFragmentCompat implements Prefer
 								}
 							}
 
-							new DecryptTask().executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR, images);
-							Toast.makeText(SettingsFragment.this.getActivity(), R.string.decrypt_progress_warning, Toast.LENGTH_LONG).show();
+							NotificationHelper.sendDataTaskNotification(getActivity(), getString(R.string.app_name), getString(R.string.decrypt_progress_warning));
+							new DecryptTask(getActivity()).executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR, images);
+
+							SnackBar.show(getActivity(), getString(R.string.decrypt_progress_warning), Snackbar.LENGTH_LONG, null);
 
 							// make sure the preferences is definitely turned off
 							((SwitchPreferenceCompat)preference).setChecked(false);
+							((SwitchPreferenceCompat)preference).setEnabled(false);
 							ImageLoader.getInstance().clearMemoryCache();
 							ImageLoader.getInstance().clearDiskCache();
 							dialog.dismiss();
@@ -430,6 +463,7 @@ public class SettingsFragment extends PreferenceFragmentCompat implements Prefer
 						else
 						{
 							((SwitchPreferenceCompat)preference).setChecked(true);
+							((SwitchPreferenceCompat)preference).setEnabled(true);
 							check.getInput().setError(getString(R.string.passphrase_error));
 						}
 					}
@@ -439,6 +473,7 @@ public class SettingsFragment extends PreferenceFragmentCompat implements Prefer
 					@Override public void onDialogCancelled()
 					{
 						((SwitchPreferenceCompat)preference).setChecked(true);
+						((SwitchPreferenceCompat)preference).setEnabled(true);
 					}
 				});
 
@@ -486,7 +521,8 @@ public class SettingsFragment extends PreferenceFragmentCompat implements Prefer
 									else
 									{
 										((SwitchPreferenceCompat)preference).setChecked(false);
-										Toast.makeText(getActivity(), R.string.passphrase_error, Toast.LENGTH_SHORT).show();
+
+										SnackBar.show(getActivity(), getString(R.string.passphrase_error), Snackbar.LENGTH_LONG, null);
 									}
 								}
 							});
@@ -514,17 +550,15 @@ public class SettingsFragment extends PreferenceFragmentCompat implements Prefer
 		}
 		else if ("auto_backup".equalsIgnoreCase(preference.getKey()))
 		{
+			Intent backupIntent = new Intent(getActivity(), BackupService.class);
+			AlarmManager alarmManager = (AlarmManager)getActivity().getSystemService(Context.ALARM_SERVICE);
+			alarmManager.cancel(PendingIntent.getBroadcast(getActivity(), 0, backupIntent, 0));
+
 			if ((Boolean)newValue)
 			{
 				PreferenceManager.getDefaultSharedPreferences(getActivity()).edit().putBoolean("auto_backup", true).apply();
 				((MainApplication)getActivity().getApplication()).registerBackupService();
-				Toast.makeText(getActivity(), R.string.backup_enable_toast, Toast.LENGTH_LONG).show();
-			}
-			else
-			{
-				Intent backupIntent = new Intent(getActivity(), BackupService.class);
-				AlarmManager alarmManager = (AlarmManager)getActivity().getSystemService(Context.ALARM_SERVICE);
-				alarmManager.cancel(PendingIntent.getBroadcast(getActivity(), 0, backupIntent, 0));
+				SnackBar.show(getActivity(), getString(R.string.backup_enable_toast), Snackbar.LENGTH_LONG, null);
 			}
 
 			return true;
@@ -561,6 +595,34 @@ public class SettingsFragment extends PreferenceFragmentCompat implements Prefer
 							.apply();
 
 						findPreference("delivery_unit").setSummary(Html.fromHtml(getString(R.string.settings_delivery, Unit.getSelectedDeliveryUnit(getActivity()).getLabel())));
+					}
+				})
+				.show();
+
+			return true;
+		}
+		else if ("tds_unit".equals(preference.getKey()))
+		{
+			final String[] options = new String[TdsUnit.values().length];
+			int index = 0, selectedIndex = TdsUnit.getSelectedTdsUnit(getActivity()).ordinal();
+			for (TdsUnit unit : TdsUnit.values())
+			{
+				options[index++] = getString(unit.getStrRes()) + " (" + unit.getLabel() + ")";
+			}
+
+			new AlertDialog.Builder(getActivity())
+				.setTitle(R.string.settings_tds_title)
+				.setSingleChoiceItems(options, selectedIndex, new DialogInterface.OnClickListener()
+				{
+					@Override public void onClick(DialogInterface dialogInterface, int index)
+					{
+						dialogInterface.dismiss();
+
+						PreferenceManager.getDefaultSharedPreferences(getActivity()).edit()
+							.putInt("tds_unit", index)
+							.apply();
+
+						findPreference("tds_unit").setSummary(Html.fromHtml(getString(R.string.settings_tds_summary, getString(TdsUnit.getSelectedTdsUnit(getActivity()).getStrRes()))));
 					}
 				})
 				.show();
@@ -695,45 +757,19 @@ public class SettingsFragment extends PreferenceFragmentCompat implements Prefer
 		else if ("backup_now".equals(preference.getKey()))
 		{
 			String currentBackup = findPreference("backup_size").getSharedPreferences().getString("backup_size", "20");
-			Toast.makeText(getActivity(), getString(R.string.backed_up_to) + BackupHelper.backupJson().getPath(), Toast.LENGTH_SHORT).show();
+			SnackBar.show(getActivity(), getString(R.string.backed_up_to) + BackupHelper.backupJson().getPath(), Snackbar.LENGTH_LONG, null);
 			findPreference("backup_size").setSummary(Html.fromHtml(getString(R.string.settings_backup_size, currentBackup, lengthToString(BackupHelper.backupSize()))));
+			findPreference("backup_now").setSummary(Html.fromHtml(getString(R.string.settings_lastbackup_summary, BackupHelper.getLastBackup())));
 		}
 		else if ("restore".equals(preference.getKey()))
 		{
-			class BackupData
-			{
-				Date date;
-				String plantsPath;
-				String gardenPath;
-				String schedulePath;
-				long size = 0;
-
-				@Override public String toString()
-				{
-					boolean encrypted = plantsPath != null && plantsPath.endsWith("dat");
-					String out = "(" + (encrypted ? "encrypted " : "") + lengthToString(size) + ")";
-					if (getActivity() != null)
-					{
-						DateFormat dateFormat = android.text.format.DateFormat.getDateFormat(getActivity());
-						DateFormat timeFormat = android.text.format.DateFormat.getTimeFormat(getActivity());
-						out = dateFormat.format(date) + " " + timeFormat.format(date) + " " + out;
-					}
-					else
-					{
-						out = date + " " + out;
-					}
-
-					return out;
-				}
-			}
-
 			// get list of backups
 			File backupPath = new File(Environment.getExternalStorageDirectory(), "/backups/GrowTracker/");
 			String[] backupFiles = backupPath.list();
 
 			if (backupFiles == null || backupFiles.length == 0)
 			{
-				Toast.makeText(getActivity(), R.string.no_backups, Toast.LENGTH_LONG).show();
+				SnackBar.show(getActivity(), getString(R.string.no_backups), Snackbar.LENGTH_LONG, null);
 				return false;
 			}
 
@@ -757,7 +793,7 @@ public class SettingsFragment extends PreferenceFragmentCompat implements Prefer
 					{
 						try
 						{
-							date = new SimpleDateFormat("yyyy-MM-dd-hh-mm-ss").parse(parts[0]);
+							date = new SimpleDateFormat("yyyy-MM-dd-HH-mm-ss").parse(parts[0]);
 						}
 						catch (Exception e2)
 						{
@@ -789,19 +825,19 @@ public class SettingsFragment extends PreferenceFragmentCompat implements Prefer
 				}
 
 				File file = new File(backupPath.getPath() + "/" + backup);
-				if (backup.contains("plants"))
+				if (backup.contains("plants") && backup.endsWith(".bak"))
 				{
 					current.plantsPath = backupPath.getPath() + "/" + backup;
 					current.size += file.length();
 				}
 
-				if (backup.contains("gardens"))
+				if (backup.contains("gardens") && backup.endsWith(".bak"))
 				{
 					current.gardenPath = backupPath.getPath() + "/" + backup;
 					current.size += file.length();
 				}
 
-				if (backup.contains("schedules"))
+				if (backup.contains("schedules") && backup.endsWith(".bak"))
 				{
 					current.schedulePath = backupPath.getPath() + "/" + backup;
 					current.size += file.length();
@@ -829,8 +865,7 @@ public class SettingsFragment extends PreferenceFragmentCompat implements Prefer
 				{
 					@Override public void onClick(DialogInterface dialog, int which)
 					{
-						BackupData selectedBackup = backups.get(which);
-						String selectedBackupStr = selectedBackup.toString();
+						final BackupData selectedBackup = backups.get(which);
 
 						if ((MainApplication.isFailsafe()))
 						{
@@ -839,62 +874,184 @@ public class SettingsFragment extends PreferenceFragmentCompat implements Prefer
 
 						if (selectedBackup.plantsPath == null) return;
 
-						if (selectedBackup.plantsPath.endsWith("dat") && !MainApplication.isEncrypted())
+						if (selectedBackup.plantsPath.endsWith(".dat.bak"))
 						{
-							SnackBar.show((AppCompatActivity)getActivity(), R.string.backup_restore_error, R.string.enable, new SnackBarListener()
+							final PinDialogFragment check = new PinDialogFragment();
+							check.setTitle(getString(R.string.passphrase_title));
+							check.setOnDialogConfirmed(new PinDialogFragment.OnDialogConfirmed()
 							{
-								@Override public void onSnackBarStarted(@NotNull Object o){}
-								@Override public void onSnackBarFinished(@NotNull Object o){}
-
-								@Override public void onSnackBarAction(@NotNull View o)
+								@Override public void onDialogConfirmed(DialogInterface dialog, String input)
 								{
-									((SwitchPreferenceCompat)findPreference("encrypt")).setChecked(true);
-									onPreferenceChange(findPreference("encrypt"), true);
+									//decrypt file
+									if (selectedBackup.plantsPath != null)
+									{
+										FileManager.getInstance().decryptTo(selectedBackup.plantsPath, selectedBackup.plantsPath + ".temp", input);
+
+										if (MainApplication.isEncrypted())
+										{
+											FileManager.getInstance().encryptTo(selectedBackup.plantsPath + ".temp", selectedBackup.plantsPath + ".temp2", MainApplication.getKey());
+											new File(selectedBackup.plantsPath + ".temp2").renameTo(new File(selectedBackup.plantsPath + ".temp"));
+										}
+
+										selectedBackup.plantsPath = selectedBackup.plantsPath + ".temp";
+									}
+
+									if (selectedBackup.gardenPath != null)
+									{
+										FileManager.getInstance().decryptTo(selectedBackup.gardenPath, selectedBackup.gardenPath + ".temp", input);
+
+										if (MainApplication.isEncrypted())
+										{
+											FileManager.getInstance().encryptTo(selectedBackup.gardenPath + ".temp", selectedBackup.gardenPath + ".temp2", MainApplication.getKey());
+											new File(selectedBackup.gardenPath + ".temp2").renameTo(new File(selectedBackup.gardenPath + ".temp"));
+										}
+
+										selectedBackup.gardenPath = selectedBackup.gardenPath + ".temp";
+									}
+
+									if (selectedBackup.schedulePath != null)
+									{
+										FileManager.getInstance().decryptTo(selectedBackup.schedulePath, selectedBackup.schedulePath + ".temp", input);
+
+										if (MainApplication.isEncrypted())
+										{
+											FileManager.getInstance().encryptTo(selectedBackup.schedulePath + ".temp", selectedBackup.schedulePath + ".temp2", MainApplication.getKey());
+											new File(selectedBackup.schedulePath + ".temp2").renameTo(new File(selectedBackup.schedulePath + ".temp"));
+										}
+
+										selectedBackup.schedulePath = selectedBackup.schedulePath + ".temp";
+									}
+
+									if (new File(selectedBackup.plantsPath).exists())
+									{
+										completeRestore(selectedBackup);
+
+										if (selectedBackup.plantsPath != null && selectedBackup.plantsPath.endsWith(".temp"))
+										{
+											FileManager.getInstance().removeFile(selectedBackup.plantsPath);
+										}
+										if (selectedBackup.gardenPath != null && selectedBackup.gardenPath.endsWith(".temp"))
+										{
+											FileManager.getInstance().removeFile(selectedBackup.gardenPath);
+										}
+										if (selectedBackup.schedulePath != null && selectedBackup.schedulePath.endsWith(".temp"))
+										{
+											FileManager.getInstance().removeFile(selectedBackup.schedulePath);
+										}
+
+										check.dismiss();
+									}
+									else
+									{
+										check.getInput().setError(getString(R.string.encrypt_passphrase_error));
+									}
 								}
 							});
+							check.show(getChildFragmentManager(), null);
 							return;
 						}
-
-						FileManager.getInstance().copyFile(PlantManager.FILES_DIR + "/plants.json", PlantManager.FILES_DIR + "/plants.temp");
-						FileManager.getInstance().copyFile(selectedBackup.plantsPath, PlantManager.FILES_DIR + "/plants.json");
-						boolean loaded = PlantManager.getInstance().load(true);
-
-						if (selectedBackup.gardenPath != null)
+						else if (MainApplication.isEncrypted())
 						{
-							FileManager.getInstance().copyFile(GardenManager.FILES_DIR + "/gardens.json", GardenManager.FILES_DIR + "/gardens.temp");
-							FileManager.getInstance().copyFile(selectedBackup.gardenPath, GardenManager.FILES_DIR + "/gardens.json");
-							GardenManager.getInstance().load();
-						}
+							//encrypt an unencrypted file
+							if (selectedBackup.plantsPath != null)
+							{
+								FileManager.getInstance().encryptTo(selectedBackup.plantsPath, selectedBackup.plantsPath + ".temp", MainApplication.getKey());
+								selectedBackup.plantsPath = selectedBackup.plantsPath + ".temp";
+							}
 
-						if (selectedBackup.schedulePath != null)
-						{
-							FileManager.getInstance().copyFile(ScheduleManager.FILES_DIR + "/schedules.json", ScheduleManager.FILES_DIR + "/schedules.temp");
-							FileManager.getInstance().copyFile(selectedBackup.schedulePath, ScheduleManager.FILES_DIR + "/schedules.json");
-							ScheduleManager.instance.load();
-						}
+							if (selectedBackup.gardenPath != null)
+							{
+								FileManager.getInstance().encryptTo(selectedBackup.gardenPath, selectedBackup.gardenPath + ".temp", MainApplication.getKey());
+								selectedBackup.gardenPath = selectedBackup.gardenPath + ".temp";
+							}
 
-						if (!loaded)
-						{
-							String errorEnd = MainApplication.isEncrypted() ? getString(R.string.unencrypted) : getString(R.string.encrypted);
-							SnackBar.show(getActivity(), getString(R.string.restore_error, selectedBackupStr, errorEnd), Snackbar.LENGTH_INDEFINITE, null);
-							FileManager.getInstance().copyFile(PlantManager.FILES_DIR + "/plants.temp", PlantManager.FILES_DIR + "/plants.json");
-							FileManager.getInstance().copyFile(GardenManager.FILES_DIR + "/gardens.temp", GardenManager.FILES_DIR + "/gardens.json");
-							FileManager.getInstance().copyFile(ScheduleManager.FILES_DIR + "/schedules.temp", ScheduleManager.FILES_DIR + "/schedules.json");
-							PlantManager.getInstance().load();
-							GardenManager.getInstance().load();
-							ScheduleManager.instance.load();
+							if (selectedBackup.schedulePath != null)
+							{
+								FileManager.getInstance().encryptTo(selectedBackup.schedulePath, selectedBackup.schedulePath + ".temp", MainApplication.getKey());
+								selectedBackup.schedulePath = selectedBackup.schedulePath + ".temp";
+							}
+
+							completeRestore(selectedBackup);
+
+							if (selectedBackup.plantsPath != null && selectedBackup.plantsPath.endsWith(".temp"))
+							{
+								FileManager.getInstance().removeFile(selectedBackup.plantsPath);
+							}
+							if (selectedBackup.gardenPath != null && selectedBackup.gardenPath.endsWith(".temp"))
+							{
+								FileManager.getInstance().removeFile(selectedBackup.gardenPath);
+							}
+							if (selectedBackup.schedulePath != null && selectedBackup.schedulePath.endsWith(".temp"))
+							{
+								FileManager.getInstance().removeFile(selectedBackup.schedulePath);
+							}
 						}
 						else
 						{
-							Toast.makeText(getActivity(), getString(R.string.restore_complete, selectedBackupStr), Toast.LENGTH_LONG).show();
-							getActivity().recreate();
+							completeRestore(selectedBackup);
 						}
 					}
 				})
 				.show();
 		}
+		else if ("image_location".equals(preference.getKey()))
+		{
+			if (Build.VERSION.SDK_INT >= 21)
+			{
+				Intent intent = new Intent(Intent.ACTION_OPEN_DOCUMENT_TREE);
+				startActivityForResult(intent, REQUEST_PICK_DOCUMENT);
+			}
+		}
+		else if ("clear_image_cache".equals(preference.getKey()))
+		{
+			ImageLoader.getInstance().clearDiskCache();
+			ImageLoader.getInstance().clearMemoryCache();
+			SnackBar.show(getActivity(), getString(R.string.cache_cleared), Snackbar.LENGTH_SHORT, null);
+		}
 
 		return false;
+	}
+
+	private void completeRestore(BackupData selectedBackup)
+	{
+		FileManager.getInstance().copyFile(PlantManager.FILES_DIR + "/plants." + PlantManager.getInstance().getFileExt(), PlantManager.FILES_DIR + "/plants.temp");
+		FileManager.getInstance().copyFile(selectedBackup.plantsPath, PlantManager.FILES_DIR + "/plants." + PlantManager.getInstance().getFileExt());
+		boolean loaded = PlantManager.getInstance().load(true);
+
+		if (selectedBackup.gardenPath != null)
+		{
+			FileManager.getInstance().copyFile(GardenManager.FILES_DIR + "/gardens." + GardenManager.getInstance().getFileExt(), GardenManager.FILES_DIR + "/gardens.temp");
+			FileManager.getInstance().copyFile(selectedBackup.gardenPath, GardenManager.FILES_DIR + "/gardens." + GardenManager.getInstance().getFileExt());
+			GardenManager.getInstance().load();
+		}
+
+		if (selectedBackup.schedulePath != null)
+		{
+			FileManager.getInstance().copyFile(ScheduleManager.FILES_DIR + "/schedules." + ScheduleManager.instance.getFileExt(), ScheduleManager.FILES_DIR + "/schedules.temp");
+			FileManager.getInstance().copyFile(selectedBackup.schedulePath, ScheduleManager.FILES_DIR + "/schedules." + ScheduleManager.instance.getFileExt());
+			ScheduleManager.instance.load();
+		}
+
+		if (!loaded)
+		{
+			String errorEnd = MainApplication.isEncrypted() ? getString(R.string.unencrypted) : getString(R.string.encrypted);
+			SnackBar.show(getActivity(), getString(R.string.restore_error, selectedBackup.toString(), errorEnd), Snackbar.LENGTH_INDEFINITE, null);
+			FileManager.getInstance().copyFile(PlantManager.FILES_DIR + "/plants.temp", PlantManager.FILES_DIR + "/plants." + PlantManager.getInstance().getFileExt());
+			FileManager.getInstance().copyFile(GardenManager.FILES_DIR + "/gardens.temp", GardenManager.FILES_DIR + "/gardens.json");
+			FileManager.getInstance().copyFile(ScheduleManager.FILES_DIR + "/schedules.temp", ScheduleManager.FILES_DIR + "/schedules.json");
+			PlantManager.getInstance().load();
+			GardenManager.getInstance().load();
+			ScheduleManager.instance.load();
+		}
+		else
+		{
+			SnackBar.show(getActivity(), getString(R.string.restore_complete, selectedBackup.toString()), Snackbar.LENGTH_LONG, null);
+			getActivity().recreate();
+		}
+
+		FileManager.getInstance().removeFile(PlantManager.FILES_DIR + "/plants.temp");
+		FileManager.getInstance().removeFile(GardenManager.FILES_DIR + "/gardens.temp");
+		FileManager.getInstance().removeFile(ScheduleManager.FILES_DIR + "/schedules.temp");
 	}
 
 	@Override public void onActivityResult(int requestCode, int resultCode, Intent data)
@@ -904,8 +1061,44 @@ public class SettingsFragment extends PreferenceFragmentCompat implements Prefer
 		if (requestCode == REQUEST_UNINSTALL)
 		{
 			// refresh addons
-			Toast.makeText(getActivity(), "Addon successfully uninstalled", Toast.LENGTH_SHORT).show();
+			SnackBar.show(getActivity(), "Addon successfully uninstalled", Snackbar.LENGTH_SHORT, null);
 			populateAddons();
+		}
+		else if (requestCode == REQUEST_PICK_DOCUMENT && Build.VERSION.SDK_INT >= 19)
+		{
+			if (resultCode == Activity.RESULT_OK)
+			{
+				Uri treeUri = data.getData();
+				DocumentFile pickedDir = DocumentFile.fromTreeUri(getActivity(), treeUri);
+
+				Uri docUri = DocumentsContract.buildDocumentUriUsingTree(treeUri, DocumentsContract.getTreeDocumentId(treeUri));
+
+				if (pickedDir != null)
+				{
+					String filePath = null;
+					try
+					{
+						filePath = PathHelper.getPath(getActivity(), docUri);
+
+						if (!TextUtils.isEmpty(filePath) && new File(filePath).exists())
+						{
+							if (!filePath.endsWith("/")) filePath = filePath + "/";
+							findPreference("image_location").getSharedPreferences().edit().putString("image_location", filePath).apply();
+							findPreference("image_location").setSummary(Html.fromHtml(getString(R.string.settings_image_location_summary, filePath)));
+
+							return;
+						}
+					}
+					catch (URISyntaxException e)
+					{
+					}
+				}
+			}
+
+			if (resultCode != Activity.RESULT_CANCELED)
+			{
+				SnackBar.show(getActivity(), getString(R.string.settings_image_location_error), Snackbar.LENGTH_LONG, null);
+			}
 		}
 	}
 
@@ -920,5 +1113,32 @@ public class SettingsFragment extends PreferenceFragmentCompat implements Prefer
 		int exp = (int)(Math.log(bytes) / Math.log(unit));
 		String pre = "KMGTPE".charAt(exp - 1) + "i";
 		return String.format("%.1f %sB", bytes / Math.pow(unit, exp), pre);
+	}
+
+	public class BackupData
+	{
+		Date date;
+		String plantsPath;
+		String gardenPath;
+		String schedulePath;
+		long size = 0;
+
+		@Override public String toString()
+		{
+			boolean encrypted = plantsPath != null && plantsPath.endsWith(".dat.bak");
+			String out = "(" + (encrypted ? "encrypted " : "") + lengthToString(size) + ")";
+			if (getActivity() != null)
+			{
+				DateFormat dateFormat = android.text.format.DateFormat.getDateFormat(getActivity());
+				DateFormat timeFormat = android.text.format.DateFormat.getTimeFormat(getActivity());
+				out = dateFormat.format(date) + " " + timeFormat.format(date) + " " + out;
+			}
+			else
+			{
+				out = date + " " + out;
+			}
+
+			return out;
+		}
 	}
 }

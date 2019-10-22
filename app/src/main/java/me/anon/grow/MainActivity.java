@@ -11,7 +11,6 @@ import android.os.Bundle;
 import android.preference.PreferenceManager;
 import android.text.Html;
 import android.text.TextUtils;
-import android.view.Menu;
 import android.view.MenuItem;
 import android.view.SubMenu;
 import android.view.View;
@@ -29,7 +28,7 @@ import androidx.appcompat.app.ActionBarDrawerToggle;
 import androidx.appcompat.app.AlertDialog;
 import androidx.drawerlayout.widget.DrawerLayout;
 import me.anon.grow.fragment.GardenDialogFragment;
-import me.anon.grow.fragment.GardenFragment;
+import me.anon.grow.fragment.GardenHostFragment;
 import me.anon.grow.fragment.PlantListFragment;
 import me.anon.lib.Views;
 import me.anon.lib.event.GardenChangeEvent;
@@ -124,18 +123,24 @@ public class MainActivity extends BaseActivity implements NavigationView.OnNavig
 		{
 			if (navigation.getMenu().findItem(selectedItem).isCheckable())
 			{
-				getSupportFragmentManager().beginTransaction().remove(getSupportFragmentManager().findFragmentById(R.id.fragment_holder)).commit();
+				getSupportFragmentManager().beginTransaction().remove(getSupportFragmentManager().findFragmentById(R.id.coordinator)).commit();
 				navigation.getMenu().findItem(selectedItem).setChecked(true);
 				onNavigationItemSelected(navigation.getMenu().findItem(selectedItem));
 			}
 		}
 
-		getSupportFragmentManager().findFragmentById(R.id.fragment_holder).onActivityResult(requestCode, resultCode, data);
+		getSupportFragmentManager().findFragmentById(R.id.coordinator).onActivityResult(requestCode, resultCode, data);
 	}
 
 	@Override protected void onResume()
 	{
 		super.onResume();
+
+		if (getSupportActionBar() != null)
+		{
+			getSupportActionBar().setDisplayHomeAsUpEnabled(!MainApplication.isTablet());
+		}
+
 		showDrawerToggle();
 	}
 
@@ -239,24 +244,6 @@ public class MainActivity extends BaseActivity implements NavigationView.OnNavig
 		}
 	}
 
-	@Override public boolean onCreateOptionsMenu(Menu menu)
-	{
-		menu.add(1, 1, 1, R.string.menu_settings);
-
-		return super.onCreateOptionsMenu(menu);
-	}
-
-	@Override public boolean onOptionsItemSelected(MenuItem item)
-	{
-		if (item.getItemId() == 1)
-		{
-			Intent settings = new Intent(this, SettingsActivity.class);
-			startActivityForResult(settings, 5);
-		}
-
-		return super.onOptionsItemSelected(item);
-	}
-
 	@Override public boolean onNavigationItemSelected(MenuItem item)
 	{
 		if (item.getItemId() == R.id.website)
@@ -347,7 +334,7 @@ public class MainActivity extends BaseActivity implements NavigationView.OnNavig
 
 			navigation.getMenu().findItem(R.id.garden_menu).getSubMenu().findItem(R.id.all).setChecked(true);
 			selectedItem = item.getItemId();
-			getSupportFragmentManager().beginTransaction().replace(R.id.fragment_holder, PlantListFragment.newInstance(), TAG_FRAGMENT).commit();
+			getSupportFragmentManager().beginTransaction().replace(R.id.coordinator, PlantListFragment.newInstance(), TAG_FRAGMENT).commit();
 		}
 		else if (item.getItemId() >= 100 && item.getItemId() < Integer.MAX_VALUE)
 		{
@@ -362,7 +349,7 @@ public class MainActivity extends BaseActivity implements NavigationView.OnNavig
 			selectedItem = item.getItemId();
 			item.setChecked(true);
 			int gardenIndex = item.getItemId() - 100;
-			getSupportFragmentManager().beginTransaction().replace(R.id.fragment_holder, GardenFragment.newInstance(GardenManager.getInstance().getGardens().get(gardenIndex)), TAG_FRAGMENT).commit();
+			getSupportFragmentManager().beginTransaction().replace(R.id.coordinator, GardenHostFragment.newInstance(GardenManager.getInstance().getGardens().get(gardenIndex)), TAG_FRAGMENT).commit();
 		}
 
 		if (drawer != null)

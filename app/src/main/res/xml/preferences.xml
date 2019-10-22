@@ -60,11 +60,10 @@
 			app:summary="Default temperature unit to use, currently C"
 		/>
 
-		<SwitchPreferenceCompat
-			app:key="tds_ec"
+		<Preference
+			app:key="tds_unit"
 			app:title="@string/settings_tds_title"
-			app:summary="@string/settings_tds_summary"
-			android:defaultValue="false"
+			app:summary="Default tds unit to use, currently PPM500"
 		/>
 	</PreferenceCategory>
 
@@ -77,6 +76,17 @@
 			app:title="@string/settings_autobackup_title"
 			app:summary="@string/settings_autobackup_summary"
 			android:defaultValue="false"
+		/>
+
+		<Preference
+			android:key="image_location"
+			android:title="@string/settings_image_location_title"
+			android:summary="Currently /var/"
+		/>
+
+		<Preference
+			android:key="clear_image_cache"
+			android:title="@string/settings_image_cache_title"
 		/>
 
 		<Preference
