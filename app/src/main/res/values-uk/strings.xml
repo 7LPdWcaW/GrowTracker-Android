@@ -83,15 +83,13 @@
 	<string name="date_label">Дата</string>
 	<string name="today">Сьогодні</string>
 	<string name="length_cured">Витримано %s днів</string>
-	<string name="length_days">%s днів</string>
-	<string name="length_days_inv">Днів %s</string>
 
 	<string name="filter_waterings">Поливи</string>
 	<string name="filter_stage_changes">Зміни стадії</string>
 
 	<string name="menu_duplicate">Дублювати</string>
 	<string name="menu_copy_to">Скопіювати до</string>
-	<string name="menu_edit_action">Відредагувати дію</string>
+	<string name="menu_edit_action">Редагувати дію</string>
 	<string name="menu_delete_action">Видалити дію</string>
 
 	<string name="garden_dialog_select">Обрати рослини</string>
@@ -102,8 +100,8 @@
 	<string name="nav_settings">Налаштування</string>
 	<string name="delete">Видалити</string>
 	<string name="share">Поділитися</string>
-	<string name="menu_photo">Світлини</string>
-	<string name="last_watering_title">Останнє поливання</string>
+	<string name="menu_photo">Світлина</string>
+	<string name="last_watering_title">Останній полив</string>
 	<string name="feed_again">Полити знову</string>
 
 	<string name="plant_name_label">Назва рослини</string>
@@ -111,7 +109,7 @@
 	<string name="plant_strain_label">Сорт рослини</string>
 	<string name="plant_strain_hint">Lemon Haze</string>
 	<string name="grow_details_title">Подробиці</string>
-	<string name="plant_date_label">Посаджено</string>
+	<string name="plant_date_label">Дата посадки</string>
 	<string name="plant_medium_label">Середовище</string>
 
 	<string name="medium_details_label">Деталі середовища</string>
@@ -142,12 +140,6 @@
 	<string name="menu_delete_garden">Видалити сад</string>
 	<string name="menu_export">Експортувати</string>
 
-	<string name="germination_label">Проростання:</string>
-	<string name="vegetation_label">Вегетація:</string>
-	<string name="cutting_label">Зріз:</string>
-	<string name="flower_label">Цвітіння:</string>
-	<string name="drying_label">Сушіння:</string>
-	<string name="curing_label">Витримка (пролічка):</string>
 	<string name="total_time_label">Загальний час:</string>
 	<string name="total_waters_label">Всього поливів:</string>
 	<string name="total_flushes_label">Всього промивань:</string>
@@ -178,7 +170,7 @@
 	<string name="confirm_delete_item_message">Дійсно видалити </string>
 	<string name="confirm_delete_photos_message" formatted="true">Дійсно видалити &lt;b&gt;%s&lt;/b&gt; зображень? Їх неможливо буде відновити.</string>
 	<string name="edit">Редагувати</string>
-	<string name="stage">стадія</string>
+	<string name="stage">стадію</string>
 	<string name="set">Встановити</string>
 	<string name="change">Змінити</string>
 	<string name="add">Додати</string>
@@ -246,7 +238,7 @@
 	<string name="show_images">Показати зображення</string>
 
 	<string name="settings_default_garden">Сад для показу за замовчуванням, зараз: &lt;b&gt;%s&lt;/b&gt;</string>
-	<string name="settings_card_style">Обрати тип картки, зараз: %s</string>
+	<string name="settings_card_style">Обрати стиль галереї, зараз: %s</string>
 	<string name="settings_delivery">Одиниця вимірювання об\'єму, зараз: &lt;b&gt;%s&lt;/b&gt;</string>
 	<string name="settings_measurement">Одиниця вимірювання добрив, зараз: &lt;b&gt;%s&lt;/b&gt;</string>
 	<string name="settings_temperature">Одиниця вимірювання температури, зараз: &lt;b&gt;%s&lt;/b&gt;</string>
@@ -281,8 +273,8 @@
 	<string name="plant_summary_amount">Кількість:</string>
 	<string name="plant_summary_temp">Температура:</string>
 	<string name="plant_summary_additives">Добрива:</string>
-	<string name="plant_summary_ec">EC</string>
-	<string name="plant_summary_ppm">ppm</string>
+	<string name="plant_summary_ec">EC:</string>
+	<string name="plant_summary_ppm">ppm:</string>
 
 	<string name="select_schedule_title">Обрати розклад</string>
 	<string name="actions">Дії</string>
@@ -317,7 +309,7 @@
 	<string name="settings_readme">Read me</string>
 	<string name="settings_export">Експортувати дані</string>
 	<string name="settings_cardstyle_title">Стиль картки</string>
-	<string name="empty_plant_list">Немає рослин для відображення</string>
+	<string name="empty_plant_list">Немає рослин</string>
 	<string name="empty_schedules">Немає розкладів</string>
 	<string name="empty_photos">Немає світлин</string>
 	<string name="events_title">Попередні дії</string>
@@ -390,4 +382,42 @@
 		<item quantity="many">років</item>
 		<item quantity="other">років</item>
 	</plurals>
+
+	<string-array name="settings_card_entries">
+		<item>Оригінальний</item>
+		<item>Компактний</item>
+		<item>Розширений</item>
+	</string-array>
+
+	<string name="confirm_quit">Всі незбережені зміни будуть втрачені</string>
+	<string name="accept_quit">Вийти</string>
+	<string name="plants">Рослини</string>
+	<string name="humidity">Вологість</string>
+	<string name="current_temp">Поточна температура:</string>
+	<string name="current_humidity">Поточна вологість:</string>
+	<string name="lighting_title">Розклад освітлення</string>
+	<string name="delete_item_dialog_title">Видалити елемент?</string>
+	<string name="confirm_delete_item_message_holder">Дійсно видалити &lt;b&gt;%s&lt;/b&gt;?</string>
+	<string name="show">Показати</string>
+	<string name="hide">Сховати</string>
+	<string name="lights_on">Світло увімк.</string>
+	<string name="lights_off">Світло вимк.</string>
+
+	<string name="settings_lastbackup_summary" formatted="true">Остання резервна копія: &lt;b&gt;%s&lt;/b&gt;</string>
+	<string name="settings_image_location_summary" formatted="true">Розташування зображень, зараз &lt;b&gt;%s&lt;/b&gt;</string>
+	<string name="settings_image_location_error">Не вдалося встановити розташування зображень</string>
+	<string name="settings_image_location_title">Розташування зображень</string>
+	<string name="settings_image_cache_title">Очистити кеш зображень</string>
+	<string name="cache_cleared">Кеш зображень очищено</string>
+	<string name="import_progress_warning">Імпортую зображення, це може тривати довго...</string>
+	<string name="data_task">Завдання даних</string>
+	<string name="task_complete">Завдання виконано</string>
+	<string name="empty_actions_list">Немає дій</string>
+
+	<string name="exporting_start">Експортую журнал для %s</string>
+	<string name="exporting_complete">Експорт %s завершено</string>
+	<string name="exporting_path">%s експортовано до %s</string>
+	<string name="export_complete">Експорт завершено</string>
+	<string name="export_dialog_label">Включити зображення?</string>
+	<string name="no_data">Дані відсутні</string>
 </resources>
