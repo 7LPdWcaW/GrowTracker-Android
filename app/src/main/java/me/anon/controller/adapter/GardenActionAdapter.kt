@@ -77,7 +77,7 @@ class GardenActionAdapter : RecyclerView.Adapter<ActionHolder>()
 		{
 			is TemperatureChange -> {
 				holder.name.setText(R.string.temperature_title)
-				summary += action.temp.formatWhole() + "°" + tempUnit.label
+				summary += TempUnit.CELCIUS.to(tempUnit, action.temp).formatWhole() + "°" + tempUnit.label
 				holder.card.setCardBackgroundColor(-0x654c6225)
 			}
 
