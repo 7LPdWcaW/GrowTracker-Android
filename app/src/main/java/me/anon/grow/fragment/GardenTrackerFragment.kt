@@ -222,9 +222,7 @@ class GardenTrackerFragment : Fragment()
 		}
 
 		actions_recycler.adapter ?: let {
-			actions_recycler.adapter = GardenActionAdapter().also {
-				it.setHasStableIds(true)
-			}
+			actions_recycler.adapter = GardenActionAdapter()
 			actions_recycler.layoutManager = LinearLayoutManager(activity!!)
 		}
 
