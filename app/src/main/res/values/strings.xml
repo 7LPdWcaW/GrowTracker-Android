@@ -83,7 +83,6 @@
 	<string name="date_label">Date</string>
 	<string name="today">Today</string>
 	<string name="length_cured">Cured for %s days</string>
-	<string name="length_days_inv">Days %s</string>
 
 	<string name="filter_waterings">Waterings</string>
 	<string name="filter_stage_changes">Stage changes</string>
