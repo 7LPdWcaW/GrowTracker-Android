@@ -73,17 +73,9 @@ class ExportHelper(
 		val deliveryUnit = me.anon.lib.Unit.getSelectedDeliveryUnit(context)
 		val tempUnit = TempUnit.getSelectedTemperatureUnit(context)
 		val tdsUnit = TdsUnit.getSelectedTdsUnit(context)
+		val folderPath = Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOCUMENTS).getPath() + "/GrowTracker/growlogs/"
 
-		var folderPath = if (Environment.getExternalStorageDirectory() != null)
-		{
-			Environment.getExternalStorageDirectory().absolutePath
-		}
-		else
-		{
-			Environment.DIRECTORY_DOWNLOADS
-		}
-
-		val exportFolder = File("$folderPath/GrowLogs/")
+		val exportFolder = File(folderPath)
 		exportFolder.mkdirs()
 
 		val finalFile = File(exportFolder, "$outputName.zip")
