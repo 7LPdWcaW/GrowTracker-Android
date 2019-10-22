@@ -83,8 +83,6 @@
 	<string name="date_label">Дата</string>
 	<string name="today">Сьогодні</string>
 	<string name="length_cured">Витримано %s днів</string>
-	<string name="length_days">%s днів</string>
-	<string name="length_days_inv">днів %s</string>
 
 	<string name="filter_waterings">Поливи</string>
 	<string name="filter_stage_changes">Зміни стадії</string>
@@ -311,7 +309,7 @@
 	<string name="settings_readme">Read me</string>
 	<string name="settings_export">Експортувати дані</string>
 	<string name="settings_cardstyle_title">Стиль картки</string>
-	<string name="empty_plant_list">Немає рослин для відображення</string>
+	<string name="empty_plant_list">Немає рослин</string>
 	<string name="empty_schedules">Немає розкладів</string>
 	<string name="empty_photos">Немає світлин</string>
 	<string name="events_title">Попередні дії</string>
@@ -414,11 +412,12 @@
 	<string name="import_progress_warning">Імпортую зображення, це може тривати довго...</string>
 	<string name="data_task">Завдання даних</string>
 	<string name="task_complete">Завдання виконано</string>
-	<string name="empty_actions_list">Немає дій для показу</string>
+	<string name="empty_actions_list">Немає дій</string>
 
 	<string name="exporting_start">Експортую журнал для %s</string>
 	<string name="exporting_complete">Експорт %s завершено</string>
-	<string name="exporting_path">Експорт %s до %s</string>
+	<string name="exporting_path">%s експортовано до %s</string>
 	<string name="export_complete">Експорт завершено</string>
 	<string name="export_dialog_label">Включити зображення?</string>
+	<string name="no_data">Дані відсутні</string>
 </resources>
