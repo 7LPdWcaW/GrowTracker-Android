@@ -232,7 +232,7 @@ class Plant(
 				when (verbosity)
 				{
 					0, 1 -> ""
-					else -> " (${context.getString(R.string.length_days, "" + harvestedDays)})"
+					else -> " (${harvestedDays} ${context.resources.getQuantityString(R.plurals.time_day, harvestedDays)})"
 				}
 			)
 
