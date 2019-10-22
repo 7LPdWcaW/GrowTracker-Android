@@ -24,15 +24,18 @@ class TemperatureDialogFragment(var action: TemperatureChange? = null, val callb
 		val dialog = AlertDialog.Builder(context!!)
 		dialog.setTitle(R.string.temperature_title)
 		dialog.setPositiveButton(if (newAction) R.string.add else R.string.edit) { dialog, which ->
-			action?.let {
-				it.temp = tempUnit.to(TempUnit.CELCIUS, view.findViewById<EditText>(R.id.temperature_input).text.toString().toDouble())
+			if (view.findViewById<EditText>(R.id.temperature_input).text.toString().isNotBlank())
+			{
+				action?.let {
+					it.temp = tempUnit.to(TempUnit.CELCIUS, view.findViewById<EditText>(R.id.temperature_input).text.toString().toDouble())
 
-				if (view.findViewById<EditText>(R.id.notes).text.isNotEmpty())
-				{
-					it.notes = view.findViewById<EditText>(R.id.notes).text.toString()
+					if (view.findViewById<EditText>(R.id.notes).text.isNotEmpty())
+					{
+						it.notes = view.findViewById<EditText>(R.id.notes).text.toString()
+					}
+
+					callback(it)
 				}
-
-				callback(it)
 			}
 		}
 

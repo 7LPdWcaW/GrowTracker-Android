@@ -218,7 +218,7 @@ class Plant(
 			currentStageTime = when (verbosity)
 			{
 				0, 1 -> TimeHelper.toDays(stageTimes[stage] ?: 0).toInt().toString() + context.getString(stage.printString).substring(0, 1).toLowerCase()
-				else -> "<b>${TimeHelper.toDays(stageTimes[stage] ?: 0).toInt()} ${context.getString(R.string.length_days_inv, context.getString(stage.printString))}</b>"
+				else -> "<b>${TimeHelper.toDays(stageTimes[stage] ?: 0).toInt()} ${context.resources.getQuantityString(R.plurals.time_day, TimeHelper.toDays(stageTimes[stage] ?: 0).toInt())} ${context.getString(stage.printString)}</b>"
 			}
 		}
 
@@ -232,7 +232,7 @@ class Plant(
 				when (verbosity)
 				{
 					0, 1 -> ""
-					else -> " (${context.getString(R.string.length_days, "" + harvestedDays)})"
+					else -> " (${harvestedDays} ${context.resources.getQuantityString(R.plurals.time_day, harvestedDays)})"
 				}
 			)
 

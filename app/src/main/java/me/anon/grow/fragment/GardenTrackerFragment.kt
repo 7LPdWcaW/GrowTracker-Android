@@ -222,9 +222,7 @@ class GardenTrackerFragment : Fragment()
 		}
 
 		actions_recycler.adapter ?: let {
-			actions_recycler.adapter = GardenActionAdapter().also {
-				it.setHasStableIds(true)
-			}
+			actions_recycler.adapter = GardenActionAdapter()
 			actions_recycler.layoutManager = LinearLayoutManager(activity!!)
 		}
 
@@ -331,7 +329,7 @@ class GardenTrackerFragment : Fragment()
 		temp.notifyDataSetChanged()
 		temp.postInvalidate()
 		min_temp.text = if (tempAdditional[0] == "100") "-" else "${tempAdditional[0]}°${tempUnit.label}"
-		max_temp.text = if (tempAdditional[1] == "-100") "-" else "${tempAdditional[0]}°${tempUnit.label}"
+		max_temp.text = if (tempAdditional[1] == "-100") "-" else "${tempAdditional[1]}°${tempUnit.label}"
 		ave_temp.text = "${tempAdditional[2]}°${tempUnit.label}"
 
 		val humidityAdditional = arrayOfNulls<String>(3)
@@ -369,7 +367,7 @@ class GardenTrackerFragment : Fragment()
 		humidity.notifyDataSetChanged()
 		humidity.postInvalidate()
 		min_humidity.text = if (humidityAdditional[0] == "100") "-" else "${humidityAdditional[0]}%"
-		max_humidity.text = if (humidityAdditional[1] == "-100") "-" else "${humidityAdditional[0]}%"
+		max_humidity.text = if (humidityAdditional[1] == "-100") "-" else "${humidityAdditional[1]}%"
 		ave_humidity.text = "${humidityAdditional[2]}%"
 
 		humidity.setOnChartValueSelectedListener(object : OnChartValueSelectedListener

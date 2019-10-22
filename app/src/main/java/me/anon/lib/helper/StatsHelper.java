@@ -101,6 +101,7 @@ public class StatsHelper
 		chart.getLegend().setWordWrapEnabled(true);
 		chart.setTouchEnabled(true);
 		chart.setHighlightPerTapEnabled(true);
+		chart.setNoDataText(context.getString(R.string.no_data));
 		chart.setMarkerView(new MarkerView(context, R.layout.chart_marker)
 		{
 			@Override

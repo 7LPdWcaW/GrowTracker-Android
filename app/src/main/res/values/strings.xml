@@ -83,8 +83,6 @@
 	<string name="date_label">Date</string>
 	<string name="today">Today</string>
 	<string name="length_cured">Cured for %s days</string>
-	<string name="length_days">%s days</string>
-	<string name="length_days_inv">Days %s</string>
 
 	<string name="filter_waterings">Waterings</string>
 	<string name="filter_stage_changes">Stage changes</string>
@@ -424,4 +422,5 @@
 	<string name="exporting_path">Exported %s to %s</string>
 	<string name="export_complete">Export complete</string>
 	<string name="export_dialog_label">Include images?</string>
+	<string name="no_data">There is no data available</string>
 </resources>

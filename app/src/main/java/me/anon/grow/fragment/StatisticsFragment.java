@@ -359,7 +359,7 @@ public class StatisticsFragment extends Fragment
 			{
 				View dataView = LayoutInflater.from(getActivity()).inflate(R.layout.data_label_stub, statsContainer, false);
 				((TextView)dataView.findViewById(R.id.label)).setText(getString(value.getPrintString()) + ":");
-				((TextView)dataView.findViewById(R.id.data)).setText(getString(R.string.length_days, "" + (int)TimeHelper.toDays(stages.get(value))));
+				((TextView)dataView.findViewById(R.id.data)).setText(((int)TimeHelper.toDays(stages.get(value)) + " " + getResources().getQuantityString(R.plurals.time_day, (int)TimeHelper.toDays(stages.get(value)))));
 				statsContainer.addView(dataView);
 			}
 		}
@@ -369,7 +369,7 @@ public class StatisticsFragment extends Fragment
 
 		View growTime = LayoutInflater.from(getActivity()).inflate(R.layout.data_label_stub, statsContainer, false);
 		((TextView)growTime.findViewById(R.id.label)).setText(R.string.total_time_label);
-		((TextView)growTime.findViewById(R.id.data)).setText(getString(R.string.length_days, "" + NumberUtilsKt.formatWhole(days)));
+		((TextView)growTime.findViewById(R.id.data)).setText(NumberUtilsKt.formatWhole(days) + " " + getResources().getQuantityString(R.plurals.time_day, (int)days));
 		statsContainer.addView(growTime);
 
 		View waterCount = LayoutInflater.from(getActivity()).inflate(R.layout.data_label_stub, statsContainer, false);
@@ -384,7 +384,7 @@ public class StatisticsFragment extends Fragment
 
 		View aveWater = LayoutInflater.from(getActivity()).inflate(R.layout.data_label_stub, statsContainer, false);
 		((TextView)aveWater.findViewById(R.id.label)).setText(R.string.ave_time_between_water_label);
-		((TextView)aveWater.findViewById(R.id.data)).setText(getString(R.string.length_days, NumberUtilsKt.formatWhole(TimeHelper.toDays(waterDifference) / (double)totalWater)));
+		((TextView)aveWater.findViewById(R.id.data)).setText(NumberUtilsKt.formatWhole(TimeHelper.toDays(waterDifference) / (double)totalWater) + " " + getResources().getQuantityString(R.plurals.time_day, (int)(TimeHelper.toDays(waterDifference) / (double)totalWater)));
 		statsContainer.addView(aveWater);
 
 		stages.remove(PlantStage.HARVESTED);
