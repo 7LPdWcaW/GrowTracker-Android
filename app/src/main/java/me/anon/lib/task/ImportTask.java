@@ -79,6 +79,12 @@ public class ImportTask extends AsyncTask<Pair<String, ArrayList<Uri>>, Integer,
 		int count = 0;
 		int total = params[0].getSecond().size();
 		File to = new File(FileManager.IMAGE_PATH + params[0].getFirst() + "/");
+
+		if (!to.exists())
+		{
+			to.mkdirs();
+		}
+
 		ArrayList<String> imagesToAdd = new ArrayList<>();
 		for (Uri filePath : params[0].getSecond())
 		{
