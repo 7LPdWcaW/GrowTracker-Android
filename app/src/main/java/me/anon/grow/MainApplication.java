@@ -14,7 +14,6 @@ import android.text.TextUtils;
 import com.nostra13.universalimageloader.core.DisplayImageOptions;
 import com.nostra13.universalimageloader.core.ImageLoader;
 import com.nostra13.universalimageloader.core.ImageLoaderConfiguration;
-import com.nostra13.universalimageloader.core.assist.ImageScaleType;
 import com.nostra13.universalimageloader.core.decode.BaseImageDecoder;
 import com.nostra13.universalimageloader.core.decode.ImageDecodingInfo;
 
@@ -128,7 +127,6 @@ public class MainApplication extends Application
 			.cacheOnDisk(true)
 			.showImageOnLoading(R.drawable.ic_image)
 			.showImageOnFail(R.drawable.default_plant)
-			.imageScaleType(ImageScaleType.EXACTLY)
 			.bitmapConfig(Bitmap.Config.RGB_565)
 			.considerExifParams(true)
 			.build();
