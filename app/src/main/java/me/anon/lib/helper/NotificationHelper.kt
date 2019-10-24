@@ -8,9 +8,7 @@ import android.content.Intent
 import android.graphics.Color
 import android.os.Build
 import androidx.core.app.NotificationCompat
-import androidx.core.content.FileProvider
 import me.anon.grow.R
-import java.io.File
 
 /**
  * Helper class for sending notification
@@ -69,34 +67,5 @@ object NotificationHelper
 			.build()
 
 		notificationManager.notify(0, exportNotification)
-	}
-
-	@JvmStatic
-	public fun sendExportCompleteNotification(context: Context, title: String, message: String, file: File)
-	{
-		val notificationManager = context.getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
-
-		val openIntent = Intent(Intent.ACTION_VIEW)
-		val apkURI = FileProvider.getUriForFile(context, context.applicationContext.packageName + ".provider", file)
-		openIntent.setDataAndType(apkURI, "application/zip")
-		openIntent.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION)
-
-		val finishNotification = NotificationCompat.Builder(context, "export")
-			.setContentText(message)
-			.setTicker(title)
-			.setContentTitle(context.getString(R.string.export_complete))
-			.setContentIntent(PendingIntent.getActivity(context, 0, openIntent, PendingIntent.FLAG_CANCEL_CURRENT))
-			.setStyle(NotificationCompat.BigTextStyle()
-				.bigText(message)
-			)
-			.setSmallIcon(R.drawable.ic_stat_done)
-			.setPriority(NotificationCompat.PRIORITY_HIGH)
-			.setVisibility(NotificationCompat.VISIBILITY_PUBLIC)
-			.setAutoCancel(true)
-			.setSound(null)
-			.setProgress(0, 0, false)
-			.build()
-
-		notificationManager.notify(0, finishNotification)
 	}
 }

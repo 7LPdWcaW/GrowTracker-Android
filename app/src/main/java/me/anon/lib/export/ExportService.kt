@@ -35,8 +35,6 @@ class ExportService : Service()
 
 			ExportHelper(this, processor, includeImages)
 				.executeExport(plants, garden, title, name) { file, context ->
-					NotificationHelper.sendExportCompleteNotification(context, getString(R.string.exporting_complete, name), getString(R.string.exporting_path, name, file.absolutePath), file)
-
 					if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT)
 					{
 						PlantDetailsFragment.MediaScannerWrapper(context, file.parent, "application/zip").scan()

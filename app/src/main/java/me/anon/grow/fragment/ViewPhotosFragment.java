@@ -408,6 +408,8 @@ public class ViewPhotosFragment extends Fragment
 
 				setAdapter();
 				adapter.notifyDataSetChanged();
+
+				finishPhotoIntent();
 			}
 		}
 		else if (requestCode == 3) // choose image from gallery
@@ -420,8 +422,24 @@ public class ViewPhotosFragment extends Fragment
 				if (data.getData() != null)
 				{
 					images.add(data.getData());
+
+					try
+					{
+						if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT)
+						{
+							getActivity().grantUriPermission(getActivity().getPackageName(), data.getData(), Intent.FLAG_GRANT_READ_URI_PERMISSION);
+
+							final int takeFlags = data.getFlags() & (Intent.FLAG_GRANT_READ_URI_PERMISSION);
+							getActivity().getContentResolver().takePersistableUriPermission(data.getData(), takeFlags);
+						}
+					}
+					catch (Exception e)
+					{
+						e.printStackTrace();
+					}
 				}
-				else if (data.getClipData() != null)
+
+				if (data.getClipData() != null)
 				{
 					for (int index = 0; index < data.getClipData().getItemCount(); index++)
 					{
@@ -429,17 +447,6 @@ public class ViewPhotosFragment extends Fragment
 					}
 				}
 				images.removeAll(Collections.singleton(null));
-
-				for (Uri image : images)
-				{
-					if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT)
-					{
-						getActivity().grantUriPermission(getActivity().getPackageName(), image, Intent.FLAG_GRANT_READ_URI_PERMISSION);
-
-						final int takeFlags = data.getFlags() & (Intent.FLAG_GRANT_READ_URI_PERMISSION);
-						getActivity().getContentResolver().takePersistableUriPermission(image, takeFlags);
-					}
-				}
 
 				NotificationHelper.sendDataTaskNotification(getActivity(), getString(R.string.app_name), getString(R.string.import_progress_warning));
 				new ImportTask(getActivity(), new AsyncCallback()
@@ -451,6 +458,8 @@ public class ViewPhotosFragment extends Fragment
 							plant = PlantManager.getInstance().getPlant(plant.getId());
 							setAdapter();
 							adapter.notifyDataSetChanged();
+
+							finishPhotoIntent();
 						}
 					}
 				}).executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR, new Pair<>(plant.getId(), images));
@@ -459,33 +468,34 @@ public class ViewPhotosFragment extends Fragment
 
 		// both photo options
 		setEmpty();
-		if ((requestCode == 1 || requestCode == 3) && resultCode != Activity.RESULT_CANCELED)
+	}
+
+	private void finishPhotoIntent()
+	{
+		Intent intent = new Intent();
+		intent.putExtra("plant", plant);
+		getActivity().setIntent(intent);
+		getActivity().setResult(Activity.RESULT_OK, intent);
+
+		if (getActivity() != null)
 		{
-			Intent intent = new Intent();
-			intent.putExtra("plant", plant);
-			getActivity().setIntent(intent);
-			getActivity().setResult(Activity.RESULT_OK, intent);
-
-			if (getActivity() != null)
+			if (MainApplication.isEncrypted())
 			{
-				if (MainApplication.isEncrypted())
-				{
-					ArrayList<String> image = new ArrayList<>();
-					image.add(plant.getImages().get(plant.getImages().size() - 1));
-					new EncryptTask(getActivity()).executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR, image);
-				}
-
-				SnackBar.show(getActivity(), R.string.snackbar_image_added, R.string.snackbar_action_take_another, new SnackBarListener()
-				{
-					@Override public void onSnackBarStarted(Object o){}
-					@Override public void onSnackBarFinished(Object o){}
-
-					@Override public void onSnackBarAction(View v)
-					{
-						onFabPhotoClick(null);
-					}
-				});
+				ArrayList<String> image = new ArrayList<>();
+				image.add(plant.getImages().get(plant.getImages().size() - 1));
+				new EncryptTask(getActivity()).executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR, image);
 			}
+
+			SnackBar.show(getActivity(), R.string.snackbar_image_added, R.string.snackbar_action_take_another, new SnackBarListener()
+			{
+				@Override public void onSnackBarStarted(Object o){}
+				@Override public void onSnackBarFinished(Object o){}
+
+				@Override public void onSnackBarAction(View v)
+				{
+					onFabPhotoClick(null);
+				}
+			});
 		}
 	}
 }

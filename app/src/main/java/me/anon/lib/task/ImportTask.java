@@ -6,6 +6,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.AsyncTask;
+import android.os.Build;
 import android.os.ParcelFileDescriptor;
 
 import java.io.BufferedInputStream;
@@ -99,6 +100,15 @@ public class ImportTask extends AsyncTask<Pair<String, ArrayList<Uri>>, Integer,
 		{
 			plant.getImages().addAll(imagesToAdd);
 			PlantManager.getInstance().save();
+		}
+
+		for (Uri uri : params[0].getSecond())
+		{
+			if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT)
+			{
+				final int takeFlags = Intent.FLAG_GRANT_READ_URI_PERMISSION;
+				appContext.getContentResolver().releasePersistableUriPermission(uri, takeFlags);
+			}
 		}
 
 		MainApplication.dataTaskRunning.set(false);

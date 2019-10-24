@@ -11,6 +11,7 @@ import android.os.Environment
 import android.view.View
 import android.view.ViewGroup
 import androidx.core.app.NotificationCompat
+import androidx.core.content.FileProvider
 import com.github.mikephil.charting.charts.LineChart
 import me.anon.grow.R
 import me.anon.lib.TdsUnit
@@ -269,6 +270,30 @@ class ExportHelper(
 			override fun onPostExecute(file: File?)
 			{
 				file?.let {
+					context?.let {
+						val openIntent = Intent(Intent.ACTION_VIEW)
+						val apkURI = FileProvider.getUriForFile(context, context.applicationContext.packageName + ".provider", file)
+						openIntent.setDataAndType(apkURI, "application/zip")
+						openIntent.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION)
+
+						exportNotification = NotificationCompat.Builder(context, "export")
+							.setContentText(context.getString(R.string.exporting_path, notificationTitle, file.absolutePath))
+							.setTicker(context.getString(R.string.exporting_complete, notificationTitle))
+							.setContentTitle(context.getString(R.string.export_complete))
+							.setContentIntent(PendingIntent.getActivity(context, 0, openIntent, PendingIntent.FLAG_CANCEL_CURRENT))
+							.setStyle(NotificationCompat.BigTextStyle()
+								.bigText(context.getString(R.string.exporting_path, notificationTitle, file.absolutePath))
+							)
+							.setSmallIcon(R.drawable.ic_stat_done)
+							.setPriority(NotificationCompat.PRIORITY_HIGH)
+							.setVisibility(NotificationCompat.VISIBILITY_PUBLIC)
+							.setAutoCancel(true)
+							.setSound(null)
+							.setProgress(0, 0, false)
+
+						notificationManager.notify(0, exportNotification.build())
+					}
+
 					callback(file, appContext)
 				}
 			}
