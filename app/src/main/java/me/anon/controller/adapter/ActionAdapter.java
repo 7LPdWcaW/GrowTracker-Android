@@ -371,7 +371,7 @@ public class ActionAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>
 			else if (action instanceof NoteAction)
 			{
 				viewHolder.getName().setText(R.string.note);
-				viewHolder.getCard().setCardBackgroundColor(IntUtilsKt.resolveColor(R.attr.colorSurface, viewHolder.itemView.getContext()));
+				viewHolder.getCard().setCardBackgroundColor(IntUtilsKt.getColor(R.color.light_grey, viewHolder.itemView.getContext()));
 			}
 			else if (action instanceof StageChange)
 			{
