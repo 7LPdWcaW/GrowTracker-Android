@@ -2,124 +2,65 @@
     <body>
         <h1>Read me</h1>
         <div>
-            Welcome to grow tracker. This app was created to help record data about growing plants in order to monitor the growing conditions to help make the plants grow better, and identify potential issues during the grow process.
+            Welcome to grow tracker. This is a utility app designed for gardening and tracking various parameters of your grow.
         </div>
         <div>
-            This app was created by 7LPdWcaW of /r/microgrowery for the aid of growing Cannabis, but there is absolutely no reason why you can not use this app for other plants.
+            This app was created by <a href="https://github.com/7LPdWcaW">7LPdWcaW</a> of <a href="https://www.reddit.com/r/microgrowery">/r/microgrowery</a>. <a href="https://www.reddit.com/r/GrowUtils/">Subreddit /r/GrowUtils</a> - <a href="https://github.com/7LPdWcaW/GrowTracker-Android">Source code</a>
         </div>
 
-        <h1>About the app</h1>
+        <h1>Translations by</h1>
         <div>
-            The app uses a simple JSON structure to store all the data about the plants that can be found in '/sdcard/Android/data/me.anon.grow/files/plants.json'. All photos taken in the app are stored in '/sdcard/DCIM/GrowTracker/' in the corresponding plant name folder.
-            <br />
-            The structure is very simple. Note: date timestamps are all unix timestamps from 1/1/1970 in milliseconds. All objects in arrays are in date order, where index 0 is the oldest and index (size - 1) is the newest.
-            <br />
-            <h3>Plant object</h3>
-            <pre>
-{
-    "id": &lt;String&gt;,
-    "actions": [&lt;Action Object&gt;],
-    "images": [&lt;String&gt;],
-    "name": "test",
-    "strain": "test",
-    "clone": &lt;boolean&gt;,
-    "medium": &lt;Medium&gt;,
-    "mediumDetails": &lt;String&gt;,
-    "plantDate": 1234567890
-}
-            </pre>
-
-            <h3>Medium (ENUM)</h3>
-            <p>One of, <pre>SOIL, HYDRO</pre></p>
-
-            <h3>Plant Stage (ENUM)</h3>
-            <p>One of, <pre>PLANTED, GERMINATION, SEEDLING, CUTTING, VEGETATION, FLOWER, CURING, HARVESTED</pre></p>
-
-            <h3>Action object (feeding)</h3>
-            <p>Temperature measured in ºC</p>
-            <h3>Action object (water)</h3>
-            <p>Water action for waterings</p>
-            <pre>
-{
-    "additives": [&lt;Additive&gt;],
-    "ph": &lt;Double&gt;,
-    "ppm": &lt;Long&gt;,
-    "runoff": &lt;Double&gt;,
-    "amount": &lt;Double&gt;,
-    "date": 1431268453111,
-    "type": "Water"
-}
-            </pre>
-
-            <h3>Additive object</h3>
-            <p>Used for nutrients</p>
-            <pre>
-{
-    "description": &lt;String&gt;,
-    "amount": &lt;Double&gt;
-}
-            </pre>
-
-            <h3>Action object (other)</h3>
-            <p>Action can be one of, <pre>FIM, FLUSH, FOLIAR_FEED, LST, LOLLIPOP, PESTICIDE_APPLICATION, TOP, TRANSPLANTED, TRIM</pre></p>
-            <pre>
-{
-    "action": &lt;Action&gt;,
-    "date": 1431258118968,
-    "type": "Action"
-}
-            </pre>
-            <h3>Stage change</h3>
-            <pre>
-{
-    "newStage": &lt;Plant Stage&gt;,
-    "date": 1431258118968,
-    "type": "StageChange"
-}
-            </pre>
-
-            <h3>Note</h3>
-            <pre>
-{
-    "notes": &lt;String&gt;,
-    "date": 1431258118968,
-    "type": "Note"
-}
-            </pre>
-
-            <p>Image object is a simple string path to an image. Each image is named by the timestamp when it was taken, in milliseconds.</p>
+            <ul>
+                <li>Alex (Noxmiles) - de</li>
+                <li>Basti B (Weltenesche) - de</li>
+                <li>EmmanuelMess - es</li>
+                <li>Maxtille - fr</li>
+                <li>Patrick B (EukalyptusX) - de</li>
+                <li>Sascha Zenglein (szenglein) - de</li>
+                <li>Vexatos - de</li>
+                <li>W Q (williq) - de</li>
+                <li>9YbQiuEohUu1 - ru/uk</li>
+            </ul>
         </div>
 
         <h1>Open source libraries</h1>
         <div>
-            <b><a href="https://github.com/google/gson">Google GSON</a></b>
+            <b><a href="https://github.com/prolificinteractive/material-calendarview/blob/master/LICENSE">material-calendarview</a></b>
             <br />
             <pre>
-Copyright (c) 2008-2009 Google Inc.
+Copyright (c) 2018 Prolific Interactive
 
-Licensed under the Apache License, Version 2.0 (the "License");
-you may not use this file except in compliance with the License.
-You may obtain a copy of the License at
+Permission is hereby granted, free of charge, to any person obtaining a copy
+of this software and associated documentation files (the "Software"), to deal
+in the Software without restriction, including without limitation the rights
+to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+copies of the Software, and to permit persons to whom the Software is
+furnished to do so, subject to the following conditions:
 
-  http://www.apache.org/licenses/LICENSE-2.0
+The above copyright notice and this permission notice shall be included in
+all copies or substantial portions of the Software.
 
-Unless required by applicable law or agreed to in writing, software
-distributed under the License is distributed on an "AS IS" BASIS,
-WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-See the License for the specific language governing permissions and
-limitations under the License.
+THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
+THE SOFTWARE.
             </pre>
         </div>
 
         <div>
-            <b><a href="https://github.com/nispok/snackbar">SnackBar</a></b>
+            <b><a href="https://github.com/JakeWharton/ThreeTenABP">ThreeTen Android</a></b>
             <br />
             <pre>
+Copyright (C) 2015 Jake Wharton
+
 Licensed under the Apache License, Version 2.0 (the "License");
 you may not use this file except in compliance with the License.
 You may obtain a copy of the License at
 
-  http://www.apache.org/licenses/LICENSE-2.0
+   http://www.apache.org/licenses/LICENSE-2.0
 
 Unless required by applicable law or agreed to in writing, software
 distributed under the License is distributed on an "AS IS" BASIS,
@@ -185,6 +126,77 @@ limitations under the License.
 
         <div>
             <b><a href="http://www.lingala.net/zip4j">Zip4j</a></b>
+            <br />
+            <pre>
+Licensed under the Apache License, Version 2.0 (the "License");
+you may not use this file except in compliance with the License.
+You may obtain a copy of the License at
+
+  http://www.apache.org/licenses/LICENSE-2.0
+
+Unless required by applicable law or agreed to in writing, software
+distributed under the License is distributed on an "AS IS" BASIS,
+WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+See the License for the specific language governing permissions and
+limitations under the License.
+            </pre>
+        </div>
+
+        <div>
+            <b><a href="https://github.com/google/flexbox-layout">Flexbox Layout</a></b>
+            <br />
+            <pre>
+Licensed under the Apache License, Version 2.0 (the "License");
+you may not use this file except in compliance with the License.
+You may obtain a copy of the License at
+
+  http://www.apache.org/licenses/LICENSE-2.0
+
+Unless required by applicable law or agreed to in writing, software
+distributed under the License is distributed on an "AS IS" BASIS,
+WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+See the License for the specific language governing permissions and
+limitations under the License.
+            </pre>
+        </div>
+
+        <div>
+            <b><a href="https://github.com/EsotericSoftware/kryo">Kryo</a></b>
+            <br />
+            <pre>
+Copyright (c) 2008-2018, Nathan Sweet All rights reserved.
+
+Redistribution and use in source and binary forms, with or without modification, are permitted provided that the following conditions are met:
+
+Redistributions of source code must retain the above copyright notice, this list of conditions and the following disclaimer.
+Redistributions in binary form must reproduce the above copyright notice, this list of conditions and the following disclaimer in the documentation and/or other materials provided with the distribution.
+Neither the name of Esoteric Software nor the names of its contributors may be used to endorse or promote products derived from this software without specific prior written permission.
+THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT HOLDER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+            </pre>
+        </div>
+
+        <div>
+                <b><a href="https://github.com/square/moshi">Moshi</a></b>
+            <br />
+            <pre>
+Copyright 2015 Square, Inc.
+
+Licensed under the Apache License, Version 2.0 (the "License");
+you may not use this file except in compliance with the License.
+You may obtain a copy of the License at
+
+   http://www.apache.org/licenses/LICENSE-2.0
+
+Unless required by applicable law or agreed to in writing, software
+distributed under the License is distributed on an "AS IS" BASIS,
+WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+See the License for the specific language governing permissions and
+limitations under the License.
+            </pre>
+        </div>
+
+                <div>
+                <b><a href="https://github.com/square/otto">Otto</a></b>
             <br />
             <pre>
 Licensed under the Apache License, Version 2.0 (the "License");
