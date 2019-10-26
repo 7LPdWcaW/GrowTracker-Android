@@ -2,6 +2,7 @@ package me.anon.view;
 
 import android.app.Activity;
 import android.content.Intent;
+import android.graphics.drawable.ColorDrawable;
 import android.text.Html;
 import android.text.TextUtils;
 import android.view.Gravity;
@@ -19,6 +20,7 @@ import java.util.ArrayList;
 
 import androidx.appcompat.widget.PopupMenu;
 import androidx.recyclerview.widget.RecyclerView;
+import me.anon.grow.BuildConfig;
 import me.anon.grow.MainApplication;
 import me.anon.grow.PlantDetailsActivity;
 import me.anon.grow.R;
@@ -81,23 +83,36 @@ public class PlantHolder extends RecyclerView.ViewHolder
 
 		summary.setText(Html.fromHtml(TextUtils.join("<br />", summaryList)));
 
-		if (plant.getImages() != null && plant.getImages().size() > 0)
+		if (BuildConfig.DISCRETE)
 		{
-			String imagePath = "file://" + plant.getImages().get(plant.getImages().size() - 1);
-
-			if (image.getTag() == null || !image.getTag().toString().equalsIgnoreCase(imagePath))
+			View parent = null;
+			if ((parent = itemView.findViewById(R.id.original_parent)) != null)
 			{
-				ImageLoader.getInstance().cancelDisplayTask(image);
+				parent.setBackgroundColor(itemView.getResources().getColor(R.color.green));
 			}
 
-			image.setTag(imagePath);
-
-			ImageAware imageAware = new ImageViewAware(image, true);
-			ImageLoader.getInstance().displayImage("file://" + plant.getImages().get(plant.getImages().size() - 1), imageAware, MainApplication.getDisplayImageOptions());
+			image.setVisibility(View.GONE);
 		}
 		else
 		{
-			image.setImageResource(R.drawable.default_plant);
+			if (plant.getImages() != null && plant.getImages().size() > 0)
+			{
+				String imagePath = "file://" + plant.getImages().get(plant.getImages().size() - 1);
+
+				if (image.getTag() == null || !image.getTag().toString().equalsIgnoreCase(imagePath))
+				{
+					ImageLoader.getInstance().cancelDisplayTask(image);
+				}
+
+				image.setTag(imagePath);
+
+				ImageAware imageAware = new ImageViewAware(image, true);
+				ImageLoader.getInstance().displayImage("file://" + plant.getImages().get(plant.getImages().size() - 1), imageAware, MainApplication.getDisplayImageOptions());
+			}
+			else
+			{
+				image.setImageResource(R.drawable.default_plant);
+			}
 		}
 
 		itemView.setOnClickListener(new View.OnClickListener()

@@ -38,6 +38,7 @@ import androidx.recyclerview.widget.RecyclerView;
 import kotlin.Pair;
 import me.anon.controller.adapter.ImageAdapter;
 import me.anon.controller.adapter.SectionedGridRecyclerViewAdapter;
+import me.anon.controller.provider.PlantWidgetProvider;
 import me.anon.grow.BuildConfig;
 import me.anon.grow.MainApplication;
 import me.anon.grow.R;
@@ -494,6 +495,8 @@ public class ViewPhotosFragment extends Fragment
 		intent.putExtra("plant", plant);
 		getActivity().setIntent(intent);
 		getActivity().setResult(Activity.RESULT_OK, intent);
+
+		PlantWidgetProvider.triggerUpdateAll(getView().getContext());
 
 		if (getActivity() != null)
 		{

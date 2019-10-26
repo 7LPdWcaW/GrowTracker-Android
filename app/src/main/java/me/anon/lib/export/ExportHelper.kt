@@ -234,7 +234,7 @@ class ExportHelper(
 
 					// Copy images to dir
 					plant?.images?.let {
-						it.forEach{ filePath ->
+						it.forEach { filePath ->
 							try
 							{
 								val currentImage = File(filePath)
@@ -280,7 +280,7 @@ class ExportHelper(
 							.setContentText(context.getString(R.string.exporting_path, notificationTitle, file.absolutePath))
 							.setTicker(context.getString(R.string.exporting_complete, notificationTitle))
 							.setContentTitle(context.getString(R.string.export_complete))
-							.setContentIntent(PendingIntent.getActivity(context, 0, openIntent, PendingIntent.FLAG_CANCEL_CURRENT))
+							.setContentIntent(PendingIntent.getActivity(context, 0, openIntent, PendingIntent.FLAG_UPDATE_CURRENT))
 							.setStyle(NotificationCompat.BigTextStyle()
 								.bigText(context.getString(R.string.exporting_path, notificationTitle, file.absolutePath))
 							)

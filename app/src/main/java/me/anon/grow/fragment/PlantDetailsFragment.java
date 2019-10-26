@@ -271,7 +271,14 @@ public class PlantDetailsFragment extends Fragment
 		{
 			lastFeeding.setVisibility(View.VISIBLE);
 
-			lastFeedingSummary.setText(Html.fromHtml(lastWater.getSummary(getActivity())));
+			String summary = lastWater.getSummary(getActivity());
+			if (!TextUtils.isEmpty(lastWater.getNotes()))
+			{
+				summary += "<br /><br />";
+				summary += lastWater.getNotes();
+			}
+
+			lastFeedingSummary.setText(Html.fromHtml(summary));
 
 			DateFormat dateFormat = android.text.format.DateFormat.getDateFormat(getActivity());
 			DateFormat timeFormat = android.text.format.DateFormat.getTimeFormat(getActivity());
@@ -700,6 +707,8 @@ public class PlantDetailsFragment extends Fragment
 		intent.putExtra("plant", plant);
 		getActivity().setIntent(intent);
 		getActivity().setResult(Activity.RESULT_OK, intent);
+
+		PlantWidgetProvider.triggerUpdateAll(getView().getContext());
 
 		if (getActivity() != null)
 		{
