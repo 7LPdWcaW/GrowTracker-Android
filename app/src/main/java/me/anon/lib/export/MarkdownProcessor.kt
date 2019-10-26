@@ -235,13 +235,13 @@ class MarkdownProcessor : ExportProcessor()
 
 		tdsNames.forEach { tds ->
 			documentBuilder.append("### ${tds.enStr}").append(NEW_LINE + NEW_LINE)
-			documentBuilder.append("![${tds.enStr} Chart](${tds.enStr}.jpg)").append(NEW_LINE + NEW_LINE)
 
 			val tdsArr = arrayOfNulls<String>(3)
 			StatsHelper.setTdsData(plant, null, null, tdsArr, tds)
 			documentBuilder.append(" - **Minimum input ${tds.enStr}**: ").append(tdsArr[0]).append(tds.label).append(NEW_LINE)
 			documentBuilder.append(" - **Maximum input ${tds.enStr}**: ").append(tdsArr[1]).append(tds.label).append(NEW_LINE)
 			documentBuilder.append(" - **Average input ${tds.enStr}**: ").append(tdsArr[2]).append(tds.label).append(NEW_LINE + NEW_LINE)
+			documentBuilder.append("![${tds.enStr} Chart](${tds.enStr}.jpg)").append(NEW_LINE + NEW_LINE)
 		}
 
 		val aveTemp = arrayOfNulls<String>(3)
