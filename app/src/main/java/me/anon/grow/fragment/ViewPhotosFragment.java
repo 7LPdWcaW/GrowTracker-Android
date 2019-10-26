@@ -153,7 +153,25 @@ public class ViewPhotosFragment extends Fragment
 
 					@Override public boolean onActionItemClicked(final ActionMode mode, MenuItem item)
 					{
-						if (item.getItemId() == R.id.delete)
+						if (item.getItemId() == R.id.select_all)
+						{
+							if (adapter.getSelected().size() > 0)
+							{
+								adapter.getSelected().clear();
+								adapter.notifyDataSetChanged();
+							}
+							else
+							{
+								for (int index = 0; index < adapter.getItemCount(); index++)
+								{
+									adapter.getSelected().add("" + index);
+								}
+								adapter.notifyDataSetChanged();
+							}
+
+							action.setTitle(getString(R.string.selected_len, adapter.getSelected().size()));
+						}
+						else if (item.getItemId() == R.id.delete)
 						{
 							new AlertDialog.Builder(getActivity())
 								.setTitle(R.string.confirm_title)
