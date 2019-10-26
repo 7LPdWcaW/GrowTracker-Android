@@ -97,6 +97,8 @@ android {
 			storePassword = System.getenv("keystore_password")
 			keyAlias = System.getenv("keystore_alias")
 			keyPassword = System.getenv("keystore_alias_password")
+			v2SigningEnabled = true
+			v1SigningEnabled = true
 		}
 	}
 
