@@ -1,0 +1,409 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<resources>
+	<string name="version">Versión %s</string>
+	<string name="menu_settings">Configuración</string>
+
+	<!-- Garden Plant list title "garden name plants" -->
+	<string name="list_title">%s plantas</string>
+	<!-- All plants list -->
+	<string name="all_list_title">Todas las plantas</string>
+	<!-- All/everything -->
+	<string name="all">Todo</string>
+	<string name="snackbar_action_add">Acciones añadidas</string>
+	<string name="snackbar_note_add">Notas añadidas</string>
+	<string name="snackbar_watering_add">Regado añadido</string>
+	<string name="snackbar_garden_deleted">Jardín eliminado</string>
+
+	<string name="dialog_garden_delete_body">Está seguro que quiere eliminar el jardín &lt;b&gt;\"%s\"&lt;/b&gt;? Eliminarlo no eliminará las plantas.</string>
+	<string name="action_feed">Regar</string>
+	<string name="action_action">Acción</string>
+
+	<string name="widget_encrypt_error">El widget no está disponible cuando la encriptación está activa</string>
+	<string name="new_plant_title">Añadir nueva planta</string>
+	<string name="plant_details_title">Detalles de la planta</string>
+	<string name="statistics_title">Estadísticas de la planta</string>
+	<!-- select from camera -->
+	<string name="photo_option_camera">De la camara</string>
+	<!-- select from gallery -->
+	<string name="photo_option_gallery">Desde galeria</string>
+	<string name="dialog_option_title">Seleccionar una opción</string>
+	<string name="dialog_select_picture_title">Seleccionar una imagen</string>
+	<string name="snackbar_action_apply">Aplicar a otra planta</string>
+	<string name="dialog_select_plant_title">Seleccionar planta</string>
+	<string name="snackbar_image_added">Imagen añadida</string>
+	<string name="snackbar_action_take_another">Tomar otra</string>
+
+	<string name="nav_feeding_schedule">Cronogramas</string>
+	<string name="schedule_details_title">Programar Detalles</string>
+	<string name="schedule_date_title">Programar Fecha</string>
+	<string name="schedule_name">Nombre</string>
+	<string name="schedule_name_hint">Alimentación liviana</string>
+	<string name="schedule_description">Descripción</string>
+	<!-- an example of a feeding schedule -->
+	<string name="schedule_description_hint">Alimentación liviana con desagote cada 2 semanas</string>
+
+	<string name="schedules_new_feeding">+ Nueva Alimentación</string>
+	<string name="schedules_new_schedule">+ Nuevo Cronograma</string>
+	<string name="new_additive">+ Nuevo Aditivo</string>
+	<string name="additives">Aditivos</string>
+	<string name="additive">Aditivo</string>
+	<string name="from_date">Desde fecha</string>
+	<string name="from_stage">De etapa</string>
+	<string name="to_date">A fecha</string>
+	<string name="to_stage">A etapa</string>
+	<string name="populate_from_schedule">Rellenar de cronograma</string>
+	<string name="populate_from_previous">Rellenar de anterior</string>
+	<string name="confirm_title">¿Estas seguro?</string>
+	<string name="confirm_copy_schedule">¿copiar el cronograma seleccionado?</string>
+	<string name="confirm_delete_schedule">¿Eliminar el calendario seleccionado?</string>
+	<string name="schedule_copied">Cronograma copiado</string>
+	<string name="schedule_deleted">Programar eliminado</string>
+	<string name="undo">Deshacer</string>
+	<string name="feeding_schedules_title">Cronograma de alimentación</string>
+	<string name="feeding_schedule_title">Cronograma de alimentación</string>
+	<string name="update_dialog_title">App actualizada</string>
+	<string name="update_dialog_message" formatted="true">La app se actualizó a la versión %s</string>
+	<string name="update_dialog_view_changes_button">Cambios de vista</string>
+	<string name="update_dialog_dismiss_button">Ignorar</string>
+
+	<!-- Feeding {plant name} -->
+	<string name="feeding_single_title" formatted="true">Regando %s</string>
+	<string name="feeding_multiple_title">Regando múltiples plantas</string>
+
+	<string name="action_dialog_notes">Notas</string>
+	<string name="water_details_title">Detalles sobre el agua</string>
+	<string name="water_ph_label">PH del agua</string>
+	<string name="ppm_label">PPM</string>
+	<string name="runoff_label">Pérdida</string>
+	<string name="amount_label" formatted="true">Cantidad (%s)</string>
+	<string name="temp_label" formatted="true">Temperatura (º%s)</string>
+	<string name="date_and_time_header">Fecha y hora</string>
+	<string name="date_now">Ahora</string>
+	<string name="date_label">Fecha</string>
+	<string name="today">Hoy</string>
+	<string name="length_cured">Curado por %s días</string>
+
+	<string name="filter_waterings">Regadas</string>
+	<string name="filter_stage_changes">Cambios de etapa</string>
+
+	<string name="menu_duplicate">Duplicar</string>
+	<string name="menu_copy_to">Copiar a</string>
+	<string name="menu_edit_action">Editar accion</string>
+	<string name="menu_delete_action">Eliminar acción</string>
+
+	<string name="garden_dialog_select">Seleccionar plantas</string>
+	<string name="nav_gardens">Jardines</string>
+	<string name="nav_all_plants">Todas las plantas</string>
+	<string name="nav_new_garden">+ Nuevo jardin</string>
+	<string name="nav_additional">Adicional</string>
+	<string name="nav_settings">Configuración</string>
+	<string name="delete">Eliminar</string>
+	<string name="share">Compartir</string>
+	<string name="menu_photo">Foto</string>
+	<string name="last_watering_title">Ultimo riego</string>
+	<string name="feed_again">Regar de nuevo</string>
+
+	<string name="plant_name_label">Nombre de planta</string>
+	<string name="new_plant_hint">Nueva planta</string>
+	<string name="plant_strain_label">Especie de planta</string>
+	<string name="plant_strain_hint">Colotois pennaria</string>
+	<string name="grow_details_title">Detalles de crecimiento</string>
+	<string name="plant_date_label">Fecha de la planta</string>
+	<string name="plant_medium_label">Medio</string>
+
+	<string name="medium_details_label">Detalles del medio de crecimiento</string>
+	<!-- Example of medium mix -->
+	<string name="medium_details_hint">Mezcla de Tierra y Perlita al 50/50</string>
+	<string name="from_clone_label">De clon?</string>
+	<string name="stage_details_title">Detalles de la etapa</string>
+	<string name="plant_stage_label">Etapa de la planta</string>
+	<string name="view_photos">Ver fotos</string>
+	<string name="view_history">Ver historia</string>
+	<string name="view_statistics">Ver estadisticas</string>
+	<string name="view_photos_short">Fotos</string>
+	<string name="view_history_short">Historia</string>
+	<string name="view_statistics_short">Estadisticas</string>
+	<string name="filter">Filtrar</string>
+	<string name="planted">Plantado</string>
+	<string name="germination">Germinación</string>
+	<string name="cutting">Esqueje</string>
+	<string name="vegetation">Vegetación</string>
+	<string name="flowering">Florecimiento</string>
+	<string name="drying">Secado</string>
+	<string name="curing">Curando</string>
+	<string name="harvested">Cosechado</string>
+	<!-- example "harvested 2 days ago" -->
+	<string name="harvested_ago" formatted="true">Cosechado hace %s</string>
+	<string name="menu_export_garden">Exportar jardín</string>
+	<string name="menu_edit_garden">Editar jardín</string>
+	<string name="menu_delete_garden">Eliminar jardín</string>
+	<string name="menu_export">Exportar</string>
+
+	<string name="total_time_label">Tiempo total:</string>
+	<string name="total_waters_label">Regadas totales:</string>
+	<string name="total_flushes_label">Desagotes en total:</string>
+	<string name="ave_time_between_water_label">Tiempo promedio entre regados:</string>
+	<string name="filter_additives">Filtrar aditivos</string>
+	<string name="ph_title">PH</string>
+
+	<string name="min">Mín:</string>
+	<string name="max">Máx:</string>
+	<string name="ave">Promedio:</string>
+	<string name="temperature_title">Temperatura</string>
+	<string name="general_title">General</string>
+	<string name="failed_to_load_plant">Falló al cargar la planta</string>
+	<string name="action_fim">Mierda, se me olvidó (FIM)</string>
+	<string name="action_flush">Desagotar</string>
+	<string name="action_foliar_feed">Alimentación foliar</string>
+	<string name="action_lst">Entrenamiento de bajo stress</string>
+	<string name="action_lolipop">Defoliación extrema durante floración</string>
+	<string name="action_pesticide_application">Aplicación de Pesticidas</string>
+	<string name="action_topped">Llenado</string>
+	<string name="action_transplanted">Transplantado</string>
+	<string name="action_trim">Recortar</string>
+	<string name="action_tuck">Meter debajo de follaje preexistente</string>
+
+	<string name="watered">Regado</string>
+	<string name="note">Nota</string>
+	<string name="delete_event_dialog_title">Eliminar este evento?</string>
+	<string name="confirm_delete_item_message">Está seguro que quiere eliminar</string>
+	<string name="confirm_delete_photos_message" formatted="true">¿Está seguro que quiere eliminar &lt;b&gt;%s&lt;/b&gt; imágenes? No podrá recuperarlas.</string>
+	<string name="edit">Editar</string>
+	<string name="stage">etapa</string>
+	<string name="set">Establecer</string>
+	<string name="change">Cambiar</string>
+	<string name="add">Añadir</string>
+	<string name="cancel">Cancelar</string>
+	<string name="action">acción</string>
+	<string name="ok">Ok</string>
+	<string name="field_required">Campo se necesita</string>
+	<string name="encrypt_passphrase_error">Error - contraseña equivocada</string>
+	<string name="edit_feeding">Modificar regado</string>
+	<string name="added">añadido</string>
+	<string name="action_duplicated">Acción duplicada</string>
+	<string name="multiple_plants">múltiples plantas</string>
+	<string name="added_to">Acción añadida a</string>
+	<string name="note_updated">Notas actualizadas</string>
+	<string name="updated">actualizado</string>
+	<string name="stage_updated">Etapa actualizada</string>
+	<string name="event_deleted">Evento eliminado</string>
+	<string name="done">Hecho</string>
+	<string name="garden">Jardín</string>
+	<string name="select_all">Seleccionar Todo</string>
+	<string name="select_none">No Seleccionar Nada</string>
+	<string name="accept">Aceptar</string>
+	<string name="enable">Habilitar</string>
+	<string name="decline">Declinar</string>
+	<string name="seedling_label">Plántula:</string>
+	<string name="seedling">Plántula</string>
+
+	<string name="crash_title">Oh Oh</string>
+	<string name="crash_message" formatted="true">Parece que se rompió algo la ultima vez que usó la app. Estaría bien si enviamos reportes anónimos? Estos reportes se enviarán a &lt;a href=\"https://github.com/7LPdWcaW/GrowTracker-Android/issues\"&gt;github.com/7LPdWcaW/GrowTracker-Android/issues&lt;/a&gt;, ninguna información personal se incluirá. Opcionalmente, puede crear reportes en &lt;a href=\"https://reddit.com/r/growutils\"&gt;reddit.com/r/growutils&lt;/a&gt; manualmente si así lo desea. Reportes se guardan en &lt;i&gt;%s&lt;i&gt;</string>
+	<string name="yes">Sí</string>
+	<string name="no">No</string>
+
+	<string name="passphrase_title">Ingrese su contraseña</string>
+	<string name="add_passphrase_title">Ingrese una contraseña</string>
+	<string name="readd_passphrase_title">Reingrese su contraseña</string>
+	<string name="passphrase_error">Error - las contraseñas no coinciden</string>
+
+	<string name="fatal_error">Ha habido un error fatal guardando los datos, por favor cree una copia de seguridad </string>
+	<string name="taken">Tomado</string>
+	<string name="ago" formatted="true">Hace %s</string>
+	<string name="watered_ago" formatted="true">Regado hace &lt;b&gt;%s&lt;/b&gt;</string>
+	<string name="last_watered_ago" formatted="true">Regado por ultima vez hace &lt;b&gt;%s&lt;/b&gt;</string>
+	<string name="planted_ago" formatted="true">Plantado hace &lt;b&gt;%s&lt;/b&gt;</string>
+
+	<string name="permission_summary">Se necesita acceso al almacenamiento externo para guardar fotos. Ninguna otra información sera usada por esta app</string>
+
+	<string name="waterings_added">Regadas añadidas</string>
+	<string name="delete_plant_message">Está a punto de eliminar &lt;b&gt;%s&lt;/b&gt; y todas las imágenes asociadas, está seguro? Esta acción no se puede deshacer.</string>
+	<string name="delete_plant_progress">Eliminando planta</string>
+
+	<string name="plant_duplicated">Planta duplicada</string>
+	<string name="open">Abrir</string>
+
+	<string name="export_progress">Exportando registro de crecimiento...</string>
+	<string name="garden_export">Exportando registro de crecimiento de las plantas en el jardín...</string>
+	<string name="action_added" formatted="true">%s añadido</string>
+	<string name="name_input_error">Nombre no puede estar vacio</string>
+	<string name="exporting" formatted="true">Exportando %s</string>
+
+	<string name="soil">Tierra</string>
+	<string name="hydroponics">Hidroponicos</string>
+	<string name="coco_coir">bonote de coco</string>
+	<string name="aeroponics">Aeroponicos</string>
+	<string name="hide_images">Esconder imagenes</string>
+	<string name="show_images">Mostrar imagenes</string>
+
+	<string name="settings_default_garden">El jardín por defecto se mostrará al abrir, actualmente es: &lt;b&gt;%s&lt;/b&gt;</string>
+	<string name="settings_card_style">Seleccionar estilo de tarjeta, actualmente: %s</string>
+	<string name="settings_delivery">Unidad a usar por defecto para entrega, actualmente: &lt;b&gt;%s&lt;/b&gt;</string>
+	<string name="settings_measurement">Unidad a usar por defecto para aditivos, actualmente: &lt;b&gt;%s&lt;/b&gt;</string>
+	<string name="settings_temperature">Unidad a usar por defecto para temperatura, actualmente: &lt;b&gt;%s&lt;/b&gt;</string>
+	<string name="settings_backup_size" formatted="true">Actualmente: &lt;b&gt;%sMiB&lt;/b&gt; / Usando &lt;b&gt;%s&lt;/b&gt;</string>
+	<string name="failsafe_message">Provee esta contraseña durante la desencriptación para prevenir que la información se cargue</string>
+	<string name="warning">Alerta</string>
+	<string name="encryption_message">Esta es una forma básica de encriptación AES, basado en una frase contraseña. Esto no es una defensa garantizada contra organismos de justicia.</string>
+	<string name="backup_enable_toast">Copia de seguridad habilitada, copias se guardaran en /sdcard/backups/GrowTracker/</string>
+	<string name="restore_complete" formatted="true">Restauración a %s completada </string>
+	<string name="restore_error" formatted="true">No se pudo restaurar desde la copia de seguridad %s. El archivo puede ser %s</string>
+	<string name="encrypted">encriptado</string>
+	<string name="unencrypted">desencriptado</string>
+
+	<string name="select_measurement_title">Seleccionar medida</string>
+	<string name="select_temperature_title">Seleccionar temperatura</string>
+	<string name="select_garden_title">Seleccionar jardín</string>
+	<string name="select_backup_title">Seleccionar copia de seguridad</string>
+	<string name="backup_restore_error">Debe tener el modo encriptado de la app activo, con la misma contraseña, para poder restaurar esta copia de seguridad</string>
+
+	<string name="backed_up_to">Copia de seguridad hecha a</string>
+	<string name="no_backups">No hay copias de seguridad desde donde restaurar</string>
+	<string name="all_none">Todos/Ninguno</string>
+
+	<string name="stat_input_ph">PH de entrada</string>
+	<string name="stat_runoff_ph">Perdida de PH</string>
+	<string name="stat_average_ph">PH promedio</string>
+
+	<string name="photos_title">Fotos de la planta</string>
+
+	<string name="plant_summary_ph">PH de entrada:</string>
+	<string name="plant_summary_out_ph">PH de salida:</string>
+	<string name="plant_summary_amount">Cantidad:</string>
+	<string name="plant_summary_temp">Temperatura:</string>
+	<string name="plant_summary_additives">Aditivos:</string>
+	<string name="plant_summary_ec">EC:</string>
+	<string name="plant_summary_ppm">PPM:</string>
+
+	<string name="select_schedule_title">Seleccionar cronograma</string>
+	<string name="actions">Acciones</string>
+	<string name="settings_dark_title">Forzar tema oscuro</string>
+	<string name="settings_dark_summary">Fuerza la app a usar el tema oscuro, sin importar cualquier configuración del sistema</string>
+	<string name="settings_harvest_title">Esconder cosechadas</string>
+	<string name="settings_harvest_summary">Esconder todas las plantas cosechadas</string>
+	<string name="settings_reverse_title">Invertir el orden de las plantas</string>
+	<string name="settings_reverse_summary">Muestra las plantas en un orden invertido. (Requiere el reinicio de la app)</string>
+	<string name="settings_garden_title">Jardín por defecto</string>
+
+	<string name="settings_units">Unidades</string>
+	<string name="settings_delivery_title">Unidad de entrega</string>
+	<string name="settings_measurement_title">Unidades de medida</string>
+	<string name="settings_temp_title">Unidades de temperatura</string>
+	<string name="settings_tds_title">Unidad para total de sólidos disueltos (TDS)</string>
+	<string name="settings_tds_summary" formatted="true">Unidad a usar por defecto para el total de sólidos disueltos (TDS), actualmente: &lt;b&gt;%s&lt;/b&gt;</string>
+	<string name="settings_data_management">Manejo de datos</string>
+	<string name="settings_autobackup_title">Copia de seguridad automatica</string>
+	<string name="settings_autobackup_summary">Copia de seguridad automática cada 24 horas</string>
+	<string name="settings_backupnow">Crear copia de seguridad ahora</string>
+	<string name="settings_backupsize_title">Limite de tamaño para la copia de seguridad</string>
+	<string name="settings_backupsize_hint">Tamaño en MiB</string>
+	<string name="settings_backupsize_dialogtitle">Limite  de tamaño de la copia de seguridad (MiB)</string>
+	<string name="settings_restore_backup">Restaurar desde la copia de seguridad</string>
+	<string name="settings_encrypt_title">Encriptar la información</string>
+	<string name="settings_encrypt_summary">Añade un bloqueo por pin a la app, y encripta todos los datos y las imagenes </string>
+	<string name="settings_failsafe_title">Fallo seguro</string>
+	<string name="settings_failsafe_summary">Establecer contraseña de un compartimiento encriptado falso para prevenir acceso a la información</string>
+	<string name="settings_addons">Complementos</string>
+	<string name="settings_about">Acerca de</string>
+	<string name="settings_readme">Leerme</string>
+	<string name="settings_export">Exportar datos</string>
+	<string name="settings_cardstyle_title">Estilo de tarjetas</string>
+	<string name="empty_plant_list">No hay plantas que mostrar</string>
+	<string name="empty_schedules">No hay cronogramas</string>
+	<string name="empty_photos">No hay imágenes que mostrar</string>
+	<string name="events_title">Acciones pasadas</string>
+	<string name="show_hide_calendar">Mostrar/esconder calendario</string>
+	<!-- "1 selected" -->
+	<string name="selected_len" formatted="true">%d Seleccionado</string>
+	<string name="translations_title">Gracias a las siguientes personas:</string>
+	<string name="translations_by">Traducciones por</string>
+	<string name="help_translate">Ayuda a traducir</string>
+	<string name="encrypt_progress_warning">Encriptando información e imágenes, esto puede tomar un rato…</string>
+	<string name="decrypt_progress_warning">Desencriptando información e imágenes, esto puede tomar un rato…</string>
+
+	<!-- now = 1 second -->
+	<string name="now_abbr">1s</string>
+	<string name="second_abbr">s</string>
+	<string name="minute_abbr">min</string>
+	<string name="hour_abbr">horas</string>
+	<string name="day_abbr">dias</string>
+	<string name="week_abbr">sem.</string>
+	<string name="month_abbr">meses</string>
+	<string name="year_abbr">años</string>
+
+	<string name="view_details_short">Detalles</string>
+
+	<plurals name="time_second">
+		<item quantity="one">segundo</item>
+		<item quantity="other">segundos</item>
+	</plurals>
+
+	<plurals name="time_minute">
+		<item quantity="one">minuto</item>
+		<item quantity="other">minutos</item>
+	</plurals>
+
+	<plurals name="time_hour">
+		<item quantity="one">hora</item>
+		<item quantity="other">horas</item>
+	</plurals>
+
+	<plurals name="time_day">
+		<item quantity="one">día</item>
+		<item quantity="other">días</item>
+	</plurals>
+
+	<plurals name="time_week">
+		<item quantity="one">semana</item>
+		<item quantity="other">semanas</item>
+	</plurals>
+
+	<plurals name="time_month">
+		<item quantity="one">mes</item>
+		<item quantity="other">meses</item>
+	</plurals>
+
+	<plurals name="time_year">
+		<item quantity="one">año</item>
+		<item quantity="other">años</item>
+	</plurals>
+
+	<string-array name="settings_card_entries">
+		<item>Original</item>
+		<item>Compacto</item>
+		<item>Extremo</item>
+	</string-array>
+
+	<string name="confirm_quit">Perderá cualquier cambio no guardado</string>
+	<string name="accept_quit">Salir</string>
+	<string name="plants">Plantas</string>
+	<string name="humidity">Humedad</string>
+	<string name="current_temp">Temperatura Actual:</string>
+	<string name="current_humidity">Humedad actual:</string>
+	<string name="lighting_title">Cronograma de Iluminación</string>
+	<string name="delete_item_dialog_title">¿Eliminar este ítem?</string>
+	<string name="confirm_delete_item_message_holder">¿Está seguro que quiere eliminar &lt;b&gt;%s&lt;/b&gt;?</string>
+	<string name="show">Mostrar</string>
+	<string name="hide">Esconder</string>
+	<string name="lights_on">Luces prendidas</string>
+	<string name="lights_off">Luces apagadas</string>
+
+	<string name="settings_lastbackup_summary" formatted="true">Ultima copia de seguridad: &lt;b&gt;%s&lt;/b&gt;</string>
+	<string name="settings_image_location_summary" formatted="true">Ubicación para guardar imágenes, actualmente &lt;b&gt;%s&lt;/b&gt;</string>
+	<string name="settings_image_location_error">Se falló en establecer la ubicación para imágenes</string>
+	<string name="settings_image_location_title">Ubicación de las imágenes guardadas</string>
+	<string name="settings_image_cache_title">Limpiar el cache de imágenes</string>
+	<string name="cache_cleared">Disco de imágenes y caché de memoria vaciados</string>
+	<string name="import_progress_warning">Importando imágenes, esto puede tomar un ratito…</string>
+	<string name="data_task">Tarea de información</string>
+	<string name="task_complete">Tarea completada</string>
+	<string name="empty_actions_list">No hay acciones que mostrar</string>
+
+	<string name="exporting_start">Exportando registro de crecimiento de %s</string>
+	<string name="exporting_complete">Exportación de %s completada</string>
+	<string name="exporting_path">Exportado %s a %s</string>
+	<string name="export_complete">Exportado por completo</string>
+	<string name="export_dialog_label">¿Incluir imágenes?</string>
+	<string name="no_data">No hay ninguna información disponible</string>
+</resources>
