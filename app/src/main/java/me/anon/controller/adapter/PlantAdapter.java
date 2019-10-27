@@ -1,27 +1,17 @@
 package me.anon.controller.adapter;
 
 import android.content.Context;
-import android.content.Intent;
-import android.support.annotation.NonNull;
-import android.support.v7.widget.RecyclerView;
-import android.text.Html;
 import android.view.LayoutInflater;
-import android.view.View;
 import android.view.ViewGroup;
-
-import com.nostra13.universalimageloader.core.ImageLoader;
-import com.nostra13.universalimageloader.core.imageaware.ImageAware;
-import com.nostra13.universalimageloader.core.imageaware.ImageViewAware;
 
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
-import me.anon.grow.MainApplication;
-import me.anon.grow.PlantDetailsActivity;
+import androidx.preference.PreferenceManager;
+import androidx.recyclerview.widget.RecyclerView;
 import me.anon.grow.R;
 import me.anon.lib.Unit;
-import me.anon.lib.manager.PlantManager;
 import me.anon.model.Plant;
 import me.anon.view.PlantHolder;
 
@@ -36,8 +26,8 @@ public class PlantAdapter extends RecyclerView.Adapter implements ItemTouchHelpe
 {
 	private List<Plant> plants = new ArrayList<>();
 	private List<String> showOnly = null;
-	private Context context;
 	private Unit measureUnit, deliveryUnit;
+	private int cardStyle = 2;
 
 	public void setShowOnly(List<String> showOnly)
 	{
@@ -66,10 +56,17 @@ public class PlantAdapter extends RecyclerView.Adapter implements ItemTouchHelpe
 
 	public PlantAdapter(Context context)
 	{
-		this.context = context;
-
 		measureUnit = Unit.getSelectedMeasurementUnit(context);
 		deliveryUnit = Unit.getSelectedDeliveryUnit(context);
+
+		try
+		{
+			cardStyle = Integer.parseInt(PreferenceManager.getDefaultSharedPreferences(context).getString("card_style", "1")) + 1;
+		}
+		catch (NumberFormatException e)
+		{
+			cardStyle = 1;
+		}
 	}
 
 	public void setPlants(List<Plant> plants)
@@ -87,7 +84,22 @@ public class PlantAdapter extends RecyclerView.Adapter implements ItemTouchHelpe
 			return 0;
 		}
 
-		return 1;
+		return cardStyle;
+	}
+
+	public int getFilteredCount()
+	{
+		int total = 0;
+		for (int position = 0; position < plants.size(); position++)
+		{
+			Plant plant = plants.get(position);
+			if (showOnly == null || showOnly.contains(plant.getId()))
+			{
+				total++;
+			}
+		}
+
+		return total;
 	}
 
 	@Override public RecyclerView.ViewHolder onCreateViewHolder(ViewGroup viewGroup, int typeView)
@@ -97,9 +109,15 @@ public class PlantAdapter extends RecyclerView.Adapter implements ItemTouchHelpe
 			case 0:
 				return new RecyclerView.ViewHolder(LayoutInflater.from(viewGroup.getContext()).inflate(R.layout.empty, viewGroup, false)){};
 
-			default:
 			case 1:
-				return new PlantHolder(LayoutInflater.from(viewGroup.getContext()).inflate(R.layout.plant_item, viewGroup, false));
+				return new PlantHolder(LayoutInflater.from(viewGroup.getContext()).inflate(R.layout.plant_compact_item, viewGroup, false));
+
+			case 3:
+				return new PlantHolder(LayoutInflater.from(viewGroup.getContext()).inflate(R.layout.plant_extreme_item, viewGroup, false));
+
+			default:
+			case 2:
+				return new PlantHolder(LayoutInflater.from(viewGroup.getContext()).inflate(R.layout.plant_original_item, viewGroup, false));
 		}
 	}
 
@@ -107,41 +125,9 @@ public class PlantAdapter extends RecyclerView.Adapter implements ItemTouchHelpe
 	{
 		final Plant plant = plants.get(position);
 
-		if (getItemViewType(position) == 1)
+		if (viewHolder instanceof PlantHolder)
 		{
-			((PlantHolder)viewHolder).getName().setText(plant.getName());
-
-			String summary = plant.generateLongSummary(((PlantHolder)viewHolder).itemView.getContext());
-			((PlantHolder)viewHolder).getSummary().setText(Html.fromHtml(summary));
-
-			if (plant.getImages() != null && plant.getImages().size() > 0)
-			{
-				String imagePath = "file://" + plant.getImages().get(plant.getImages().size() - 1);
-
-				if (((PlantHolder)viewHolder).getImage().getTag() == null || !((PlantHolder)viewHolder).getImage().getTag().toString().equalsIgnoreCase(imagePath))
-				{
-					ImageLoader.getInstance().cancelDisplayTask(((PlantHolder)viewHolder).getImage());
-				}
-
-				((PlantHolder)viewHolder).getImage().setTag(imagePath);
-
-				ImageAware imageAware = new ImageViewAware(((PlantHolder)viewHolder).getImage(), true);
-				ImageLoader.getInstance().displayImage("file://" + plant.getImages().get(plant.getImages().size() - 1), imageAware, MainApplication.getDisplayImageOptions());
-			}
-			else
-			{
-				((PlantHolder)viewHolder).getImage().setImageResource(R.drawable.default_plant);
-			}
-
-			viewHolder.itemView.setOnClickListener(new View.OnClickListener()
-			{
-				@Override public void onClick(View v)
-				{
-					Intent details = new Intent(v.getContext(), PlantDetailsActivity.class);
-					details.putExtra("plant_index", PlantManager.getInstance().getPlants().indexOf(plant));
-					v.getContext().startActivity(details);
-				}
-			});
+			((PlantHolder)viewHolder).bind(plant, cardStyle);
 		}
 	}
 

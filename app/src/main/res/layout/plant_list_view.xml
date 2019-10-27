@@ -2,66 +2,16 @@
 
 <FrameLayout
 	xmlns:android="http://schemas.android.com/apk/res/android"
+	xmlns:app="http://schemas.android.com/apk/res-auto"
 	android:layout_width="match_parent"
 	android:layout_height="match_parent"
 >
-	<LinearLayout
+	<androidx.constraintlayout.widget.ConstraintLayout
 		android:layout_width="match_parent"
 		android:layout_height="match_parent"
 		android:orientation="vertical"
 	>
-		<LinearLayout
-			android:layout_width="match_parent"
-			android:layout_height="wrap_content"
-			android:id="@+id/action_container"
-			android:orientation="horizontal"
-			android:background="#ffffff"
-			android:elevation="4dp"
-			android:divider="@drawable/vertical_full_divider"
-			android:showDividers="middle"
-			android:dividerPadding="8dp"
-			android:padding="0dp"
-			android:visibility="gone"
-			style="@style/PaperCard"
-		>
-			<TextView
-				android:layout_width="0dp"
-				android:layout_height="match_parent"
-				android:id="@+id/feeding"
-				android:layout_weight="1"
-				android:layout_gravity="center_vertical"
-				android:gravity="center"
-				android:paddingBottom="16dp"
-				android:paddingTop="16dp"
-				android:text="Feed"
-			/>
-
-			<TextView
-				android:layout_width="0dp"
-				android:layout_height="match_parent"
-				android:id="@+id/action"
-				android:layout_weight="1"
-				android:layout_gravity="center_vertical"
-				android:gravity="center"
-				android:paddingBottom="16dp"
-				android:paddingTop="16dp"
-				android:text="Action"
-			/>
-
-			<TextView
-				android:layout_width="0dp"
-				android:layout_height="match_parent"
-				android:id="@+id/note"
-				android:layout_weight="1"
-				android:layout_gravity="center_vertical"
-				android:gravity="center"
-				android:paddingBottom="16dp"
-				android:paddingTop="16dp"
-				android:text="Note"
-			/>
-		</LinearLayout>
-
-		<android.support.v7.widget.RecyclerView
+		<androidx.recyclerview.widget.RecyclerView
 			android:layout_width="match_parent"
 			android:layout_height="match_parent"
 			android:id="@+id/recycler_view"
@@ -70,40 +20,48 @@
 			android:paddingTop="8dp"
 			android:paddingBottom="88dp"
 			android:clipToPadding="false"
+			android:visibility="gone"
+			app:layout_constraintTop_toTopOf="parent"
 		/>
-	</LinearLayout>
 
-	<FrameLayout
+		<LinearLayout
+			android:layout_width="wrap_content"
+			android:layout_height="wrap_content"
+			android:id="@+id/empty"
+			android:layout_gravity="center"
+			android:orientation="vertical"
+			app:layout_constraintTop_toTopOf="parent"
+			app:layout_constraintBottom_toBottomOf="parent"
+			app:layout_constraintStart_toStartOf="parent"
+			app:layout_constraintEnd_toEndOf="parent"
+		>
+			<ImageView
+				android:layout_width="256dp"
+				android:layout_height="256dp"
+				app:srcCompat="@drawable/ic_flower"
+				app:tint="?android:textColorTertiary"
+				android:alpha="0.2"
+			/>
+
+			<TextView
+				android:layout_width="wrap_content"
+				android:layout_height="wrap_content"
+				android:gravity="center_horizontal"
+				android:text="@string/empty_plant_list"
+				android:textColor="?android:textColorTertiary"
+				android:layout_marginTop="12dp"
+				android:layout_gravity="center_horizontal"
+			/>
+		</LinearLayout>
+	</androidx.constraintlayout.widget.ConstraintLayout>
+
+	<com.google.android.material.floatingactionbutton.FloatingActionButton
 		android:layout_width="wrap_content"
 		android:layout_height="wrap_content"
 		android:id="@+id/fab_add"
-		android:layout_gravity="bottom|right"
+		app:backgroundTint="#E10A19"
+		app:srcCompat="@drawable/ic_floting_add"
+		android:layout_gravity="bottom|end"
 		android:layout_margin="16dp"
-	>
-		<ImageView
-			android:layout_width="57dp"
-			android:layout_height="56dp"
-			android:layout_marginTop="3dp"
-			android:src="@drawable/fab_button_shadow"
-			android:layout_gravity="center_horizontal"
-		/>
-
-		<FrameLayout
-			android:layout_width="wrap_content"
-			android:layout_height="wrap_content"
-		>
-			<ImageView
-				android:layout_width="56dp"
-				android:layout_height="56dp"
-				android:background="@drawable/add_button_bg"
-			/>
-
-			<ImageView
-				android:layout_width="24dp"
-				android:layout_height="24dp"
-				android:layout_gravity="center"
-				android:src="@drawable/ic_floting_add"
-			/>
-		</FrameLayout>
-	</FrameLayout>
+	/>
 </FrameLayout>

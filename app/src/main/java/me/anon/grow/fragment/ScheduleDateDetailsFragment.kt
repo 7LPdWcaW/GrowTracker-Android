@@ -1,7 +1,7 @@
 package me.anon.grow.fragment
 
 import android.app.Activity
-import android.app.Fragment
+import android.content.Intent
 import android.os.Bundle
 import android.text.Editable
 import android.text.TextUtils
@@ -12,43 +12,47 @@ import android.view.ViewGroup
 import android.widget.AdapterView
 import android.widget.ArrayAdapter
 import android.widget.TextView
+import androidx.fragment.app.Fragment
 import kotlinx.android.synthetic.main.schedule_date_details_view.*
 import me.anon.grow.R
 import me.anon.lib.Unit
 import me.anon.lib.ext.toSafeInt
-import me.anon.lib.manager.ScheduleManager
 import me.anon.model.Additive
 import me.anon.model.FeedingScheduleDate
 import me.anon.model.PlantStage
+import kotlin.math.floor
 
 class ScheduleDateDetailsFragment : Fragment()
 {
 	companion object
 	{
-		fun newInstance(scheduleIndex: Int = -1, dateIndex: Int = -1): ScheduleDateDetailsFragment
+		fun newInstance(bundle: Bundle): ScheduleDateDetailsFragment
 		{
 			return ScheduleDateDetailsFragment().apply {
-				this.scheduleIndex = scheduleIndex
-				this.dateIndex = dateIndex
+				arguments = bundle
 			}
 		}
 	}
 
-	private var scheduleIndex: Int = -1
-	private var dateIndex: Int = -1
+	private var date: FeedingScheduleDate? = null
 	private var additives: ArrayList<Additive> = arrayListOf()
 	private val selectedMeasurementUnit: Unit by lazy { Unit.getSelectedMeasurementUnit(activity); }
 	private val selectedDeliveryUnit: Unit by lazy { Unit.getSelectedDeliveryUnit(activity); }
 
-	override fun onCreateView(inflater: LayoutInflater?, container: ViewGroup?, savedInstanceState: Bundle?): View
-		= inflater?.inflate(R.layout.schedule_date_details_view, container, false) ?: View(activity)
+	override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View?
+		= inflater.inflate(R.layout.schedule_date_details_view, container, false) ?: View(activity)
 
 	override fun onActivityCreated(savedInstanceState: Bundle?)
 	{
 		super.onActivityCreated(savedInstanceState)
 
-		to_stage.adapter = ArrayAdapter<String>(activity, android.R.layout.simple_list_item_1, PlantStage.values().map { it.printString }.toTypedArray())
-		from_stage.adapter = ArrayAdapter<String>(activity, android.R.layout.simple_list_item_1, PlantStage.values().map { it.printString }.toTypedArray())
+		(savedInstanceState ?: arguments).let {
+			date = it?.get("schedule_date") as FeedingScheduleDate?
+			additives = (it?.get("additives") as ArrayList<Additive>?) ?: date?.additives ?: arrayListOf<Additive>()
+		}
+
+		to_stage.adapter = ArrayAdapter<String>(activity!!, android.R.layout.simple_list_item_1, PlantStage.values().map { getString(it.printString) }.toTypedArray())
+		from_stage.adapter = ArrayAdapter<String>(activity!!, android.R.layout.simple_list_item_1, PlantStage.values().map { getString(it.printString) }.toTypedArray())
 
 		from_stage.onItemSelectedListener = object: AdapterView.OnItemSelectedListener
 		{
@@ -56,6 +60,7 @@ class ScheduleDateDetailsFragment : Fragment()
 
 			override fun onItemSelected(parent: AdapterView<*>?, view: View?, position: Int, id: Long)
 			{
+				from_stage.tag = PlantStage.values()[position]
 				if (to_stage.selectedItemPosition < position)
 				{
 					to_stage.setSelection(position)
@@ -69,6 +74,7 @@ class ScheduleDateDetailsFragment : Fragment()
 
 			override fun onItemSelected(parent: AdapterView<*>?, view: View?, position: Int, id: Long)
 			{
+				to_stage.tag = PlantStage.values()[position]
 				if (from_stage.selectedItemPosition > position)
 				{
 					from_stage.setSelection(position)
@@ -87,16 +93,15 @@ class ScheduleDateDetailsFragment : Fragment()
 			}
 		})
 
-		if (dateIndex > -1)
-		{
-			ScheduleManager.instance.schedules[scheduleIndex].schedules[dateIndex].apply {
-				from_stage.setSelection(this.stageRange[0].ordinal)
-				to_stage.setSelection(this.stageRange[1].ordinal)
-				from_date.setText(this.dateRange[0].toString())
-				to_date.setText(this.dateRange[1].toString())
+		date?.let {
+			from_stage.setSelection(it.stageRange[0].ordinal)
+			from_stage.tag = it.stageRange[0]
+			to_stage.setSelection(it.stageRange[1].ordinal)
+			to_stage.tag = it.stageRange[1]
+			from_date.setText(it.dateRange[0].toString())
+			to_date.setText(it.dateRange[1].toString())
 
-				this@ScheduleDateDetailsFragment.additives = additives
-			}
+			this@ScheduleDateDetailsFragment.additives = additives
 		}
 
 		populateAdditives()
@@ -110,38 +115,45 @@ class ScheduleDateDetailsFragment : Fragment()
 
 			val fromDate = from_date.text.toString().toSafeInt()
 			val toDate = if (to_date.text.isEmpty()) fromDate else to_date.text.toString().toSafeInt()
-			val fromStage = PlantStage.valueOfPrintString(from_stage.selectedItem as String)!!
-			val toStage = PlantStage.valueOfPrintString(to_stage.selectedItem as String)!!
+			val fromStage = from_stage.tag as PlantStage?
+			val toStage = to_stage.tag as PlantStage?
 
-			if (toDate < fromDate && fromStage.ordinal ?: -1 == toStage.ordinal ?: -1)
+			if (toDate < fromDate && fromStage?.ordinal ?: -1 == toStage?.ordinal ?: -1)
 			{
 				to_date.error = "Date can not be before from date"
 				return@setOnClickListener
 			}
 
-			when (dateIndex)
+			val date = when (date)
 			{
-				-1 -> {
-					val date: FeedingScheduleDate = FeedingScheduleDate(
-						dateRange = arrayOf<Int>(fromDate, if (to_date.text.isEmpty()) fromDate else toDate),
-						stageRange = arrayOf<PlantStage>(fromStage, toStage),
+				null -> {
+					FeedingScheduleDate(
+						dateRange = arrayOf(fromDate, if (to_date.text.isEmpty()) fromDate else toDate),
+						stageRange = arrayOf(fromStage!!, toStage!!),
 						additives = additives
 					)
-
-					ScheduleManager.instance.schedules[scheduleIndex].schedules.add(date)
 				}
 				else -> {
-					ScheduleManager.instance.schedules[scheduleIndex].schedules[dateIndex].apply {
-						this.dateRange = arrayOf<Int>(fromDate, if (to_date.text.isEmpty()) fromDate else toDate)
-						this.stageRange = arrayOf<PlantStage>(fromStage, toStage)
-						this.additives = this@ScheduleDateDetailsFragment.additives
+					date!!.apply {
+						dateRange = arrayOf(fromDate, if (to_date.text.isEmpty()) fromDate else toDate)
+						stageRange = arrayOf(fromStage!!, toStage!!)
+						additives = this@ScheduleDateDetailsFragment.additives
 					}
 				}
 			}
 
-			activity.setResult(Activity.RESULT_OK)
-			activity.finish()
+			activity?.setResult(Activity.RESULT_OK, Intent().also {
+				it.putExtra("schedule_date", date)
+			})
+			activity?.finish()
 		}
+	}
+
+	override fun onSaveInstanceState(outState: Bundle)
+	{
+		outState.putParcelable("schedule_date", date)
+		outState.putParcelableArrayList("additives", additives)
+		super.onSaveInstanceState(outState)
 	}
 
 	private fun populateAdditives()
@@ -150,8 +162,8 @@ class ScheduleDateDetailsFragment : Fragment()
 		{
 			if (additive.amount == null) continue
 
-			val converted = Unit.ML.to(selectedMeasurementUnit, additive.amount)
-			val amountStr = if (converted == Math.floor(converted)) converted.toInt().toString() else converted.toString()
+			val converted = Unit.ML.to(selectedMeasurementUnit, additive.amount!!)
+			val amountStr = if (converted == floor(converted)) converted.toInt().toString() else converted.toString()
 
 			val additiveStub = LayoutInflater.from(activity).inflate(R.layout.additive_stub, additive_container, false)
 			(additiveStub as TextView).text = "${additive.description}   -   $amountStr${selectedMeasurementUnit.label}/${selectedDeliveryUnit.label}"
@@ -166,9 +178,9 @@ class ScheduleDateDetailsFragment : Fragment()
 
 	private fun onNewAdditiveClick(view: View)
 	{
-		val currentFocus = activity.currentFocus
+		val currentFocus = activity?.currentFocus
 		val currentTag = view.tag
-		val fm = fragmentManager
+		val fm = childFragmentManager
 		val addAdditiveDialogFragment = AddAdditiveDialogFragment(if (view.tag is Additive) view.tag as Additive else null)
 		addAdditiveDialogFragment.setOnAdditiveSelectedListener(object : AddAdditiveDialogFragment.OnAdditiveSelectedListener
 		{
@@ -180,7 +192,7 @@ class ScheduleDateDetailsFragment : Fragment()
 				}
 
 				var converted = Unit.ML.to(selectedMeasurementUnit, additive.amount!!)
-				var amountStr = if (converted == Math.floor(converted)) converted.toInt().toString() else converted.toString()
+				var amountStr = if (converted == floor(converted)) converted.toInt().toString() else converted.toString()
 
 				val additiveStub = LayoutInflater.from(activity).inflate(R.layout.additive_stub, additive_container, false)
 				(additiveStub as TextView).text = "${additive.description}   -   $amountStr${selectedMeasurementUnit.label}/${selectedDeliveryUnit.label}"
@@ -205,7 +217,7 @@ class ScheduleDateDetailsFragment : Fragment()
 						if (tag === currentTag)
 						{
 							converted = Unit.ML.to(selectedMeasurementUnit, additive.amount!!)
-							amountStr = if (converted == Math.floor(converted)) converted.toInt().toString() else converted.toString()
+							amountStr = if (converted == floor(converted)) converted.toInt().toString() else converted.toString()
 
 							additives[childIndex] = additive
 

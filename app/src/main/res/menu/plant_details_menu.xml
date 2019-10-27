@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<menu
+	xmlns:android="http://schemas.android.com/apk/res/android"
+>
+	<item
+		android:id="@+id/view_details"
+		android:icon="@drawable/ic_stat_name"
+		android:title="@string/view_details_short"
+	/>
+
+	<item
+		android:id="@+id/view_photos"
+		android:icon="@drawable/ic_floating_photo"
+		android:title="@string/view_photos_short"
+	/>
+
+	<item
+		android:id="@+id/view_history"
+		android:icon="@drawable/ic_calendar"
+		android:title="@string/view_history_short"
+	/>
+
+	<item
+		android:id="@+id/view_statistics"
+		android:icon="@drawable/ic_stats"
+		android:title="@string/view_statistics_short"
+	/>
+</menu>

@@ -59,7 +59,7 @@ public class ExceptionHandler
 			e.printStackTrace();
 		}
 
-		filesPath = Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DCIM).getPath() + "/GrowTracker/crashes/";
+		filesPath = Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOCUMENTS).getPath() + "/GrowTracker/crashes/";
 		new File(filesPath).mkdirs();
 
 		new Thread()

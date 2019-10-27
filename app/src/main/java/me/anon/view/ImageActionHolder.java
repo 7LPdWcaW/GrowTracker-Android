@@ -1,11 +1,9 @@
 package me.anon.view;
 
 import android.content.Intent;
-import android.support.v4.view.ViewCompat;
-import android.support.v7.widget.CardView;
-import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
+import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
 
@@ -17,11 +15,12 @@ import com.nostra13.universalimageloader.core.imageaware.ImageViewAware;
 import java.util.ArrayList;
 import java.util.Collections;
 
+import androidx.core.view.ViewCompat;
+import androidx.recyclerview.widget.RecyclerView;
 import me.anon.controller.adapter.ActionAdapter;
 import me.anon.grow.MainApplication;
 import me.anon.grow.R;
 import me.anon.grow.fragment.ImageLightboxDialog;
-import me.anon.lib.manager.PlantManager;
 
 /**
  * // TODO: Add class description
@@ -62,8 +61,8 @@ public class ImageActionHolder extends RecyclerView.ViewHolder
 		flexboxLayout.removeAllViews();
 		for (final String imageUrl : imageUrls)
 		{
-			CardView view = (CardView)LayoutInflater.from(itemView.getContext()).inflate(R.layout.action_image_item, flexboxLayout, false);
-			final ImageView image = (ImageView)view.getChildAt(0);
+			ViewGroup view = (ViewGroup)LayoutInflater.from(itemView.getContext()).inflate(R.layout.action_image_item, flexboxLayout, false);
+			final ImageView image = (ImageView)view.findViewById(R.id.image);
 
 			ImageLoader.getInstance().cancelDisplayTask(image);
 
@@ -81,7 +80,7 @@ public class ImageActionHolder extends RecyclerView.ViewHolder
 
 			flexboxLayout.addView(view);
 
-			image.setOnClickListener(new View.OnClickListener()
+			view.setOnClickListener(new View.OnClickListener()
 			{
 				@Override public void onClick(View v)
 				{
@@ -90,7 +89,7 @@ public class ImageActionHolder extends RecyclerView.ViewHolder
 					Collections.reverse(images);
 
 					Intent details = new Intent(v.getContext(), ImageLightboxDialog.class);
-					details.putExtra("plant_index", PlantManager.getInstance().getPlants().indexOf(adapter.getPlant()));
+					details.putExtra("plant", adapter.getPlant());
 					details.putExtra("images", (String[])images.toArray(new String[images.size()]));
 					details.putExtra("image_position", images.indexOf(imageUrl));
 					v.getContext().startActivity(details);

@@ -6,36 +6,45 @@
 	android:layout_width="match_parent"
 	android:layout_height="match_parent"
 	android:fitsSystemWindows="false"
-	android:orientation="vertical"
+	android:orientation="horizontal"
 >
-	<android.support.v7.widget.Toolbar
-		android:layout_width="match_parent"
-		android:layout_height="wrap_content"
-		android:id="@+id/toolbar"
-		android:minHeight="@dimen/abc_action_bar_default_height_material"
-		android:background="?attr/colorPrimary"
+	<com.google.android.material.navigation.NavigationView
+		android:layout_width="@dimen/navigation_width"
+		android:layout_height="match_parent"
+		android:id="@+id/navigation_view"
+		android:layout_gravity="start"
 		android:fitsSystemWindows="true"
-		app:theme="@style/Toolbar"
-		app:popupTheme="@style/ThemeOverlay.AppCompat.Light"
 	/>
 
 	<LinearLayout
 		android:layout_width="match_parent"
 		android:layout_height="match_parent"
-		android:orientation="horizontal"
+		android:orientation="vertical"
 	>
-		<android.support.design.widget.NavigationView
-			android:layout_width="240dp"
-			android:layout_height="match_parent"
-			android:id="@+id/navigation_view"
-			android:layout_gravity="start"
-			android:fitsSystemWindows="true"
-		/>
+		<com.google.android.material.appbar.AppBarLayout
+			android:layout_width="match_parent"
+			android:layout_height="wrap_content"
+			android:id="@+id/toolbar_layout"
+			app:elevation="4dp"
+			android:elevation="4dp"
+			app:drawerArrowStyle="@null"
+			android:theme="@style/Toolbar"
+			style="@style/Widget.MaterialComponents.ActionBar.Primary"
+		>
+			<com.google.android.material.appbar.MaterialToolbar
+				android:layout_width="match_parent"
+				android:layout_height="wrap_content"
+				android:id="@+id/toolbar"
+				android:fitsSystemWindows="true"
+				app:drawerArrowStyle="@null"
+				app:popupTheme="@style/ThemeOverlay.AppCompat.DayNight"
+			/>
+		</com.google.android.material.appbar.AppBarLayout>
 
-		<FrameLayout
+		<androidx.coordinatorlayout.widget.CoordinatorLayout
 			android:layout_width="match_parent"
 			android:layout_height="match_parent"
-			android:id="@+id/fragment_holder"
+			android:id="@+id/coordinator"
 		/>
 	</LinearLayout>
 </LinearLayout>

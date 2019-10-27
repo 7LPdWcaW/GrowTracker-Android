@@ -1,7 +1,7 @@
 package me.anon.lib;
 
 import android.content.Context;
-import android.support.annotation.WorkerThread;
+import androidx.annotation.WorkerThread;
 
 import java.io.File;
 

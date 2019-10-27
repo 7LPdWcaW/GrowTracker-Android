@@ -2,7 +2,6 @@ package me.anon.grow;
 
 import android.Manifest;
 import android.app.Activity;
-import android.app.AlertDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
@@ -10,21 +9,26 @@ import android.content.pm.PackageManager;
 import android.net.Uri;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
-import android.support.annotation.Nullable;
-import android.support.design.widget.NavigationView;
-import android.support.v4.widget.DrawerLayout;
-import android.support.v7.app.ActionBarDrawerToggle;
-import android.support.v7.widget.Toolbar;
-import android.view.Menu;
+import android.text.Html;
+import android.text.TextUtils;
 import android.view.MenuItem;
+import android.view.SubMenu;
 import android.view.View;
 import android.view.inputmethod.InputMethodManager;
 
+import com.google.android.material.appbar.AppBarLayout;
+import com.google.android.material.appbar.MaterialToolbar;
+import com.google.android.material.navigation.NavigationView;
 import com.squareup.otto.Subscribe;
 
 import java.util.ArrayList;
 
+import androidx.annotation.Nullable;
+import androidx.appcompat.app.ActionBarDrawerToggle;
+import androidx.appcompat.app.AlertDialog;
+import androidx.drawerlayout.widget.DrawerLayout;
 import me.anon.grow.fragment.GardenDialogFragment;
+import me.anon.grow.fragment.GardenHostFragment;
 import me.anon.grow.fragment.PlantListFragment;
 import me.anon.lib.Views;
 import me.anon.lib.event.GardenChangeEvent;
@@ -45,7 +49,8 @@ public class MainActivity extends BaseActivity implements NavigationView.OnNavig
 {
 	private static final String TAG_FRAGMENT = "current_fragment";
 
-	@Views.InjectView(R.id.toolbar) private Toolbar toolbar;
+	@Views.InjectView(R.id.toolbar) private MaterialToolbar toolbar;
+	@Views.InjectView(R.id.toolbar_layout) public AppBarLayout toolbarLayout;
 	@Nullable @Views.InjectView(R.id.drawer_layout) private DrawerLayout drawer;
 	@Views.InjectView(R.id.navigation_view) private NavigationView navigation;
 	private int selectedItem = 0;
@@ -59,9 +64,15 @@ public class MainActivity extends BaseActivity implements NavigationView.OnNavig
 	{
 		super.onCreate(savedInstanceState);
 
+		if (MainApplication.isPanic)
+		{
+			Intent settings = new Intent(this, SettingsActivity.class);
+			startActivity(settings);
+		}
+
 		if (!PermissionHelper.hasPermission(this, Manifest.permission.WRITE_EXTERNAL_STORAGE))
 		{
-			PermissionHelper.doPermissionCheck(this, Manifest.permission.WRITE_EXTERNAL_STORAGE, 1, "Access to external storage is to display photos in the app. No other data is read.");
+			PermissionHelper.doPermissionCheck(this, Manifest.permission.WRITE_EXTERNAL_STORAGE, 1, getString(R.string.permission_summary));
 		}
 
 		setContentView(R.layout.main_view);
@@ -69,7 +80,6 @@ public class MainActivity extends BaseActivity implements NavigationView.OnNavig
 
 		setSupportActionBar(toolbar);
 		setNavigationView();
-		showDrawerToggle();
 		showUpdateDialog();
 
 		if (savedInstanceState == null)
@@ -99,11 +109,39 @@ public class MainActivity extends BaseActivity implements NavigationView.OnNavig
 			if (navigation.getMenu().findItem(selectedItem).isCheckable())
 			{
 				navigation.getMenu().findItem(selectedItem).setChecked(true);
-				onNavigationItemSelected(navigation.getMenu().findItem(selectedItem));
 			}
 		}
 
 		BusHelper.getInstance().register(this);
+	}
+
+	@Override protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data)
+	{
+		super.onActivityResult(requestCode, resultCode, data);
+
+		if (resultCode == Activity.RESULT_OK && data.hasExtra("refresh"))
+		{
+			if (navigation.getMenu().findItem(selectedItem).isCheckable())
+			{
+				getSupportFragmentManager().beginTransaction().remove(getSupportFragmentManager().findFragmentById(R.id.coordinator)).commit();
+				navigation.getMenu().findItem(selectedItem).setChecked(true);
+				onNavigationItemSelected(navigation.getMenu().findItem(selectedItem));
+			}
+		}
+
+		getSupportFragmentManager().findFragmentById(R.id.coordinator).onActivityResult(requestCode, resultCode, data);
+	}
+
+	@Override protected void onResume()
+	{
+		super.onResume();
+
+		if (getSupportActionBar() != null)
+		{
+			getSupportActionBar().setDisplayHomeAsUpEnabled(!MainApplication.isTablet());
+		}
+
+		showDrawerToggle();
 	}
 
 	@Override protected void onSaveInstanceState(Bundle outState)
@@ -165,7 +203,7 @@ public class MainActivity extends BaseActivity implements NavigationView.OnNavig
 
 		try
 		{
-			navigation.getMenu().findItem(R.id.version).setTitle("Version " + getPackageManager().getPackageInfo(getPackageName(), 0).versionName);
+			navigation.getMenu().findItem(R.id.version).setTitle(getString(R.string.version, getPackageManager().getPackageInfo(getPackageName(), 0).versionName));
 		}
 		catch (PackageManager.NameNotFoundException e)
 		{
@@ -180,7 +218,12 @@ public class MainActivity extends BaseActivity implements NavigationView.OnNavig
 
 	public void showDrawerToggle()
 	{
-		if (drawer != null)
+		if (MainApplication.isTablet())
+		{
+			getSupportActionBar().setDisplayHomeAsUpEnabled(false);
+			getSupportActionBar().setDisplayShowHomeEnabled(false);
+		}
+		else if (drawer != null)
 		{
 			ActionBarDrawerToggle drawerToggle = new ActionBarDrawerToggle(this, drawer, toolbar, 0, 0)
 			{
@@ -201,24 +244,6 @@ public class MainActivity extends BaseActivity implements NavigationView.OnNavig
 		}
 	}
 
-	@Override public boolean onCreateOptionsMenu(Menu menu)
-	{
-		menu.add(1, 1, 1, "Settings");
-
-		return super.onCreateOptionsMenu(menu);
-	}
-
-	@Override public boolean onOptionsItemSelected(MenuItem item)
-	{
-		if (item.getItemId() == 1)
-		{
-			Intent settings = new Intent(this, SettingsActivity.class);
-			startActivity(settings);
-		}
-
-		return super.onOptionsItemSelected(item);
-	}
-
 	@Override public boolean onNavigationItemSelected(MenuItem item)
 	{
 		if (item.getItemId() == R.id.website)
@@ -226,6 +251,23 @@ public class MainActivity extends BaseActivity implements NavigationView.OnNavig
 			Intent view = new Intent(Intent.ACTION_VIEW);
 			view.setData(Uri.parse("http://github.com/7lpdwcaw/"));
 			startActivity(view);
+		}
+		else if (item.getItemId() == R.id.translations)
+		{
+			new AlertDialog.Builder(this)
+				.setTitle(R.string.translations_title)
+				.setMessage(Html.fromHtml(TextUtils.join("<br />", getResources().getStringArray(R.array.translators))))
+				.setPositiveButton(R.string.help_translate, new DialogInterface.OnClickListener()
+				{
+					@Override public void onClick(DialogInterface dialogInterface, int i)
+					{
+						Intent view = new Intent(Intent.ACTION_VIEW);
+						view.setData(Uri.parse("https://github.com/7LPdWcaW/GrowTracker-Android/issues/116"));
+						startActivity(view);
+					}
+				})
+				.setNegativeButton(R.string.cancel, null)
+				.show();
 		}
 		else if (item.getItemId() == R.id.add)
 		{
@@ -260,7 +302,7 @@ public class MainActivity extends BaseActivity implements NavigationView.OnNavig
 					onNavigationItemSelected(navigation.getMenu().findItem(selectedItem));
 				}
 			});
-			dialogFragment.show(getFragmentManager(), null);
+			dialogFragment.show(getSupportFragmentManager(), null);
 			item.setChecked(false);
 
 			if (drawer != null)
@@ -275,7 +317,7 @@ public class MainActivity extends BaseActivity implements NavigationView.OnNavig
 			item.setChecked(false);
 
 			Intent settings = new Intent(this, SettingsActivity.class);
-			startActivity(settings);
+			startActivityForResult(settings, 5);
 		}
 		else if (item.getItemId() == R.id.feeding_schedule)
 		{
@@ -284,8 +326,15 @@ public class MainActivity extends BaseActivity implements NavigationView.OnNavig
 		}
 		else if (item.getItemId() == R.id.all)
 		{
+			SubMenu menu = navigation.getMenu().findItem(R.id.garden_menu).getSubMenu();
+			for (int index = 0; index < menu.size(); index++)
+			{
+				menu.getItem(index).setChecked(false);
+			}
+
+			navigation.getMenu().findItem(R.id.garden_menu).getSubMenu().findItem(R.id.all).setChecked(true);
 			selectedItem = item.getItemId();
-			getFragmentManager().beginTransaction().replace(R.id.fragment_holder, PlantListFragment.newInstance(null), TAG_FRAGMENT).commit();
+			getSupportFragmentManager().beginTransaction().replace(R.id.coordinator, PlantListFragment.newInstance(), TAG_FRAGMENT).commit();
 		}
 		else if (item.getItemId() >= 100 && item.getItemId() < Integer.MAX_VALUE)
 		{
@@ -300,7 +349,7 @@ public class MainActivity extends BaseActivity implements NavigationView.OnNavig
 			selectedItem = item.getItemId();
 			item.setChecked(true);
 			int gardenIndex = item.getItemId() - 100;
-			getFragmentManager().beginTransaction().replace(R.id.fragment_holder, PlantListFragment.newInstance(GardenManager.getInstance().getGardens().get(gardenIndex)), TAG_FRAGMENT).commit();
+			getSupportFragmentManager().beginTransaction().replace(R.id.coordinator, GardenHostFragment.newInstance(GardenManager.getInstance().getGardens().get(gardenIndex)), TAG_FRAGMENT).commit();
 		}
 
 		if (drawer != null)

@@ -1,19 +1,11 @@
 package me.anon.grow.fragment;
 
 import android.app.Activity;
-import android.app.AlertDialog;
-import android.app.Fragment;
-import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.Rect;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
-import android.support.annotation.Nullable;
-import android.support.v7.widget.GridLayoutManager;
-import android.support.v7.widget.LinearLayoutManager;
-import android.support.v7.widget.RecyclerView;
-import android.support.v7.widget.helper.ItemTouchHelper;
-import android.text.Html;
+import android.util.Log;
 import android.util.TypedValue;
 import android.view.LayoutInflater;
 import android.view.Menu;
@@ -21,68 +13,59 @@ import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Toast;
 
 import com.esotericsoftware.kryo.Kryo;
 
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
+import java.util.LinkedHashSet;
+import java.util.Set;
 
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
+import androidx.fragment.app.Fragment;
+import androidx.recyclerview.widget.GridLayoutManager;
+import androidx.recyclerview.widget.ItemTouchHelper;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
+import kotlin.jvm.functions.Function3;
 import me.anon.controller.adapter.PlantAdapter;
 import me.anon.controller.adapter.SimpleItemTouchHelperCallback;
-import me.anon.grow.AddPlantActivity;
+import me.anon.controller.provider.PlantWidgetProvider;
 import me.anon.grow.AddWateringActivity;
 import me.anon.grow.MainActivity;
 import me.anon.grow.MainApplication;
+import me.anon.grow.PlantDetailsActivity;
 import me.anon.grow.R;
-import me.anon.grow.service.ExportService;
 import me.anon.lib.SnackBar;
 import me.anon.lib.SnackBarListener;
 import me.anon.lib.Views;
-import me.anon.lib.event.GardenChangeEvent;
-import me.anon.lib.helper.BusHelper;
+import me.anon.lib.ext.IntUtilsKt;
 import me.anon.lib.helper.FabAnimator;
-import me.anon.lib.helper.NotificationHelper;
-import me.anon.lib.manager.GardenManager;
 import me.anon.lib.manager.PlantManager;
 import me.anon.model.EmptyAction;
-import me.anon.model.Garden;
 import me.anon.model.NoteAction;
 import me.anon.model.Plant;
 import me.anon.model.PlantStage;
+import me.anon.view.SomeDividerItemDecoration;
 
-/**
- * // TODO: Add class description
- *
- * @author 7LPdWcaW
- * @documentation // TODO Reference flow doc
- * @project GrowTracker
- */
 @Views.Injectable
 public class PlantListFragment extends Fragment
 {
 	private PlantAdapter adapter;
-	private Garden garden;
 
-	public void setGarden(Garden garden)
-	{
-		this.garden = garden;
-	}
-
-	public static PlantListFragment newInstance(@Nullable Garden garden)
+	public static PlantListFragment newInstance()
 	{
 		PlantListFragment fragment = new PlantListFragment();
-		fragment.setGarden(garden);
-
 		return fragment;
 	}
 
-	@Views.InjectView(R.id.action_container) private View actionContainer;
 	@Views.InjectView(R.id.recycler_view) private RecyclerView recycler;
+	@Views.InjectView(R.id.empty) private View empty;
 
-	private ArrayList<PlantStage> filterList = new ArrayList<>();
-	private boolean hideHarvested = false;
+	private ArrayList<PlantStage> filterList = null;
+	private boolean reverse = false;
 
 	@Override public void onCreate(Bundle savedInstanceState)
 	{
@@ -103,11 +86,18 @@ public class PlantListFragment extends Fragment
 	{
 		super.onActivityCreated(savedInstanceState);
 
-		getActivity().setTitle(garden == null ? "All" : garden.getName() + " plants");
+		reverse = PreferenceManager.getDefaultSharedPreferences(getActivity()).getBoolean("reverse_order", false);
+		if (savedInstanceState != null)
+		{
+			filterList = savedInstanceState.getParcelableArrayList("filter");
+		}
+
+		((MainActivity)getActivity()).toolbarLayout.removeViews(1, ((MainActivity)getActivity()).toolbarLayout.getChildCount() - 1);
+		getActivity().setTitle(getString(R.string.all_list_title));
 
 		adapter = new PlantAdapter(getActivity());
 
-		if (MainApplication.isTablet())
+		if (MainApplication.isTablet() && getResources().getBoolean(R.bool.is_portrait) == false)
 		{
 			GridLayoutManager layoutManager = new GridLayoutManager(getActivity(), 2);
 			RecyclerView.ItemDecoration spacesItemDecoration = new RecyclerView.ItemDecoration()
@@ -117,12 +107,6 @@ public class PlantListFragment extends Fragment
 				@Override
 				public void getItemOffsets(Rect outRect, View view, RecyclerView parent, RecyclerView.State state)
 				{
-					if (parent.getPaddingLeft() != space)
-					{
-						parent.setPadding(space, space, space, space);
-						parent.setClipToPadding(false);
-					}
-
 					outRect.top = space;
 					outRect.bottom = space;
 					outRect.left = space;
@@ -135,10 +119,15 @@ public class PlantListFragment extends Fragment
 		}
 		else
 		{
-			boolean reverse = PreferenceManager.getDefaultSharedPreferences(getActivity()).getBoolean("reverse_order", false);
-			LinearLayoutManager layoutManager = new LinearLayoutManager(getActivity(), LinearLayoutManager.VERTICAL, reverse);
-			layoutManager.setStackFromEnd(reverse);
+			LinearLayoutManager layoutManager = new LinearLayoutManager(getActivity());
 			recycler.setLayoutManager(layoutManager);
+			recycler.addItemDecoration(new SomeDividerItemDecoration(getActivity(), SomeDividerItemDecoration.VERTICAL, R.drawable.divider_8dp, new Function3<Integer, RecyclerView.ViewHolder, RecyclerView.Adapter<RecyclerView.ViewHolder>, Boolean>()
+			{
+				@Override public Boolean invoke(Integer integer, RecyclerView.ViewHolder viewHolder, RecyclerView.Adapter<RecyclerView.ViewHolder> viewHolderAdapter)
+				{
+					return viewHolderAdapter.getItemViewType(integer) != 0;
+				}
+			}));
 		}
 
 		recycler.setAdapter(adapter);
@@ -183,24 +172,43 @@ public class PlantListFragment extends Fragment
 		ItemTouchHelper touchHelper = new ItemTouchHelper(callback);
 		touchHelper.attachToRecyclerView(recycler);
 
-		if (garden != null)
+		if (filterList == null)
 		{
-			actionContainer.setVisibility(View.VISIBLE);
-		}
-
-		filterList.addAll(Arrays.asList(PlantStage.values()));
-
-		if (hideHarvested = PreferenceManager.getDefaultSharedPreferences(getActivity()).getBoolean("hide_harvested", false))
-		{
-			filterList.remove(PlantStage.HARVESTED);
-			hideHarvested = true;
+			filterList = new ArrayList<>();
+			Set<String> prefsList = androidx.preference.PreferenceManager.getDefaultSharedPreferences(getActivity()).getStringSet("filter_list", null);
+			if (prefsList == null)
+			{
+				filterList.addAll(Arrays.asList(PlantStage.values()));
+			}
+			else
+			{
+				for (String s : prefsList)
+				{
+					try
+					{
+						int ordinal = IntUtilsKt.toSafeInt(s);
+						filterList.add(PlantStage.values()[ordinal]);
+					}
+					catch (Exception e)
+					{
+						e.printStackTrace();
+					}
+				}
+			}
 		}
 	}
 
-	@Override public void onStart()
+	@Override public void onSaveInstanceState(@NonNull Bundle outState)
 	{
-		super.onStart();
+		outState.putParcelableArrayList("filter", filterList);
+		super.onSaveInstanceState(outState);
+	}
 
+	@Override public void onResume()
+	{
+		super.onResume();
+
+		Log.e("TEST", "resume");
 		filter();
 	}
 
@@ -213,44 +221,26 @@ public class PlantListFragment extends Fragment
 
 	private boolean beingFiltered()
 	{
-		return !(filterList.size() == PlantStage.values().length - (hideHarvested ? 1 : 0));
+		return !(filterList.size() == PlantStage.values().length);
 	}
 
 	private synchronized void saveCurrentState()
 	{
 		ArrayList<Plant> plants = (ArrayList<Plant>)adapter.getPlants();
 
-		if (garden == null)
+		if (reverse)
 		{
-			PlantManager.getInstance().setPlants(plants);
-			PlantManager.getInstance().save();
+			Collections.reverse(plants);
 		}
-		else
-		{
-			if (!beingFiltered())
-			{
-				ArrayList<String> orderedPlantIds = new ArrayList<>();
-				for (Plant plant : plants)
-				{
-					orderedPlantIds.add(plant.getId());
-				}
 
-				garden.setPlantIds(orderedPlantIds);
-				GardenManager.getInstance().save();
-			}
-		}
+		PlantManager.getInstance().setPlants(plants);
+		PlantManager.getInstance().save();
 	}
 
 	@Views.OnClick public void onFabAddClick(View view)
 	{
-		Intent addPlant = new Intent(getActivity(), AddPlantActivity.class);
-
-		if (garden != null)
-		{
-			addPlant.putExtra("garden_index", GardenManager.getInstance().getGardens().indexOf(garden));
-		}
-
-		startActivity(addPlant);
+		Intent addPlant = new Intent(getActivity(), PlantDetailsActivity.class);
+		startActivityForResult(addPlant, 5);
 	}
 
 	@Views.OnClick public void onFeedingClick(View view)
@@ -260,7 +250,7 @@ public class PlantListFragment extends Fragment
 		int index = 0;
 		for (Plant plant : adapter.getPlants())
 		{
-			plants[index] = PlantManager.getInstance().getPlants().indexOf(plant);
+			plants[index] = PlantManager.getInstance().indexOf(plant);
 			index++;
 		}
 
@@ -283,7 +273,7 @@ public class PlantListFragment extends Fragment
 
 				PlantManager.getInstance().save();
 
-				SnackBar.show(getActivity(), "Actions added", new SnackBarListener()
+				SnackBar.show(getActivity(), R.string.snackbar_action_add, new SnackBarListener()
 				{
 					@Override public void onSnackBarStarted(Object o)
 					{
@@ -307,7 +297,7 @@ public class PlantListFragment extends Fragment
 				});
 			}
 		});
-		dialogFragment.show(getFragmentManager(), null);
+		dialogFragment.show(getChildFragmentManager(), null);
 	}
 
 	@Views.OnClick public void onNoteClick(final View view)
@@ -319,13 +309,13 @@ public class PlantListFragment extends Fragment
 			{
 				for (Plant plant : adapter.getPlants())
 				{
-					NoteAction action = new NoteAction(notes);
+					NoteAction action = new NoteAction(System.currentTimeMillis(), notes);
 					plant.getActions().add(action);
 				}
 
 				PlantManager.getInstance().save();
 
-				SnackBar.show(getActivity(), "Notes added", new SnackBarListener()
+				SnackBar.show(getActivity(), R.string.snackbar_note_add, new SnackBarListener()
 				{
 					@Override public void onSnackBarStarted(Object o)
 					{
@@ -349,17 +339,25 @@ public class PlantListFragment extends Fragment
 				});
 			}
 		});
-		dialogFragment.show(getFragmentManager(), null);
+		dialogFragment.show(getChildFragmentManager(), null);
 	}
 
 	@Override public void onActivityResult(int requestCode, int resultCode, Intent data)
 	{
+		if (resultCode == Activity.RESULT_OK && data.hasExtra("plant"))
+		{
+			Plant plant = data.getParcelableExtra("plant");
+			PlantManager.getInstance().upsert(plant);
+			Log.e("TEST", "result " + plant);
+			PlantWidgetProvider.triggerUpdateAll(getActivity());
+		}
+
 		if (requestCode == 2)
 		{
 			if (resultCode != Activity.RESULT_CANCELED)
 			{
 				adapter.notifyDataSetChanged();
-				SnackBar.show(getActivity(), "Watering added", new SnackBarListener()
+				SnackBar.show(getActivity(), R.string.snackbar_watering_add, new SnackBarListener()
 				{
 					@Override public void onSnackBarStarted(Object o)
 					{
@@ -392,16 +390,16 @@ public class PlantListFragment extends Fragment
 	{
 		inflater.inflate(R.menu.plant_list_menu, menu);
 
-		if (garden != null)
-		{
-			menu.findItem(R.id.export_garden).setVisible(true);
-			menu.findItem(R.id.edit_garden).setVisible(true);
-			menu.findItem(R.id.delete_garden).setVisible(true);
-		}
+		int[] ids = {R.id.filter_germination, R.id.filter_vegetation, R.id.filter_seedling, R.id.filter_cutting, R.id.filter_flowering, R.id.filter_drying, R.id.filter_curing, R.id.filter_harvested, R.id.filter_planted};
+		PlantStage[] stages = {PlantStage.GERMINATION, PlantStage.VEGETATION, PlantStage.SEEDLING, PlantStage.CUTTING, PlantStage.FLOWER, PlantStage.DRYING, PlantStage.CURING, PlantStage.HARVESTED, PlantStage.PLANTED};
 
-		if (PreferenceManager.getDefaultSharedPreferences(getActivity()).getBoolean("hide_harvested", false))
+		for (int index = 0; index < ids.length; index++)
 		{
-			menu.findItem(R.id.filter_harvested).setVisible(false);
+			menu.findItem(ids[index]).setChecked(false);
+			if (filterList.contains(stages[index]))
+			{
+				menu.findItem(ids[index]).setChecked(true);
+			}
 		}
 
 		super.onCreateOptionsMenu(menu, inflater);
@@ -409,116 +407,52 @@ public class PlantListFragment extends Fragment
 
 	@Override public boolean onOptionsItemSelected(MenuItem item)
 	{
-		if (item.getItemId() == R.id.edit_garden)
+		if (item.isCheckable())
 		{
-			GardenDialogFragment dialogFragment = new GardenDialogFragment(garden);
-			dialogFragment.setOnEditGardenListener(new GardenDialogFragment.OnEditGardenListener()
+			item.setChecked(!item.isChecked());
+		}
+
+		boolean filter = false;
+
+		if (!beingFiltered())
+		{
+			saveCurrentState();
+		}
+
+		int[] ids = {R.id.filter_planted, R.id.filter_germination, R.id.filter_seedling, R.id.filter_cutting, R.id.filter_vegetation, R.id.filter_flowering, R.id.filter_drying, R.id.filter_curing, R.id.filter_harvested};
+		PlantStage[] stages = PlantStage.values();
+
+		for (int index = 0; index < ids.length; index++)
+		{
+			int id = ids[index];
+			if (item.getItemId() == id)
 			{
-				@Override public void onGardenEdited(Garden garden)
+				if (filterList.contains(stages[index]))
 				{
-					int index = GardenManager.getInstance().getGardens().indexOf(PlantListFragment.this.garden);
-					GardenManager.getInstance().getGardens().set(index, garden);
-					GardenManager.getInstance().save();
-					PlantListFragment.this.garden = garden;
-
-					getActivity().setTitle(garden == null ? "All" : garden.getName() + " plants");
-					filter();
-
-					((MainActivity)getActivity()).setNavigationView();
+					filterList.remove(stages[index]);
 				}
-			});
-			dialogFragment.show(getFragmentManager(), null);
-
-			return true;
-		}
-		else if (item.getItemId() == R.id.export_garden)
-		{
-			Toast.makeText(getActivity(), "Exporting grow log of garden...", Toast.LENGTH_SHORT).show();
-			NotificationHelper.createExportChannel(getActivity());
-			NotificationHelper.sendExportNotification(getActivity(), "Exporting garden grow log", "Exporting " + garden.getName());
-
-			ArrayList<Plant> export = new ArrayList<>(adapter.getPlants());
-			ExportService.export(getActivity(), export, garden.getName().replaceAll("[^a-zA-Z0-9]+", "-"), garden.getName());
-		}
-		else if (item.getItemId() == R.id.delete_garden)
-		{
-			new AlertDialog.Builder(getActivity())
-				.setTitle("Are you sure?")
-				.setMessage(Html.fromHtml("Are you sure you want to delete garden <b>" + garden.getName() + "</b>? This will not delete the plants."))
-				.setPositiveButton("Yes", new DialogInterface.OnClickListener()
+				else
 				{
-					@Override public void onClick(DialogInterface dialogInterface, int i)
-					{
-						final Garden oldGarden = garden;
-						final int oldIndex = GardenManager.getInstance().getGardens().indexOf(garden);
-						final int defaultGarden = PreferenceManager.getDefaultSharedPreferences(getActivity()).getInt("default_garden", -1);
-
-						PreferenceManager.getDefaultSharedPreferences(getActivity()).edit().remove("default_garden").apply();
-						GardenManager.getInstance().getGardens().remove(garden);
-						GardenManager.getInstance().save();
-
-						SnackBar.show(getActivity(), "Garden deleted", "undo", new SnackBarListener()
-						{
-							@Override public void onSnackBarStarted(Object o){}
-							@Override public void onSnackBarFinished(Object o){}
-
-							@Override public void onSnackBarAction(View o)
-							{
-								PreferenceManager.getDefaultSharedPreferences(o.getContext()).edit().putInt("default_garden", defaultGarden).apply();
-								GardenManager.getInstance().getGardens().add(oldIndex, oldGarden);
-								GardenManager.getInstance().save();
-
-								BusHelper.getInstance().post(new GardenChangeEvent());
-							}
-						});
-
-						((MainActivity)getActivity()).setNavigationView();
-						((MainActivity)getActivity()).getNavigation().getMenu().findItem(R.id.all).setChecked(true);
-						((MainActivity)getActivity()).onNavigationItemSelected(((MainActivity)getActivity()).getNavigation().getMenu().findItem(R.id.all));
-					}
-				})
-				.setNegativeButton("No", null)
-				.show();
-		}
-		else
-		{
-			if (item.isCheckable())
-			{
-				item.setChecked(!item.isChecked());
-			}
-
-			boolean filter = false;
-
-			if (!beingFiltered())
-			{
-				saveCurrentState();
-			}
-
-			int[] ids = {R.id.filter_planted, R.id.filter_germination, R.id.filter_seedling, R.id.filter_cutting, R.id.filter_vegetation, R.id.filter_flowering, R.id.filter_drying, R.id.filter_curing, R.id.filter_harvested};
-			PlantStage[] stages = PlantStage.values();
-
-			for (int index = 0; index < ids.length; index++)
-			{
-				int id = ids[index];
-				if (item.getItemId() == id)
-				{
-					if (filterList.contains(stages[index]))
-					{
-						filterList.remove(stages[index]);
-					}
-					else
-					{
-						filterList.add(stages[index]);
-					}
-
-					filter = true;
+					filterList.add(stages[index]);
 				}
-			}
 
-			if (filter)
-			{
-				filter();
+				filter = true;
 			}
+		}
+
+		Set<String> stageOrdinals = new LinkedHashSet<>();
+		for (PlantStage plantStage : filterList)
+		{
+			stageOrdinals.add(plantStage.ordinal() + "");
+		}
+
+		PreferenceManager.getDefaultSharedPreferences(getActivity()).edit()
+			.putStringSet("filter_list", stageOrdinals)
+			.apply();
+
+		if (filter)
+		{
+			filter();
 		}
 
 		return super.onOptionsItemSelected(item);
@@ -526,7 +460,13 @@ public class PlantListFragment extends Fragment
 
 	private void filter()
 	{
-		ArrayList<Plant> plantList = PlantManager.getInstance().getSortedPlantList(garden);
+		Log.e("TEST", "filtering");
+		ArrayList<Plant> plantList = PlantManager.getInstance().getSortedPlantList(null);
+		if (reverse)
+		{
+			Collections.reverse(plantList);
+		}
+
 		adapter.setPlants(plantList);
 
 		ArrayList<String> plants = new ArrayList<>();
@@ -538,7 +478,7 @@ public class PlantListFragment extends Fragment
 			}
 		}
 
-		if (garden != null || plants.size() < plantList.size())
+		if (plants.size() < plantList.size())
 		{
 			adapter.setShowOnly(plants);
 		}
@@ -548,5 +488,21 @@ public class PlantListFragment extends Fragment
 		}
 
 		adapter.notifyDataSetChanged();
+
+		if (adapter.getFilteredCount() == 0)
+		{
+			empty.setVisibility(View.VISIBLE);
+			recycler.setVisibility(View.GONE);
+		}
+		else
+		{
+			empty.setVisibility(View.GONE);
+			recycler.setVisibility(View.VISIBLE);
+		}
+	}
+
+	@Override public void startActivityForResult(Intent intent, int requestCode)
+	{
+		getActivity().startActivityForResult(intent, requestCode);
 	}
 }

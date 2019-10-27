@@ -1,19 +1,24 @@
 package me.anon.grow;
 
 import android.app.Activity;
-import android.app.AlertDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.graphics.drawable.Drawable;
 import android.os.Bundle;
-import android.support.annotation.Nullable;
 import android.text.Html;
 import android.util.Base64;
 
+import com.squareup.moshi.Types;
+
+import java.util.ArrayList;
+
+import androidx.annotation.Nullable;
+import androidx.appcompat.app.AlertDialog;
 import me.anon.lib.helper.EncryptionHelper;
-import me.anon.lib.helper.GsonHelper;
+import me.anon.lib.helper.MoshiHelper;
 import me.anon.lib.manager.PlantManager;
+import me.anon.model.Plant;
 
 /**
  * Class used for other applications to request data from this application
@@ -39,7 +44,7 @@ public class RequestActivity extends Activity
 					{
 						@Override public void onClick(DialogInterface dialog, int which)
 						{
-							String plantListData = GsonHelper.parse(PlantManager.getInstance().getPlants());
+							String plantListData = MoshiHelper.toJson(PlantManager.getInstance().getPlants(), Types.newParameterizedType(ArrayList.class, Plant.class));
 
 							if (MainApplication.isEncrypted())
 							{

@@ -2,6 +2,7 @@
 
 <FrameLayout
 	xmlns:android="http://schemas.android.com/apk/res/android"
+	xmlns:app="http://schemas.android.com/apk/res-auto"
 	android:layout_width="match_parent"
 	android:layout_height="match_parent"
 >
@@ -19,14 +20,13 @@
 				android:layout_width="match_parent"
 				android:layout_height="wrap_content"
 				android:orientation="vertical"
-				android:background="#ffffff"
 				android:elevation="4dp"
 				style="@style/PaperCard"
 			>
 				<TextView
 					android:layout_width="wrap_content"
 					android:layout_height="wrap_content"
-					android:text="Water details"
+					android:text="@string/water_details_title"
 					style="@style/SectionTitle"
 				/>
 
@@ -34,7 +34,7 @@
 					android:layout_width="match_parent"
 					android:layout_height="wrap_content"
 					android:orientation="vertical"
-					android:divider="@drawable/full_divider"
+					android:divider="?android:listDivider"
 					android:showDividers="middle"
 					android:layout_marginTop="16dp"
 				>
@@ -59,7 +59,7 @@
 							<TextView
 								android:layout_width="match_parent"
 								android:layout_height="wrap_content"
-								android:text="Water PH"
+								android:text="@string/water_ph_label"
 								style="@style/SubsectionTitle"
 							/>
 
@@ -85,7 +85,7 @@
 								android:layout_width="match_parent"
 								android:layout_height="wrap_content"
 								android:id="@+id/ppm_label"
-								android:text="PPM"
+								android:text="@string/ppm_label"
 								style="@style/SubsectionTitle"
 							/>
 
@@ -110,7 +110,7 @@
 							<TextView
 								android:layout_width="match_parent"
 								android:layout_height="wrap_content"
-								android:text="Runoff"
+								android:text="@string/runoff_label"
 								style="@style/SubsectionTitle"
 							/>
 
@@ -149,7 +149,7 @@
 								android:layout_width="match_parent"
 								android:layout_height="wrap_content"
 								android:id="@+id/amount_label"
-								android:text="Amount (ml)"
+								android:text="@string/amount_label"
 								style="@style/SubsectionTitle"
 							/>
 
@@ -176,7 +176,7 @@
 								android:layout_width="match_parent"
 								android:layout_height="wrap_content"
 								android:id="@+id/temp_label"
-								android:text="Temp (ºC)"
+								android:text="@string/temp_label"
 								style="@style/SubsectionTitle"
 							/>
 
@@ -198,7 +198,6 @@
 				android:layout_width="match_parent"
 				android:layout_height="wrap_content"
 				android:orientation="vertical"
-				android:background="#ffffff"
 				android:layout_marginTop="8dp"
 				android:elevation="4dp"
 				style="@style/PaperCard"
@@ -206,7 +205,7 @@
 				<TextView
 					android:layout_width="wrap_content"
 					android:layout_height="wrap_content"
-					android:text="Date and time"
+					android:text="@string/date_and_time_header"
 					style="@style/SectionTitle"
 				/>
 
@@ -214,7 +213,7 @@
 					android:layout_width="match_parent"
 					android:layout_height="wrap_content"
 					android:orientation="vertical"
-					android:divider="@drawable/full_divider"
+					android:divider="?android:listDivider"
 					android:showDividers="middle"
 					android:layout_marginTop="16dp"
 				>
@@ -223,25 +222,23 @@
 						android:layout_height="wrap_content"
 						android:id="@+id/date_container"
 						android:orientation="vertical"
-						android:paddingLeft="16dp"
-						android:paddingRight="16dp"
-						android:paddingTop="8dp"
-						android:paddingBottom="16dp"
+						android:padding="16dp"
+						android:background="?selectableItemBackground"
 					>
 						<Button
 							android:layout_width="wrap_content"
 							android:layout_height="wrap_content"
 							android:id="@+id/date_now"
 							android:layout_alignParentEnd="true"
-							android:text="Now"
-							style="@style/Widget.AppCompat.Button.Borderless"
+							android:text="@string/date_now"
+							style="@style/Widget.MaterialComponents.Button.TextButton"
 						/>
 
 						<TextView
 							android:layout_width="match_parent"
 							android:layout_height="wrap_content"
 							android:id="@+id/date_text"
-							android:text="Date"
+							android:text="@string/date_label"
 							android:layout_toStartOf="@id/date_now"
 							style="@style/SubsectionTitle"
 						/>
@@ -252,7 +249,7 @@
 							android:id="@+id/date"
 							android:editable="false"
 							android:inputType="none"
-							android:text="Today"
+							android:text="@string/today"
 							android:layout_toStartOf="@id/date_now"
 							android:layout_below="@id/date_text"
 							style="@style/SubsectionSubTitle"
@@ -265,7 +262,6 @@
 				android:layout_width="match_parent"
 				android:layout_height="wrap_content"
 				android:orientation="vertical"
-				android:background="#ffffff"
 				android:layout_marginTop="8dp"
 				android:elevation="4dp"
 				style="@style/PaperCard"
@@ -273,7 +269,7 @@
 				<TextView
 					android:layout_width="wrap_content"
 					android:layout_height="wrap_content"
-					android:text="Additives"
+					android:text="@string/additives_title"
 					style="@style/SectionTitle"
 				/>
 
@@ -282,7 +278,7 @@
 					android:layout_height="wrap_content"
 					android:id="@+id/additive_container"
 					android:orientation="vertical"
-					android:divider="@drawable/left_inset_divider"
+					android:divider="?android:listDivider"
 					android:showDividers="middle"
 					android:layout_marginTop="16dp"
 				>
@@ -290,12 +286,13 @@
 						android:layout_width="match_parent"
 						android:layout_height="wrap_content"
 						android:id="@+id/new_additive"
-						android:text="+ New Additive"
+						android:text="@string/new_additive"
 						android:textStyle="bold"
 						android:paddingLeft="16dp"
 						android:paddingRight="16dp"
 						android:paddingTop="18dp"
 						android:paddingBottom="18dp"
+						android:background="?selectableItemBackground"
 					/>
 				</LinearLayout>
 			</LinearLayout>
@@ -304,7 +301,6 @@
 				android:layout_width="match_parent"
 				android:layout_height="wrap_content"
 				android:orientation="vertical"
-				android:background="#ffffff"
 				android:layout_marginTop="8dp"
 				android:elevation="4dp"
 				style="@style/PaperCard"
@@ -312,7 +308,7 @@
 				<TextView
 					android:layout_width="wrap_content"
 					android:layout_height="wrap_content"
-					android:text="Notes"
+					android:text="@string/notes_title"
 					style="@style/SectionTitle"
 				/>
 
@@ -320,7 +316,7 @@
 					android:layout_width="match_parent"
 					android:layout_height="wrap_content"
 					android:orientation="vertical"
-					android:divider="@drawable/full_divider"
+					android:divider="?android:listDivider"
 					android:showDividers="middle"
 					android:layout_marginTop="16dp"
 				>
@@ -336,7 +332,7 @@
 						<TextView
 							android:layout_width="match_parent"
 							android:layout_height="wrap_content"
-							android:text="Notes"
+							android:text="@string/notes_label"
 							style="@style/SubsectionTitle"
 						/>
 
@@ -355,37 +351,13 @@
 		</LinearLayout>
 	</ScrollView>
 
-	<FrameLayout
+	<com.google.android.material.floatingactionbutton.FloatingActionButton
 		android:layout_width="wrap_content"
 		android:layout_height="wrap_content"
 		android:id="@+id/fab_complete"
-		android:layout_gravity="bottom|right"
+		app:backgroundTint="#4CAF50"
+		app:srcCompat="@drawable/ic_floting_done"
+		android:layout_gravity="bottom|end"
 		android:layout_margin="16dp"
-	>
-		<ImageView
-			android:layout_width="57dp"
-			android:layout_height="56dp"
-			android:layout_marginTop="3dp"
-			android:src="@drawable/fab_button_shadow"
-			android:layout_gravity="center_horizontal"
-		/>
-
-		<FrameLayout
-			android:layout_width="wrap_content"
-			android:layout_height="wrap_content"
-		>
-			<ImageView
-				android:layout_width="56dp"
-				android:layout_height="56dp"
-				android:background="@drawable/complete_button_bg"
-			/>
-
-			<ImageView
-				android:layout_width="24dp"
-				android:layout_height="24dp"
-				android:layout_gravity="center"
-				android:src="@drawable/ic_floting_done"
-			/>
-		</FrameLayout>
-	</FrameLayout>
+	/>
 </FrameLayout>

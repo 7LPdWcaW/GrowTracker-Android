@@ -1,21 +1,44 @@
 apply plugin: 'com.android.application'
 apply plugin: 'kotlin-android'
 apply plugin: 'kotlin-android-extensions'
+apply plugin: 'kotlin-kapt'
 
 repositories {
 	mavenCentral()
 }
 
+def travis = System.getenv("CI") == "true"
+
+def getCommitCountTotal = { ->
+	try
+	{
+		def commitCount = "git rev-list HEAD --count".execute().text.trim()
+		return (commitCount == "") ? 0 : commitCount.toInteger()
+	}
+	catch (e)
+	{
+		return 1
+	}
+}
+
 android {
-	compileSdkVersion 28
-	buildToolsVersion "28.0.3"
+	compileSdkVersion 29
+	buildToolsVersion "29.0.2"
 
 	defaultConfig {
 		applicationId "me.anon.grow"
 		minSdkVersion 17
-		targetSdkVersion 28
-		versionCode 23
-		versionName "2.5.2"
+		targetSdkVersion 29
+		versionCode getCommitCountTotal()
+		versionName "2.6"
+		versionNameSuffix (travis ? "-alpha" : "")
+
+		compileOptions {
+			sourceCompatibility 1.8
+			targetCompatibility 1.8
+		}
+
+		resValue "string", "version_date", System.currentTimeMillis().toString()
 
 		javaCompileOptions {
 			annotationProcessorOptions {
@@ -38,7 +61,18 @@ android {
 			buildConfigField "Boolean", "DISCRETE", "false"
 
 			manifestPlaceholders = [
-					"appType": "original"
+				"appType": "original"
+			]
+
+			resValue "string", "app_name", "GrowTracker"
+		}
+
+		en {
+			resConfig "en"
+			buildConfigField "Boolean", "DISCRETE", "false"
+
+			manifestPlaceholders = [
+				"appType": "en"
 			]
 
 			resValue "string", "app_name", "GrowTracker"
@@ -49,10 +83,22 @@ android {
 			buildConfigField "Boolean", "DISCRETE", "true"
 
 			manifestPlaceholders = [
-					"appType": "discrete"
+				"appType": "discrete"
 			]
 
 			resValue "string", "app_name", "Tracker"
+		}
+	}
+
+	signingConfigs {
+		release {
+			// configure keystore
+			storeFile = file("../keystore.jks")
+			storePassword = System.getenv("keystore_password")
+			keyAlias = System.getenv("keystore_alias")
+			keyPassword = System.getenv("keystore_alias_password")
+			v2SigningEnabled = true
+			v1SigningEnabled = true
 		}
 	}
 
@@ -61,28 +107,40 @@ android {
 			resValue "string", "app_name", "Dev GrowTracker"
 			applicationIdSuffix = ".debug"
 		}
+
+		release {
+			signingConfig signingConfigs.release
+		}
 	}
 }
 
 dependencies {
-	implementation 'com.android.support:support-compat:28.0.0'
-	implementation 'com.android.support:appcompat-v7:28.0.0'
-	implementation 'com.android.support:recyclerview-v7:28.0.0'
-	implementation 'com.android.support.constraint:constraint-layout:1.1.3'
-	implementation 'com.android.support:cardview-v7:28.0.0'
-	implementation 'com.android.support:design:28.0.0'
-	implementation "com.android.support:exifinterface:28.0.0"
+	implementation 'androidx.core:core:1.1.0'
+	implementation 'androidx.appcompat:appcompat:1.1.0'
+	implementation 'androidx.preference:preference:1.1.0'
+	implementation 'androidx.recyclerview:recyclerview:1.0.0'
+	implementation 'androidx.constraintlayout:constraintlayout:1.1.3'
+	implementation 'androidx.cardview:cardview:1.0.0'
+	implementation 'androidx.exifinterface:exifinterface:1.0.0'
+	implementation 'androidx.documentfile:documentfile:1.0.1'
 
+	implementation 'com.github.prolificinteractive:material-calendarview:2.0.0'
+	implementation 'com.jakewharton.threetenabp:threetenabp:1.1.1'
+
+	implementation 'com.google.android.material:material:1.2.0-alpha01'
+    implementation 'com.google.android:flexbox:1.1.0'
 	implementation 'com.esotericsoftware:kryo:3.0.3'
-	implementation 'com.google.code.gson:gson:2.8.5'
+	implementation 'com.squareup.moshi:moshi-kotlin:1.8.0'
 	implementation 'com.squareup:otto:1.3.8'
 	implementation 'com.github.PhilJay:MPAndroidChart:v2.1.6'
 	implementation 'com.nostra13.universalimageloader:universal-image-loader:1.9.5'
 	implementation 'com.davemorrissey.labs:subsampling-scale-image-view:3.6.0'
 	implementation 'net.lingala.zip4j:zip4j:1.3.2'
-	implementation 'com.google.android:flexbox:1.0.0'
 
-	api "org.jetbrains.kotlin:kotlin-stdlib-jdk7:$kotlin_version"
+	api "org.jetbrains.kotlin:kotlin-reflect:1.3.41"
+	api "org.jetbrains.kotlin:kotlin-stdlib-jdk7:1.3.41"
+
+	kapt 'com.squareup.moshi:moshi-kotlin-codegen:1.8.0'
 }
 
 androidExtensions {

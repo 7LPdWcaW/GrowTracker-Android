@@ -1,13 +1,8 @@
 package me.anon.grow.fragment;
 
 import android.annotation.SuppressLint;
-import android.app.AlertDialog;
 import android.app.Dialog;
-import android.app.DialogFragment;
 import android.os.Bundle;
-import android.support.v7.widget.DividerItemDecoration;
-import android.support.v7.widget.LinearLayoutManager;
-import android.support.v7.widget.RecyclerView;
 import android.view.View;
 import android.view.Window;
 import android.view.WindowManager;
@@ -15,6 +10,11 @@ import android.widget.LinearLayout;
 
 import java.util.ArrayList;
 
+import androidx.appcompat.app.AlertDialog;
+import androidx.fragment.app.DialogFragment;
+import androidx.recyclerview.widget.DividerItemDecoration;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
 import me.anon.controller.adapter.ActionAdapter;
 import me.anon.grow.R;
 import me.anon.lib.Views;
@@ -64,7 +64,7 @@ public class ActionSelectDialogFragment extends DialogFragment
 
 				if (vh instanceof ActionHolder)
 				{
-					((ActionHolder)vh).getCard().setBackgroundResource(0);
+					((ActionHolder)vh).getCard().setCardBackgroundColor(0);
 					((ActionHolder)vh).getCard().setContentPadding(padding, padding, padding * 2, (int)(padding * 2.5));
 				}
 			}
@@ -90,7 +90,7 @@ public class ActionSelectDialogFragment extends DialogFragment
 		recyclerView.addItemDecoration(new DividerItemDecoration(getActivity(), LinearLayout.VERTICAL));
 
 		final AlertDialog dialog = new AlertDialog.Builder(getActivity())
-			.setTitle("Actions")
+			.setTitle(R.string.actions)
 			.setView(view)
 			.create();
 

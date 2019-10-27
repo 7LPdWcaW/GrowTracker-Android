@@ -2,24 +2,17 @@ package me.anon.grow.fragment;
 
 import android.Manifest;
 import android.app.Activity;
-import android.app.AlertDialog;
-import android.app.Fragment;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.pm.PackageManager;
+import android.content.res.Configuration;
 import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Build;
 import android.os.Bundle;
-import android.os.Environment;
-import android.os.ParcelFileDescriptor;
 import android.provider.MediaStore;
-import android.support.annotation.Nullable;
-import android.support.v4.content.FileProvider;
-import android.support.v7.app.AppCompatActivity;
-import android.support.v7.view.ActionMode;
-import android.support.v7.widget.GridLayoutManager;
-import android.support.v7.widget.RecyclerView;
+import android.text.Html;
+import android.view.ActionMode;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -27,65 +20,59 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.view.WindowManager;
 
-import java.io.BufferedInputStream;
-import java.io.BufferedOutputStream;
 import java.io.File;
-import java.io.FileDescriptor;
-import java.io.FileInputStream;
-import java.io.FileOutputStream;
 import java.io.IOException;
-import java.io.InputStream;
-import java.io.OutputStream;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
+import androidx.appcompat.app.AlertDialog;
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.widget.Toolbar;
+import androidx.core.content.FileProvider;
+import androidx.fragment.app.Fragment;
+import androidx.recyclerview.widget.GridLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
+import kotlin.Pair;
 import me.anon.controller.adapter.ImageAdapter;
 import me.anon.controller.adapter.SectionedGridRecyclerViewAdapter;
+import me.anon.controller.provider.PlantWidgetProvider;
 import me.anon.grow.BuildConfig;
 import me.anon.grow.MainApplication;
 import me.anon.grow.R;
 import me.anon.lib.SnackBar;
 import me.anon.lib.SnackBarListener;
 import me.anon.lib.Views;
-import me.anon.lib.helper.AddonHelper;
-import me.anon.lib.helper.ExportHelper;
-import me.anon.lib.helper.FabAnimator;
+import me.anon.lib.export.ExportHelper;
+import me.anon.lib.helper.NotificationHelper;
 import me.anon.lib.helper.PermissionHelper;
 import me.anon.lib.helper.TimeHelper;
+import me.anon.lib.manager.FileManager;
 import me.anon.lib.manager.PlantManager;
+import me.anon.lib.task.AsyncCallback;
 import me.anon.lib.task.EncryptTask;
+import me.anon.lib.task.ImportTask;
 import me.anon.model.Action;
 import me.anon.model.Plant;
 import me.anon.model.StageChange;
 
-/**
- * // TODO: Add class description
- *
- * @author 7LPdWcaW
- * @documentation // TODO Reference flow doc
- * @project GrowTracker
- */
 @Views.Injectable
 public class ViewPhotosFragment extends Fragment
 {
 	private ImageAdapter adapter;
 
 	@Views.InjectView(R.id.recycler_view) private RecyclerView recycler;
+	@Views.InjectView(R.id.empty) private View empty;
+	private ActionMode action = null;
 
-	private int plantIndex = -1;
 	private Plant plant;
 
-	/**
-	 * @param plantIndex If -1, assume new plant
-	 * @return Instantiated details fragment
-	 */
-	public static ViewPhotosFragment newInstance(int plantIndex)
+	public static ViewPhotosFragment newInstance(Bundle arguments)
 	{
-		Bundle args = new Bundle();
-		args.putInt("plant_index", plantIndex);
-
 		ViewPhotosFragment fragment = new ViewPhotosFragment();
-		fragment.setArguments(args);
+		fragment.setArguments(arguments);
 
 		return fragment;
 	}
@@ -98,21 +85,25 @@ public class ViewPhotosFragment extends Fragment
 		return view;
 	}
 
+	@Override public void onSaveInstanceState(@NonNull Bundle outState)
+	{
+		outState.putParcelable("plant", plant);
+		super.onSaveInstanceState(outState);
+	}
+
 	@Override public void onActivityCreated(Bundle savedInstanceState)
 	{
 		super.onActivityCreated(savedInstanceState);
 
-		getActivity().setTitle("Plant photos");
+		getActivity().setTitle(R.string.photos_title);
 
 		if (getArguments() != null)
 		{
-			plantIndex = getArguments().getInt("plant_index");
-
-			if (plantIndex > -1)
-			{
-				plant = PlantManager.getInstance().getPlants().get(plantIndex);
-				getActivity().getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_ALWAYS_HIDDEN);
-			}
+			plant = getArguments().getParcelable("plant");
+		}
+		else if (savedInstanceState != null)
+		{
+			plant = savedInstanceState.getParcelable("plant");
 		}
 
 		if (plant == null)
@@ -121,13 +112,31 @@ public class ViewPhotosFragment extends Fragment
 			return;
 		}
 
+		getActivity().getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_ALWAYS_HIDDEN);
 		adapter = new ImageAdapter();
 		adapter.plant = plant;
+		adapter.onItemSelectedListener = new ImageAdapter.OnItemSelectedListener()
+		{
+			@Override public void onItemSelected(int totalSelected)
+			{
+				if (action == null) return;
+
+				if (totalSelected == 0)
+				{
+					action.finish();
+				}
+				else
+				{
+					action.setTitle(getString(R.string.selected_len, totalSelected));
+				}
+			}
+		};
 		adapter.setOnLongClickListener(new View.OnLongClickListener()
 		{
 			@Override public boolean onLongClick(View v)
 			{
-				((AppCompatActivity)getActivity()).startSupportActionMode(new ActionMode.Callback()
+				Toolbar toolbar = ((AppCompatActivity)getActivity()).findViewById(R.id.toolbar);
+				action = toolbar.startActionMode(new ActionMode.Callback()
 				{
 					@Override public boolean onCreateActionMode(ActionMode mode, Menu menu)
 					{
@@ -145,30 +154,53 @@ public class ViewPhotosFragment extends Fragment
 
 					@Override public boolean onActionItemClicked(final ActionMode mode, MenuItem item)
 					{
-						if (item.getItemId() == R.id.delete)
+						if (item.getItemId() == R.id.select_all)
+						{
+							if (adapter.getSelected().size() > 0)
+							{
+								adapter.getSelected().clear();
+								adapter.notifyDataSetChanged();
+							}
+							else
+							{
+								for (int index = 0; index < adapter.getItemCount(); index++)
+								{
+									adapter.getSelected().add("" + index);
+								}
+								adapter.notifyDataSetChanged();
+							}
+
+							action.setTitle(getString(R.string.selected_len, adapter.getSelected().size()));
+						}
+						else if (item.getItemId() == R.id.delete)
 						{
 							new AlertDialog.Builder(getActivity())
-								.setTitle("Are you sure?")
-								.setMessage("You're about to delete " + adapter.getSelected().size() + " images, are you sure? You will not be able to recover these")
-								.setPositiveButton("Yes", new DialogInterface.OnClickListener()
+								.setTitle(R.string.confirm_title)
+								.setMessage(Html.fromHtml(getString(R.string.confirm_delete_photos_message, "" + adapter.getSelected().size())))
+								.setPositiveButton(R.string.yes, new DialogInterface.OnClickListener()
 								{
 									@Override public void onClick(DialogInterface dialog, int which)
 									{
-										for (Integer integer : adapter.getSelected())
+										for (String integer : adapter.getSelected())
 										{
-											String image = adapter.getImages().get(integer);
+											String image = adapter.getImages().get(Integer.parseInt(integer));
 											new File(image).delete();
 											plant.getImages().remove(image);
-											AddonHelper.broadcastImage(getActivity(), image, true);
 										}
 
-										PlantManager.getInstance().upsert(plantIndex, plant);
+										PlantManager.getInstance().upsert(plant);
 										setAdapter();
 										adapter.notifyDataSetChanged();
+										setEmpty();
 										mode.finish();
+
+										Intent intent = new Intent();
+										intent.putExtra("plant", plant);
+										getActivity().setIntent(intent);
+										getActivity().setResult(Activity.RESULT_OK, intent);
 									}
 								})
-								.setNegativeButton("No", null)
+								.setNegativeButton(R.string.no, null)
 								.show();
 
 							return true;
@@ -181,9 +213,9 @@ public class ViewPhotosFragment extends Fragment
 
 							ArrayList<Uri> files = new ArrayList<Uri>();
 
-							for (Integer integer : adapter.getSelected())
+							for (String integer : adapter.getSelected())
 							{
-								String image = adapter.getImages().get(integer);
+								String image = adapter.getImages().get(Integer.parseInt(integer));
 								File file = new File(image);
 								Uri uri = FileProvider.getUriForFile(getActivity(), getActivity().getPackageName() + ".provider", file);
 								files.add(uri);
@@ -203,8 +235,10 @@ public class ViewPhotosFragment extends Fragment
 					{
 						adapter.setInActionMode(false);
 						adapter.notifyDataSetChanged();
+						action = null;
 					}
 				});
+				action.setTitle(getString(R.string.selected_len, 1));
 
 				return true;
 			}
@@ -212,7 +246,7 @@ public class ViewPhotosFragment extends Fragment
 
 		recycler.setHasFixedSize(true);
 
-		if (MainApplication.isTablet())
+		if (MainApplication.isTablet() || getResources().getConfiguration().orientation == Configuration.ORIENTATION_LANDSCAPE)
 		{
 			recycler.setLayoutManager(new GridLayoutManager(getActivity(), 6));
 		}
@@ -226,7 +260,7 @@ public class ViewPhotosFragment extends Fragment
 
 	private void setAdapter()
 	{
-		adapter.setImages(PlantManager.getInstance().getPlants().get(plantIndex).getImages());
+		adapter.setImages(plant.getImages());
 
 		String lastFileDate = "";
 		List<SectionedGridRecyclerViewAdapter.Section> sections = new ArrayList<SectionedGridRecyclerViewAdapter.Section>();
@@ -273,7 +307,7 @@ public class ViewPhotosFragment extends Fragment
 
 					int currentDays = (int)TimeHelper.toDays(Math.abs(currentChange.getDate() - lastChange.getDate()));
 					currentDays = (currentDays == 0 ? 1 : currentDays);
-					stageDayStr += "/" + currentDays + lastChange.getNewStage().getPrintString().substring(0, 1).toLowerCase();
+					stageDayStr += "/" + currentDays + getString(lastChange.getNewStage().getPrintString()).substring(0, 1).toLowerCase();
 				}
 
 				sections.add(new SectionedGridRecyclerViewAdapter.Section(index, printedFileDate + stageDayStr));
@@ -284,6 +318,22 @@ public class ViewPhotosFragment extends Fragment
 		sectionedAdapter.setSections(sections.toArray(new SectionedGridRecyclerViewAdapter.Section[sections.size()]));
 
 		recycler.setAdapter(sectionedAdapter);
+
+		setEmpty();
+	}
+
+	private void setEmpty()
+	{
+		if (adapter.getItemCount() == 0)
+		{
+			empty.setVisibility(View.VISIBLE);
+			recycler.setVisibility(View.GONE);
+		}
+		else
+		{
+			empty.setVisibility(View.GONE);
+			recycler.setVisibility(View.VISIBLE);
+		}
 	}
 
 	@Override public void onRequestPermissionsResult(int requestCode, String[] permissions, int[] grantResults)
@@ -298,14 +348,14 @@ public class ViewPhotosFragment extends Fragment
 	{
 		if (!PermissionHelper.hasPermission(getActivity(), Manifest.permission.WRITE_EXTERNAL_STORAGE))
 		{
-			PermissionHelper.doPermissionCheck(this, Manifest.permission.WRITE_EXTERNAL_STORAGE, 1, "Access to external storage is needed to store photos. No other data is consumed by this app");
+			PermissionHelper.doPermissionCheck(this, Manifest.permission.WRITE_EXTERNAL_STORAGE, 1, getString(R.string.permission_summary));
 			return;
 		}
 
-		String[] choices = {"From camera", "From gallery"};
+		String[] choices = {getString(R.string.photo_option_camera), getString(R.string.photo_option_gallery)};
 
 		new AlertDialog.Builder(getActivity())
-			.setTitle("Select an option")
+			.setTitle(R.string.dialog_option_title)
 			.setItems(choices, new DialogInterface.OnClickListener()
 			{
 				@Override public void onClick(DialogInterface dialogInterface, int index)
@@ -314,7 +364,7 @@ public class ViewPhotosFragment extends Fragment
 					{
 						Intent intent = new Intent(android.provider.MediaStore.ACTION_IMAGE_CAPTURE);
 
-						File path = new File(Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DCIM).getPath() + "/GrowTracker/" + plant.getId() + "/");
+						File path = new File(FileManager.IMAGE_PATH + plant.getId() + "/");
 						path.mkdirs();
 
 						try
@@ -355,7 +405,7 @@ public class ViewPhotosFragment extends Fragment
 						intent.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION);
 						intent.setType("image/*");
 
-						startActivityForResult(Intent.createChooser(intent, "Select picture"), 3);
+						startActivityForResult(Intent.createChooser(intent, getString(R.string.dialog_select_picture_title)), 3);
 					}
 				}
 			})
@@ -373,154 +423,100 @@ public class ViewPhotosFragment extends Fragment
 			}
 			else
 			{
-				PlantManager.getInstance().upsert(plantIndex, plant);
-				AddonHelper.broadcastImage(getActivity(), plant.getImages().get(plant.getImages().size() - 1), false);
+				PlantManager.getInstance().upsert(plant);
 
 				setAdapter();
 				adapter.notifyDataSetChanged();
+
+				finishPhotoIntent();
 			}
 		}
 		else if (requestCode == 3) // choose image from gallery
 		{
 			if (resultCode != Activity.RESULT_CANCELED)
 			{
-				if (data != null && data.getData() != null)
+				if (data == null) return;
+
+				ArrayList<Uri> images = new ArrayList<>();
+				if (data.getData() != null)
 				{
-					Uri selectedUri = data.getData();
-					if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT)
-					{
-						getActivity().grantUriPermission(getActivity().getPackageName(), selectedUri, Intent.FLAG_GRANT_READ_URI_PERMISSION);
-
-						final int takeFlags = data.getFlags() & (Intent.FLAG_GRANT_READ_URI_PERMISSION);
-						getActivity().getContentResolver().takePersistableUriPermission(selectedUri, takeFlags);
-					}
-
-					File path = new File(Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DCIM).getPath() + "/GrowTracker/" + plant.getId() + "/");
-					path.mkdirs();
+					images.add(data.getData());
 
 					try
 					{
-						new File(path, ".nomedia").createNewFile();
+						if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT)
+						{
+							getActivity().grantUriPermission(getActivity().getPackageName(), data.getData(), Intent.FLAG_GRANT_READ_URI_PERMISSION);
+
+							final int takeFlags = data.getFlags() & (Intent.FLAG_GRANT_READ_URI_PERMISSION);
+							getActivity().getContentResolver().takePersistableUriPermission(data.getData(), takeFlags);
+						}
 					}
-					catch (IOException e){}
-
-					File out = new File(path, System.currentTimeMillis() + ".jpg");
-
-					copyImage(selectedUri, out);
-
-					if (out.exists() && out.length() > 0)
+					catch (Exception e)
 					{
-						plant.getImages().add(out.getAbsolutePath());
-
-						PlantManager.getInstance().upsert(plantIndex, plant);
-						AddonHelper.broadcastImage(getActivity(), plant.getImages().get(plant.getImages().size() - 1), false);
-
-						setAdapter();
-						adapter.notifyDataSetChanged();
-					}
-					else
-					{
-						out.delete();
+						e.printStackTrace();
 					}
 				}
+
+				if (data.getClipData() != null)
+				{
+					for (int index = 0; index < data.getClipData().getItemCount(); index++)
+					{
+						images.add(data.getClipData().getItemAt(index).getUri());
+					}
+				}
+				images.removeAll(Collections.singleton(null));
+
+				NotificationHelper.sendDataTaskNotification(getActivity(), getString(R.string.app_name), getString(R.string.import_progress_warning));
+				new ImportTask(getActivity(), new AsyncCallback()
+				{
+					@Override public void callback()
+					{
+						if (getActivity() != null && !getActivity().isFinishing())
+						{
+							plant = PlantManager.getInstance().getPlant(plant.getId());
+							setAdapter();
+							adapter.notifyDataSetChanged();
+
+							finishPhotoIntent();
+						}
+					}
+				}).executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR, new Pair<>(plant.getId(), images));
 			}
 		}
 
 		// both photo options
-		if ((requestCode == 1 || requestCode == 3) && resultCode != Activity.RESULT_CANCELED)
-		{
-			if (getActivity() != null)
-			{
-				if (MainApplication.isEncrypted())
-				{
-					ArrayList<String> image = new ArrayList<>();
-					image.add(plant.getImages().get(plant.getImages().size() - 1));
-					new EncryptTask().executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR, image);
-				}
-
-				SnackBar.show(getActivity(), "Image added", "Take another", new SnackBarListener()
-				{
-					@Override public void onSnackBarStarted(Object o)
-					{
-						if (getView() != null)
-						{
-							FabAnimator.animateUp(getView().findViewById(R.id.fab_photo));
-						}
-					}
-
-					@Override public void onSnackBarFinished(Object o)
-					{
-						if (getView() != null)
-						{
-							FabAnimator.animateDown(getView().findViewById(R.id.fab_photo));
-						}
-					}
-
-					@Override public void onSnackBarAction(View v)
-					{
-						onFabPhotoClick(null);
-					}
-				});
-			}
-		}
+		setEmpty();
 	}
 
-	public void copyImage(Uri imageUri, File newLocation)
+	private void finishPhotoIntent()
 	{
-		try
+		Intent intent = new Intent();
+		intent.putExtra("plant", plant);
+		getActivity().setIntent(intent);
+		getActivity().setResult(Activity.RESULT_OK, intent);
+
+		PlantWidgetProvider.triggerUpdateAll(getView().getContext());
+
+		if (getActivity() != null)
 		{
-			if (imageUri.getScheme().startsWith("content"))
+			if (MainApplication.isEncrypted())
 			{
-				if (!newLocation.exists())
-				{
-					newLocation.createNewFile();
-				}
-
-				ParcelFileDescriptor parcelFileDescriptor = getActivity().getContentResolver().openFileDescriptor(imageUri, "r");
-				FileDescriptor fileDescriptor = parcelFileDescriptor.getFileDescriptor();
-
-
-				InputStream streamIn = new BufferedInputStream(new FileInputStream(fileDescriptor), 524288);
-				OutputStream streamOut = new BufferedOutputStream(new FileOutputStream(newLocation), 524288);
-
-				int len = 0;
-				byte[] buffer = new byte[524288];
-				while ((len = streamIn.read(buffer)) != -1)
-				{
-					streamOut.write(buffer, 0, len);
-				}
-
-				streamIn.close();
-				streamOut.flush();
-				streamOut.close();
+				ArrayList<String> image = new ArrayList<>();
+				image.add(plant.getImages().get(plant.getImages().size() - 1));
+				new EncryptTask(getActivity()).executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR, image);
 			}
-			else if (imageUri.getScheme().startsWith("file"))
+
+			SnackBar.show(getActivity(), R.string.snackbar_image_added, R.string.snackbar_action_take_another, new SnackBarListener()
 			{
-				if (!newLocation.exists())
+				@Override public void onSnackBarStarted(Object o){}
+				@Override public void onSnackBarFinished(Object o){}
+
+				@Override public void onSnackBarAction(View v)
 				{
-					newLocation.createNewFile();
+					onFabPhotoClick(null);
 				}
-
-				String image = imageUri.getPath();
-
-				InputStream streamIn = new BufferedInputStream(new FileInputStream(new File(image)), 524288);
-				OutputStream streamOut = new BufferedOutputStream(new FileOutputStream(newLocation), 524288);
-
-				int len = 0;
-				byte[] buffer = new byte[524288];
-				while ((len = streamIn.read(buffer)) != -1)
-				{
-					streamOut.write(buffer, 0, len);
-				}
-
-				streamIn.close();
-				streamOut.flush();
-				streamOut.close();
-			}
-		}
-		catch (Exception e)
-		{
-			e.printStackTrace();
+			});
 		}
 	}
 }

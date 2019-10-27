@@ -1,9 +1,10 @@
 package me.anon.lib
 
-import android.app.Activity
-import android.support.annotation.StringRes
-import android.support.design.widget.Snackbar
 import android.view.View
+import androidx.annotation.StringRes
+import androidx.fragment.app.FragmentActivity
+import com.google.android.material.snackbar.Snackbar
+import me.anon.grow.R
 
 abstract class SnackBarListener
 {
@@ -20,7 +21,7 @@ class SnackBar
 	companion object
 	{
 		@JvmStatic
-		public fun show(context: Activity, @StringRes messageRes: Int, @StringRes actionTextRes: Int = -1,
+		public fun show(context: FragmentActivity, @StringRes messageRes: Int, @StringRes actionTextRes: Int = -1,
 			listener: SnackBarListener?
 		)
 		{
@@ -32,19 +33,25 @@ class SnackBar
 		}
 
 		@JvmStatic
-		public fun show(context: Activity, message: String, listener: SnackBarListener?)
+		public fun show(context: FragmentActivity, @StringRes message: Int, listener: SnackBarListener?)
+		{
+			show(context, context.getString(message), listener)
+		}
+
+		@JvmStatic
+		public fun show(context: FragmentActivity, message: String, listener: SnackBarListener?)
 		{
 			show(context, message, "", Snackbar.LENGTH_LONG, listener)
 		}
 
 		@JvmStatic
-		public fun show(context: Activity, message: String, length: Int, listener: SnackBarListener?)
+		public fun show(context: FragmentActivity, message: String, length: Int, listener: SnackBarListener?)
 		{
 			show(context, message, "", length, listener)
 		}
 
 		@JvmStatic
-		public fun show(context: Activity, message: String, actionText: String = "",
+		public fun show(context: FragmentActivity, message: String, actionText: String = "",
 			listener: SnackBarListener?
 		)
 		{
@@ -52,7 +59,7 @@ class SnackBar
 		}
 
 		@JvmStatic
-		public fun show(context: Activity, message: String, actionText: String = "", length: Int = Snackbar.LENGTH_LONG,
+		public fun show(context: FragmentActivity, message: String, actionText: String = "", length: Int = Snackbar.LENGTH_LONG,
 			listener: SnackBarListener?
 		)
 		{
@@ -66,12 +73,12 @@ class SnackBar
 		}
 	}
 
-	public fun show(context: Activity, @StringRes messageRes: Int)
+	public fun show(context: FragmentActivity, @StringRes messageRes: Int)
 	{
 		show(context, messageRes)
 	}
 
-	public fun show(context: Activity, @StringRes messageRes: Int, @StringRes actionTextRes: Int = -1,
+	public fun show(context: FragmentActivity, @StringRes messageRes: Int, @StringRes actionTextRes: Int = -1,
 		start: () -> kotlin.Unit = {},
 		end: () -> kotlin.Unit = {},
 		action: (View) -> kotlin.Unit = {}
@@ -84,13 +91,13 @@ class SnackBar
 		)
 	}
 
-	public fun show(context: Activity, message: String, actionText: String = "", length: Int = Snackbar.LENGTH_LONG,
+	public fun show(context: FragmentActivity, message: String, actionText: String = "", length: Int = Snackbar.LENGTH_LONG,
 		start: () -> kotlin.Unit = {},
 		end: () -> kotlin.Unit = {},
 		action: (View) -> kotlin.Unit = {}
 	)
 	{
-		val snackbar = Snackbar.make(context.findViewById(android.R.id.content), message, length)
+		val snackbar = Snackbar.make(context.findViewById(R.id.coordinator), message, length)
 		var actionText = actionText
 		var action = action
 

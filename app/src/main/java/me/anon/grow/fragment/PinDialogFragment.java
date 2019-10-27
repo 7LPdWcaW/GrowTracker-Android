@@ -1,13 +1,10 @@
 package me.anon.grow.fragment;
 
 import android.annotation.SuppressLint;
-import android.app.AlertDialog;
 import android.app.Dialog;
-import android.app.DialogFragment;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.os.Bundle;
-import android.support.annotation.Nullable;
 import android.text.Editable;
 import android.text.TextUtils;
 import android.text.TextWatcher;
@@ -16,6 +13,9 @@ import android.view.View;
 import android.view.WindowManager;
 import android.widget.EditText;
 
+import androidx.annotation.Nullable;
+import androidx.appcompat.app.AlertDialog;
+import androidx.fragment.app.DialogFragment;
 import me.anon.grow.R;
 import me.anon.lib.Views;
 
@@ -24,7 +24,7 @@ public class PinDialogFragment extends DialogFragment
 {
 	public static interface OnDialogConfirmed
 	{
-		public void onDialogConfirmed(@Nullable String input);
+		public void onDialogConfirmed(DialogInterface dialog, @Nullable String input);
 	}
 
 	public static interface OnDialogCancelled
@@ -33,6 +33,11 @@ public class PinDialogFragment extends DialogFragment
 	}
 
 	@Views.InjectView(R.id.pin) private EditText input;
+
+	public EditText getInput()
+	{
+		return input;
+	}
 
 	private OnDialogConfirmed onDialogConfirmed;
 	private OnDialogCancelled onDialogCancelled;
@@ -67,17 +72,14 @@ public class PinDialogFragment extends DialogFragment
 		Views.inject(this, view);
 
 		dialog.setView(view);
-		dialog.setPositiveButton("Accept", new DialogInterface.OnClickListener()
+		dialog.setPositiveButton(R.string.accept, new DialogInterface.OnClickListener()
 		{
 			@Override public void onClick(DialogInterface dialog, int which)
 			{
-				if (onDialogConfirmed != null && !TextUtils.isEmpty(input.getText()))
-				{
-					onDialogConfirmed.onDialogConfirmed(input.getText().toString());
-				}
+
 			}
 		});
-		dialog.setNegativeButton("Cancel", new DialogInterface.OnClickListener()
+		dialog.setNegativeButton(R.string.cancel, new DialogInterface.OnClickListener()
 		{
 			@Override public void onClick(DialogInterface dialog, int which)
 			{
@@ -94,6 +96,16 @@ public class PinDialogFragment extends DialogFragment
 			@Override public void onShow(DialogInterface dialog)
 			{
 				((AlertDialog)show).getButton(DialogInterface.BUTTON_POSITIVE).setEnabled(false);
+				((AlertDialog)show).getButton(DialogInterface.BUTTON_POSITIVE).setOnClickListener(new View.OnClickListener()
+				{
+					@Override public void onClick(View view)
+					{
+						if (onDialogConfirmed != null && !TextUtils.isEmpty(input.getText()))
+						{
+							onDialogConfirmed.onDialogConfirmed(dialog, input.getText().toString());
+						}
+					}
+				});
 				input.addTextChangedListener(new TextWatcher()
 				{
 					@Override public void beforeTextChanged(CharSequence s, int start, int count, int after){}

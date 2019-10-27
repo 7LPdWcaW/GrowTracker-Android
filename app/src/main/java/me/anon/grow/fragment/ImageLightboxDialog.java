@@ -1,13 +1,11 @@
 package me.anon.grow.fragment;
 
-import android.app.Activity;
 import android.content.Context;
 import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
+import android.net.Uri;
 import android.os.Bundle;
 import android.os.Parcelable;
-import android.support.media.ExifInterface;
-import android.support.v4.view.PagerAdapter;
-import android.support.v4.view.ViewPager;
 import android.text.Html;
 import android.text.TextUtils;
 import android.view.Gravity;
@@ -25,24 +23,31 @@ import android.widget.TextView;
 
 import com.davemorrissey.labs.subscaleview.ImageSource;
 import com.davemorrissey.labs.subscaleview.SubsamplingScaleImageView;
-import com.nostra13.universalimageloader.core.ImageLoader;
-import com.nostra13.universalimageloader.core.listener.SimpleImageLoadingListener;
+import com.davemorrissey.labs.subscaleview.decoder.ImageDecoder;
 
+import java.io.File;
 import java.io.IOException;
 import java.text.DateFormat;
 import java.util.Date;
 
+import androidx.exifinterface.media.ExifInterface;
+import androidx.fragment.app.FragmentActivity;
+import androidx.viewpager.widget.PagerAdapter;
+import androidx.viewpager.widget.ViewPager;
+import me.anon.grow.MainApplication;
 import me.anon.grow.R;
 import me.anon.lib.DateRenderer;
 import me.anon.lib.Views;
 import me.anon.lib.helper.TimeHelper;
-import me.anon.lib.manager.PlantManager;
+import me.anon.lib.stream.DecryptInputStream;
+import me.anon.lib.stream.InputStreamImageDecoder;
+import me.anon.lib.stream.InputStreamImageRegionDecoder;
 import me.anon.model.Action;
 import me.anon.model.Plant;
 import me.anon.model.StageChange;
 
 @Views.Injectable
-public class ImageLightboxDialog extends Activity
+public class ImageLightboxDialog extends FragmentActivity
 {
 	private String[] imageUrls = {};
 	private Plant plant;
@@ -67,7 +72,7 @@ public class ImageLightboxDialog extends Activity
 				imageUrls = getIntent().getExtras().getStringArray("images");
 			}
 
-			plant = PlantManager.getInstance().getPlants().get(getIntent().getIntExtra("plant_index", -1));
+			plant = getIntent().getParcelableExtra("plant");
 			pagerPosition = getIntent().getExtras().getInt("image_position", 0);
 		}
 		else
@@ -78,7 +83,7 @@ public class ImageLightboxDialog extends Activity
 
 		if (savedInstanceState != null)
 		{
-			plant = PlantManager.getInstance().getPlants().get(getIntent().getIntExtra("plant_index", -1));
+			plant = savedInstanceState.getParcelable("plant");
 			pagerPosition = savedInstanceState.getInt("image_position");
 		}
 
@@ -90,7 +95,7 @@ public class ImageLightboxDialog extends Activity
 
 	@Override protected void onSaveInstanceState(Bundle outState)
 	{
-		outState.putInt("plant_index", PlantManager.getInstance().getPlants().indexOf(plant));
+		outState.putParcelable("plant", plant);
 		outState.putInt("image_position", pager.getCurrentItem());
 		super.onSaveInstanceState(outState);
 	}
@@ -182,8 +187,7 @@ public class ImageLightboxDialog extends Activity
 				Date date = new Date(Long.parseLong(fileDate));
 
 				StageChange lastChange = null;
-				StageChange currentChange = new StageChange();
-				currentChange.setDate(date.getTime());
+				long currentChangeDate = date.getTime();
 
 				for (int index = plant.getActions().size() - 1; index >= 0; index--)
 				{
@@ -205,13 +209,13 @@ public class ImageLightboxDialog extends Activity
 					int totalDays = (int)TimeHelper.toDays(Math.abs(date.getTime() - plant.getPlantDate()));
 					stageDayStr += (totalDays == 0 ? 1 : totalDays);
 
-					int currentDays = (int)TimeHelper.toDays(Math.abs(currentChange.getDate() - lastChange.getDate()));
+					int currentDays = (int)TimeHelper.toDays(Math.abs(currentChangeDate - lastChange.getDate()));
 					currentDays = (currentDays == 0 ? 1 : currentDays);
-					stageDayStr += "/" + currentDays + lastChange.getNewStage().getPrintString().substring(0, 1).toLowerCase();
+					stageDayStr += "/" + currentDays + getString(lastChange.getNewStage().getPrintString()).substring(0, 1).toLowerCase();
 				}
 
 				String dateStr = dateFormat.format(date) + " " + timeFormat.format(date);
-				((TextView)imageLayout.findViewById(R.id.taken)).setText(Html.fromHtml("<b>Taken</b>: " + dateStr + stageDayStr + " (" + new DateRenderer().timeAgo(date.getTime()).formattedDate + " ago)"));
+				((TextView)imageLayout.findViewById(R.id.taken)).setText(Html.fromHtml("<b>" + getString(R.string.taken) + "</b>: " + dateStr + stageDayStr + " (" + getString(R.string.ago,  new DateRenderer(view.getContext()).timeAgo(date.getTime()).formattedDate) + ")"));
 
 				try
 				{
@@ -269,13 +273,17 @@ public class ImageLightboxDialog extends Activity
 			final SubsamplingScaleImageView imageView = (SubsamplingScaleImageView)v.findViewById(R.id.image);
 			imageView.setDoubleTapZoomScale(1.5f);
 
-			ImageLoader.getInstance().loadImage("file://" + images[position], new SimpleImageLoadingListener()
+			try
 			{
-				@Override public void onLoadingComplete(String imageUri, View view, Bitmap loadedImage)
-				{
-					imageView.setImage(ImageSource.bitmap(loadedImage));
-				}
-			});
+				imageView.setBitmapDecoderFactory(new InputStreamImageDecoder.Factory());
+				imageView.setRegionDecoderFactory(new InputStreamImageRegionDecoder.Factory());
+
+				imageView.setImage(ImageSource.uri("file://" + images[position]));
+			}
+			catch (Exception e)
+			{
+				e.printStackTrace();
+			}
 		}
 
 		@Override public boolean isViewFromObject(View view, Object object)
@@ -294,6 +302,17 @@ public class ImageLightboxDialog extends Activity
 
 		@Override public void startUpdate(View container)
 		{
+		}
+	}
+
+	public static class EncryptedImageDecoder implements ImageDecoder
+	{
+		@Override public Bitmap decode(Context context, Uri uri) throws Exception
+		{
+			BitmapFactory.Options options = new BitmapFactory.Options();
+			options.inPreferredConfig = Bitmap.Config.RGB_565;
+
+			return BitmapFactory.decodeStream(new DecryptInputStream(MainApplication.getKey(), new File(uri.getPath())), null, options);
 		}
 	}
 }

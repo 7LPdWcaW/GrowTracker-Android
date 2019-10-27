@@ -1,44 +1,46 @@
 package me.anon.grow;
 
-import android.app.Activity;
-import android.app.AlertDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
-import android.support.v4.content.FileProvider;
 import android.text.Html;
 import android.util.Base64;
-import android.widget.Toast;
 
 import java.io.File;
 import java.util.ArrayList;
 
+import androidx.appcompat.app.AlertDialog;
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.app.AppCompatDelegate;
+import androidx.core.content.FileProvider;
 import me.anon.grow.fragment.PinDialogFragment;
 import me.anon.lib.handler.ExceptionHandler;
 import me.anon.lib.helper.EncryptionHelper;
 import me.anon.lib.helper.MigrationHelper;
 import me.anon.lib.manager.PlantManager;
+import me.anon.lib.task.AsyncCallback;
 
-public class BootActivity extends Activity
+public class BootActivity extends AppCompatActivity
 {
 	private boolean sentIntent = false;
 
 	@Override protected void onCreate(Bundle savedInstanceState)
 	{
+		boolean forceDark = androidx.preference.PreferenceManager.getDefaultSharedPreferences(this).getBoolean("force_dark", false);
+		AppCompatDelegate.setDefaultNightMode(forceDark ? AppCompatDelegate.MODE_NIGHT_YES : AppCompatDelegate.MODE_NIGHT_FOLLOW_SYSTEM);
+
 		super.onCreate(savedInstanceState);
 
 		final String[] exceptions = ExceptionHandler.getInstance().searchForStackTraces();
 		if (exceptions != null && exceptions.length > 0)
 		{
 			new AlertDialog.Builder(this)
-				.setTitle("Uh-oh")
-				.setMessage(Html.fromHtml("Looks like there was a crash the last time you used the app. Would you like to send these anonymous reports? " +
-					"These reports will be sent to <a href=\"https://github.com/7LPdWcaW/GrowTracker-Android/issues\">github.com/7LPdWcaW/GrowTracker-Android/issues</a>, no personal information will be included. You can optionally " +
-					"post these reports to <a href=\"https://reddit.com/r/growutils\">reddit.com/r/growutils</a> manually if you wish. Reports are stored in <i>" + ExceptionHandler.getInstance().getFilesPath() + "</i>"))
-				.setPositiveButton("Yes", new DialogInterface.OnClickListener()
+				.setTitle(R.string.crash_title)
+				.setMessage(Html.fromHtml(getString(R.string.crash_message, ExceptionHandler.getInstance().getFilesPath())))
+				.setPositiveButton(R.string.yes, new DialogInterface.OnClickListener()
 				{
 					@Override public void onClick(DialogInterface dialogInterface, int i)
 					{
@@ -69,7 +71,7 @@ public class BootActivity extends Activity
 						sentIntent = true;
 					}
 				})
-				.setNegativeButton("No", new DialogInterface.OnClickListener()
+				.setNegativeButton(R.string.no, new DialogInterface.OnClickListener()
 				{
 					@Override public void onClick(DialogInterface dialogInterface, int i)
 					{
@@ -115,12 +117,12 @@ public class BootActivity extends Activity
 		if (MainApplication.isEncrypted())
 		{
 			final PinDialogFragment check = new PinDialogFragment();
-			check.setTitle("Enter your passphrase");
+			check.setTitle(getString(R.string.passphrase_title));
 			check.setOnDialogConfirmed(new PinDialogFragment.OnDialogConfirmed()
 			{
-				@Override public void onDialogConfirmed(String input)
+				@Override public void onDialogConfirmed(DialogInterface dialog, String input)
 				{
-					String integrityCheck = PreferenceManager.getDefaultSharedPreferences(BootActivity.this).getString("encryption_check_key", "");
+					String integrityCheck = PreferenceManager.getDefaultSharedPreferences(BootActivity.this).getString("encryption_check_key", Base64.encodeToString(EncryptionHelper.encrypt(input, input), Base64.NO_WRAP));
 					String failsafeCheck = PreferenceManager.getDefaultSharedPreferences(BootActivity.this).getString("failsafe_check_key", "");
 					String inputCheck = Base64.encodeToString(EncryptionHelper.encrypt(input, input), Base64.NO_WRAP);
 
@@ -128,6 +130,7 @@ public class BootActivity extends Activity
 					{
 						MainApplication.setFailsafe(true);
 						start();
+						dialog.dismiss();
 					}
 					else if (inputCheck.equals(integrityCheck))
 					{
@@ -136,13 +139,11 @@ public class BootActivity extends Activity
 						PlantManager.getInstance().load();
 
 						start();
+						dialog.dismiss();
 					}
 					else
 					{
-						Toast.makeText(BootActivity.this, "Error - incorrect passphrase", Toast.LENGTH_SHORT).show();
-
-						check.dismiss();
-						check.show(getFragmentManager(), null);
+						check.getInput().setError(getString(R.string.encrypt_passphrase_error));
 					}
 				}
 			});
@@ -154,7 +155,7 @@ public class BootActivity extends Activity
 				}
 			});
 
-			check.show(getFragmentManager(), null);
+			check.show(getSupportFragmentManager(), null);
 		}
 		else
 		{
@@ -166,8 +167,13 @@ public class BootActivity extends Activity
 	{
 		if (MigrationHelper.needsMigration(this))
 		{
-			MigrationHelper.performMigration(this);
-			start();
+			MigrationHelper.performMigration(this, new AsyncCallback()
+			{
+				@Override public void callback()
+				{
+					start();
+				}
+			});
 		}
 		else
 		{

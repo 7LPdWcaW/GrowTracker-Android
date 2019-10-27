@@ -33,7 +33,7 @@
 		/>
 	</LinearLayout>
 
-	<android.support.v7.widget.CardView
+	<com.google.android.material.card.MaterialCardView
 		android:layout_width="match_parent"
 		android:layout_height="wrap_content"
 		android:id="@+id/card"
@@ -48,7 +48,7 @@
 			android:paddingBottom="12dp"
 			android:paddingStart="8dp"
 		>
-			<android.support.constraint.ConstraintLayout
+			<androidx.constraintlayout.widget.ConstraintLayout
 				android:layout_width="match_parent"
 				android:layout_height="wrap_content"
 				android:id="@+id/content_container"
@@ -58,9 +58,9 @@
 					android:layout_height="42dp"
 					android:id="@+id/overflow"
 					android:src="@drawable/ic_overflow"
-					android:background="@null"
+					android:background="?actionBarItemBackground"
 					android:adjustViewBounds="true"
-					android:tint="#333333"
+					android:tint="?android:textColorSecondary"
 					android:padding="12dp"
 					android:visibility="gone"
 					app:layout_constraintEnd_toEndOf="parent"
@@ -72,7 +72,7 @@
 					android:layout_height="42dp"
 					android:id="@+id/date"
 					android:textSize="14sp"
-					android:textColor="#666666"
+					android:textColor="?android:textColorSecondary"
 					android:gravity="center"
 					android:layout_gravity="center_vertical"
 					android:fontFamily="sans-serif-light"
@@ -87,21 +87,13 @@
 					android:id="@+id/name"
 					android:paddingEnd="8dp"
 					android:paddingStart="8dp"
-					android:minHeight="42dp"
 					android:gravity="center_vertical"
 					app:layout_constraintTop_toTopOf="@id/date"
+					app:layout_constraintBottom_toBottomOf="@id/date"
 					app:layout_constraintEnd_toStartOf="@id/date"
 					app:layout_constraintStart_toStartOf="parent"
 					tools:text="Very Long Action name"
 					style="@style/SubsectionTitle"
-				/>
-
-				<android.support.constraint.Barrier
-					android:layout_width="0dp"
-					android:layout_height="0dp"
-					android:id="@+id/title_barrier"
-					app:barrierDirection="bottom"
-					app:constraint_referenced_ids="name,overflow,date"
 				/>
 
 				<TextView
@@ -109,16 +101,16 @@
 					android:layout_height="wrap_content"
 					android:id="@+id/full_date"
 					android:textSize="14sp"
-					android:textColor="#666666"
+					android:textColor="?android:textColorSecondary"
 					android:fontFamily="sans-serif-light"
 					android:layout_below="@id/name"
 					android:paddingEnd="8dp"
 					android:paddingStart="8dp"
-					app:layout_constraintTop_toBottomOf="@id/title_barrier"
-					app:layout_constraintStart_toStartOf="parent"
-					app:layout_constraintEnd_toEndOf="parent"
+					app:layout_constraintTop_toBottomOf="@id/name"
+					app:layout_constraintStart_toStartOf="@id/name"
+					app:layout_constraintEnd_toStartOf="@id/date"
 				/>
-			</android.support.constraint.ConstraintLayout>
+			</androidx.constraintlayout.widget.ConstraintLayout>
 
 			<TextView
 				android:layout_width="match_parent"
@@ -130,5 +122,5 @@
 				style="@style/SubsectionSubTitle"
 			/>
 		</LinearLayout>
-	</android.support.v7.widget.CardView>
+	</com.google.android.material.card.MaterialCardView>
 </LinearLayout>

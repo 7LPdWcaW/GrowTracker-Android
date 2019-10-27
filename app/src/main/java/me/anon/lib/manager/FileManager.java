@@ -1,10 +1,7 @@
 package me.anon.lib.manager;
 
-import android.support.annotation.Nullable;
+import android.os.Environment;
 import android.text.TextUtils;
-
-import com.google.gson.JsonElement;
-import com.google.gson.JsonParser;
 
 import java.io.BufferedInputStream;
 import java.io.ByteArrayOutputStream;
@@ -21,8 +18,13 @@ import java.io.Serializable;
 import java.security.DigestInputStream;
 import java.security.MessageDigest;
 
+import androidx.annotation.Nullable;
+import me.anon.lib.stream.DecryptInputStream;
+import me.anon.lib.stream.EncryptOutputStream;
+
 public class FileManager
 {
+	public static String IMAGE_PATH = Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DCIM).getPath() + "/GrowTracker/";
 	private static FileManager instance;
 
 	/**
@@ -66,6 +68,52 @@ public class FileManager
 		}
 
 		return 0;
+	}
+
+	public void decryptTo(String from, String to, String key)
+	{
+		try
+		{
+			DecryptInputStream decryptInputStream = new DecryptInputStream(key, new File(from));
+			FileOutputStream outputStream = new FileOutputStream(new File(to));
+			byte[] buffer = new byte[8192];
+			int count = 0;
+			while ((count = decryptInputStream.read(buffer)) != -1)
+			{
+				outputStream.write(buffer, 0, count);
+			}
+
+			decryptInputStream.close();
+			outputStream.flush();
+			outputStream.close();
+		}
+		catch (Exception e)
+		{
+			e.printStackTrace();
+		}
+	}
+
+	public void encryptTo(String from, String to, String key)
+	{
+		try
+		{
+			FileInputStream inputStream = new FileInputStream(new File(from));
+			EncryptOutputStream outputStream = new EncryptOutputStream(key, new File(to));
+			byte[] buffer = new byte[8192];
+			int count = 0;
+			while ((count = inputStream.read(buffer)) != -1)
+			{
+				outputStream.write(buffer, 0, count);
+			}
+
+			inputStream.close();
+			outputStream.flush();
+			outputStream.close();
+		}
+		catch (Exception e)
+		{
+			e.printStackTrace();
+		}
 	}
 
 	/**
@@ -114,42 +162,6 @@ public class FileManager
 	public String readFileAsString(InputStream stream)
 	{
 		return new String(readFile(stream));
-	}
-
-	/**
-	 * Read from file and return as a JSON element
-	 *
-	 * @param filePath The absolute path to the file on the local filesystem
-	 *
-	 * @return JSON representation of file contents
-	 */
-	public JsonElement readFileAsJson(String filePath)
-	{
-		return readFileAsJson(new File(filePath));
-	}
-
-	/**
-	 * Read from file and return as a JSON element
-	 *
-	 * @param file The file on the local filesystem
-	 *
-	 * @return JSON representation of file contents
-	 */
-	public JsonElement readFileAsJson(File file)
-	{
-		return new JsonParser().parse(readFileAsString(file));
-	}
-
-	/**
-	 * Read from file and return as a JSON element
-	 *
-	 * @param stream The stream to read from
-	 *
-	 * @return JSON representation of file contents
-	 */
-	public JsonElement readFileAsJson(InputStream stream)
-	{
-		return new JsonParser().parse(readFileAsString(stream));
 	}
 
 	/**

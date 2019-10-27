@@ -1,0 +1,74 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<FrameLayout
+	xmlns:android="http://schemas.android.com/apk/res/android"
+	xmlns:app="http://schemas.android.com/apk/res-auto"
+	xmlns:tools="http://schemas.android.com/tools"
+	android:layout_width="match_parent"
+	android:layout_height="match_parent"
+>
+	<androidx.core.widget.NestedScrollView
+		android:layout_width="match_parent"
+		android:layout_height="match_parent"
+		android:fillViewport="true"
+	>
+		<androidx.constraintlayout.widget.ConstraintLayout
+			android:layout_width="match_parent"
+			android:layout_height="match_parent"
+			android:orientation="vertical"
+			android:clipToPadding="false"
+			android:clipChildren="false"
+		>
+			<androidx.recyclerview.widget.RecyclerView
+				android:layout_width="match_parent"
+				android:layout_height="match_parent"
+				android:id="@+id/recycler_view"
+				android:paddingLeft="8dp"
+				android:paddingRight="8dp"
+				android:paddingTop="8dp"
+				android:paddingBottom="88dp"
+				android:clipToPadding="false"
+			/>
+
+			<LinearLayout
+				android:layout_width="wrap_content"
+				android:layout_height="wrap_content"
+				android:id="@+id/empty"
+				android:layout_gravity="center"
+				android:orientation="vertical"
+				app:layout_constraintTop_toTopOf="parent"
+				app:layout_constraintBottom_toBottomOf="parent"
+				app:layout_constraintStart_toStartOf="parent"
+				app:layout_constraintEnd_toEndOf="parent"
+			>
+				<ImageView
+					android:layout_width="256dp"
+					android:layout_height="256dp"
+					app:srcCompat="@drawable/ic_flower"
+					app:tint="?android:textColorTertiary"
+					android:alpha="0.2"
+				/>
+
+				<TextView
+					android:layout_width="wrap_content"
+					android:layout_height="wrap_content"
+					android:gravity="center_horizontal"
+					android:text="@string/empty_plant_list"
+					android:textColor="?android:textColorTertiary"
+					android:layout_marginTop="12dp"
+					android:layout_gravity="center_horizontal"
+				/>
+			</LinearLayout>
+		</androidx.constraintlayout.widget.ConstraintLayout>
+	</androidx.core.widget.NestedScrollView>
+
+	<com.google.android.material.floatingactionbutton.FloatingActionButton
+		android:layout_width="wrap_content"
+		android:layout_height="wrap_content"
+		android:id="@+id/fab_add"
+		android:layout_gravity="bottom|right"
+		android:layout_margin="16dp"
+		android:src="@drawable/ic_floting_add"
+		app:backgroundTint="#E10A19"
+	/>
+</FrameLayout>

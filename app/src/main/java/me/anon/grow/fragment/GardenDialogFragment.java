@@ -1,13 +1,10 @@
 package me.anon.grow.fragment;
 
 import android.annotation.SuppressLint;
-import android.app.AlertDialog;
 import android.app.Dialog;
-import android.app.DialogFragment;
 import android.content.DialogInterface;
 import android.os.Bundle;
-import android.support.v7.widget.LinearLayoutManager;
-import android.support.v7.widget.RecyclerView;
+import android.preference.PreferenceManager;
 import android.text.TextUtils;
 import android.view.View;
 import android.widget.EditText;
@@ -15,6 +12,10 @@ import android.widget.TextView;
 
 import java.util.ArrayList;
 
+import androidx.appcompat.app.AlertDialog;
+import androidx.fragment.app.DialogFragment;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
 import me.anon.controller.adapter.PlantSelectionAdapter;
 import me.anon.grow.R;
 import me.anon.lib.Views;
@@ -71,14 +72,17 @@ public class GardenDialogFragment extends DialogFragment
 
 		adapter = new PlantSelectionAdapter(PlantManager.getInstance().getSortedPlantList(null), garden == null ? null : garden.getPlantIds(), getActivity());
 		recyclerView.setAdapter(adapter);
-		recyclerView.setLayoutManager(new LinearLayoutManager(getActivity(), LinearLayoutManager.VERTICAL, false));
+		boolean reverse = PreferenceManager.getDefaultSharedPreferences(getActivity()).getBoolean("reverse_order", false);
+		LinearLayoutManager layoutManager = new LinearLayoutManager(getActivity(), RecyclerView.VERTICAL, reverse);
+		layoutManager.setStackFromEnd(reverse);
+		recyclerView.setLayoutManager(layoutManager);
 
 		final AlertDialog alertDialog = new AlertDialog.Builder(getActivity())
-			.setTitle("Garden")
+			.setTitle(R.string.garden)
 			.setView(view)
-			.setPositiveButton("Ok", null)
-			.setNeutralButton("Select All", null)
-			.setNegativeButton("Cancel", new DialogInterface.OnClickListener()
+			.setPositiveButton(R.string.ok, null)
+			.setNeutralButton(R.string.select_all, null)
+			.setNegativeButton(R.string.cancel, new DialogInterface.OnClickListener()
 			{
 				public void onClick(DialogInterface dialog, int whichButton)
 				{
@@ -96,7 +100,7 @@ public class GardenDialogFragment extends DialogFragment
 					{
 						if (TextUtils.isEmpty(name.getText()))
 						{
-							name.setError("Field is required");
+							name.setError(getString(R.string.field_required));
 							return;
 						}
 
@@ -133,7 +137,7 @@ public class GardenDialogFragment extends DialogFragment
 
 							adapter.setSelectedIds(plantIds);
 							adapter.notifyDataSetChanged();
-							((TextView)view).setText("Select none");
+							((TextView)view).setText(R.string.select_none);
 						}
 						else
 						{
@@ -141,7 +145,7 @@ public class GardenDialogFragment extends DialogFragment
 
 							adapter.setSelectedIds(plantIds);
 							adapter.notifyDataSetChanged();
-							((TextView)view).setText("Select all");
+							((TextView)view).setText(R.string.select_all);
 						}
 					}
 				});

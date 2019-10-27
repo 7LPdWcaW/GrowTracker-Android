@@ -2,15 +2,25 @@
 
 <menu
 	xmlns:android="http://schemas.android.com/apk/res/android"
+	xmlns:app="http://schemas.android.com/apk/res-auto"
 >
 	<item
-		android:title="Delete"
+		android:title="@string/select_all"
+		android:id="@+id/select_all"
+		android:icon="@drawable/ic_select_all"
+		app:iconTint="?colorOnPrimary"
+	/>
+
+
+	<item
+		android:title="@string/delete"
 		android:id="@+id/delete"
 		android:icon="@drawable/ic_delete"
+		app:iconTint="?colorOnPrimary"
 	/>
 
 	<item
-		android:title="Share"
+		android:title="@string/share"
 		android:id="@+id/share"
 		android:icon="@drawable/ic_share"
 	/>

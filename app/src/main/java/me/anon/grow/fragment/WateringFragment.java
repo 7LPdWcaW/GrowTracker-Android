@@ -1,14 +1,10 @@
 package me.anon.grow.fragment;
 
 import android.app.Activity;
-import android.app.AlertDialog;
-import android.app.Fragment;
-import android.app.FragmentManager;
 import android.content.Context;
 import android.content.DialogInterface;
+import android.content.Intent;
 import android.os.Bundle;
-import android.preference.PreferenceManager;
-import android.support.annotation.Nullable;
 import android.text.Editable;
 import android.text.Html;
 import android.text.TextUtils;
@@ -34,8 +30,14 @@ import java.util.Comparator;
 import java.util.Date;
 import java.util.GregorianCalendar;
 
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
+import androidx.appcompat.app.AlertDialog;
+import androidx.fragment.app.Fragment;
+import androidx.fragment.app.FragmentManager;
 import me.anon.controller.provider.PlantWidgetProvider;
 import me.anon.grow.R;
+import me.anon.lib.TdsUnit;
 import me.anon.lib.TempUnit;
 import me.anon.lib.Unit;
 import me.anon.lib.Views;
@@ -46,6 +48,7 @@ import me.anon.model.Additive;
 import me.anon.model.FeedingSchedule;
 import me.anon.model.FeedingScheduleDate;
 import me.anon.model.Plant;
+import me.anon.model.Tds;
 import me.anon.model.Water;
 
 import static me.anon.lib.TempUnit.CELCIUS;
@@ -80,7 +83,7 @@ public class WateringFragment extends Fragment
 	private Water water;
 	private Unit selectedMeasurementUnit, selectedDeliveryUnit;
 	private TempUnit selectedTemperatureUnit;
-	private boolean usingEc = false;
+	private TdsUnit selectedTdsUnit;
 	private TextWatcher deliveryTextChangeListener = new TextWatcher()
 	{
 		@Override public void beforeTextChanged(CharSequence s, int start, int count, int after){}
@@ -129,25 +132,36 @@ public class WateringFragment extends Fragment
 		selectedMeasurementUnit = Unit.getSelectedMeasurementUnit(getActivity());
 		selectedDeliveryUnit = Unit.getSelectedDeliveryUnit(getActivity());
 		selectedTemperatureUnit = TempUnit.getSelectedTemperatureUnit(getActivity());
-		usingEc = PreferenceManager.getDefaultSharedPreferences(getActivity()).getBoolean("tds_ec", false);
+		selectedTdsUnit = TdsUnit.getSelectedTdsUnit(getActivity());
 
-		if (getArguments() != null)
+		if (savedInstanceState != null)
+		{
+			plantIndex = savedInstanceState.getIntArray("plant_index");
+			actionIndex = savedInstanceState.getInt("action_index");
+			water = savedInstanceState.getParcelable("water");
+		}
+		else if (getArguments() != null)
 		{
 			plantIndex = getArguments().getIntArray("plant_index");
 			actionIndex = getArguments().getInt("action_index");
-
-			for (int index : plantIndex)
-			{
-				Plant plant = PlantManager.getInstance().getPlants().get(index);
-				plants.add(plant);
-
-				getActivity().getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_ALWAYS_HIDDEN);
-			}
 
 			if (actionIndex > -1 && plantIndex.length == 1)
 			{
 				water = (Water)PlantManager.getInstance().getPlants().get(plantIndex[0]).getActions().get(actionIndex);
 			}
+		}
+
+		if (water != null && water.getTds() != null)
+		{
+			selectedTdsUnit = water.getTds().getType();
+		}
+
+		for (int index : plantIndex)
+		{
+			Plant plant = PlantManager.getInstance().getPlants().get(index);
+			plants.add(plant);
+
+			getActivity().getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_ALWAYS_HIDDEN);
 		}
 
 		if (water == null)
@@ -163,6 +177,15 @@ public class WateringFragment extends Fragment
 
 		setUi();
 		setHints();
+	}
+
+	@Override public void onSaveInstanceState(@NonNull Bundle outState)
+	{
+		outState.putIntArray("plant_index", plantIndex);
+		outState.putInt("action_index", actionIndex);
+		outState.putParcelable("water", water);
+
+		super.onSaveInstanceState(outState);
 	}
 
 	@Override public void onResume()
@@ -195,7 +218,7 @@ public class WateringFragment extends Fragment
 			}
 
 			new AlertDialog.Builder(getActivity())
-				.setTitle("Select schedule")
+				.setTitle(R.string.select_schedule_title)
 				.setItems(items.toArray(new String[items.size()]), new DialogInterface.OnClickListener()
 				{
 					@Override public void onClick(DialogInterface dialog, int which)
@@ -253,7 +276,14 @@ public class WateringFragment extends Fragment
 		{
 			@Override public void onFeedingSelected(FeedingScheduleDate date)
 			{
-				water.setAdditives(date.getAdditives());
+				ArrayList<Additive> additives = new ArrayList<>();
+
+				for (Additive additive : date.getAdditives())
+				{
+					additives.add(new Kryo().copy(additive));
+				}
+
+				water.setAdditives(additives);
 				populateAdditives();
 			}
 		});
@@ -262,14 +292,12 @@ public class WateringFragment extends Fragment
 
 	private void setHints()
 	{
-		amountLabel.setText("Amount (" + selectedDeliveryUnit.getLabel() + ")");
+		amountLabel.setText(getString(R.string.amount_label, selectedDeliveryUnit.getLabel()));
 		amount.setHint("250" + selectedDeliveryUnit.getLabel());
+		tempLabel.setText(getString(R.string.temp_label, selectedTemperatureUnit.getLabel()));
 
-		if (usingEc)
-		{
-			waterPpm.setHint("1.0 " + (usingEc ? "EC" : "PPM"));
-			((TextView)((ViewGroup)waterPpm.getParent()).findViewById(R.id.ppm_label)).setText(usingEc ? "EC" : "PPM");
-		}
+		waterPpm.setHint(selectedTdsUnit.getLabel());
+		((TextView)((ViewGroup)waterPpm.getParent()).findViewById(R.id.ppm_label)).setText(selectedTdsUnit.getStrRes());
 
 		if (water != null)
 		{
@@ -291,8 +319,8 @@ public class WateringFragment extends Fragment
 			{
 				Double averagePh = 0.0;
 				int phCount = 0;
-				Double averagePpm = 0.0;
-				int ppmCount = 0;
+				ArrayList<Tds> averagePpm = new ArrayList<>();
+				Double selectedTdsAverage = 0.0;
 				Double averageRunoff = 0.0;
 				int runoffCount = 0;
 				Double averageAmount = 0.0;
@@ -308,10 +336,14 @@ public class WateringFragment extends Fragment
 						phCount++;
 					}
 
-					if (hint.getPpm() != null)
+					if (hint.getTds() != null)
 					{
-						averagePpm += hint.getPpm();
-						ppmCount++;
+						Tds tds = new Tds(hint.getTds().getAmount(), hint.getTds().getType());
+						if (hint.getTds().getType() == selectedTdsUnit)
+						{
+							selectedTdsAverage += hint.getTds().getAmount();
+							averagePpm.add(tds);
+						}
 					}
 
 					if (hint.getRunoff() != null)
@@ -334,7 +366,7 @@ public class WateringFragment extends Fragment
 				}
 
 				averagePh = Unit.toTwoDecimalPlaces(averagePh / phCount);
-				averagePpm = Unit.toTwoDecimalPlaces(averagePpm / ppmCount);
+				selectedTdsAverage = Unit.toTwoDecimalPlaces(selectedTdsAverage / (double)averagePpm.size());
 				averageRunoff = Unit.toTwoDecimalPlaces(averageRunoff / runoffCount);
 				averageAmount = Unit.toTwoDecimalPlaces(averageAmount / amountCount);
 				averageTemp = Unit.toTwoDecimalPlaces(averageTemp / tempCount);
@@ -344,14 +376,16 @@ public class WateringFragment extends Fragment
 					waterPh.setHint(String.valueOf(averagePh));
 				}
 
-				if (!averagePpm.isNaN())
+				if (!selectedTdsAverage.isNaN())
 				{
-					if (usingEc)
+					if (selectedTdsUnit.getDecimalPlaces() == 0)
 					{
-						averagePpm = Unit.toTwoDecimalPlaces((averagePpm * 2d) / 1000d);
+						waterPpm.setHint(selectedTdsAverage.intValue() + " " + selectedTdsUnit.getLabel());
 					}
-
-					waterPpm.setHint(String.valueOf(averagePpm) + " " + (usingEc ? "EC" : "PPM"));
+					else
+					{
+						waterPpm.setHint(selectedTdsAverage + " " + selectedTdsUnit.getLabel());
+					}
 				}
 
 				if (!averageRunoff.isNaN())
@@ -365,7 +399,6 @@ public class WateringFragment extends Fragment
 				}
 
 				tempContainer.setVisibility(View.VISIBLE);
-				tempLabel.setText("Temp (º" + selectedTemperatureUnit.getLabel() + ")");
 
 				if (!averageTemp.isNaN())
 				{
@@ -387,7 +420,7 @@ public class WateringFragment extends Fragment
 		date.setText("");
 		notes.setText("");
 
-		getActivity().setTitle("Feeding " + (plants.size() == 1 ? plants.get(0).getName() : "multiple plants"));
+		getActivity().setTitle(plants.size() == 1 ? getString(R.string.feeding_single_title, plants.get(0).getName()) : getString(R.string.feeding_multiple_title));
 
 		Calendar date = Calendar.getInstance();
 		date.setTimeInMillis(water.getDate());
@@ -431,12 +464,12 @@ public class WateringFragment extends Fragment
 				waterPh.setText(String.valueOf(water.getPh()));
 			}
 
-			if (water.getPpm() != null)
+			if (water.getTds() != null)
 			{
-				String ppm = String.valueOf(water.getPpm().longValue());
-				if (usingEc)
+				String ppm = String.valueOf(water.getTds().getAmount().intValue());
+				if (selectedTdsUnit.getDecimalPlaces() == 2)
 				{
-					ppm = String.valueOf((water.getPpm() * 2d) / 1000d);
+					ppm = "" + Unit.toTwoDecimalPlaces(water.getTds().getAmount());
 				}
 
 				waterPpm.setText(ppm);
@@ -611,15 +644,20 @@ public class WateringFragment extends Fragment
 		Double amount = TextUtils.isEmpty(this.amount.getText()) ? null : Double.valueOf(this.amount.getText().toString());
 		Double temp = TextUtils.isEmpty(this.temp.getText()) ? null : Double.valueOf(this.temp.getText().toString());
 
-		if (usingEc && ppm != null)
-		{
-			ppm = (ppm * 1000d) / 2d;
-		}
-
 		water.setPh(waterPh);
-		water.setPpm(ppm);
 		water.setRunoff(runoffPh);
 		water.setAmount(amount == null ? null : selectedDeliveryUnit.to(ML, amount));
+
+		if (water.getTds() == null && ppm != null)
+		{
+			water.setTds(new Tds());
+			water.getTds().setType(selectedTdsUnit);
+		}
+
+		if (water.getTds() != null)
+		{
+			water.getTds().setAmount(ppm);
+		}
 
 		if (temp != null)
 		{
@@ -644,7 +682,7 @@ public class WateringFragment extends Fragment
 				plants.get(0).getActions().set(actionIndex, water);
 			}
 
-			PlantManager.getInstance().upsert(plantIndex[0], plants.get(0));
+			PlantManager.getInstance().upsert(plants.get(0));
 		}
 		else
 		{
@@ -663,7 +701,17 @@ public class WateringFragment extends Fragment
 		}
 
 		PlantWidgetProvider.triggerUpdateAll(getActivity());
-		getActivity().setResult(Activity.RESULT_OK);
+
+		Plant plant = null;
+		for (int index : plantIndex)
+		{
+			plant = PlantManager.getInstance().getPlants().get(index);
+			break;
+		}
+
+		Intent intent = new Intent();
+		intent.putExtra("plant", plant);
+		getActivity().setResult(Activity.RESULT_OK, intent);
 		getActivity().finish();
 	}
 

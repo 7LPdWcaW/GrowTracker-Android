@@ -1,14 +1,13 @@
 package me.anon.view
 
-import android.app.AlertDialog
 import android.content.Intent
-import android.support.v7.widget.RecyclerView
 import android.view.View
+import androidx.appcompat.app.AlertDialog
+import androidx.recyclerview.widget.RecyclerView
 import kotlinx.android.synthetic.main.schedule_item.view.*
 import me.anon.controller.adapter.FeedingScheduleAdapter
 import me.anon.grow.FeedingScheduleDetailsActivity
 import me.anon.grow.R
-import me.anon.lib.manager.ScheduleManager
 import me.anon.model.FeedingSchedule
 
 /**
@@ -55,7 +54,7 @@ class ScheduleHolder(val adapter: FeedingScheduleAdapter, itemView: View) : Recy
 
 		itemView.setOnClickListener {
 			it.context.startActivity(Intent(it.context, FeedingScheduleDetailsActivity::class.java).also {
-				it.putExtra("schedule_index", ScheduleManager.instance.schedules.indexOf(feedingSchedule))
+				it.putExtra("schedule", feedingSchedule)
 			})
 		}
 	}

@@ -1,7 +1,6 @@
 package me.anon.controller.adapter;
 
 import android.content.Intent;
-import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -14,10 +13,10 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
+import androidx.recyclerview.widget.RecyclerView;
 import me.anon.grow.MainApplication;
 import me.anon.grow.R;
 import me.anon.grow.fragment.ImageLightboxDialog;
-import me.anon.lib.manager.PlantManager;
 import me.anon.model.Plant;
 import me.anon.view.ImageHolder;
 
@@ -30,9 +29,15 @@ import me.anon.view.ImageHolder;
  */
 public class ImageAdapter extends RecyclerView.Adapter<ImageHolder>
 {
+	public interface OnItemSelectedListener
+	{
+		public void onItemSelected(int totalSelected);
+	}
+
+	public OnItemSelectedListener onItemSelectedListener = null;
 	public Plant plant = null;
 	private List<String> images = new ArrayList<>();
-	private List<Integer> selected = new ArrayList<>();
+	private List<String> selected = new ArrayList<>();
 	private View.OnLongClickListener onLongClickListener;
 	private boolean inActionMode = false;
 
@@ -41,7 +46,7 @@ public class ImageAdapter extends RecyclerView.Adapter<ImageHolder>
 		return images;
 	}
 
-	public List<Integer> getSelected()
+	public List<String> getSelected()
 	{
 		return selected;
 	}
@@ -78,28 +83,30 @@ public class ImageAdapter extends RecyclerView.Adapter<ImageHolder>
 				if (!inActionMode)
 				{
 					Intent details = new Intent(v.getContext(), ImageLightboxDialog.class);
-					details.putExtra("plant_index", PlantManager.getInstance().getPlants().indexOf(plant));
+					details.putExtra("plant", plant);
 					details.putExtra("images", (String[])images.toArray(new String[getItemCount()]));
 					details.putExtra("image_position", position);
 					v.getContext().startActivity(details);
 				}
 				else
 				{
-					if (selected.contains((Integer)position))
+					if (selected.contains("" + position))
 					{
-						selected.remove((Integer)position);
+						selected.remove("" + position);
 						viewHolder.getSelection().setChecked(false);
 					}
 					else
 					{
-						selected.add(position);
+						selected.add("" + position);
 						viewHolder.getSelection().setChecked(true);
 					}
+
+					if (onItemSelectedListener != null) onItemSelectedListener.onItemSelected(selected.size());
 				}
 			}
 		});
 
-		viewHolder.getSelection().setChecked(selected.contains((Integer)position));
+		viewHolder.getSelection().setChecked(selected.contains("" + position));
 		viewHolder.getSelection().setVisibility(inActionMode ? View.VISIBLE : View.GONE);
 
 		if (onLongClickListener != null && !inActionMode)
@@ -108,7 +115,7 @@ public class ImageAdapter extends RecyclerView.Adapter<ImageHolder>
 			{
 				@Override public boolean onLongClick(View v)
 				{
-					selected.add(position);
+					selected.add("" + position);
 					viewHolder.getSelection().setChecked(true);
 					return onLongClickListener.onLongClick(v);
 				}

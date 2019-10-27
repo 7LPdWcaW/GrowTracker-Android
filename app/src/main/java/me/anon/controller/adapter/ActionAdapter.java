@@ -1,11 +1,9 @@
 package me.anon.controller.adapter;
 
-import android.app.AlertDialog;
+import android.annotation.SuppressLint;
 import android.content.DialogInterface;
-import android.preference.PreferenceManager;
-import android.support.annotation.Nullable;
-import android.support.v7.widget.PopupMenu;
-import android.support.v7.widget.RecyclerView;
+import android.os.Parcel;
+import android.os.Parcelable;
 import android.text.Html;
 import android.text.TextUtils;
 import android.view.Gravity;
@@ -16,6 +14,12 @@ import android.view.ViewGroup;
 import android.widget.TextView;
 
 import com.esotericsoftware.kryo.Kryo;
+import com.prolificinteractive.materialcalendarview.CalendarDay;
+
+import org.jetbrains.annotations.NotNull;
+import org.threeten.bp.Instant;
+import org.threeten.bp.LocalDate;
+import org.threeten.bp.ZoneId;
 
 import java.io.File;
 import java.text.DateFormat;
@@ -28,10 +32,16 @@ import java.util.GregorianCalendar;
 import java.util.List;
 import java.util.Locale;
 
+import androidx.annotation.Nullable;
+import androidx.appcompat.app.AlertDialog;
+import androidx.appcompat.widget.PopupMenu;
+import androidx.recyclerview.widget.RecyclerView;
+import kotlinx.android.parcel.Parcelize;
 import me.anon.grow.R;
 import me.anon.lib.DateRenderer;
 import me.anon.lib.TempUnit;
 import me.anon.lib.Unit;
+import me.anon.lib.ext.IntUtilsKt;
 import me.anon.lib.helper.TimeHelper;
 import me.anon.model.Action;
 import me.anon.model.EmptyAction;
@@ -71,20 +81,41 @@ public class ActionAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>
 	private List<Action> actions = new ArrayList<>();
 	private Unit measureUnit, deliveryUnit;
 	private TempUnit tempUnit;
-	private boolean usingEc = false;
 	private boolean showDate = true;
 	private boolean showActions = true;
+	private CalendarDay selectedFilterDate = null;
+
+	public void setFilterDate(CalendarDay selectedFilterDate)
+	{
+		this.selectedFilterDate = selectedFilterDate;
+	}
 
 	/**
 	 * Dummy image action placeholder class
 	 */
-	private static class ImageAction extends Action
+	@SuppressLint("ParcelCreator") @Parcelize
+	private static class ImageAction extends Action implements Parcelable
 	{
+		@NotNull @Override public String getTypeStr()
+		{
+			return "image";
+		}
+
 		public ArrayList<String> images = new ArrayList<>();
 
 		@Override public long getDate()
 		{
 			return getImageDate(images.get(0));
+		}
+
+		@Override public int describeContents()
+		{
+			return 0;
+		}
+
+		@Override public void writeToParcel(Parcel parcel, int i)
+		{
+
 		}
 	}
 
@@ -237,6 +268,12 @@ public class ActionAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>
 
 	@Override public int getItemViewType(int position)
 	{
+		if (selectedFilterDate != null)
+		{
+			LocalDate actionDate = CalendarDay.from(LocalDate.from(Instant.ofEpochMilli(actions.get(position).getDate()).atZone(ZoneId.systemDefault()))).getDate();
+			if (!selectedFilterDate.getDate().equals(actionDate)) return 0;
+		}
+
 		if (actions.get(position).getClass() == ImageAction.class)
 		{
 			return 2;
@@ -247,7 +284,11 @@ public class ActionAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>
 
 	@Override public RecyclerView.ViewHolder onCreateViewHolder(ViewGroup viewGroup, int viewType)
 	{
-		if (viewType == 2)
+		if (viewType == 0)
+		{
+			return new RecyclerView.ViewHolder(LayoutInflater.from(viewGroup.getContext()).inflate(R.layout.empty, viewGroup, false)){};
+		}
+		else if (viewType == 2)
 		{
 			return new ImageActionHolder(this, LayoutInflater.from(viewGroup.getContext()).inflate(R.layout.action_image, viewGroup, false));
 		}
@@ -257,6 +298,8 @@ public class ActionAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>
 
 	@Override public void onBindViewHolder(final RecyclerView.ViewHolder vh, final int index)
 	{
+		if (getItemViewType(index) == 0) return;
+
 		final Action action = actions.get(index);
 		DateFormat dateFormat = android.text.format.DateFormat.getDateFormat(vh.itemView.getContext());
 		DateFormat timeFormat = android.text.format.DateFormat.getTimeFormat(vh.itemView.getContext());
@@ -289,8 +332,6 @@ public class ActionAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>
 				tempUnit = TempUnit.getSelectedTemperatureUnit(viewHolder.itemView.getContext());
 			}
 
-			usingEc = PreferenceManager.getDefaultSharedPreferences(viewHolder.itemView.getContext()).getBoolean("tds_ec", false);
-
 			if (action == null) return;
 
 			dateDay = viewHolder.getDateDay();
@@ -300,27 +341,27 @@ public class ActionAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>
 			Calendar actionCalendar = GregorianCalendar.getInstance();
 			actionCalendar.setTime(actionDate);
 			String fullDateStr = dateFormat.format(actionDate) + " " + timeFormat.format(actionDate);
-			String dateStr = "<b>" + new DateRenderer().timeAgo(action.getDate()).formattedDate + "</b> ago";
+			String dateStr = vh.itemView.getContext().getString(R.string.ago, "<b>" + new DateRenderer(viewHolder.itemView.getContext()).timeAgo(action.getDate()).formattedDate + "</b>");
 
 			if (index > 0)
 			{
 				long difference = actions.get(index - 1).getDate() - action.getDate();
 				int days = (int)Math.round(((double)difference / 60d / 60d / 24d / 1000d));
 
-				dateStr += " (-" + days + "d)";
+				dateStr += " (-" + days + vh.itemView.getContext().getString(R.string.day_abbr) + ")";
 			}
 
 			viewHolder.getFullDate().setText(Html.fromHtml(fullDateStr));
 			viewHolder.getDate().setText(Html.fromHtml(dateStr));
 			viewHolder.getSummary().setVisibility(View.GONE);
-			viewHolder.getCard().setCardBackgroundColor(0xffffffff);
+			viewHolder.getCard().setCardBackgroundColor(IntUtilsKt.resolveColor(R.attr.colorSurface, viewHolder.itemView.getContext()));
 
 			String summary = "";
 			if (action.getClass() == Water.class)
 			{
 				summary += ((Water)action).getSummary(viewHolder.itemView.getContext());
-				viewHolder.getCard().setCardBackgroundColor(0x9ABBDEFB);
-				viewHolder.getName().setText("Watered");
+				viewHolder.getCard().setCardBackgroundColor(viewHolder.itemView.getContext().getResources().getColor(R.color.light_blue));
+				viewHolder.getName().setText(R.string.watered);
 			}
 			else if (action instanceof EmptyAction && ((EmptyAction)action).getAction() != null)
 			{
@@ -329,8 +370,8 @@ public class ActionAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>
 			}
 			else if (action instanceof NoteAction)
 			{
-				viewHolder.getName().setText("Note");
-				viewHolder.getCard().setCardBackgroundColor(0xffffffff);
+				viewHolder.getName().setText(R.string.note);
+				viewHolder.getCard().setCardBackgroundColor(IntUtilsKt.getColor(R.color.light_grey, viewHolder.itemView.getContext()));
 			}
 			else if (action instanceof StageChange)
 			{
@@ -400,9 +441,9 @@ public class ActionAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>
 								else if (item.getItemId() == R.id.delete)
 								{
 									new AlertDialog.Builder(v.getContext())
-										.setTitle("Delete this event?")
-										.setMessage("Are you sure you want to delete " + viewHolder.getName().getText())
-										.setPositiveButton("Yes", new DialogInterface.OnClickListener()
+										.setTitle(R.string.delete_event_dialog_title)
+										.setMessage(Html.fromHtml(v.getContext().getString(R.string.confirm_delete_item_message) + " <b>" + viewHolder.getName().getText() + "</b>?"))
+										.setPositiveButton(R.string.confirm_positive, new DialogInterface.OnClickListener()
 										{
 											@Override public void onClick(DialogInterface dialog, int which)
 											{
@@ -412,7 +453,7 @@ public class ActionAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>
 												}
 											}
 										})
-										.setNegativeButton("No", null)
+										.setNegativeButton(R.string.confirm_negative, null)
 										.show();
 
 									return true;
@@ -460,8 +501,7 @@ public class ActionAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>
 					String stageDayStr = "";
 
 					StageChange lastChange = null;
-					StageChange currentChange = new StageChange();
-					currentChange.setDate(action.getDate());
+					long currentChangeDate = action.getDate();
 
 					for (int actionIndex = index; actionIndex < actions.size(); actionIndex++)
 					{
@@ -480,9 +520,9 @@ public class ActionAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>
 
 					if (lastChange != null)
 					{
-						int currentDays = (int)TimeHelper.toDays(Math.abs(currentChange.getDate() - lastChange.getDate()));
+						int currentDays = (int)TimeHelper.toDays(Math.abs(currentChangeDate - lastChange.getDate()));
 						currentDays = (currentDays == 0 ? 1 : currentDays);
-						stageDayStr += "/" + currentDays + lastChange.getNewStage().getPrintString().substring(0, 1).toLowerCase();
+						stageDayStr += "/" + currentDays + dateDay.getContext().getString(lastChange.getNewStage().getPrintString()).substring(0, 1).toLowerCase();
 					}
 
 					stageDay.setText(stageDayStr);
@@ -506,13 +546,19 @@ public class ActionAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>
 
 		if (onItemSelectCallback != null)
 		{
-			vh.itemView.setOnClickListener(new View.OnClickListener()
+			if (vh instanceof ActionHolder)
 			{
-				@Override public void onClick(View v)
+				((ActionHolder)vh).getCard().setClickable(true);
+				((ActionHolder)vh).getCard().setFocusable(true);
+
+				((ActionHolder)vh).getCard().setOnClickListener(new View.OnClickListener()
 				{
-					onItemSelectCallback.onItemSelected(action);
-				}
-			});
+					@Override public void onClick(View v)
+					{
+						onItemSelectCallback.onItemSelected(action);
+					}
+				});
+			}
 		}
 	}
 

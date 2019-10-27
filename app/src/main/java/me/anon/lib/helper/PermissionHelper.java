@@ -2,13 +2,15 @@ package me.anon.lib.helper;
 
 import android.annotation.TargetApi;
 import android.app.Activity;
-import android.app.AlertDialog;
-import android.app.Fragment;
+import androidx.appcompat.app.AlertDialog;
+import androidx.fragment.app.Fragment;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.pm.PackageManager;
 import android.os.Build;
-import android.support.v4.content.PermissionChecker;
+import androidx.core.content.PermissionChecker;
+
+import me.anon.grow.R;
 
 public class PermissionHelper
 {
@@ -21,14 +23,14 @@ public class PermissionHelper
 			{
 				new AlertDialog.Builder(fragment.getActivity())
 					.setMessage(dialogMessage)
-					.setPositiveButton("OK", new DialogInterface.OnClickListener()
+					.setPositiveButton(R.string.ok, new DialogInterface.OnClickListener()
 					{
 						@Override public void onClick(DialogInterface dialog, int which)
 						{
 							fragment.requestPermissions(new String[]{permission}, requestCode);
 						}
 					})
-					.setNegativeButton("Cancel", null)
+					.setNegativeButton(R.string.cancel, null)
 					.show();
 
 				return false;
@@ -50,14 +52,14 @@ public class PermissionHelper
 			{
 				new AlertDialog.Builder(activity)
 					.setMessage(dialogMessage)
-					.setPositiveButton("OK", new DialogInterface.OnClickListener()
+					.setPositiveButton(R.string.ok, new DialogInterface.OnClickListener()
 					{
 						@Override public void onClick(DialogInterface dialog, int which)
 						{
 							activity.requestPermissions(new String[]{permission}, requestCode);
 						}
 					})
-					.setNegativeButton("Cancel", null)
+					.setNegativeButton(R.string.cancel, null)
 					.show();
 
 				return false;

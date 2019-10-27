@@ -2,12 +2,20 @@
 
 <menu
 	xmlns:android="http://schemas.android.com/apk/res/android"
+	xmlns:app="http://schemas.android.com/apk/res-auto"
 >
+	<item
+		android:id="@+id/menu_calendar"
+		android:title="@string/show_hide_calendar"
+		android:icon="@drawable/ic_calendar"
+		app:showAsAction="always"
+	/>
+
 	<group android:checkableBehavior="all">
 		<item
 			android:id="@+id/filter_waterings"
 			android:checked="true"
-			android:title="Waterings"
+			android:title="@string/filter_waterings"
 		/>
 	</group>
 
@@ -15,7 +23,7 @@
 		<item
 			android:id="@+id/filter_notes"
 			android:checked="true"
-			android:title="Notes"
+			android:title="@string/filter_notes"
 		/>
 	</group>
 
@@ -23,12 +31,12 @@
 		<item
 			android:id="@+id/filter_stages"
 			android:checked="true"
-			android:title="Stage changes"
+			android:title="@string/filter_stage_changes"
 		/>
 	</group>
 
 	<item
 		android:id="@+id/filter_actions"
-		android:title="Actions"
+		android:title="@string/filter_actions"
 	/>
 </menu>

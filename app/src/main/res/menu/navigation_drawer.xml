@@ -1,36 +1,36 @@
 <?xml version="1.0" encoding="utf-8"?>
 
 <menu xmlns:android="http://schemas.android.com/apk/res/android">
-	<item android:id="@+id/garden_menu" android:title="Gardens">
+	<item android:id="@+id/garden_menu" android:title="@string/nav_gardens">
 		<menu>
 			<group android:checkableBehavior="single">
 				<item
 					android:id="@+id/all"
-					android:title="All plants"
+					android:title="@string/nav_all_plants"
 					android:orderInCategory="0"
 				/>
 
 				<item
 					android:id="@+id/add"
-					android:title="+ New garden"
+					android:title="@string/nav_new_garden"
 					android:orderInCategory="2"
 				/>
 			</group>
 		</menu>
 	</item>
 
-	<item android:title="Additional" android:orderInCategory="3">
+	<item android:title="@string/nav_additional" android:orderInCategory="3">
 		<menu>
 			<item
 				android:id="@+id/feeding_schedule"
-				android:title="@string/menu_feeding_schedule"
+				android:title="@string/nav_feeding_schedule"
 				android:checkable="false"
 				android:orderInCategory="3"
 			/>
 
 			<item
 				android:id="@+id/settings"
-				android:title="Settings"
+				android:title="@string/nav_settings"
 				android:checkable="false"
 				android:orderInCategory="3"
 			/>
@@ -38,6 +38,12 @@
 			<item
 				android:id="@+id/website"
 				android:title="By 7lpdwcaw"
+				android:orderInCategory="3"
+			/>
+
+			<item
+				android:id="@+id/translations"
+				android:title="@string/translations_by"
 				android:orderInCategory="3"
 			/>
 

@@ -4,11 +4,11 @@ import android.content.Context
 import android.content.Intent
 import android.text.TextUtils
 import android.widget.Toast
-import com.google.gson.JsonSyntaxException
-import com.google.gson.reflect.TypeToken
+import com.squareup.moshi.JsonDataException
+import com.squareup.moshi.Types
 import me.anon.grow.MainApplication
 import me.anon.lib.helper.EncryptionHelper
-import me.anon.lib.helper.GsonHelper
+import me.anon.lib.helper.MoshiHelper
 import me.anon.model.FeedingSchedule
 import java.io.File
 import java.util.*
@@ -21,14 +21,38 @@ class ScheduleManager private constructor()
 	fun initialise(context: Context)
 	{
 		this.context = context.applicationContext
-		FILES_DIR = this.context.getExternalFilesDir(null).absolutePath
+		FILES_DIR = this.context.getExternalFilesDir(null)!!.absolutePath
 
 		load()
 	}
 
+	public val fileExt: String
+		get() {
+			if (MainApplication.isEncrypted()) return "dat"
+			else return "json"
+		}
+
+	public fun indexOf(schedule: FeedingSchedule) = schedules.indexOfFirst { it.id == schedule.id }
+
+	public fun upsert(schedule: FeedingSchedule)
+	{
+		var index = indexOf(schedule)
+
+		if (index < 0)
+		{
+			insert(schedule)
+		}
+		else
+		{
+			this.schedules[index] = schedule
+		}
+
+		save()
+	}
+
 	fun load()
 	{
-		if (FileManager.getInstance().fileExists("$FILES_DIR/schedules.json"))
+		if (FileManager.getInstance().fileExists("$FILES_DIR/schedules.${fileExt}"))
 		{
 			val scheduleData = if (MainApplication.isEncrypted())
 			{
@@ -37,11 +61,11 @@ class ScheduleManager private constructor()
 					return
 				}
 
-				EncryptionHelper.decrypt(MainApplication.getKey(), FileManager.getInstance().readFile("$FILES_DIR/schedules.json"))
+				EncryptionHelper.decrypt(MainApplication.getKey(), FileManager.getInstance().readFile("$FILES_DIR/schedules.${fileExt}"))
 			}
 			else
 			{
-				FileManager.getInstance().readFileAsString("$FILES_DIR/schedules.json")
+				FileManager.getInstance().readFileAsString("$FILES_DIR/schedules.${fileExt}")
 			}
 
 			try
@@ -49,10 +73,10 @@ class ScheduleManager private constructor()
 				if (!TextUtils.isEmpty(scheduleData))
 				{
 					schedules.clear()
-					schedules.addAll(GsonHelper.parse<Any>(scheduleData, object : TypeToken<ArrayList<FeedingSchedule>>(){}.type) as ArrayList<FeedingSchedule>)
+					schedules.addAll(MoshiHelper.parse<Any>(scheduleData, Types.newParameterizedType(ArrayList::class.java, FeedingSchedule::class.java)) as ArrayList<FeedingSchedule>)
 				}
 			}
-			catch (e: JsonSyntaxException)
+			catch (e: JsonDataException)
 			{
 				e.printStackTrace()
 			}
@@ -70,17 +94,17 @@ class ScheduleManager private constructor()
 					return
 				}
 
-				FileManager.getInstance().writeFile("$FILES_DIR/schedules.json", EncryptionHelper.encrypt(MainApplication.getKey(), GsonHelper.parse(schedules)))
+				FileManager.getInstance().writeFile("$FILES_DIR/schedules.${fileExt}", EncryptionHelper.encrypt(MainApplication.getKey(), MoshiHelper.toJson(schedules, Types.newParameterizedType(ArrayList::class.java, FeedingSchedule::class.java))))
 			}
 			else
 			{
-				FileManager.getInstance().writeFile("$FILES_DIR/schedules.json", GsonHelper.parse(schedules))
+				FileManager.getInstance().writeFile("$FILES_DIR/schedules.${fileExt}", MoshiHelper.toJson(schedules, Types.newParameterizedType(ArrayList::class.java, FeedingSchedule::class.java)))
 			}
 
-			if (File("$FILES_DIR/schedules.json").length() == 0L || !File("$FILES_DIR/schedules.json").exists())
+			if (File("$FILES_DIR/schedules.${fileExt}").length() == 0L || !File("$FILES_DIR/schedules.${fileExt}").exists())
 			{
 				Toast.makeText(context, "There was a fatal problem saving the schedule data, please backup this data", Toast.LENGTH_LONG).show()
-				val sendData = GsonHelper.parse(schedules)
+				val sendData = MoshiHelper.toJson(schedules, Types.newParameterizedType(ArrayList::class.java, FeedingSchedule::class.java))
 				val share = Intent(Intent.ACTION_SEND)
 				share.type = "text/plain"
 				share.putExtra(Intent.EXTRA_TEXT, "== WARNING : PLEASE BACK UP THIS DATA == \r\n\r\n $sendData")

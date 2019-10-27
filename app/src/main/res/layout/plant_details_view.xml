@@ -11,81 +11,14 @@
 		android:layout_height="wrap_content"
 		android:orientation="vertical"
 	>
-		<LinearLayout
-			android:layout_width="match_parent"
-			android:layout_height="wrap_content"
-			android:id="@+id/action_container"
-			android:orientation="horizontal"
-			android:background="#ffffff"
-			android:elevation="4dp"
-			android:layout_marginBottom="12dp"
-			android:divider="@drawable/vertical_full_divider"
-			android:showDividers="middle"
-			android:dividerPadding="8dp"
-			android:padding="0dp"
-			android:visibility="gone"
-			style="@style/PaperCard"
-		>
-			<TextView
-				android:layout_width="0dp"
-				android:layout_height="match_parent"
-				android:id="@+id/feeding"
-				android:layout_weight="1"
-				android:layout_gravity="center_vertical"
-				android:gravity="center"
-				android:paddingBottom="16dp"
-				android:paddingTop="16dp"
-				android:text="Feed"
-			/>
-
-			<TextView
-				android:layout_width="0dp"
-				android:layout_height="match_parent"
-				android:id="@+id/action"
-				android:layout_weight="1"
-				android:layout_gravity="center_vertical"
-				android:gravity="center"
-				android:paddingBottom="16dp"
-				android:paddingTop="16dp"
-				android:text="Action"
-			/>
-
-			<TextView
-				android:layout_width="0dp"
-				android:layout_height="match_parent"
-				android:id="@+id/note"
-				android:layout_weight="1"
-				android:layout_gravity="center_vertical"
-				android:gravity="center"
-				android:paddingBottom="16dp"
-				android:paddingTop="16dp"
-				android:text="Note"
-			/>
-
-			<TextView
-				android:layout_width="0dp"
-				android:layout_height="match_parent"
-				android:id="@+id/photo"
-				android:layout_weight="1"
-				android:layout_gravity="center_vertical"
-				android:gravity="center"
-				android:paddingBottom="16dp"
-				android:paddingTop="16dp"
-				android:text="Photo"
-			/>
-		</LinearLayout>
-
-		<android.support.v7.widget.CardView
+		<androidx.cardview.widget.CardView
 			android:layout_width="match_parent"
 			android:layout_height="wrap_content"
 			android:id="@+id/last_feeding"
-			android:layout_marginStart="16dp"
-			android:layout_marginEnd="16dp"
-			android:layout_marginBottom="16dp"
-			android:layout_marginTop="8dp"
-			app:cardBackgroundColor="#90CAF9"
+			android:layout_margin="16dp"
+			app:cardBackgroundColor="@color/light_blue"
 			app:cardCornerRadius="4dp"
-			app:cardElevation="0dp"
+			app:cardElevation="2dp"
 		>
 			<LinearLayout
 				android:layout_width="match_parent"
@@ -104,7 +37,7 @@
 						android:layout_alignParentRight="true"
 						android:textSize="14sp"
 						android:layout_centerVertical="true"
-						android:textColor="#666666"
+						android:textColor="?android:textColorSecondary"
 						android:layout_marginLeft="8dp"
 						android:fontFamily="sans-serif-light"
 						android:layout_alignParentTop="true"
@@ -117,10 +50,10 @@
 						android:layout_height="wrap_content"
 						android:id="@+id/last_feeding_name"
 						android:layout_centerVertical="true"
-						android:layout_toLeftOf="@id/date"
+						android:layout_toLeftOf="@id/last_feeding_date"
 						android:layout_alignParentTop="true"
 						android:layout_marginTop="12dp"
-						android:text="Last watering"
+						android:text="@string/last_watering_title"
 						style="@style/SubsectionTitle"
 					/>
 
@@ -129,7 +62,7 @@
 						android:layout_height="wrap_content"
 						android:id="@+id/last_feeding_full_date"
 						android:textSize="14sp"
-						android:textColor="#666666"
+						android:textColor="?android:textColorSecondary"
 						android:fontFamily="sans-serif-light"
 						android:layout_below="@id/last_feeding_name"
 					/>
@@ -149,27 +82,27 @@
 					android:layout_width="wrap_content"
 					android:layout_height="wrap_content"
 					android:id="@+id/duplicate_feeding"
-					android:text="Feed again"
+					android:text="@string/feed_again"
 					android:layout_gravity="end"
-					android:layout_margin="0dp"
+					android:layout_marginEnd="8dp"
 					android:padding="16dp"
-					style="@style/Base.Widget.AppCompat.Button.Borderless"
+					android:textColor="?android:textColorPrimary"
+					style="@style/Widget.MaterialComponents.Button.TextButton"
 				/>
 			</LinearLayout>
-		</android.support.v7.widget.CardView>
+		</androidx.cardview.widget.CardView>
 
 		<LinearLayout
 			android:layout_width="match_parent"
 			android:layout_height="wrap_content"
 			android:orientation="vertical"
-			android:background="#ffffff"
 			android:elevation="4dp"
 			style="@style/PaperCard"
 		>
 			<TextView
 				android:layout_width="wrap_content"
 				android:layout_height="wrap_content"
-				android:text="Plant details"
+				android:text="@string/plant_details_title"
 				style="@style/SectionTitle"
 			/>
 
@@ -177,7 +110,7 @@
 				android:layout_width="match_parent"
 				android:layout_height="wrap_content"
 				android:orientation="vertical"
-				android:divider="@drawable/full_divider"
+				android:divider="?android:listDivider"
 				android:showDividers="middle"
 				android:layout_marginTop="16dp"
 			>
@@ -193,7 +126,7 @@
 					<TextView
 						android:layout_width="match_parent"
 						android:layout_height="wrap_content"
-						android:text="Plant name"
+						android:text="@string/plant_name_label"
 						style="@style/SubsectionTitle"
 					/>
 
@@ -201,7 +134,7 @@
 						android:layout_width="match_parent"
 						android:layout_height="wrap_content"
 						android:id="@+id/plant_name"
-						android:hint="New plant"
+						android:hint="@string/new_plant_hint"
 						android:nextFocusDown="@+id/plant_strain"
 						android:singleLine="true"
 						android:inputType="textCapWords"
@@ -221,18 +154,18 @@
 					<TextView
 						android:layout_width="match_parent"
 						android:layout_height="wrap_content"
-						android:text="Plant strain"
+						android:text="@string/plant_strain_label"
 						style="@style/SubsectionTitle"
 					/>
 
-					<EditText
+					<AutoCompleteTextView
 						android:layout_width="match_parent"
 						android:layout_height="wrap_content"
-						android:hint="Lemon haze"
+						android:hint="@string/plant_strain_hint"
 						android:id="@+id/plant_strain"
 						android:nextFocusDown="@+id/plant_date"
 						android:singleLine="true"
-						android:inputType="textCapWords"
+						android:inputType="textCapWords|textAutoComplete"
 						style="@style/SubsectionSubTitle"
 					/>
 				</LinearLayout>
@@ -243,7 +176,6 @@
 			android:layout_width="match_parent"
 			android:layout_height="wrap_content"
 			android:orientation="vertical"
-			android:background="#ffffff"
 			android:elevation="4dp"
 			android:layout_marginTop="12dp"
 			style="@style/PaperCard"
@@ -251,7 +183,7 @@
 			<TextView
 				android:layout_width="wrap_content"
 				android:layout_height="wrap_content"
-				android:text="Grow details"
+				android:text="@string/grow_details_title"
 				style="@style/SectionTitle"
 			/>
 
@@ -259,24 +191,22 @@
 				android:layout_width="match_parent"
 				android:layout_height="wrap_content"
 				android:orientation="vertical"
-				android:divider="@drawable/full_divider"
+				android:divider="?android:listDivider"
 				android:showDividers="middle"
-				android:layout_marginTop="16dp"
+				android:layout_marginTop="8dp"
 			>
 				<LinearLayout
 					android:layout_width="match_parent"
 					android:layout_height="wrap_content"
 					android:id="@+id/plant_date_container"
 					android:orientation="vertical"
-					android:paddingLeft="16dp"
-					android:paddingRight="16dp"
-					android:paddingTop="8dp"
-					android:paddingBottom="16dp"
+					android:padding="16dp"
+					android:background="?selectableItemBackground"
 				>
 					<TextView
 						android:layout_width="match_parent"
 						android:layout_height="wrap_content"
-						android:text="Plant date"
+						android:text="@string/plant_date_label"
 						style="@style/SubsectionTitle"
 					/>
 
@@ -295,18 +225,19 @@
 					android:id="@+id/plant_medium_container"
 					android:orientation="vertical"
 					android:padding="16dp"
+					android:background="?selectableItemBackground"
 				>
 					<TextView
 						android:layout_width="match_parent"
 						android:layout_height="wrap_content"
-						android:text="Medium"
+						android:text="@string/plant_medium_label"
 						style="@style/SubsectionTitle"
 					/>
 
 					<TextView
 						android:layout_width="match_parent"
 						android:layout_height="wrap_content"
-						android:text="Soil"
+						android:text="@string/plant_medium_hint"
 						android:id="@+id/plant_medium"
 						style="@style/SubsectionSubTitle"
 					/>
@@ -322,7 +253,7 @@
 					<TextView
 						android:layout_width="match_parent"
 						android:layout_height="wrap_content"
-						android:text="Medium details"
+						android:text="@string/medium_details_label"
 						style="@style/SubsectionTitle"
 					/>
 
@@ -330,7 +261,7 @@
 						android:layout_width="match_parent"
 						android:layout_height="wrap_content"
 						android:id="@+id/plant_medium_details"
-						android:hint="Soil, Perlite 50/50 mix"
+						android:hint="@string/medium_details_hint"
 						android:lines="3"
 						android:gravity="top"
 						style="@style/SubsectionSubTitle"
@@ -349,7 +280,7 @@
 					<TextView
 						android:layout_width="wrap_content"
 						android:layout_height="wrap_content"
-						android:text="From clone?"
+						android:text="@string/from_clone_label"
 						style="@style/SubsectionTitle"
 					/>
 
@@ -369,15 +300,15 @@
 			android:layout_width="match_parent"
 			android:layout_height="wrap_content"
 			android:orientation="vertical"
-			android:background="#ffffff"
 			android:elevation="4dp"
 			android:layout_marginTop="12dp"
+			android:layout_marginBottom="24dp"
 			style="@style/PaperCard"
 		>
 			<TextView
 				android:layout_width="wrap_content"
 				android:layout_height="wrap_content"
-				android:text="Stage details"
+				android:text="@string/stage_details_title"
 				style="@style/SectionTitle"
 			/>
 
@@ -386,80 +317,33 @@
 				android:layout_height="wrap_content"
 				android:id="@+id/plant_stage_container"
 				android:orientation="vertical"
-				android:divider="@drawable/full_divider"
+				android:divider="?android:listDivider"
 				android:showDividers="middle"
-				android:layout_marginTop="16dp"
+				android:layout_marginTop="8dp"
+				android:background="?selectableItemBackground"
 			>
 				<LinearLayout
 					android:layout_width="match_parent"
 					android:layout_height="wrap_content"
 					android:orientation="vertical"
-					android:paddingLeft="16dp"
-					android:paddingRight="16dp"
-					android:paddingTop="8dp"
-					android:paddingBottom="16dp"
+					android:padding="16dp"
 				>
 					<TextView
 						android:layout_width="match_parent"
 						android:layout_height="wrap_content"
-						android:text="Plant stage"
+						android:text="@string/plant_stage_label"
 						style="@style/SubsectionTitle"
 					/>
 
 					<TextView
 						android:layout_width="match_parent"
 						android:layout_height="wrap_content"
-						android:text="Germination"
+						android:text="@string/germination"
 						android:id="@+id/plant_stage"
 						style="@style/SubsectionSubTitle"
 					/>
 				</LinearLayout>
 			</LinearLayout>
-		</LinearLayout>
-
-		<LinearLayout
-			android:layout_width="match_parent"
-			android:layout_height="wrap_content"
-			android:id="@+id/link_container"
-			android:orientation="vertical"
-			android:background="#ffffff"
-			android:layout_marginTop="12dp"
-			android:divider="@drawable/full_divider"
-			android:showDividers="middle"
-			android:visibility="gone"
-			style="@style/PaperCard"
-			android:paddingTop="0dp"
-			android:paddingBottom="0dp"
-		>
-			<TextView
-				android:layout_width="match_parent"
-				android:layout_height="wrap_content"
-				android:id="@+id/view_photos"
-				android:layout_gravity="center_vertical"
-				android:text="View photos"
-				style="@style/SubsectionTitle"
-				android:padding="16dp"
-			/>
-
-			<TextView
-				android:layout_width="match_parent"
-				android:layout_height="wrap_content"
-				android:id="@+id/view_history"
-				android:layout_gravity="center_vertical"
-				android:text="View history"
-				style="@style/SubsectionTitle"
-				android:padding="16dp"
-			/>
-
-			<TextView
-				android:layout_width="match_parent"
-				android:layout_height="wrap_content"
-				android:id="@+id/view_statistics"
-				android:layout_gravity="center_vertical"
-				android:text="View statistics"
-				style="@style/SubsectionTitle"
-				android:padding="16dp"
-			/>
 		</LinearLayout>
 	</LinearLayout>
 </ScrollView>
