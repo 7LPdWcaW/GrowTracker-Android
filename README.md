@@ -6,9 +6,11 @@ Welcome to grow tracker. This is a utility app designed for gardening and tracki
 
 [Latest Nightly Build (Experimental!)](https://github.com/7LPdWcaW/GrowTracker-Android/releases/tag/alpha)
 
-[Latest APK: (MD5) 9dbd3d137cbf062d3d06b1918942fc10 v2.5.2](https://github.com/7LPdWcaW/GrowTracker-Android/releases/download/v2.5.2/v2.5.2-production.apk)
+[Latest APK: (SHA256) 4009957e99cc7e0d8a4d1fd9ef8f724cbd65566eb776c94350b6ed1e8a405275 v2.6](https://github.com/7LPdWcaW/GrowTracker-Android/releases/download/v2.6/v2.6-production.apk)
 
-[Latest APK (Discrete): (MD5) 078a0326b61fd065cb7168535de85767 v2.5.2](https://github.com/7LPdWcaW/GrowTracker-Android/releases/download/v2.5.2/v2.5.2-discrete.apk)
+[Latest APK (English only): (SHA256) 0f9cd87e57bcb9e402c9aeafba719a9f19be5c26fae54f756924da286403dcaa v2.6](https://github.com/7LPdWcaW/GrowTracker-Android/releases/download/v2.6/v2.6-en.apk)
+
+[Latest APK (Discrete): (SHA256) 3feb38df6d8044d71fa3616092afe1242f5a9d2dd69d39e0660d125d57590f59 v2.6](https://github.com/7LPdWcaW/GrowTracker-Android/releases/download/v2.6/v2.6-discrete.apk)
 
 [Get it on F-Droid with automatic updates](https://f-droid.org/packages/me.anon.grow/)
 
