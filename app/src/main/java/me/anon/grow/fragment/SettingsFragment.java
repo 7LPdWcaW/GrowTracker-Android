@@ -18,9 +18,13 @@ import android.os.Bundle;
 import android.os.Environment;
 import android.provider.DocumentsContract;
 import android.text.Html;
+import android.text.SpannableString;
 import android.text.TextUtils;
+import android.text.method.LinkMovementMethod;
+import android.text.util.Linkify;
 import android.util.Base64;
 import android.view.View;
+import android.widget.TextView;
 
 import com.google.android.material.snackbar.Snackbar;
 import com.nostra13.universalimageloader.core.ImageLoader;
@@ -52,7 +56,6 @@ import androidx.preference.PreferenceGroup;
 import androidx.preference.PreferenceManager;
 import androidx.preference.SwitchPreferenceCompat;
 import me.anon.controller.receiver.BackupService;
-import me.anon.grow.BootActivity;
 import me.anon.grow.MainApplication;
 import me.anon.grow.R;
 import me.anon.lib.SnackBar;
@@ -735,9 +738,17 @@ public class SettingsFragment extends PreferenceFragmentCompat implements Prefer
 				e.printStackTrace();
 			}
 
-			new AlertDialog.Builder(getActivity())
+			AlertDialog alertDialog = new AlertDialog.Builder(getActivity())
 				.setMessage(Html.fromHtml(readme))
-				.show();
+				.create();
+			alertDialog.show();
+
+			if (alertDialog.findViewById(android.R.id.message) != null)
+			{
+//				Linkify.addLinks((TextView)alertDialog.findViewById(android.R.id.message), Linkify.WEB_URLS);
+				((TextView)alertDialog.findViewById(android.R.id.message)).setMovementMethod(LinkMovementMethod.getInstance());
+				((TextView)alertDialog.findViewById(android.R.id.message)).setLinksClickable(true);
+			}
 
 			return true;
 		}

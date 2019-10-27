@@ -101,10 +101,14 @@ class MarkdownProcessor : ExportProcessor()
 
 		if (currentStage == PlantStage.HARVESTED)
 		{
-			val stageDate = stageTimes[currentStage] ?: 0
-			val harvested = DateTimeUtils.toLocalDateTime(Timestamp(stageDate))
+			val stageDate = plant.actions?.find { it is StageChange && it.newStage == PlantStage.HARVESTED }?.date ?: 0
+			if (stageDate > 0)
+			{
+				val harvested = DateTimeUtils.toLocalDateTime(Timestamp(stageDate))
 
-			documentBuilder.append("**Harvested:** ").append(harvested.format(DateTimeFormatter.ofPattern("yyyy-mm-dd HH:mm")))
+				documentBuilder.append("**Harvested:** ").append(harvested.format(DateTimeFormatter.ofPattern("yyyy-mm-dd HH:mm")))
+				documentBuilder.append(NEW_LINE + NEW_LINE)
+			}
 		}
 
 		documentBuilder.append("## Stages")
@@ -121,8 +125,11 @@ class MarkdownProcessor : ExportProcessor()
 			documentBuilder.append(" - ").append(stageName).append(NEW_LINE + NEW_LINE)
 			documentBuilder.append("\t - ").append("**Set on:** ").append(stageDateTime.format(DateTimeFormatter.ofPattern("yyyy-mm-dd HH:mm"))).append(NEW_LINE)
 
-			stageTime?.let {
-				documentBuilder.append("\t - ").append("**In stage for:** ").append(TimeHelper.toDays(stageTime).formatWhole()).append(" days").append(NEW_LINE)
+			if (key != PlantStage.HARVESTED)
+			{
+				stageTime?.let {
+					documentBuilder.append("\t - ").append("**In stage for:** ").append(TimeHelper.toDays(stageTime).formatWhole()).append(" days").append(NEW_LINE)
+				}
 			}
 
 			if (notes?.isNotEmpty() == true)
@@ -228,13 +235,13 @@ class MarkdownProcessor : ExportProcessor()
 
 		tdsNames.forEach { tds ->
 			documentBuilder.append("### ${tds.enStr}").append(NEW_LINE + NEW_LINE)
-			documentBuilder.append("![${tds.enStr} Chart](${tds.enStr}.jpg)").append(NEW_LINE + NEW_LINE)
 
 			val tdsArr = arrayOfNulls<String>(3)
 			StatsHelper.setTdsData(plant, null, null, tdsArr, tds)
 			documentBuilder.append(" - **Minimum input ${tds.enStr}**: ").append(tdsArr[0]).append(tds.label).append(NEW_LINE)
 			documentBuilder.append(" - **Maximum input ${tds.enStr}**: ").append(tdsArr[1]).append(tds.label).append(NEW_LINE)
 			documentBuilder.append(" - **Average input ${tds.enStr}**: ").append(tdsArr[2]).append(tds.label).append(NEW_LINE + NEW_LINE)
+			documentBuilder.append("![${tds.enStr} Chart](${tds.enStr}.jpg)").append(NEW_LINE + NEW_LINE)
 		}
 
 		val aveTemp = arrayOfNulls<String>(3)
@@ -306,7 +313,7 @@ class MarkdownProcessor : ExportProcessor()
 						documentBuilder.append(" / ")
 						action.additives.forEach { additive ->
 							documentBuilder.append("**${additive.description ?: ""}:** ").append(Unit.ML.to(selectedMeasurement, additive.amount ?: 0.0).formatWhole()).append(selectedMeasurement!!.label).append("/").append(selectedDelivery!!.label)
-							if (action.additives.last() != additive) documentBuilder.append(" -- ")
+							if (action.additives.last() != additive) documentBuilder.append(" – ")
 						}
 					}
 				}

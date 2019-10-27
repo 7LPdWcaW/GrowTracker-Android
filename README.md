@@ -1,14 +1,16 @@
 # GrowTracker
 
-Welcome to grow tracker. This app was created to help record data about growing plants in order to monitor the growing conditions to help make the plants grow better, and identify potential issues during the grow process.
+Welcome to grow tracker. This is a utility app designed for gardening and tracking various parameters of your grow.
 
 [![Latest Nightly](https://travis-ci.com/7LPdWcaW/GrowTracker-Android.svg?branch=alpha)](https://travis-ci.com/7LPdWcaW/GrowTracker-Android)
 
 [Latest Nightly Build (Experimental!)](https://github.com/7LPdWcaW/GrowTracker-Android/releases/tag/alpha)
 
-[Latest APK: (MD5) 9dbd3d137cbf062d3d06b1918942fc10 v2.5.2](https://github.com/7LPdWcaW/GrowTracker-Android/releases/download/v2.5.2/v2.5.2-production.apk)
+[Latest APK: (SHA256) 4009957e99cc7e0d8a4d1fd9ef8f724cbd65566eb776c94350b6ed1e8a405275 v2.6](https://github.com/7LPdWcaW/GrowTracker-Android/releases/download/v2.6/v2.6-production.apk)
 
-[Latest APK (Discrete): (MD5) 078a0326b61fd065cb7168535de85767 v2.5.2](https://github.com/7LPdWcaW/GrowTracker-Android/releases/download/v2.5.2/v2.5.2-discrete.apk)
+[Latest APK (English only): (SHA256) 0f9cd87e57bcb9e402c9aeafba719a9f19be5c26fae54f756924da286403dcaa v2.6](https://github.com/7LPdWcaW/GrowTracker-Android/releases/download/v2.6/v2.6-en.apk)
+
+[Latest APK (Discrete): (SHA256) 3feb38df6d8044d71fa3616092afe1242f5a9d2dd69d39e0660d125d57590f59 v2.6](https://github.com/7LPdWcaW/GrowTracker-Android/releases/download/v2.6/v2.6-discrete.apk)
 
 [Get it on F-Droid with automatic updates](https://f-droid.org/packages/me.anon.grow/)
 
@@ -18,64 +20,62 @@ You can follow development, post questions, or grow logs in the [Subreddit](http
 
 The app requires no permissions except for external storage (for caching plant data and images) which you can see [here](https://github.com/7LPdWcaW/GrowTracker-Android/blob/develop/app/src/main/AndroidManifest.xml) in order for users to maintain anonymity, and a minimum Android version of `4.2` and above
 
-# Addons
+## How to install from APK
 
-On documentation on creating addons, please see [ADDONS.md](ADDONS.md)
-
-## How to install
-
-1. Follow [this guide](https://gameolith.uservoice.com/knowledgebase/articles/76902-android-4-0-tablets-allowing-app-installs-from) to enable unknown sources
+1. Follow [this guide](http://www.inbox.com/article/how-do-enable-third-party-apps-on-android.html) to enable unknown sources
 2. Download the APK from [here](https://github.com/7LPdWcaW/GrowTracker-Android/releases)
 3. Click on downloaded app and install
 
-# Updating
+## Updating
 
 You can either elect to update manually, or get notified on releases by installing the [Update plugin](https://github.com/7LPdWcaW/GrowUpdater-Android/releases)
 
-**For updates, do not uninstall first, you will lose your existing plant data**
+**For updates, do not uninstall first, you will lose your existing plant data. Always back up your data!**
 
 # Screenshots
 
-[![install](fastlane/metadata/android/en-GB/images/phoneScreenshotsThumbs/install-thumb.png)](fastlane/metadata/android/en-GB/images/phoneScreenshots/install.png)
-[![plant list](fastlane/metadata/android/en-GB/images/phoneScreenshotsThumbs/1-thumb.png)](fastlane/metadata/android/en-GB/images/phoneScreenshots/1.png)
-[![discrete plant list](fastlane/metadata/android/en-GB/images/phoneScreenshotsThumbs/1b-thumb.png)](fastlane/metadata/android/en-GB/images/phoneScreenshots/1b.png)
-[![discrete plant list](fastlane/metadata/android/en-GB/images/phoneScreenshotsThumbs/1c-thumb.png)](fastlane/metadata/android/en-GB/images/phoneScreenshots/1c.png)
-[![discrete plant list](fastlane/metadata/android/en-GB/images/phoneScreenshotsThumbs/1d-thumb.png)](fastlane/metadata/android/en-GB/images/phoneScreenshots/1d.png)
-[![discrete plant list](fastlane/metadata/android/en-GB/images/phoneScreenshotsThumbs/1e-thumb.png)](fastlane/metadata/android/en-GB/images/phoneScreenshots/1e.png)
-[![plant details](fastlane/metadata/android/en-GB/images/phoneScreenshotsThumbs/2-thumb.png)](fastlane/metadata/android/en-GB/images/phoneScreenshots/2.png)
-[![feeding](fastlane/metadata/android/en-GB/images/phoneScreenshotsThumbs/3-thumb.png)](fastlane/metadata/android/en-GB/images/phoneScreenshots/3.png)
-[![nutrients](fastlane/metadata/android/en-GB/images/phoneScreenshotsThumbs/4-thumb.png)](fastlane/metadata/android/en-GB/images/phoneScreenshots/4.png)
-[![nutrients](fastlane/metadata/android/en-GB/images/phoneScreenshotsThumbs/4b-thumb.png)](fastlane/metadata/android/en-GB/images/phoneScreenshots/4b.png)
-[![actions](fastlane/metadata/android/en-GB/images/phoneScreenshotsThumbs/5-thumb.png)](fastlane/metadata/android/en-GB/images/phoneScreenshots/5.png)
-[![pictures](fastlane/metadata/android/en-GB/images/phoneScreenshotsThumbs/6-thumb.png)](fastlane/metadata/android/en-GB/images/phoneScreenshots/6.png)
-[![statistics](fastlane/metadata/android/en-GB/images/phoneScreenshotsThumbs/7-thumb.png)](fastlane/metadata/android/en-GB/images/phoneScreenshots/7.png)
-[![past actions](fastlane/metadata/android/en-GB/images/phoneScreenshotsThumbs/8-thumb.png)](fastlane/metadata/android/en-GB/images/phoneScreenshots/8.png)
-[![action filters](fastlane/metadata/android/en-GB/images/phoneScreenshotsThumbs/9-thumb.png)](fastlane/metadata/android/en-GB/images/phoneScreenshots/9.png)
-[![action options](fastlane/metadata/android/en-GB/images/phoneScreenshotsThumbs/10-thumb.png)](fastlane/metadata/android/en-GB/images/phoneScreenshots/10.png)
-[![settings](fastlane/metadata/android/en-GB/images/phoneScreenshotsThumbs/11-thumb.png)](fastlane/metadata/android/en-GB/images/phoneScreenshots/11.png)
-[![measurements](fastlane/metadata/android/en-GB/images/phoneScreenshotsThumbs/12-thumb.png)](fastlane/metadata/android/en-GB/images/phoneScreenshots/12.png)
-[![schedules](fastlane/metadata/android/en-GB/images/phoneScreenshotsThumbs/13-thumb.png)](fastlane/metadata/android/en-GB/images/phoneScreenshots/13.png)
-[![schedule details](fastlane/metadata/android/en-GB/images/phoneScreenshotsThumbs/14-thumb.png)](fastlane/metadata/android/en-GB/images/phoneScreenshots/14.png)
-[![schedule date](fastlane/metadata/android/en-GB/images/phoneScreenshotsThumbs/15-thumb.png)](fastlane/metadata/android/en-GB/images/phoneScreenshots/15.png)
+[![install](fastlane/metadata/android/en-GB/images/phoneScreenshotsThumbs/install.png)](fastlane/metadata/android/en-GB/images/phoneScreenshots/install.png)
+[![main plant list](fastlane/metadata/android/en-GB/images/phoneScreenshotsThumbs/1.png)](fastlane/metadata/android/en-GB/images/phoneScreenshots/1.png)
+[![plant details](fastlane/metadata/android/en-GB/images/phoneScreenshotsThumbs/2.png)](fastlane/metadata/android/en-GB/images/phoneScreenshots/2.png)
+[![plant photos](fastlane/metadata/android/en-GB/images/phoneScreenshotsThumbs/3.png)](fastlane/metadata/android/en-GB/images/phoneScreenshots/3.png)
+[![plant actions](fastlane/metadata/android/en-GB/images/phoneScreenshotsThumbs/4.png)](fastlane/metadata/android/en-GB/images/phoneScreenshots/4.png)
+[![plant statistics](fastlane/metadata/android/en-GB/images/phoneScreenshotsThumbs/5.png)](fastlane/metadata/android/en-GB/images/phoneScreenshots/5.png)
+[![schedule details](fastlane/metadata/android/en-GB/images/phoneScreenshotsThumbs/6.png)](fastlane/metadata/android/en-GB/images/phoneScreenshots/6.png)
+[![schedule dates](fastlane/metadata/android/en-GB/images/phoneScreenshotsThumbs/7.png)](fastlane/metadata/android/en-GB/images/phoneScreenshots/7.png)
+[![watering details](fastlane/metadata/android/en-GB/images/phoneScreenshotsThumbs/8.png)](fastlane/metadata/android/en-GB/images/phoneScreenshots/8.png)
+[![garden tracker](fastlane/metadata/android/en-GB/images/phoneScreenshotsThumbs/9.png)](fastlane/metadata/android/en-GB/images/phoneScreenshots/9.png)
+[![dark main plant list](fastlane/metadata/android/en-GB/images/phoneScreenshotsThumbs/1b.png)](fastlane/metadata/android/en-GB/images/phoneScreenshots/1b.png)
+[![dark plant details](fastlane/metadata/android/en-GB/images/phoneScreenshotsThumbs/2b.png)](fastlane/metadata/android/en-GB/images/phoneScreenshots/2b.png)
+[![dark plant photos](fastlane/metadata/android/en-GB/images/phoneScreenshotsThumbs/3b.png)](fastlane/metadata/android/en-GB/images/phoneScreenshots/3b.png)
+[![dark plant actions](fastlane/metadata/android/en-GB/images/phoneScreenshotsThumbs/4b.png)](fastlane/metadata/android/en-GB/images/phoneScreenshots/4b.png)
+[![dark plant statistics](fastlane/metadata/android/en-GB/images/phoneScreenshotsThumbs/5b.png)](fastlane/metadata/android/en-GB/images/phoneScreenshots/5b.png)
+[![dark schedule details](fastlane/metadata/android/en-GB/images/phoneScreenshotsThumbs/6b.png)](fastlane/metadata/android/en-GB/images/phoneScreenshots/6b.png)
+[![dark schedule dates](fastlane/metadata/android/en-GB/images/phoneScreenshotsThumbs/7b.png)](fastlane/metadata/android/en-GB/images/phoneScreenshots/7b.png)
+[![dark watering details](fastlane/metadata/android/en-GB/images/phoneScreenshotsThumbs/8b.png)](fastlane/metadata/android/en-GB/images/phoneScreenshots/8b.png)
+[![dark garden tracker](fastlane/metadata/android/en-GB/images/phoneScreenshotsThumbs/9b.png)](fastlane/metadata/android/en-GB/images/phoneScreenshots/9b.png)
+[![settings](fastlane/metadata/android/en-GB/images/phoneScreenshotsThumbs/10.png)](fastlane/metadata/android/en-GB/images/phoneScreenshots/10.png)
 
 # About the app
 
-The app uses a simple JSON structure to store all the data about the plants that can be found in `/sdcard/Android/data/me.anon.grow/files/plants.json`. All photos taken in the app are stored in `/sdcard/DCIM/GrowTracker/` in the corresponding plant id folder. `NOTE`: Photos will **not** show in any gallery app and will only be accessible through GrowTracker, or other **file** browser apps such as `ESFile Explorer`
+The app was designed with data in mind. All data is easily accessible via the app's files folder in `Android/data/me.anon.grow/files/`. You will need a file explorer to browse this folder, or alternatively, you can back your data up via the app settings which will create copies in `backups/GrowTracker/`
 
-The structure is very simple. Note: date timestamps are all unix timestamps from 1/1/1970 in milliseconds. All objects in arrays are in date order, where index 0 is the oldest and index (size - 1) is the newest.
+The structure is very simple, and consists of a few different objects.
 
-### Plant object
+*Note*: date timestamps are all unix timestamps from 1/1/1970 in milliseconds. All objects in arrays are in date order, where index 0 is the oldest and index (size - 1) is the newest.
 
-- Plant date in milliseconds
+## Plant object
+
+- `plantDate` in milliseconds
+- `images` is an array of file paths. Image file names are the taken date as unix timestamp in milliseconds
 
 ```js
 {
     "id": <String>,
-    "actions": [<Action Object>],
+    "actions": [<Action>],
     "images": [<String>],
-    "name": "test",
-    "strain": "test",
-    "clone": <boolean>,
+    "name": <String>,
+    "strain": <String>,
+    "clone": <Boolean>,
     "medium": <Medium>,
     "mediumDetails": <String>,
     "plantDate": 1234567890
@@ -88,18 +88,21 @@ One of,
 
 `SOIL`, `HYDRO`, `COCO`, `AERO`
 
-### Plant Stage (ENUM)
+## Actions
 
-One of,
+All actions have the following 3 properties
 
-`PLANTED`, `GERMINATION`, `SEEDLING`, `CUTTING`, `VEGETATION`, `FLOWER`, `DRYING`, `CURING`, `HARVESTED`
+```js
+{
+    "type": <String>,
+    "date": 1234567890,
+    "notes": <String>,
+}
+```
 
-### Action object (feeding)
+Only the following actions are currently supports
 
-Temperature measured in ºC
-
-
-### Action object (water)
+### Action object (type = Water)
 
 - Temperature measured in ºC
 - Amount measured in ml
@@ -115,29 +118,18 @@ Water action for waterings
     "tds": <Tds>,
     "runoff": <Double>,
     "amount": <Double>,
-    "date": 1431268453111,
+    "date": 1234567890,
     "type": "Water",
     "temp": <Double>,
     "notes": <String>
 }
 ```
 
-### Tds object
-
-Type can be one one of,
-
-`PPM500`, `PPM700`, `EC`
-
-```js
-{
-    "amount": <Double>,
-    "type": <TdsUnit>
-}
-```
-
-### Additive object - used for nutrients
+### Additive object
 
 - Amount is measured in ml
+
+Object for nutrient dosages
 
 ```js
 {
@@ -146,55 +138,138 @@ Type can be one one of,
 }
 ```
 
-### Action object (other)
+### Tds object
 
-Action can be one of,
+Object for measuring conductivity or PPM
 
-`FIM`, `FLUSH`, `FOLIAR_FEED`, `LST`, `LOLLIPOP`, `PESTICIDE_APPLICATION`, `TOP`, `TRANSPLANTED`, `TRIM`
+```js
+{
+    "amount": <Double>,
+    "type": <TdsUnit>
+}
+```
+
+### Tds Unit (ENUM)
+
+One of,
+
+`PPM500`, `PPM700`, `EC`
+
+### Action object (type = Action)
 
 - Date in milliseconds
+
+Action object for recording plant actions such as trimming, transplanting.
 
 ```js
 {
     "action": <Action>,
-    "date": 1431258118968,
+    "date": 1234567890,
     "type": "Action",
     "notes": <String>
 }
 ```
 
-### Stage change
+### Action (ENUM)
+
+One of,
+
+`FIM`, `FLUSH`, `FOLIAR_FEED`, `LST`, `LOLLIPOP`, `PESTICIDE_APPLICATION`, `TOP`, `TRANSPLANTED`, `TRIM`, `TUCK`
+
+### Stage change (type = StageChange)
 
 - Date in milliseconds
 
-```
+Action object for recording a change in plant stage.
+
+```js
 {
-    "newStage": <Plant Stage>,
-    "date": 1431258118968,
+    "newStage": <PlantStage>,
+    "date": 1234567890,
     "type": "StageChange",
     "notes": <String>
 }
 ```
 
-### Note
+### PlantStage (ENUM)
+
+One of,
+
+`PLANTED`, `GERMINATION`, `SEEDLING`, `CUTTING`, `VEGETATION`, `FLOWER`, `DRYING`, `CURING`, `HARVESTED`
+
+### Note action (type = Note)
 
 - Date in milliseconds
 
-```
+```js
 {
     "notes": <String>,
-    "date": 1431258118968,
+    "date": 1234567890,
     "type": "Note"
 }
 ```
 
-Image object is a simple string path to an image. Each image is named by the timestamp when it was taken, in milliseconds.
+## Garden object
+
+The garden object is similar to the plant object, and accepts `Action` types, but is software-restricted to the following
+
+```js
+{
+    "id": <String>,
+    "name": <String>,
+    "plantIds": [<String>],
+    "actions": [<Action>]
+}
+```
+
+### Temperature change action (type = TemperatureChange)
+
+- Temperature measured in ºC
+- Date in milliseconds
+
+```js
+{
+    "temp": <Double>,
+    "notes": <String>,
+    "date": 1234567890,
+    "type": "TemperatureChange"
+}
+```
+
+### Humidity change action (type = HumidityChange)
+
+- Date in milliseconds
+
+```js
+{
+    "humidity": <Double>,
+    "notes": <String>,
+    "date": 1234567890,
+    "type": "HumidityChange"
+}
+```
+
+### Light schedule change action (type = LightingChange)
+
+- `on` time format `HH:mm`
+- `off` time format `HH:mm`
+- Date in milliseconds
+
+```js
+{
+    "on": <String>,
+    "off": <String>,
+    "notes": <String>,
+    "date": 1234567890,
+    "type": "LightingChange"
+}
+```
 
 # Encryption
 
-Note that this is **not** a guarantee form of encryption from law enforcement agencies.
+Note that this is **not** a guaranteed form of protection from law enforcement agencies.
 
-Encryption in the app uses basic AES for encryption using the provided passphrase. If the passphrase is less than 128 bits (16 UTF-8 chars), it will be padded with `0x0` bytes. You can view the key generator method [here](https://github.com/7LPdWcaW/GrowTracker-Android/blob/master/app/src/main/java/me/anon/lib/helper/EncryptionHelper.java#L27)
+Encryption in the app uses basic AES for encryption using a provided passphrase. If the passphrase is less than 128 bits (16 UTF-8 chars), it will be padded with `0x0` bytes. You can view the key generator method [here](https://github.com/7LPdWcaW/GrowTracker-Android/blob/master/app/src/main/java/me/anon/lib/helper/EncryptionHelper.java#L27)
 
 You can decrypt your files using your passphrase either by writing a script that uses AES decryption, or an online tool such as [Online-Domain-Tools](http://aes.online-domain-tools.com/).
 

@@ -1,0 +1,25 @@
+- New updated material design
+- New supported languages: French, Russian, Ukrainian
+- New tabbed system for plant details/garden view
+- New Support for Android 10 dark theme, Also works on older versions
+- New garden tracker functionality. Track temp/humidity, lighting schedule, and notes
+- New setting to change the look of the list card
+- New TDS selection option (this deprecates the `ppm` field in Water object for `tds`)
+- New 'panic mode' helps you restore your data from backups when a problem happens
+- New calendar view in history tab
+- New 'ScrOG Tuck' action
+- New plant stage chart in statistics view
+- New autocomplete functionality for plant strain
+- New confirm exit dialog when watering
+- New 'clear image cache' button in settings
+
+- Updates export functionality, should be much more reliable
+- Updates data tasks to run in background such as importing images, encrypting/decrypting the app
+- Updates graphs in statistics view
+
+- Fixes issue with feeding schedule dates not ordering correctly
+- Fixes many issues with weird data states, especially around encryption mode
+- Fixes tablet layouts
+- Fixes issue with importing multiple images
+
+- Removes support for Addons. Addon functionality is now currently deprecated

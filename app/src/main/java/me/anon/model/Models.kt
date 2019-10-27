@@ -11,6 +11,7 @@ import me.anon.lib.DateRenderer
 import me.anon.lib.TdsUnit
 import me.anon.lib.TempUnit
 import me.anon.lib.Unit
+import me.anon.lib.ext.formatWhole
 import me.anon.lib.helper.TimeHelper
 import java.util.*
 
@@ -266,30 +267,30 @@ class Plant(
 					var waterStr: String = ""
 
 					it.ph?.let { ph ->
-						waterStr = "<b>$ph pH</b> "
+						waterStr = "<b>${ph.formatWhole()} pH</b> "
 
 						if (verbosity > 1)
 						{
 							it.runoff?.let { runoff ->
-								waterStr += "➙ <b>$runoff pH</b> "
+								waterStr += "➙ <b>${runoff.formatWhole()} pH</b> "
 							}
 						}
 					}
 
 					it.amount?.let { amount ->
-						waterStr += "<b>${Unit.ML.to(deliveryUnit, amount)}${deliveryUnit.label}</b> "
+						waterStr += "<b>${Unit.ML.to(deliveryUnit, amount).formatWhole()}${deliveryUnit.label}</b> "
 					}
 
 					it.tds?.let { tds ->
 						var ppm = tds.amount ?: 0.0
 						waterStr += "<b>@"
-						waterStr += if (tds.type.decimalPlaces == 0) ppm.toInt() else TdsUnit.toTwoDecimalPlaces(ppm)
+						waterStr += ppm.formatWhole()
 						waterStr += tds.type.label
 						waterStr += "</b> "
 					}
 
 					it.temp?.let { temp ->
-						val temp = "º${TempUnit.CELCIUS.to(tempUnit, temp)}${tempUnit.label}"
+						val temp = "${TempUnit.CELCIUS.to(tempUnit, temp).formatWhole()}º${tempUnit.label}"
 						waterStr += "<b>$temp</b> "
 					}
 
@@ -301,7 +302,7 @@ class Plant(
 					if (it.additives.isNotEmpty())
 					{
 						var total = it.additives.sumByDouble { it.amount ?: 0.0 }
-						summary += "+ <b>" + Unit.ML.to(measureUnit, total) + measureUnit.label + "</b> " + context.getString(R.string.additives)
+						summary += "+ <b>" + Unit.ML.to(measureUnit, total).formatWhole() + measureUnit.label + "</b> " + context.getString(R.string.additives)
 					}
 				}
 			}
@@ -505,7 +506,7 @@ class Water(
 			waterStr.append("<b>")
 			waterStr.append(context.getString(R.string.plant_summary_ph))
 			waterStr.append("</b> ")
-			waterStr.append(it)
+			waterStr.append(it.formatWhole())
 			waterStr.append(", ")
 		}
 
@@ -513,7 +514,7 @@ class Water(
 			waterStr.append("<b>")
 			waterStr.append(context.getString(R.string.plant_summary_out_ph))
 			waterStr.append("</b> ")
-			waterStr.append(it)
+			waterStr.append(it.formatWhole())
 			waterStr.append(", ")
 		}
 
@@ -526,7 +527,7 @@ class Water(
 			waterStr.append("<b>")
 			waterStr.append(context.getString(it.type.strRes))
 			waterStr.append("</b> ")
-			waterStr.append(if (it.type.decimalPlaces == 0) ppm.toInt() else TdsUnit.toTwoDecimalPlaces(ppm))
+			waterStr.append(ppm.formatWhole())
 			waterStr.append(it.type.label)
 			waterStr.append(", ")
 		}
@@ -535,7 +536,7 @@ class Water(
 			waterStr.append("<b>")
 			waterStr.append(context.getString(R.string.plant_summary_amount))
 			waterStr.append("</b> ")
-			waterStr.append(Unit.ML.to(deliveryUnit, it))
+			waterStr.append(Unit.ML.to(deliveryUnit, it).formatWhole())
 			waterStr.append(deliveryUnit.label)
 			waterStr.append(", ")
 		}
@@ -544,7 +545,7 @@ class Water(
 			waterStr.append("<b>")
 			waterStr.append(context.getString(R.string.plant_summary_temp))
 			waterStr.append("</b> ")
-			waterStr.append(TempUnit.CELCIUS.to(tempUnit, it))
+			waterStr.append(TempUnit.CELCIUS.to(tempUnit, it).formatWhole())
 			waterStr.append("º").append(tempUnit.label).append(", ")
 		}
 
@@ -562,7 +563,7 @@ class Water(
 				if (additive.amount == null) return@forEach
 
 				val converted = Unit.ML.to(measureUnit, additive.amount!!)
-				val amountStr = if (converted == Math.floor(converted)) converted.toInt().toString() else converted.toString()
+				val amountStr = converted.formatWhole()
 
 				waterStr.append("<br/>&nbsp;&nbsp;&nbsp;&nbsp; → ")
 				waterStr.append(additive.description)

@@ -89,7 +89,7 @@ class GardenActionAdapter : RecyclerView.Adapter<ActionHolder>()
 
 			is NoteAction -> {
 				holder.name.setText(R.string.note)
-				holder.card.setCardBackgroundColor(0xffe5e5e5.toInt())
+				holder.card.setCardBackgroundColor(R.color.light_grey.getColor(holder.itemView.context))
 			}
 
 			is LightingChange -> {
