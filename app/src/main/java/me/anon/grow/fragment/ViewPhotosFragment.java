@@ -346,6 +346,12 @@ public class ViewPhotosFragment extends Fragment
 
 	@Views.OnClick public void onFabPhotoClick(final View view)
 	{
+		if (!PermissionHelper.hasPermission(getActivity(), Manifest.permission.CAMERA))
+		{
+			PermissionHelper.doPermissionCheck(this, Manifest.permission.CAMERA, 1, getString(R.string.camera_permission_summary));
+			return;
+		}
+
 		if (!PermissionHelper.hasPermission(getActivity(), Manifest.permission.WRITE_EXTERNAL_STORAGE))
 		{
 			PermissionHelper.doPermissionCheck(this, Manifest.permission.WRITE_EXTERNAL_STORAGE, 1, getString(R.string.permission_summary));
