@@ -77,7 +77,7 @@ class MarkdownProcessor : ExportProcessor()
 		}
 
 		val planted = DateTimeUtils.toLocalDateTime(Timestamp(plant.plantDate))
-		documentBuilder.append("**Planted:** ").append(planted.format(DateTimeFormatter.ofPattern("yyyy-mm-dd HH:mm")))
+		documentBuilder.append("**Planted:** ").append(planted.format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm")))
 		documentBuilder.append(NEW_LINE + NEW_LINE)
 
 		documentBuilder.append("**From clone?:** ").append(plant.clone)
@@ -106,7 +106,7 @@ class MarkdownProcessor : ExportProcessor()
 			{
 				val harvested = DateTimeUtils.toLocalDateTime(Timestamp(stageDate))
 
-				documentBuilder.append("**Harvested:** ").append(harvested.format(DateTimeFormatter.ofPattern("yyyy-mm-dd HH:mm")))
+				documentBuilder.append("**Harvested:** ").append(harvested.format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm")))
 				documentBuilder.append(NEW_LINE + NEW_LINE)
 			}
 		}
@@ -123,7 +123,7 @@ class MarkdownProcessor : ExportProcessor()
 			val stageName = key.enString
 
 			documentBuilder.append(" - ").append(stageName).append(NEW_LINE + NEW_LINE)
-			documentBuilder.append("\t - ").append("**Set on:** ").append(stageDateTime.format(DateTimeFormatter.ofPattern("yyyy-mm-dd HH:mm"))).append(NEW_LINE)
+			documentBuilder.append("\t - ").append("**Set on:** ").append(stageDateTime.format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm"))).append(NEW_LINE)
 
 			if (key != PlantStage.HARVESTED)
 			{
@@ -265,7 +265,7 @@ class MarkdownProcessor : ExportProcessor()
 			val actionDate = DateTimeUtils.toLocalDateTime(Timestamp(action.date))
 
 			documentBuilder.append("| ")
-			documentBuilder.append(actionDate.format(DateTimeFormatter.ofPattern("yyyy-mm-dd HH:mm")))
+			documentBuilder.append(actionDate.format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm")))
 			documentBuilder.append(" | ")
 
 			// stage date
@@ -381,7 +381,7 @@ class MarkdownProcessor : ExportProcessor()
 			val actionDate = DateTimeUtils.toLocalDateTime(Timestamp(action.date))
 
 			documentBuilder.append("| ")
-			documentBuilder.append(actionDate.format(DateTimeFormatter.ofPattern("yyyy-mm-dd HH:mm")))
+			documentBuilder.append(actionDate.format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm")))
 			documentBuilder.append(" | ")
 			documentBuilder.append(action.getTypeStr())
 			documentBuilder.append(" | ")
