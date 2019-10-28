@@ -46,7 +46,7 @@ object BackupHelper
 				}
 			}
 
-			return DateTimeUtils.toLocalDateTime(Timestamp(date.time)).format(DateTimeFormatter.ofPattern("yyyy-mm-dd HH:mm:ss"))
+			return DateTimeUtils.toLocalDateTime(Timestamp(date.time)).format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss"))
 		}
 
 		return ""
