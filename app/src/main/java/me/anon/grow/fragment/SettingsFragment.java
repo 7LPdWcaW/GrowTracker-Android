@@ -65,12 +65,14 @@ import me.anon.lib.Unit;
 import me.anon.lib.helper.AddonHelper;
 import me.anon.lib.helper.BackupHelper;
 import me.anon.lib.helper.EncryptionHelper;
+import me.anon.lib.helper.MigrationHelper;
 import me.anon.lib.helper.NotificationHelper;
 import me.anon.lib.helper.PathHelper;
 import me.anon.lib.manager.FileManager;
 import me.anon.lib.manager.GardenManager;
 import me.anon.lib.manager.PlantManager;
 import me.anon.lib.manager.ScheduleManager;
+import me.anon.lib.task.AsyncCallback;
 import me.anon.lib.task.DecryptTask;
 import me.anon.lib.task.EncryptTask;
 import me.anon.model.Garden;
@@ -836,20 +838,23 @@ public class SettingsFragment extends PreferenceFragmentCompat implements Prefer
 				}
 
 				File file = new File(backupPath.getPath() + "/" + backup);
-				if (backup.contains("plants") && backup.endsWith(".bak"))
+				if (backup.contains("plants"))
 				{
+					current.requireMigration = !backup.endsWith(".bak");
 					current.plantsPath = backupPath.getPath() + "/" + backup;
 					current.size += file.length();
 				}
 
-				if (backup.contains("gardens") && backup.endsWith(".bak"))
+				if (backup.contains("gardens"))
 				{
+					current.requireMigration = !backup.endsWith(".bak");
 					current.gardenPath = backupPath.getPath() + "/" + backup;
 					current.size += file.length();
 				}
 
-				if (backup.contains("schedules") && backup.endsWith(".bak"))
+				if (backup.contains("schedules"))
 				{
+					current.requireMigration = !backup.endsWith(".bak");
 					current.schedulePath = backupPath.getPath() + "/" + backup;
 					current.size += file.length();
 				}
@@ -1057,12 +1062,16 @@ public class SettingsFragment extends PreferenceFragmentCompat implements Prefer
 		else
 		{
 			SnackBar.show(getActivity(), getString(R.string.restore_complete, selectedBackup.toString()), Snackbar.LENGTH_LONG, null);
-			getActivity().recreate();
 		}
 
 		FileManager.getInstance().removeFile(PlantManager.FILES_DIR + "/plants.temp");
 		FileManager.getInstance().removeFile(GardenManager.FILES_DIR + "/gardens.temp");
 		FileManager.getInstance().removeFile(ScheduleManager.FILES_DIR + "/schedules.temp");
+
+		if (selectedBackup.requireMigration)
+		{
+			MigrationHelper.migratePpm(getActivity());
+		}
 	}
 
 	@Override public void onActivityResult(int requestCode, int resultCode, Intent data)
@@ -1133,6 +1142,7 @@ public class SettingsFragment extends PreferenceFragmentCompat implements Prefer
 		String gardenPath;
 		String schedulePath;
 		long size = 0;
+		boolean requireMigration = false;
 
 		@Override public String toString()
 		{
