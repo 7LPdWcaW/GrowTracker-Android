@@ -423,4 +423,6 @@
 	<string name="export_complete">Export complete</string>
 	<string name="export_dialog_label">Include images?</string>
 	<string name="no_data">There is no data available</string>
+
+	<string name="camera_permission_summary">Camera permission is required to take photos</string>
 </resources>
