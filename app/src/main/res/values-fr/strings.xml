@@ -83,8 +83,6 @@
 	<string name="date_label">Date</string>
 	<string name="today">Aujourd\'hui</string>
 	<string name="length_cured">Curé depuis %s jours</string>
-	<string name="length_days">%s jours</string>
-	<string name="length_days_inv">Jours %s</string>
 
 	<string name="filter_waterings">Arrosages</string>
 	<string name="filter_stage_changes">Changements d\'état</string>
@@ -407,4 +405,7 @@
 	<string name="exporting_path"> %s exporté à %s</string>
 	<string name="export_complete">Export complet</string>
 	<string name="export_dialog_label">Inclure les images ?</string>
+	<string name="no_data">Aucune donnée accessible </string>
+
+	<string name="camera_permission_summary">Permission d\'utiliser l\'appareil photo requise pour prendre des photos</string>
 </resources>
