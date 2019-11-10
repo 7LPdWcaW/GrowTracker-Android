@@ -174,7 +174,7 @@
 	<string name="set">Встановити</string>
 	<string name="change">Змінити</string>
 	<string name="add">Додати</string>
-	<string name="cancel">Відмінити</string>
+	<string name="cancel">Скасувати</string>
 	<string name="action">дію</string>
 	<string name="ok">Ок</string>
 	<string name="field_required">Обов\'язкове поле</string>
@@ -410,7 +410,7 @@
 	<string name="settings_image_cache_title">Очистити кеш зображень</string>
 	<string name="cache_cleared">Кеш зображень очищено</string>
 	<string name="import_progress_warning">Імпортую зображення, це може тривати довго...</string>
-	<string name="data_task">Завдання даних</string>
+	<string name="data_task">Обробка даних</string>
 	<string name="task_complete">Завдання виконано</string>
 	<string name="empty_actions_list">Немає дій</string>
 
@@ -420,4 +420,6 @@
 	<string name="export_complete">Експорт завершено</string>
 	<string name="export_dialog_label">Включити зображення?</string>
 	<string name="no_data">Дані відсутні</string>
+
+	<string name="camera_permission_summary">Камері потрібен дозвіл щоб робити знімки</string>
 </resources>
