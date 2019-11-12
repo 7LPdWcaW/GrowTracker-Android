@@ -410,7 +410,7 @@
 	<string name="settings_image_cache_title">Очистить кеш изображений</string>
 	<string name="cache_cleared">Кеш изображений очищен</string>
 	<string name="import_progress_warning">Импорт изображений, может занять некоторое время...</string>
-	<string name="data_task">Задание данных</string>
+	<string name="data_task">Обработка данных</string>
 	<string name="task_complete">Задание выполнено</string>
 	<string name="empty_actions_list">Нет действий</string>
 
@@ -420,4 +420,6 @@
 	<string name="export_complete">Экспорт завершён</string>
 	<string name="export_dialog_label">Включить изображения?</string>
 	<string name="no_data">Данные отсутствуют</string>
+
+	<string name="camera_permission_summary">Камере необходимо разрешение чтобы делать фото</string>
 </resources>
