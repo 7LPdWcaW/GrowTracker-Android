@@ -394,7 +394,7 @@
 	<string name="settings_image_location_error">Se falló en establecer la ubicación para imágenes</string>
 	<string name="settings_image_location_title">Ubicación de las imágenes guardadas</string>
 	<string name="settings_image_cache_title">Limpiar el cache de imágenes</string>
-	<string name="cache_cleared">Disco de imágenes y caché de memoria vaciados</string>
+	<string name="cache_cleared">Imágenes y caché en memoria y disco vaciados</string>
 	<string name="import_progress_warning">Importando imágenes, esto puede tomar un ratito…</string>
 	<string name="data_task">Tarea de información</string>
 	<string name="task_complete">Tarea completada</string>
@@ -406,4 +406,6 @@
 	<string name="export_complete">Exportado por completo</string>
 	<string name="export_dialog_label">¿Incluir imágenes?</string>
 	<string name="no_data">No hay ninguna información disponible</string>
+
+	<string name="camera_permission_summary">Para tomar fotos se necesita el permiso para la cámara </string>
 </resources>
