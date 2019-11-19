@@ -523,8 +523,31 @@ public class PlantDetailsFragment extends Fragment
 		{
 			if (resultCode == Activity.RESULT_CANCELED)
 			{
-				new File(plant.getImages().get(plant.getImages().size() - 1)).delete();
-				plant.getImages().remove(plant.getImages().size() - 1);
+				File imageFile = new File(plant.getImages().get(plant.getImages().size() - 1));
+
+				if (imageFile.delete())
+				{
+					plant.getImages().remove(plant.getImages().size() - 1);
+				}
+
+				File folderFile = imageFile.getParentFile();
+				String[] list = folderFile.list();
+				if (list != null)
+				{
+					if (list.length == 1 && ".nomedia".equals(list[0]))
+					{
+						new File(folderFile, ".nomedia").delete();
+					}
+
+					if (folderFile.list() == null || folderFile.list().length == 0)
+					{
+						folderFile.delete();
+					}
+				}
+				else
+				{
+					folderFile.delete();
+				}
 			}
 			else
 			{
