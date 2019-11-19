@@ -54,8 +54,8 @@
 			app:layout_constraintEnd_toEndOf="parent"
 		>
 			<ImageView
-				android:layout_width="256dp"
-				android:layout_height="256dp"
+				android:layout_width="@dimen/empty_size"
+				android:layout_height="@dimen/empty_size"
 				app:srcCompat="@drawable/ic_cog"
 				app:tint="?android:textColorTertiary"
 				android:layout_gravity="center_horizontal"
