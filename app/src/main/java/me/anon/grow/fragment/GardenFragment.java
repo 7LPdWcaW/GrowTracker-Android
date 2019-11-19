@@ -387,6 +387,13 @@ public class GardenFragment extends Fragment
 		{
 			Plant plant = data.getParcelableExtra("plant");
 			PlantManager.getInstance().upsert(plant);
+
+			if (requestCode == 5 && !garden.getPlantIds().contains(plant.getId()))
+			{
+				garden.getPlantIds().add(plant.getId());
+				GardenManager.getInstance().save();
+			}
+
 			filter();
 			PlantWidgetProvider.triggerUpdateAll(getActivity());
 		}

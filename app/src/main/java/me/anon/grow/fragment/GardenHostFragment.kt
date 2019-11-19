@@ -1,5 +1,6 @@
 package me.anon.grow.fragment
 
+import android.content.Intent
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
@@ -43,6 +44,12 @@ class GardenHostFragment : Fragment()
 
 			return@setOnNavigationItemSelectedListener true
 		}
+	}
+
+	override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?)
+	{
+		super.onActivityResult(requestCode, resultCode, data)
+		childFragmentManager.findFragmentById(R.id.child_fragment_holder)?.onActivityResult(requestCode, resultCode, data)
 	}
 
 	override fun onSaveInstanceState(outState: Bundle)
