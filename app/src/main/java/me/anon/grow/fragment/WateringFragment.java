@@ -41,6 +41,7 @@ import me.anon.lib.TdsUnit;
 import me.anon.lib.TempUnit;
 import me.anon.lib.Unit;
 import me.anon.lib.Views;
+import me.anon.lib.ext.NumberUtilsKt;
 import me.anon.lib.manager.PlantManager;
 import me.anon.lib.manager.ScheduleManager;
 import me.anon.model.Action;
@@ -395,14 +396,14 @@ public class WateringFragment extends Fragment
 
 				if (!averageAmount.isNaN())
 				{
-					amount.setHint(String.valueOf(ML.to(selectedDeliveryUnit, averageAmount)) + selectedDeliveryUnit.getLabel());
+					amount.setHint(NumberUtilsKt.formatWhole(ML.to(selectedDeliveryUnit, averageAmount)) + selectedDeliveryUnit.getLabel());
 				}
 
 				tempContainer.setVisibility(View.VISIBLE);
 
 				if (!averageTemp.isNaN())
 				{
-					temp.setHint(String.valueOf(CELCIUS.to(selectedTemperatureUnit, averageTemp)) + selectedTemperatureUnit.getLabel());
+					temp.setHint(NumberUtilsKt.formatWhole(CELCIUS.to(selectedTemperatureUnit, averageTemp)) + selectedTemperatureUnit.getLabel());
 				}
 
 				notes.setHint(hintFeed.get(0).getNotes());
@@ -466,12 +467,7 @@ public class WateringFragment extends Fragment
 
 			if (water.getTds() != null)
 			{
-				String ppm = String.valueOf(water.getTds().getAmount().intValue());
-				if (selectedTdsUnit.getDecimalPlaces() == 2)
-				{
-					ppm = "" + Unit.toTwoDecimalPlaces(water.getTds().getAmount());
-				}
-
+				String ppm = NumberUtilsKt.formatWhole(water.getTds().getAmount());
 				waterPpm.setText(ppm);
 			}
 
@@ -482,14 +478,14 @@ public class WateringFragment extends Fragment
 
 			if (water.getAmount() != null)
 			{
-				amount.setText(String.valueOf(ML.to(selectedDeliveryUnit, water.getAmount())));
+				amount.setText(NumberUtilsKt.formatWhole(ML.to(selectedDeliveryUnit, water.getAmount())));
 			}
 
 			tempContainer.setVisibility(View.VISIBLE);
 
 			if (water.getTemp() != null)
 			{
-				temp.setHint(String.valueOf(CELCIUS.to(selectedTemperatureUnit, water.getTemp())) + selectedTemperatureUnit.getLabel());
+				temp.setHint(NumberUtilsKt.formatWhole(CELCIUS.to(selectedTemperatureUnit, water.getTemp())) + selectedTemperatureUnit.getLabel());
 			}
 
 			populateAdditives();
