@@ -270,7 +270,7 @@ public class MainApplication extends Application
 					return new File(dir, fileName);
 				}
 			})
-			.diskCacheExtraOptions(512, 512, null)
+			.diskCacheExtraOptions(768, 768, null)
 			.imageDecoder(new BaseImageDecoder(false)
 			{
 				@Override protected InputStream getImageStream(ImageDecodingInfo decodingInfo) throws IOException
