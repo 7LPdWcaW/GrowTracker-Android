@@ -9,6 +9,7 @@ import android.os.Build;
 import android.os.Environment;
 import android.provider.DocumentsContract;
 import android.provider.MediaStore;
+import android.text.TextUtils;
 
 import java.net.URISyntaxException;
 
@@ -45,12 +46,27 @@ public class PathHelper
 					}
 				}
 
-				return "/storage/" + split[0] + "/" + split[1];
+				return "/storage/" + TextUtils.join("/", split);
 			}
 			else if (isDownloadsDocument(uri))
 			{
 				final String id = DocumentsContract.getDocumentId(uri);
-				uri = ContentUris.withAppendedId(Uri.parse("content://downloads/public_downloads"), Long.valueOf(id));
+				if (!TextUtils.isEmpty(id))
+				{
+					if (id.startsWith("raw:"))
+					{
+						return id.replaceFirst("raw:", "");
+					}
+					try
+					{
+						final Uri contentUri = ContentUris.withAppendedId(Uri.parse("content://downloads/public_downloads"), Long.valueOf(id));
+						return getDataColumn(context, contentUri, null, null);
+					}
+					catch (NumberFormatException e)
+					{
+						return null;
+					}
+				}
 			}
 			else if (isMediaDocument(uri))
 			{
@@ -128,5 +144,29 @@ public class PathHelper
 	public static boolean isMediaDocument(Uri uri)
 	{
 		return "com.android.providers.media.documents".equals(uri.getAuthority());
+	}
+
+	public static String getDataColumn(Context context, Uri uri, String selection, String[] selectionArgs)
+	{
+		Cursor cursor = null;
+		final String column = "_data";
+		final String[] projection = {column};
+		try
+		{
+			cursor = context.getContentResolver().query(uri, projection, selection, selectionArgs, null);
+			if (cursor != null && cursor.moveToFirst())
+			{
+				final int index = cursor.getColumnIndexOrThrow(column);
+				return cursor.getString(index);
+			}
+		}
+		finally
+		{
+			if (cursor != null)
+			{
+				cursor.close();
+			}
+		}
+		return null;
 	}
 }

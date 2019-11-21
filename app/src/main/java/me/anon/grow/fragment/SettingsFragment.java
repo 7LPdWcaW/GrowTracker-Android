@@ -82,6 +82,7 @@ public class SettingsFragment extends PreferenceFragmentCompat implements Prefer
 {
 	private static final int REQUEST_UNINSTALL = 0x01;
 	private static final int REQUEST_PICK_DOCUMENT = 0x02;
+	private static final int REQUEST_PICK_BACKUP_DOCUMENT = 0x03;
 
 	@Override public void onCreatePreferences(Bundle savedInstanceState, String rootKey)
 	{
@@ -110,6 +111,7 @@ public class SettingsFragment extends PreferenceFragmentCompat implements Prefer
 		findPreference("tds_unit").setSummary(Html.fromHtml(getString(R.string.settings_tds_summary, getString(TdsUnit.getSelectedTdsUnit(getActivity()).getStrRes()))));
 		findPreference("backup_now").setSummary(Html.fromHtml(getString(R.string.settings_lastbackup_summary, BackupHelper.getLastBackup())));
 		findPreference("image_location").setSummary(Html.fromHtml(getString(R.string.settings_image_location_summary, FileManager.IMAGE_PATH)));
+		findPreference("backup_location").setSummary(Html.fromHtml(getString(R.string.settings_backup_location_summary, BackupHelper.FILES_PATH)));
 
 		try
 		{
@@ -136,6 +138,8 @@ public class SettingsFragment extends PreferenceFragmentCompat implements Prefer
 		}
 		else
 		{
+			findPreference("image_location").setEnabled(false);
+			findPreference("backup_location").setEnabled(false);
 			findPreference("backup_size").setEnabled(false);
 		}
 
@@ -150,6 +154,7 @@ public class SettingsFragment extends PreferenceFragmentCompat implements Prefer
 		findPreference("backup_now").setOnPreferenceClickListener(this);
 		findPreference("restore").setOnPreferenceClickListener(this);
 		findPreference("image_location").setOnPreferenceClickListener(this);
+		findPreference("backup_location").setOnPreferenceClickListener(this);
 
 		findPreference("failsafe").setEnabled(((SwitchPreferenceCompat)findPreference("encrypt")).isChecked());
 
@@ -563,7 +568,7 @@ public class SettingsFragment extends PreferenceFragmentCompat implements Prefer
 			{
 				PreferenceManager.getDefaultSharedPreferences(getActivity()).edit().putBoolean("auto_backup", true).apply();
 				((MainApplication)getActivity().getApplication()).registerBackupService();
-				SnackBar.show(getActivity(), getString(R.string.backup_enable_toast), Snackbar.LENGTH_LONG, null);
+				SnackBar.show(getActivity(), getString(R.string.backup_enable_toast, BackupHelper.FILES_PATH), Snackbar.LENGTH_LONG, null);
 			}
 
 			return true;
@@ -777,7 +782,7 @@ public class SettingsFragment extends PreferenceFragmentCompat implements Prefer
 		else if ("restore".equals(preference.getKey()))
 		{
 			// get list of backups
-			File backupPath = new File(Environment.getExternalStorageDirectory(), "/backups/GrowTracker/");
+			File backupPath = new File(BackupHelper.FILES_PATH);
 			String[] backupFiles = backupPath.list();
 
 			if (backupFiles == null || backupFiles.length == 0)
@@ -1018,6 +1023,14 @@ public class SettingsFragment extends PreferenceFragmentCompat implements Prefer
 				startActivityForResult(intent, REQUEST_PICK_DOCUMENT);
 			}
 		}
+		else if ("backup_location".equals(preference.getKey()))
+		{
+			if (Build.VERSION.SDK_INT >= 21)
+			{
+				Intent intent = new Intent(Intent.ACTION_OPEN_DOCUMENT_TREE);
+				startActivityForResult(intent, REQUEST_PICK_BACKUP_DOCUMENT);
+			}
+		}
 		else if ("clear_image_cache".equals(preference.getKey()))
 		{
 			ImageLoader.getInstance().clearDiskCache();
@@ -1115,10 +1128,44 @@ public class SettingsFragment extends PreferenceFragmentCompat implements Prefer
 				}
 			}
 
-			if (resultCode != Activity.RESULT_CANCELED)
+			SnackBar.show(getActivity(), getString(R.string.settings_image_location_error), Snackbar.LENGTH_LONG, null);
+		}
+		else if (requestCode == REQUEST_PICK_BACKUP_DOCUMENT && Build.VERSION.SDK_INT >= 19)
+		{
+			if (resultCode == Activity.RESULT_OK)
 			{
-				SnackBar.show(getActivity(), getString(R.string.settings_image_location_error), Snackbar.LENGTH_LONG, null);
+				Uri treeUri = data.getData();
+				DocumentFile pickedDir = DocumentFile.fromTreeUri(getActivity(), treeUri);
+
+				Uri docUri = DocumentsContract.buildDocumentUriUsingTree(treeUri, DocumentsContract.getTreeDocumentId(treeUri));
+
+				if (pickedDir != null)
+				{
+					String filePath = null;
+					try
+					{
+						filePath = PathHelper.getPath(getActivity(), docUri);
+
+						if (!TextUtils.isEmpty(filePath) && new File(filePath).exists())
+						{
+							if (!filePath.endsWith("/")) filePath = filePath + "/";
+
+							if (new File(filePath).canWrite())
+							{
+								BackupHelper.FILES_PATH = filePath;
+								findPreference("backup_location").getSharedPreferences().edit().putString("backup_location", filePath).apply();
+								findPreference("backup_location").setSummary(Html.fromHtml(getString(R.string.settings_backup_location_summary, filePath)));
+								return;
+							}
+						}
+					}
+					catch (URISyntaxException e)
+					{
+					}
+				}
 			}
+
+			SnackBar.show(getActivity(), getString(R.string.settings_backup_location_error), Snackbar.LENGTH_LONG, null);
 		}
 	}
 
