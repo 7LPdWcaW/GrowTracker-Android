@@ -21,7 +21,7 @@ import kotlin.collections.ArrayList
 object BackupHelper
 {
 	@JvmField
-	public var FILES_PATH = Environment.getExternalStorageDirectory().absolutePath + "/backups/GrowTracker"
+	public var FILES_PATH = Environment.getExternalStorageDirectory().absolutePath + "/backups/GrowTracker/"
 
 	@JvmStatic
 	public fun getLastBackup(): String
