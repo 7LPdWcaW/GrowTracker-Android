@@ -133,6 +133,11 @@
 			app:key="restore"
 			app:title="@string/settings_restore_backup"
 		/>
+
+		<Preference
+			app:key="import"
+			app:title="@string/settings_import"
+		/>
 	</PreferenceCategory>
 
 	<PreferenceCategory
