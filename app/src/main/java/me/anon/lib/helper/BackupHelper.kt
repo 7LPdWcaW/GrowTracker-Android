@@ -51,7 +51,7 @@ object BackupHelper
 			}
 		}
 
-		return ""
+		return "-"
 	}
 
 	@JvmStatic

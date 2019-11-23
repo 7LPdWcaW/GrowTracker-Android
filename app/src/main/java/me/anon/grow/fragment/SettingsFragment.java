@@ -1,6 +1,5 @@
 package me.anon.grow.fragment;
 
-import android.app.Activity;
 import android.app.AlarmManager;
 import android.app.PendingIntent;
 import android.content.ComponentName;
@@ -15,22 +14,21 @@ import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Build;
 import android.os.Bundle;
-import android.os.Environment;
 import android.provider.DocumentsContract;
 import android.text.Html;
-import android.text.SpannableString;
 import android.text.TextUtils;
 import android.text.method.LinkMovementMethod;
-import android.text.util.Linkify;
 import android.util.Base64;
 import android.view.View;
 import android.widget.TextView;
 
 import com.google.android.material.snackbar.Snackbar;
 import com.nostra13.universalimageloader.core.ImageLoader;
+import com.squareup.moshi.Types;
 
 import java.io.BufferedInputStream;
 import java.io.File;
+import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.URISyntaxException;
@@ -66,23 +64,26 @@ import me.anon.lib.helper.AddonHelper;
 import me.anon.lib.helper.BackupHelper;
 import me.anon.lib.helper.EncryptionHelper;
 import me.anon.lib.helper.MigrationHelper;
+import me.anon.lib.helper.MoshiHelper;
 import me.anon.lib.helper.NotificationHelper;
 import me.anon.lib.helper.PathHelper;
 import me.anon.lib.manager.FileManager;
 import me.anon.lib.manager.GardenManager;
 import me.anon.lib.manager.PlantManager;
 import me.anon.lib.manager.ScheduleManager;
-import me.anon.lib.task.AsyncCallback;
 import me.anon.lib.task.DecryptTask;
 import me.anon.lib.task.EncryptTask;
 import me.anon.model.Garden;
 import me.anon.model.Plant;
+
+import static android.app.Activity.RESULT_OK;
 
 public class SettingsFragment extends PreferenceFragmentCompat implements Preference.OnPreferenceClickListener, Preference.OnPreferenceChangeListener
 {
 	private static final int REQUEST_UNINSTALL = 0x01;
 	private static final int REQUEST_PICK_DOCUMENT = 0x02;
 	private static final int REQUEST_PICK_BACKUP_DOCUMENT = 0x03;
+	private static final int REQUEST_PICK_IMPORT_DOCUMENT = 0x04;
 
 	@Override public void onCreatePreferences(Bundle savedInstanceState, String rootKey)
 	{
@@ -155,7 +156,9 @@ public class SettingsFragment extends PreferenceFragmentCompat implements Prefer
 		findPreference("restore").setOnPreferenceClickListener(this);
 		findPreference("image_location").setOnPreferenceClickListener(this);
 		findPreference("backup_location").setOnPreferenceClickListener(this);
+		findPreference("import").setOnPreferenceClickListener(this);
 
+		findPreference("import").setEnabled(!MainApplication.isEncrypted());
 		findPreference("failsafe").setEnabled(((SwitchPreferenceCompat)findPreference("encrypt")).isChecked());
 
 		if (MainApplication.isFailsafe())
@@ -183,7 +186,7 @@ public class SettingsFragment extends PreferenceFragmentCompat implements Prefer
 		{
 			Intent refresh = new Intent();
 			refresh.putExtra("refresh", true);
-			getActivity().setResult(Activity.RESULT_OK, refresh);
+			getActivity().setResult(RESULT_OK, refresh);
 		}
 	}
 
@@ -298,7 +301,7 @@ public class SettingsFragment extends PreferenceFragmentCompat implements Prefer
 	{
 		Intent refresh = new Intent();
 		refresh.putExtra("refresh", true);
-		getActivity().setResult(Activity.RESULT_OK, refresh);
+		getActivity().setResult(RESULT_OK, refresh);
 
 		if ("force_dark".equals(preference.getKey()))
 		{
@@ -581,7 +584,7 @@ public class SettingsFragment extends PreferenceFragmentCompat implements Prefer
 	{
 		Intent refresh = new Intent();
 		refresh.putExtra("refresh", true);
-		getActivity().setResult(Activity.RESULT_OK, refresh);
+		getActivity().setResult(RESULT_OK, refresh);
 
 		if ("delivery_unit".equals(preference.getKey()))
 		{
@@ -1037,6 +1040,16 @@ public class SettingsFragment extends PreferenceFragmentCompat implements Prefer
 			ImageLoader.getInstance().clearMemoryCache();
 			SnackBar.show(getActivity(), getString(R.string.cache_cleared), Snackbar.LENGTH_SHORT, null);
 		}
+		else if ("import".equals(preference.getKey()))
+		{
+			Intent intent = new Intent(Intent.ACTION_GET_CONTENT);
+			intent.setType("*/*");
+
+			intent.addCategory(Intent.CATEGORY_OPENABLE);
+			intent.putExtra(Intent.EXTRA_LOCAL_ONLY, true);
+
+			startActivityForResult(intent, REQUEST_PICK_IMPORT_DOCUMENT);
+		}
 
 		return false;
 	}
@@ -1099,7 +1112,7 @@ public class SettingsFragment extends PreferenceFragmentCompat implements Prefer
 		}
 		else if (requestCode == REQUEST_PICK_DOCUMENT && Build.VERSION.SDK_INT >= 19)
 		{
-			if (resultCode == Activity.RESULT_OK)
+			if (resultCode == RESULT_OK)
 			{
 				Uri treeUri = data.getData();
 				DocumentFile pickedDir = DocumentFile.fromTreeUri(getActivity(), treeUri);
@@ -1116,10 +1129,14 @@ public class SettingsFragment extends PreferenceFragmentCompat implements Prefer
 						if (!TextUtils.isEmpty(filePath) && new File(filePath).exists())
 						{
 							if (!filePath.endsWith("/")) filePath = filePath + "/";
-							findPreference("image_location").getSharedPreferences().edit().putString("image_location", filePath).apply();
-							findPreference("image_location").setSummary(Html.fromHtml(getString(R.string.settings_image_location_summary, filePath)));
 
-							return;
+							if (new File(filePath).canWrite())
+							{
+								findPreference("image_location").getSharedPreferences().edit().putString("image_location", filePath).apply();
+								findPreference("image_location").setSummary(Html.fromHtml(getString(R.string.settings_image_location_summary, filePath)));
+
+								return;
+							}
 						}
 					}
 					catch (URISyntaxException e)
@@ -1132,7 +1149,7 @@ public class SettingsFragment extends PreferenceFragmentCompat implements Prefer
 		}
 		else if (requestCode == REQUEST_PICK_BACKUP_DOCUMENT && Build.VERSION.SDK_INT >= 19)
 		{
-			if (resultCode == Activity.RESULT_OK)
+			if (resultCode == RESULT_OK)
 			{
 				Uri treeUri = data.getData();
 				DocumentFile pickedDir = DocumentFile.fromTreeUri(getActivity(), treeUri);
@@ -1155,6 +1172,13 @@ public class SettingsFragment extends PreferenceFragmentCompat implements Prefer
 								BackupHelper.FILES_PATH = filePath;
 								findPreference("backup_location").getSharedPreferences().edit().putString("backup_location", filePath).apply();
 								findPreference("backup_location").setSummary(Html.fromHtml(getString(R.string.settings_backup_location_summary, filePath)));
+
+								// refresh backup size
+								String currentBackup = findPreference("backup_size").getSharedPreferences().getString("backup_size", "20");
+								findPreference("backup_size").setSummary(Html.fromHtml(getString(R.string.settings_backup_size, currentBackup, lengthToString(BackupHelper.backupSize()))));
+
+								// refresh last backup
+								findPreference("backup_now").setSummary(Html.fromHtml(getString(R.string.settings_lastbackup_summary, BackupHelper.getLastBackup())));
 								return;
 							}
 						}
@@ -1166,6 +1190,39 @@ public class SettingsFragment extends PreferenceFragmentCompat implements Prefer
 			}
 
 			SnackBar.show(getActivity(), getString(R.string.settings_backup_location_error), Snackbar.LENGTH_LONG, null);
+		}
+		else if (requestCode == REQUEST_PICK_IMPORT_DOCUMENT)
+		{
+			if (resultCode == RESULT_OK && data.getData() != null)
+			{
+				try
+				{
+					File temp = new File(getActivity().getCacheDir(), "importtemp.json");
+					InputStream inputStream = getActivity().getContentResolver().openInputStream(data.getData());
+					FileManager.getInstance().copyFile(inputStream, new FileOutputStream(temp));
+
+					if (temp.exists())
+					{
+						// Try reading as plants
+						ArrayList<Plant> plants = MoshiHelper.parse(temp, Types.newParameterizedType(ArrayList.class, Plant.class));
+						if (plants != null)
+						{
+							// backup
+							FileManager.getInstance().copyFile(PlantManager.FILES_DIR + "/plants." + PlantManager.getInstance().getFileExt(), PlantManager.FILES_DIR + "/plants." + PlantManager.getInstance().getFileExt() + ".bak");
+							FileManager.getInstance().copyFile(temp.getPath(), PlantManager.FILES_DIR + "/plants." + PlantManager.getInstance().getFileExt());
+							PlantManager.getInstance().load();
+							SnackBar.show(getActivity(), getString(R.string.settings_import_success), Snackbar.LENGTH_LONG, null);
+							return;
+						}
+					}
+				}
+				catch (Exception e)
+				{
+					e.printStackTrace();
+				}
+			}
+
+			SnackBar.show(getActivity(), getString(R.string.settings_import_error), Snackbar.LENGTH_LONG, null);
 		}
 	}
 
