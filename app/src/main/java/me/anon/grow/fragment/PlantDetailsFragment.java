@@ -284,7 +284,7 @@ public class PlantDetailsFragment extends Fragment
 			DateFormat timeFormat = android.text.format.DateFormat.getTimeFormat(getActivity());
 			Date actionDate = new Date(lastWater.getDate());
 			lastFeedingFullDate.setText(dateFormat.format(actionDate) + " " + timeFormat.format(actionDate));
-			lastFeedingDate.setText(Html.fromHtml("<b>" + new DateRenderer(getActivity()).timeAgo(lastWater.getDate()).formattedDate + "</b> ago"));
+			lastFeedingDate.setText(Html.fromHtml(getString(R.string.ago, "<b>" + new DateRenderer(getActivity()).timeAgo(lastWater.getDate()).formattedDate + "</b>")));
 
 			final Water finalLastWater = lastWater;
 			duplicateFeeding.setOnClickListener(new View.OnClickListener()
