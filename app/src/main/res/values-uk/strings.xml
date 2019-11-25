@@ -149,7 +149,7 @@
 
 	<string name="min">Мін:</string>
 	<string name="max">Макс:</string>
-	<string name="ave">Середній:</string>
+	<string name="ave">Серед:</string>
 	<string name="temperature_title">Температура</string>
 	<string name="general_title">Загальні</string>
 	<string name="failed_to_load_plant">Не вдалося завантажити рослину</string>
@@ -426,4 +426,7 @@
 	<string name="settings_backup_location_title">Розташування резервних копій</string>
 	<string name="settings_backup_location_summary" formatted="true">Наразі &lt;b&gt;%s&lt;/b&gt;</string>
 	<string name="settings_backup_location_error">Не вдалося встановити розташування резервних копій</string>
+	<string name="settings_import_error">Не вдалося імпортувати</string>
+	<string name="settings_import">Імпортувати рослини з файлу</string>
+	<string name="settings_import_success">Імпорт завершено</string>
 </resources>
