@@ -139,12 +139,12 @@ public class ImportTask extends AsyncTask<Pair<String, ArrayList<Uri>>, Integer,
 
 				ParcelFileDescriptor parcelFileDescriptor = context.getContentResolver().openFileDescriptor(imageUri, "r");
 				FileDescriptor fileDescriptor = parcelFileDescriptor.getFileDescriptor();
-				InputStream streamIn = new BufferedInputStream(new FileInputStream(fileDescriptor), 524288);
+				InputStream streamIn = new BufferedInputStream(new FileInputStream(fileDescriptor), 8192);
 
-				OutputStream streamOut = new BufferedOutputStream(eos, 524288);
+				OutputStream streamOut = new BufferedOutputStream(eos, 8192);
 
 				int len;
-				byte[] buffer = new byte[524288];
+				byte[] buffer = new byte[8192];
 				while ((len = streamIn.read(buffer)) != -1)
 				{
 					streamOut.write(buffer, 0, len);
@@ -163,11 +163,11 @@ public class ImportTask extends AsyncTask<Pair<String, ArrayList<Uri>>, Integer,
 
 				String image = imageUri.getPath();
 
-				InputStream streamIn = new BufferedInputStream(new FileInputStream(new File(image)), 524288);
-				OutputStream streamOut = new BufferedOutputStream(eos, 524288);
+				InputStream streamIn = new BufferedInputStream(new FileInputStream(new File(image)), 8192);
+				OutputStream streamOut = new BufferedOutputStream(eos, 8192);
 
 				int len;
-				byte[] buffer = new byte[524288];
+				byte[] buffer = new byte[8192];
 				while ((len = streamIn.read(buffer)) != -1)
 				{
 					streamOut.write(buffer, 0, len);
