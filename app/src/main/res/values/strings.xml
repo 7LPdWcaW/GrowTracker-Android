@@ -431,5 +431,5 @@
 	<string name="settings_backup_location_error">Failed to set backup location</string>
 	<string name="settings_import_error">Failed to import plants from file</string>
 	<string name="settings_import">Import plants from file</string>
-	<string name="settings_import_success">Plantsp successfully imported from file</string>
+	<string name="settings_import_success">Plants successfully imported from file</string>
 </resources>
