@@ -246,7 +246,7 @@
 	<string name="failsafe_message">Используйте этот пароль на стадии расшифровки чтобы не допустить загрузки данных</string>
 	<string name="warning">Внимание</string>
 	<string name="encryption_message">Используется базовая форма AES-шифрования на основе введённого пароля. Данный метод не гарантирует защиту от доступа правоохранительными органами.</string>
-	<string name="backup_enable_toast">Включено резервное копирование. Резервные копии будут храниться в /sdcard/backups/GrowTracker/</string>
+	<string name="backup_enable_toast" formatted="true">Резервное копирование включено, копии будут храниться в %s</string>
 	<string name="restore_complete" formatted="true">Восстановление в %s завершено</string>
 	<string name="restore_error" formatted="true">Не удалось восстановить резервную копию %s. Возможно файл %s</string>
 	<string name="encrypted">зашифрован</string>
@@ -422,4 +422,8 @@
 	<string name="no_data">Данные отсутствуют</string>
 
 	<string name="camera_permission_summary">Камере необходимо разрешение чтобы делать фото</string>
+	<string name="settings_backup_management_title">Управление резервными копиями</string>
+	<string name="settings_backup_location_title">Расположение резервных копий</string>
+	<string name="settings_backup_location_summary" formatted="true">Расположение резервных копий, сейчас &lt;b&gt;%s&lt;/b&gt;</string>
+	<string name="settings_backup_location_error">Не удалось изменить расположение резервных копий</string>
 </resources>
