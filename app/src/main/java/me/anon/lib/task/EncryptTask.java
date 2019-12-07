@@ -80,7 +80,7 @@ public class EncryptTask extends AsyncTask<ArrayList<String>, Integer, Void>
 				fis = new FileInputStream(temp);
 				eos = new EncryptOutputStream(cipher, file);
 
-				byte[] buffer = new byte[524288];
+				byte[] buffer = new byte[8192];
 				int len = 0;
 
 				while ((len = fis.read(buffer)) != -1)
