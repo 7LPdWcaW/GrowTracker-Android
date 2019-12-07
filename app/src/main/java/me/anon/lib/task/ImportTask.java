@@ -91,7 +91,12 @@ public class ImportTask extends AsyncTask<Pair<String, ArrayList<Uri>>, Integer,
 		{
 			File toPath = new File(to, System.currentTimeMillis() + ".jpg");
 			copyImage(appContext, filePath, toPath);
-			imagesToAdd.add(toPath.getPath());
+
+			if (toPath.exists())
+			{
+				imagesToAdd.add(toPath.getPath());
+			}
+
 			publishProgress(++count, total);
 		}
 
@@ -150,8 +155,8 @@ public class ImportTask extends AsyncTask<Pair<String, ArrayList<Uri>>, Integer,
 					streamOut.write(buffer, 0, len);
 				}
 
-				streamIn.close();
 				streamOut.flush();
+				streamIn.close();
 				streamOut.close();
 			}
 			else if (imageUri.getScheme().startsWith("file"))
@@ -173,13 +178,14 @@ public class ImportTask extends AsyncTask<Pair<String, ArrayList<Uri>>, Integer,
 					streamOut.write(buffer, 0, len);
 				}
 
-				streamIn.close();
 				streamOut.flush();
+				streamIn.close();
 				streamOut.close();
 			}
 		}
 		catch (Exception e)
 		{
+			newLocation.delete();
 			e.printStackTrace();
 		}
 	}
