@@ -160,7 +160,7 @@ public class ActionsListFragment extends Fragment implements ActionAdapter.OnAct
 			}
 		});
 		calendar.setCurrentDate(CalendarDay.today());
-		calendar.setVisibility(filtered ? View.VISIBLE : View.GONE);
+		calendar.setVisibility(filtered && getResources().getBoolean(R.bool.is_portrait) ? View.VISIBLE : View.GONE);
 		adapter.setFilterDate(selectedFilterDate);
 
 		setActions();
