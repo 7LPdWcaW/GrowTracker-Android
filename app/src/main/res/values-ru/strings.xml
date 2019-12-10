@@ -426,4 +426,7 @@
 	<string name="settings_backup_location_title">Расположение резервных копий</string>
 	<string name="settings_backup_location_summary" formatted="true">Расположение резервных копий, сейчас &lt;b&gt;%s&lt;/b&gt;</string>
 	<string name="settings_backup_location_error">Не удалось изменить расположение резервных копий</string>
+	<string name="settings_import_error">Не удалось импортировать растения</string>
+	<string name="settings_import">Импортировать растения из файла</string>
+	<string name="settings_import_success">Растение успешно импортировано из файла</string>
 </resources>
