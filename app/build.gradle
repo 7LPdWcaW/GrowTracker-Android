@@ -29,8 +29,8 @@ android {
 		applicationId "me.anon.grow"
 		minSdkVersion 17
 		targetSdkVersion 29
-		versionCode getCommitCountTotal()
-		versionName "2.6"
+		versionCode 1370//getCommitCountTotal()
+		versionName "2.6.1"
 		versionNameSuffix (travis ? "-alpha" : "")
 
 		compileOptions {
