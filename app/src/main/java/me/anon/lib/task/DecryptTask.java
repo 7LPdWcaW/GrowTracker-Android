@@ -80,7 +80,7 @@ public class DecryptTask extends AsyncTask<ArrayList<String>, Integer, Void>
 				dis = new DecryptInputStream(cipher, temp);
 				fos = new FileOutputStream(file);
 
-				byte[] buffer = new byte[524288];
+				byte[] buffer = new byte[8192];
 				int len;
 
 				while ((len = dis.read(buffer)) != -1)

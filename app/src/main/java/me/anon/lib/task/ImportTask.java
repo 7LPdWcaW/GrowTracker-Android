@@ -91,7 +91,12 @@ public class ImportTask extends AsyncTask<Pair<String, ArrayList<Uri>>, Integer,
 		{
 			File toPath = new File(to, System.currentTimeMillis() + ".jpg");
 			copyImage(appContext, filePath, toPath);
-			imagesToAdd.add(toPath.getPath());
+
+			if (toPath.exists())
+			{
+				imagesToAdd.add(toPath.getPath());
+			}
+
 			publishProgress(++count, total);
 		}
 
@@ -139,19 +144,19 @@ public class ImportTask extends AsyncTask<Pair<String, ArrayList<Uri>>, Integer,
 
 				ParcelFileDescriptor parcelFileDescriptor = context.getContentResolver().openFileDescriptor(imageUri, "r");
 				FileDescriptor fileDescriptor = parcelFileDescriptor.getFileDescriptor();
-				InputStream streamIn = new BufferedInputStream(new FileInputStream(fileDescriptor), 524288);
+				InputStream streamIn = new BufferedInputStream(new FileInputStream(fileDescriptor), 8192);
 
-				OutputStream streamOut = new BufferedOutputStream(eos, 524288);
+				OutputStream streamOut = new BufferedOutputStream(eos, 8192);
 
 				int len;
-				byte[] buffer = new byte[524288];
+				byte[] buffer = new byte[8192];
 				while ((len = streamIn.read(buffer)) != -1)
 				{
 					streamOut.write(buffer, 0, len);
 				}
 
-				streamIn.close();
 				streamOut.flush();
+				streamIn.close();
 				streamOut.close();
 			}
 			else if (imageUri.getScheme().startsWith("file"))
@@ -163,23 +168,24 @@ public class ImportTask extends AsyncTask<Pair<String, ArrayList<Uri>>, Integer,
 
 				String image = imageUri.getPath();
 
-				InputStream streamIn = new BufferedInputStream(new FileInputStream(new File(image)), 524288);
-				OutputStream streamOut = new BufferedOutputStream(eos, 524288);
+				InputStream streamIn = new BufferedInputStream(new FileInputStream(new File(image)), 8192);
+				OutputStream streamOut = new BufferedOutputStream(eos, 8192);
 
 				int len;
-				byte[] buffer = new byte[524288];
+				byte[] buffer = new byte[8192];
 				while ((len = streamIn.read(buffer)) != -1)
 				{
 					streamOut.write(buffer, 0, len);
 				}
 
-				streamIn.close();
 				streamOut.flush();
+				streamIn.close();
 				streamOut.close();
 			}
 		}
 		catch (Exception e)
 		{
+			newLocation.delete();
 			e.printStackTrace();
 		}
 	}

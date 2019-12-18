@@ -1,6 +1,5 @@
 package me.anon.grow.fragment;
 
-import android.app.Activity;
 import android.app.AlarmManager;
 import android.app.PendingIntent;
 import android.content.ComponentName;
@@ -15,22 +14,21 @@ import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Build;
 import android.os.Bundle;
-import android.os.Environment;
 import android.provider.DocumentsContract;
 import android.text.Html;
-import android.text.SpannableString;
 import android.text.TextUtils;
 import android.text.method.LinkMovementMethod;
-import android.text.util.Linkify;
 import android.util.Base64;
 import android.view.View;
 import android.widget.TextView;
 
 import com.google.android.material.snackbar.Snackbar;
 import com.nostra13.universalimageloader.core.ImageLoader;
+import com.squareup.moshi.Types;
 
 import java.io.BufferedInputStream;
 import java.io.File;
+import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.URISyntaxException;
@@ -65,6 +63,8 @@ import me.anon.lib.Unit;
 import me.anon.lib.helper.AddonHelper;
 import me.anon.lib.helper.BackupHelper;
 import me.anon.lib.helper.EncryptionHelper;
+import me.anon.lib.helper.MigrationHelper;
+import me.anon.lib.helper.MoshiHelper;
 import me.anon.lib.helper.NotificationHelper;
 import me.anon.lib.helper.PathHelper;
 import me.anon.lib.manager.FileManager;
@@ -76,10 +76,14 @@ import me.anon.lib.task.EncryptTask;
 import me.anon.model.Garden;
 import me.anon.model.Plant;
 
+import static android.app.Activity.RESULT_OK;
+
 public class SettingsFragment extends PreferenceFragmentCompat implements Preference.OnPreferenceClickListener, Preference.OnPreferenceChangeListener
 {
 	private static final int REQUEST_UNINSTALL = 0x01;
 	private static final int REQUEST_PICK_DOCUMENT = 0x02;
+	private static final int REQUEST_PICK_BACKUP_DOCUMENT = 0x03;
+	private static final int REQUEST_PICK_IMPORT_DOCUMENT = 0x04;
 
 	@Override public void onCreatePreferences(Bundle savedInstanceState, String rootKey)
 	{
@@ -108,6 +112,7 @@ public class SettingsFragment extends PreferenceFragmentCompat implements Prefer
 		findPreference("tds_unit").setSummary(Html.fromHtml(getString(R.string.settings_tds_summary, getString(TdsUnit.getSelectedTdsUnit(getActivity()).getStrRes()))));
 		findPreference("backup_now").setSummary(Html.fromHtml(getString(R.string.settings_lastbackup_summary, BackupHelper.getLastBackup())));
 		findPreference("image_location").setSummary(Html.fromHtml(getString(R.string.settings_image_location_summary, FileManager.IMAGE_PATH)));
+		findPreference("backup_location").setSummary(Html.fromHtml(getString(R.string.settings_backup_location_summary, BackupHelper.FILES_PATH)));
 
 		try
 		{
@@ -134,6 +139,8 @@ public class SettingsFragment extends PreferenceFragmentCompat implements Prefer
 		}
 		else
 		{
+			findPreference("image_location").setEnabled(false);
+			findPreference("backup_location").setEnabled(false);
 			findPreference("backup_size").setEnabled(false);
 		}
 
@@ -148,7 +155,10 @@ public class SettingsFragment extends PreferenceFragmentCompat implements Prefer
 		findPreference("backup_now").setOnPreferenceClickListener(this);
 		findPreference("restore").setOnPreferenceClickListener(this);
 		findPreference("image_location").setOnPreferenceClickListener(this);
+		findPreference("backup_location").setOnPreferenceClickListener(this);
+		findPreference("import").setOnPreferenceClickListener(this);
 
+		findPreference("import").setEnabled(!MainApplication.isEncrypted());
 		findPreference("failsafe").setEnabled(((SwitchPreferenceCompat)findPreference("encrypt")).isChecked());
 
 		if (MainApplication.isFailsafe())
@@ -176,7 +186,7 @@ public class SettingsFragment extends PreferenceFragmentCompat implements Prefer
 		{
 			Intent refresh = new Intent();
 			refresh.putExtra("refresh", true);
-			getActivity().setResult(Activity.RESULT_OK, refresh);
+			getActivity().setResult(RESULT_OK, refresh);
 		}
 	}
 
@@ -291,7 +301,7 @@ public class SettingsFragment extends PreferenceFragmentCompat implements Prefer
 	{
 		Intent refresh = new Intent();
 		refresh.putExtra("refresh", true);
-		getActivity().setResult(Activity.RESULT_OK, refresh);
+		getActivity().setResult(RESULT_OK, refresh);
 
 		if ("force_dark".equals(preference.getKey()))
 		{
@@ -561,7 +571,7 @@ public class SettingsFragment extends PreferenceFragmentCompat implements Prefer
 			{
 				PreferenceManager.getDefaultSharedPreferences(getActivity()).edit().putBoolean("auto_backup", true).apply();
 				((MainApplication)getActivity().getApplication()).registerBackupService();
-				SnackBar.show(getActivity(), getString(R.string.backup_enable_toast), Snackbar.LENGTH_LONG, null);
+				SnackBar.show(getActivity(), getString(R.string.backup_enable_toast, BackupHelper.FILES_PATH), Snackbar.LENGTH_LONG, null);
 			}
 
 			return true;
@@ -574,7 +584,7 @@ public class SettingsFragment extends PreferenceFragmentCompat implements Prefer
 	{
 		Intent refresh = new Intent();
 		refresh.putExtra("refresh", true);
-		getActivity().setResult(Activity.RESULT_OK, refresh);
+		getActivity().setResult(RESULT_OK, refresh);
 
 		if ("delivery_unit".equals(preference.getKey()))
 		{
@@ -775,7 +785,7 @@ public class SettingsFragment extends PreferenceFragmentCompat implements Prefer
 		else if ("restore".equals(preference.getKey()))
 		{
 			// get list of backups
-			File backupPath = new File(Environment.getExternalStorageDirectory(), "/backups/GrowTracker/");
+			File backupPath = new File(BackupHelper.FILES_PATH);
 			String[] backupFiles = backupPath.list();
 
 			if (backupFiles == null || backupFiles.length == 0)
@@ -836,20 +846,23 @@ public class SettingsFragment extends PreferenceFragmentCompat implements Prefer
 				}
 
 				File file = new File(backupPath.getPath() + "/" + backup);
-				if (backup.contains("plants") && backup.endsWith(".bak"))
+				if (backup.contains("plants"))
 				{
+					current.requireMigration = !backup.endsWith(".bak");
 					current.plantsPath = backupPath.getPath() + "/" + backup;
 					current.size += file.length();
 				}
 
-				if (backup.contains("gardens") && backup.endsWith(".bak"))
+				if (backup.contains("gardens"))
 				{
+					current.requireMigration = !backup.endsWith(".bak");
 					current.gardenPath = backupPath.getPath() + "/" + backup;
 					current.size += file.length();
 				}
 
-				if (backup.contains("schedules") && backup.endsWith(".bak"))
+				if (backup.contains("schedules"))
 				{
+					current.requireMigration = !backup.endsWith(".bak");
 					current.schedulePath = backupPath.getPath() + "/" + backup;
 					current.size += file.length();
 				}
@@ -1013,11 +1026,29 @@ public class SettingsFragment extends PreferenceFragmentCompat implements Prefer
 				startActivityForResult(intent, REQUEST_PICK_DOCUMENT);
 			}
 		}
+		else if ("backup_location".equals(preference.getKey()))
+		{
+			if (Build.VERSION.SDK_INT >= 21)
+			{
+				Intent intent = new Intent(Intent.ACTION_OPEN_DOCUMENT_TREE);
+				startActivityForResult(intent, REQUEST_PICK_BACKUP_DOCUMENT);
+			}
+		}
 		else if ("clear_image_cache".equals(preference.getKey()))
 		{
 			ImageLoader.getInstance().clearDiskCache();
 			ImageLoader.getInstance().clearMemoryCache();
 			SnackBar.show(getActivity(), getString(R.string.cache_cleared), Snackbar.LENGTH_SHORT, null);
+		}
+		else if ("import".equals(preference.getKey()))
+		{
+			Intent intent = new Intent(Intent.ACTION_GET_CONTENT);
+			intent.setType("*/*");
+
+			intent.addCategory(Intent.CATEGORY_OPENABLE);
+			intent.putExtra(Intent.EXTRA_LOCAL_ONLY, true);
+
+			startActivityForResult(intent, REQUEST_PICK_IMPORT_DOCUMENT);
 		}
 
 		return false;
@@ -1057,12 +1088,16 @@ public class SettingsFragment extends PreferenceFragmentCompat implements Prefer
 		else
 		{
 			SnackBar.show(getActivity(), getString(R.string.restore_complete, selectedBackup.toString()), Snackbar.LENGTH_LONG, null);
-			getActivity().recreate();
 		}
 
 		FileManager.getInstance().removeFile(PlantManager.FILES_DIR + "/plants.temp");
 		FileManager.getInstance().removeFile(GardenManager.FILES_DIR + "/gardens.temp");
 		FileManager.getInstance().removeFile(ScheduleManager.FILES_DIR + "/schedules.temp");
+
+		if (selectedBackup.requireMigration)
+		{
+			MigrationHelper.migratePpm(getActivity());
+		}
 	}
 
 	@Override public void onActivityResult(int requestCode, int resultCode, Intent data)
@@ -1077,7 +1112,7 @@ public class SettingsFragment extends PreferenceFragmentCompat implements Prefer
 		}
 		else if (requestCode == REQUEST_PICK_DOCUMENT && Build.VERSION.SDK_INT >= 19)
 		{
-			if (resultCode == Activity.RESULT_OK)
+			if (resultCode == RESULT_OK)
 			{
 				Uri treeUri = data.getData();
 				DocumentFile pickedDir = DocumentFile.fromTreeUri(getActivity(), treeUri);
@@ -1094,10 +1129,14 @@ public class SettingsFragment extends PreferenceFragmentCompat implements Prefer
 						if (!TextUtils.isEmpty(filePath) && new File(filePath).exists())
 						{
 							if (!filePath.endsWith("/")) filePath = filePath + "/";
-							findPreference("image_location").getSharedPreferences().edit().putString("image_location", filePath).apply();
-							findPreference("image_location").setSummary(Html.fromHtml(getString(R.string.settings_image_location_summary, filePath)));
 
-							return;
+							if (new File(filePath).canWrite())
+							{
+								findPreference("image_location").getSharedPreferences().edit().putString("image_location", filePath).apply();
+								findPreference("image_location").setSummary(Html.fromHtml(getString(R.string.settings_image_location_summary, filePath)));
+
+								return;
+							}
 						}
 					}
 					catch (URISyntaxException e)
@@ -1106,10 +1145,84 @@ public class SettingsFragment extends PreferenceFragmentCompat implements Prefer
 				}
 			}
 
-			if (resultCode != Activity.RESULT_CANCELED)
+			SnackBar.show(getActivity(), getString(R.string.settings_image_location_error), Snackbar.LENGTH_LONG, null);
+		}
+		else if (requestCode == REQUEST_PICK_BACKUP_DOCUMENT && Build.VERSION.SDK_INT >= 19)
+		{
+			if (resultCode == RESULT_OK)
 			{
-				SnackBar.show(getActivity(), getString(R.string.settings_image_location_error), Snackbar.LENGTH_LONG, null);
+				Uri treeUri = data.getData();
+				DocumentFile pickedDir = DocumentFile.fromTreeUri(getActivity(), treeUri);
+
+				Uri docUri = DocumentsContract.buildDocumentUriUsingTree(treeUri, DocumentsContract.getTreeDocumentId(treeUri));
+
+				if (pickedDir != null)
+				{
+					String filePath = null;
+					try
+					{
+						filePath = PathHelper.getPath(getActivity(), docUri);
+
+						if (!TextUtils.isEmpty(filePath) && new File(filePath).exists())
+						{
+							if (!filePath.endsWith("/")) filePath = filePath + "/";
+
+							if (new File(filePath).canWrite())
+							{
+								BackupHelper.FILES_PATH = filePath;
+								findPreference("backup_location").getSharedPreferences().edit().putString("backup_location", filePath).apply();
+								findPreference("backup_location").setSummary(Html.fromHtml(getString(R.string.settings_backup_location_summary, filePath)));
+
+								// refresh backup size
+								String currentBackup = findPreference("backup_size").getSharedPreferences().getString("backup_size", "20");
+								findPreference("backup_size").setSummary(Html.fromHtml(getString(R.string.settings_backup_size, currentBackup, lengthToString(BackupHelper.backupSize()))));
+
+								// refresh last backup
+								findPreference("backup_now").setSummary(Html.fromHtml(getString(R.string.settings_lastbackup_summary, BackupHelper.getLastBackup())));
+								return;
+							}
+						}
+					}
+					catch (URISyntaxException e)
+					{
+					}
+				}
 			}
+
+			SnackBar.show(getActivity(), getString(R.string.settings_backup_location_error), Snackbar.LENGTH_LONG, null);
+		}
+		else if (requestCode == REQUEST_PICK_IMPORT_DOCUMENT)
+		{
+			if (resultCode == RESULT_OK && data.getData() != null)
+			{
+				try
+				{
+					File temp = new File(getActivity().getCacheDir(), "importtemp.json");
+					InputStream inputStream = getActivity().getContentResolver().openInputStream(data.getData());
+					FileManager.getInstance().copyFile(inputStream, new FileOutputStream(temp));
+
+					if (temp.exists())
+					{
+						// Try reading as plants
+						ArrayList<Plant> plants = MoshiHelper.parse(temp, Types.newParameterizedType(ArrayList.class, Plant.class));
+						if (plants != null)
+						{
+							// backup
+							FileManager.getInstance().copyFile(PlantManager.FILES_DIR + "/plants." + PlantManager.getInstance().getFileExt(), PlantManager.FILES_DIR + "/plants." + PlantManager.getInstance().getFileExt() + ".bak");
+							FileManager.getInstance().copyFile(temp.getPath(), PlantManager.FILES_DIR + "/plants." + PlantManager.getInstance().getFileExt());
+							PlantManager.getInstance().load();
+							SnackBar.show(getActivity(), getString(R.string.settings_import_success), Snackbar.LENGTH_LONG, null);
+							return;
+						}
+					}
+				}
+				catch (Exception e)
+				{
+					e.printStackTrace();
+				}
+			}
+
+			SnackBar.show(getActivity(), getString(R.string.settings_import_error), Snackbar.LENGTH_LONG, null);
 		}
 	}
 
@@ -1133,6 +1246,7 @@ public class SettingsFragment extends PreferenceFragmentCompat implements Prefer
 		String gardenPath;
 		String schedulePath;
 		long size = 0;
+		boolean requireMigration = false;
 
 		@Override public String toString()
 		{

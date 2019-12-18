@@ -21,35 +21,37 @@ import kotlin.collections.ArrayList
 object BackupHelper
 {
 	@JvmField
-	public var FILES_PATH = Environment.getExternalStorageDirectory().absolutePath + "/backups/GrowTracker"
+	public var FILES_PATH = Environment.getExternalStorageDirectory().absolutePath + "/backups/GrowTracker/"
 
 	@JvmStatic
 	public fun getLastBackup(): String
 	{
 		File(FILES_PATH).listFiles()?.let {
 			val sorted = ArrayList(it.sortedBy { it.lastModified() })
-			val parts = sorted.last().name.split(".")
-			var date = Date()
-			try
-			{
-				date = Date(java.lang.Long.parseLong(parts[0]))
-			}
-			catch (e: NumberFormatException)
-			{
+			sorted.lastOrNull()?.let { str ->
+				val parts = str.name.split(".")
+				var date = Date()
 				try
 				{
-					date = SimpleDateFormat("yyyy-MM-dd-HH-mm-ss").parse(parts[0])
+					date = Date(java.lang.Long.parseLong(parts[0]))
 				}
-				catch (e2: Exception)
+				catch (e: NumberFormatException)
 				{
-					date = Date(sorted.last().lastModified())
+					try
+					{
+						date = SimpleDateFormat("yyyy-MM-dd-HH-mm-ss").parse(parts[0])
+					}
+					catch (e2: Exception)
+					{
+						date = Date(sorted.last().lastModified())
+					}
 				}
-			}
 
-			return DateTimeUtils.toLocalDateTime(Timestamp(date.time)).format(DateTimeFormatter.ofPattern("yyyy-mm-dd HH:mm:ss"))
+				return DateTimeUtils.toLocalDateTime(Timestamp(date.time)).format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss"))
+			}
 		}
 
-		return ""
+		return "-"
 	}
 
 	@JvmStatic

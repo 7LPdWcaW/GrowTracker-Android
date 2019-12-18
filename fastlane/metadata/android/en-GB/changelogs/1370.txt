@@ -1,0 +1,12 @@
+- Adds Dutch (Netherlands) localisations
+- Adds custom backup path setting
+- Adds import plants from file functionality
+
+- Allows old backups to be visible
+
+- Fixes issue with adding plant via garden not working
+- Fixes grow log date formatting
+- Fixes issue with folders not being deleted if there are no images
+- Fixes issue with camera intent not taking photos correctly due to lack of permission
+- Fixes issue with calendar obstructing actions view in landscape
+- Fixes issue with importing large images causing corrupt images

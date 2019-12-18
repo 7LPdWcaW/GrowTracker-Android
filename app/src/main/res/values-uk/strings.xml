@@ -149,7 +149,7 @@
 
 	<string name="min">Мін:</string>
 	<string name="max">Макс:</string>
-	<string name="ave">Середній:</string>
+	<string name="ave">Серед:</string>
 	<string name="temperature_title">Температура</string>
 	<string name="general_title">Загальні</string>
 	<string name="failed_to_load_plant">Не вдалося завантажити рослину</string>
@@ -174,7 +174,7 @@
 	<string name="set">Встановити</string>
 	<string name="change">Змінити</string>
 	<string name="add">Додати</string>
-	<string name="cancel">Відмінити</string>
+	<string name="cancel">Скасувати</string>
 	<string name="action">дію</string>
 	<string name="ok">Ок</string>
 	<string name="field_required">Обов\'язкове поле</string>
@@ -246,7 +246,7 @@
 	<string name="failsafe_message">Введіть цей пароль під час розшифрування щоб упередити завантаження даних</string>
 	<string name="warning">Увага</string>
 	<string name="encryption_message">Використовується базова форма AES-шифрування на основі введеного пароля. Даний спосіб не гарантує захисту від правоохоронних органів.</string>
-	<string name="backup_enable_toast">Резервне копіювання ввімкнено. Резервні копії будуть зберігатися в /sdcard/backups/GrowTracker/</string>
+	<string name="backup_enable_toast" formatted="true">Резервне копіювання ввімкнено, копії зберігатимуться до %s</string>
 	<string name="restore_complete" formatted="true">Відновлення до %s завершено</string>
 	<string name="restore_error" formatted="true">Не вдалося відновити з копії %s. Можливо файл %s</string>
 	<string name="encrypted">зашифрований</string>
@@ -410,7 +410,7 @@
 	<string name="settings_image_cache_title">Очистити кеш зображень</string>
 	<string name="cache_cleared">Кеш зображень очищено</string>
 	<string name="import_progress_warning">Імпортую зображення, це може тривати довго...</string>
-	<string name="data_task">Завдання даних</string>
+	<string name="data_task">Обробка даних</string>
 	<string name="task_complete">Завдання виконано</string>
 	<string name="empty_actions_list">Немає дій</string>
 
@@ -420,4 +420,13 @@
 	<string name="export_complete">Експорт завершено</string>
 	<string name="export_dialog_label">Включити зображення?</string>
 	<string name="no_data">Дані відсутні</string>
+
+	<string name="camera_permission_summary">Камері потрібен дозвіл щоб робити знімки</string>
+	<string name="settings_backup_management_title">Керування резервними копіями</string>
+	<string name="settings_backup_location_title">Розташування резервних копій</string>
+	<string name="settings_backup_location_summary" formatted="true">Наразі &lt;b&gt;%s&lt;/b&gt;</string>
+	<string name="settings_backup_location_error">Не вдалося встановити розташування резервних копій</string>
+	<string name="settings_import_error">Не вдалося імпортувати</string>
+	<string name="settings_import">Імпортувати рослини з файлу</string>
+	<string name="settings_import_success">Імпорт завершено</string>
 </resources>

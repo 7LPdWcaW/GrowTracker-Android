@@ -284,7 +284,7 @@ public class PlantDetailsFragment extends Fragment
 			DateFormat timeFormat = android.text.format.DateFormat.getTimeFormat(getActivity());
 			Date actionDate = new Date(lastWater.getDate());
 			lastFeedingFullDate.setText(dateFormat.format(actionDate) + " " + timeFormat.format(actionDate));
-			lastFeedingDate.setText(Html.fromHtml("<b>" + new DateRenderer(getActivity()).timeAgo(lastWater.getDate()).formattedDate + "</b> ago"));
+			lastFeedingDate.setText(Html.fromHtml(getString(R.string.ago, "<b>" + new DateRenderer(getActivity()).timeAgo(lastWater.getDate()).formattedDate + "</b>")));
 
 			final Water finalLastWater = lastWater;
 			duplicateFeeding.setOnClickListener(new View.OnClickListener()
@@ -431,6 +431,12 @@ public class PlantDetailsFragment extends Fragment
 
 	@Views.OnClick public void onPhotoClick()
 	{
+		if (!PermissionHelper.hasPermission(getActivity(), Manifest.permission.CAMERA))
+		{
+			PermissionHelper.doPermissionCheck(this, Manifest.permission.CAMERA, 1, getString(R.string.camera_permission_summary));
+			return;
+		}
+
 		if (!PermissionHelper.hasPermission(getActivity(), Manifest.permission.WRITE_EXTERNAL_STORAGE))
 		{
 			PermissionHelper.doPermissionCheck(this, Manifest.permission.WRITE_EXTERNAL_STORAGE, 1, getString(R.string.permission_summary));
@@ -517,8 +523,31 @@ public class PlantDetailsFragment extends Fragment
 		{
 			if (resultCode == Activity.RESULT_CANCELED)
 			{
-				new File(plant.getImages().get(plant.getImages().size() - 1)).delete();
-				plant.getImages().remove(plant.getImages().size() - 1);
+				File imageFile = new File(plant.getImages().get(plant.getImages().size() - 1));
+
+				if (imageFile.delete())
+				{
+					plant.getImages().remove(plant.getImages().size() - 1);
+				}
+
+				File folderFile = imageFile.getParentFile();
+				String[] list = folderFile.list();
+				if (list != null)
+				{
+					if (list.length == 1 && ".nomedia".equals(list[0]))
+					{
+						new File(folderFile, ".nomedia").delete();
+					}
+
+					if (folderFile.list() == null || folderFile.list().length == 0)
+					{
+						folderFile.delete();
+					}
+				}
+				else
+				{
+					folderFile.delete();
+				}
 			}
 			else
 			{

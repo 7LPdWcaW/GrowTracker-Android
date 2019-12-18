@@ -71,13 +71,6 @@
 		app:title="@string/settings_data_management"
 		android:key="settings_data"
 	>
-		<SwitchPreferenceCompat
-			app:key="auto_backup"
-			app:title="@string/settings_autobackup_title"
-			app:summary="@string/settings_autobackup_summary"
-			android:defaultValue="false"
-		/>
-
 		<Preference
 			android:key="image_location"
 			android:title="@string/settings_image_location_title"
@@ -87,6 +80,38 @@
 		<Preference
 			android:key="clear_image_cache"
 			android:title="@string/settings_image_cache_title"
+		/>
+
+		<SwitchPreferenceCompat
+			app:key="encrypt"
+			app:title="@string/settings_encrypt_title"
+			app:summary="@string/settings_encrypt_summary"
+			android:defaultValue="false"
+		/>
+
+		<SwitchPreferenceCompat
+			app:key="failsafe"
+			app:title="@string/settings_failsafe_title"
+			app:summary="@string/settings_failsafe_summary"
+			android:enabled="false"
+			android:defaultValue="false"
+		/>
+	</PreferenceCategory>
+
+	<PreferenceCategory
+		android:title="@string/settings_backup_management_title"
+	>
+		<Preference
+			android:key="backup_location"
+			android:title="@string/settings_backup_location_title"
+			android:summary="Currently /var/"
+		/>
+
+		<SwitchPreferenceCompat
+			app:key="auto_backup"
+			app:title="@string/settings_autobackup_title"
+			app:summary="@string/settings_autobackup_summary"
+			android:defaultValue="false"
 		/>
 
 		<Preference
@@ -109,19 +134,9 @@
 			app:title="@string/settings_restore_backup"
 		/>
 
-		<SwitchPreferenceCompat
-			app:key="encrypt"
-			app:title="@string/settings_encrypt_title"
-			app:summary="@string/settings_encrypt_summary"
-			android:defaultValue="false"
-		/>
-
-		<SwitchPreferenceCompat
-			app:key="failsafe"
-			app:title="@string/settings_failsafe_title"
-			app:summary="@string/settings_failsafe_summary"
-			android:enabled="false"
-			android:defaultValue="false"
+		<Preference
+			app:key="import"
+			app:title="@string/settings_import"
 		/>
 	</PreferenceCategory>
 

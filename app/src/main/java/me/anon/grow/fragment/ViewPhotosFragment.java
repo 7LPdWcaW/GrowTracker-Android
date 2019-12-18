@@ -24,7 +24,9 @@ import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -181,11 +183,38 @@ public class ViewPhotosFragment extends Fragment
 								{
 									@Override public void onClick(DialogInterface dialog, int which)
 									{
+										Set<String> folders = new HashSet<>();
 										for (String integer : adapter.getSelected())
 										{
 											String image = adapter.getImages().get(Integer.parseInt(integer));
-											new File(image).delete();
-											plant.getImages().remove(image);
+											File imageFile = new File(image);
+
+											folders.add(imageFile.getParentFile().getPath());
+											if (imageFile.delete())
+											{
+												plant.getImages().remove(image);
+											}
+										}
+
+										for (String folder : folders)
+										{
+											File folderFile = new File(folder);
+											if (folderFile.isDirectory())
+											{
+												String[] list = folderFile.list();
+												if (list != null)
+												{
+													if (list.length == 1 && ".nomedia".equals(list[0]))
+													{
+														new File(folderFile, ".nomedia").delete();
+													}
+
+													if (folderFile.list() == null || folderFile.list().length == 0)
+													{
+														folderFile.delete();
+													}
+												}
+											}
 										}
 
 										PlantManager.getInstance().upsert(plant);
@@ -346,6 +375,12 @@ public class ViewPhotosFragment extends Fragment
 
 	@Views.OnClick public void onFabPhotoClick(final View view)
 	{
+		if (!PermissionHelper.hasPermission(getActivity(), Manifest.permission.CAMERA))
+		{
+			PermissionHelper.doPermissionCheck(this, Manifest.permission.CAMERA, 1, getString(R.string.camera_permission_summary));
+			return;
+		}
+
 		if (!PermissionHelper.hasPermission(getActivity(), Manifest.permission.WRITE_EXTERNAL_STORAGE))
 		{
 			PermissionHelper.doPermissionCheck(this, Manifest.permission.WRITE_EXTERNAL_STORAGE, 1, getString(R.string.permission_summary));
@@ -418,8 +453,31 @@ public class ViewPhotosFragment extends Fragment
 		{
 			if (resultCode == Activity.RESULT_CANCELED)
 			{
-				new File(plant.getImages().get(plant.getImages().size() - 1)).delete();
-				plant.getImages().remove(plant.getImages().size() - 1);
+				File imageFile = new File(plant.getImages().get(plant.getImages().size() - 1));
+
+				if (imageFile.delete())
+				{
+					plant.getImages().remove(plant.getImages().size() - 1);
+				}
+
+				File folderFile = imageFile.getParentFile();
+				String[] list = folderFile.list();
+				if (list != null)
+				{
+					if (list.length == 1 && ".nomedia".equals(list[0]))
+					{
+						new File(folderFile, ".nomedia").delete();
+					}
+
+					if (folderFile.list() == null || folderFile.list().length == 0)
+					{
+						folderFile.delete();
+					}
+				}
+				else
+				{
+					folderFile.delete();
+				}
 			}
 			else
 			{

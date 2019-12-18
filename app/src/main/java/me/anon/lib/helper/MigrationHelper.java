@@ -40,31 +40,7 @@ public class MigrationHelper
 			SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(context);
 			if (!preferences.getBoolean("migration_tds", false))
 			{
-				// migrate ppm to tds
-				boolean usingEc = preferences.getBoolean("tds_ec", false);
-				for (Plant plant : PlantManager.getInstance().getPlants())
-				{
-					for (Action action : plant.getActions())
-					{
-						if (action instanceof Water && ((Water)action).getPpm() != null)
-						{
-							Tds replacement = new Tds();
-							if (usingEc && ((Water)action).getPpm() < 25)
-							{
-								replacement.setAmount(Unit.toTwoDecimalPlaces((((Water)action).getPpm() * 2d) / 1000d));
-								replacement.setType(TdsUnit.EC);
-							}
-							else
-							{
-								replacement.setAmount(((Water)action).getPpm());
-								replacement.setType(TdsUnit.PPM500);
-							}
-
-							((Water)action).setTds(replacement);
-							((Water)action).setPpm(null);
-						}
-					}
-				}
+				migratePpm(context);
 
 				preferences.edit().putBoolean("migration_tds", true).apply();
 				PlantManager.getInstance().save(callback, true);
@@ -76,5 +52,35 @@ public class MigrationHelper
 			e.printStackTrace();
 		}
 		return false;
+	}
+
+	public static void migratePpm(Context context)
+	{
+		// migrate ppm to tds
+		SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(context);
+		boolean usingEc = preferences.getBoolean("tds_ec", false);
+		for (Plant plant : PlantManager.getInstance().getPlants())
+		{
+			for (Action action : plant.getActions())
+			{
+				if (action instanceof Water && ((Water)action).getPpm() != null)
+				{
+					Tds replacement = new Tds();
+					if (usingEc && ((Water)action).getPpm() < 25)
+					{
+						replacement.setAmount(Unit.toTwoDecimalPlaces((((Water)action).getPpm() * 2d) / 1000d));
+						replacement.setType(TdsUnit.EC);
+					}
+					else
+					{
+						replacement.setAmount(((Water)action).getPpm());
+						replacement.setType(TdsUnit.PPM500);
+					}
+
+					((Water)action).setTds(replacement);
+					((Water)action).setPpm(null);
+				}
+			}
+		}
 	}
 }

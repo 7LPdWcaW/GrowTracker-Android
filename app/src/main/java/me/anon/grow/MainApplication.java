@@ -3,6 +3,7 @@ package me.anon.grow;
 import android.app.AlarmManager;
 import android.app.Application;
 import android.app.PendingIntent;
+import android.app.backup.BackupManager;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
@@ -35,6 +36,7 @@ import java.util.concurrent.atomic.AtomicBoolean;
 
 import me.anon.controller.receiver.BackupService;
 import me.anon.lib.handler.ExceptionHandler;
+import me.anon.lib.helper.BackupHelper;
 import me.anon.lib.manager.FileManager;
 import me.anon.lib.manager.GardenManager;
 import me.anon.lib.manager.PlantManager;
@@ -120,9 +122,12 @@ public class MainApplication extends Application
 		PlantManager.getInstance().initialise(this);
 		encrypted = PreferenceManager.getDefaultSharedPreferences(this).getBoolean("encrypt", false) || PlantManager.isFileEncrypted();
 
+		BackupHelper.FILES_PATH = PreferenceManager.getDefaultSharedPreferences(this).getString("backup_location", "");
 		FileManager.IMAGE_PATH = PreferenceManager.getDefaultSharedPreferences(this).getString("image_location", "");
+		if (TextUtils.isEmpty(BackupHelper.FILES_PATH)) BackupHelper.FILES_PATH = Environment.getExternalStorageDirectory().getAbsolutePath() + "/backups/GrowTracker/";
 		if (TextUtils.isEmpty(FileManager.IMAGE_PATH)) FileManager.IMAGE_PATH = Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DCIM).getPath() + "/GrowTracker/";
-		new File(FileManager.IMAGE_PATH).mkdir();
+		new File(FileManager.IMAGE_PATH).mkdirs();
+		new File(BackupHelper.FILES_PATH).mkdirs();
 
 		isTablet = getResources().getBoolean(R.bool.is_tablet);
 
@@ -270,7 +275,7 @@ public class MainApplication extends Application
 					return new File(dir, fileName);
 				}
 			})
-			.diskCacheExtraOptions(512, 512, null)
+			.diskCacheExtraOptions(768, 768, null)
 			.imageDecoder(new BaseImageDecoder(false)
 			{
 				@Override protected InputStream getImageStream(ImageDecodingInfo decodingInfo) throws IOException
