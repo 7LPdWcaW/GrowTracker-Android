@@ -432,4 +432,14 @@
 	<string name="settings_import_error">Failed to import plants from file</string>
 	<string name="settings_import">Import plants from file</string>
 	<string name="settings_import_success">Plants successfully imported from file</string>
+
+	<string name="light_title">Light Details</string>
+	<string name="light_type_label">Light type</string>
+
+	<string name="led">LED</string>
+	<string name="hid">HID</string>
+	<string name="cfl">CFL</string>
+	<string name="de">DE</string>
+	<string name="cmh">CMH</string>
+	<string name="sun">Sunlight</string>
 </resources>

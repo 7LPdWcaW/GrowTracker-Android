@@ -46,6 +46,49 @@
 				<TextView
 					android:layout_width="wrap_content"
 					android:layout_height="wrap_content"
+					android:text="@string/light_title"
+					style="@style/SectionTitle"
+				/>
+
+				<LinearLayout
+					android:layout_width="match_parent"
+					android:layout_height="wrap_content"
+					android:orientation="horizontal"
+					android:divider="@drawable/vertical_full_divider"
+					android:showDividers="middle"
+					android:paddingStart="16dp"
+					android:paddingEnd="16dp"
+					android:layout_marginTop="16dp"
+					android:weightSum="2"
+				>
+					<LinearLayout
+						android:layout_width="match_parent"
+						android:layout_height="wrap_content"
+						android:id="@+id/light_type_container"
+						android:orientation="vertical"
+						android:padding="16dp"
+						android:background="?selectableItemBackground"
+					>
+						<TextView
+							android:layout_width="match_parent"
+							android:layout_height="wrap_content"
+							android:text="@string/light_type_label"
+							style="@style/SubsectionTitle"
+						/>
+
+						<TextView
+							android:layout_width="match_parent"
+							android:layout_height="wrap_content"
+							android:id="@+id/light_type"
+							android:text="@string/led"
+							style="@style/SubsectionSubTitle"
+						/>
+					</LinearLayout>
+				</LinearLayout>
+
+				<TextView
+					android:layout_width="wrap_content"
+					android:layout_height="wrap_content"
 					android:text="@string/lighting_title"
 					style="@style/SectionTitle"
 				/>
