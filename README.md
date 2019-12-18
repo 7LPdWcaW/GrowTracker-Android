@@ -279,6 +279,7 @@ Translations provided by;
 
 - Alex (Noxmiles) - de ![DE - German](https://transifex-open-api.herokuapp.com/badge/growutils/project/growtracker/language/de_DE/translated.png)
 - Basti B (Weltenesche) - de ![DE - German](https://transifex-open-api.herokuapp.com/badge/growutils/project/growtracker/language/de_DE/translated.png)
+- Heimen Stoffels (Vistaus) - nl ![NL - Dutch](https://transifex-open-api.herokuapp.com/badge/growutils/project/growtracker/language/nl_NL/translated.png)
 - EmmanuelMess - es ![ES - Spanish](https://transifex-open-api.herokuapp.com/badge/growutils/project/growtracker/language/es/translated.png)
 - Maxtille - fr ![FR - French](https://transifex-open-api.herokuapp.com/badge/growutils/project/growtracker/language/fr/translated.png)
 - Patrick B (EukalyptusX) - de ![DE - German](https://transifex-open-api.herokuapp.com/badge/growutils/project/growtracker/language/de_DE/translated.png)
