@@ -6,11 +6,11 @@ Welcome to grow tracker. This is a utility app designed for gardening and tracki
 
 [Latest Nightly Build (Experimental!)](https://github.com/7LPdWcaW/GrowTracker-Android/releases/tag/alpha)
 
-[Latest APK: (SHA256) 4009957e99cc7e0d8a4d1fd9ef8f724cbd65566eb776c94350b6ed1e8a405275 v2.6](https://github.com/7LPdWcaW/GrowTracker-Android/releases/download/v2.6/v2.6-production.apk)
+[Latest APK: (SHA256) 501786b7350eceb7b894a5745c06c378f1d2f2e6f4bf659ee2576b3dfaca5732 v2.6.1](https://github.com/7LPdWcaW/GrowTracker-Android/releases/download/v2.6.1/v2.6.1-production.apk)
 
-[Latest APK (English only): (SHA256) 0f9cd87e57bcb9e402c9aeafba719a9f19be5c26fae54f756924da286403dcaa v2.6](https://github.com/7LPdWcaW/GrowTracker-Android/releases/download/v2.6/v2.6-en.apk)
+[Latest APK (English only): (SHA256) e366c67c54548da4c46206c953e8847ba6e4c933449ca8d33525601ee2d87bb8 v2.6.1](https://github.com/7LPdWcaW/GrowTracker-Android/releases/download/v2.6.1/v2.6.1-en.apk)
 
-[Latest APK (Discrete): (SHA256) 3feb38df6d8044d71fa3616092afe1242f5a9d2dd69d39e0660d125d57590f59 v2.6](https://github.com/7LPdWcaW/GrowTracker-Android/releases/download/v2.6/v2.6-discrete.apk)
+[Latest APK (Discrete): (SHA256) 3b5edaceb462c6fcd51d11652943357976f75b53dacdfe650f422933357688d9 v2.6.1](https://github.com/7LPdWcaW/GrowTracker-Android/releases/download/v2.6.1/v2.6.1-discrete.apk)
 
 [Get it on F-Droid with automatic updates](https://f-droid.org/packages/me.anon.grow/)
 
@@ -279,6 +279,7 @@ Translations provided by;
 
 - Alex (Noxmiles) - de ![DE - German](https://transifex-open-api.herokuapp.com/badge/growutils/project/growtracker/language/de_DE/translated.png)
 - Basti B (Weltenesche) - de ![DE - German](https://transifex-open-api.herokuapp.com/badge/growutils/project/growtracker/language/de_DE/translated.png)
+- Heimen Stoffels (Vistaus) - nl ![NL - Dutch](https://transifex-open-api.herokuapp.com/badge/growutils/project/growtracker/language/nl_NL/translated.png)
 - EmmanuelMess - es ![ES - Spanish](https://transifex-open-api.herokuapp.com/badge/growutils/project/growtracker/language/es/translated.png)
 - Maxtille - fr ![FR - French](https://transifex-open-api.herokuapp.com/badge/growutils/project/growtracker/language/fr/translated.png)
 - Patrick B (EukalyptusX) - de ![DE - German](https://transifex-open-api.herokuapp.com/badge/growutils/project/growtracker/language/de_DE/translated.png)
