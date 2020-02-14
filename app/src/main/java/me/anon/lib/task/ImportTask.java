@@ -15,6 +15,7 @@ import java.io.File;
 import java.io.FileDescriptor;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
+import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.util.ArrayList;
@@ -84,6 +85,11 @@ public class ImportTask extends AsyncTask<Pair<String, ArrayList<Uri>>, Integer,
 		if (!to.exists())
 		{
 			to.mkdirs();
+			try
+			{
+				new File(to, ".nomedia").createNewFile();
+			}
+			catch (IOException e){}
 		}
 
 		ArrayList<String> imagesToAdd = new ArrayList<>();
