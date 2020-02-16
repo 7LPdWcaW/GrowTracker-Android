@@ -1,9 +1,7 @@
 package me.anon.grow;
 
 import android.app.AlarmManager;
-import android.app.Application;
 import android.app.PendingIntent;
-import android.app.backup.BackupManager;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
@@ -34,6 +32,7 @@ import java.net.URISyntaxException;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicBoolean;
 
+import androidx.multidex.MultiDexApplication;
 import me.anon.controller.receiver.BackupService;
 import me.anon.lib.handler.ExceptionHandler;
 import me.anon.lib.helper.BackupHelper;
@@ -44,14 +43,7 @@ import me.anon.lib.manager.ScheduleManager;
 import me.anon.lib.stream.DecryptInputStream;
 import me.anon.lib.stream.EncryptOutputStream;
 
-/**
- * // TODO: Add class description
- *
- * @author 7LPdWcaW
- * @documentation // TODO Reference flow doc
- * @project GrowTracker
- */
-public class MainApplication extends Application
+public class MainApplication extends MultiDexApplication
 {
 	private static DisplayImageOptions displayImageOptions;
 	private static boolean encrypted = false;
