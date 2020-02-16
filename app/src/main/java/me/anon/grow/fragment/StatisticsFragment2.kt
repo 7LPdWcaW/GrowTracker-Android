@@ -7,6 +7,7 @@ import android.view.ViewGroup
 import android.widget.TextView
 import androidx.core.view.plusAssign
 import androidx.fragment.app.Fragment
+import kotlinx.android.synthetic.main.action_buttons_stub.*
 import kotlinx.android.synthetic.main.data_label_stub.view.*
 import kotlinx.android.synthetic.main.statistics2_view.*
 import me.anon.grow.R
@@ -73,6 +74,13 @@ class StatisticsFragment2 : Fragment()
 			}
 		}
 
+		val aveStageWaters = LinkedHashMap<PlantStage, ArrayList<Long>>()
+		aveStageWaters.putAll(plantStages.keys.map { it }.associateWith { arrayListOf<Long>() })
+		val stageChanges = plant.getStages()
+		stageChanges.toSortedMap(Comparator { first, second ->
+			(stageChanges[first]?.date ?: 0).compareTo(stageChanges[second]?.date ?: 0)
+		})
+
 		val startDate = plant.plantDate
 		var endDate = System.currentTimeMillis()
 		var waterDifference = 0L
@@ -91,6 +99,10 @@ class StatisticsFragment2 : Fragment()
 					if (lastWater != 0L) waterDifference += abs(action.date - lastWater)
 					totalWater++
 					lastWater = action.date
+
+					// find the stage change where the date is older than the watering
+					val stage = stageChanges.filterValues { it.date <= action.date }.toSortedMap().lastKey()
+					aveStageWaters.getOrPut(stage, { arrayListOf<Long>() }).add(action.date)
 				}
 
 				is EmptyAction -> {
@@ -126,6 +138,20 @@ class StatisticsFragment2 : Fragment()
 				"${d.formatWhole()} ${resources.getQuantityString(R.plurals.time_day, ceil(d).toInt())}"
 			}
 		)
+
+		// ave water time between stages
+		aveStageWaters.forEach { (stage, dates) ->
+			if (dates.isNotEmpty())
+			{
+				var dateDifference = dates.last() - dates.first()
+				statTemplates += template(
+					label = getString(R.string.ave_time_stage_label, stage.enString),
+					data = (TimeHelper.toDays(dateDifference) / dates.size).let { d ->
+						"${d.formatWhole()} ${resources.getQuantityString(R.plurals.time_day, ceil(d).toInt())}"
+					}
+				)
+			}
+		}
 
 		statTemplates.forEach {
 			val dataView = LayoutInflater.from(activity).inflate(R.layout.data_label_stub, stats_container, false)
