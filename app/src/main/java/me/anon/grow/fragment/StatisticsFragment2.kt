@@ -140,18 +140,20 @@ class StatisticsFragment2 : Fragment()
 		)
 
 		// ave water time between stages
-		aveStageWaters.forEach { (stage, dates) ->
-			if (dates.isNotEmpty())
-			{
-				var dateDifference = dates.last() - dates.first()
-				statTemplates += template(
-					label = getString(R.string.ave_time_stage_label, stage.enString),
-					data = (TimeHelper.toDays(dateDifference) / dates.size).let { d ->
-						"${d.formatWhole()} ${resources.getQuantityString(R.plurals.time_day, ceil(d).toInt())}"
-					}
-				)
+		aveStageWaters
+			.toSortedMap(Comparator { first, second -> first.ordinal.compareTo(second.ordinal) })
+			.forEach { (stage, dates) ->
+				if (dates.isNotEmpty())
+				{
+					var dateDifference = dates.last() - dates.first()
+					statTemplates += template(
+						label = getString(R.string.ave_time_stage_label, stage.enString),
+						data = (TimeHelper.toDays(dateDifference) / dates.size).let { d ->
+							"${d.formatWhole()} ${resources.getQuantityString(R.plurals.time_day, ceil(d).toInt())}"
+						}
+					)
+				}
 			}
-		}
 
 		statTemplates.forEach {
 			val dataView = LayoutInflater.from(activity).inflate(R.layout.data_label_stub, stats_container, false)
