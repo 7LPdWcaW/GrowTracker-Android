@@ -52,6 +52,38 @@
 					android:layout_marginBottom="16dp"
 				/>
 			</LinearLayout>
+
+			<LinearLayout
+				android:layout_width="match_parent"
+				android:layout_height="wrap_content"
+				android:orientation="vertical"
+				android:elevation="4dp"
+				android:layout_marginTop="12dp"
+				style="@style/PaperCard"
+			>
+				<TextView
+					android:layout_width="wrap_content"
+					android:layout_height="wrap_content"
+					android:text="@string/additives_title"
+					style="@style/SectionTitle"
+				/>
+
+				<LinearLayout
+					android:layout_width="match_parent"
+					android:layout_height="wrap_content"
+					android:padding="16dp"
+					android:orientation="vertical"
+				>
+					<com.google.android.flexbox.FlexboxLayout
+						android:layout_width="match_parent"
+						android:layout_height="wrap_content"
+						android:id="@+id/additive_chips_container"
+						app:flexWrap="wrap"
+						app:showDividerVertical="middle"
+						app:dividerDrawableVertical="@drawable/divider_8dp"
+					/>
+				</LinearLayout>
+			</LinearLayout>
 		</LinearLayout>
 	</ScrollView>
 </androidx.constraintlayout.widget.ConstraintLayout>
