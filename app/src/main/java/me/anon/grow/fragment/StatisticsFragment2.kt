@@ -1,6 +1,7 @@
 package me.anon.grow.fragment
 
 import android.graphics.Color
+import android.graphics.Typeface
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
@@ -22,6 +23,8 @@ import me.anon.grow.R
 import me.anon.lib.TdsUnit
 import me.anon.lib.Unit
 import me.anon.lib.ext.formatWhole
+import me.anon.lib.ext.resolveColor
+import me.anon.lib.ext.resolveDimen
 import me.anon.lib.helper.TimeHelper
 import me.anon.model.*
 import java.lang.Math.abs
@@ -47,6 +50,11 @@ class StatisticsFragment2 : Fragment()
 	private val selectedDeliveryUnit by lazy { Unit.getSelectedDeliveryUnit(activity!!) }
 	private val selectedMeasurementUnit by lazy { Unit.getSelectedMeasurementUnit(activity!!) }
 	private val checkedAdditives = setOf<String>()
+	private val statsColours by lazy {
+		resources.getStringArray(R.array.stats_colours).map {
+			Color.parseColor(it)
+		}
+	}
 
 	override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View?
 		= inflater.inflate(R.layout.statistics2_view, container, false)
@@ -209,13 +217,8 @@ class StatisticsFragment2 : Fragment()
 		}
 
 		// stage chart
-		val entry = arrayListOf<BarEntry>()
 		val labels = arrayOfNulls<String>(plantStages.size)
 		val yVals = FloatArray(plantStages.size)
-
-		val statsColours = resources.getStringArray(R.array.stats_colours).map {
-			Color.parseColor(it)
-		}
 
 		var index = plantStages.size - 1
 		for (plantStage in plantStages.keys)
@@ -231,6 +234,8 @@ class StatisticsFragment2 : Fragment()
 		stageData.isHighlightEnabled = false
 		stageData.stackLabels = labels
 		stageData.setColors(statsColours)
+		stageData.valueTypeface = Typeface.DEFAULT_BOLD
+		stageData.valueTextSize = 10f
 		stageData.valueFormatter = object : ValueFormatter()
 		{
 			override fun getBarStackedLabel(value: Float, stackedEntry: BarEntry?): String
@@ -257,7 +262,7 @@ class StatisticsFragment2 : Fragment()
 
 		stage_chart.axisLeft.setDrawGridLines(false)
 		stage_chart.axisLeft.axisMinimum = 0f
-		stage_chart.axisLeft.textColor = 0xffffffff.toInt()
+		stage_chart.axisLeft.textColor = R.attr.colorOnSurface.resolveColor(context!!)
 		stage_chart.axisLeft.valueFormatter = object : ValueFormatter()
 		{
 			override fun getAxisLabel(value: Float, axis: AxisBase?): String
@@ -273,7 +278,7 @@ class StatisticsFragment2 : Fragment()
 		stage_chart.xAxis.setDrawAxisLine(false)
 		stage_chart.xAxis.setDrawLabels(false)
 
-		stage_chart.legend.textColor = 0xffffffff.toInt()
+		stage_chart.legend.textColor = R.attr.colorOnSurface.resolveColor(context!!).toInt()
 		stage_chart.legend.isWordWrapEnabled = true
 	}
 }
