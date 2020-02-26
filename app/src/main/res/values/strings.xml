@@ -143,6 +143,7 @@
 	<string name="total_time_label">Total time:</string>
 	<string name="total_waters_label">Total waters:</string>
 	<string name="total_flushes_label">Total flushes:</string>
+	<string name="total_water_amount_label">Total water used:</string>
 	<string name="ave_time_between_water_label">Ave. time between water:</string>
 	<string name="ave_time_stage_label" formatted="true">Ave. %s water:</string>
 	<string name="filter_additives">Filter additives</string>

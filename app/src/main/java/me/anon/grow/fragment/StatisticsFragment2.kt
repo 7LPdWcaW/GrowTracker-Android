@@ -56,7 +56,10 @@ class StatisticsFragment2 : Fragment()
 
 	private fun populateGeneralStats()
 	{
-		class template(val label: String, val data: String)
+		open class template()
+		open class header(var label: String) : template()
+		open class data(label: String, val data: String) : header(label)
+
 		val statTemplates = arrayListOf<template>()
 
 		stats_container.removeAllViews()
@@ -66,7 +69,7 @@ class StatisticsFragment2 : Fragment()
 			if (plantStages.containsKey(stage))
 			{
 				plantStages[stage]?.let { time ->
-					statTemplates += template(
+					statTemplates += data(
 						label = "${getString(stage.printString)}:",
 						data = "${TimeHelper.toDays(time).toInt()} ${resources.getQuantityString(R.plurals.time_day, TimeHelper.toDays(time).toInt())}"
 					)
@@ -86,6 +89,7 @@ class StatisticsFragment2 : Fragment()
 		var waterDifference = 0L
 		var lastWater = 0L
 		var totalWater = 0
+		var totalWaterAmount = 0.0
 		var totalFlush = 0
 
 		plant.actions?.forEach { action ->
@@ -98,6 +102,7 @@ class StatisticsFragment2 : Fragment()
 				is Water -> {
 					if (lastWater != 0L) waterDifference += abs(action.date - lastWater)
 					totalWater++
+					totalWaterAmount += action.amount ?: 0.0
 					lastWater = action.date
 
 					// find the stage change where the date is older than the watering
@@ -114,25 +119,33 @@ class StatisticsFragment2 : Fragment()
 		val days = ((endDate - startDate) / 1000.0) * 0.0000115741
 
 		// total time
-		statTemplates += template(
+		statTemplates += data(
 			label = getString(R.string.total_time_label),
 			data = "${days.formatWhole()} ${resources.getQuantityString(R.plurals.time_day, days.toInt())}"
 		)
 
+		statTemplates += header("Water stats")
+
 		// total waters
-		statTemplates += template(
+		statTemplates += data(
 			label = getString(R.string.total_waters_label),
 			data = "${totalWater.formatWhole()}"
 		)
 
 		// total flushes
-		statTemplates += template(
+		statTemplates += data(
 			label = getString(R.string.total_flushes_label),
 			data = "${totalFlush.formatWhole()}"
 		)
 
+		// total water amount
+		statTemplates += data(
+			label = getString(R.string.total_water_amount_label),
+			data = "${Unit.ML.to(selectedDeliveryUnit, totalWaterAmount).formatWhole()} ${selectedDeliveryUnit.label}"
+		)
+
 		// ave time between water
-		statTemplates += template(
+		statTemplates += data(
 			label = getString(R.string.ave_time_between_water_label),
 			data = (TimeHelper.toDays(waterDifference) / totalWater).let { d ->
 				"${d.formatWhole()} ${resources.getQuantityString(R.plurals.time_day, ceil(d).toInt())}"
@@ -146,7 +159,7 @@ class StatisticsFragment2 : Fragment()
 				if (dates.isNotEmpty())
 				{
 					var dateDifference = dates.last() - dates.first()
-					statTemplates += template(
+					statTemplates += data(
 						label = getString(R.string.ave_time_stage_label, stage.enString),
 						data = (TimeHelper.toDays(dateDifference) / dates.size).let { d ->
 							"${d.formatWhole()} ${resources.getQuantityString(R.plurals.time_day, ceil(d).toInt())}"
@@ -155,10 +168,27 @@ class StatisticsFragment2 : Fragment()
 				}
 			}
 
-		statTemplates.forEach {
-			val dataView = LayoutInflater.from(activity).inflate(R.layout.data_label_stub, stats_container, false)
-			dataView.label.text = it.label
-			dataView.data.text = it.data
+		statTemplates.forEach { template ->
+			var dataView = when (template)
+			{
+				is data -> {
+					LayoutInflater.from(activity).inflate(R.layout.data_label_stub, stats_container, false).also {
+						it.label.text = template.label
+						it.data.text = template.data
+					}
+				}
+
+				is header -> {
+					LayoutInflater.from(activity).inflate(R.layout.subtitle_stub, stats_container, false).also {
+						(it as TextView).text = template.label
+						it.setPadding(0, resources.getDimension(R.dimen.padding_16dp).toInt(), 0, 0)
+					}
+				}
+
+				else -> null
+			}
+
+			dataView ?: return
 			stats_container += dataView
 		}
 	}

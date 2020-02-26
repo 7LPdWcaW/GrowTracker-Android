@@ -30,7 +30,7 @@ public enum Unit
 		}
 	},
 
-	L("l")
+	L("L")
 	{
 		@Override public double to(Unit to, double fromValue)
 		{
