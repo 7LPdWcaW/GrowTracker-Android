@@ -144,6 +144,12 @@ class StatisticsFragment2 : Fragment()
 			data = "${Unit.ML.to(selectedDeliveryUnit, totalWaterAmount).formatWhole()} ${selectedDeliveryUnit.label}"
 		)
 
+		// average water amount
+		statTemplates += data(
+			label = getString(R.string.ave_water_amount_label),
+			data = "${Unit.ML.to(selectedDeliveryUnit, (totalWaterAmount / totalWater.toDouble())).formatWhole()} ${selectedDeliveryUnit.label}"
+		)
+
 		// ave time between water
 		statTemplates += data(
 			label = getString(R.string.ave_time_between_water_label),
