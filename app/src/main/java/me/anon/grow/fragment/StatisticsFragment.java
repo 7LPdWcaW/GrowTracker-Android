@@ -19,7 +19,6 @@ import com.github.mikephil.charting.data.BarDataSet;
 import com.github.mikephil.charting.data.BarEntry;
 import com.github.mikephil.charting.data.Entry;
 import com.github.mikephil.charting.formatter.ValueFormatter;
-import com.github.mikephil.charting.formatter.YAxisValueFormatter;
 import com.github.mikephil.charting.highlight.Highlight;
 import com.github.mikephil.charting.utils.ViewPortHandler;
 import com.google.android.flexbox.FlexboxLayout;
@@ -181,26 +180,26 @@ public class StatisticsFragment extends Fragment
 
 		String[] tdsAdditional = new String[3];
 		StatsHelper.setTdsData(plant, getActivity(), tds, tdsAdditional, selectedTdsUnit);
-		tds.setMarkerView(new MarkerView(getActivity(), R.layout.chart_marker)
-		{
-			@Override
-			public void refreshContent(Entry e, Highlight highlight)
-			{
-				String val = NumberUtilsKt.formatWhole(e.getVal());
-
-				((TextView)findViewById(R.id.content)).setText(val);
-			}
-
-			@Override public int getXOffset(float xpos)
-			{
-				return -(getWidth() / 2);
-			}
-
-			@Override public int getYOffset(float ypos)
-			{
-				return -getHeight();
-			}
-		});
+//		tds.setMarkerView(new MarkerView(getActivity(), R.layout.chart_marker)
+//		{
+//			@Override
+//			public void refreshContent(Entry e, Highlight highlight)
+//			{
+//				String val = NumberUtilsKt.formatWhole(e.getVal());
+//
+//				((TextView)findViewById(R.id.content)).setText(val);
+//			}
+//
+//			@Override public int getXOffset(float xpos)
+//			{
+//				return -(getWidth() / 2);
+//			}
+//
+//			@Override public int getYOffset(float ypos)
+//			{
+//				return -getHeight();
+//			}
+//		});
 		tds.notifyDataSetChanged();
 		tds.postInvalidate();
 		mintds.setText(tdsAdditional[0].equals(String.valueOf(Long.MAX_VALUE)) ? "0" : tdsAdditional[0]);
@@ -234,34 +233,34 @@ public class StatisticsFragment extends Fragment
 		final Unit measurement = Unit.getSelectedMeasurementUnit(getActivity());
 		final Unit delivery = Unit.getSelectedDeliveryUnit(getActivity());
 
-		additives.setMarkerView(new MarkerView(getActivity(), R.layout.chart_marker)
-		{
-			@Override
-			public void refreshContent(Entry e, Highlight highlight)
-			{
-				String val = NumberUtilsKt.formatWhole(e.getVal());
-
-				((TextView)findViewById(R.id.content)).setText(val + measurement.getLabel() + "/" + delivery.getLabel());
-
-				int color = IntUtilsKt.resolveColor(R.attr.colorPrimary, getActivity());
-				if (e.getData() instanceof Integer)
-				{
-					color = (int)e.getData();
-				}
-
-				((TextView)findViewById(R.id.content)).setTextColor(color);
-			}
-
-			@Override public int getXOffset(float xpos)
-			{
-				return -(getWidth() / 2);
-			}
-
-			@Override public int getYOffset(float ypos)
-			{
-				return -getHeight();
-			}
-		});
+//		additives.setMarkerView(new MarkerView(getActivity(), R.layout.chart_marker)
+//		{
+//			@Override
+//			public void refreshContent(Entry e, Highlight highlight)
+//			{
+//				String val = NumberUtilsKt.formatWhole(e.getVal());
+//
+//				((TextView)findViewById(R.id.content)).setText(val + measurement.getLabel() + "/" + delivery.getLabel());
+//
+//				int color = IntUtilsKt.resolveColor(R.attr.colorPrimary, getActivity());
+//				if (e.getData() instanceof Integer)
+//				{
+//					color = (int)e.getData();
+//				}
+//
+//				((TextView)findViewById(R.id.content)).setTextColor(color);
+//			}
+//
+//			@Override public int getXOffset(float xpos)
+//			{
+//				return -(getWidth() / 2);
+//			}
+//
+//			@Override public int getYOffset(float ypos)
+//			{
+//				return -getHeight();
+//			}
+//		});
 
 		additives.notifyDataSetChanged();
 		additives.postInvalidate();
@@ -407,45 +406,45 @@ public class StatisticsFragment extends Fragment
 			labels[index--] = getString(plantStage.getPrintString());
 		}
 
-		entry.add(new BarEntry(yVals, 0));
-
-		BarDataSet set = new BarDataSet(entry, "");
-		set.setColors(statsColours);
-		set.setStackLabels(labels);
-		set.setValueTextSize(12.0f);
-		set.setValueTextColor(IntUtilsKt.resolveColor(R.attr.chart_label, getActivity()));
-		set.setHighlightEnabled(false);
-
-		BarData data = new BarData(new String[] { "" }, set);
-		data.setValueFormatter(new ValueFormatter()
-		{
-			@Override public String getFormattedValue(float value, Entry entry, int dataSetIndex, ViewPortHandler viewPortHandler)
-			{
-				return (int)value + getString(R.string.day_abbr);
-			}
-		});
-
-		StatsHelper.styleGraph(stagesChart);
-
-		stagesChart.getXAxis().setLabelsToSkip(0);
-		stagesChart.getAxisLeft().setValueFormatter(new YAxisValueFormatter()
-		{
-			@Override public String getFormattedValue(float value, YAxis yAxis)
-			{
-				return "" + (int)value;
-			}
-		});
-		stagesChart.getAxisRight().setValueFormatter(new YAxisValueFormatter()
-		{
-			@Override public String getFormattedValue(float value, YAxis yAxis)
-			{
-				return "" + (int)value;
-			}
-		});
-
-		stagesChart.setMarkerView(null);
-		stagesChart.setHighlightPerTapEnabled(false);
-		stagesChart.getAxisLeft().setStartAtZero(true);
-		stagesChart.setData(data);
+//		entry.add(new BarEntry(yVals, 0));
+//
+//		BarDataSet set = new BarDataSet(entry, "");
+//		set.setColors(statsColours);
+//		set.setStackLabels(labels);
+//		set.setValueTextSize(12.0f);
+//		set.setValueTextColor(IntUtilsKt.resolveColor(R.attr.chart_label, getActivity()));
+//		set.setHighlightEnabled(false);
+//
+//		BarData data = new BarData(new String[] { "" }, set);
+//		data.setValueFormatter(new ValueFormatter()
+//		{
+//			@Override public String getFormattedValue(float value, Entry entry, int dataSetIndex, ViewPortHandler viewPortHandler)
+//			{
+//				return (int)value + getString(R.string.day_abbr);
+//			}
+//		});
+//
+//		StatsHelper.styleGraph(stagesChart);
+//
+//		stagesChart.getXAxis().setLabelsToSkip(0);
+//		stagesChart.getAxisLeft().setValueFormatter(new YAxisValueFormatter()
+//		{
+//			@Override public String getFormattedValue(float value, YAxis yAxis)
+//			{
+//				return "" + (int)value;
+//			}
+//		});
+//		stagesChart.getAxisRight().setValueFormatter(new YAxisValueFormatter()
+//		{
+//			@Override public String getFormattedValue(float value, YAxis yAxis)
+//			{
+//				return "" + (int)value;
+//			}
+//		});
+//
+//		stagesChart.setMarkerView(null);
+//		stagesChart.setHighlightPerTapEnabled(false);
+//		stagesChart.getAxisLeft().setStartAtZero(true);
+//		stagesChart.setData(data);
 	}
 }

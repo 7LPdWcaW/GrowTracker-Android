@@ -1,5 +1,6 @@
 package me.anon.grow.fragment
 
+import android.graphics.Color
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
@@ -7,6 +8,13 @@ import android.view.ViewGroup
 import android.widget.TextView
 import androidx.core.view.plusAssign
 import androidx.fragment.app.Fragment
+import com.github.mikephil.charting.components.AxisBase
+import com.github.mikephil.charting.data.BarData
+import com.github.mikephil.charting.data.BarDataSet
+import com.github.mikephil.charting.data.BarEntry
+import com.github.mikephil.charting.data.Entry
+import com.github.mikephil.charting.formatter.ValueFormatter
+import com.github.mikephil.charting.utils.ViewPortHandler
 import kotlinx.android.synthetic.main.action_buttons_stub.*
 import kotlinx.android.synthetic.main.data_label_stub.view.*
 import kotlinx.android.synthetic.main.statistics2_view.*
@@ -18,6 +26,8 @@ import me.anon.lib.helper.TimeHelper
 import me.anon.model.*
 import java.lang.Math.abs
 import kotlin.math.ceil
+import kotlin.math.max
+import kotlin.math.roundToInt
 
 /**
  * // TODO: Add class description
@@ -197,5 +207,73 @@ class StatisticsFragment2 : Fragment()
 			dataView ?: return
 			stats_container += dataView
 		}
+
+		// stage chart
+		val entry = arrayListOf<BarEntry>()
+		val labels = arrayOfNulls<String>(plantStages.size)
+		val yVals = FloatArray(plantStages.size)
+
+		val statsColours = resources.getStringArray(R.array.stats_colours).map {
+			Color.parseColor(it)
+		}
+
+		var index = plantStages.size - 1
+		for (plantStage in plantStages.keys)
+		{
+			yVals[index] = max(TimeHelper.toDays(plantStages[plantStage] ?: 0).toFloat(), 1f)
+			labels[index--] = getString(plantStage.printString)
+		}
+
+		val stageEntries = arrayListOf<BarEntry>()
+		stageEntries += BarEntry(0f, yVals, plantStages.keys.toList().asReversed())
+
+		val stageData = BarDataSet(stageEntries, "")
+		stageData.isHighlightEnabled = false
+		stageData.stackLabels = labels
+		stageData.setColors(statsColours)
+		stageData.valueFormatter = object : ValueFormatter()
+		{
+			override fun getBarStackedLabel(value: Float, stackedEntry: BarEntry?): String
+			{
+				stackedEntry?.let {
+					(it.data as? List<PlantStage>)?.let { stages ->
+						val stageIndex = it.yVals.indexOf(value)
+						return "${value.toInt()}${getString(stages[stageIndex].printString)[0].toLowerCase()}"
+					}
+				}
+
+				return super.getBarStackedLabel(value, stackedEntry)
+			}
+		}
+
+		val barData = BarData(stageData)
+
+		stage_chart.data = barData
+		stage_chart.setDrawGridBackground(false)
+		stage_chart.description = null
+		stage_chart.isScaleYEnabled = false
+		stage_chart.setDrawBorders(false)
+		stage_chart.setDrawValueAboveBar(false)
+
+		stage_chart.axisLeft.setDrawGridLines(false)
+		stage_chart.axisLeft.axisMinimum = 0f
+		stage_chart.axisLeft.textColor = 0xffffffff.toInt()
+		stage_chart.axisLeft.valueFormatter = object : ValueFormatter()
+		{
+			override fun getAxisLabel(value: Float, axis: AxisBase?): String
+			{
+				return "${value.toInt()}${getString(R.string.day_abbr)}"
+			}
+		}
+
+		stage_chart.axisRight.setDrawLabels(false)
+		stage_chart.axisRight.setDrawGridLines(false)
+
+		stage_chart.xAxis.setDrawGridLines(false)
+		stage_chart.xAxis.setDrawAxisLine(false)
+		stage_chart.xAxis.setDrawLabels(false)
+
+		stage_chart.legend.textColor = 0xffffffff.toInt()
+		stage_chart.legend.isWordWrapEnabled = true
 	}
 }
