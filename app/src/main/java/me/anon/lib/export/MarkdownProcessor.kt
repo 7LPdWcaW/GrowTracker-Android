@@ -311,7 +311,7 @@ class MarkdownProcessor : ExportProcessor()
 					if (action.additives.isNotEmpty())
 					{
 						documentBuilder.append(" / ")
-						action.additives.forEach { additive ->
+						action.additives.sortedBy { it.description ?: "" }.forEach { additive ->
 							documentBuilder.append("**${additive.description ?: ""}:** ").append(Unit.ML.to(selectedMeasurement, additive.amount ?: 0.0).formatWhole()).append(selectedMeasurement!!.label).append("/").append(selectedDelivery!!.label)
 							if (action.additives.last() != additive) documentBuilder.append(" – ")
 						}
@@ -337,8 +337,19 @@ class MarkdownProcessor : ExportProcessor()
 		documentBuilder.append(NEW_LINE)
 	}
 
-	override fun printPlantImages(arrayList: ArrayList<String>)
+	override fun printPlantImages(map: SortedMap<String, ArrayList<String>>)
 	{
+		documentBuilder.append("## Images")
+		documentBuilder.append(NEW_LINE + NEW_LINE)
+
+		map.forEach { (k, items) ->
+			documentBuilder.append("### $k")
+			documentBuilder.append(NEW_LINE + NEW_LINE)
+			items.forEach { item ->
+				documentBuilder.append("![${item.split("/").last()}]($item)")
+				documentBuilder.append(NEW_LINE + NEW_LINE)
+			}
+		}
 	}
 
 	override fun printGardenDetails(garden: Garden)
