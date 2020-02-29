@@ -238,18 +238,18 @@ class MarkdownProcessor : ExportProcessor()
 
 			val tdsArr = arrayOfNulls<String>(3)
 			StatsHelper.setTdsData(plant, null, null, tdsArr, tds)
-			documentBuilder.append(" - **Minimum input ${tds.enStr}**: ").append(tdsArr[0]).append(tds.label).append(NEW_LINE)
-			documentBuilder.append(" - **Maximum input ${tds.enStr}**: ").append(tdsArr[1]).append(tds.label).append(NEW_LINE)
-			documentBuilder.append(" - **Average input ${tds.enStr}**: ").append(tdsArr[2]).append(tds.label).append(NEW_LINE + NEW_LINE)
+			documentBuilder.append(" - **Minimum input ${tds.enStr}:** ").append(tdsArr[0]).append(tds.label).append(NEW_LINE)
+			documentBuilder.append(" - **Maximum input ${tds.enStr}:** ").append(tdsArr[1]).append(tds.label).append(NEW_LINE)
+			documentBuilder.append(" - **Average input ${tds.enStr}:** ").append(tdsArr[2]).append(tds.label).append(NEW_LINE + NEW_LINE)
 			documentBuilder.append("![${tds.enStr} Chart](${tds.enStr}.jpg)").append(NEW_LINE + NEW_LINE)
 		}
 
 		val aveTemp = arrayOfNulls<String>(3)
 		StatsHelper.setTempData(plant, null, selectedTemp, null, aveTemp)
 		documentBuilder.append("### Temperature (°${selectedTemp!!.label})").append(NEW_LINE + NEW_LINE)
-		documentBuilder.append(" - **Minimum input temperature**: ").append(aveTemp[0]).append("°${selectedTemp!!.label}").append(NEW_LINE)
-		documentBuilder.append(" - **Maximum input temperature**: ").append(aveTemp[1]).append("°${selectedTemp!!.label}").append(NEW_LINE)
-		documentBuilder.append(" - **Average input temperature**: ").append(aveTemp[2]).append("°${selectedTemp!!.label}").append(NEW_LINE + NEW_LINE)
+		documentBuilder.append(" - **Minimum input temperature:** ").append(aveTemp[0]).append("°${selectedTemp!!.label}").append(NEW_LINE)
+		documentBuilder.append(" - **Maximum input temperature:** ").append(aveTemp[1]).append("°${selectedTemp!!.label}").append(NEW_LINE)
+		documentBuilder.append(" - **Average input temperature:** ").append(aveTemp[2]).append("°${selectedTemp!!.label}").append(NEW_LINE + NEW_LINE)
 		documentBuilder.append("![Temp](temp.jpg)").append(NEW_LINE + NEW_LINE)
 	}
 
@@ -366,17 +366,17 @@ class MarkdownProcessor : ExportProcessor()
 		val aveTemp = arrayOfNulls<String>(3)
 		StatsHelper.setTempData(garden, null, selectedTemp, null, aveTemp)
 		documentBuilder.append("### Temperature (°${selectedTemp!!.label})").append(NEW_LINE + NEW_LINE)
-		documentBuilder.append(" - **Minimum temperature**: ").append(aveTemp[0]).append("°${selectedTemp!!.label}").append(NEW_LINE)
-		documentBuilder.append(" - **Maximum temperature**: ").append(aveTemp[1]).append("°${selectedTemp!!.label}").append(NEW_LINE)
-		documentBuilder.append(" - **Average temperature**: ").append(aveTemp[2]).append("°${selectedTemp!!.label}").append(NEW_LINE + NEW_LINE)
+		documentBuilder.append(" - **Minimum temperature:** ").append(aveTemp[0]).append("°${selectedTemp!!.label}").append(NEW_LINE)
+		documentBuilder.append(" - **Maximum temperature:** ").append(aveTemp[1]).append("°${selectedTemp!!.label}").append(NEW_LINE)
+		documentBuilder.append(" - **Average temperature:** ").append(aveTemp[2]).append("°${selectedTemp!!.label}").append(NEW_LINE + NEW_LINE)
 		documentBuilder.append("![Temp](garden-temp.jpg)").append(NEW_LINE + NEW_LINE)
 
 		val aveHumidity = arrayOfNulls<String>(3)
 		StatsHelper.setHumidityData(garden, null, null, aveHumidity)
 		documentBuilder.append("### Humidity").append(NEW_LINE + NEW_LINE)
-		documentBuilder.append(" - **Minimum humidity**: ").append(aveHumidity[0]).append("%").append(NEW_LINE)
-		documentBuilder.append(" - **Maximum humidity**: ").append(aveHumidity[1]).append("%").append(NEW_LINE)
-		documentBuilder.append(" - **Average humidity**: ").append(aveHumidity[2]).append("%").append(NEW_LINE + NEW_LINE)
+		documentBuilder.append(" - **Minimum humidity:** ").append(aveHumidity[0]).append("%").append(NEW_LINE)
+		documentBuilder.append(" - **Maximum humidity:** ").append(aveHumidity[1]).append("%").append(NEW_LINE)
+		documentBuilder.append(" - **Average humidity:** ").append(aveHumidity[2]).append("%").append(NEW_LINE + NEW_LINE)
 		documentBuilder.append("![Humidity](garden-humidity.jpg)").append(NEW_LINE + NEW_LINE)
 	}
 
@@ -408,7 +408,7 @@ class MarkdownProcessor : ExportProcessor()
 				}
 
 				is LightingChange -> {
-					documentBuilder.append("**Lights on:** ").append(action.on).append(" **Lights off:**: ").append(action.off)
+					documentBuilder.append("**Lights on:** ").append(action.on).append(" **Lights off::** ").append(action.off)
 				}
 
 				else -> documentBuilder.append(" ")
