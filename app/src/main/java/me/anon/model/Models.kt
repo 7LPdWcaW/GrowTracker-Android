@@ -450,7 +450,9 @@ enum class PlantStage private constructor(val printString: Int, val enString: St
 	SEEDLING(R.string.seedling, "Seedling"),
 	CUTTING(R.string.cutting, "Cutting"),
 	VEGETATION(R.string.vegetation, "Vegetation"),
+	BUDDING(R.string.budding, "Budding"),
 	FLOWER(R.string.flowering, "Flowering"),
+	RIPENING(R.string.ripening, "Ripening"),
 	DRYING(R.string.drying, "Drying"),
 	CURING(R.string.curing, "Curing"),
 	HARVESTED(R.string.harvested, "Harvested");

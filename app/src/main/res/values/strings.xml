@@ -129,7 +129,9 @@
 	<string name="germination">Germination</string>
 	<string name="cutting">Cutting</string>
 	<string name="vegetation">Vegetation</string>
+	<string name="budding">Budding</string>
 	<string name="flowering">Flowering</string>
+	<string name="ripening">Ripening</string>
 	<string name="drying">Drying</string>
 	<string name="curing">Curing</string>
 	<string name="harvested">Harvested</string>
