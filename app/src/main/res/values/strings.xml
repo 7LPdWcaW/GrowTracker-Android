@@ -436,4 +436,8 @@
 	<string name="settings_import_error">Failed to import plants from file</string>
 	<string name="settings_import">Import plants from file</string>
 	<string name="settings_import_success">Plants successfully imported from file</string>
+
+	<string name="additive_stat_header" formatted="true">%s stats</string>
+	<string name="additive_average_usage_label">Ave. each feeding:</string>
+	<string name="additive_total_usage_label">Total amount:</string>
 </resources>

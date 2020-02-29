@@ -8,6 +8,7 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.TextView
 import androidx.core.view.plusAssign
+import androidx.core.view.setMargins
 import androidx.fragment.app.Fragment
 import com.github.mikephil.charting.components.AxisBase
 import com.github.mikephil.charting.data.BarData
@@ -24,6 +25,7 @@ import kotlinx.android.synthetic.main.statistics2_view.*
 import me.anon.grow.R
 import me.anon.lib.TdsUnit
 import me.anon.lib.Unit
+import me.anon.lib.ext.T
 import me.anon.lib.ext.formatWhole
 import me.anon.lib.ext.resolveColor
 import me.anon.lib.ext.resolveDimen
@@ -32,6 +34,7 @@ import me.anon.model.*
 import java.lang.Math.abs
 import kotlin.math.ceil
 import kotlin.math.max
+import kotlin.math.min
 import kotlin.math.roundToInt
 
 /**
@@ -285,22 +288,43 @@ class StatisticsFragment2 : Fragment()
 
 	private fun populateAdditiveStates()
 	{
-		class additiveStat(var total: Double = 0.0, var count: Int = 0)
+		class additiveStat(var total: Double = 0.0, var count: Int = 0, var min: Double = Double.NaN, var max: Double = Double.NaN)
+
+		fun displayStats(name: String, stat: additiveStat)
+		{
+			val stats = arrayListOf<template>()
+			stats += header(getString(R.string.additive_stat_header, name))
+			stats += data(
+				label = getString(R.string.additive_average_usage_label),
+				data = "${Unit.ML.to(selectedMeasurementUnit, stat.total / stat.count.toDouble()).formatWhole()} ${selectedMeasurementUnit.label}/${selectedDeliveryUnit.label}"
+			)
+			stats += data(
+				label = getString(R.string.additive_total_usage_label),
+				data = "${Unit.ML.to(selectedMeasurementUnit, stat.total).formatWhole()} ${selectedMeasurementUnit.label}"
+			)
+
+			additives_stats_container.removeAllViews()
+			renderStats(additives_stats_container, stats)
+		}
 
 		val names = HashMap<String, additiveStat>()
 		additives.forEach { additive ->
 			additive.description?.let { key ->
 				names.getOrPut(key, { additiveStat() }).apply {
 					total += additive.amount ?: 0.0
+					min = max(min.isNaN() T Double.MIN_VALUE ?: min, additive.amount ?: 0.0)
+					max = min(max.isNaN() T Double.MIN_VALUE ?: max, additive.amount ?: 0.0)
 					count++
 				}
 			}
 		}
 
 		names.forEach { (k, v) ->
-			val chip = Chip(context!!)
+			val chip = LayoutInflater.from(context!!).inflate(R.layout.filter_chip_stub, additive_chips_container, false) as Chip
 			chip.text = k
-
+			chip.setOnCheckedChangeListener { buttonView, isChecked ->
+				//displayStats(k, v)
+			}
 			additive_chips_container += chip
 		}
 	}
