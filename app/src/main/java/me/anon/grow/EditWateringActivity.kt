@@ -38,7 +38,7 @@ class EditWateringActivity : BaseActivity()
 		if (supportFragmentManager.findFragmentByTag("fragment") == null)
 		{
 			supportFragmentManager.beginTransaction()
-				.replace(R.id.coordinator, WateringFragment.newInstance(intArrayOf(plantIndex), feedingIndex), "fragment")
+				.replace(R.id.coordinator, WateringFragment.newInstance(intArrayOf(plantIndex), feedingIndex, -1), "fragment")
 				.commit()
 		}
 	}

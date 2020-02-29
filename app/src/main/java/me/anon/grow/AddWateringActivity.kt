@@ -15,6 +15,7 @@ class AddWateringActivity : BaseActivity()
 		setSupportActionBar(toolbar)
 
 		var plantIndex: IntArray? = intent.extras?.getIntArray("plant_index") ?: intArrayOf(-1)
+		var gardenIndex: Int = intent.extras?.getInt("garden_index") ?: -1
 
 		if (plantIndex == null || plantIndex.size == 0)
 		{
@@ -24,7 +25,7 @@ class AddWateringActivity : BaseActivity()
 
 		if (supportFragmentManager.findFragmentByTag(TAG_FRAGMENT) == null)
 		{
-			supportFragmentManager.beginTransaction().replace(R.id.coordinator, WateringFragment.newInstance(plantIndex, -1), TAG_FRAGMENT).commit()
+			supportFragmentManager.beginTransaction().replace(R.id.coordinator, WateringFragment.newInstance(plantIndex, -1, gardenIndex), TAG_FRAGMENT).commit()
 		}
 	}
 

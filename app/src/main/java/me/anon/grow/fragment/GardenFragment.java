@@ -295,6 +295,7 @@ public class GardenFragment extends Fragment
 
 		Intent feed = new Intent(getActivity(), AddWateringActivity.class);
 		feed.putExtra("plant_index", plants);
+		feed.putExtra("garden_index", GardenManager.getInstance().getGardens().indexOf(garden));
 		startActivityForResult(feed, 2);
 	}
 

@@ -80,6 +80,8 @@ class PlantDetailsActivity : BaseActivity()
 
 					return@setOnNavigationItemSelectedListener true
 				}
+
+				supportActionBar?.subtitle = plant.name
 			}
 		}
 	}
