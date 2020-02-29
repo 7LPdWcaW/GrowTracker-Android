@@ -36,18 +36,21 @@ import androidx.appcompat.app.AlertDialog;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
 import me.anon.controller.provider.PlantWidgetProvider;
+import me.anon.grow.BaseActivity;
 import me.anon.grow.R;
 import me.anon.lib.TdsUnit;
 import me.anon.lib.TempUnit;
 import me.anon.lib.Unit;
 import me.anon.lib.Views;
 import me.anon.lib.ext.NumberUtilsKt;
+import me.anon.lib.manager.GardenManager;
 import me.anon.lib.manager.PlantManager;
 import me.anon.lib.manager.ScheduleManager;
 import me.anon.model.Action;
 import me.anon.model.Additive;
 import me.anon.model.FeedingSchedule;
 import me.anon.model.FeedingScheduleDate;
+import me.anon.model.Garden;
 import me.anon.model.Plant;
 import me.anon.model.Tds;
 import me.anon.model.Water;
@@ -79,6 +82,7 @@ public class WateringFragment extends Fragment
 	@Views.InjectView(R.id.notes) private EditText notes;
 
 	private int[] plantIndex = {-1};
+	private int gardenIndex = -1;
 	private int actionIndex = -1;
 	private ArrayList<Plant> plants = new ArrayList<>();
 	private Water water;
@@ -100,10 +104,11 @@ public class WateringFragment extends Fragment
 	 * @param plantIndex If -1, assume new plant
 	 * @return Instantiated details fragment
 	 */
-	public static WateringFragment newInstance(int[] plantIndex, int feedingIndex)
+	public static WateringFragment newInstance(int[] plantIndex, int feedingIndex, int gardenIndex)
 	{
 		Bundle args = new Bundle();
 		args.putIntArray("plant_index", plantIndex);
+		args.putInt("garden_index", gardenIndex);
 		args.putInt("action_index", feedingIndex);
 
 		WateringFragment fragment = new WateringFragment();
@@ -138,12 +143,14 @@ public class WateringFragment extends Fragment
 		if (savedInstanceState != null)
 		{
 			plantIndex = savedInstanceState.getIntArray("plant_index");
+			gardenIndex = savedInstanceState.getInt("garden_index");
 			actionIndex = savedInstanceState.getInt("action_index");
 			water = savedInstanceState.getParcelable("water");
 		}
 		else if (getArguments() != null)
 		{
 			plantIndex = getArguments().getIntArray("plant_index");
+			gardenIndex = getArguments().getInt("garden_index");
 			actionIndex = getArguments().getInt("action_index");
 
 			if (actionIndex > -1 && plantIndex.length == 1)
@@ -176,6 +183,33 @@ public class WateringFragment extends Fragment
 			return;
 		}
 
+		if (getActivity() instanceof BaseActivity)
+		{
+			Garden garden = null;
+			if (gardenIndex > -1)
+			{
+				garden = GardenManager.getInstance().getGardens().get(gardenIndex);
+			}
+
+			if (plants.size() == 1)
+			{
+				getActivity().setTitle(getString(R.string.feeding_single_title, plants.get(0).getName()));
+			}
+			else
+			{
+				getActivity().setTitle(getString(R.string.feeding_single_title, garden == null ? "" : garden.getName()));
+				String subtitle = "";
+				for (Plant plant : plants)
+				{
+					if (subtitle.length() > 0) subtitle += ", ";
+					subtitle += plant.getName();
+				}
+
+				((BaseActivity)getActivity()).getSupportActionBar().setSubtitle(subtitle);
+			}
+		}
+
+
 		setUi();
 		setHints();
 	}
@@ -183,6 +217,7 @@ public class WateringFragment extends Fragment
 	@Override public void onSaveInstanceState(@NonNull Bundle outState)
 	{
 		outState.putIntArray("plant_index", plantIndex);
+		outState.putInt("garden_index", actionIndex);
 		outState.putInt("action_index", actionIndex);
 		outState.putParcelable("water", water);
 
@@ -420,8 +455,6 @@ public class WateringFragment extends Fragment
 		temp.setText("");
 		date.setText("");
 		notes.setText("");
-
-		getActivity().setTitle(plants.size() == 1 ? getString(R.string.feeding_single_title, plants.get(0).getName()) : getString(R.string.feeding_multiple_title));
 
 		Calendar date = Calendar.getInstance();
 		date.setTimeInMillis(water.getDate());
