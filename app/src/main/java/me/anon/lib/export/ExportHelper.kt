@@ -18,6 +18,7 @@ import me.anon.lib.TdsUnit
 import me.anon.lib.TempUnit
 import me.anon.lib.helper.NotificationHelper
 import me.anon.lib.helper.StatsHelper
+import me.anon.lib.helper.TimeHelper
 import me.anon.model.*
 import net.lingala.zip4j.core.ZipFile
 import net.lingala.zip4j.model.ZipParameters
@@ -26,6 +27,8 @@ import java.io.ByteArrayInputStream
 import java.io.ByteArrayOutputStream
 import java.io.File
 import java.io.FileInputStream
+import java.text.SimpleDateFormat
+import java.time.format.DateTimeFormatter
 import java.util.*
 import kotlin.collections.ArrayList
 
@@ -137,7 +140,8 @@ class ExportHelper(
 				processor.printPlantStats(plant)
 				processor.printPlantActions(plant)
 
-				val imagePaths = arrayListOf<String>()
+				val imagePaths = sortedMapOf<String, ArrayList<String>>()
+				val stages = plant.getStages()
 				for (filePath in plant.images!!)
 				{
 					try
@@ -150,7 +154,28 @@ class ExportHelper(
 							fileDate = currentImage.lastModified()
 						}
 
-						imagePaths.add(zipPathPrefix + "images/" + dateFolder(context, fileDate) + "/" + fileDate + ".jpg")
+						val totalDays = TimeHelper.toDays(Math.abs(fileDate - plant.plantDate)).toInt()
+						var stageChange: StageChange? = null
+						with (stages.keys.iterator())
+						{
+							while (this.hasNext())
+							{
+								val k = next()
+								stages[k]?.let { action ->
+									if (action.date <= fileDate && stageChange == null)
+									{
+										stageChange = action as? StageChange
+									}
+								}
+							}
+						}
+
+						var dateSuffix = ""
+						stageChange?.let { change ->
+							dateSuffix = " ${totalDays}/" + TimeHelper.toDays(fileDate - change.date).toInt() + context.getString(change.newStage.printString)[0].toLowerCase()
+						}
+
+						imagePaths.getOrPut(dateFolder(context, fileDate) + dateSuffix) { arrayListOf() }.add(zipPathPrefix + "images/" + dateFolder(context, fileDate) + "/" + fileDate + ".jpg")
 					}
 					catch (e: java.lang.Exception)
 					{
@@ -586,8 +611,7 @@ class ExportHelper(
 		@JvmStatic
 		fun dateFolder(context: Context, timestamp: Long): String
 		{
-			val dateFormat = android.text.format.DateFormat.getDateFormat(context)
-			return dateFormat.format(Date(timestamp)).replace("[^0-9]".toRegex(), "-")
+			return SimpleDateFormat("yyyy-MM-dd").format(Date(timestamp)).replace("[^0-9]".toRegex(), "-")
 		}
 	}
 }
