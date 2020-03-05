@@ -129,7 +129,9 @@
 	<string name="germination">Ontkiemd</string>
 	<string name="cutting">Gewied</string>
 	<string name="vegetation">Groeiende</string>
+	<string name="budding">Ontkieming</string>
 	<string name="flowering">Bloeiende</string>
+	<string name="ripening">Rijping</string>
 	<string name="drying">Drogende</string>
 	<string name="curing">Genezende</string>
 	<string name="harvested">Geplukt</string>
