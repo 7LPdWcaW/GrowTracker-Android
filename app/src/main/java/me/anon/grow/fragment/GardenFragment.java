@@ -207,7 +207,7 @@ public class GardenFragment extends Fragment
 		if (filterList == null)
 		{
 			filterList = new ArrayList<>();
-			Set<String> prefsList = androidx.preference.PreferenceManager.getDefaultSharedPreferences(getActivity()).getStringSet("filter_list", null);
+			Set<String> prefsList = androidx.preference.PreferenceManager.getDefaultSharedPreferences(getActivity()).getStringSet("new_filter_list", null);
 			if (prefsList == null)
 			{
 				filterList.addAll(Arrays.asList(PlantStage.values()));
@@ -218,8 +218,7 @@ public class GardenFragment extends Fragment
 				{
 					try
 					{
-						int ordinal = IntUtilsKt.toSafeInt(s);
-						filterList.add(PlantStage.values()[ordinal]);
+						filterList.add(PlantStage.valueOf(s));
 					}
 					catch (Exception e)
 					{
@@ -441,8 +440,20 @@ public class GardenFragment extends Fragment
 		menu.findItem(R.id.export_garden).setVisible(true);
 		menu.findItem(R.id.delete_garden).setVisible(true);
 
-		int[] ids = {R.id.filter_germination, R.id.filter_vegetation, R.id.filter_seedling, R.id.filter_cutting, R.id.filter_flowering, R.id.filter_drying, R.id.filter_curing, R.id.filter_harvested, R.id.filter_planted};
-		PlantStage[] stages = {PlantStage.GERMINATION, PlantStage.VEGETATION, PlantStage.SEEDLING, PlantStage.CUTTING, PlantStage.FLOWER, PlantStage.DRYING, PlantStage.CURING, PlantStage.HARVESTED, PlantStage.PLANTED};
+		int[] ids = {
+			R.id.filter_planted,
+			R.id.filter_germination,
+			R.id.filter_seedling,
+			R.id.filter_cutting,
+			R.id.filter_vegetation,
+			R.id.filter_budding,
+			R.id.filter_flowering,
+			R.id.filter_ripening,
+			R.id.filter_drying,
+			R.id.filter_curing,
+			R.id.filter_harvested
+		};
+		PlantStage[] stages = PlantStage.values();
 
 		for (int index = 0; index < ids.length; index++)
 		{
@@ -549,7 +560,19 @@ public class GardenFragment extends Fragment
 				saveCurrentState();
 			}
 
-			int[] ids = {R.id.filter_planted, R.id.filter_germination, R.id.filter_seedling, R.id.filter_cutting, R.id.filter_vegetation, R.id.filter_flowering, R.id.filter_drying, R.id.filter_curing, R.id.filter_harvested};
+			int[] ids = {
+				R.id.filter_planted,
+				R.id.filter_germination,
+				R.id.filter_seedling,
+				R.id.filter_cutting,
+				R.id.filter_vegetation,
+				R.id.filter_budding,
+				R.id.filter_flowering,
+				R.id.filter_ripening,
+				R.id.filter_drying,
+				R.id.filter_curing,
+				R.id.filter_harvested
+			};
 			PlantStage[] stages = PlantStage.values();
 
 			for (int index = 0; index < ids.length; index++)
@@ -573,10 +596,10 @@ public class GardenFragment extends Fragment
 			Set<String> stageOrdinals = new LinkedHashSet<>();
 			for (PlantStage plantStage : filterList)
 			{
-				stageOrdinals.add(plantStage.ordinal() + "");
+				stageOrdinals.add(plantStage.name());
 			}
 			androidx.preference.PreferenceManager.getDefaultSharedPreferences(getActivity()).edit()
-				.putStringSet("filter_list", stageOrdinals)
+				.putStringSet("new_filter_list", stageOrdinals)
 				.apply();
 
 			if (filter)
