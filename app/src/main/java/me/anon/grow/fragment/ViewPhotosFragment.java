@@ -71,6 +71,8 @@ public class ViewPhotosFragment extends Fragment
 
 	private Plant plant;
 
+	private String tempImagePath = "";
+
 	public static ViewPhotosFragment newInstance(Bundle arguments)
 	{
 		ViewPhotosFragment fragment = new ViewPhotosFragment();
@@ -90,6 +92,7 @@ public class ViewPhotosFragment extends Fragment
 	@Override public void onSaveInstanceState(@NonNull Bundle outState)
 	{
 		outState.putParcelable("plant", plant);
+		outState.putString("temp_image", tempImagePath);
 		super.onSaveInstanceState(outState);
 	}
 
@@ -106,6 +109,7 @@ public class ViewPhotosFragment extends Fragment
 		else if (savedInstanceState != null)
 		{
 			plant = savedInstanceState.getParcelable("plant");
+			tempImagePath = savedInstanceState.getString("temp_image", "");
 		}
 
 		if (plant == null)
@@ -190,7 +194,7 @@ public class ViewPhotosFragment extends Fragment
 											File imageFile = new File(image);
 
 											folders.add(imageFile.getParentFile().getPath());
-											if (imageFile.delete())
+											if (!imageFile.exists() || imageFile.delete())
 											{
 												plant.getImages().remove(image);
 											}
@@ -198,23 +202,7 @@ public class ViewPhotosFragment extends Fragment
 
 										for (String folder : folders)
 										{
-											File folderFile = new File(folder);
-											if (folderFile.isDirectory())
-											{
-												String[] list = folderFile.list();
-												if (list != null)
-												{
-													if (list.length == 1 && ".nomedia".equals(list[0]))
-													{
-														new File(folderFile, ".nomedia").delete();
-													}
-
-													if (folderFile.list() == null || folderFile.list().length == 0)
-													{
-														folderFile.delete();
-													}
-												}
-											}
+											cleanupFolder(new File(folder));
 										}
 
 										PlantManager.getInstance().upsert(plant);
@@ -411,7 +399,8 @@ public class ViewPhotosFragment extends Fragment
 						File out = new File(path, System.currentTimeMillis() + ".jpg");
 						Uri photoURI = FileProvider.getUriForFile(getActivity(), BuildConfig.APPLICATION_ID + ".provider", out);
 
-						plant.getImages().add(out.getAbsolutePath());
+						tempImagePath = out.getAbsolutePath();
+						plant.getImages().add(tempImagePath);
 
 						intent.putExtra(MediaStore.EXTRA_OUTPUT, photoURI);
 						startActivityForResult(intent, 1);
@@ -447,46 +436,61 @@ public class ViewPhotosFragment extends Fragment
 			.show();
 	}
 
+	private void cleanupFolder(@Nullable File folderPath)
+	{
+		if (folderPath != null)
+		{
+			String[] list = folderPath.list();
+			if (list != null)
+			{
+				if (list.length == 1 && ".nomedia".equals(list[0]))
+				{
+					new File(folderPath, ".nomedia").delete();
+				}
+
+				if (folderPath.list() == null || folderPath.list().length == 0)
+				{
+					folderPath.delete();
+				}
+			}
+			else
+			{
+				folderPath.delete();
+			}
+		}
+	}
+
 	@Override public void onActivityResult(int requestCode, int resultCode, Intent data)
 	{
 		if (requestCode == 1)
 		{
 			if (resultCode == Activity.RESULT_CANCELED)
 			{
-				File imageFile = new File(plant.getImages().get(plant.getImages().size() - 1));
+				File imageFile = new File(tempImagePath);
 
-				if (imageFile.delete())
+				if (!imageFile.exists() || imageFile.delete())
 				{
 					plant.getImages().remove(plant.getImages().size() - 1);
 				}
 
-				File folderFile = imageFile.getParentFile();
-				String[] list = folderFile.list();
-				if (list != null)
-				{
-					if (list.length == 1 && ".nomedia".equals(list[0]))
-					{
-						new File(folderFile, ".nomedia").delete();
-					}
-
-					if (folderFile.list() == null || folderFile.list().length == 0)
-					{
-						folderFile.delete();
-					}
-				}
-				else
-				{
-					folderFile.delete();
-				}
+				cleanupFolder(imageFile.getParentFile());
 			}
 			else
 			{
-				PlantManager.getInstance().upsert(plant);
+				File imageFile = new File(tempImagePath);
+				if (imageFile.exists() && imageFile.length() > 0)
+				{
+					PlantManager.getInstance().upsert(plant);
 
-				setAdapter();
-				adapter.notifyDataSetChanged();
+					setAdapter();
+					adapter.notifyDataSetChanged();
 
-				finishPhotoIntent();
+					finishPhotoIntent();
+				}
+				else
+				{
+					cleanupFolder(imageFile.getParentFile());
+				}
 			}
 		}
 		else if (requestCode == 3) // choose image from gallery
@@ -549,6 +553,8 @@ public class ViewPhotosFragment extends Fragment
 
 	private void finishPhotoIntent()
 	{
+		tempImagePath = "";
+
 		Intent intent = new Intent();
 		intent.putExtra("plant", plant);
 		getActivity().setIntent(intent);
@@ -572,7 +578,7 @@ public class ViewPhotosFragment extends Fragment
 
 				@Override public void onSnackBarAction(View v)
 				{
-					onFabPhotoClick(null);
+					onFabPhotoClick(v);
 				}
 			});
 		}
