@@ -165,6 +165,8 @@
 	<string name="action_transplanted">Transplanted</string>
 	<string name="action_trim">Trim</string>
 	<string name="action_tuck">ScrOG Tuck</string>
+	<string name="action_supercrop">Supercrop</string>
+	<string name="action_monstercrop">Monstercrop</string>
 
 	<string name="watered">Watered</string>
 	<string name="note">Note</string>

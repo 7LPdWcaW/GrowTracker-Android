@@ -77,7 +77,9 @@ abstract class Action(
 		TOP(R.string.action_topped, -0x6543555c, "Topped"),
 		TRANSPLANTED(R.string.action_transplanted, -0x65000073, "Transplanted"),
 		TRIM(R.string.action_trim, -0x6500546f, "Trim"),
-		TUCK(R.string.action_tuck, -0x65800046, "ScrOG Tuck");
+		TUCK(R.string.action_tuck, -0x65800046, "ScrOG Tuck"),
+		SUPERCROP(R.string.action_supercrop, 0xFF72C7D6.toInt(), "Supercrop"),
+		MONSTERCROP(R.string.action_monstercrop, 0xFFFF7681.toInt(), "Monstercrop");
 
 		companion object
 		{
