@@ -1,0 +1,268 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<resources>
+	<string name="version">Versjon %s</string>
+	<string name="menu_settings">Innstillinger</string>
+
+	<!-- Garden Plant list title "garden name plants" -->
+	<string name="list_title">%s planter</string>
+	<!-- All plants list -->
+	<string name="all_list_title">Alle planter</string>
+	<!-- All/everything -->
+	<string name="all">Alle</string>
+	<string name="snackbar_action_add">La til handlinger</string>
+	<string name="snackbar_note_add">La til notater</string>
+	<string name="snackbar_watering_add">La til vanning</string>
+	<string name="snackbar_garden_deleted">Slettet hagen</string>
+
+	<string name="dialog_garden_delete_body">Er du sikker på at du vil slette hagen &lt;b&gt;\"%s\"&lt;/b&gt;? Dette vil ikke slette plantene.</string>
+	<string name="action_feed">Vann</string>
+	<string name="action_action">Handling</string>
+
+	<string name="widget_encrypt_error">Widget er ikke tilgjengelig når kryptering er slått på</string>
+	<string name="new_plant_title">Legg til ny plante</string>
+	<string name="plant_details_title">Plantedetaljer</string>
+	<string name="statistics_title">Plantestatistikker</string>
+	<!-- select from camera -->
+	<string name="photo_option_camera">Fra kamera</string>
+	<!-- select from gallery -->
+	<string name="photo_option_gallery">Fra galleri</string>
+	<string name="dialog_option_title">Velg et alternativ</string>
+	<string name="dialog_select_picture_title">Velg bilde</string>
+	<string name="snackbar_action_apply">Bruk på en annen plante</string>
+	<string name="dialog_select_plant_title">Velg plante</string>
+	<string name="snackbar_image_added">La til bilde</string>
+	<string name="snackbar_action_take_another">Ta et til</string>
+
+	<string name="nav_feeding_schedule">Tidsplaner</string>
+	<string name="schedule_details_title">Tidsplandetaljer</string>
+	<string name="schedule_date_title">Tidsplan-dato</string>
+	<string name="schedule_name">Navn</string>
+	<string name="schedule_name_hint">Lett mating</string>
+	<string name="schedule_description">Beskrivelse</string>
+	<!-- an example of a feeding schedule -->
+	<string name="schedule_description_hint">Lett mating med 2 ukers flush</string>
+
+	<string name="schedules_new_feeding">+ Ny mating</string>
+	<string name="schedules_new_schedule">+ Ny tidsplan</string>
+	<string name="new_additive">+ Ny additiv</string>
+	<string name="additives">Additiver</string>
+	<string name="additive">Additiv</string>
+	<string name="from_date">Fra dato</string>
+	<string name="from_stage">Fra fase</string>
+	<string name="to_date">Til dato</string>
+	<string name="to_stage">Til fase</string>
+	<string name="populate_from_schedule">Fyll ut ved hjelp av tidsplan</string>
+	<string name="populate_from_previous">Fyll ut ved hjelp av forrige</string>
+	<string name="confirm_title">Er du sikker?</string>
+	<string name="confirm_copy_schedule">Kopiere valgte tidsplan?</string>
+	<string name="confirm_delete_schedule">Slette valgt tidsplan?</string>
+	<string name="schedule_copied">Tidsplan kopiert</string>
+	<string name="schedule_deleted">Tidsplan slettet</string>
+	<string name="undo">Angre</string>
+	<string name="feeding_schedules_title">Tidsplaner for mating</string>
+	<string name="feeding_schedule_title">Tidsplan for mating</string>
+	<string name="update_dialog_title">App er oppdatert</string>
+	<string name="update_dialog_message" formatted="true">Appen er blitt oppdatert til versjon %s</string>
+	<string name="update_dialog_view_changes_button">Se endringer</string>
+	<string name="update_dialog_dismiss_button">Avvis</string>
+
+	<!-- Feeding {plant name} -->
+	<string name="feeding_single_title" formatted="true">Vanning %s</string>
+	<string name="feeding_multiple_title">Vanning av flere planer</string>
+
+	<string name="action_dialog_notes">Notater</string>
+	<string name="water_details_title">Vanndetaljer</string>
+	<string name="water_ph_label">Vann-pH</string>
+	<string name="ppm_label">PPM</string>
+	<string name="date_and_time_header">Dato og tid</string>
+	<string name="date_now">Nå</string>
+	<string name="date_label">Dato</string>
+	<string name="today">I dag</string>
+	<string name="filter_waterings">Vanninger</string>
+	<string name="menu_duplicate">Dupliser</string>
+	<string name="menu_copy_to">Kopier til</string>
+	<string name="menu_edit_action">Endre handling</string>
+	<string name="menu_delete_action">Slett handling</string>
+
+	<string name="garden_dialog_select">Velg planter</string>
+	<string name="nav_gardens">Hager</string>
+	<string name="nav_all_plants">Alle planter</string>
+	<string name="nav_new_garden">+ Ny hage</string>
+	<string name="nav_settings">Innstillinger</string>
+	<string name="delete">Slett</string>
+	<string name="share">Del</string>
+	<string name="menu_photo">Bilde</string>
+	<string name="last_watering_title">Siste vanning</string>
+	<string name="feed_again">Vann igjen</string>
+
+	<string name="plant_name_label">Plantenavn</string>
+	<string name="new_plant_hint">Ny plante</string>
+	<string name="grow_details_title">Voksedetaljer</string>
+	<string name="plant_date_label">Plantedato</string>
+	<string name="view_photos">Se bilder</string>
+	<string name="view_history">Se historikk</string>
+	<string name="view_statistics">Se statistikker</string>
+	<string name="view_photos_short">Bilder</string>
+	<string name="view_history_short">Historikk</string>
+	<string name="view_statistics_short">Statistikker</string>
+	<string name="filter">Filter</string>
+	<string name="planted">Plantet</string>
+	<string name="menu_export_garden">Eksporter hage</string>
+	<string name="menu_edit_garden">Rediger hage</string>
+	<string name="menu_delete_garden">Slett hage</string>
+	<string name="menu_export">Eksporter</string>
+
+	<string name="min">Min:</string>
+	<string name="max">Max:</string>
+	<string name="ave">Gj.snitt:</string>
+	<string name="temperature_title">Temperatur</string>
+	<string name="general_title">Generelt</string>
+	<string name="failed_to_load_plant">Kunne ikke laste plante</string>
+	<string name="action_fim">Fuck I Missed (FIM)</string>
+	<string name="delete_event_dialog_title">Slette denne hendelser?</string>
+	<string name="confirm_delete_item_message">Er du sikker på at du vil slette</string>
+	<string name="confirm_delete_photos_message" formatted="true">Er du sikker på at du vil slette &lt;b&gt;%s&lt;/b&gt; bilder? Du vil ikke kunne gjenopprette de.</string>
+	<string name="edit">Rediger</string>
+	<string name="set">Angi</string>
+	<string name="change">Endre</string>
+	<string name="add">Legg til</string>
+	<string name="cancel">Avbryt</string>
+	<string name="action">handling</string>
+	<string name="ok">OK</string>
+	<string name="field_required">Feltet er obligatorisk</string>
+	<string name="encrypt_passphrase_error">Feil - Ukorrekt passord</string>
+	<string name="edit_feeding">Rediger vanning</string>
+	<string name="added">lagt til</string>
+	<string name="action_duplicated">Dupliserte handlingen</string>
+	<string name="multiple_plants">flere planter</string>
+	<string name="added_to">La handlingen til</string>
+	<string name="note_updated">Notat oppdatert</string>
+	<string name="updated">oppdatert</string>
+	<string name="done">Ferdig</string>
+	<string name="garden">Hage</string>
+	<string name="select_all">Velg alle</string>
+	<string name="select_none">Velg ingen</string>
+	<string name="accept">Aksepter</string>
+	<string name="enable">Aktiver</string>
+	<string name="decline">Avslå</string>
+	<string name="crash_title">Oisann.</string>
+	<string name="crash_message" formatted="true">Ser ut som at det var en stopp i programmet sist gang du brukte appen. Vil du sende disse anonyme rapportene? Rapportene vil sendes til &lt;a href=\"https://github.com/7LPdWcaW/GrowTracker-Android/issues\"&gt;github.com/7LPdWcaW/GrowTracker-Android/issues&lt;/a&gt;, ingen personlig informasjon vil inkluderes. Du kan selv publisere disse rapportene på &lt;a href=\"https://reddit.com/r/growutils\"&gt;reddit.com/r/growutils&lt;/a&gt; manuelt hvis du vil. Rapporter lagres i  &lt;i&gt;%s&lt;i&gt;</string>
+	<string name="yes">Ja</string>
+	<string name="no">Nei</string>
+
+	<string name="passphrase_title">Angi passordet ditt</string>
+	<string name="add_passphrase_title">Angi et passord</string>
+	<string name="delete_plant_progress">Sletter plante...</string>
+
+	<string name="plant_duplicated">Dupliserte plante</string>
+	<string name="open">Åpne</string>
+
+	<string name="action_added" formatted="true">La til %s</string>
+	<string name="name_input_error">Navn kan ikke stå tomt</string>
+	<string name="exporting" formatted="true">Eksporterer %s</string>
+
+	<string name="encrypted">kryptert</string>
+	<string name="unencrypted">ukryptert</string>
+
+	<string name="actions">Handlinger</string>
+	<string name="settings_dark_title">Tving mørkt tema</string>
+	<string name="settings_dark_summary">Tvinger appen til å bruke det mørke temaet, uavhengig av systemets innstillinger.</string>
+	<string name="settings_units">Enheter</string>
+	<string name="settings_measurement_title">Måleenhet</string>
+	<string name="settings_temp_title">Temperaturenhet</string>
+	<string name="settings_autobackup_title">Automatisk sikkerhetskopi</string>
+	<string name="settings_autobackup_summary">Sikkerhetskopier plantedataene dine hver 24 time</string>
+	<string name="settings_backupnow">Sikkerhetskopier nå</string>
+	<string name="settings_backupsize_title">Sikkerhetskopi-størrelsesbegrensning</string>
+	<string name="settings_backupsize_hint">Størrelse i MiB</string>
+	<string name="settings_backupsize_dialogtitle">Sikkerhetskopi-begrensning (MiB)</string>
+	<string name="settings_restore_backup">Gjenopprett fra sikkerhetskopi</string>
+	<string name="settings_encrypt_title">Krypter data</string>
+	<string name="settings_encrypt_summary">En kodelås legges til appen og krypterer alt av data og bilder</string>
+	<string name="settings_addons">Tillegg</string>
+	<string name="settings_about">Om</string>
+	<string name="settings_readme">Les meg</string>
+	<string name="settings_export">Eksporter data</string>
+	<string name="settings_cardstyle_title">Kortstil</string>
+	<string name="empty_plant_list">Det er ingen planter å vise</string>
+	<string name="empty_schedules">Det er ingen tidsplaner</string>
+	<string name="empty_photos">Det er ingen bilder å vise</string>
+	<string name="events_title">Tidligere handlinger</string>
+	<string name="show_hide_calendar">Vis/skjul kalender</string>
+	<!-- "1 selected" -->
+	<string name="selected_len" formatted="true">%d valgt</string>
+	<string name="translations_title">Tusen takk til de følgende</string>
+	<string name="translations_by">Oversettelser av</string>
+	<string name="help_translate">Hjelp til med å oversette</string>
+	<string name="encrypt_progress_warning">Krypterer data og bilder. Dette kan ta en stund...</string>
+	<string name="decrypt_progress_warning">Dekrypterer data og bilder. Dette kan ta en stund...</string>
+
+	<!-- now = 1 second -->
+	<string name="now_abbr">1s</string>
+	<string name="second_abbr">s</string>
+	<string name="minute_abbr">m</string>
+	<string name="hour_abbr">t</string>
+	<string name="day_abbr">d</string>
+	<string name="week_abbr">u</string>
+	<string name="month_abbr">m</string>
+	<string name="year_abbr">å</string>
+
+	<string name="view_details_short">Detaljer</string>
+
+	<plurals name="time_second">
+		<item quantity="one">sekund</item>
+		<item quantity="other">sekunder</item>
+	</plurals>
+
+	<plurals name="time_minute">
+		<item quantity="one">minutt</item>
+		<item quantity="other">minutter</item>
+	</plurals>
+
+	<plurals name="time_hour">
+		<item quantity="one">time</item>
+		<item quantity="other">timer</item>
+	</plurals>
+
+	<plurals name="time_day">
+		<item quantity="one">dag</item>
+		<item quantity="other">dager</item>
+	</plurals>
+
+	<plurals name="time_week">
+		<item quantity="one">uke</item>
+		<item quantity="other">uker</item>
+	</plurals>
+
+	<plurals name="time_month">
+		<item quantity="one">måned</item>
+		<item quantity="other">måneder</item>
+	</plurals>
+
+	<plurals name="time_year">
+		<item quantity="one">år</item>
+		<item quantity="other">år</item>
+	</plurals>
+
+	<string-array name="settings_card_entries">
+		<item>Original</item>
+		<item>Kompakt</item>
+		<item>Ekstrem</item>
+	</string-array>
+
+	<string name="confirm_quit">Du vil miste ulagrede endringer</string>
+	<string name="accept_quit">Gå ut</string>
+	<string name="plants">Planter</string>
+	<string name="humidity">Fuktighet</string>
+	<string name="current_temp">Nåværende temperatur:</string>
+	<string name="current_humidity">Nåværende fuktighet:</string>
+	<string name="delete_item_dialog_title">Slette dette elementet</string>
+	<string name="confirm_delete_item_message_holder">Er du sikker på at du vil slette &lt;b&gt;%s&lt;/b&gt;?</string>
+	<string name="show">Vis</string>
+	<string name="hide">Skjul</string>
+	<string name="export_dialog_label">Inkludere bilder?</string>
+	<string name="no_data">Det er ingen data tilgjengelig</string>
+
+	<string name="camera_permission_summary">Kameratillatelse trengs for å ta bilder</string>
+	</resources>
