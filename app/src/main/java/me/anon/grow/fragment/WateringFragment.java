@@ -28,7 +28,6 @@ import java.util.Calendar;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.Date;
-import java.util.EnumSet;
 import java.util.GregorianCalendar;
 
 import androidx.annotation.NonNull;
@@ -212,6 +211,7 @@ public class WateringFragment extends Fragment
 
 		reattachFeedingDialogListener();
 		reattachScheduleDialogListener();
+		reattachDateDialogListener();
 		setUi();
 		setHints();
 	}
@@ -318,6 +318,33 @@ public class WateringFragment extends Fragment
 					water = (Water)new Kryo().copy(action);
 					water.setDate(System.currentTimeMillis());
 					setUi();
+				}
+			});
+		}
+	}
+
+	private void reattachDateDialogListener()
+	{
+		DateDialogFragment fragment = (DateDialogFragment)getFragmentManager().findFragmentByTag("date");
+		if (fragment != null)
+		{
+			fragment.setOnDateSelected(new DateDialogFragment.OnDateSelectedListener()
+			{
+				@Override public void onDateSelected(Calendar date)
+				{
+					final DateFormat dateFormat = android.text.format.DateFormat.getDateFormat(getActivity());
+					final DateFormat timeFormat = android.text.format.DateFormat.getTimeFormat(getActivity());
+
+					String dateStr = dateFormat.format(date.getTime()) + " " + timeFormat.format(date.getTime());
+					WateringFragment.this.date.setText(dateStr);
+
+					water.setDate(date.getTimeInMillis());
+					onCancelled();
+				}
+
+				@Override public void onCancelled()
+				{
+					getFragmentManager().beginTransaction().remove(fragment).commit();
 				}
 			});
 		}
@@ -489,24 +516,9 @@ public class WateringFragment extends Fragment
 		{
 			@Override public void onClick(View v)
 			{
-				final DateDialogFragment fragment = new DateDialogFragment(water.getDate());
-				fragment.setOnDateSelected(new DateDialogFragment.OnDateSelectedListener()
-				{
-					@Override public void onDateSelected(Calendar date)
-					{
-						String dateStr = dateFormat.format(date.getTime()) + " " + timeFormat.format(date.getTime());
-						WateringFragment.this.date.setText(dateStr);
-
-						water.setDate(date.getTimeInMillis());
-						onCancelled();
-					}
-
-					@Override public void onCancelled()
-					{
-						getFragmentManager().beginTransaction().remove(fragment).commit();
-					}
-				});
+				final DateDialogFragment fragment = DateDialogFragment.newInstance(water.getDate());
 				getFragmentManager().beginTransaction().add(fragment, "date").commit();
+				reattachDateDialogListener();
 			}
 		});
 
