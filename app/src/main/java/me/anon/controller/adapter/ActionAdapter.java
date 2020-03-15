@@ -543,9 +543,9 @@ public class ActionAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>
 			{
 				String lastDateStr = "";
 
-				if (index - 1 >= 0)
+				if (actionIndex - 1 >= 0)
 				{
-					Date lastActionDate = new Date(actions.get(index - 1).getDate());
+					Date lastActionDate = new Date(actions.get(actionIndex - 1).getDate());
 					Calendar lastActionCalendar = GregorianCalendar.getInstance();
 					lastActionCalendar.setTime(lastActionDate);
 					lastDateStr = lastActionCalendar.get(Calendar.DAY_OF_MONTH) + " " + lastActionCalendar.getDisplayName(Calendar.MONTH, Calendar.SHORT, Locale.getDefault());
@@ -560,7 +560,7 @@ public class ActionAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>
 					StageChange lastChange = null;
 					long currentChangeDate = action.getDate();
 
-					for (int aIndex = index; aIndex < actions.size(); aIndex++)
+					for (int aIndex = actionIndex; aIndex < actions.size(); aIndex++)
 					{
 						if (actions.get(aIndex) instanceof StageChange)
 						{
