@@ -48,7 +48,7 @@ class PlantDetailsActivity : BaseActivity()
 					}
 					else -> PlantDetailsFragment.newInstance(intent.extras)
 				}
-				supportFragmentManager.beginTransaction().replace(R.id.coordinator, fragment, TAG_FRAGMENT).commit()
+				supportFragmentManager.beginTransaction().replace(R.id.fragment_holder, fragment, TAG_FRAGMENT).commit()
 			}
 
 			tabs.visibility = View.GONE
@@ -58,7 +58,7 @@ class PlantDetailsActivity : BaseActivity()
 				tabs.visibility = View.VISIBLE
 				tabs.setOnNavigationItemSelectedListener {
 					plant = intent.extras?.get("plant") as Plant
-					val fragment = supportFragmentManager.findFragmentById(R.id.coordinator)
+					val fragment = supportFragmentManager.findFragmentById(R.id.fragment_holder)
 
 					if (fragment is PlantDetailsFragment)
 					{
@@ -68,7 +68,7 @@ class PlantDetailsActivity : BaseActivity()
 					toolbarLayout.removeViews(1, toolbarLayout.childCount - 1)
 					supportFragmentManager.beginTransaction()
 						.setCustomAnimations(R.anim.fade_in, R.anim.fade_out)
-						.replace(R.id.coordinator, when (it.itemId)
+						.replace(R.id.fragment_holder, when (it.itemId)
 						{
 							R.id.view_details -> PlantDetailsFragment.newInstance(intent.extras)
 							R.id.view_history -> ActionsListFragment.newInstance(intent.extras)
@@ -98,7 +98,7 @@ class PlantDetailsActivity : BaseActivity()
 	{
 		if (item.itemId == android.R.id.home)
 		{
-			val fragment = supportFragmentManager.findFragmentById(R.id.coordinator)
+			val fragment = supportFragmentManager.findFragmentById(R.id.fragment_holder)
 
 			if (fragment is PlantDetailsFragment)
 			{
