@@ -211,6 +211,7 @@ public class WateringFragment extends Fragment
 		}
 
 		reattachFeedingDialogListener();
+		reattachScheduleDialogListener();
 		setUi();
 		setHints();
 	}
@@ -290,17 +291,9 @@ public class WateringFragment extends Fragment
 				}
 			});
 
-			ActionSelectDialogFragment actionSelectDialogFragment = new ActionSelectDialogFragment(items);
-			actionSelectDialogFragment.setOnActionSelectedListener(new ActionSelectDialogFragment.OnActionSelectedListener()
-			{
-				@Override public void onActionSelected(Action action)
-				{
-					water = (Water)new Kryo().copy(action);
-					water.setDate(System.currentTimeMillis());
-					setUi();
-				}
-			});
+			ActionSelectDialogFragment actionSelectDialogFragment = ActionSelectDialogFragment.newInstance(items);
 			actionSelectDialogFragment.show(getFragmentManager(), "actions");
+			reattachFeedingDialogListener();
 		}
 
 		return super.onOptionsItemSelected(item);
@@ -310,15 +303,32 @@ public class WateringFragment extends Fragment
 	{
 		FeedingScheduleSelectDialogFragment feedingScheduleSelectDialogFragment = FeedingScheduleSelectDialogFragment.newInstance(schedule, plants);
 		feedingScheduleSelectDialogFragment.show(getFragmentManager(), "feeding");
-		reattachFeedingDialogListener();
+		reattachScheduleDialogListener();
 	}
 
 	private void reattachFeedingDialogListener()
 	{
-		FeedingScheduleSelectDialogFragment feedingScheduleSelectDialogFragment = (FeedingScheduleSelectDialogFragment)getFragmentManager().findFragmentByTag("feeding");
-		if (feedingScheduleSelectDialogFragment != null)
+		ActionSelectDialogFragment fragment = (ActionSelectDialogFragment)getFragmentManager().findFragmentByTag("actions");
+		if (fragment != null)
 		{
-			feedingScheduleSelectDialogFragment.setOnFeedingSelectedListener(new FeedingScheduleSelectDialogFragment.OnFeedingSelectedListener()
+			fragment.setOnActionSelectedListener(new ActionSelectDialogFragment.OnActionSelectedListener()
+			{
+				@Override public void onActionSelected(Action action)
+				{
+					water = (Water)new Kryo().copy(action);
+					water.setDate(System.currentTimeMillis());
+					setUi();
+				}
+			});
+		}
+	}
+
+	private void reattachScheduleDialogListener()
+	{
+		FeedingScheduleSelectDialogFragment fragment = (FeedingScheduleSelectDialogFragment)getFragmentManager().findFragmentByTag("feeding");
+		if (fragment != null)
+		{
+			fragment.setOnFeedingSelectedListener(new FeedingScheduleSelectDialogFragment.OnFeedingSelectedListener()
 			{
 				@Override public void onFeedingSelected(FeedingScheduleDate date)
 				{

@@ -10,6 +10,7 @@ import android.widget.LinearLayout;
 
 import java.util.ArrayList;
 
+import androidx.annotation.NonNull;
 import androidx.appcompat.app.AlertDialog;
 import androidx.fragment.app.DialogFragment;
 import androidx.recyclerview.widget.DividerItemDecoration;
@@ -38,26 +39,53 @@ public class ActionSelectDialogFragment extends DialogFragment
 	}
 
 	@Views.InjectView(R.id.recycler_view) private RecyclerView recyclerView;
+	private ArrayList<Action> actions;
 	private ActionAdapter adapter;
 	private OnActionSelectedListener onActionSelected;
+	private ArrayList<Class> exclude = new ArrayList<>();
+	{
+		exclude.add(ImageActionHolder.class);
+	}
 
 	public void setOnActionSelectedListener(OnActionSelectedListener onActionSelected)
 	{
 		this.onActionSelected = onActionSelected;
 	}
 
-	@SuppressLint("ValidFragment")
-	public ActionSelectDialogFragment(ArrayList<Action> actions)
+	public static ActionSelectDialogFragment newInstance(ArrayList<Action> actions)
 	{
-		ArrayList<Class> exclude = new ArrayList<>();
-		exclude.add(ImageActionHolder.class);
+		ActionSelectDialogFragment fragment = new ActionSelectDialogFragment();
+		fragment.actions = actions;
+
+		return fragment;
+	}
+
+	public ActionSelectDialogFragment()
+	{
+	}
+
+	@Override public void onSaveInstanceState(@NonNull Bundle outState)
+	{
+		outState.putParcelableArrayList("actions", actions);
+		super.onSaveInstanceState(outState);
+	}
+
+	@Override public Dialog onCreateDialog(Bundle savedInstanceState)
+	{
+		View view = getActivity().getLayoutInflater().inflate(R.layout.action_list_dialog_view, null, false);
+		Views.inject(this, view);
+
+		if (savedInstanceState != null)
+		{
+			actions = savedInstanceState.getParcelableArrayList("actions");
+		}
 
 		adapter = new ActionAdapter()
 		{
 			@Override public void onBindViewHolder(RecyclerView.ViewHolder vh, int index)
 			{
 				super.onBindViewHolder(vh, index);
-				int padding = (int)getResources().getDimension(R.dimen.padding_8dp);
+				int padding = (int)vh.itemView.getContext().getResources().getDimension(R.dimen.padding_8dp);
 				vh.itemView.setPadding(0, 0, 0, 0);
 				vh.itemView.findViewById(R.id.date_container).setVisibility(View.GONE);
 				((View)vh.itemView.findViewById(R.id.content_container).getParent()).setPadding(0, 0, 0, 0);
@@ -73,17 +101,6 @@ public class ActionSelectDialogFragment extends DialogFragment
 		adapter.setShowDate(false);
 		adapter.setShowActions(false);
 		adapter.setActions(null, actions, exclude);
-	}
-
-	@SuppressLint("ValidFragment")
-	public ActionSelectDialogFragment()
-	{
-	}
-
-	@Override public Dialog onCreateDialog(Bundle savedInstanceState)
-	{
-		View view = getActivity().getLayoutInflater().inflate(R.layout.action_list_dialog_view, null, false);
-		Views.inject(this, view);
 
 		recyclerView.setAdapter(adapter);
 		recyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
