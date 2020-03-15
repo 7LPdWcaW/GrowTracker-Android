@@ -22,7 +22,7 @@ class StatisticsActivity : BaseActivity()
 		if (supportFragmentManager.findFragmentByTag("fragment") == null)
 		{
 			supportFragmentManager.beginTransaction()
-				.replace(R.id.coordinator, StatisticsFragment.newInstance(intent.extras), "fragment")
+				.replace(R.id.fragment_holder, StatisticsFragment.newInstance(intent.extras), "fragment")
 				.commit()
 		}
 	}
