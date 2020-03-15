@@ -28,6 +28,7 @@ import java.util.Calendar;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.Date;
+import java.util.EnumSet;
 import java.util.GregorianCalendar;
 
 import androidx.annotation.NonNull;
@@ -209,7 +210,7 @@ public class WateringFragment extends Fragment
 			}
 		}
 
-
+		reattachFeedingDialogListener();
 		setUi();
 		setHints();
 	}
@@ -308,22 +309,31 @@ public class WateringFragment extends Fragment
 	private void showScheduleDialog(FeedingSchedule schedule)
 	{
 		FeedingScheduleSelectDialogFragment feedingScheduleSelectDialogFragment = FeedingScheduleSelectDialogFragment.newInstance(schedule, plants);
-		feedingScheduleSelectDialogFragment.setOnFeedingSelectedListener(new FeedingScheduleSelectDialogFragment.OnFeedingSelectedListener()
-		{
-			@Override public void onFeedingSelected(FeedingScheduleDate date)
-			{
-				ArrayList<Additive> additives = new ArrayList<>();
-
-				for (Additive additive : date.getAdditives())
-				{
-					additives.add(new Kryo().copy(additive));
-				}
-
-				water.setAdditives(additives);
-				populateAdditives();
-			}
-		});
 		feedingScheduleSelectDialogFragment.show(getFragmentManager(), "feeding");
+		reattachFeedingDialogListener();
+	}
+
+	private void reattachFeedingDialogListener()
+	{
+		FeedingScheduleSelectDialogFragment feedingScheduleSelectDialogFragment = (FeedingScheduleSelectDialogFragment)getFragmentManager().findFragmentByTag("feeding");
+		if (feedingScheduleSelectDialogFragment != null)
+		{
+			feedingScheduleSelectDialogFragment.setOnFeedingSelectedListener(new FeedingScheduleSelectDialogFragment.OnFeedingSelectedListener()
+			{
+				@Override public void onFeedingSelected(FeedingScheduleDate date)
+				{
+					ArrayList<Additive> additives = new ArrayList<>();
+
+					for (Additive additive : date.getAdditives())
+					{
+						additives.add(new Kryo().copy(additive));
+					}
+
+					water.setAdditives(additives);
+					populateAdditives();
+				}
+			});
+		}
 	}
 
 	private void setHints()

@@ -10,6 +10,7 @@ import android.widget.LinearLayout;
 
 import java.util.ArrayList;
 
+import androidx.annotation.NonNull;
 import androidx.appcompat.app.AlertDialog;
 import androidx.fragment.app.DialogFragment;
 import androidx.recyclerview.widget.DividerItemDecoration;
@@ -64,10 +65,23 @@ public class FeedingScheduleSelectDialogFragment extends DialogFragment
 	{
 	}
 
+	@Override public void onSaveInstanceState(@NonNull Bundle outState)
+	{
+		outState.putParcelableArrayList("plants", plants);
+		outState.putParcelable("schedule", schedule);
+		super.onSaveInstanceState(outState);
+	}
+
 	@Override public Dialog onCreateDialog(Bundle savedInstanceState)
 	{
 		View view = getActivity().getLayoutInflater().inflate(R.layout.feeding_list_dialog_view, null, false);
 		Views.inject(this, view);
+
+		if (savedInstanceState != null)
+		{
+			plants = savedInstanceState.getParcelableArrayList("plants");
+			schedule = savedInstanceState.getParcelable("schedule");
+		}
 
 		adapter = new FeedingDateAdapter();
 		adapter.setPlants(plants);
