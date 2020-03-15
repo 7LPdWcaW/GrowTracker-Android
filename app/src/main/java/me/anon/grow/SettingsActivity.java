@@ -20,7 +20,9 @@ public class SettingsActivity extends BaseActivity
 
 		if (getSupportFragmentManager().findFragmentByTag(TAG_FRAGMENT) == null)
 		{
-			getSupportFragmentManager().beginTransaction().replace(R.id.coordinator, new SettingsFragment(), TAG_FRAGMENT).commit();
+			getSupportFragmentManager().beginTransaction()
+				.replace(R.id.fragment_holder, new SettingsFragment(), TAG_FRAGMENT)
+				.commit();
 		}
 	}
 }
