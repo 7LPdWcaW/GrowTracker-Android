@@ -25,7 +25,7 @@ class AddWateringActivity : BaseActivity()
 
 		if (supportFragmentManager.findFragmentByTag(TAG_FRAGMENT) == null)
 		{
-			supportFragmentManager.beginTransaction().replace(R.id.coordinator, WateringFragment.newInstance(plantIndex, -1, gardenIndex), TAG_FRAGMENT).commit()
+			supportFragmentManager.beginTransaction().replace(R.id.fragment_holder, WateringFragment.newInstance(plantIndex, -1, gardenIndex), TAG_FRAGMENT).commit()
 		}
 	}
 

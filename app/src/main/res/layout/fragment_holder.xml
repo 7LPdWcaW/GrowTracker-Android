@@ -25,9 +25,9 @@
 		/>
 	</com.google.android.material.appbar.AppBarLayout>
 
-	<androidx.coordinatorlayout.widget.CoordinatorLayout
+	<FrameLayout
 		android:layout_width="match_parent"
 		android:layout_height="match_parent"
-		android:id="@+id/coordinator"
+		android:id="@+id/fragment_holder"
 	/>
 </LinearLayout>

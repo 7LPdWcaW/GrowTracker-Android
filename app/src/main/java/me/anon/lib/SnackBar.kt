@@ -97,7 +97,7 @@ class SnackBar
 		action: (View) -> kotlin.Unit = {}
 	)
 	{
-		val snackbar = Snackbar.make(context.findViewById(R.id.coordinator), message, length)
+		val snackbar = Snackbar.make(context.findViewById(R.id.coordinator) ?: context.findViewById(R.id.fragment_holder) , message, length)
 		var actionText = actionText
 		var action = action
 

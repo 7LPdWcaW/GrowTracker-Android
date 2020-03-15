@@ -51,7 +51,6 @@ import me.anon.lib.export.ExportHelper;
 import me.anon.lib.export.ExportProcessor;
 import me.anon.lib.ext.IntUtilsKt;
 import me.anon.lib.helper.BusHelper;
-import me.anon.lib.helper.FabAnimator;
 import me.anon.lib.manager.GardenManager;
 import me.anon.lib.manager.PlantManager;
 import me.anon.model.EmptyAction;
@@ -312,28 +311,7 @@ public class GardenFragment extends Fragment
 
 				saveCurrentState();
 
-				SnackBar.show(getActivity(), getString(R.string.snackbar_action_add), new SnackBarListener()
-				{
-					@Override public void onSnackBarStarted(Object o)
-					{
-						if (getView() != null)
-						{
-							FabAnimator.animateUp(getView().findViewById(R.id.fab_add));
-						}
-					}
-
-					@Override public void onSnackBarFinished(Object o)
-					{
-						if (getView() != null)
-						{
-							FabAnimator.animateDown(getView().findViewById(R.id.fab_add));
-						}
-					}
-
-					@Override public void onSnackBarAction(View v)
-					{
-					}
-				});
+				SnackBar.show(getActivity(), getString(R.string.snackbar_action_add), null);
 			}
 		});
 		dialogFragment.show(getFragmentManager(), null);
@@ -354,28 +332,7 @@ public class GardenFragment extends Fragment
 
 				saveCurrentState();
 
-				SnackBar.show(getActivity(), getString(R.string.snackbar_note_add), new SnackBarListener()
-				{
-					@Override public void onSnackBarStarted(Object o)
-					{
-						if (getView() != null)
-						{
-							FabAnimator.animateUp(getView().findViewById(R.id.fab_add));
-						}
-					}
-
-					@Override public void onSnackBarFinished(Object o)
-					{
-						if (getView() != null)
-						{
-							FabAnimator.animateDown(getView().findViewById(R.id.fab_add));
-						}
-					}
-
-					@Override public void onSnackBarAction(View v)
-					{
-					}
-				});
+				SnackBar.show(getActivity(), getString(R.string.snackbar_note_add), null);
 			}
 		});
 		dialogFragment.show(getFragmentManager(), null);
@@ -404,29 +361,7 @@ public class GardenFragment extends Fragment
 			{
 				adapter.notifyDataSetChanged();
 				saveCurrentState();
-				SnackBar.show(getActivity(), getString(R.string.snackbar_watering_add), new SnackBarListener()
-				{
-					@Override public void onSnackBarStarted(Object o)
-					{
-						if (getView() != null)
-						{
-							FabAnimator.animateUp(getView().findViewById(R.id.fab_add));
-						}
-					}
-
-					@Override public void onSnackBarAction(View v)
-					{
-
-					}
-
-					@Override public void onSnackBarFinished(Object o)
-					{
-						if (getView() != null)
-						{
-							FabAnimator.animateDown(getView().findViewById(R.id.fab_add));
-						}
-					}
-				});
+				SnackBar.show(getActivity(), getString(R.string.snackbar_watering_add), null);
 			}
 		}
 

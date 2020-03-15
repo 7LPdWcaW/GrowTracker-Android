@@ -18,7 +18,6 @@ import me.anon.grow.ScheduleDateDetailsActivity
 import me.anon.lib.SnackBar
 import me.anon.lib.Unit
 import me.anon.lib.ext.T
-import me.anon.lib.helper.FabAnimator
 import me.anon.lib.manager.ScheduleManager
 import me.anon.model.FeedingSchedule
 import me.anon.model.FeedingScheduleDate
@@ -154,11 +153,7 @@ class FeedingScheduleDetailsFragment : Fragment()
 						scheduleDates.remove(date)
 						populateScheduleDates()
 
-						SnackBar().show(activity as AppCompatActivity, R.string.schedule_deleted, R.string.undo, {
-							FabAnimator.animateUp(fab_complete)
-						}, {
-							FabAnimator.animateDown(fab_complete)
-						}, {
+						SnackBar().show(activity as AppCompatActivity, R.string.schedule_deleted, R.string.undo, action = {
 							scheduleDates.add(index, date)
 							populateScheduleDates()
 						})
@@ -174,11 +169,7 @@ class FeedingScheduleDetailsFragment : Fragment()
 				scheduleDates.add((index < 0) T scheduleDates.size - 1 ?: index, newSchedule)
 				populateScheduleDates()
 
-				SnackBar().show(activity!!, R.string.schedule_copied, R.string.undo, {
-					FabAnimator.animateUp(fab_complete)
-				}, {
-					FabAnimator.animateDown(fab_complete)
-				}, {
+				SnackBar().show(activity!!, R.string.schedule_copied, R.string.undo, action = {
 					scheduleDates.remove(newSchedule)
 					populateScheduleDates()
 				})
