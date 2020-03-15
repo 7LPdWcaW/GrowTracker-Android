@@ -129,7 +129,9 @@
 	<string name="germination">Ontkiemd</string>
 	<string name="cutting">Gewied</string>
 	<string name="vegetation">Groeiende</string>
+	<string name="budding">Ontkieming</string>
 	<string name="flowering">Bloeiende</string>
+	<string name="ripening">Rijping</string>
 	<string name="drying">Drogende</string>
 	<string name="curing">Genezende</string>
 	<string name="harvested">Geplukt</string>
@@ -163,6 +165,8 @@
 	<string name="action_transplanted">Verpot</string>
 	<string name="action_trim">Bijsnijden</string>
 	<string name="action_tuck">ScrOG Tuck</string>
+	<string name="action_supercrop">Supergroot gewas</string>
+	<string name="action_monstercrop">Immens gewas</string>
 
 	<string name="watered">Water gegeven</string>
 	<string name="note">Aantekening</string>
