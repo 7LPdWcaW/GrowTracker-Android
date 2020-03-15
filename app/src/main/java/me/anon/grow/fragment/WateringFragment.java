@@ -209,7 +209,9 @@ public class WateringFragment extends Fragment
 			}
 		}
 
-
+		reattachFeedingDialogListener();
+		reattachScheduleDialogListener();
+		reattachDateDialogListener();
 		setUi();
 		setHints();
 	}
@@ -289,8 +291,27 @@ public class WateringFragment extends Fragment
 				}
 			});
 
-			ActionSelectDialogFragment actionSelectDialogFragment = new ActionSelectDialogFragment(items);
-			actionSelectDialogFragment.setOnActionSelectedListener(new ActionSelectDialogFragment.OnActionSelectedListener()
+			ActionSelectDialogFragment actionSelectDialogFragment = ActionSelectDialogFragment.newInstance(items);
+			actionSelectDialogFragment.show(getFragmentManager(), "actions");
+			reattachFeedingDialogListener();
+		}
+
+		return super.onOptionsItemSelected(item);
+	}
+
+	private void showScheduleDialog(FeedingSchedule schedule)
+	{
+		FeedingScheduleSelectDialogFragment feedingScheduleSelectDialogFragment = FeedingScheduleSelectDialogFragment.newInstance(schedule, plants);
+		feedingScheduleSelectDialogFragment.show(getFragmentManager(), "feeding");
+		reattachScheduleDialogListener();
+	}
+
+	private void reattachFeedingDialogListener()
+	{
+		ActionSelectDialogFragment fragment = (ActionSelectDialogFragment)getFragmentManager().findFragmentByTag("actions");
+		if (fragment != null)
+		{
+			fragment.setOnActionSelectedListener(new ActionSelectDialogFragment.OnActionSelectedListener()
 			{
 				@Override public void onActionSelected(Action action)
 				{
@@ -299,31 +320,57 @@ public class WateringFragment extends Fragment
 					setUi();
 				}
 			});
-			actionSelectDialogFragment.show(getFragmentManager(), "actions");
 		}
-
-		return super.onOptionsItemSelected(item);
 	}
 
-	private void showScheduleDialog(FeedingSchedule schedule)
+	private void reattachDateDialogListener()
 	{
-		FeedingScheduleSelectDialogFragment feedingScheduleSelectDialogFragment = new FeedingScheduleSelectDialogFragment(schedule, plants.get(0));
-		feedingScheduleSelectDialogFragment.setOnFeedingSelectedListener(new FeedingScheduleSelectDialogFragment.OnFeedingSelectedListener()
+		DateDialogFragment fragment = (DateDialogFragment)getFragmentManager().findFragmentByTag("date");
+		if (fragment != null)
 		{
-			@Override public void onFeedingSelected(FeedingScheduleDate date)
+			fragment.setOnDateSelected(new DateDialogFragment.OnDateSelectedListener()
 			{
-				ArrayList<Additive> additives = new ArrayList<>();
-
-				for (Additive additive : date.getAdditives())
+				@Override public void onDateSelected(Calendar date)
 				{
-					additives.add(new Kryo().copy(additive));
+					final DateFormat dateFormat = android.text.format.DateFormat.getDateFormat(getActivity());
+					final DateFormat timeFormat = android.text.format.DateFormat.getTimeFormat(getActivity());
+
+					String dateStr = dateFormat.format(date.getTime()) + " " + timeFormat.format(date.getTime());
+					WateringFragment.this.date.setText(dateStr);
+
+					water.setDate(date.getTimeInMillis());
+					onCancelled();
 				}
 
-				water.setAdditives(additives);
-				populateAdditives();
-			}
-		});
-		feedingScheduleSelectDialogFragment.show(getFragmentManager(), "feeding");
+				@Override public void onCancelled()
+				{
+					getFragmentManager().beginTransaction().remove(fragment).commit();
+				}
+			});
+		}
+	}
+
+	private void reattachScheduleDialogListener()
+	{
+		FeedingScheduleSelectDialogFragment fragment = (FeedingScheduleSelectDialogFragment)getFragmentManager().findFragmentByTag("feeding");
+		if (fragment != null)
+		{
+			fragment.setOnFeedingSelectedListener(new FeedingScheduleSelectDialogFragment.OnFeedingSelectedListener()
+			{
+				@Override public void onFeedingSelected(FeedingScheduleDate date)
+				{
+					ArrayList<Additive> additives = new ArrayList<>();
+
+					for (Additive additive : date.getAdditives())
+					{
+						additives.add(new Kryo().copy(additive));
+					}
+
+					water.setAdditives(additives);
+					populateAdditives();
+				}
+			});
+		}
 	}
 
 	private void setHints()
@@ -469,24 +516,9 @@ public class WateringFragment extends Fragment
 		{
 			@Override public void onClick(View v)
 			{
-				final DateDialogFragment fragment = new DateDialogFragment(water.getDate());
-				fragment.setOnDateSelected(new DateDialogFragment.OnDateSelectedListener()
-				{
-					@Override public void onDateSelected(Calendar date)
-					{
-						String dateStr = dateFormat.format(date.getTime()) + " " + timeFormat.format(date.getTime());
-						WateringFragment.this.date.setText(dateStr);
-
-						water.setDate(date.getTimeInMillis());
-						onCancelled();
-					}
-
-					@Override public void onCancelled()
-					{
-						getFragmentManager().beginTransaction().remove(fragment).commit();
-					}
-				});
+				final DateDialogFragment fragment = DateDialogFragment.newInstance(water.getDate());
 				getFragmentManager().beginTransaction().add(fragment, "date").commit();
+				reattachDateDialogListener();
 			}
 		});
 

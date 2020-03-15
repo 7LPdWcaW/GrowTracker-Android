@@ -332,7 +332,7 @@ public class PlantDetailsFragment extends Fragment
 		{
 			@Override public void onClick(View v)
 			{
-				final DateDialogFragment fragment = new DateDialogFragment(plant.getPlantDate());
+				final DateDialogFragment fragment = DateDialogFragment.newInstance(plant.getPlantDate());
 				fragment.setOnDateSelected(new DateDialogFragment.OnDateSelectedListener()
 				{
 					@Override public void onDateSelected(Calendar newDate)
