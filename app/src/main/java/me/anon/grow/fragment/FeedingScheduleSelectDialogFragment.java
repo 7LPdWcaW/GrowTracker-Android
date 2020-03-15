@@ -1,6 +1,5 @@
 package me.anon.grow.fragment;
 
-import android.annotation.SuppressLint;
 import android.app.Dialog;
 import android.content.DialogInterface;
 import android.os.Bundle;
@@ -8,6 +7,8 @@ import android.view.View;
 import android.view.Window;
 import android.view.WindowManager;
 import android.widget.LinearLayout;
+
+import java.util.ArrayList;
 
 import androidx.appcompat.app.AlertDialog;
 import androidx.fragment.app.DialogFragment;
@@ -43,7 +44,7 @@ public class FeedingScheduleSelectDialogFragment extends DialogFragment
 	@Views.InjectView(R.id.recycler_view) private RecyclerView recyclerView;
 	private FeedingDateAdapter adapter;
 	private OnFeedingSelectedListener onFeedingSelected;
-	private Plant plant;
+	private ArrayList<Plant> plants;
 	private FeedingSchedule schedule;
 
 	public void setOnFeedingSelectedListener(OnFeedingSelectedListener onFeedingSelected)
@@ -51,15 +52,14 @@ public class FeedingScheduleSelectDialogFragment extends DialogFragment
 		this.onFeedingSelected = onFeedingSelected;
 	}
 
-	@SuppressLint("ValidFragment")
-	public FeedingScheduleSelectDialogFragment(FeedingSchedule schedule, Plant plant)
+	public static FeedingScheduleSelectDialogFragment newInstance(FeedingSchedule schedule, ArrayList<Plant> plants)
 	{
-		this.plant = plant;
-		this.schedule = schedule;
+		FeedingScheduleSelectDialogFragment fragment = new FeedingScheduleSelectDialogFragment();
+		fragment.plants = new ArrayList(plants);
+		fragment.schedule = schedule;
+		return fragment;
 	}
 
-
-	@SuppressLint("ValidFragment")
 	public FeedingScheduleSelectDialogFragment()
 	{
 	}
@@ -70,7 +70,7 @@ public class FeedingScheduleSelectDialogFragment extends DialogFragment
 		Views.inject(this, view);
 
 		adapter = new FeedingDateAdapter();
-		adapter.setPlant(plant);
+		adapter.setPlants(plants);
 		adapter.setItems(schedule.getSchedules());
 		recyclerView.setAdapter(adapter);
 		recyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
@@ -101,25 +101,18 @@ public class FeedingScheduleSelectDialogFragment extends DialogFragment
 		{
 			@Override public void onShow(DialogInterface dialog)
 			{
-				PlantStage lastStage = adapter.getLastStage();
-				int days = (int)TimeHelper.toDays(adapter.getPlantStages().get(lastStage));
-				int suggestedIndex = 0;
-				for (FeedingScheduleDate feedingScheduleDate : adapter.getItems())
+				for (int index = 0; index < recyclerView.getAdapter().getItemCount(); index++)
 				{
-					if (lastStage.ordinal() >= feedingScheduleDate.getStageRange()[0].ordinal())
+					recyclerView.scrollToPosition(index);
+					for (int childIndex = 0; childIndex < recyclerView.getChildCount(); childIndex++)
 					{
-						if (days >= feedingScheduleDate.getDateRange()[0]
-						&& ((days <= feedingScheduleDate.getDateRange()[1] && lastStage.ordinal() == feedingScheduleDate.getStageRange()[0].ordinal())
-							|| (lastStage.ordinal() < feedingScheduleDate.getStageRange()[1].ordinal())))
+						if (recyclerView.getChildAt(childIndex).getTag() == Boolean.TRUE)
 						{
-							break;
+							recyclerView.scrollToPosition(recyclerView.getChildAdapterPosition(recyclerView.getChildAt(childIndex)));
+							return;
 						}
 					}
-
-					suggestedIndex++;
 				}
-
-				recyclerView.scrollToPosition(suggestedIndex);
 			}
 		});
 

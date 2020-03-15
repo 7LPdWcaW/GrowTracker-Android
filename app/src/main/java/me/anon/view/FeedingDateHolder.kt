@@ -33,16 +33,21 @@ class FeedingDateHolder(val adapter: FeedingDateAdapter, itemView: View) : Recyc
 		copy.visibility = View.GONE
 		card.setCardBackgroundColor(R.attr.colorSurface.resolveColor(card.context))
 
-		val lastStage = adapter.plantStages.toSortedMap().lastKey()
-		val days = TimeHelper.toDays(adapter.plantStages[lastStage] ?: 0).toInt()
+		val lastStages = adapter.getLastStages()
 
-		if (lastStage.ordinal >= feedingSchedule.stageRange[0].ordinal)
-		{
-			if (days >= feedingSchedule.dateRange[0]
-			&& ((days <= feedingSchedule.dateRange[1] && lastStage.ordinal == feedingSchedule.stageRange[0].ordinal)
-				|| (lastStage.ordinal < feedingSchedule.stageRange[1].ordinal)))
+		lastStages.forEachIndexed { index, lastStage ->
+			val days = TimeHelper.toDays(adapter.plantStages[index][lastStage] ?: 0).toInt()
+
+			if (lastStage.ordinal >= feedingSchedule.stageRange[0].ordinal)
 			{
-				card.setCardBackgroundColor(android.R.attr.colorAccent.resolveColor(card.context))
+				if (days >= feedingSchedule.dateRange[0]
+				&& ((days <= feedingSchedule.dateRange[1] && lastStage.ordinal == feedingSchedule.stageRange[0].ordinal)
+					|| (lastStage.ordinal < feedingSchedule.stageRange[1].ordinal)))
+				{
+					itemView.tag = true
+					card.setCardBackgroundColor(android.R.attr.colorAccent.resolveColor(card.context))
+					return@forEachIndexed
+				}
 			}
 		}
 
