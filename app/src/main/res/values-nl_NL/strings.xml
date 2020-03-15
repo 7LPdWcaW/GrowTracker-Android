@@ -165,6 +165,8 @@
 	<string name="action_transplanted">Verpot</string>
 	<string name="action_trim">Bijsnijden</string>
 	<string name="action_tuck">ScrOG Tuck</string>
+	<string name="action_supercrop">Supergroot gewas</string>
+	<string name="action_monstercrop">Immens gewas</string>
 
 	<string name="watered">Water gegeven</string>
 	<string name="note">Aantekening</string>
