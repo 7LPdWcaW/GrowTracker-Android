@@ -163,7 +163,6 @@
 	<string name="action_transplanted">Transplantado</string>
 	<string name="action_trim">Recortar</string>
 	<string name="action_tuck">Meter debajo de follaje preexistente</string>
-
 	<string name="watered">Regado</string>
 	<string name="note">Nota</string>
 	<string name="delete_event_dialog_title">Eliminar este evento?</string>
@@ -246,7 +245,7 @@
 	<string name="failsafe_message">Provee esta contraseña durante la desencriptación para prevenir que la información se cargue</string>
 	<string name="warning">Alerta</string>
 	<string name="encryption_message">Esta es una forma básica de encriptación AES, basado en una frase contraseña. Esto no es una defensa garantizada contra organismos de justicia.</string>
-	<string name="backup_enable_toast">Copia de seguridad habilitada, copias se guardaran en /sdcard/backups/GrowTracker/</string>
+	<string name="backup_enable_toast" formatted="true">Copia de seguridad habilitada, copias se guardaran en /sdcard/backups/GrowTracker/</string>
 	<string name="restore_complete" formatted="true">Restauración a %s completada </string>
 	<string name="restore_error" formatted="true">No se pudo restaurar desde la copia de seguridad %s. El archivo puede ser %s</string>
 	<string name="encrypted">encriptado</string>
@@ -408,4 +407,4 @@
 	<string name="no_data">No hay ninguna información disponible</string>
 
 	<string name="camera_permission_summary">Para tomar fotos se necesita el permiso para la cámara </string>
-</resources>
+	</resources>
