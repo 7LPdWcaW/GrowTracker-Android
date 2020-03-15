@@ -163,7 +163,6 @@
 	<string name="action_transplanted">Пересадка</string>
 	<string name="action_trim">Трімінг</string>
 	<string name="action_tuck">Виконання ScrOG</string>
-
 	<string name="watered">Полито</string>
 	<string name="note">Нотатка</string>
 	<string name="delete_event_dialog_title">Видалити подію?</string>
