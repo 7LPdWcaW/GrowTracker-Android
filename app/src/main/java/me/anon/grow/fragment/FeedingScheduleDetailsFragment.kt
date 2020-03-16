@@ -165,8 +165,7 @@ class FeedingScheduleDetailsFragment : Fragment()
 			feedingView.copy.setOnClickListener { view ->
 				val newSchedule = Kryo().copy(date)
 				newSchedule.id = UUID.randomUUID().toString()
-				val index = schedule_dates_container.indexOfChild(feedingView)
-				scheduleDates.add((index < 0) T scheduleDates.size - 1 ?: index, newSchedule)
+				scheduleDates.add(newSchedule)
 				populateScheduleDates()
 
 				SnackBar().show(activity!!, R.string.schedule_copied, R.string.undo, action = {
