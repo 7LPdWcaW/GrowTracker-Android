@@ -46,17 +46,11 @@ class FeedingSchedule(
 @Parcelize
 @JsonClass(generateAdapter = true)
 class FeedingScheduleDate(
-	var id: String = UUID.randomUUID().toString(),
-	var dateRange: Array<Int>,
-	var stageRange: Array<PlantStage>,
+	@Transient var id: String = UUID.randomUUID().toString(),
+	var dateRange: Array<Int> = arrayOf(),
+	var stageRange: Array<PlantStage> = arrayOf(),
 	var additives: ArrayList<Additive> = arrayListOf()
 ) : Parcelable {
-	constructor() : this(
-		id = UUID.randomUUID().toString(),
-		dateRange = arrayOf(),
-		stageRange = arrayOf(),
-		additives = arrayListOf()
-	){}
 }
 
 abstract class Action(
