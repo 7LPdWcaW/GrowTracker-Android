@@ -22,7 +22,7 @@ class ViewPhotosActivity : BaseActivity()
 		if (supportFragmentManager.findFragmentByTag("fragment") == null)
 		{
 			supportFragmentManager.beginTransaction()
-				.replace(R.id.coordinator, ViewPhotosFragment.newInstance(intent.extras), "fragment")
+				.replace(R.id.fragment_holder, ViewPhotosFragment.newInstance(intent.extras), "fragment")
 				.commit()
 		}
 	}

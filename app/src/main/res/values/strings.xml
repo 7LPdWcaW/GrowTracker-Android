@@ -129,7 +129,9 @@
 	<string name="germination">Germination</string>
 	<string name="cutting">Cutting</string>
 	<string name="vegetation">Vegetation</string>
+	<string name="budding">Budding</string>
 	<string name="flowering">Flowering</string>
+	<string name="ripening">Ripening</string>
 	<string name="drying">Drying</string>
 	<string name="curing">Curing</string>
 	<string name="harvested">Harvested</string>
@@ -166,6 +168,8 @@
 	<string name="action_transplanted">Transplanted</string>
 	<string name="action_trim">Trim</string>
 	<string name="action_tuck">ScrOG Tuck</string>
+	<string name="action_supercrop">Supercrop</string>
+	<string name="action_monstercrop">Monstercrop</string>
 
 	<string name="watered">Watered</string>
 	<string name="note">Note</string>

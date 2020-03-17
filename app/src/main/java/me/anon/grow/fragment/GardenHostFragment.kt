@@ -28,13 +28,13 @@ class GardenHostFragment : Fragment()
 		}
 
 		childFragmentManager.findFragmentByTag("child_fragment") ?: let {
-			childFragmentManager.beginTransaction().replace(R.id.child_fragment_holder, GardenFragment.newInstance(garden), "child_fragment").commit()
+			childFragmentManager.beginTransaction().replace(R.id.fragment_holder, GardenFragment.newInstance(garden), "child_fragment").commit()
 		}
 
 		tabs.setOnNavigationItemSelectedListener {
 			childFragmentManager.beginTransaction()
 				.setCustomAnimations(R.anim.fade_in, R.anim.fade_out)
-				.replace(R.id.child_fragment_holder, when (it.itemId)
+				.replace(R.id.fragment_holder, when (it.itemId)
 				{
 					R.id.view_plants -> GardenFragment.newInstance(garden)
 					R.id.view_history -> GardenTrackerFragment.newInstance(garden)
@@ -49,7 +49,7 @@ class GardenHostFragment : Fragment()
 	override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?)
 	{
 		super.onActivityResult(requestCode, resultCode, data)
-		childFragmentManager.findFragmentById(R.id.child_fragment_holder)?.onActivityResult(requestCode, resultCode, data)
+		childFragmentManager.findFragmentById(R.id.fragment_holder)?.onActivityResult(requestCode, resultCode, data)
 	}
 
 	override fun onSaveInstanceState(outState: Bundle)

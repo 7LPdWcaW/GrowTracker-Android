@@ -61,7 +61,7 @@ class TemperatureDialogFragment(var action: TemperatureChange? = null, val callb
 
 		view.findViewById<TextView>(R.id.date).text = dateStr
 		view.findViewById<TextView>(R.id.date).setOnClickListener {
-			val fragment = DateDialogFragment(action!!.date)
+			val fragment = DateDialogFragment.newInstance(action!!.date)
 			fragment.setOnDateSelected(object : DateDialogFragment.OnDateSelectedListener
 			{
 				override fun onDateSelected(date: Calendar)
