@@ -129,7 +129,9 @@
 	<string name="germination">Germinación</string>
 	<string name="cutting">Esqueje</string>
 	<string name="vegetation">Vegetación</string>
+	<string name="budding">Cerniendo</string>
 	<string name="flowering">Florecimiento</string>
+	<string name="ripening">Madurado</string>
 	<string name="drying">Secado</string>
 	<string name="curing">Curando</string>
 	<string name="harvested">Cosechado</string>
@@ -163,6 +165,9 @@
 	<string name="action_transplanted">Transplantado</string>
 	<string name="action_trim">Recortar</string>
 	<string name="action_tuck">Meter debajo de follaje preexistente</string>
+	<string name="action_supercrop">Supercrop</string>
+	<string name="action_monstercrop">Monstercrop</string>
+
 	<string name="watered">Regado</string>
 	<string name="note">Nota</string>
 	<string name="delete_event_dialog_title">Eliminar este evento?</string>
@@ -407,4 +412,11 @@
 	<string name="no_data">No hay ninguna información disponible</string>
 
 	<string name="camera_permission_summary">Para tomar fotos se necesita el permiso para la cámara </string>
-	</resources>
+	<string name="settings_backup_management_title">Manejo de copias de seguridad</string>
+	<string name="settings_backup_location_title">Lugar de guardadado de la copia de seguridad</string>
+	<string name="settings_backup_location_summary" formatted="true">Ubicación de la copia de seguridad, actualmente &lt;b&gt;%s&lt;/b&gt;</string>
+	<string name="settings_backup_location_error">Falló en establecer ubicación de la copia de seguridad</string>
+	<string name="settings_import_error">Falló al importar plantas desde archivo</string>
+	<string name="settings_import">Importar plantas desde archivo</string>
+	<string name="settings_import_success">Plantas importadas de archivo correctamente</string>
+</resources>
