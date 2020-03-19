@@ -209,9 +209,9 @@ public class WateringFragment extends Fragment
 			}
 		}
 
-		reattachFeedingDialogListener();
-		reattachScheduleDialogListener();
-		reattachDateDialogListener();
+		reattachFeedingDialogListener((ActionSelectDialogFragment)getFragmentManager().findFragmentByTag("actions"));
+		reattachScheduleDialogListener((FeedingScheduleSelectDialogFragment)getFragmentManager().findFragmentByTag("feeding"));
+		reattachDateDialogListener((DateDialogFragment)getFragmentManager().findFragmentByTag("date"));
 		setUi();
 		setHints();
 	}
@@ -293,7 +293,7 @@ public class WateringFragment extends Fragment
 
 			ActionSelectDialogFragment actionSelectDialogFragment = ActionSelectDialogFragment.newInstance(items);
 			actionSelectDialogFragment.show(getFragmentManager(), "actions");
-			reattachFeedingDialogListener();
+			reattachFeedingDialogListener(actionSelectDialogFragment);
 		}
 
 		return super.onOptionsItemSelected(item);
@@ -303,12 +303,11 @@ public class WateringFragment extends Fragment
 	{
 		FeedingScheduleSelectDialogFragment feedingScheduleSelectDialogFragment = FeedingScheduleSelectDialogFragment.newInstance(schedule, plants);
 		feedingScheduleSelectDialogFragment.show(getFragmentManager(), "feeding");
-		reattachScheduleDialogListener();
+		reattachScheduleDialogListener(feedingScheduleSelectDialogFragment);
 	}
 
-	private void reattachFeedingDialogListener()
+	private void reattachFeedingDialogListener(ActionSelectDialogFragment fragment)
 	{
-		ActionSelectDialogFragment fragment = (ActionSelectDialogFragment)getFragmentManager().findFragmentByTag("actions");
 		if (fragment != null)
 		{
 			fragment.setOnActionSelectedListener(new ActionSelectDialogFragment.OnActionSelectedListener()
@@ -323,9 +322,8 @@ public class WateringFragment extends Fragment
 		}
 	}
 
-	private void reattachDateDialogListener()
+	private void reattachDateDialogListener(DateDialogFragment fragment)
 	{
-		DateDialogFragment fragment = (DateDialogFragment)getFragmentManager().findFragmentByTag("date");
 		if (fragment != null)
 		{
 			fragment.setOnDateSelected(new DateDialogFragment.OnDateSelectedListener()
@@ -350,9 +348,8 @@ public class WateringFragment extends Fragment
 		}
 	}
 
-	private void reattachScheduleDialogListener()
+	private void reattachScheduleDialogListener(FeedingScheduleSelectDialogFragment fragment)
 	{
-		FeedingScheduleSelectDialogFragment fragment = (FeedingScheduleSelectDialogFragment)getFragmentManager().findFragmentByTag("feeding");
 		if (fragment != null)
 		{
 			fragment.setOnFeedingSelectedListener(new FeedingScheduleSelectDialogFragment.OnFeedingSelectedListener()
@@ -518,7 +515,7 @@ public class WateringFragment extends Fragment
 			{
 				final DateDialogFragment fragment = DateDialogFragment.newInstance(water.getDate());
 				getFragmentManager().beginTransaction().add(fragment, "date").commit();
-				reattachDateDialogListener();
+				reattachDateDialogListener(fragment);
 			}
 		});
 
