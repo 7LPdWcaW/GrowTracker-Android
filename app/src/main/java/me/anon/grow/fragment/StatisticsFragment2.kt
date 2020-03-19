@@ -11,17 +11,18 @@ import androidx.core.view.plusAssign
 import androidx.core.view.setMargins
 import androidx.fragment.app.Fragment
 import com.github.mikephil.charting.components.AxisBase
-import com.github.mikephil.charting.data.BarData
-import com.github.mikephil.charting.data.BarDataSet
-import com.github.mikephil.charting.data.BarEntry
-import com.github.mikephil.charting.data.Entry
+import com.github.mikephil.charting.data.*
 import com.github.mikephil.charting.formatter.ValueFormatter
+import com.github.mikephil.charting.interfaces.datasets.ILineDataSet
 import com.github.mikephil.charting.utils.ViewPortHandler
 import com.google.android.material.chip.Chip
 import kotlinx.android.synthetic.main.action_buttons_stub.*
 import kotlinx.android.synthetic.main.data_label_stub.view.*
 import kotlinx.android.synthetic.main.garden_action_buttons_stub.*
 import kotlinx.android.synthetic.main.statistics2_view.*
+import kotlinx.android.synthetic.main.statistics2_view.stage_chart
+import kotlinx.android.synthetic.main.statistics2_view.stats_container
+import kotlinx.android.synthetic.main.statistics_view.*
 import me.anon.grow.R
 import me.anon.lib.TdsUnit
 import me.anon.lib.Unit
@@ -87,6 +88,7 @@ class StatisticsFragment2 : Fragment()
 	}
 
 	val additives = arrayListOf<Additive>()
+	val additiveValues = hashMapOf<String, ArrayList<Entry>>()
 	var endDate = System.currentTimeMillis()
 	var waterDifference = 0L
 	var lastWater = 0L
@@ -114,6 +116,7 @@ class StatisticsFragment2 : Fragment()
 
 	private fun calculateStats()
 	{
+		var additiveIndex = 0
 		plant.actions?.forEach { action ->
 			when (action)
 			{
@@ -131,6 +134,18 @@ class StatisticsFragment2 : Fragment()
 					val stage = stageChanges.filterValues { it.date <= action.date }.toSortedMap().lastKey()
 					aveStageWaters.getOrPut(stage, { arrayListOf<Long>() }).add(action.date)
 
+					action.additives.forEach { additive ->
+						if (additive.description != null)
+						{
+							additive.amount?.let { amount ->
+								val amount = Unit.ML.to(selectedMeasurementUnit, amount)
+								val entry = Entry(additiveIndex.toFloat(), amount.toFloat())
+								additiveValues.getOrPut(additive.description!!, { arrayListOf() }).add(entry)
+							}
+						}
+					}
+
+					additiveIndex++
 					additives.addAll(action.additives)
 				}
 
@@ -288,6 +303,8 @@ class StatisticsFragment2 : Fragment()
 
 	private fun populateAdditiveStates()
 	{
+		val selectedAdditives = arrayListOf<String>()
+
 		class additiveStat(var total: Double = 0.0, var count: Int = 0, var min: Double = Double.NaN, var max: Double = Double.NaN)
 
 		fun displayStats(name: String, stat: additiveStat)
@@ -307,6 +324,30 @@ class StatisticsFragment2 : Fragment()
 			renderStats(additives_stats_container, stats)
 		}
 
+		fun displayChart()
+		{
+			val dataSets = arrayListOf<ILineDataSet>()
+			var index = 0
+			additiveValues.forEach { (k, v) ->
+				if (selectedAdditives.contains(k))
+				{
+					dataSets += LineDataSet(v, k).apply {
+						color = statsColours.get(index)
+						fillColor = color
+						setCircleColor(color)
+					}
+				}
+
+				index++
+				if (index >= statsColours.size) index = 0
+			}
+
+			val lineData = LineData(dataSets)
+			additives_chart.data = lineData
+			additives_chart.notifyDataSetChanged()
+			additives_chart.invalidate()
+		}
+
 		val names = HashMap<String, additiveStat>()
 		additives.forEach { additive ->
 			additive.description?.let { key ->
@@ -322,11 +363,51 @@ class StatisticsFragment2 : Fragment()
 		names.forEach { (k, v) ->
 			val chip = LayoutInflater.from(context!!).inflate(R.layout.filter_chip_stub, additive_chips_container, false) as Chip
 			chip.text = k
+			chip.isChecked = true
 			chip.setOnCheckedChangeListener { buttonView, isChecked ->
 				//displayStats(k, v)
+				if (isChecked)
+				{
+					selectedAdditives += k
+				}
+				else
+				{
+					selectedAdditives -= k
+				}
+
+				displayChart()
 			}
+
+			selectedAdditives += k
 			additive_chips_container += chip
 		}
+
+		additives_chart.setDrawGridBackground(false)
+		additives_chart.description = null
+		additives_chart.isScaleYEnabled = false
+		additives_chart.setDrawBorders(false)
+
+		additives_chart.axisLeft.setDrawGridLines(false)
+		additives_chart.axisLeft.axisMinimum = 0f
+		additives_chart.axisLeft.textColor = R.attr.colorOnSurface.resolveColor(context!!)
+		additives_chart.axisLeft.valueFormatter = object : ValueFormatter()
+		{
+			override fun getAxisLabel(value: Float, axis: AxisBase?): String
+			{
+				return "${value.toInt()}${selectedMeasurementUnit.label}/${selectedDeliveryUnit.label}"
+			}
+		}
+
+		additives_chart.axisRight.setDrawLabels(false)
+		additives_chart.axisRight.setDrawGridLines(false)
+
+		additives_chart.xAxis.setDrawGridLines(false)
+		additives_chart.xAxis.setDrawAxisLine(false)
+		additives_chart.xAxis.setDrawLabels(false)
+
+		additives_chart.legend.textColor = R.attr.colorOnSurface.resolveColor(context!!).toInt()
+		additives_chart.legend.isWordWrapEnabled = true
+		displayChart()
 	}
 
 	private fun renderStats(container: ViewGroup, templates: ArrayList<template>)
