@@ -63,7 +63,7 @@ class FeedingScheduleDetailsFragment : Fragment()
 		fab_complete.setOnClickListener {
 			title.error = null
 
-			if (scheduleDates.isNotEmpty() && title.text.isEmpty())
+			if (title.text.isEmpty())
 			{
 				title.error = getString(R.string.field_required)
 			}
