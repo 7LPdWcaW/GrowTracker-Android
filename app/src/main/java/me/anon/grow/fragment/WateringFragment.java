@@ -453,7 +453,7 @@ public class WateringFragment extends Fragment
 
 				if (!averagePh.isNaN())
 				{
-					waterPh.setHint(String.valueOf(averagePh));
+					waterPh.setHint(NumberUtilsKt.formatWhole(averagePh));
 				}
 
 				if (!selectedTdsAverage.isNaN())
@@ -464,13 +464,13 @@ public class WateringFragment extends Fragment
 					}
 					else
 					{
-						waterPpm.setHint(selectedTdsAverage + " " + selectedTdsUnit.getLabel());
+						waterPpm.setHint(NumberUtilsKt.formatWhole(selectedTdsAverage) + " " + selectedTdsUnit.getLabel());
 					}
 				}
 
 				if (!averageRunoff.isNaN())
 				{
-					runoffPh.setHint(String.valueOf(averageRunoff));
+					runoffPh.setHint(NumberUtilsKt.formatWhole(averageRunoff));
 				}
 
 				if (!averageAmount.isNaN())
@@ -565,7 +565,7 @@ public class WateringFragment extends Fragment
 			if (additive == null || additive.getAmount() == null) continue;
 
 			double converted = Unit.ML.to(selectedMeasurementUnit, additive.getAmount());
-			String amountStr = converted == Math.floor(converted) ? String.valueOf((int)converted) : String.valueOf(converted);
+			String amountStr = NumberUtilsKt.formatWhole(converted);
 			amountStr = additive.getDescription() + "   -   " + amountStr + selectedMeasurementUnit.getLabel() + "/" + selectedDeliveryUnit.getLabel();
 			maxChars = Math.max(maxChars, amountStr.length());
 		}
@@ -601,7 +601,7 @@ public class WateringFragment extends Fragment
 				totalDelivery = ML.to(selectedDeliveryUnit, totalDelivery);
 				Double additiveAmount = ML.to(selectedMeasurementUnit, additive.getAmount());
 
-				amountStr = amountStr + "&nbsp;&nbsp;<b>(" + Unit.toTwoDecimalPlaces(additiveAmount * totalDelivery) + selectedMeasurementUnit.getLabel() + " total)</b>";
+				amountStr = amountStr + "&nbsp;&nbsp;<b>(" + NumberUtilsKt.formatWhole(Unit.toTwoDecimalPlaces(additiveAmount * totalDelivery)) + selectedMeasurementUnit.getLabel() + " total)</b>";
 			}
 
 			((TextView)additiveStub).setText(Html.fromHtml(amountStr));
