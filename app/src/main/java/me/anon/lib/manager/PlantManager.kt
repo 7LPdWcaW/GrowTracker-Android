@@ -59,7 +59,13 @@ class PlantManager private constructor()
 		}
 
 		synchronized(this.plants) {
-			return ArrayList(plants.filterIndexed { index, plant -> garden?.plantIds?.contains(plant.id) ?: true })
+			val list = garden?.let {
+				ArrayList((garden?.plantIds ?: arrayListOf<String>()).map { id ->
+					plants.firstOrNull { it.id == id }
+				}).filterNotNull() as ArrayList
+			} ?: plants
+
+			return list
 		}
 	}
 

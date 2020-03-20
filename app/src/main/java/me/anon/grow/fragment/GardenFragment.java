@@ -179,7 +179,6 @@ public class GardenFragment extends Fragment
 				{
 					for (int index = fromPosition; index < toPosition; index++)
 					{
-						Collections.swap(PlantManager.getInstance().getPlants(), index, index + 1);
 						Collections.swap(adapter.getPlants(), index, index + 1);
 						adapter.notifyItemChanged(index, Boolean.TRUE);
 						adapter.notifyItemChanged(index + 1, Boolean.TRUE);
@@ -189,7 +188,6 @@ public class GardenFragment extends Fragment
 				{
 					for (int index = fromPosition; index > toPosition; index--)
 					{
-						Collections.swap(PlantManager.getInstance().getPlants(), index, index - 1);
 						Collections.swap(adapter.getPlants(), index, index - 1);
 						adapter.notifyItemChanged(index, Boolean.TRUE);
 						adapter.notifyItemChanged(index - 1, Boolean.TRUE);
@@ -267,7 +265,7 @@ public class GardenFragment extends Fragment
 			}
 
 			garden.setPlantIds(orderedPlantIds);
-			GardenManager.getInstance().save();
+			GardenManager.getInstance().upsert(garden);
 		}
 
 		PlantManager.getInstance().upsert(plants);
