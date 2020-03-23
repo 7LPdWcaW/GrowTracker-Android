@@ -81,16 +81,6 @@
 						app:chipSpacing="4dp"
 						app:chipSpacingVertical="0dp"
 					/>
-
-					<com.google.android.flexbox.FlexboxLayout
-						android:layout_width="match_parent"
-						android:layout_height="wrap_content"
-						android:id="@+id/additives_stats_container"
-						android:layout_marginTop="12dp"
-						app:flexWrap="wrap"
-						app:showDividerVertical="middle"
-						app:dividerDrawableVertical="@drawable/divider_8dp"
-					/>
 				</LinearLayout>
 
 				<com.github.mikephil.charting.charts.LineChart
@@ -98,10 +88,20 @@
 					android:layout_height="300dp"
 					android:id="@+id/additives_chart"
 					android:padding="16dp"
-					android:layout_marginTop="16dp"
 					app:layout_constraintTop_toBottomOf="@id/additive_title"
 					app:layout_constraintStart_toStartOf="parent"
 					app:layout_constraintEnd_toEndOf="parent"
+				/>
+
+				<com.google.android.flexbox.FlexboxLayout
+					android:layout_width="match_parent"
+					android:layout_height="wrap_content"
+					android:id="@+id/additives_stats_container"
+					android:layout_marginTop="12dp"
+					android:padding="16dp"
+					app:flexWrap="wrap"
+					app:showDividerVertical="middle"
+					app:dividerDrawableVertical="@drawable/divider_8dp"
 				/>
 			</LinearLayout>
 		</LinearLayout>

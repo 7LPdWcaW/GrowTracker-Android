@@ -1,5 +1,6 @@
 package me.anon.grow.fragment
 
+import android.content.Context
 import android.graphics.Color
 import android.graphics.Typeface
 import android.os.Bundle
@@ -7,36 +8,31 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.TextView
+import androidx.appcompat.view.ContextThemeWrapper
+import androidx.core.graphics.ColorUtils
 import androidx.core.view.plusAssign
-import androidx.core.view.setMargins
 import androidx.fragment.app.Fragment
 import com.github.mikephil.charting.components.AxisBase
+import com.github.mikephil.charting.components.XAxis
 import com.github.mikephil.charting.data.*
 import com.github.mikephil.charting.formatter.ValueFormatter
 import com.github.mikephil.charting.interfaces.datasets.ILineDataSet
-import com.github.mikephil.charting.utils.ViewPortHandler
 import com.google.android.material.chip.Chip
-import kotlinx.android.synthetic.main.action_buttons_stub.*
 import kotlinx.android.synthetic.main.data_label_stub.view.*
-import kotlinx.android.synthetic.main.garden_action_buttons_stub.*
 import kotlinx.android.synthetic.main.statistics2_view.*
 import kotlinx.android.synthetic.main.statistics2_view.stage_chart
 import kotlinx.android.synthetic.main.statistics2_view.stats_container
-import kotlinx.android.synthetic.main.statistics_view.*
 import me.anon.grow.R
 import me.anon.lib.TdsUnit
 import me.anon.lib.Unit
-import me.anon.lib.ext.T
-import me.anon.lib.ext.formatWhole
-import me.anon.lib.ext.resolveColor
-import me.anon.lib.ext.resolveDimen
+import me.anon.lib.ext.*
+import me.anon.lib.helper.StatsHelper.formatter
 import me.anon.lib.helper.TimeHelper
 import me.anon.model.*
 import java.lang.Math.abs
 import kotlin.math.ceil
 import kotlin.math.max
 import kotlin.math.min
-import kotlin.math.roundToInt
 
 /**
  * // TODO: Add class description
@@ -88,6 +84,7 @@ class StatisticsFragment2 : Fragment()
 	}
 
 	val additives = arrayListOf<Additive>()
+	val additiveDates = arrayListOf<String>()
 	val additiveValues = hashMapOf<String, ArrayList<Entry>>()
 	var endDate = System.currentTimeMillis()
 	var waterDifference = 0L
@@ -131,9 +128,15 @@ class StatisticsFragment2 : Fragment()
 					lastWater = action.date
 
 					// find the stage change where the date is older than the watering
-					val stage = stageChanges.filterValues { it.date <= action.date }.toSortedMap().lastKey()
+					val sortedStageChange = stageChanges.filterValues { it.date <= action.date }.toSortedMap()
+					val stage = sortedStageChange.lastKey()
+					val stageChangeDate = sortedStageChange[stage]?.date ?: 0
+					val waterDate = action.date
+					val stageLength = (waterDate - stageChangeDate).toDays().toInt()
 					aveStageWaters.getOrPut(stage, { arrayListOf<Long>() }).add(action.date)
+					additiveDates.add("${stageLength}${getString(stage.printString).toLowerCase()[0]}")
 
+					// add additives to pre calculated list
 					action.additives.forEach { additive ->
 						if (additive.description != null)
 						{
@@ -303,38 +306,53 @@ class StatisticsFragment2 : Fragment()
 
 	private fun populateAdditiveStates()
 	{
-		val selectedAdditives = arrayListOf<String>()
-
 		class additiveStat(var total: Double = 0.0, var count: Int = 0, var min: Double = Double.NaN, var max: Double = Double.NaN)
 
-		fun displayStats(name: String, stat: additiveStat)
-		{
-			val stats = arrayListOf<template>()
-			stats += header(getString(R.string.additive_stat_header, name))
-			stats += data(
-				label = getString(R.string.additive_average_usage_label),
-				data = "${Unit.ML.to(selectedMeasurementUnit, stat.total / stat.count.toDouble()).formatWhole()} ${selectedMeasurementUnit.label}/${selectedDeliveryUnit.label}"
-			)
-			stats += data(
-				label = getString(R.string.additive_total_usage_label),
-				data = "${Unit.ML.to(selectedMeasurementUnit, stat.total).formatWhole()} ${selectedMeasurementUnit.label}"
-			)
+		val selectedAdditives = arrayListOf<String>()
+		val additiveStats = LinkedHashMap<String, additiveStat>()
 
+		fun displayStats()
+		{
 			additives_stats_container.removeAllViews()
-			renderStats(additives_stats_container, stats)
+
+			selectedAdditives.forEach { name ->
+				additiveStats[name]?.let { stat ->
+					val stats = arrayListOf<template>()
+					stats += header(getString(R.string.additive_stat_header, name))
+					stats += data(
+						label = getString(R.string.min),
+						data = "${Unit.ML.to(selectedMeasurementUnit, stat.min).formatWhole()} ${selectedMeasurementUnit.label}/${selectedDeliveryUnit.label}"
+					)
+					stats += data(
+						label = getString(R.string.max),
+						data = "${Unit.ML.to(selectedMeasurementUnit, stat.max).formatWhole()} ${selectedMeasurementUnit.label}/${selectedDeliveryUnit.label}"
+					)
+					stats += data(
+						label = getString(R.string.additive_average_usage_label),
+						data = "${Unit.ML.to(selectedMeasurementUnit, stat.total / stat.count.toDouble()).formatWhole()} ${selectedMeasurementUnit.label}/${selectedDeliveryUnit.label}"
+					)
+					stats += data(
+						label = getString(R.string.additive_total_usage_label),
+						data = "${Unit.ML.to(selectedMeasurementUnit, stat.total).formatWhole()} ${selectedMeasurementUnit.label}"
+					)
+
+					renderStats(additives_stats_container, stats)
+				}
+			}
 		}
 
 		fun displayChart()
 		{
 			val dataSets = arrayListOf<ILineDataSet>()
 			var index = 0
-			additiveValues.forEach { (k, v) ->
+			additiveValues.toSortedMap().forEach { (k, v) ->
 				if (selectedAdditives.contains(k))
 				{
 					dataSets += LineDataSet(v, k).apply {
 						color = statsColours.get(index)
 						fillColor = color
 						setCircleColor(color)
+						styleDataset(context!!, this, color)
 					}
 				}
 
@@ -348,34 +366,27 @@ class StatisticsFragment2 : Fragment()
 			additives_chart.invalidate()
 		}
 
-		val names = HashMap<String, additiveStat>()
-		additives.forEach { additive ->
+		additives.sortedBy { it.description }.forEach { additive ->
 			additive.description?.let { key ->
-				names.getOrPut(key, { additiveStat() }).apply {
+				additiveStats.getOrPut(key, { additiveStat() }).apply {
 					total += additive.amount ?: 0.0
-					min = max(min.isNaN() T Double.MIN_VALUE ?: min, additive.amount ?: 0.0)
-					max = min(max.isNaN() T Double.MIN_VALUE ?: max, additive.amount ?: 0.0)
+					min = min(min.isNaN() T Double.MAX_VALUE ?: min, additive.amount ?: 0.0)
+					max = max(max.isNaN() T Double.MIN_VALUE ?: max, additive.amount ?: 0.0)
 					count++
 				}
 			}
 		}
 
-		names.forEach { (k, v) ->
+		additiveStats.forEach { (k, v) ->
 			val chip = LayoutInflater.from(context!!).inflate(R.layout.filter_chip_stub, additive_chips_container, false) as Chip
 			chip.text = k
 			chip.isChecked = true
 			chip.setOnCheckedChangeListener { buttonView, isChecked ->
-				//displayStats(k, v)
-				if (isChecked)
-				{
-					selectedAdditives += k
-				}
-				else
-				{
-					selectedAdditives -= k
-				}
+				if (isChecked) selectedAdditives += k
+				else selectedAdditives -= k
 
 				displayChart()
+				displayStats()
 			}
 
 			selectedAdditives += k
@@ -387,27 +398,37 @@ class StatisticsFragment2 : Fragment()
 		additives_chart.isScaleYEnabled = false
 		additives_chart.setDrawBorders(false)
 
+		additives_chart.axisLeft.granularity = 1f
 		additives_chart.axisLeft.setDrawGridLines(false)
-		additives_chart.axisLeft.axisMinimum = 0f
 		additives_chart.axisLeft.textColor = R.attr.colorOnSurface.resolveColor(context!!)
 		additives_chart.axisLeft.valueFormatter = object : ValueFormatter()
 		{
 			override fun getAxisLabel(value: Float, axis: AxisBase?): String
 			{
-				return "${value.toInt()}${selectedMeasurementUnit.label}/${selectedDeliveryUnit.label}"
+				return "${value.formatWhole()}${selectedMeasurementUnit.label}/${selectedDeliveryUnit.label}"
 			}
 		}
 
 		additives_chart.axisRight.setDrawLabels(false)
 		additives_chart.axisRight.setDrawGridLines(false)
+		additives_chart.axisRight.setDrawAxisLine(false)
 
 		additives_chart.xAxis.setDrawGridLines(false)
-		additives_chart.xAxis.setDrawAxisLine(false)
-		additives_chart.xAxis.setDrawLabels(false)
+		additives_chart.xAxis.granularity = 1f
+		additives_chart.xAxis.position = XAxis.XAxisPosition.BOTTOM
+		additives_chart.xAxis.textColor = R.attr.colorOnSurface.resolveColor(context!!)
+		additives_chart.xAxis.valueFormatter = object : ValueFormatter()
+		{
+			override fun getAxisLabel(value: Float, axis: AxisBase?): String
+			{
+				return additiveDates.getOrElse(value.toInt(), { "" })
+			}
+		}
 
-		additives_chart.legend.textColor = R.attr.colorOnSurface.resolveColor(context!!).toInt()
+		additives_chart.legend.textColor = R.attr.colorOnSurface.resolveColor(context!!)
 		additives_chart.legend.isWordWrapEnabled = true
 		displayChart()
+		displayStats()
 	}
 
 	private fun renderStats(container: ViewGroup, templates: ArrayList<template>)
@@ -435,5 +456,24 @@ class StatisticsFragment2 : Fragment()
 			dataView ?: return
 			container += dataView
 		}
+	}
+
+	fun styleDataset(context: Context, data: LineDataSet, colour: Int)
+	{
+		val context = ContextThemeWrapper(context, R.style.AppTheme)
+		data.valueTextColor = R.attr.colorAccent.resolveColor(context)
+		data.setCircleColor(R.attr.colorAccent.resolveColor(context))
+		data.cubicIntensity = 0.2f
+		data.lineWidth = 2.0f
+		data.setDrawCircleHole(true)
+		data.color = colour
+		data.setCircleColor(colour)
+		data.circleRadius = 4.0f
+		data.setDrawHighlightIndicators(true)
+		data.isHighlightEnabled = true
+		data.highlightLineWidth = 2f
+		data.highLightColor = ColorUtils.setAlphaComponent(colour, 96)
+		data.setDrawValues(false)
+		data.valueFormatter = formatter
 	}
 }
