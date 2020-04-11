@@ -8,7 +8,9 @@ import me.anon.model.Plant
  */
 interface PlantsDataSource
 {
-	public fun observePlants(): LiveData<List<Plant>>
-
+	public fun addPlant(plant: Plant)
+	public fun setPlant(plant: Plant)
 	suspend fun getPlants(): List<Plant>
+	public fun observePlants(): LiveData<List<Plant>>
+	suspend fun save()
 }

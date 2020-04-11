@@ -6,10 +6,9 @@ import android.os.Bundle
 import android.view.MenuItem
 import android.view.View
 import android.view.inputmethod.InputMethodManager
+import androidx.activity.viewModels
 import androidx.appcompat.app.ActionBarDrawerToggle
-import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.Fragment
-import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.observe
 import com.google.android.material.navigation.NavigationView
 import kotlinx.android.synthetic.main.main_view.*
@@ -22,15 +21,13 @@ import me.anon.view.viewmodel.ViewModelFactory
 /**
  * // TODO: Add class description
  */
-class MainActivity2 : AppCompatActivity(), NavigationView.OnNavigationItemSelectedListener
+class MainActivity2 : BaseActivity(), NavigationView.OnNavigationItemSelectedListener
 {
-	private lateinit var viewModel: MainViewModel
+	private val viewModel: MainViewModel by viewModels { ViewModelFactory(application as MainApplication2, this) }
 
 	override fun onCreate(savedInstanceState: Bundle?)
 	{
 		super.onCreate(savedInstanceState)
-
-		viewModel = ViewModelProvider(this, ViewModelFactory(application as MainApplication2, this)).get(MainViewModel::class.java)
 
 		setContentView(R.layout.main_view)
 		setSupportActionBar(toolbar)

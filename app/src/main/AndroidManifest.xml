@@ -43,7 +43,11 @@
 		</receiver>
 
 		<activity
-			android:name="me.anon.view.MainActivity2"
+			android:name="me.anon.view.BootActivity2"
+			android:noHistory="true"
+			android:finishOnTaskLaunch="true"
+			android:configChanges="orientation|screenSize"
+			android:theme="@style/AppThemeLaunch"
 		>
 			<intent-filter>
 				<category android:name="android.intent.category.LAUNCHER" />
@@ -58,6 +62,7 @@
 		</activity>
 
 		<activity android:name=".MainActivity" />
+		<activity android:name="me.anon.view.MainActivity2" />
 		<activity android:name=".AddWateringActivity" />
 		<activity android:name=".EditWateringActivity" />
 		<activity android:name=".ViewPhotosActivity" />
@@ -66,6 +71,7 @@
 		<activity android:name=".SettingsActivity" />
 		<activity android:name=".fragment.ImageLightboxDialog" android:theme="@style/fullscreen" android:windowSoftInputMode="stateHidden|adjustResize" />
 		<activity android:name=".PlantDetailsActivity" android:windowSoftInputMode="stateAlwaysHidden" />
+		<activity android:name="me.anon.view.PlantDetailsActivity2" android:windowSoftInputMode="stateAlwaysHidden" />
 		<activity android:name=".FeedingScheduleActivity" android:windowSoftInputMode="stateAlwaysHidden" />
 		<activity android:name=".FeedingScheduleDetailsActivity" android:windowSoftInputMode="stateAlwaysHidden" />
 		<activity android:name=".ScheduleDateDetailsActivity" android:windowSoftInputMode="stateAlwaysHidden" />
