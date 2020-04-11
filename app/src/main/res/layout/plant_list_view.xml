@@ -7,9 +7,18 @@
 	android:layout_height="match_parent"
 	android:id="@+id/coordinator"
 >
+	<ProgressBar
+		android:layout_width="wrap_content"
+		android:layout_height="wrap_content"
+		android:id="@+id/progress_bar"
+		android:layout_gravity="center"
+	/>
+
 	<FrameLayout
 		android:layout_width="match_parent"
 		android:layout_height="match_parent"
+		android:id="@+id/content_container"
+		android:visibility="gone"
 	>
 		<androidx.constraintlayout.widget.ConstraintLayout
 			android:layout_width="match_parent"

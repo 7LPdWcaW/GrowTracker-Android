@@ -18,7 +18,8 @@ class ViewModelFactory(
 {
 	override fun <T : ViewModel> create(key: String, modelClass: Class<T>, handle: SavedStateHandle): T = with(modelClass) {
 		when {
-			isAssignableFrom(MainViewModel::class.java) -> MainViewModel(application.plantsRepository)
+			isAssignableFrom(PlantListViewModel::class.java) -> PlantListViewModel(application.plantsRepository)
+			isAssignableFrom(MainViewModel::class.java) -> MainViewModel(application.gardensRepository)
 			else -> throw IllegalAccessException("Invalid view model")
 		} as T
 	}

@@ -1,8 +1,11 @@
 package me.anon.view
 
 import android.app.Application
-import me.anon.data.repository.DefaultPlantsRepository
+import me.anon.data.repository.GardensRepository
 import me.anon.data.repository.PlantsRepository
+import me.anon.data.repository.impl.DefaultGardensRepository
+import me.anon.data.repository.impl.DefaultPlantsRepository
+import me.anon.data.source.json.JsonGardensDataSource
 import me.anon.data.source.json.JsonPlantsDataSource
 
 /**
@@ -20,6 +23,17 @@ class MainApplication2 : Application()
 				_plantsRepository = DefaultPlantsRepository(JsonPlantsDataSource(plantsPath))
 				_plantsRepository
 			} ?: throw IllegalStateException("Unable to load plants repository")
+		}
+	}
+
+	private val gardensPath get() = getExternalFilesDir(null)!!.absolutePath
+	private var _gardensRepository: GardensRepository? = null
+	public val gardensRepository: GardensRepository by lazy {
+		synchronized(lock) {
+			_gardensRepository ?: _gardensRepository ?: let {
+				_gardensRepository = DefaultGardensRepository(JsonGardensDataSource(gardensPath))
+				_gardensRepository
+			} ?: throw IllegalStateException("Unable to load gardens repository")
 		}
 	}
 }
