@@ -12,7 +12,7 @@
 		android:roundIcon="@mipmap/ic_launcher_round"
 		android:label="@string/app_name"
 		android:theme="@style/AppTheme"
-		android:name=".MainApplication"
+		android:name="me.anon.view.MainApplication2"
 		android:requestLegacyExternalStorage="true"
 	>
 		<provider
@@ -43,11 +43,7 @@
 		</receiver>
 
 		<activity
-			android:name=".BootActivity"
-			android:noHistory="true"
-			android:finishOnTaskLaunch="true"
-			android:configChanges="orientation|screenSize"
-			android:theme="@style/AppThemeLaunch"
+			android:name="me.anon.view.MainActivity2"
 		>
 			<intent-filter>
 				<category android:name="android.intent.category.LAUNCHER" />
