@@ -1,9 +1,6 @@
 package me.anon.view.viewmodel
 
-import androidx.lifecycle.MutableLiveData
-import androidx.lifecycle.SavedStateHandle
-import androidx.lifecycle.ViewModel
-import androidx.lifecycle.viewModelScope
+import androidx.lifecycle.*
 import kotlinx.coroutines.launch
 import me.anon.data.repository.PlantsRepository
 import me.anon.model.Plant
@@ -25,7 +22,10 @@ class PlantDetailsViewModel(
 		}
 
 	private val _plant: MutableLiveData<Plant> = MutableLiveData()
-	public val plant = _plant
+	public val plant = plantsRepository.observePlants().switchMap { plants ->
+		_plant.value = plants.find { it.id == plantId }
+		_plant
+	}
 
 	public val name = MutableLiveData<String>()
 	public val strain = MutableLiveData<String>()
@@ -36,14 +36,7 @@ class PlantDetailsViewModel(
 
 	public fun initialise()
 	{
-		plantId?.let {
-			viewModelScope.launch {
-				plantsRepository.getPlants().firstOrNull { it.id == plantId }?.also { plant ->
-					newPlant = false
-					_plant.postValue(plant)
-				}
-			}
-		}
+
 	}
 
 	public fun savePlant()

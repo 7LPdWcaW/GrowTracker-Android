@@ -25,6 +25,11 @@ class JsonPlantsDataSource internal constructor(
 
 	override fun loaded(): LiveData<Result<Boolean>> = _loaded
 
+	override fun triggerUpdate()
+	{
+		plants.postValue(plants.value)
+	}
+
 	override fun addPlant(plant: Plant)
 	{
 		plants.postValue(plants.value?.also { (it as ArrayList).add(plant) })

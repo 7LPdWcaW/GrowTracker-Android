@@ -19,6 +19,11 @@ class DefaultPlantsRepository(
 {
 	override fun loaded(): LiveData<Result<Boolean>> = dataSource.loaded()
 
+	override fun triggerUpdate()
+	{
+		dataSource.triggerUpdate()
+	}
+
 	override suspend fun reload()
 	{
 		dataSource.getPlants()

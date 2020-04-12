@@ -63,6 +63,7 @@
 
 		<activity android:name=".MainActivity" />
 		<activity android:name="me.anon.view.MainActivity2" />
+		<activity android:name="me.anon.view.WateringActivity2" />
 		<activity android:name=".AddWateringActivity" />
 		<activity android:name=".EditWateringActivity" />
 		<activity android:name=".ViewPhotosActivity" />

@@ -1,14 +1,22 @@
 package me.anon.view.fragment
 
+import android.content.Intent
 import android.os.Bundle
 import android.text.format.DateFormat
+import android.view.View
 import android.view.WindowManager
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.observe
+import kotlinx.android.synthetic.main.action_buttons_stub.view.*
 import kotlinx.android.synthetic.main.plant_details_view.*
+import kotlinx.android.synthetic.main.tabbed_fragment_holder.*
 import me.anon.grow.R
+import me.anon.lib.ext.inflate
+import me.anon.lib.ext.removeViewsFrom
 import me.anon.lib.ext.viewModelFactory
+import me.anon.view.PlantDetailsActivity2
+import me.anon.view.WateringActivity2
 import me.anon.view.viewmodel.PlantDetailsViewModel
 import java.util.*
 
@@ -45,6 +53,17 @@ class PlantDetailsFragment : Fragment(R.layout.plant_details_view)
 
 	private fun setupUi()
 	{
+		(requireActivity() as? PlantDetailsActivity2)?.apply {
+			toolbar_layout.removeViewsFrom(1)
+			toolbar_layout.inflate<View>(R.layout.action_buttons_stub, true)
+
+			toolbar_layout.feeding?.setOnClickListener {
+				it.context.startActivity(Intent(it.context, WateringActivity2::class.java).apply {
+					putExtra("plantId", viewModel.plantId)
+				})
+			}
+		}
+
 		fab_complete.setOnClickListener {
 			viewModel.name.value = plant_name.text.toString()
 			viewModel.strain.value = plant_strain.text.toString()

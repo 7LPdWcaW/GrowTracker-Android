@@ -54,6 +54,7 @@ class FeedingScheduleDate(
 }
 
 abstract class Action(
+	@Transient var id: String = UUID.randomUUID().toString(),
 	open var date: Long = System.currentTimeMillis(),
 	open var notes: String? = null
 ) : Parcelable
@@ -107,7 +108,7 @@ class EmptyAction(
 
 	override var date: Long = System.currentTimeMillis(),
 	override var notes: String? = null
-) : Action(date, notes)
+) : Action(date = date, notes = notes)
 {
 	public var type: String = "Action"
 	public override fun getTypeStr(): String = type
@@ -118,7 +119,7 @@ class EmptyAction(
 class NoteAction(
 	override var date: Long = System.currentTimeMillis(),
 	override var notes: String? = null
-) : Action(date, notes)
+) : Action(date = date, notes = notes)
 {
 	public var type: String = "Note"
 	public override fun getTypeStr(): String = type
@@ -131,7 +132,7 @@ class StageChange(
 
 	override var date: Long = System.currentTimeMillis(),
 	override var notes: String? = null
-) : Action(date, notes)
+) : Action(date = date, notes = notes)
 {
 	public var type: String = "StageChange"
 	public override fun getTypeStr(): String = type
@@ -479,7 +480,7 @@ class Water(
 
 	override var date: Long = System.currentTimeMillis(),
 	override var notes: String? = null
-) : Action(date, notes), Parcelable
+) : Action(date = date, notes = notes), Parcelable
 {
 	public var type: String = "Water"
 	public override fun getTypeStr(): String = type
@@ -609,7 +610,7 @@ class TemperatureChange(
 
 	override var date: Long = System.currentTimeMillis(),
 	override var notes: String? = null
-) : Action(date, notes)
+) : Action(date = date, notes = notes)
 {
 	public var type: String = "TemperatureChange"
 	public override fun getTypeStr(): String = type
@@ -622,7 +623,7 @@ class HumidityChange(
 
 	override var date: Long = System.currentTimeMillis(),
 	override var notes: String? = null
-) : Action(date, notes)
+) : Action(date = date, notes = notes)
 {
 	public var type: String = "HumidityChange"
 	public override fun getTypeStr(): String = type
@@ -635,7 +636,7 @@ class LightingChange(
 	var off: String = "18:00",
 
 	override var date: Long = System.currentTimeMillis()
-) : Action(date, null)
+) : Action(date = date, notes = "")
 {
 	public var type: String = "LightingChange"
 	public override fun getTypeStr(): String = type

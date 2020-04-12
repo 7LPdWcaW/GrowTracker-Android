@@ -14,6 +14,8 @@ interface PlantsRepository
 
 	public fun observePlants(): LiveData<List<Plant>>
 
+	public fun triggerUpdate()
+
 	suspend fun getPlants(): List<Plant>
 
 	public fun addPlant(plant: Plant)

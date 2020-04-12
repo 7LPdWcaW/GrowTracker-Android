@@ -14,4 +14,6 @@ interface PlantsDataSource
 	suspend fun getPlants(): List<Plant>
 	public fun observePlants(): LiveData<List<Plant>>
 	suspend fun save()
+
+	public fun triggerUpdate()
 }
