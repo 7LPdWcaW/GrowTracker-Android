@@ -3,7 +3,10 @@ package me.anon.data.source.json
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import com.squareup.moshi.Types
-import kotlinx.coroutines.*
+import kotlinx.coroutines.CoroutineDispatcher
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 import me.anon.data.source.PlantsDataSource
 import me.anon.lib.helper.MoshiHelper
 import me.anon.model.Plant
@@ -19,8 +22,10 @@ class JsonPlantsDataSource internal constructor(
 	private val ioDispatcher: CoroutineDispatcher = Dispatchers.IO
 ) : PlantsDataSource
 {
-	private var loaded = false
+	private val _loaded: MutableLiveData<Result<Boolean>> = MutableLiveData()
 	private val plants: MutableLiveData<List<Plant>> = MutableLiveData(arrayListOf())
+
+	override fun loaded(): LiveData<Result<Boolean>> = _loaded
 
 	override fun addPlant(plant: Plant)
 	{
@@ -38,8 +43,10 @@ class JsonPlantsDataSource internal constructor(
 	override suspend fun save()
 	{
 		plants.value ?: return
-		coroutineScope {
-			launch { MoshiHelper.toJson(plants.value!!, Types.newParameterizedType(ArrayList::class.java, Plant::class.java), FileOutputStream(File(sourcePath, "plants.json"))) }
+		withContext(ioDispatcher) {
+			launch {
+				MoshiHelper.toJson(plants.value!!, Types.newParameterizedType(ArrayList::class.java, Plant::class.java), FileOutputStream(File(sourcePath, "plants.json")))
+			}
 		}
 	}
 
@@ -47,17 +54,22 @@ class JsonPlantsDataSource internal constructor(
 
 	override suspend fun getPlants(): List<Plant>
 	{
-		if (!loaded)
+		if (_loaded.value == null)
 		{
 			plants.postValue(withContext(ioDispatcher) {
 				return@withContext try {
-					MoshiHelper.parse<List<Plant>>(FileInputStream(File(sourcePath, "plants.json")), Types.newParameterizedType(ArrayList::class.java, Plant::class.java)).also {
-						loaded = true
-					}
+					val data = MoshiHelper.parse<List<Plant>>(
+						json = FileInputStream(File(sourcePath, "plants.json")),
+						type = Types.newParameterizedType(ArrayList::class.java, Plant::class.java)
+					)
+
+					_loaded.postValue(Result.success(true))
+					data
 				}
 				catch (e: Exception)
 				{
 					e.printStackTrace()
+					_loaded.postValue(Result.failure(e.cause ?: e.fillInStackTrace()))
 					arrayListOf<Plant>()
 				}
 			})

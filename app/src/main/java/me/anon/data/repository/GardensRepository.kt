@@ -8,6 +8,7 @@ import me.anon.model.Garden
  */
 interface GardensRepository
 {
+	public fun loaded(): LiveData<Result<Boolean>>
 	public fun observeGardens(): LiveData<List<Garden>>
 	suspend fun getGardens(): List<Garden>
 }

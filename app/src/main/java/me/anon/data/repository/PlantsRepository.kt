@@ -8,6 +8,8 @@ import me.anon.model.Plant
  */
 interface PlantsRepository
 {
+	public fun loaded(): LiveData<Result<Boolean>>
+
 	suspend fun reload()
 
 	public fun observePlants(): LiveData<List<Plant>>

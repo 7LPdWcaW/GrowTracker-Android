@@ -15,6 +15,7 @@ class DefaultGardensRepository(
 	private val ioDispatcher: CoroutineDispatcher = Dispatchers.IO
 ) : GardensRepository
 {
+	override fun loaded(): LiveData<Result<Boolean>> = dataSource.loaded()
 	override fun observeGardens(): LiveData<List<Garden>> = dataSource.observeGardens()
 	override suspend fun getGardens(): List<Garden> = dataSource.getGardens()
 }

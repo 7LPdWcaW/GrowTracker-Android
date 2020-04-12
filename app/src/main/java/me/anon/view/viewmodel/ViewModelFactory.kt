@@ -21,6 +21,7 @@ class ViewModelFactory(
 			isAssignableFrom(PlantListViewModel::class.java) -> PlantListViewModel(application.plantsRepository)
 			isAssignableFrom(MainViewModel::class.java) -> MainViewModel(application.gardensRepository)
 			isAssignableFrom(PlantDetailsViewModel::class.java) -> PlantDetailsViewModel(application.plantsRepository, handle)
+			isAssignableFrom(BootViewModel::class.java) -> BootViewModel(application.plantsRepository, application.gardensRepository, application)
 			else -> throw IllegalAccessException("Invalid view model")
 		} as T
 	}

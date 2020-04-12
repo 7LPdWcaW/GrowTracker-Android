@@ -17,6 +17,8 @@ class DefaultPlantsRepository(
 	private val ioDispatcher: CoroutineDispatcher = Dispatchers.IO
 ) : PlantsRepository
 {
+	override fun loaded(): LiveData<Result<Boolean>> = dataSource.loaded()
+
 	override suspend fun reload()
 	{
 		dataSource.getPlants()

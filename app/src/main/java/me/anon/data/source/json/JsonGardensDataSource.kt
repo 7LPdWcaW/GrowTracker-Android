@@ -20,27 +20,31 @@ class JsonGardensDataSource internal constructor(
 	private val ioDispatcher: CoroutineDispatcher = Dispatchers.IO
 ) : GardensDataSource
 {
-	private var loaded = false
+	private var _loaded = MutableLiveData<Result<Boolean>>()
 	private val gardens: MutableLiveData<List<Garden>> = MutableLiveData(arrayListOf())
+
+	override fun loaded(): LiveData<Result<Boolean>> = _loaded
 
 	override fun observeGardens(): LiveData<List<Garden>> = gardens
 
 	override suspend fun getGardens(): List<Garden>
 	{
-		if (!loaded)
+		if (_loaded.value == null)
 		{
 			gardens.postValue(withContext(ioDispatcher) {
 				return@withContext try {
-					MoshiHelper.parse<List<Garden>>(
+					val data = MoshiHelper.parse<List<Garden>>(
 						json = FileInputStream(File(sourcePath, "gardens.json")),
 						type = Types.newParameterizedType(ArrayList::class.java, Garden::class.java)
-					).also {
-						loaded = true
-					}
+					)
+
+					_loaded.postValue(Result.success(true))
+					data
 				}
 				catch (e: Exception)
 				{
 					e.printStackTrace()
+					_loaded.postValue(Result.failure(e.cause ?: e.fillInStackTrace()))
 					arrayListOf<Garden>()
 				}
 			})
