@@ -33,10 +33,15 @@ class JsonGardensDataSource internal constructor(
 		{
 			gardens.postValue(withContext(ioDispatcher) {
 				return@withContext try {
-					val data = MoshiHelper.parse<List<Garden>>(
-						json = FileInputStream(File(sourcePath, "gardens.json")),
-						type = Types.newParameterizedType(ArrayList::class.java, Garden::class.java)
-					)
+					val file = File(sourcePath, "gardens.json")
+					var data: List<Garden> = arrayListOf()
+					if (file.exists())
+					{
+						data = MoshiHelper.parse<List<Garden>>(
+							json = FileInputStream(file),
+							type = Types.newParameterizedType(ArrayList::class.java, Garden::class.java)
+						)
+					}
 
 					_loaded.postValue(Result.success(true))
 					data

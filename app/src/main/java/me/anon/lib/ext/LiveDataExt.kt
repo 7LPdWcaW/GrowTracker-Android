@@ -12,14 +12,14 @@ public fun <J> ArrayList<LiveData<J>>.zipLiveData(): LiveData<ArrayList<J>>
 		val zippedObjects = ArrayList<J>()
 		this@zipLiveData.forEach {
 			addSource(it) { item ->
-				if (!zippedObjects.contains(item as J))
+				synchronized(zippedObjects)
 				{
 					zippedObjects.add(item)
-				}
 
-				if (zippedObjects.size == this@zipLiveData.size)
-				{
-					value = zippedObjects
+					if (zippedObjects.size == this@zipLiveData.size)
+					{
+						value = zippedObjects
+					}
 				}
 			}
 		}
