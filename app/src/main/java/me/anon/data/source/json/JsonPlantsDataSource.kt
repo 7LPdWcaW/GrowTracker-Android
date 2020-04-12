@@ -10,9 +10,7 @@ import kotlinx.coroutines.withContext
 import me.anon.data.source.PlantsDataSource
 import me.anon.lib.helper.MoshiHelper
 import me.anon.model.Plant
-import java.io.File
-import java.io.FileInputStream
-import java.io.FileOutputStream
+import java.io.*
 
 /**
  * // TODO: Add class description
@@ -45,7 +43,12 @@ class JsonPlantsDataSource internal constructor(
 		plants.value ?: return
 		withContext(ioDispatcher) {
 			launch {
-				MoshiHelper.toJson(plants.value!!, Types.newParameterizedType(ArrayList::class.java, Plant::class.java), FileOutputStream(File(sourcePath, "plants.json")))
+				val outstream = FileOutputStream(File(sourcePath, "plants.json"))
+				val output = MoshiHelper.toJson(plants.value ?: arrayListOf(), Types.newParameterizedType(ArrayList::class.java, Plant::class.java))
+				val writer = BufferedWriter(OutputStreamWriter(outstream))
+				writer.write(output)
+				writer.flush()
+				writer.close()
 			}
 		}
 	}
@@ -63,7 +66,7 @@ class JsonPlantsDataSource internal constructor(
 
 					if (file.exists())
 					{
-						data = MoshiHelper.parse<List<Plant>>(
+						data = MoshiHelper.parse(
 							json = FileInputStream(file),
 							type = Types.newParameterizedType(ArrayList::class.java, Plant::class.java)
 						)

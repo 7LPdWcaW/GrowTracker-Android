@@ -150,8 +150,8 @@ class Plant(
 	var clone: Boolean = false,
 	var medium: PlantMedium = PlantMedium.SOIL,
 	var mediumDetails: String? = null,
-	var images: ArrayList<String>? = arrayListOf(),
-	var actions: ArrayList<Action>? = arrayListOf()
+	var images: ArrayList<String> = arrayListOf(),
+	var actions: ArrayList<Action> = arrayListOf()
 ) : Parcelable
 {
 	public val stage: PlantStage
