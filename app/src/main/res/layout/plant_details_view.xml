@@ -21,6 +21,7 @@
 				android:layout_height="wrap_content"
 				android:id="@+id/last_feeding"
 				android:layout_margin="16dp"
+				android:visibility="gone"
 				app:cardBackgroundColor="@color/light_blue"
 				app:cardCornerRadius="4dp"
 				app:cardElevation="2dp"

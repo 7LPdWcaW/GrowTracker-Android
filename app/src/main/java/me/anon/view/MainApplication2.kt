@@ -1,6 +1,8 @@
 package me.anon.view
 
 import android.app.Application
+import com.nostra13.universalimageloader.core.ImageLoader
+import com.nostra13.universalimageloader.core.ImageLoaderConfiguration
 import me.anon.data.repository.GardensRepository
 import me.anon.data.repository.PlantsRepository
 import me.anon.data.repository.impl.DefaultGardensRepository
@@ -35,5 +37,12 @@ class MainApplication2 : Application()
 				_gardensRepository
 			} ?: throw IllegalStateException("Unable to load gardens repository")
 		}
+	}
+
+	override fun onCreate()
+	{
+		super.onCreate()
+
+		ImageLoader.getInstance().init(ImageLoaderConfiguration.createDefault(this))
 	}
 }

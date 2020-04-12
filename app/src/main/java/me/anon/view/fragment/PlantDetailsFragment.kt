@@ -36,7 +36,9 @@ class PlantDetailsFragment : Fragment(R.layout.plant_details_view)
 	{
 		super.onActivityCreated(savedInstanceState)
 
-		viewModel.start()
+		viewModel.plantId = arguments?.getString(EXTRA_PLANT_ID)
+		viewModel.initialise()
+
 		setupUi()
 		setupDetails()
 	}
@@ -47,6 +49,7 @@ class PlantDetailsFragment : Fragment(R.layout.plant_details_view)
 			viewModel.name.value = plant_name.text.toString()
 			viewModel.strain.value = plant_strain.text.toString()
 			viewModel.savePlant()
+			requireActivity().finish()
 		}
 	}
 

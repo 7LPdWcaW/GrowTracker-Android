@@ -24,7 +24,7 @@ class PlantDetailsViewModel(
 			savedStateHandle["plantId"] = plantId
 		}
 
-	private val _plant: MutableLiveData<Plant> = MutableLiveData<Plant>()
+	private val _plant: MutableLiveData<Plant> = MutableLiveData()
 	public val plant = _plant
 
 	public val name = MutableLiveData<String>()
@@ -34,7 +34,7 @@ class PlantDetailsViewModel(
 		plantId = savedStateHandle["plantId"] ?: plantId
 	}
 
-	public fun start()
+	public fun initialise()
 	{
 		plantId?.let {
 			viewModelScope.launch {

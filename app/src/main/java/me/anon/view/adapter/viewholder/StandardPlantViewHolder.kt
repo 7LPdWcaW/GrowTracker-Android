@@ -5,7 +5,11 @@ import android.text.Html
 import android.text.TextUtils
 import android.view.View
 import androidx.recyclerview.widget.RecyclerView
+import com.nostra13.universalimageloader.core.ImageLoader
+import com.nostra13.universalimageloader.core.imageaware.ImageAware
+import com.nostra13.universalimageloader.core.imageaware.ImageViewAware
 import kotlinx.android.synthetic.main.plant_extreme_item.view.*
+import me.anon.grow.R
 import me.anon.model.Plant
 import me.anon.view.PlantDetailsActivity2
 
@@ -21,8 +25,23 @@ class StandardPlantViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView
 	public fun bind(plant: Plant)
 	{
 		name.text = plant.name
+
 		val summaryList = plant.generateSummary(itemView.context, 2)
 		summary.text = Html.fromHtml(TextUtils.join("<br />", summaryList))
+
+		ImageLoader.getInstance().cancelDisplayTask(image)
+		plant.images.lastOrNull().let {
+			if (it == null)
+			{
+				image.setImageResource(R.drawable.default_plant)
+			}
+			else
+			{
+				val path = "file://$it"
+				val imageAware: ImageAware = ImageViewAware(image, true)
+				ImageLoader.getInstance().displayImage(path, imageAware)
+			}
+		}
 
 		itemView.setOnClickListener {
 			it.context.startActivity(Intent(it.context, PlantDetailsActivity2::class.java).apply {

@@ -12,8 +12,10 @@ import androidx.lifecycle.observe
 import androidx.recyclerview.widget.LinearLayoutManager
 import kotlinx.android.synthetic.main.plant_list_view.*
 import me.anon.grow.R
+import me.anon.lib.ext.removeAllItemDecorators
 import me.anon.view.MainApplication2
 import me.anon.view.PlantDetailsActivity2
+import me.anon.view.SomeDividerItemDecoration
 import me.anon.view.adapter.PlantsAdapter
 import me.anon.view.viewmodel.PlantListViewModel
 import me.anon.view.viewmodel.ViewModelFactory
@@ -62,6 +64,14 @@ class PlantListFragment : Fragment()
 	{
 		recycler_view.adapter = adapter
 		recycler_view.layoutManager = LinearLayoutManager(requireContext())
+		recycler_view.removeAllItemDecorators()
+		recycler_view.addItemDecoration(SomeDividerItemDecoration(
+			requireActivity(),
+			SomeDividerItemDecoration.VERTICAL,
+			R.drawable.divider_8dp,
+			showDivider = { index, _, adapter -> adapter.getItemViewType(index) != PlantsAdapter.TYPE_HIDDEN }
+		))
+
 		viewModel.plants.observe(viewLifecycleOwner) { plants ->
 			adapter.items = plants
 
