@@ -3,6 +3,11 @@ package me.anon.lib.ext
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MediatorLiveData
 
+public fun merge(vararg liveData: LiveData<*>): LiveData<ArrayList<*>>
+{
+	return arrayListOf(*liveData).zipMapLiveData()
+}
+
 /**
  * // TODO: Add class description
  */
@@ -26,9 +31,9 @@ public fun <J> ArrayList<LiveData<J>>.zipLiveData(): LiveData<ArrayList<J>>
 	}
 }
 
-public fun ArrayList<LiveData<Any>>.zipMapLiveData(): LiveData<ArrayList<Any>>
+public fun List<LiveData<*>>.zipMapLiveData(): LiveData<ArrayList<*>>
 {
-	return MediatorLiveData<ArrayList<Any>>().apply {
+	return MediatorLiveData<ArrayList<*>>().apply {
 		val zippedObjects = ArrayList<Any>()
 		this@zipMapLiveData.forEach {
 			addSource(it) { item ->

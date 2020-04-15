@@ -7,6 +7,7 @@ import androidx.lifecycle.observe
 import kotlinx.android.synthetic.main.add_watering_view.*
 import me.anon.grow.R
 import me.anon.lib.ext.formatWhole
+import me.anon.lib.ext.toDoubleOrNull
 import me.anon.lib.ext.viewModelFactory
 import me.anon.view.viewmodel.WateringViewModel
 
@@ -31,20 +32,22 @@ class WateringFragment : Fragment(R.layout.add_watering_view)
 	{
 		super.onActivityCreated(savedInstanceState)
 
-		viewModel.plantId = arguments?.getString("plantId") ?: throw IllegalArgumentException("Invalid plant ID")
-		viewModel.actionId = arguments?.getString("actionId")
-		viewModel.initialise()
-
+		viewModel.initialise(requireArguments().getString("plantId")!!, arguments?.getString("actionId"))
 		setupUi()
 	}
 
 	private fun setupUi()
 	{
 		fab_complete.setOnClickListener {
-			viewModel.plantsRepository.triggerUpdate()
+			viewModel.setValues(
+				ph = water_ph.text.toDoubleOrNull(),
+				tds = water_ppm.text.toDoubleOrNull()
+			)
+			requireActivity().finish()
 		}
 
 		viewModel.plant.observe(viewLifecycleOwner) { plant ->
+			plant ?: return@observe
 			requireActivity().title = getString(R.string.feeding_single_title, plant.name)
 		}
 

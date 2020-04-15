@@ -1,54 +1,50 @@
 package me.anon.view.viewmodel
 
 import androidx.lifecycle.*
+import kotlinx.coroutines.async
 import me.anon.data.repository.PlantsRepository
+import me.anon.lib.ext.addOrUpdate
 import me.anon.model.Plant
+import me.anon.model.Tds
 import me.anon.model.Water
 
 /**
  * // TODO: Add class description
  */
 class WateringViewModel(
-	public val plantsRepository: PlantsRepository,
+	private val plantsRepository: PlantsRepository,
 	private val savedStateHandle: SavedStateHandle
 ) : ViewModel()
 {
-	public var plantId: String? = null
-		set(value)
-		{
-			field = value
-			savedStateHandle["plantId"] = value
-		}
+	private var _plantId: String? = null
+	private var _actionId: String? = null
 
-	public var actionId: String? = null
-		set(value)
-		{
-			field = value
-			savedStateHandle["actionId"] = value
-		}
-
-	private val _plant = MutableLiveData<Plant>()
-	public val plant = plantsRepository.observePlants().switchMap { plants ->
-		_plant.value = plants.first { it.id == plantId }
-		_plant
+	public var plant: LiveData<Plant> = liveData {
+		emit(plantsRepository.getPlantById(_plantId!!) ?: throw IllegalArgumentException("Plant not found"))
 	}
 
-	private val _action = MutableLiveData<Water>()
-	public val action: LiveData<Water> = plant.switchMap { plant ->
-		(plant.actions.firstOrNull { it.id == actionId } as? Water)?.let {
-			_action.value = it
+	public val action: LiveData<Water> = liveData {
+		(plant.value!!.actions.firstOrNull { it.id == _actionId } as? Water)?.let {
+			emit(it)
 		}
-
-		_action
 	}
 
-	init {
-		plantId = savedStateHandle["plantId"] ?: plantId
-		actionId = savedStateHandle["actionId"] ?: actionId
-	}
-
-	public fun initialise()
+	public fun initialise(plantId: String, actionId: String?)
 	{
+		_plantId = plantId.also { savedStateHandle["plantId"] = it }
+		_actionId = actionId.also { savedStateHandle["actionId"] = it }
+	}
 
+	public fun setValues(ph: Double?, tds: Double?)
+	{
+		val action = action.value ?: Water()
+		action.ph = ph
+		tds?.let { action.tds = Tds(it) }
+
+		plant.value!!.actions.addOrUpdate(action) { action.id }
+
+		viewModelScope.async {
+			plantsRepository.save()
+		}
 	}
 }

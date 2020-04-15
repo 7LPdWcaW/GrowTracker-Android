@@ -8,75 +8,11 @@
 		android:id="@+id/filter"
 		android:title="@string/filter"
 		android:icon="@drawable/ic_filter"
-		app:showAsAction="always"
+		app:showAsAction="ifRoom"
 	>
 		<menu>
-			<group android:checkableBehavior="all">
-				<item
-					android:id="@+id/filter_planted"
-					android:title="@string/planted"
-					android:checked="true"
-				/>
+			<group android:id="@+id/filter_group" android:checkableBehavior="all">
 
-				<item
-					android:id="@+id/filter_germination"
-					android:title="@string/germination"
-					android:checked="true"
-				/>
-
-				<item
-					android:id="@+id/filter_seedling"
-					android:title="@string/seedling"
-					android:checked="true"
-				/>
-
-				<item
-					android:id="@+id/filter_cutting"
-					android:title="@string/cutting"
-					android:checked="true"
-				/>
-
-				<item
-					android:id="@+id/filter_vegetation"
-					android:title="@string/vegetation"
-					android:checked="true"
-				/>
-
-				<item
-					android:id="@+id/filter_budding"
-					android:title="@string/budding"
-					android:checked="true"
-				/>
-
-				<item
-					android:id="@+id/filter_flowering"
-					android:title="@string/flowering"
-					android:checked="true"
-				/>
-
-				<item
-					android:id="@+id/filter_ripening"
-					android:title="@string/ripening"
-					android:checked="true"
-				/>
-
-				<item
-					android:id="@+id/filter_drying"
-					android:title="@string/drying"
-					android:checked="true"
-				/>
-
-				<item
-					android:id="@+id/filter_curing"
-					android:title="@string/curing"
-					android:checked="true"
-				/>
-
-				<item
-					android:id="@+id/filter_harvested"
-					android:title="@string/harvested"
-					android:checked="true"
-				/>
 			</group>
 		</menu>
 	</item>

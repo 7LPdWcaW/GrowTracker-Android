@@ -9,14 +9,14 @@ import me.anon.model.Plant
 interface PlantsRepository
 {
 	public fun loaded(): LiveData<Result<Boolean>>
-
 	suspend fun reload()
 
-	public fun observePlants(): LiveData<List<Plant>>
-
-	public fun triggerUpdate()
-
+	public val plants: LiveData<List<Plant>>
 	suspend fun getPlants(): List<Plant>
+
+	suspend fun getPlantById(id: String): Plant?
+	public fun getPlantsById(vararg id: String): LiveData<List<Plant>>
+	public fun getPlantsByGarden(gardenId: String): LiveData<List<Plant>>
 
 	public fun addPlant(plant: Plant)
 	public fun setPlant(plant: Plant)

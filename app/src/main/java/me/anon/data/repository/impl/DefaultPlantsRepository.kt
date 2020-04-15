@@ -19,14 +19,9 @@ class DefaultPlantsRepository(
 {
 	override fun loaded(): LiveData<Result<Boolean>> = dataSource.loaded()
 
-	override fun triggerUpdate()
-	{
-		dataSource.triggerUpdate()
-	}
-
 	override suspend fun reload()
 	{
-		dataSource.getPlants()
+		dataSource.plants
 	}
 
 	override fun addPlant(plant: Plant)
@@ -46,6 +41,17 @@ class DefaultPlantsRepository(
 		}
 	}
 
-	override fun observePlants(): LiveData<List<Plant>> = dataSource.observePlants()
+	override val plants: LiveData<List<Plant>> = dataSource.plants
 	override suspend fun getPlants(): List<Plant> = dataSource.getPlants()
+	override suspend fun getPlantById(id: String): Plant? = dataSource.getPlantById(id)
+
+	override fun getPlantsById(vararg id: String): LiveData<List<Plant>>
+	{
+		TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
+	}
+
+	override fun getPlantsByGarden(gardenId: String): LiveData<List<Plant>>
+	{
+		TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
+	}
 }

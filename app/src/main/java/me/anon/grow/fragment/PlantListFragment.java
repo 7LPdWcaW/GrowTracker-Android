@@ -39,9 +39,7 @@ import me.anon.grow.MainApplication;
 import me.anon.grow.PlantDetailsActivity;
 import me.anon.grow.R;
 import me.anon.lib.SnackBar;
-import me.anon.lib.SnackBarListener;
 import me.anon.lib.Views;
-import me.anon.lib.ext.IntUtilsKt;
 import me.anon.lib.manager.PlantManager;
 import me.anon.model.EmptyAction;
 import me.anon.model.NoteAction;
@@ -325,17 +323,17 @@ public class PlantListFragment extends Fragment
 		inflater.inflate(R.menu.plant_list_menu, menu);
 
 		int[] ids = {
-			R.id.filter_planted,
-			R.id.filter_germination,
-			R.id.filter_seedling,
-			R.id.filter_cutting,
-			R.id.filter_vegetation,
-			R.id.filter_budding,
-			R.id.filter_flowering,
-			R.id.filter_ripening,
-			R.id.filter_drying,
-			R.id.filter_curing,
-			R.id.filter_harvested
+//			R.id.filter_planted,
+//			R.id.filter_germination,
+//			R.id.filter_seedling,
+//			R.id.filter_cutting,
+//			R.id.filter_vegetation,
+//			R.id.filter_budding,
+//			R.id.filter_flowering,
+//			R.id.filter_ripening,
+//			R.id.filter_drying,
+//			R.id.filter_curing,
+//			R.id.filter_harvested
 		};
 		PlantStage[] stages = PlantStage.values();
 
@@ -366,17 +364,17 @@ public class PlantListFragment extends Fragment
 		}
 
 		int[] ids = {
-			R.id.filter_planted,
-			R.id.filter_germination,
-			R.id.filter_seedling,
-			R.id.filter_cutting,
-			R.id.filter_vegetation,
-			R.id.filter_budding,
-			R.id.filter_flowering,
-			R.id.filter_ripening,
-			R.id.filter_drying,
-			R.id.filter_curing,
-			R.id.filter_harvested
+//			R.id.filter_planted,
+//			R.id.filter_germination,
+//			R.id.filter_seedling,
+//			R.id.filter_cutting,
+//			R.id.filter_vegetation,
+//			R.id.filter_budding,
+//			R.id.filter_flowering,
+//			R.id.filter_ripening,
+//			R.id.filter_drying,
+//			R.id.filter_curing,
+//			R.id.filter_harvested
 		};
 		PlantStage[] stages = PlantStage.values();
 

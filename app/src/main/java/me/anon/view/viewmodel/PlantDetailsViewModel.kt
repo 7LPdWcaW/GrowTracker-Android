@@ -22,8 +22,10 @@ class PlantDetailsViewModel(
 		}
 
 	private val _plant: MutableLiveData<Plant> = MutableLiveData()
-	public val plant = plantsRepository.observePlants().switchMap { plants ->
-		_plant.value = plants.find { it.id == plantId }
+	public val plant = plantsRepository.plants.switchMap { plants ->
+		_plant.value = plants.find { it.id == plantId }?.also {
+			newPlant = false
+		}
 		_plant
 	}
 

@@ -49,7 +49,6 @@ import me.anon.lib.Views;
 import me.anon.lib.event.GardenChangeEvent;
 import me.anon.lib.export.ExportHelper;
 import me.anon.lib.export.ExportProcessor;
-import me.anon.lib.ext.IntUtilsKt;
 import me.anon.lib.helper.BusHelper;
 import me.anon.lib.manager.GardenManager;
 import me.anon.lib.manager.PlantManager;
@@ -374,17 +373,17 @@ public class GardenFragment extends Fragment
 		menu.findItem(R.id.delete_garden).setVisible(true);
 
 		int[] ids = {
-			R.id.filter_planted,
-			R.id.filter_germination,
-			R.id.filter_seedling,
-			R.id.filter_cutting,
-			R.id.filter_vegetation,
-			R.id.filter_budding,
-			R.id.filter_flowering,
-			R.id.filter_ripening,
-			R.id.filter_drying,
-			R.id.filter_curing,
-			R.id.filter_harvested
+//			R.id.filter_planted,
+//			R.id.filter_germination,
+//			R.id.filter_seedling,
+//			R.id.filter_cutting,
+//			R.id.filter_vegetation,
+//			R.id.filter_budding,
+//			R.id.filter_flowering,
+//			R.id.filter_ripening,
+//			R.id.filter_drying,
+//			R.id.filter_curing,
+//			R.id.filter_harvested
 		};
 		PlantStage[] stages = PlantStage.values();
 
@@ -494,17 +493,17 @@ public class GardenFragment extends Fragment
 			}
 
 			int[] ids = {
-				R.id.filter_planted,
-				R.id.filter_germination,
-				R.id.filter_seedling,
-				R.id.filter_cutting,
-				R.id.filter_vegetation,
-				R.id.filter_budding,
-				R.id.filter_flowering,
-				R.id.filter_ripening,
-				R.id.filter_drying,
-				R.id.filter_curing,
-				R.id.filter_harvested
+//				R.id.filter_planted,
+//				R.id.filter_germination,
+//				R.id.filter_seedling,
+//				R.id.filter_cutting,
+//				R.id.filter_vegetation,
+//				R.id.filter_budding,
+//				R.id.filter_flowering,
+//				R.id.filter_ripening,
+//				R.id.filter_drying,
+//				R.id.filter_curing,
+//				R.id.filter_harvested
 			};
 			PlantStage[] stages = PlantStage.values();
 

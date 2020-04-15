@@ -2,9 +2,7 @@ package me.anon.view.fragment
 
 import android.content.Intent
 import android.os.Bundle
-import android.view.LayoutInflater
-import android.view.View
-import android.view.ViewGroup
+import android.view.*
 import androidx.core.view.isVisible
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
@@ -36,6 +34,12 @@ class PlantListFragment : Fragment()
 	override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View?
 		= inflater.inflate(R.layout.plant_list_view, container, false)
 
+	override fun onCreate(savedInstanceState: Bundle?)
+	{
+		super.onCreate(savedInstanceState)
+		setHasOptionsMenu(true)
+	}
+
 	override fun onActivityCreated(savedInstanceState: Bundle?)
 	{
 		super.onActivityCreated(savedInstanceState)
@@ -43,6 +47,40 @@ class PlantListFragment : Fragment()
 		setupUi()
 		setupLoader()
 		setupList()
+		setupMenu()
+	}
+
+	override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater)
+	{
+		inflater.inflate(R.menu.plant_list_menu, menu)
+
+		val checkedFilters = viewModel.filters
+		viewModel.allFilters.forEachIndexed { index, filter ->
+			menu.findItem(R.id.filter).subMenu.add(R.id.filter_group, filter.hashCode(), index, filter.stage.printString).apply {
+				isCheckable = true
+				isChecked = checkedFilters.any { it == filter } == true
+			}
+		}
+
+		super.onCreateOptionsMenu(menu, inflater)
+	}
+
+	override fun onOptionsItemSelected(item: MenuItem): Boolean
+	{
+		if (item.groupId == R.id.filter_group)
+		{
+			val filter = viewModel.allFilters.find { it.hashCode() == item.itemId }
+			filter ?: return false
+			if (item.isChecked) viewModel.removeFilter(filter) else viewModel.applyFilter(filter)
+			return true
+		}
+
+		return super.onOptionsItemSelected(item)
+	}
+
+	private fun setupMenu()
+	{
+
 	}
 
 	private fun setupUi()

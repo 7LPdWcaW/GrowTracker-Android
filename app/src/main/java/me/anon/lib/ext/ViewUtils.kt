@@ -5,6 +5,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.view.inputmethod.InputMethodManager
+import android.widget.TextView
 import androidx.annotation.ColorRes
 import androidx.annotation.DimenRes
 import androidx.annotation.LayoutRes
@@ -148,3 +149,9 @@ public fun View.dimension(@DimenRes resId: Int): Float = resources.getDimension(
 public fun View.dimensionPixels(@DimenRes resId: Int): Int = resources.getDimensionPixelSize(resId)
 public fun View.string(@StringRes resId: Int): String = resources.getString(resId)
 public fun View.color(@ColorRes resId: Int): Int = resources.getColor(resId)
+
+public var TextView.text: String
+	public set(value) {
+		setText(value)
+	}
+	public get() = text.toString()
