@@ -54,11 +54,11 @@ class PlantListFragment : Fragment()
 	{
 		inflater.inflate(R.menu.plant_list_menu, menu)
 
-		val checkedFilters = viewModel.filters
+		val checkedFilters = viewModel.filters.value
 		viewModel.allFilters.forEachIndexed { index, filter ->
 			menu.findItem(R.id.filter).subMenu.add(R.id.filter_group, filter.hashCode(), index, filter.stage.printString).apply {
 				isCheckable = true
-				isChecked = checkedFilters.any { it == filter } == true
+				isChecked = checkedFilters?.any { it == filter } == true
 			}
 		}
 
@@ -72,6 +72,7 @@ class PlantListFragment : Fragment()
 			val filter = viewModel.allFilters.find { it.hashCode() == item.itemId }
 			filter ?: return false
 			if (item.isChecked) viewModel.removeFilter(filter) else viewModel.applyFilter(filter)
+			item.isChecked = !item.isChecked
 			return true
 		}
 
@@ -115,6 +116,10 @@ class PlantListFragment : Fragment()
 
 			empty.isVisible = adapter.itemCount == 0
 			recycler_view.isVisible = adapter.itemCount != 0
+		}
+
+		viewModel.filters.observe(viewLifecycleOwner) { filters ->
+			adapter.filters = filters
 		}
 	}
 }

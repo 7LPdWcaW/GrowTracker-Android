@@ -6,6 +6,7 @@ import me.anon.grow.R
 import me.anon.lib.ext.inflate
 import me.anon.model.Plant
 import me.anon.view.adapter.viewholder.StandardPlantViewHolder
+import me.anon.view.viewmodel.PlantListViewModel
 
 	/**
  * // TODO: Add class description
@@ -23,6 +24,31 @@ class PlantsAdapter : RecyclerView.Adapter<RecyclerView.ViewHolder>()
 	public var items: List<Plant> = arrayListOf()
 		set (value) {
 			field = value
+
+			filterItems()
+
+			notifyDataSetChanged()
+		}
+
+	private var filteredItems = arrayListOf<String>()
+	private fun filterItems()
+	{
+		filteredItems.clear()
+		for (item in items)
+		{
+			if (!filters.any { it.stage == item.stage })
+			{
+				filteredItems.add(item.id)
+			}
+		}
+	}
+
+	public var filters: List<PlantListViewModel.Filter> = arrayListOf()
+		set (value) {
+			field = value
+
+			filterItems()
+
 			notifyDataSetChanged()
 		}
 
@@ -30,6 +56,9 @@ class PlantsAdapter : RecyclerView.Adapter<RecyclerView.ViewHolder>()
 
 	override fun getItemViewType(position: Int): Int
 	{
+		val item = items[position]
+
+		if (filteredItems.contains(item.id)) return TYPE_HIDDEN
 		return TYPE_STANDARD
 	}
 
@@ -37,6 +66,7 @@ class PlantsAdapter : RecyclerView.Adapter<RecyclerView.ViewHolder>()
 	{
 		return when (viewType)
 		{
+			TYPE_HIDDEN -> object : RecyclerView.ViewHolder(parent.inflate(R.layout.empty)) {}
 			TYPE_STANDARD -> StandardPlantViewHolder(parent.inflate(R.layout.plant_original_item))
 			else -> throw IllegalArgumentException("Invalid view holder type")
 		}

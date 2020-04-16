@@ -21,9 +21,10 @@ class PlantListViewModel(
 		addAll(PlantStage.values().map { Filter(it) })
 	}
 
-	public val filters = arrayListOf<Filter>().apply {
+	private val _filters = MutableLiveData<ArrayList<Filter>>(arrayListOf<Filter>().apply {
 		addAll(allFilters)
-	}
+	})
+	public val filters: LiveData<ArrayList<Filter>> = _filters
 
 	private val _loaded = MutableLiveData<Boolean>(false)
 
@@ -38,7 +39,7 @@ class PlantListViewModel(
 			}
 		}
 
-		plantsRepository.plants.switchMap { filterPlants(it) }
+		plantsRepository.plants
 	}
 
 	public val plants: LiveData<List<Plant>> = _plants
@@ -50,35 +51,16 @@ class PlantListViewModel(
 
 	public fun applyFilter(filter: Filter)
 	{
-		filters.clear()
-		filters.addAll(arrayListOf(filter).apply {
-			addAll(filters ?: arrayListOf())
-		})
+		_filters.value = arrayListOf(filter).apply {
+			addAll(_filters.value ?: arrayListOf())
+		}
 		_forceUpdate.value = true
 	}
 
 	public fun removeFilter(filter: Filter)
 	{
-		val newFilters = filters.filterNot { it == filter }
-		filters.clear()
-		filters.addAll(newFilters)
+		val newFilters = filters.value?.filterNot { it == filter } as ArrayList?
+		_filters.value = newFilters ?: allFilters
 		_forceUpdate.value = true
-	}
-
-	private fun filterPlants(plants: List<Plant>): LiveData<List<Plant>>
-	{
-		val liveData = MutableLiveData<List<Plant>>()
-		val filteredPlants = arrayListOf<Plant>()
-
-		viewModelScope.launch {
-			for (plant in plants)
-			{
-				if (filters.any { it.stage == plant.stage }) filteredPlants.add(plant)
-			}
-
-			liveData.value = filteredPlants
-		}
-
-		return liveData
 	}
 }
