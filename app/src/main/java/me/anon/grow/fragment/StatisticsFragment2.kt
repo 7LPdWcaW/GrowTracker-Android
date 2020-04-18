@@ -20,12 +20,13 @@ import com.github.mikephil.charting.interfaces.datasets.ILineDataSet
 import com.google.android.material.chip.Chip
 import kotlinx.android.synthetic.main.data_label_stub.view.*
 import kotlinx.android.synthetic.main.statistics2_view.*
-import kotlinx.android.synthetic.main.statistics2_view.stage_chart
-import kotlinx.android.synthetic.main.statistics2_view.stats_container
 import me.anon.grow.R
 import me.anon.lib.TdsUnit
 import me.anon.lib.Unit
-import me.anon.lib.ext.*
+import me.anon.lib.ext.T
+import me.anon.lib.ext.formatWhole
+import me.anon.lib.ext.resolveColor
+import me.anon.lib.ext.toDays
 import me.anon.lib.helper.StatsHelper.formatter
 import me.anon.lib.helper.TimeHelper
 import me.anon.model.*
@@ -133,8 +134,9 @@ class StatisticsFragment2 : Fragment()
 					val stageChangeDate = sortedStageChange[stage]?.date ?: 0
 					val waterDate = action.date
 					val stageLength = (waterDate - stageChangeDate).toDays().toInt()
+					val totalDate = TimeHelper.toDays(action.date - plant.plantDate).toInt()
 					aveStageWaters.getOrPut(stage, { arrayListOf<Long>() }).add(action.date)
-					additiveDates.add("${stageLength}${getString(stage.printString).toLowerCase()[0]}")
+					additiveDates.add("${totalDate}/${stageLength}${getString(stage.printString).toLowerCase()[0]}")
 
 					// add additives to pre calculated list
 					action.additives.forEach { additive ->
@@ -421,7 +423,7 @@ class StatisticsFragment2 : Fragment()
 		{
 			override fun getAxisLabel(value: Float, axis: AxisBase?): String
 			{
-				return additiveDates.getOrElse(value.toInt(), { "" })
+				return additiveDates.getOrElse(value.toInt()) { "" }
 			}
 		}
 
