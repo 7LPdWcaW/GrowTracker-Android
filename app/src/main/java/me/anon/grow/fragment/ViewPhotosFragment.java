@@ -6,10 +6,12 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.content.res.Configuration;
+import android.database.Cursor;
 import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Build;
 import android.os.Bundle;
+import android.provider.DocumentsContract;
 import android.provider.MediaStore;
 import android.text.Html;
 import android.view.ActionMode;
@@ -23,7 +25,7 @@ import android.view.WindowManager;
 import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
-import java.util.Collections;
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
@@ -106,7 +108,8 @@ public class ViewPhotosFragment extends Fragment
 		{
 			plant = getArguments().getParcelable("plant");
 		}
-		else if (savedInstanceState != null)
+
+		if (savedInstanceState != null)
 		{
 			plant = savedInstanceState.getParcelable("plant");
 			tempImagePath = savedInstanceState.getString("temp_image", "");
@@ -480,6 +483,10 @@ public class ViewPhotosFragment extends Fragment
 				File imageFile = new File(tempImagePath);
 				if (imageFile.exists() && imageFile.length() > 0)
 				{
+					if (!plant.getImages().contains(imageFile.getAbsolutePath()))
+					{
+						plant.getImages().add(imageFile.getAbsolutePath());
+					}
 					PlantManager.getInstance().upsert(plant);
 
 					setAdapter();
@@ -489,6 +496,7 @@ public class ViewPhotosFragment extends Fragment
 				}
 				else
 				{
+					plant.getImages().remove(imageFile.getAbsolutePath());
 					cleanupFolder(imageFile.getParentFile());
 				}
 			}
@@ -499,10 +507,10 @@ public class ViewPhotosFragment extends Fragment
 			{
 				if (data == null) return;
 
-				ArrayList<Uri> images = new ArrayList<>();
+				HashMap<Uri, Long> images = new HashMap();
 				if (data.getData() != null)
 				{
-					images.add(data.getData());
+					images.put(data.getData(), System.currentTimeMillis());
 
 					try
 					{
@@ -524,10 +532,28 @@ public class ViewPhotosFragment extends Fragment
 				{
 					for (int index = 0; index < data.getClipData().getItemCount(); index++)
 					{
-						images.add(data.getClipData().getItemAt(index).getUri());
+						images.put(data.getClipData().getItemAt(index).getUri(), System.currentTimeMillis());
 					}
 				}
-				images.removeAll(Collections.singleton(null));
+
+				for (Uri key : images.keySet())
+				{
+					try
+					{
+						Cursor query = getActivity().getContentResolver().query(key, null,
+							DocumentsContract.Document.COLUMN_DOCUMENT_ID + " = " + key.getPath(), null, null);
+						long modifiedDate = images.get(key);
+						int modifiedIndex = query.getColumnIndex(DocumentsContract.Document.COLUMN_LAST_MODIFIED);
+						while (query.moveToNext()) {
+							modifiedDate = query.getLong(modifiedIndex);
+							break;
+						}
+
+						images.put(key, modifiedDate == -1 ? images.get(key) : modifiedDate);
+						query.close();
+					}
+					catch (Exception e){}
+				}
 
 				NotificationHelper.sendDataTaskNotification(getActivity(), getString(R.string.app_name), getString(R.string.import_progress_warning));
 				new ImportTask(getActivity(), new AsyncCallback()

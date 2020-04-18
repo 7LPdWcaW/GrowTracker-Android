@@ -19,6 +19,8 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.HashMap;
 
 import javax.crypto.Cipher;
 
@@ -39,7 +41,7 @@ import me.anon.model.Plant;
  * @documentation // TODO Reference flow doc
  * @project GrowTracker
  */
-public class ImportTask extends AsyncTask<Pair<String, ArrayList<Uri>>, Integer, Void>
+public class ImportTask extends AsyncTask<Pair<String, HashMap<Uri, Long>>, Integer, Void>
 {
 	protected NotificationCompat.Builder notification;
 	protected NotificationManager notificationManager;
@@ -74,7 +76,7 @@ public class ImportTask extends AsyncTask<Pair<String, ArrayList<Uri>>, Integer,
 		notificationManager.notify(1, notification.build());
 	}
 
-	@Override protected Void doInBackground(Pair<String, ArrayList<Uri>>... params)
+	@Override protected Void doInBackground(Pair<String, HashMap<Uri, Long>>... params)
 	{
 		MainApplication.dataTaskRunning.set(true);
 
@@ -93,9 +95,9 @@ public class ImportTask extends AsyncTask<Pair<String, ArrayList<Uri>>, Integer,
 		}
 
 		ArrayList<String> imagesToAdd = new ArrayList<>();
-		for (Uri filePath : params[0].getSecond())
+		for (Uri filePath : params[0].getSecond().keySet())
 		{
-			File toPath = new File(to, System.currentTimeMillis() + ".jpg");
+			File toPath = new File(to, params[0].getSecond().get(filePath) + ".jpg");
 			copyImage(appContext, filePath, toPath);
 
 			if (toPath.exists())
@@ -109,11 +111,15 @@ public class ImportTask extends AsyncTask<Pair<String, ArrayList<Uri>>, Integer,
 		Plant plant = PlantManager.getInstance().getPlant(params[0].getFirst());
 		if (plant != null)
 		{
-			plant.getImages().addAll(imagesToAdd);
+			ArrayList<String> images = plant.getImages();
+			images.addAll(imagesToAdd);
+			Collections.sort(images);
+			plant.setImages(images);
+
 			PlantManager.getInstance().save();
 		}
 
-		for (Uri uri : params[0].getSecond())
+		for (Uri uri : params[0].getSecond().keySet())
 		{
 			if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT)
 			{
