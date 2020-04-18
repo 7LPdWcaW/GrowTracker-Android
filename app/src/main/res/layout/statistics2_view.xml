@@ -83,7 +83,7 @@
 					/>
 				</LinearLayout>
 
-				<com.github.mikephil.charting.charts.LineChart
+				<com.github.mikephil.charting.charts.CombinedChart
 					android:layout_width="match_parent"
 					android:layout_height="300dp"
 					android:id="@+id/additives_chart"

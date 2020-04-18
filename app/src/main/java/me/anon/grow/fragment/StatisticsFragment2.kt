@@ -12,10 +12,13 @@ import androidx.appcompat.view.ContextThemeWrapper
 import androidx.core.graphics.ColorUtils
 import androidx.core.view.plusAssign
 import androidx.fragment.app.Fragment
+import com.github.mikephil.charting.charts.CombinedChart.DrawOrder
 import com.github.mikephil.charting.components.AxisBase
 import com.github.mikephil.charting.components.XAxis
+import com.github.mikephil.charting.components.YAxis
 import com.github.mikephil.charting.data.*
 import com.github.mikephil.charting.formatter.ValueFormatter
+import com.github.mikephil.charting.interfaces.datasets.IBarDataSet
 import com.github.mikephil.charting.interfaces.datasets.ILineDataSet
 import com.google.android.material.chip.Chip
 import kotlinx.android.synthetic.main.data_label_stub.view.*
@@ -23,10 +26,7 @@ import kotlinx.android.synthetic.main.statistics2_view.*
 import me.anon.grow.R
 import me.anon.lib.TdsUnit
 import me.anon.lib.Unit
-import me.anon.lib.ext.T
-import me.anon.lib.ext.formatWhole
-import me.anon.lib.ext.resolveColor
-import me.anon.lib.ext.toDays
+import me.anon.lib.ext.*
 import me.anon.lib.helper.StatsHelper.formatter
 import me.anon.lib.helper.TimeHelper
 import me.anon.model.*
@@ -40,6 +40,8 @@ import kotlin.math.min
  */
 class StatisticsFragment2 : Fragment()
 {
+	class StageDate(var day: Int, var total: Int, var stage: PlantStage)
+
 	open class template()
 	open class header(var label: String) : template()
 	open class data(label: String, val data: String) : header(label)
@@ -85,7 +87,7 @@ class StatisticsFragment2 : Fragment()
 	}
 
 	val additives = arrayListOf<Additive>()
-	val additiveDates = arrayListOf<String>()
+	val additiveDates = arrayListOf<StageDate>()
 	val additiveValues = hashMapOf<String, ArrayList<Entry>>()
 	var endDate = System.currentTimeMillis()
 	var waterDifference = 0L
@@ -136,7 +138,7 @@ class StatisticsFragment2 : Fragment()
 					val stageLength = (waterDate - stageChangeDate).toDays().toInt()
 					val totalDate = TimeHelper.toDays(action.date - plant.plantDate).toInt()
 					aveStageWaters.getOrPut(stage, { arrayListOf<Long>() }).add(action.date)
-					additiveDates.add("${totalDate}/${stageLength}${getString(stage.printString).toLowerCase()[0]}")
+					additiveDates.add(StageDate(stageLength, totalDate, stage))
 
 					// add additives to pre calculated list
 					action.additives.forEach { additive ->
@@ -312,6 +314,7 @@ class StatisticsFragment2 : Fragment()
 
 		val selectedAdditives = arrayListOf<String>()
 		val additiveStats = LinkedHashMap<String, additiveStat>()
+		var totalMax = Double.MIN_VALUE
 
 		fun displayStats()
 		{
@@ -345,25 +348,45 @@ class StatisticsFragment2 : Fragment()
 
 		fun displayChart()
 		{
+			val barSets = arrayListOf<IBarDataSet>()
 			val dataSets = arrayListOf<ILineDataSet>()
 			var index = 0
-			additiveValues.toSortedMap().forEach { (k, v) ->
-				if (selectedAdditives.contains(k))
-				{
-					dataSets += LineDataSet(v, k).apply {
-						color = statsColours.get(index)
-						fillColor = color
-						setCircleColor(color)
-						styleDataset(context!!, this, color)
+			additiveValues.toSortedMap().let {
+				it.forEach { (k, v) ->
+					if (selectedAdditives.contains(k))
+					{
+						dataSets += LineDataSet(v, k).apply {
+							color = statsColours.get(index)
+							fillColor = color
+							setCircleColor(color)
+							styleDataset(context!!, this, color)
+						}
 					}
-				}
 
-				index++
-				if (index >= statsColours.size) index = 0
+					index++
+					if (index >= statsColours.size) index = 0
+				}
+			}
+
+			val stageEntries = plantStages.keys.toList().asReversed()
+			additiveDates.forEachIndexed { additiveIndex, date ->
+				barSets += BarDataSet(arrayListOf(BarEntry(additiveIndex.toFloat(), totalMax.toFloat())), null).apply {
+					color = ColorUtils.setAlphaComponent(statsColours[stageEntries.indexOf(date.stage) % statsColours.size], 127)
+				}
 			}
 
 			val lineData = LineData(dataSets)
-			additives_chart.data = lineData
+			val barData = BarData(barSets).apply {
+				setDrawValues(false)
+				this.isHighlightEnabled = false
+				this.barWidth = 1.0f
+				this.groupBars(0f, 0f, 0f)
+			}
+
+			val data = CombinedData()
+			data.setData(barData)
+			data.setData(lineData)
+			additives_chart.data = data
 			additives_chart.notifyDataSetChanged()
 			additives_chart.invalidate()
 		}
@@ -375,6 +398,8 @@ class StatisticsFragment2 : Fragment()
 					min = min(min.isNaN() T Double.MAX_VALUE ?: min, additive.amount ?: 0.0)
 					max = max(max.isNaN() T Double.MIN_VALUE ?: max, additive.amount ?: 0.0)
 					count++
+
+					totalMax = max(totalMax, max)
 				}
 			}
 		}
@@ -395,6 +420,11 @@ class StatisticsFragment2 : Fragment()
 			additive_chips_container += chip
 		}
 
+		// draw bars behind lines
+		additives_chart.drawOrder = arrayOf(
+			DrawOrder.BAR, DrawOrder.LINE
+		)
+		additives_chart.setVisibleYRangeMaximum(totalMax.toFloat(), YAxis.AxisDependency.LEFT)
 		additives_chart.setDrawGridBackground(false)
 		additives_chart.description = null
 		additives_chart.isScaleYEnabled = false
@@ -423,12 +453,15 @@ class StatisticsFragment2 : Fragment()
 		{
 			override fun getAxisLabel(value: Float, axis: AxisBase?): String
 			{
-				return additiveDates.getOrElse(value.toInt()) { "" }
+				return additiveDates.getOrNull(value.toInt())?.transform {
+					"${total}/${day}${getString(stage.printString).toLowerCase()[0]}"
+				} ?: ""
 			}
 		}
 
 		additives_chart.legend.textColor = R.attr.colorOnSurface.resolveColor(context!!)
 		additives_chart.legend.isWordWrapEnabled = true
+		additives_chart.legend.setCustom(arrayListOf())
 		displayChart()
 		displayStats()
 	}
