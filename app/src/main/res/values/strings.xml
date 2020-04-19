@@ -444,4 +444,7 @@
 	<string name="additive_stat_header" formatted="true">%s stats</string>
 	<string name="additive_average_usage_label">Ave. each feeding:</string>
 	<string name="additive_total_usage_label">Total amount:</string>
+
+	<string name="additives_overtime_title">Additives over time</string>
+	<string name="additives_distribution_title">Additives distribution</string>
 </resources>

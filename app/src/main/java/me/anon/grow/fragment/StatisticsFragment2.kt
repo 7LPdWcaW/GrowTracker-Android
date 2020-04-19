@@ -391,6 +391,30 @@ class StatisticsFragment2 : Fragment()
 			additives_chart.invalidate()
 		}
 
+		fun displayTotalsChart()
+		{
+			val pieData = arrayListOf<PieEntry>()
+			selectedAdditives.forEach { selected ->
+				additiveStats.get(selected)?.let { additive ->
+					pieData += PieEntry(additive.total.toFloat())
+				}
+			}
+
+			additives_count_chart.data = PieData(PieDataSet(pieData, "").apply {
+				this.colors = statsColours
+				this.valueTextSize = 14f
+				this.valueFormatter = object : ValueFormatter()
+				{
+					override fun getFormattedValue(value: Float): String
+					{
+						return "${value.formatWhole()}${selectedMeasurementUnit.label}"
+					}
+				}
+			})
+			additives_count_chart.notifyDataSetChanged()
+			additives_count_chart.invalidate()
+		}
+
 		additives.sortedBy { it.description }.forEach { additive ->
 			additive.description?.let { key ->
 				additiveStats.getOrPut(key, { additiveStat() }).apply {
@@ -462,7 +486,14 @@ class StatisticsFragment2 : Fragment()
 		additives_chart.legend.textColor = R.attr.colorOnSurface.resolveColor(context!!)
 		additives_chart.legend.isWordWrapEnabled = true
 		additives_chart.legend.setCustom(arrayListOf())
+
+//		additives_count_chart.holeRadius = 10f
+		additives_count_chart.description = null
+		additives_count_chart.setHoleColor(0x00ffffff.toInt())
+		additives_count_chart.legend.setCustom(arrayListOf())
+
 		displayChart()
+		displayTotalsChart()
 		displayStats()
 	}
 
