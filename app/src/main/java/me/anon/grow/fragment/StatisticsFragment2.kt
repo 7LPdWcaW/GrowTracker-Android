@@ -13,9 +13,7 @@ import androidx.core.graphics.ColorUtils
 import androidx.core.view.plusAssign
 import androidx.fragment.app.Fragment
 import com.github.mikephil.charting.charts.CombinedChart.DrawOrder
-import com.github.mikephil.charting.components.AxisBase
-import com.github.mikephil.charting.components.XAxis
-import com.github.mikephil.charting.components.YAxis
+import com.github.mikephil.charting.components.*
 import com.github.mikephil.charting.data.*
 import com.github.mikephil.charting.formatter.ValueFormatter
 import com.github.mikephil.charting.interfaces.datasets.IBarDataSet
@@ -86,9 +84,11 @@ class StatisticsFragment2 : Fragment()
 		}
 	}
 
-	val additives = arrayListOf<Additive>()
+	val additives = hashMapOf<Water, ArrayList<Additive>>()
 	val additiveDates = arrayListOf<StageDate>()
 	val additiveValues = hashMapOf<String, ArrayList<Entry>>()
+	val additiveTotalValues = hashMapOf<String, ArrayList<Entry>>()
+
 	var endDate = System.currentTimeMillis()
 	var waterDifference = 0L
 	var lastWater = 0L
@@ -145,15 +145,25 @@ class StatisticsFragment2 : Fragment()
 						if (additive.description != null)
 						{
 							additive.amount?.let { amount ->
-								val amount = Unit.ML.to(selectedMeasurementUnit, amount)
-								val entry = Entry(additiveIndex.toFloat(), amount.toFloat())
-								additiveValues.getOrPut(additive.description!!, { arrayListOf() }).add(entry)
+								with (additiveValues) {
+									val amount = Unit.ML.to(selectedMeasurementUnit, amount)
+									val entry = Entry(additiveIndex.toFloat(), amount.toFloat())
+									getOrPut(additive.description!!, { arrayListOf() }).add(entry)
+								}
+
+								with (additiveTotalValues) {
+									val totalDelivery = Unit.ML.to(selectedDeliveryUnit, action.amount ?: 1000.0)
+									val additiveAmount = Unit.ML.to(selectedMeasurementUnit, amount)
+
+									val entry = Entry(additiveIndex.toFloat(), Unit.toTwoDecimalPlaces(additiveAmount * totalDelivery).toFloat())
+									getOrPut(additive.description!!, { arrayListOf() }).add(entry)
+								}
 							}
 						}
 					}
 
 					additiveIndex++
-					additives.addAll(action.additives)
+					additives.getOrPut(action) { arrayListOf() }.addAll(action.additives)
 				}
 
 				is EmptyAction -> {
@@ -310,7 +320,13 @@ class StatisticsFragment2 : Fragment()
 
 	private fun populateAdditiveStates()
 	{
-		class additiveStat(var total: Double = 0.0, var count: Int = 0, var min: Double = Double.NaN, var max: Double = Double.NaN)
+		class additiveStat(
+			var total: Double = 0.0,
+			var totalAdjusted: Double = 0.0,
+			var count: Int = 0,
+			var min: Double = Double.NaN,
+			var max: Double = Double.NaN
+		)
 
 		val selectedAdditives = arrayListOf<String>()
 		val additiveStats = LinkedHashMap<String, additiveStat>()
@@ -337,8 +353,12 @@ class StatisticsFragment2 : Fragment()
 						data = "${Unit.ML.to(selectedMeasurementUnit, stat.total / stat.count.toDouble()).formatWhole()} ${selectedMeasurementUnit.label}/${selectedDeliveryUnit.label}"
 					)
 					stats += data(
+						label = getString(R.string.additive_usage_count_label),
+						data = "${stat.count}"
+					)
+					stats += data(
 						label = getString(R.string.additive_total_usage_label),
-						data = "${Unit.ML.to(selectedMeasurementUnit, stat.total).formatWhole()} ${selectedMeasurementUnit.label}"
+						data = "${Unit.ML.to(selectedMeasurementUnit, stat.totalAdjusted).formatWhole()} ${selectedMeasurementUnit.label}"
 					)
 
 					renderStats(additives_stats_container, stats)
@@ -346,7 +366,7 @@ class StatisticsFragment2 : Fragment()
 			}
 		}
 
-		fun displayChart()
+		fun displayConcentrationChart()
 		{
 			val barSets = arrayListOf<IBarDataSet>()
 			val dataSets = arrayListOf<ILineDataSet>()
@@ -356,7 +376,7 @@ class StatisticsFragment2 : Fragment()
 					if (selectedAdditives.contains(k))
 					{
 						dataSets += LineDataSet(v, k).apply {
-							color = statsColours.get(index)
+							color = statsColours[index]
 							fillColor = color
 							setCircleColor(color)
 							styleDataset(context!!, this, color)
@@ -384,25 +404,41 @@ class StatisticsFragment2 : Fragment()
 			}
 
 			val data = CombinedData()
-			data.setData(barData)
+			//data.setData(barData)
 			data.setData(lineData)
-			additives_chart.data = data
-			additives_chart.notifyDataSetChanged()
-			additives_chart.invalidate()
+			additives_concentration_chart.data = data
+			additives_concentration_chart.notifyDataSetChanged()
+			additives_concentration_chart.invalidate()
 		}
 
 		fun displayTotalsChart()
 		{
 			val pieData = arrayListOf<PieEntry>()
-			selectedAdditives.forEach { selected ->
-				additiveStats.get(selected)?.let { additive ->
-					pieData += PieEntry(additive.total.toFloat())
+			val colors = arrayListOf<Int>()
+			additiveTotalValues.toSortedMap().let { values ->
+				var index = 0
+
+				values.forEach { (k, v) ->
+					if (selectedAdditives.contains(k))
+					{
+						var total = 0.0
+						v.forEach { entry ->
+							total += entry.y
+						}
+
+						pieData += PieEntry(total.toFloat()).apply {
+							colors += statsColours[index]
+						}
+					}
+
+					index++
+					if (index >= statsColours.size) index = 0
 				}
 			}
 
 			additives_count_chart.data = PieData(PieDataSet(pieData, "").apply {
-				this.colors = statsColours
-				this.valueTextSize = 14f
+				this.colors = colors
+				this.valueTextSize = 12f
 				this.valueFormatter = object : ValueFormatter()
 				{
 					override fun getFormattedValue(value: Float): String
@@ -415,15 +451,91 @@ class StatisticsFragment2 : Fragment()
 			additives_count_chart.invalidate()
 		}
 
-		additives.sortedBy { it.description }.forEach { additive ->
-			additive.description?.let { key ->
-				additiveStats.getOrPut(key, { additiveStat() }).apply {
-					total += additive.amount ?: 0.0
-					min = min(min.isNaN() T Double.MAX_VALUE ?: min, additive.amount ?: 0.0)
-					max = max(max.isNaN() T Double.MIN_VALUE ?: max, additive.amount ?: 0.0)
-					count++
+		fun displayOvertimeChart()
+		{
+			val barSets = arrayListOf<IBarDataSet>()
+			val dataSets = arrayListOf<ILineDataSet>()
+			var index = 0
+			val newValues = sortedMapOf<String, ArrayList<Entry>>()
 
-					totalMax = max(totalMax, max)
+			additiveTotalValues.toSortedMap().let {
+				it.forEach { (key, entries) ->
+					if (selectedAdditives.contains(key))
+					{
+						val newEntries = arrayListOf<Entry>()
+						var lastEntry: Entry? = null
+						entries.forEach { entry ->
+							val newEntry = Entry(entry.x, entry.y + (lastEntry?.y ?: 0.0f))
+							newEntries.add(newEntry)
+							lastEntry = newEntry
+						}
+
+						newValues[key] = newEntries
+
+						dataSets += LineDataSet(newValues[key], key).apply {
+							color = statsColours[index]
+							fillColor = color
+							setCircleColor(color)
+							styleDataset(context!!, this, color)
+						}
+					}
+
+					index++
+					if (index >= statsColours.size) index = 0
+				}
+			}
+
+			val stageEntries = plantStages.keys.toList().asReversed()
+			additiveDates.forEachIndexed { additiveIndex, date ->
+				barSets += BarDataSet(arrayListOf(BarEntry(additiveIndex.toFloat(), totalMax.toFloat())), null).apply {
+					color = ColorUtils.setAlphaComponent(statsColours[stageEntries.indexOf(date.stage) % statsColours.size], 127)
+				}
+			}
+
+			val lineData = LineData(dataSets)
+			val barData = BarData(barSets).apply {
+				setDrawValues(false)
+				this.isHighlightEnabled = false
+				this.barWidth = 1.0f
+				this.groupBars(0f, 0f, 0f)
+			}
+
+			val data = CombinedData()
+			//data.setData(barData)
+			data.setData(lineData)
+			additives_overtime_chart.data = data
+			additives_overtime_chart.notifyDataSetChanged()
+			additives_overtime_chart.invalidate()
+		}
+
+		fun refreshCharts()
+		{
+			displayConcentrationChart()
+			displayTotalsChart()
+			displayOvertimeChart()
+			displayStats()
+		}
+
+		additives.keys.forEach { water ->
+			additives[water]?.sortedBy { it.description }?.forEach { additive ->
+				additive.description?.let { key ->
+					additiveStats.getOrPut(key, { additiveStat() }).apply {
+						total += additive.amount ?: 0.0
+						min = min(min.isNaN() T Double.MAX_VALUE ?: min, additive.amount ?: 0.0)
+						max = max(max.isNaN() T Double.MIN_VALUE ?: max, additive.amount ?: 0.0)
+
+						additiveTotalValues[key]?.let { totalValues ->
+							var total = 0.0
+							totalValues.forEach { entry ->
+								total += entry.y
+							}
+
+							totalAdjusted = total
+						}
+
+						count++
+						totalMax = max(totalMax, max)
+					}
 				}
 			}
 		}
@@ -436,65 +548,136 @@ class StatisticsFragment2 : Fragment()
 				if (isChecked) selectedAdditives += k
 				else selectedAdditives -= k
 
-				displayChart()
-				displayStats()
+				refreshCharts()
 			}
 
 			selectedAdditives += k
 			additive_chips_container += chip
 		}
 
-		// draw bars behind lines
-		additives_chart.drawOrder = arrayOf(
-			DrawOrder.BAR, DrawOrder.LINE
-		)
-		additives_chart.setVisibleYRangeMaximum(totalMax.toFloat(), YAxis.AxisDependency.LEFT)
-		additives_chart.setDrawGridBackground(false)
-		additives_chart.description = null
-		additives_chart.isScaleYEnabled = false
-		additives_chart.setDrawBorders(false)
+		val entries = arrayListOf<LegendEntry>()
+		additiveValues.toSortedMap().let {
+			var index = 0
+			it.forEach { (k, v) ->
+				if (selectedAdditives.contains(k))
+				{
+					entries.add(LegendEntry().apply {
+						label = k
+						formColor = statsColours[index]
+					})
+				}
 
-		additives_chart.axisLeft.granularity = 1f
-		additives_chart.axisLeft.setDrawGridLines(false)
-		additives_chart.axisLeft.textColor = R.attr.colorOnSurface.resolveColor(context!!)
-		additives_chart.axisLeft.valueFormatter = object : ValueFormatter()
-		{
-			override fun getAxisLabel(value: Float, axis: AxisBase?): String
-			{
-				return "${value.formatWhole()}${selectedMeasurementUnit.label}/${selectedDeliveryUnit.label}"
+				index++
+				if (index >= statsColours.size) index = 0
 			}
 		}
 
-		additives_chart.axisRight.setDrawLabels(false)
-		additives_chart.axisRight.setDrawGridLines(false)
-		additives_chart.axisRight.setDrawAxisLine(false)
+		with (additives_concentration_chart) {
+			drawOrder = arrayOf(
+				DrawOrder.BAR, DrawOrder.LINE
+			)
+			setVisibleYRangeMaximum(totalMax.toFloat(), YAxis.AxisDependency.LEFT)
+			setDrawGridBackground(false)
+			description = null
+			isScaleYEnabled = false
+			setDrawBorders(false)
 
-		additives_chart.xAxis.setDrawGridLines(false)
-		additives_chart.xAxis.granularity = 1f
-		additives_chart.xAxis.position = XAxis.XAxisPosition.BOTTOM
-		additives_chart.xAxis.textColor = R.attr.colorOnSurface.resolveColor(context!!)
-		additives_chart.xAxis.valueFormatter = object : ValueFormatter()
-		{
-			override fun getAxisLabel(value: Float, axis: AxisBase?): String
+			axisLeft.granularity = 1f
+			axisLeft.setDrawGridLines(false)
+			axisLeft.textColor = R.attr.colorOnSurface.resolveColor(context!!)
+			axisLeft.valueFormatter = object : ValueFormatter()
 			{
-				return additiveDates.getOrNull(value.toInt())?.transform {
-					"${total}/${day}${getString(stage.printString).toLowerCase()[0]}"
-				} ?: ""
+				override fun getAxisLabel(value: Float, axis: AxisBase?): String
+				{
+					return "${value.formatWhole()}${selectedMeasurementUnit.label}/${selectedDeliveryUnit.label}"
+				}
 			}
+
+			axisRight.setDrawLabels(false)
+			axisRight.setDrawGridLines(false)
+			axisRight.setDrawAxisLine(false)
+
+			xAxis.setDrawGridLines(false)
+			xAxis.granularity = 1f
+			xAxis.position = XAxis.XAxisPosition.BOTTOM
+			xAxis.yOffset = 10f
+			xAxis.textColor = R.attr.colorOnSurface.resolveColor(context!!)
+			xAxis.valueFormatter = object : ValueFormatter()
+			{
+				override fun getAxisLabel(value: Float, axis: AxisBase?): String
+				{
+					return additiveDates.getOrNull(value.toInt())?.transform {
+						"${total}/${day}${getString(stage.printString).toLowerCase()[0]}"
+					} ?: ""
+				}
+			}
+
+			legend.setCustom(entries)
+			legend.form = Legend.LegendForm.CIRCLE
+			legend.textColor = R.attr.colorOnSurface.resolveColor(context!!)
+			legend.isWordWrapEnabled = true
+			legend.yOffset = 10f
+			legend.xOffset = 10f
 		}
 
-		additives_chart.legend.textColor = R.attr.colorOnSurface.resolveColor(context!!)
-		additives_chart.legend.isWordWrapEnabled = true
-		additives_chart.legend.setCustom(arrayListOf())
+		with (additives_overtime_chart) {
+			drawOrder = arrayOf(
+				DrawOrder.BAR, DrawOrder.LINE
+			)
+			setVisibleYRangeMaximum(totalMax.toFloat(), YAxis.AxisDependency.LEFT)
+			setDrawGridBackground(false)
+			description = null
+			isScaleYEnabled = false
+			setDrawBorders(false)
 
-//		additives_count_chart.holeRadius = 10f
-		additives_count_chart.description = null
-		additives_count_chart.setHoleColor(0x00ffffff.toInt())
-		additives_count_chart.legend.setCustom(arrayListOf())
+			axisLeft.granularity = 1f
+			axisLeft.setDrawGridLines(false)
+			axisLeft.textColor = R.attr.colorOnSurface.resolveColor(context!!)
+			axisLeft.valueFormatter = object : ValueFormatter()
+			{
+				override fun getAxisLabel(value: Float, axis: AxisBase?): String
+				{
+					return "${value.formatWhole()}${selectedMeasurementUnit.label}"
+				}
+			}
 
-		displayChart()
-		displayTotalsChart()
-		displayStats()
+			axisRight.setDrawLabels(false)
+			axisRight.setDrawGridLines(false)
+			axisRight.setDrawAxisLine(false)
+
+			xAxis.setDrawGridLines(false)
+			xAxis.granularity = 1f
+			xAxis.position = XAxis.XAxisPosition.BOTTOM
+			xAxis.yOffset = 10f
+			xAxis.textColor = R.attr.colorOnSurface.resolveColor(context!!)
+			xAxis.valueFormatter = object : ValueFormatter()
+			{
+				override fun getAxisLabel(value: Float, axis: AxisBase?): String
+				{
+					return additiveDates.getOrNull(value.toInt())?.transform {
+						"${total}/${day}${getString(stage.printString).toLowerCase()[0]}"
+					} ?: ""
+				}
+			}
+
+			legend.setCustom(entries)
+			legend.form = Legend.LegendForm.CIRCLE
+			legend.textColor = R.attr.colorOnSurface.resolveColor(context!!)
+			legend.isWordWrapEnabled = true
+			legend.yOffset = 10f
+			legend.xOffset = 10f
+		}
+
+		with (additives_count_chart) {
+			description = null
+			setHoleColor(0x00ffffff)
+			legend.setCustom(entries)
+			legend.form = Legend.LegendForm.CIRCLE
+			legend.textColor = R.attr.colorOnSurface.resolveColor(context!!)
+			legend.isWordWrapEnabled = true
+		}
+
+		refreshCharts()
 	}
 
 	private fun renderStats(container: ViewGroup, templates: ArrayList<template>)
