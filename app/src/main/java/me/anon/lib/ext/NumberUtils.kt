@@ -36,3 +36,23 @@ public fun Number.dip(context: Context): Float = TypedValue.applyDimension(Typed
 public fun Number.sp(context: Context): Float = TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_SP, this.toFloat(), context.resources.displayMetrics)
 public fun Number.mm(context: Context): Float = TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_MM, this.toFloat(), context.resources.displayMetrics)
 public fun Number.pt(context: Context): Float = TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_PT, this.toFloat(), context.resources.displayMetrics)
+
+public fun Double?.max(other: Double?): Double?
+{
+	return when
+	{
+		other == null -> this
+		this == null -> other
+		else -> kotlin.math.max(this, other)
+	}
+}
+
+public fun Double?.min(other: Double?): Double?
+{
+	return when
+	{
+		other == null -> this
+		this == null -> other
+		else -> kotlin.math.min(this, other)
+	}
+}

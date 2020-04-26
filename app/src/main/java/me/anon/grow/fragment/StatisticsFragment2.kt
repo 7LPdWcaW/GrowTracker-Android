@@ -39,6 +39,7 @@ import kotlin.math.min
 class StatisticsFragment2 : Fragment()
 {
 	class StageDate(var day: Int, var total: Int, var stage: PlantStage)
+	class StatWrapper(var min: Double? = null, var max: Double? = null, var average: Double? = null)
 
 	open class template()
 	open class header(var label: String) : template()
@@ -85,9 +86,15 @@ class StatisticsFragment2 : Fragment()
 	}
 
 	val additives = hashMapOf<Water, ArrayList<Additive>>()
-	val additiveDates = arrayListOf<StageDate>()
+	val waterDates = arrayListOf<StageDate>()
 	val additiveValues = hashMapOf<String, ArrayList<Entry>>()
 	val additiveTotalValues = hashMapOf<String, ArrayList<Entry>>()
+
+	val phValues = arrayListOf<Entry>()
+	val phStats = StatWrapper()
+
+	val runoffValues = arrayListOf<Entry>()
+	val runoffStats = StatWrapper()
 
 	var endDate = System.currentTimeMillis()
 	var waterDifference = 0L
@@ -111,12 +118,15 @@ class StatisticsFragment2 : Fragment()
 
 		calculateStats()
 		populateGeneralStats()
-		populateAdditiveStates()
+		populateAdditiveStats()
+		populatePhStats()
 	}
 
 	private fun calculateStats()
 	{
-		var additiveIndex = 0
+		val tempPhValues = arrayListOf<Double>()
+		val tempRunoffValues = arrayListOf<Double>()
+		var waterIndex = 0
 		plant.actions?.forEach { action ->
 			when (action)
 			{
@@ -137,8 +147,26 @@ class StatisticsFragment2 : Fragment()
 					val waterDate = action.date
 					val stageLength = (waterDate - stageChangeDate).toDays().toInt()
 					val totalDate = TimeHelper.toDays(action.date - plant.plantDate).toInt()
-					aveStageWaters.getOrPut(stage, { arrayListOf<Long>() }).add(action.date)
-					additiveDates.add(StageDate(stageLength, totalDate, stage))
+					waterDates.add(StageDate(stageLength, totalDate, stage))
+					aveStageWaters.getOrPut(stage, { arrayListOf() }).add(action.date)
+
+					// pH stats
+					action.ph?.let {
+						tempPhValues += it
+						phStats.max = max(phStats.max ?: Double.MIN_VALUE, it)
+						phStats.min = min(phStats.min ?: Double.MAX_VALUE, it)
+
+						phValues += Entry(waterIndex.toFloat(), it.toFloat())
+					}
+
+					// runoff stats
+					action.runoff?.let {
+						tempRunoffValues += it
+						runoffStats.max = max(runoffStats.max ?: Double.MIN_VALUE, it)
+						runoffStats.min = min(runoffStats.min ?: Double.MAX_VALUE, it)
+
+						runoffValues += Entry(waterIndex.toFloat(), it.toFloat())
+					}
 
 					// add additives to pre calculated list
 					action.additives.forEach { additive ->
@@ -147,7 +175,7 @@ class StatisticsFragment2 : Fragment()
 							additive.amount?.let { amount ->
 								with (additiveValues) {
 									val amount = Unit.ML.to(selectedMeasurementUnit, amount)
-									val entry = Entry(additiveIndex.toFloat(), amount.toFloat())
+									val entry = Entry(waterIndex.toFloat(), amount.toFloat())
 									getOrPut(additive.description!!, { arrayListOf() }).add(entry)
 								}
 
@@ -155,14 +183,14 @@ class StatisticsFragment2 : Fragment()
 									val totalDelivery = Unit.ML.to(selectedDeliveryUnit, action.amount ?: 1000.0)
 									val additiveAmount = Unit.ML.to(selectedMeasurementUnit, amount)
 
-									val entry = Entry(additiveIndex.toFloat(), Unit.toTwoDecimalPlaces(additiveAmount * totalDelivery).toFloat())
+									val entry = Entry(waterIndex.toFloat(), Unit.toTwoDecimalPlaces(additiveAmount * totalDelivery).toFloat())
 									getOrPut(additive.description!!, { arrayListOf() }).add(entry)
 								}
 							}
 						}
 					}
 
-					additiveIndex++
+					waterIndex++
 					additives.getOrPut(action) { arrayListOf() }.addAll(action.additives)
 				}
 
@@ -171,6 +199,9 @@ class StatisticsFragment2 : Fragment()
 				}
 			}
 		}
+
+		phStats.average = if (tempPhValues.isNotEmpty()) tempPhValues.average() else null
+		runoffStats.average = if (tempRunoffValues.isNotEmpty()) tempRunoffValues.average() else null
 	}
 
 	private fun populateGeneralStats()
@@ -318,7 +349,7 @@ class StatisticsFragment2 : Fragment()
 		stage_chart.legend.isWordWrapEnabled = true
 	}
 
-	private fun populateAdditiveStates()
+	private fun populateAdditiveStats()
 	{
 		class additiveStat(
 			var total: Double = 0.0,
@@ -389,7 +420,7 @@ class StatisticsFragment2 : Fragment()
 			}
 
 			val stageEntries = plantStages.keys.toList().asReversed()
-			additiveDates.forEachIndexed { additiveIndex, date ->
+			waterDates.forEachIndexed { additiveIndex, date ->
 				barSets += BarDataSet(arrayListOf(BarEntry(additiveIndex.toFloat(), totalMax.toFloat())), null).apply {
 					color = ColorUtils.setAlphaComponent(statsColours[stageEntries.indexOf(date.stage) % statsColours.size], 127)
 				}
@@ -486,7 +517,7 @@ class StatisticsFragment2 : Fragment()
 			}
 
 			val stageEntries = plantStages.keys.toList().asReversed()
-			additiveDates.forEachIndexed { additiveIndex, date ->
+			waterDates.forEachIndexed { additiveIndex, date ->
 				barSets += BarDataSet(arrayListOf(BarEntry(additiveIndex.toFloat(), totalMax.toFloat())), null).apply {
 					color = ColorUtils.setAlphaComponent(statsColours[stageEntries.indexOf(date.stage) % statsColours.size], 127)
 				}
@@ -606,7 +637,7 @@ class StatisticsFragment2 : Fragment()
 			{
 				override fun getAxisLabel(value: Float, axis: AxisBase?): String
 				{
-					return additiveDates.getOrNull(value.toInt())?.transform {
+					return waterDates.getOrNull(value.toInt())?.transform {
 						"${total}/${day}${getString(stage.printString).toLowerCase()[0]}"
 					} ?: ""
 				}
@@ -654,7 +685,7 @@ class StatisticsFragment2 : Fragment()
 			{
 				override fun getAxisLabel(value: Float, axis: AxisBase?): String
 				{
-					return additiveDates.getOrNull(value.toInt())?.transform {
+					return waterDates.getOrNull(value.toInt())?.transform {
 						"${total}/${day}${getString(stage.printString).toLowerCase()[0]}"
 					} ?: ""
 				}
@@ -678,6 +709,159 @@ class StatisticsFragment2 : Fragment()
 		}
 
 		refreshCharts()
+	}
+
+	private fun populatePhStats()
+	{
+		val INPUT_PH = R.string.stat_input_ph
+		val RUNOFF_PH = R.string.stat_runoff_ph
+		val AVERAGE_PH = R.string.stat_average_ph
+		val selectedModes = arrayListOf<Int>()
+
+		fun refreshCharts()
+		{
+			val sets = arrayListOf<ILineDataSet>()
+
+			if (INPUT_PH in selectedModes)
+			{
+				sets += LineDataSet(phValues, getString(R.string.stat_input_ph)).apply {
+					color = statsColours[0]
+					fillColor = color
+					setCircleColor(color)
+					styleDataset(context!!, this, color)
+				}
+			}
+
+			if (RUNOFF_PH in selectedModes)
+			{
+				sets += LineDataSet(runoffValues, getString(R.string.stat_runoff_ph)).apply {
+					color = statsColours[1]
+					fillColor = color
+					setCircleColor(color)
+					styleDataset(context!!, this, color)
+				}
+			}
+
+			if (AVERAGE_PH in selectedModes)
+			{
+				val averageEntries = arrayListOf<Entry>()
+				phValues.foldIndexed(0.0f) { index, acc, entry ->
+					if (acc > 0) averageEntries += Entry(index.toFloat(), acc / index)
+					entry.y + acc
+				}
+				sets += LineDataSet(averageEntries, getString(R.string.stat_average_ph)).apply {
+					color = ColorUtils.blendARGB(statsColours[0], 0xffffffff.toInt(), 0.4f)
+					setDrawCircles(false)
+					setDrawValues(false)
+					setDrawCircleHole(false)
+					setDrawHighlightIndicators(true)
+					cubicIntensity = 1f
+					lineWidth = 2.0f
+					isHighlightEnabled = false
+				}
+			}
+
+			input_ph.data = LineData(sets)
+			input_ph.notifyDataSetChanged()
+			input_ph.invalidate()
+		}
+
+		fun displayStats()
+		{
+			ph_stats_container.removeAllViews()
+
+			selectedModes.forEach { mode ->
+				val stats = arrayListOf<template>()
+				stats += header(getString(mode))
+
+				val stat = when (mode)
+				{
+					INPUT_PH -> phStats
+					RUNOFF_PH -> runoffStats
+					else -> null
+				}
+
+				stat ?: return@forEach
+				stat.min?.let {
+					stats += data(
+						label = getString(R.string.min),
+						data = it.formatWhole()
+					)
+				}
+
+				stat.max?.let {
+					stats += data(
+						label = getString(R.string.max),
+						data = it.formatWhole()
+					)
+				}
+
+				stat.average?.let {
+					stats += data(
+						label = getString(R.string.ave),
+						data = it.formatWhole()
+					)
+				}
+
+				if (stats.size > 1) renderStats(ph_stats_container, stats)
+			}
+		}
+
+		arrayListOf(INPUT_PH, RUNOFF_PH, AVERAGE_PH).forEach { mode ->
+			val chip = LayoutInflater.from(context!!).inflate(R.layout.filter_chip_stub, additive_chips_container, false) as Chip
+			chip.setText(mode)
+			chip.isChecked = true
+			chip.setOnCheckedChangeListener { buttonView, isChecked ->
+				if (isChecked) selectedModes += mode
+				else selectedModes -= mode
+
+				refreshCharts()
+				displayStats()
+			}
+
+			selectedModes += mode
+			ph_chips_container += chip
+		}
+
+		with (input_ph) {
+			setVisibleYRangeMaximum(max(phStats.max?.toFloat() ?: 0.0f, runoffStats.max?.toFloat() ?: 0.0f), YAxis.AxisDependency.LEFT)
+			setDrawGridBackground(false)
+			description = null
+			isScaleYEnabled = false
+			setDrawBorders(false)
+
+			axisLeft.labelCount = 8
+			axisLeft.setDrawTopYLabelEntry(true)
+			axisLeft.setDrawZeroLine(true)
+			axisLeft.setDrawGridLines(false)
+			axisLeft.textColor = R.attr.colorOnSurface.resolveColor(context!!)
+
+			axisRight.setDrawLabels(false)
+			axisRight.setDrawGridLines(false)
+			axisRight.setDrawAxisLine(false)
+
+			xAxis.setDrawGridLines(false)
+			xAxis.granularity = 1f
+			xAxis.position = XAxis.XAxisPosition.BOTTOM
+			xAxis.yOffset = 10f
+			xAxis.textColor = R.attr.colorOnSurface.resolveColor(context!!)
+			xAxis.valueFormatter = object : ValueFormatter()
+			{
+				override fun getAxisLabel(value: Float, axis: AxisBase?): String
+				{
+					return waterDates.getOrNull(value.toInt())?.transform {
+						"${total}/${day}${getString(stage.printString).toLowerCase()[0]}"
+					} ?: ""
+				}
+			}
+
+			legend.form = Legend.LegendForm.CIRCLE
+			legend.textColor = R.attr.colorOnSurface.resolveColor(context!!)
+			legend.isWordWrapEnabled = true
+		}
+
+		refreshCharts()
+		displayStats()
 	}
 
 	private fun renderStats(container: ViewGroup, templates: ArrayList<template>)
@@ -713,7 +897,7 @@ class StatisticsFragment2 : Fragment()
 		data.valueTextColor = R.attr.colorAccent.resolveColor(context)
 		data.setCircleColor(R.attr.colorAccent.resolveColor(context))
 		data.cubicIntensity = 0.2f
-		data.lineWidth = 2.0f
+		data.lineWidth = 3.0f
 		data.setDrawCircleHole(true)
 		data.color = colour
 		data.setCircleColor(colour)
