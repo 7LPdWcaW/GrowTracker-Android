@@ -10,11 +10,12 @@ import android.view.ViewGroup
 import android.widget.TextView
 import androidx.appcompat.view.ContextThemeWrapper
 import androidx.core.graphics.ColorUtils
-import androidx.core.view.forEach
 import androidx.core.view.plusAssign
 import androidx.fragment.app.Fragment
-import com.github.mikephil.charting.charts.CombinedChart.DrawOrder
-import com.github.mikephil.charting.components.*
+import com.github.mikephil.charting.components.AxisBase
+import com.github.mikephil.charting.components.Legend
+import com.github.mikephil.charting.components.LegendEntry
+import com.github.mikephil.charting.components.YAxis
 import com.github.mikephil.charting.data.*
 import com.github.mikephil.charting.formatter.ValueFormatter
 import com.github.mikephil.charting.interfaces.datasets.IBarDataSet
@@ -107,6 +108,16 @@ class StatisticsFragment2 : Fragment()
 	var totalWater = 0
 	var totalWaterAmount = 0.0
 	var totalFlush = 0
+
+	val datesFormatter = object : ValueFormatter()
+	{
+		override fun getAxisLabel(value: Float, axis: AxisBase?): String
+		{
+			return waterDates.getOrNull(value.toInt())?.transform {
+				"${total}/${day}${getString(stage.printString).toLowerCase()[0]}"
+			} ?: ""
+		}
+	}
 
 	override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View?
 		= inflater.inflate(R.layout.statistics2_view, container, false)
@@ -325,7 +336,7 @@ class StatisticsFragment2 : Fragment()
 		val stageData = BarDataSet(stageEntries, "")
 		stageData.isHighlightEnabled = false
 		stageData.stackLabels = labels
-		stageData.setColors(statsColours)
+		stageData.colors = statsColours
 		stageData.valueTypeface = Typeface.DEFAULT_BOLD
 		stageData.valueTextSize = 10f
 		stageData.valueFormatter = object : ValueFormatter()
@@ -376,7 +387,7 @@ class StatisticsFragment2 : Fragment()
 
 	private fun populateAdditiveStats()
 	{
-		class additiveStat(
+		class AdditiveStat(
 			var total: Double = 0.0,
 			var totalAdjusted: Double = 0.0,
 			var count: Int = 0,
@@ -385,7 +396,7 @@ class StatisticsFragment2 : Fragment()
 		)
 
 		val selectedAdditives = arrayListOf<String>()
-		val additiveStats = LinkedHashMap<String, additiveStat>()
+		val additiveStats = LinkedHashMap<String, AdditiveStat>()
 		var totalMax = Double.MIN_VALUE
 
 		fun displayStats()
@@ -424,7 +435,6 @@ class StatisticsFragment2 : Fragment()
 
 		fun displayConcentrationChart()
 		{
-			val barSets = arrayListOf<IBarDataSet>()
 			val dataSets = arrayListOf<ILineDataSet>()
 			var index = 0
 			additiveValues.toSortedMap().let {
@@ -444,25 +454,9 @@ class StatisticsFragment2 : Fragment()
 				}
 			}
 
-			val stageEntries = plantStages.keys.toList().asReversed()
-			waterDates.forEachIndexed { additiveIndex, date ->
-				barSets += BarDataSet(arrayListOf(BarEntry(additiveIndex.toFloat(), totalMax.toFloat())), null).apply {
-					color = ColorUtils.setAlphaComponent(statsColours[stageEntries.indexOf(date.stage) % statsColours.size], 127)
-				}
-			}
-
 			val lineData = LineData(dataSets)
-			val barData = BarData(barSets).apply {
-				setDrawValues(false)
-				this.isHighlightEnabled = false
-				this.barWidth = 1.0f
-				this.groupBars(0f, 0f, 0f)
-			}
 
-			val data = CombinedData()
-			//data.setData(barData)
-			data.setData(lineData)
-			additives_concentration_chart.data = data
+			additives_concentration_chart.data = lineData
 			additives_concentration_chart.notifyDataSetChanged()
 			additives_concentration_chart.invalidate()
 		}
@@ -549,17 +543,8 @@ class StatisticsFragment2 : Fragment()
 			}
 
 			val lineData = LineData(dataSets)
-			val barData = BarData(barSets).apply {
-				setDrawValues(false)
-				this.isHighlightEnabled = false
-				this.barWidth = 1.0f
-				this.groupBars(0f, 0f, 0f)
-			}
 
-			val data = CombinedData()
-			//data.setData(barData)
-			data.setData(lineData)
-			additives_overtime_chart.data = data
+			additives_overtime_chart.data = lineData
 			additives_overtime_chart.notifyDataSetChanged()
 			additives_overtime_chart.invalidate()
 		}
@@ -575,7 +560,7 @@ class StatisticsFragment2 : Fragment()
 		additives.keys.forEach { water ->
 			additives[water]?.sortedBy { it.description }?.forEach { additive ->
 				additive.description?.let { key ->
-					additiveStats.getOrPut(key, { additiveStat() }).apply {
+					additiveStats.getOrPut(key, { AdditiveStat() }).apply {
 						total += additive.amount ?: 0.0
 						min = min(min.isNaN() T Double.MAX_VALUE ?: min, additive.amount ?: 0.0)
 						max = max(max.isNaN() T Double.MIN_VALUE ?: max, additive.amount ?: 0.0)
@@ -629,18 +614,10 @@ class StatisticsFragment2 : Fragment()
 		}
 
 		with (additives_concentration_chart) {
-			drawOrder = arrayOf(
-				DrawOrder.BAR, DrawOrder.LINE
-			)
 			setVisibleYRangeMaximum(totalMax.toFloat(), YAxis.AxisDependency.LEFT)
-			setDrawGridBackground(false)
-			description = null
-			isScaleYEnabled = false
-			setDrawBorders(false)
+			style()
 
 			axisLeft.granularity = 1f
-			axisLeft.setDrawGridLines(false)
-			axisLeft.textColor = R.attr.colorOnSurface.resolveColor(context!!)
 			axisLeft.valueFormatter = object : ValueFormatter()
 			{
 				override fun getAxisLabel(value: Float, axis: AxisBase?): String
@@ -649,77 +626,29 @@ class StatisticsFragment2 : Fragment()
 				}
 			}
 
-			axisRight.setDrawLabels(false)
-			axisRight.setDrawGridLines(false)
-			axisRight.setDrawAxisLine(false)
-
-			xAxis.setDrawGridLines(false)
-			xAxis.granularity = 1f
-			xAxis.position = XAxis.XAxisPosition.BOTTOM
-			xAxis.yOffset = 10f
-			xAxis.textColor = R.attr.colorOnSurface.resolveColor(context!!)
-			xAxis.valueFormatter = object : ValueFormatter()
-			{
-				override fun getAxisLabel(value: Float, axis: AxisBase?): String
-				{
-					return waterDates.getOrNull(value.toInt())?.transform {
-						"${total}/${day}${getString(stage.printString).toLowerCase()[0]}"
-					} ?: ""
-				}
-			}
+			xAxis.valueFormatter = datesFormatter
 
 			legend.setCustom(entries)
-			legend.form = Legend.LegendForm.CIRCLE
-			legend.textColor = R.attr.colorOnSurface.resolveColor(context!!)
-			legend.isWordWrapEnabled = true
 			legend.yOffset = 10f
 			legend.xOffset = 10f
 		}
 
 		with (additives_overtime_chart) {
-			drawOrder = arrayOf(
-				DrawOrder.BAR, DrawOrder.LINE
-			)
 			setVisibleYRangeMaximum(totalMax.toFloat(), YAxis.AxisDependency.LEFT)
-			setDrawGridBackground(false)
-			description = null
-			isScaleYEnabled = false
-			setDrawBorders(false)
+			style()
 
 			axisLeft.granularity = 1f
-			axisLeft.setDrawGridLines(false)
-			axisLeft.textColor = R.attr.colorOnSurface.resolveColor(context!!)
 			axisLeft.valueFormatter = object : ValueFormatter()
 			{
 				override fun getAxisLabel(value: Float, axis: AxisBase?): String
 				{
-					return "${value.formatWhole()}${selectedMeasurementUnit.label}"
+					return "${value.formatWhole()}${selectedMeasurementUnit.label}/${selectedDeliveryUnit.label}"
 				}
 			}
 
-			axisRight.setDrawLabels(false)
-			axisRight.setDrawGridLines(false)
-			axisRight.setDrawAxisLine(false)
-
-			xAxis.setDrawGridLines(false)
-			xAxis.granularity = 1f
-			xAxis.position = XAxis.XAxisPosition.BOTTOM
-			xAxis.yOffset = 10f
-			xAxis.textColor = R.attr.colorOnSurface.resolveColor(context!!)
-			xAxis.valueFormatter = object : ValueFormatter()
-			{
-				override fun getAxisLabel(value: Float, axis: AxisBase?): String
-				{
-					return waterDates.getOrNull(value.toInt())?.transform {
-						"${total}/${day}${getString(stage.printString).toLowerCase()[0]}"
-					} ?: ""
-				}
-			}
+			xAxis.valueFormatter = datesFormatter
 
 			legend.setCustom(entries)
-			legend.form = Legend.LegendForm.CIRCLE
-			legend.textColor = R.attr.colorOnSurface.resolveColor(context!!)
-			legend.isWordWrapEnabled = true
 			legend.yOffset = 10f
 			legend.xOffset = 10f
 		}
@@ -755,6 +684,20 @@ class StatisticsFragment2 : Fragment()
 					setCircleColor(color)
 					styleDataset(context!!, this, color)
 				}
+
+				if (AVERAGE_PH in selectedModes)
+				{
+					sets += LineDataSet(phValues.rollingAverage(), getString(R.string.stat_average_runoff_ph)).apply {
+						color = ColorUtils.blendARGB(statsColours[0], 0xffffffff.toInt(), 0.4f)
+						setDrawCircles(false)
+						setDrawValues(false)
+						setDrawCircleHole(false)
+						setDrawHighlightIndicators(true)
+						cubicIntensity = 1f
+						lineWidth = 2.0f
+						isHighlightEnabled = false
+					}
+				}
 			}
 
 			if (RUNOFF_PH in selectedModes)
@@ -765,27 +708,19 @@ class StatisticsFragment2 : Fragment()
 					setCircleColor(color)
 					styleDataset(context!!, this, color)
 				}
-			}
 
-			if (AVERAGE_PH in selectedModes)
-			{
-				val averageEntries = arrayListOf<Entry>()
-				if (phValues.isNotEmpty())
+				if (AVERAGE_PH in selectedModes)
 				{
-					phValues.foldIndexed(phValues.first().y) { index, acc, entry ->
-						averageEntries += Entry(phValues[index].x.toFloat(), acc / (index + 1))
-						entry.y + acc
+					sets += LineDataSet(runoffValues.rollingAverage(), getString(R.string.stat_average_runoff_ph)).apply {
+						color = ColorUtils.blendARGB(statsColours[1], 0xffffffff.toInt(), 0.4f)
+						setDrawCircles(false)
+						setDrawValues(false)
+						setDrawCircleHole(false)
+						setDrawHighlightIndicators(true)
+						cubicIntensity = 1f
+						lineWidth = 2.0f
+						isHighlightEnabled = false
 					}
-				}
-				sets += LineDataSet(averageEntries, getString(R.string.stat_average_ph)).apply {
-					color = ColorUtils.blendARGB(statsColours[0], 0xffffffff.toInt(), 0.4f)
-					setDrawCircles(false)
-					setDrawValues(false)
-					setDrawCircleHole(false)
-					setDrawHighlightIndicators(true)
-					cubicIntensity = 1f
-					lineWidth = 2.0f
-					isHighlightEnabled = false
 				}
 			}
 
@@ -835,7 +770,11 @@ class StatisticsFragment2 : Fragment()
 			}
 		}
 
-		arrayListOf(INPUT_PH, RUNOFF_PH, AVERAGE_PH).forEach { mode ->
+		arrayListOf<Int>().apply {
+			if (phValues.isNotEmpty()) add(INPUT_PH)
+			if (runoffValues.isNotEmpty()) add(RUNOFF_PH)
+			if (isNotEmpty()) add(AVERAGE_PH)
+		}.forEach { mode ->
 			val chip = LayoutInflater.from(context!!).inflate(R.layout.filter_chip_stub, ph_chips_container, false) as Chip
 			chip.setText(mode)
 			chip.isChecked = true
@@ -853,39 +792,8 @@ class StatisticsFragment2 : Fragment()
 
 		with (input_ph) {
 			setVisibleYRangeMaximum(max(phStats.max?.toFloat() ?: 0.0f, runoffStats.max?.toFloat() ?: 0.0f), YAxis.AxisDependency.LEFT)
-			setDrawGridBackground(false)
-			description = null
-			isScaleYEnabled = false
-			setDrawBorders(false)
-
-			axisLeft.labelCount = 8
-			axisLeft.setDrawTopYLabelEntry(true)
-			axisLeft.setDrawZeroLine(true)
-			axisLeft.setDrawGridLines(false)
-			axisLeft.textColor = R.attr.colorOnSurface.resolveColor(context!!)
-
-			axisRight.setDrawLabels(false)
-			axisRight.setDrawGridLines(false)
-			axisRight.setDrawAxisLine(false)
-
-			xAxis.setDrawGridLines(false)
-			xAxis.granularity = 1f
-			xAxis.position = XAxis.XAxisPosition.BOTTOM
-			xAxis.yOffset = 10f
-			xAxis.textColor = R.attr.colorOnSurface.resolveColor(context!!)
-			xAxis.valueFormatter = object : ValueFormatter()
-			{
-				override fun getAxisLabel(value: Float, axis: AxisBase?): String
-				{
-					return waterDates.getOrNull(value.toInt())?.transform {
-						"${total}/${day}${getString(stage.printString).toLowerCase()[0]}"
-					} ?: ""
-				}
-			}
-
-			legend.form = Legend.LegendForm.CIRCLE
-			legend.textColor = R.attr.colorOnSurface.resolveColor(context!!)
-			legend.isWordWrapEnabled = true
+			style()
+			xAxis.valueFormatter = datesFormatter
 		}
 
 		refreshCharts()
@@ -899,7 +807,6 @@ class StatisticsFragment2 : Fragment()
 		fun refreshCharts()
 		{
 			val sets = arrayListOf<ILineDataSet>()
-			var index = 0
 
 			tdsValues[selectedUnit]?.let { values ->
 				sets += LineDataSet(values, getString(selectedUnit.strRes)).apply {
@@ -909,16 +816,7 @@ class StatisticsFragment2 : Fragment()
 					styleDataset(context!!, this, color)
 				}
 
-				val averageEntries = arrayListOf<Entry>()
-				if (values.isNotEmpty())
-				{
-					values.foldIndexed(values.first().y) { index, acc, entry ->
-						averageEntries += Entry(values[index].x.toFloat(), acc / (index + 1))
-						entry.y + acc
-					}
-				}
-
-				sets += LineDataSet(averageEntries, getString(R.string.stat_average_tds, selectedUnit.label)).apply {
+				sets += LineDataSet(values.rollingAverage(), getString(R.string.stat_average_tds, selectedUnit.label)).apply {
 					color = ColorUtils.blendARGB(statsColours[tdsValues.keys.indexOfFirst { it == selectedUnit }.absoluteValue % statsColours.size], 0xffffffff.toInt(), 0.4f)
 					setDrawCircles(false)
 					setDrawValues(false)
@@ -997,40 +895,8 @@ class StatisticsFragment2 : Fragment()
 		}
 
 		with (tds_chart) {
-//			setVisibleYRangeMaximum(max(phStats.max?.toFloat() ?: 0.0f, runoffStats.max?.toFloat() ?: 0.0f), YAxis.AxisDependency.LEFT)
-			setDrawGridBackground(false)
-			description = null
-			isScaleYEnabled = false
-			setDrawBorders(false)
-
-			axisLeft.labelCount = 8
-			axisLeft.setDrawTopYLabelEntry(true)
-			axisLeft.setDrawZeroLine(true)
-			axisLeft.setDrawGridLines(false)
-			axisLeft.textColor = R.attr.colorOnSurface.resolveColor(context!!)
-
-			axisRight.setDrawLabels(false)
-			axisRight.setDrawGridLines(false)
-			axisRight.setDrawAxisLine(false)
-
-			xAxis.setDrawGridLines(false)
-			xAxis.granularity = 1f
-			xAxis.position = XAxis.XAxisPosition.BOTTOM
-			xAxis.yOffset = 10f
-			xAxis.textColor = R.attr.colorOnSurface.resolveColor(context!!)
-			xAxis.valueFormatter = object : ValueFormatter()
-			{
-				override fun getAxisLabel(value: Float, axis: AxisBase?): String
-				{
-					return waterDates.getOrNull(value.toInt())?.transform {
-						"${total}/${day}${getString(stage.printString).toLowerCase()[0]}"
-					} ?: ""
-				}
-			}
-
-			legend.form = Legend.LegendForm.CIRCLE
-			legend.textColor = R.attr.colorOnSurface.resolveColor(context!!)
-			legend.isWordWrapEnabled = true
+			style()
+			xAxis.valueFormatter = datesFormatter
 		}
 
 		refreshCharts()
