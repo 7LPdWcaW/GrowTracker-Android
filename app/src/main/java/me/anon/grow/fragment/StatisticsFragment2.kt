@@ -42,7 +42,6 @@ class StatisticsFragment2 : Fragment()
 {
 	class StageDate(var day: Int, var total: Int, var stage: PlantStage)
 	class StatWrapper(var min: Double? = null, var max: Double? = null, var average: Double? = null)
-	class StageEntry(var dateIndex: Int, x: Float, y: Float): Entry(x, y)
 
 	open class template()
 	open class header(var label: String) : template()
@@ -90,16 +89,16 @@ class StatisticsFragment2 : Fragment()
 
 	val additives = hashMapOf<Water, ArrayList<Additive>>()
 	val waterDates = arrayListOf<StageDate>()
-	val additiveValues = hashMapOf<String, ArrayList<StageEntry>>()
-	val additiveTotalValues = hashMapOf<String, ArrayList<StageEntry>>()
+	val additiveValues = hashMapOf<String, ArrayList<Entry>>()
+	val additiveTotalValues = hashMapOf<String, ArrayList<Entry>>()
 
-	val phValues = arrayListOf<StageEntry>()
+	val phValues = arrayListOf<Entry>()
 	val phStats = StatWrapper()
 
-	val runoffValues = arrayListOf<StageEntry>()
+	val runoffValues = arrayListOf<Entry>()
 	val runoffStats = StatWrapper()
 
-	val tdsValues = hashMapOf<TdsUnit, ArrayList<StageEntry>>()
+	val tdsValues = hashMapOf<TdsUnit, ArrayList<Entry>>()
 	val tdsStats = hashMapOf<TdsUnit, StatWrapper>()
 
 	var endDate = System.currentTimeMillis()
@@ -164,7 +163,7 @@ class StatisticsFragment2 : Fragment()
 						phStats.max = max(phStats.max ?: Double.MIN_VALUE, it)
 						phStats.min = min(phStats.min ?: Double.MAX_VALUE, it)
 
-						phValues += StageEntry(waterDates.size - 1, waterIndex.toFloat(), it.toFloat())
+						phValues += Entry(waterIndex.toFloat(), it.toFloat())
 					}
 
 					// runoff stats
@@ -173,7 +172,7 @@ class StatisticsFragment2 : Fragment()
 						runoffStats.max = max(runoffStats.max ?: Double.MIN_VALUE, it)
 						runoffStats.min = min(runoffStats.min ?: Double.MAX_VALUE, it)
 
-						runoffValues += StageEntry(waterDates.size - 1, waterIndex.toFloat(), it.toFloat())
+						runoffValues += Entry(waterIndex.toFloat(), it.toFloat())
 					}
 
 					// tds stats
@@ -185,7 +184,7 @@ class StatisticsFragment2 : Fragment()
 								this.min = min(this.min ?: Double.MAX_VALUE, amount)
 							}
 
-							tdsValues.getOrPut(tds.type) { arrayListOf() }.add(StageEntry(waterDates.size - 1, waterIndex.toFloat(), amount.toFloat()))
+							tdsValues.getOrPut(tds.type) { arrayListOf() }.add(Entry(waterIndex.toFloat(), amount.toFloat()))
 						}
 					}
 
@@ -196,7 +195,7 @@ class StatisticsFragment2 : Fragment()
 							additive.amount?.let { amount ->
 								with (additiveValues) {
 									val amount = Unit.ML.to(selectedMeasurementUnit, amount)
-									val entry = StageEntry(waterDates.size - 1, waterIndex.toFloat(), amount.toFloat())
+									val entry = Entry(waterIndex.toFloat(), amount.toFloat())
 									getOrPut(additive.description!!, { arrayListOf() }).add(entry)
 								}
 
@@ -204,7 +203,7 @@ class StatisticsFragment2 : Fragment()
 									val totalDelivery = Unit.ML.to(selectedDeliveryUnit, action.amount ?: 1000.0)
 									val additiveAmount = Unit.ML.to(selectedMeasurementUnit, amount)
 
-									val entry = StageEntry(waterDates.size - 1, waterIndex.toFloat(), Unit.toTwoDecimalPlaces(additiveAmount * totalDelivery).toFloat())
+									val entry = Entry(waterIndex.toFloat(), Unit.toTwoDecimalPlaces(additiveAmount * totalDelivery).toFloat())
 									getOrPut(additive.description!!, { arrayListOf() }).add(entry)
 								}
 							}
@@ -432,7 +431,7 @@ class StatisticsFragment2 : Fragment()
 				it.forEach { (k, v) ->
 					if (selectedAdditives.contains(k))
 					{
-						dataSets += LineDataSet(v as List<Entry>, k).apply {
+						dataSets += LineDataSet(v, k).apply {
 							color = statsColours[index]
 							fillColor = color
 							setCircleColor(color)
@@ -750,7 +749,7 @@ class StatisticsFragment2 : Fragment()
 
 			if (INPUT_PH in selectedModes)
 			{
-				sets += LineDataSet(phValues as List<Entry>, getString(R.string.stat_input_ph)).apply {
+				sets += LineDataSet(phValues, getString(R.string.stat_input_ph)).apply {
 					color = statsColours[0]
 					fillColor = color
 					setCircleColor(color)
@@ -760,7 +759,7 @@ class StatisticsFragment2 : Fragment()
 
 			if (RUNOFF_PH in selectedModes)
 			{
-				sets += LineDataSet(runoffValues as List<Entry>, getString(R.string.stat_runoff_ph)).apply {
+				sets += LineDataSet(runoffValues, getString(R.string.stat_runoff_ph)).apply {
 					color = statsColours[1]
 					fillColor = color
 					setCircleColor(color)
@@ -771,9 +770,12 @@ class StatisticsFragment2 : Fragment()
 			if (AVERAGE_PH in selectedModes)
 			{
 				val averageEntries = arrayListOf<Entry>()
-				phValues.foldIndexed(0.0f) { index, acc, entry ->
-					if (acc > 0) averageEntries += Entry(index.toFloat(), acc / index)
-					entry.y + acc
+				if (phValues.isNotEmpty())
+				{
+					phValues.foldIndexed(phValues.first().y) { index, acc, entry ->
+						averageEntries += Entry(phValues[index].x.toFloat(), acc / (index + 1))
+						entry.y + acc
+					}
 				}
 				sets += LineDataSet(averageEntries, getString(R.string.stat_average_ph)).apply {
 					color = ColorUtils.blendARGB(statsColours[0], 0xffffffff.toInt(), 0.4f)
@@ -899,23 +901,24 @@ class StatisticsFragment2 : Fragment()
 			val sets = arrayListOf<ILineDataSet>()
 			var index = 0
 
-			tdsValues[selectedUnit]?.let {
-				sets += LineDataSet(it as List<Entry>, getString(selectedUnit.strRes)).apply {
+			tdsValues[selectedUnit]?.let { values ->
+				sets += LineDataSet(values, getString(selectedUnit.strRes)).apply {
 					color = statsColours[tdsValues.keys.indexOfFirst { it == selectedUnit }.absoluteValue % statsColours.size]
 					fillColor = color
 					setCircleColor(color)
 					styleDataset(context!!, this, color)
 				}
-			}
 
-			val averageEntries = arrayListOf<Entry>()
-			tdsValues[selectedUnit]?.let { values ->
-				values.foldIndexed(0.0f) { index, acc, entry ->
-					if (acc > 0) averageEntries += Entry(index.toFloat(), acc / index)
-					entry.y + acc
+				val averageEntries = arrayListOf<Entry>()
+				if (values.isNotEmpty())
+				{
+					values.foldIndexed(values.first().y) { index, acc, entry ->
+						averageEntries += Entry(values[index].x.toFloat(), acc / (index + 1))
+						entry.y + acc
+					}
 				}
 
-				sets += LineDataSet(averageEntries, getString(R.string.stat_average_tds, selectedTdsUnit.label)).apply {
+				sets += LineDataSet(averageEntries, getString(R.string.stat_average_tds, selectedUnit.label)).apply {
 					color = ColorUtils.blendARGB(statsColours[tdsValues.keys.indexOfFirst { it == selectedUnit }.absoluteValue % statsColours.size], 0xffffffff.toInt(), 0.4f)
 					setDrawCircles(false)
 					setDrawValues(false)
@@ -929,6 +932,7 @@ class StatisticsFragment2 : Fragment()
 
 			tds_chart.data = LineData(sets)
 			tds_chart.notifyDataSetChanged()
+			tds_chart.fitScreen()
 			tds_chart.invalidate()
 		}
 
