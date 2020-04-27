@@ -3,10 +3,7 @@ package me.anon.lib.ext
 import android.content.Context
 import android.graphics.drawable.Drawable
 import android.util.TypedValue
-import androidx.annotation.AttrRes
-import androidx.annotation.ColorInt
-import androidx.annotation.ColorRes
-import androidx.annotation.DrawableRes
+import androidx.annotation.*
 import androidx.core.content.ContextCompat
 import androidx.core.content.res.ResourcesCompat
 
@@ -61,6 +58,11 @@ public fun @receiver:ColorRes Int.getColor(themedContext: Context): Int
 {
 	return ContextCompat.getColor(themedContext, this)
 }
+
+/**
+ * Resolves a colour int from an attr res. Will only work for attr type color/reference (to color res)
+ */
+public fun @receiver:AttrRes Int.resolveDimen(themedContext: Context?): Float = themedContext?.resources?.getDimension(this) ?: 0f
 
 /**
  * Resolves a drawable object from a drawable res

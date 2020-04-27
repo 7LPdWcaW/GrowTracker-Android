@@ -9,10 +9,7 @@ import com.google.android.material.appbar.AppBarLayout
 import kotlinx.android.synthetic.main.fragment_holder.toolbar
 import kotlinx.android.synthetic.main.fragment_holder.toolbar_layout
 import kotlinx.android.synthetic.main.tabbed_fragment_holder.*
-import me.anon.grow.fragment.ActionsListFragment
-import me.anon.grow.fragment.PlantDetailsFragment
-import me.anon.grow.fragment.StatisticsFragment
-import me.anon.grow.fragment.ViewPhotosFragment
+import me.anon.grow.fragment.*
 import me.anon.model.Plant
 
 class PlantDetailsActivity : BaseActivity()
@@ -44,7 +41,7 @@ class PlantDetailsActivity : BaseActivity()
 					}
 					"statistics" -> {
 						tabs.selectedItemId = R.id.view_statistics
-						StatisticsFragment.newInstance(intent.extras)
+						StatisticsFragment2.newInstance(intent.extras!!)
 					}
 					else -> PlantDetailsFragment.newInstance(intent.extras)
 				}
@@ -73,7 +70,7 @@ class PlantDetailsActivity : BaseActivity()
 							R.id.view_details -> PlantDetailsFragment.newInstance(intent.extras)
 							R.id.view_history -> ActionsListFragment.newInstance(intent.extras)
 							R.id.view_photos -> ViewPhotosFragment.newInstance(intent.extras)
-							R.id.view_statistics -> StatisticsFragment.newInstance(intent.extras)
+							R.id.view_statistics -> StatisticsFragment2.newInstance(intent.extras!!)
 							else -> Fragment()
 						}, TAG_FRAGMENT)
 						.commit()

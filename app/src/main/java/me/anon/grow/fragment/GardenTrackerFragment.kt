@@ -303,29 +303,29 @@ class GardenTrackerFragment : Fragment()
 			if (data_container.findViewById<View?>(R.id.stats_temp) == null) data_container.addView(view)
 		}
 		StatsHelper.setTempData(garden, activity!!, temp, tempAdditional)
-		temp.markerView = object : MarkerView(context, R.layout.chart_marker)
-		{
-			override fun refreshContent(e: Entry, highlight: Highlight)
-			{
-				val timeFormat = android.text.format.DateFormat.getTimeFormat(context)
-				val action = e.data as Action
-				var date = ""
-
-				if (action != null) date = "\n" + timeFormat.format(Date(action.date))
-
-				(findViewById<View>(R.id.content) as TextView).text = e.getVal().formatWhole() + "°" + tempUnit.label + date
-			}
-
-			override fun getXOffset(xpos: Float): Int
-			{
-				return -(width / 2)
-			}
-
-			override fun getYOffset(ypos: Float): Int
-			{
-				return -height
-			}
-		}
+//		temp.markerView = object : MarkerView(context, R.layout.chart_marker)
+//		{
+//			override fun refreshContent(e: Entry, highlight: Highlight)
+//			{
+//				val timeFormat = android.text.format.DateFormat.getTimeFormat(context)
+//				val action = e.data as Action
+//				var date = ""
+//
+//				if (action != null) date = "\n" + timeFormat.format(Date(action.date))
+//
+//				(findViewById<View>(R.id.content) as TextView).text = e.getVal().formatWhole() + "°" + tempUnit.label + date
+//			}
+//
+//			override fun getXOffset(xpos: Float): Int
+//			{
+//				return -(width / 2)
+//			}
+//
+//			override fun getYOffset(ypos: Float): Int
+//			{
+//				return -height
+//			}
+//		}
 		temp.notifyDataSetChanged()
 		temp.postInvalidate()
 		min_temp.text = if (tempAdditional[0] == "100") "-" else "${tempAdditional[0]}°${tempUnit.label}"
@@ -342,87 +342,87 @@ class GardenTrackerFragment : Fragment()
 			if (data_container.findViewById<View?>(R.id.stats_humidity) == null) data_container.addView(view)
 		}
 		StatsHelper.setHumidityData(garden, activity!!, humidity, humidityAdditional)
-		humidity.markerView = object : MarkerView(context, R.layout.chart_marker)
-		{
-			override fun refreshContent(e: Entry, highlight: Highlight)
-			{
-				val timeFormat = android.text.format.DateFormat.getTimeFormat(context)
-				val action = e.data as Action
-				var date = ""
-
-				if (action != null) date = "\n" + timeFormat.format(Date(action.date))
-				(findViewById<View>(R.id.content) as TextView).text = e.getVal().toInt().toString() + "%" + date
-			}
-
-			override fun getXOffset(xpos: Float): Int
-			{
-				return -(width / 2)
-			}
-
-			override fun getYOffset(ypos: Float): Int
-			{
-				return -height
-			}
-		}
+//		humidity.markerView = object : MarkerView(context, R.layout.chart_marker)
+//		{
+//			override fun refreshContent(e: Entry, highlight: Highlight)
+//			{
+//				val timeFormat = android.text.format.DateFormat.getTimeFormat(context)
+//				val action = e.data as Action
+//				var date = ""
+//
+//				if (action != null) date = "\n" + timeFormat.format(Date(action.date))
+//				(findViewById<View>(R.id.content) as TextView).text = e.getVal().toInt().toString() + "%" + date
+//			}
+//
+//			override fun getXOffset(xpos: Float): Int
+//			{
+//				return -(width / 2)
+//			}
+//
+//			override fun getYOffset(ypos: Float): Int
+//			{
+//				return -height
+//			}
+//		}
 		humidity.notifyDataSetChanged()
 		humidity.postInvalidate()
 		min_humidity.text = if (humidityAdditional[0] == "100") "-" else "${humidityAdditional[0]}%"
 		max_humidity.text = if (humidityAdditional[1] == "-100") "-" else "${humidityAdditional[1]}%"
 		ave_humidity.text = "${humidityAdditional[2]}%"
 
-		humidity.setOnChartValueSelectedListener(object : OnChartValueSelectedListener
-		{
-			override fun onNothingSelected()
-			{
-				edit_humidity.visibility = View.GONE
-				delete_humidity.visibility = View.GONE
-			}
-
-			override fun onValueSelected(e: Entry?, dataSetIndex: Int, h: Highlight?)
-			{
-				edit_humidity.visibility = View.VISIBLE
-				delete_humidity.visibility = View.VISIBLE
-
-				edit_humidity.setOnClickListener {
-					(e?.data as HumidityChange?)?.let { current ->
-						editAction(current)
-					}
-				}
-
-				delete_humidity.setOnClickListener {
-					(e?.data as Action?)?.let {
-						deleteAction(it)
-					}
-				}
-			}
-		})
-
-		temp.setOnChartValueSelectedListener(object : OnChartValueSelectedListener
-		{
-			override fun onNothingSelected()
-			{
-				edit_temp.visibility = View.GONE
-				delete_temp.visibility = View.GONE
-			}
-
-			override fun onValueSelected(e: Entry?, dataSetIndex: Int, h: Highlight?)
-			{
-				edit_temp.visibility = View.VISIBLE
-				delete_temp.visibility = View.VISIBLE
-
-				edit_temp.setOnClickListener {
-					(e?.data as TemperatureChange?)?.let { current ->
-						editAction(current)
-					}
-				}
-
-				delete_temp.setOnClickListener {
-					(e?.data as Action?)?.let { current ->
-						deleteAction(current)
-					}
-				}
-			}
-		})
+//		humidity.setOnChartValueSelectedListener(object : OnChartValueSelectedListener
+//		{
+//			override fun onNothingSelected()
+//			{
+//				edit_humidity.visibility = View.GONE
+//				delete_humidity.visibility = View.GONE
+//			}
+//
+//			override fun onValueSelected(e: Entry?, dataSetIndex: Int, h: Highlight?)
+//			{
+//				edit_humidity.visibility = View.VISIBLE
+//				delete_humidity.visibility = View.VISIBLE
+//
+//				edit_humidity.setOnClickListener {
+//					(e?.data as HumidityChange?)?.let { current ->
+//						editAction(current)
+//					}
+//				}
+//
+//				delete_humidity.setOnClickListener {
+//					(e?.data as Action?)?.let {
+//						deleteAction(it)
+//					}
+//				}
+//			}
+//		})
+//
+//		temp.setOnChartValueSelectedListener(object : OnChartValueSelectedListener
+//		{
+//			override fun onNothingSelected()
+//			{
+//				edit_temp.visibility = View.GONE
+//				delete_temp.visibility = View.GONE
+//			}
+//
+//			override fun onValueSelected(e: Entry?, dataSetIndex: Int, h: Highlight?)
+//			{
+//				edit_temp.visibility = View.VISIBLE
+//				delete_temp.visibility = View.VISIBLE
+//
+//				edit_temp.setOnClickListener {
+//					(e?.data as TemperatureChange?)?.let { current ->
+//						editAction(current)
+//					}
+//				}
+//
+//				delete_temp.setOnClickListener {
+//					(e?.data as Action?)?.let { current ->
+//						deleteAction(current)
+//					}
+//				}
+//			}
+//		})
 
 		general_title.visibility = if (data_container.childCount > 0) View.VISIBLE else View.GONE
 		data_container.visibility = if (data_container.childCount > 0) View.VISIBLE else View.GONE

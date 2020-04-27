@@ -311,9 +311,10 @@ class MarkdownProcessor : ExportProcessor()
 					if (action.additives.isNotEmpty())
 					{
 						documentBuilder.append(" / ")
-						action.additives.sortedBy { it.description ?: "" }.forEach { additive ->
+						val additives = action.additives.sortedBy { it.description ?: "" }
+						additives.forEach { additive ->
 							documentBuilder.append("**${additive.description ?: ""}:** ").append(Unit.ML.to(selectedMeasurement, additive.amount ?: 0.0).formatWhole()).append(selectedMeasurement!!.label).append("/").append(selectedDelivery!!.label)
-							if (action.additives.last() != additive) documentBuilder.append(" – ")
+							if (additives.last() != additive) documentBuilder.append(" – ")
 						}
 					}
 				}
