@@ -25,6 +25,7 @@ import kotlinx.android.synthetic.main.data_label_stub.view.*
 import kotlinx.android.synthetic.main.statistics2_view.*
 import me.anon.grow.R
 import me.anon.lib.TdsUnit
+import me.anon.lib.TempUnit
 import me.anon.lib.Unit
 import me.anon.lib.ext.*
 import me.anon.lib.helper.StatsHelper.formatter
@@ -60,6 +61,7 @@ class StatisticsFragment2 : Fragment()
 	private val selectedTdsUnit by lazy { TdsUnit.getSelectedTdsUnit(activity!!) }
 	private val selectedDeliveryUnit by lazy { Unit.getSelectedDeliveryUnit(activity!!) }
 	private val selectedMeasurementUnit by lazy { Unit.getSelectedMeasurementUnit(activity!!) }
+	private val selectedTempUnit by lazy { TempUnit.getSelectedTemperatureUnit(activity!!) }
 	private val checkedAdditives = setOf<String>()
 	private val statsColours by lazy {
 		resources.getStringArray(R.array.stats_colours).map {
@@ -102,6 +104,9 @@ class StatisticsFragment2 : Fragment()
 	val tdsValues = hashMapOf<TdsUnit, ArrayList<Entry>>()
 	val tdsStats = hashMapOf<TdsUnit, StatWrapper>()
 
+	val tempValues = ArrayList<Entry>()
+	val tempStats = StatWrapper()
+
 	var endDate = System.currentTimeMillis()
 	var waterDifference = 0L
 	var lastWater = 0L
@@ -137,10 +142,12 @@ class StatisticsFragment2 : Fragment()
 		populateAdditiveStats()
 		populatePhStats()
 		populateTdsStats()
+		populateTempStats()
 	}
 
 	private fun calculateStats()
 	{
+		val tempTempValues = arrayListOf<Double>()
 		val tempPhValues = arrayListOf<Double>()
 		val tempRunoffValues = arrayListOf<Double>()
 		val tempTdsValues = hashMapOf<TdsUnit, ArrayList<Double>>()
@@ -199,6 +206,15 @@ class StatisticsFragment2 : Fragment()
 						}
 					}
 
+					// temp stats
+					action.temp?.let {
+						tempTempValues += it
+						tempStats.max = max(tempStats.max ?: Double.MIN_VALUE, it)
+						tempStats.min = min(tempStats.min ?: Double.MAX_VALUE, it)
+
+						tempValues += Entry(waterIndex.toFloat(), it.toFloat())
+					}
+
 					// add additives to pre calculated list
 					action.additives.forEach { additive ->
 						if (additive.description != null)
@@ -233,6 +249,7 @@ class StatisticsFragment2 : Fragment()
 
 		phStats.average = if (tempPhValues.isNotEmpty()) tempPhValues.average() else null
 		runoffStats.average = if (tempRunoffValues.isNotEmpty()) tempRunoffValues.average() else null
+		tempStats.average = if (tempTempValues.isNotEmpty()) tempTempValues.average() else null
 		tdsStats.forEach { (k, v) ->
 			tempTdsValues[k]?.let {
 				tdsStats[k]?.average = if (it.isNotEmpty()) it.average() else null
@@ -902,6 +919,71 @@ class StatisticsFragment2 : Fragment()
 		refreshCharts()
 		displayStats()
 	}
+
+	private fun populateTempStats()
+	{
+		with (temp_chart) {
+			setVisibleYRangeMaximum(tempStats.max?.toFloat() ?: 0.0f, YAxis.AxisDependency.LEFT)
+			style()
+
+			axisLeft.valueFormatter = object : ValueFormatter()
+			{
+				override fun getAxisLabel(value: Float, axis: AxisBase?): String
+				{
+					return "${value.formatWhole()}°${selectedTempUnit.label}"
+				}
+			}
+
+			xAxis.valueFormatter = datesFormatter
+		}
+
+		val sets = arrayListOf<ILineDataSet>()
+
+		sets += LineDataSet(tempValues, getString(R.string.stat_input_ph)).apply {
+			color = statsColours[0]
+			fillColor = color
+			setCircleColor(color)
+			styleDataset(context!!, this, color)
+		}
+
+		sets += LineDataSet(tempValues.rollingAverage(), getString(R.string.stat_average_temp)).apply {
+			color = ColorUtils.blendARGB(statsColours[0], 0xffffffff.toInt(), 0.4f)
+			setDrawCircles(false)
+			setDrawValues(false)
+			setDrawCircleHole(false)
+			setDrawHighlightIndicators(true)
+			cubicIntensity = 1f
+			lineWidth = 2.0f
+			isHighlightEnabled = false
+		}
+
+		temp_chart.data = LineData(sets)
+
+		val stats = arrayListOf<template>()
+		tempStats.min?.let {
+			stats += data(
+				label = getString(R.string.min),
+				data = "${it.formatWhole()}°${selectedTempUnit.label}"
+			)
+		}
+
+		tempStats.max?.let {
+			stats += data(
+				label = getString(R.string.max),
+				data = "${it.formatWhole()}°${selectedTempUnit.label}"
+			)
+		}
+
+		tempStats.average?.let {
+			stats += data(
+				label = getString(R.string.ave),
+				data = "${it.formatWhole()}°${selectedTempUnit.label}"
+			)
+		}
+
+		if (stats.size > 0) renderStats(temp_stats_container, stats)
+	}
+
 
 	private fun renderStats(container: ViewGroup, templates: ArrayList<template>)
 	{
