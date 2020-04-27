@@ -12,14 +12,13 @@ import androidx.appcompat.view.ContextThemeWrapper
 import androidx.core.graphics.ColorUtils
 import androidx.core.view.plusAssign
 import androidx.fragment.app.Fragment
-import com.github.mikephil.charting.components.AxisBase
-import com.github.mikephil.charting.components.Legend
-import com.github.mikephil.charting.components.LegendEntry
-import com.github.mikephil.charting.components.YAxis
+import com.github.mikephil.charting.components.*
 import com.github.mikephil.charting.data.*
 import com.github.mikephil.charting.formatter.ValueFormatter
+import com.github.mikephil.charting.highlight.Highlight
 import com.github.mikephil.charting.interfaces.datasets.IBarDataSet
 import com.github.mikephil.charting.interfaces.datasets.ILineDataSet
+import com.github.mikephil.charting.utils.MPPointF
 import com.google.android.material.chip.Chip
 import kotlinx.android.synthetic.main.data_label_stub.view.*
 import kotlinx.android.synthetic.main.statistics2_view.*
@@ -634,6 +633,22 @@ class StatisticsFragment2 : Fragment()
 			setVisibleYRangeMaximum(totalMax.toFloat(), YAxis.AxisDependency.LEFT)
 			style()
 
+			marker = object : MarkerView(activity, R.layout.chart_marker)
+			{
+				override fun refreshContent(e: Entry, highlight: Highlight): kotlin.Unit
+				{
+					val color = additives_concentration_chart.data.dataSets[highlight.dataSetIndex].color
+					with (this.findViewById<TextView>(R.id.content)) {
+						text = "${e.y.formatWhole()} ${selectedMeasurementUnit.label}/${selectedDeliveryUnit.label}"
+						setTextColor(color)
+					}
+
+					super.refreshContent(e, highlight)
+				}
+
+				override fun getOffset(): MPPointF = MPPointF.getInstance(-(width / 2f), -(height * 1.2f))
+			}
+
 			axisLeft.granularity = 1f
 			axisLeft.valueFormatter = object : ValueFormatter()
 			{
@@ -653,6 +668,22 @@ class StatisticsFragment2 : Fragment()
 		with (additives_overtime_chart) {
 			setVisibleYRangeMaximum(totalMax.toFloat(), YAxis.AxisDependency.LEFT)
 			style()
+
+			marker = object : MarkerView(activity, R.layout.chart_marker)
+			{
+				override fun refreshContent(e: Entry, highlight: Highlight): kotlin.Unit
+				{
+					val color = additives_overtime_chart.data.dataSets[highlight.dataSetIndex].color
+					with (this.findViewById<TextView>(R.id.content)) {
+						text = "${e.y.formatWhole()} ${selectedMeasurementUnit.label}"
+						setTextColor(color)
+					}
+
+					super.refreshContent(e, highlight)
+				}
+
+				override fun getOffset(): MPPointF = MPPointF.getInstance(-(width / 2f), -(height * 1.2f))
+			}
 
 			axisLeft.granularity = 1f
 			axisLeft.valueFormatter = object : ValueFormatter()
@@ -810,6 +841,23 @@ class StatisticsFragment2 : Fragment()
 		with (input_ph) {
 			setVisibleYRangeMaximum(max(phStats.max?.toFloat() ?: 0.0f, runoffStats.max?.toFloat() ?: 0.0f), YAxis.AxisDependency.LEFT)
 			style()
+
+			marker = object : MarkerView(activity, R.layout.chart_marker)
+			{
+				override fun refreshContent(e: Entry, highlight: Highlight): kotlin.Unit
+				{
+					val color = input_ph.data.dataSets[highlight.dataSetIndex].color
+					with (this.findViewById<TextView>(R.id.content)) {
+						text = e.y.formatWhole()
+						setTextColor(color)
+					}
+
+					super.refreshContent(e, highlight)
+				}
+
+				override fun getOffset(): MPPointF = MPPointF.getInstance(-(width / 2f), -(height * 1.2f))
+			}
+
 			xAxis.valueFormatter = datesFormatter
 		}
 
@@ -913,6 +961,23 @@ class StatisticsFragment2 : Fragment()
 
 		with (tds_chart) {
 			style()
+
+			marker = object : MarkerView(activity, R.layout.chart_marker)
+			{
+				override fun refreshContent(e: Entry, highlight: Highlight): kotlin.Unit
+				{
+					val color = tds_chart.data.dataSets[highlight.dataSetIndex].color
+					with (this.findViewById<TextView>(R.id.content)) {
+						text = e.y.formatWhole()
+						setTextColor(color)
+					}
+
+					super.refreshContent(e, highlight)
+				}
+
+				override fun getOffset(): MPPointF = MPPointF.getInstance(-(width / 2f), -(height * 1.2f))
+			}
+
 			xAxis.valueFormatter = datesFormatter
 		}
 
@@ -932,6 +997,22 @@ class StatisticsFragment2 : Fragment()
 				{
 					return "${value.formatWhole()}°${selectedTempUnit.label}"
 				}
+			}
+
+			marker = object : MarkerView(activity, R.layout.chart_marker)
+			{
+				override fun refreshContent(e: Entry, highlight: Highlight): kotlin.Unit
+				{
+					val color = temp_chart.data.dataSets[highlight.dataSetIndex].color
+					with (this.findViewById<TextView>(R.id.content)) {
+						text = "${e.y.formatWhole()}°${selectedTempUnit.label}"
+						setTextColor(color)
+					}
+
+					super.refreshContent(e, highlight)
+				}
+
+				override fun getOffset(): MPPointF = MPPointF.getInstance(-(width / 2f), -(height * 1.2f))
 			}
 
 			xAxis.valueFormatter = datesFormatter
@@ -983,7 +1064,6 @@ class StatisticsFragment2 : Fragment()
 
 		if (stats.size > 0) renderStats(temp_stats_container, stats)
 	}
-
 
 	private fun renderStats(container: ViewGroup, templates: ArrayList<template>)
 	{
