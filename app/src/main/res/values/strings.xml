@@ -151,6 +151,7 @@
 	<string name="ave_time_stage_label" formatted="true">Ave. %s water:</string>
 	<string name="filter_additives">Filter additives</string>
 	<string name="ph_title">pH</string>
+	<string name="tds_title">TDS</string>
 
 	<string name="min">Min:</string>
 	<string name="max">Max:</string>
@@ -272,6 +273,7 @@
 	<string name="stat_input_ph">Input pH</string>
 	<string name="stat_runoff_ph">Runoff pH</string>
 	<string name="stat_average_ph">Average pH</string>
+	<string name="stat_average_tds" formatted="true">Average %s</string>
 
 	<string name="photos_title">Plant photos</string>
 

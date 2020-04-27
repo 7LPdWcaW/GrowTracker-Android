@@ -10,6 +10,7 @@ import android.view.ViewGroup
 import android.widget.TextView
 import androidx.appcompat.view.ContextThemeWrapper
 import androidx.core.graphics.ColorUtils
+import androidx.core.view.forEach
 import androidx.core.view.plusAssign
 import androidx.fragment.app.Fragment
 import com.github.mikephil.charting.charts.CombinedChart.DrawOrder
@@ -29,6 +30,7 @@ import me.anon.lib.helper.StatsHelper.formatter
 import me.anon.lib.helper.TimeHelper
 import me.anon.model.*
 import java.lang.Math.abs
+import kotlin.math.absoluteValue
 import kotlin.math.ceil
 import kotlin.math.max
 import kotlin.math.min
@@ -40,6 +42,7 @@ class StatisticsFragment2 : Fragment()
 {
 	class StageDate(var day: Int, var total: Int, var stage: PlantStage)
 	class StatWrapper(var min: Double? = null, var max: Double? = null, var average: Double? = null)
+	class StageEntry(var dateIndex: Int, x: Float, y: Float): Entry(x, y)
 
 	open class template()
 	open class header(var label: String) : template()
@@ -87,14 +90,17 @@ class StatisticsFragment2 : Fragment()
 
 	val additives = hashMapOf<Water, ArrayList<Additive>>()
 	val waterDates = arrayListOf<StageDate>()
-	val additiveValues = hashMapOf<String, ArrayList<Entry>>()
-	val additiveTotalValues = hashMapOf<String, ArrayList<Entry>>()
+	val additiveValues = hashMapOf<String, ArrayList<StageEntry>>()
+	val additiveTotalValues = hashMapOf<String, ArrayList<StageEntry>>()
 
-	val phValues = arrayListOf<Entry>()
+	val phValues = arrayListOf<StageEntry>()
 	val phStats = StatWrapper()
 
-	val runoffValues = arrayListOf<Entry>()
+	val runoffValues = arrayListOf<StageEntry>()
 	val runoffStats = StatWrapper()
+
+	val tdsValues = hashMapOf<TdsUnit, ArrayList<StageEntry>>()
+	val tdsStats = hashMapOf<TdsUnit, StatWrapper>()
 
 	var endDate = System.currentTimeMillis()
 	var waterDifference = 0L
@@ -120,12 +126,14 @@ class StatisticsFragment2 : Fragment()
 		populateGeneralStats()
 		populateAdditiveStats()
 		populatePhStats()
+		populateTdsStats()
 	}
 
 	private fun calculateStats()
 	{
 		val tempPhValues = arrayListOf<Double>()
 		val tempRunoffValues = arrayListOf<Double>()
+		val tempTdsValues = hashMapOf<TdsUnit, ArrayList<Double>>()
 		var waterIndex = 0
 		plant.actions?.forEach { action ->
 			when (action)
@@ -156,7 +164,7 @@ class StatisticsFragment2 : Fragment()
 						phStats.max = max(phStats.max ?: Double.MIN_VALUE, it)
 						phStats.min = min(phStats.min ?: Double.MAX_VALUE, it)
 
-						phValues += Entry(waterIndex.toFloat(), it.toFloat())
+						phValues += StageEntry(waterDates.size - 1, waterIndex.toFloat(), it.toFloat())
 					}
 
 					// runoff stats
@@ -165,7 +173,20 @@ class StatisticsFragment2 : Fragment()
 						runoffStats.max = max(runoffStats.max ?: Double.MIN_VALUE, it)
 						runoffStats.min = min(runoffStats.min ?: Double.MAX_VALUE, it)
 
-						runoffValues += Entry(waterIndex.toFloat(), it.toFloat())
+						runoffValues += StageEntry(waterDates.size - 1, waterIndex.toFloat(), it.toFloat())
+					}
+
+					// tds stats
+					action.tds?.let { tds ->
+						tds.amount?.let { amount ->
+							tempTdsValues.getOrPut(tds.type) { arrayListOf() }.add(amount)
+							tdsStats.getOrPut(tds.type) { StatWrapper() }.apply {
+								this.max = max(this.max ?: Double.MIN_VALUE, amount)
+								this.min = min(this.min ?: Double.MAX_VALUE, amount)
+							}
+
+							tdsValues.getOrPut(tds.type) { arrayListOf() }.add(StageEntry(waterDates.size - 1, waterIndex.toFloat(), amount.toFloat()))
+						}
 					}
 
 					// add additives to pre calculated list
@@ -175,7 +196,7 @@ class StatisticsFragment2 : Fragment()
 							additive.amount?.let { amount ->
 								with (additiveValues) {
 									val amount = Unit.ML.to(selectedMeasurementUnit, amount)
-									val entry = Entry(waterIndex.toFloat(), amount.toFloat())
+									val entry = StageEntry(waterDates.size - 1, waterIndex.toFloat(), amount.toFloat())
 									getOrPut(additive.description!!, { arrayListOf() }).add(entry)
 								}
 
@@ -183,7 +204,7 @@ class StatisticsFragment2 : Fragment()
 									val totalDelivery = Unit.ML.to(selectedDeliveryUnit, action.amount ?: 1000.0)
 									val additiveAmount = Unit.ML.to(selectedMeasurementUnit, amount)
 
-									val entry = Entry(waterIndex.toFloat(), Unit.toTwoDecimalPlaces(additiveAmount * totalDelivery).toFloat())
+									val entry = StageEntry(waterDates.size - 1, waterIndex.toFloat(), Unit.toTwoDecimalPlaces(additiveAmount * totalDelivery).toFloat())
 									getOrPut(additive.description!!, { arrayListOf() }).add(entry)
 								}
 							}
@@ -202,6 +223,11 @@ class StatisticsFragment2 : Fragment()
 
 		phStats.average = if (tempPhValues.isNotEmpty()) tempPhValues.average() else null
 		runoffStats.average = if (tempRunoffValues.isNotEmpty()) tempRunoffValues.average() else null
+		tdsStats.forEach { (k, v) ->
+			tempTdsValues[k]?.let {
+				tdsStats[k]?.average = if (it.isNotEmpty()) it.average() else null
+			}
+		}
 	}
 
 	private fun populateGeneralStats()
@@ -406,7 +432,7 @@ class StatisticsFragment2 : Fragment()
 				it.forEach { (k, v) ->
 					if (selectedAdditives.contains(k))
 					{
-						dataSets += LineDataSet(v, k).apply {
+						dataSets += LineDataSet(v as List<Entry>, k).apply {
 							color = statsColours[index]
 							fillColor = color
 							setCircleColor(color)
@@ -724,7 +750,7 @@ class StatisticsFragment2 : Fragment()
 
 			if (INPUT_PH in selectedModes)
 			{
-				sets += LineDataSet(phValues, getString(R.string.stat_input_ph)).apply {
+				sets += LineDataSet(phValues as List<Entry>, getString(R.string.stat_input_ph)).apply {
 					color = statsColours[0]
 					fillColor = color
 					setCircleColor(color)
@@ -734,7 +760,7 @@ class StatisticsFragment2 : Fragment()
 
 			if (RUNOFF_PH in selectedModes)
 			{
-				sets += LineDataSet(runoffValues, getString(R.string.stat_runoff_ph)).apply {
+				sets += LineDataSet(runoffValues as List<Entry>, getString(R.string.stat_runoff_ph)).apply {
 					color = statsColours[1]
 					fillColor = color
 					setCircleColor(color)
@@ -808,7 +834,7 @@ class StatisticsFragment2 : Fragment()
 		}
 
 		arrayListOf(INPUT_PH, RUNOFF_PH, AVERAGE_PH).forEach { mode ->
-			val chip = LayoutInflater.from(context!!).inflate(R.layout.filter_chip_stub, additive_chips_container, false) as Chip
+			val chip = LayoutInflater.from(context!!).inflate(R.layout.filter_chip_stub, ph_chips_container, false) as Chip
 			chip.setText(mode)
 			chip.isChecked = true
 			chip.setOnCheckedChangeListener { buttonView, isChecked ->
@@ -825,6 +851,149 @@ class StatisticsFragment2 : Fragment()
 
 		with (input_ph) {
 			setVisibleYRangeMaximum(max(phStats.max?.toFloat() ?: 0.0f, runoffStats.max?.toFloat() ?: 0.0f), YAxis.AxisDependency.LEFT)
+			setDrawGridBackground(false)
+			description = null
+			isScaleYEnabled = false
+			setDrawBorders(false)
+
+			axisLeft.labelCount = 8
+			axisLeft.setDrawTopYLabelEntry(true)
+			axisLeft.setDrawZeroLine(true)
+			axisLeft.setDrawGridLines(false)
+			axisLeft.textColor = R.attr.colorOnSurface.resolveColor(context!!)
+
+			axisRight.setDrawLabels(false)
+			axisRight.setDrawGridLines(false)
+			axisRight.setDrawAxisLine(false)
+
+			xAxis.setDrawGridLines(false)
+			xAxis.granularity = 1f
+			xAxis.position = XAxis.XAxisPosition.BOTTOM
+			xAxis.yOffset = 10f
+			xAxis.textColor = R.attr.colorOnSurface.resolveColor(context!!)
+			xAxis.valueFormatter = object : ValueFormatter()
+			{
+				override fun getAxisLabel(value: Float, axis: AxisBase?): String
+				{
+					return waterDates.getOrNull(value.toInt())?.transform {
+						"${total}/${day}${getString(stage.printString).toLowerCase()[0]}"
+					} ?: ""
+				}
+			}
+
+			legend.form = Legend.LegendForm.CIRCLE
+			legend.textColor = R.attr.colorOnSurface.resolveColor(context!!)
+			legend.isWordWrapEnabled = true
+		}
+
+		refreshCharts()
+		displayStats()
+	}
+
+	private fun populateTdsStats()
+	{
+		var selectedUnit: TdsUnit = selectedTdsUnit
+
+		fun refreshCharts()
+		{
+			val sets = arrayListOf<ILineDataSet>()
+			var index = 0
+
+			tdsValues[selectedUnit]?.let {
+				sets += LineDataSet(it as List<Entry>, getString(selectedUnit.strRes)).apply {
+					color = statsColours[tdsValues.keys.indexOfFirst { it == selectedUnit }.absoluteValue % statsColours.size]
+					fillColor = color
+					setCircleColor(color)
+					styleDataset(context!!, this, color)
+				}
+			}
+
+			val averageEntries = arrayListOf<Entry>()
+			tdsValues[selectedUnit]?.let { values ->
+				values.foldIndexed(0.0f) { index, acc, entry ->
+					if (acc > 0) averageEntries += Entry(index.toFloat(), acc / index)
+					entry.y + acc
+				}
+
+				sets += LineDataSet(averageEntries, getString(R.string.stat_average_tds, selectedTdsUnit.label)).apply {
+					color = ColorUtils.blendARGB(statsColours[tdsValues.keys.indexOfFirst { it == selectedUnit }.absoluteValue % statsColours.size], 0xffffffff.toInt(), 0.4f)
+					setDrawCircles(false)
+					setDrawValues(false)
+					setDrawCircleHole(false)
+					setDrawHighlightIndicators(true)
+					cubicIntensity = 1f
+					lineWidth = 2.0f
+					isHighlightEnabled = false
+				}
+			}
+
+			tds_chart.data = LineData(sets)
+			tds_chart.notifyDataSetChanged()
+			tds_chart.invalidate()
+		}
+
+		fun displayStats()
+		{
+			tds_stats_container.removeAllViews()
+
+			tdsStats[selectedUnit]?.let { stat ->
+				val stats = arrayListOf<template>()
+				stats += header(getString(selectedUnit.strRes))
+
+				stat.min?.let {
+					stats += data(
+						label = getString(R.string.min),
+						data = it.formatWhole()
+					)
+				}
+
+				stat.max?.let {
+					stats += data(
+						label = getString(R.string.max),
+						data = it.formatWhole()
+					)
+				}
+
+				stat.average?.let {
+					stats += data(
+						label = getString(R.string.ave),
+						data = it.formatWhole()
+					)
+				}
+
+				if (stats.size > 1) renderStats(tds_stats_container, stats)
+			}
+		}
+
+		val values = TdsUnit.values().filter { it in tdsValues.keys }
+		if (values.size > 1)
+		{
+			values.forEach { unit ->
+				val chip = LayoutInflater.from(context!!).inflate(R.layout.filter_chip_stub, tds_chips_container, false) as Chip
+				chip.setText(unit.strRes)
+				chip.isCheckable = true
+				chip.id = unit.strRes
+
+				chip.setOnCheckedChangeListener { buttonView, isChecked ->
+					if (isChecked) selectedUnit = unit
+
+					refreshCharts()
+					displayStats()
+				}
+
+				tds_chips_container += chip
+			}
+
+			tds_chips_container.check(selectedUnit.strRes)
+		}
+		else
+		{
+			tds_chips_container.isVisible = false
+			selectedUnit = values.firstOrNull() ?: selectedTdsUnit
+		}
+
+		with (tds_chart) {
+//			setVisibleYRangeMaximum(max(phStats.max?.toFloat() ?: 0.0f, runoffStats.max?.toFloat() ?: 0.0f), YAxis.AxisDependency.LEFT)
 			setDrawGridBackground(false)
 			description = null
 			isScaleYEnabled = false

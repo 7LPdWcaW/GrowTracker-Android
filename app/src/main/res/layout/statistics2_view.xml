@@ -191,6 +191,59 @@
 					app:dividerDrawableVertical="@drawable/divider_8dp"
 				/>
 			</LinearLayout>
+
+			<LinearLayout
+				android:layout_width="match_parent"
+				android:layout_height="wrap_content"
+				android:orientation="vertical"
+				android:elevation="4dp"
+				android:layout_marginTop="12dp"
+				style="@style/PaperCard"
+			>
+				<TextView
+					android:layout_width="wrap_content"
+					android:layout_height="wrap_content"
+					android:text="@string/tds_title"
+					style="@style/SectionTitle"
+				/>
+
+				<LinearLayout
+					android:layout_width="match_parent"
+					android:layout_height="wrap_content"
+					android:padding="16dp"
+					android:orientation="vertical"
+				>
+					<com.google.android.material.chip.ChipGroup
+						android:layout_width="match_parent"
+						android:layout_height="wrap_content"
+						android:id="@+id/tds_chips_container"
+						app:chipSpacing="4dp"
+						app:chipSpacingVertical="0dp"
+						app:singleSelection="true"
+						app:selectionRequired="true"
+					/>
+				</LinearLayout>
+
+				<com.github.mikephil.charting.charts.LineChart
+					android:layout_width="match_parent"
+					android:layout_height="300dp"
+					android:id="@+id/tds_chart"
+					android:padding="16dp"
+					android:layout_marginTop="24dp"
+				/>
+
+				<com.google.android.flexbox.FlexboxLayout
+					android:layout_width="match_parent"
+					android:layout_height="wrap_content"
+					android:id="@+id/tds_stats_container"
+					android:paddingStart="16dp"
+					android:paddingEnd="16dp"
+					android:paddingBottom="16dp"
+					app:flexWrap="wrap"
+					app:showDividerVertical="middle"
+					app:dividerDrawableVertical="@drawable/divider_8dp"
+				/>
+			</LinearLayout>
 		</LinearLayout>
 	</ScrollView>
 </androidx.constraintlayout.widget.ConstraintLayout>
