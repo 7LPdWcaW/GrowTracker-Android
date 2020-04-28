@@ -145,9 +145,13 @@
 	<string name="total_time_label">Totaaltijd:</string>
 	<string name="total_waters_label">Totaal water gegeven:</string>
 	<string name="total_flushes_label">Totaal bijgesteld:</string>
+	<string name="total_water_amount_label">Totaal waterverbruik:</string>
+	<string name="ave_water_amount_label">Gem. waterverbruik:</string>
 	<string name="ave_time_between_water_label">Gem. tijd tussen water geven:</string>
+	<string name="ave_time_stage_label" formatted="true">Gemiddeld %swater:</string>
 	<string name="filter_additives">Toevoegingen filteren</string>
 	<string name="ph_title">pH-waarde</string>
+	<string name="tds_title">TDS</string>
 
 	<string name="min">Min.:</string>
 	<string name="max">Max.:</string>
@@ -269,6 +273,9 @@
 	<string name="stat_input_ph">Toevoer-pH-waarde</string>
 	<string name="stat_runoff_ph">Afvoer-pH-waarde</string>
 	<string name="stat_average_ph">Gemiddelde pH-waarde</string>
+	<string name="stat_average_temp">Gemiddelde temperatuur</string>
+	<string name="stat_average_runoff_ph">Gemiddelde afvoer-pH-waarde</string>
+	<string name="stat_average_tds" formatted="true">Gemiddeld %s</string>
 
 	<string name="photos_title">Plantenfoto\'s</string>
 
@@ -419,4 +426,13 @@
 	<string name="settings_import_error">Kan planten niet importeren uit bestand</string>
 	<string name="settings_import">Planten importeren uit bestand</string>
 	<string name="settings_import_success">De planten zijn geïmporteerd</string>
+
+	<string name="additive_stat_header" formatted="true">%s-statistieken</string>
+	<string name="additive_average_usage_label">Gem. per voeding:</string>
+	<string name="additive_usage_count_label">Aantal keer gebruikt:</string>
+	<string name="additive_total_usage_label">Totaal:</string>
+
+	<string name="additives_concentration_title">Toegevoegde concentratie</string>
+	<string name="additives_overtime_title">Toevoegingen in de loop der tijd</string>
+	<string name="additives_distribution_title">Toegevoegde verspreiding</string>
 </resources>
