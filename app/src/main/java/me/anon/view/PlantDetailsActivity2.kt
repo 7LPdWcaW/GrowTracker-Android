@@ -9,7 +9,6 @@ import androidx.lifecycle.ViewModel
 import com.google.android.material.appbar.MaterialToolbar
 import kotlinx.android.synthetic.main.tabbed_fragment_holder.*
 import me.anon.grow.R
-import me.anon.view.fragment.PlantDetailsFragment
 
 /**
  * // TODO: Add class description
@@ -69,7 +68,7 @@ class PlantDetailsActivity2 : BaseActivity()
 					.setCustomAnimations(R.anim.fade_in, R.anim.fade_out)
 					.replace(R.id.fragment_holder, when (it.itemId)
 					{
-						R.id.view_details -> PlantDetailsFragment.newInstance(plantId)
+						//R.id.view_details -> PlantDetailsFragment.newInstance(plantId)
 //						R.id.view_history -> ActionsListFragment.newInstance(intent.extras)
 //						R.id.view_photos -> ViewPhotosFragment.newInstance(intent.extras)
 //						R.id.view_statistics -> StatisticsFragment.newInstance(intent.extras)
@@ -83,7 +82,7 @@ class PlantDetailsActivity2 : BaseActivity()
 
 		supportFragmentManager.findFragmentByTag(TAG_FRAGMENT) ?: let {
 			supportFragmentManager.beginTransaction()
-				.replace(R.id.fragment_holder, PlantDetailsFragment.newInstance(viewModel.plantId), TAG_FRAGMENT)
+				//.replace(R.id.fragment_holder, PlantDetailsFragment.newInstance(viewModel.plantId), TAG_FRAGMENT)
 				.commit()
 		}
 	}

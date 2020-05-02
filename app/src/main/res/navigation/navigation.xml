@@ -1,0 +1,54 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<navigation xmlns:android="http://schemas.android.com/apk/res/android"
+	xmlns:app="http://schemas.android.com/apk/res-auto"
+	android:id="@+id/navigation"
+	app:startDestination="@id/plant_list"
+>
+
+	<fragment
+		android:id="@+id/plant_list"
+		android:name="me.anon.view.fragment.PlantListFragment"
+		android:label="PlantListFragment"
+	>
+		<action
+			android:id="@+id/action_plant_details"
+			app:destination="@id/plant_details"
+		/>
+		<action
+			android:id="@+id/action_water_plant"
+			app:destination="@id/water_plant"
+		/>
+	</fragment>
+
+	<fragment
+		android:id="@+id/plant_details"
+		android:name="me.anon.view.fragment.PlantDetailsFragment"
+		android:label="PlantDetailsFragment"
+	>
+		<action
+			android:id="@+id/action_water_plant"
+			app:destination="@id/water_plant"
+		/>
+		<argument
+			android:name="plantId"
+			app:argType="string"
+			app:nullable="true"
+		/>
+	</fragment>
+
+	<fragment
+		android:id="@+id/water_plant"
+		android:name="me.anon.view.fragment.WateringFragment"
+		android:label="WateringFragment"
+	>
+		<argument
+			android:name="plantIds"
+			app:argType="string[]"
+		/>
+		<argument
+			android:name="plantActionId"
+			app:argType="string"
+			app:nullable="true" />
+	</fragment>
+</navigation>

@@ -29,11 +29,11 @@ class MainActivity2 : BaseActivity(), NavigationView.OnNavigationItemSelectedLis
 	{
 		super.onCreate(savedInstanceState)
 
-		setContentView(R.layout.main_view)
-		setSupportActionBar(toolbar)
-		setupDrawerToggle()
-		setupNavigation()
-		viewModel.start()
+		setContentView(R.layout.activity_main)
+//		setSupportActionBar(toolbar)
+//		setupDrawerToggle()
+//		setupNavigation()
+//		viewModel.start()
 	}
 
 	private fun setupDrawerToggle()

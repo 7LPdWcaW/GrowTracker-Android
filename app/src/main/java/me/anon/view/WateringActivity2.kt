@@ -53,7 +53,7 @@ class WateringActivity2 : BaseActivity()
 		val fragment: WateringFragment? = supportFragmentManager.findFragmentById(R.id.fragment_holder) as? WateringFragment
 
 		supportFragmentManager.beginTransaction()
-			.replace(R.id.fragment_holder, fragment ?: WateringFragment.newInstance(viewModel.plantId!!, viewModel.actionId))
+			//.replace(R.id.fragment_holder, fragment ?: WateringFragment.newInstance(viewModel.plantId!!, viewModel.actionId))
 			.commit()
 	}
 }

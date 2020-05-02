@@ -1,6 +1,5 @@
 package me.anon.view.fragment
 
-import android.content.Intent
 import android.os.Bundle
 import android.text.TextUtils
 import android.text.format.DateFormat
@@ -10,6 +9,8 @@ import androidx.core.view.isVisible
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.observe
+import androidx.navigation.findNavController
+import androidx.navigation.fragment.navArgs
 import kotlinx.android.synthetic.main.action_buttons_stub.view.*
 import kotlinx.android.synthetic.main.plant_details_view.*
 import kotlinx.android.synthetic.main.tabbed_fragment_holder.*
@@ -20,7 +21,6 @@ import me.anon.lib.ext.inflate
 import me.anon.lib.ext.viewModelFactory
 import me.anon.model.Water
 import me.anon.view.PlantDetailsActivity2
-import me.anon.view.WateringActivity2
 import me.anon.view.viewmodel.PlantDetailsViewModel
 import java.util.*
 
@@ -29,17 +29,7 @@ import java.util.*
  */
 class PlantDetailsFragment : Fragment(R.layout.plant_details_view)
 {
-	companion object
-	{
-		public const val EXTRA_PLANT_ID = "plantId"
-
-		public fun newInstance(plantId: String? = null): PlantDetailsFragment = PlantDetailsFragment().apply {
-			arguments = Bundle().apply {
-				plantId?.let { putString(EXTRA_PLANT_ID, it) }
-			}
-		}
-	}
-
+	private val args: PlantDetailsFragmentArgs by navArgs()
 	private val viewModel: PlantDetailsViewModel by viewModels { viewModelFactory() }
 	private val dateFormat by lazy { DateFormat.getDateFormat(activity) }
 	private val timeFormat by lazy { DateFormat.getTimeFormat(activity) }
@@ -48,7 +38,7 @@ class PlantDetailsFragment : Fragment(R.layout.plant_details_view)
 	{
 		super.onActivityCreated(savedInstanceState)
 
-		viewModel.plantId = arguments?.getString(EXTRA_PLANT_ID)
+		viewModel.plantId =args.plantId
 		viewModel.initialise()
 
 		setupUi()
@@ -70,9 +60,7 @@ class PlantDetailsFragment : Fragment(R.layout.plant_details_view)
 			toolbar_layout.inflate<View>(R.layout.action_buttons_stub, true)
 
 			toolbar_layout.feeding?.setOnClickListener {
-				it.context.startActivity(Intent(it.context, WateringActivity2::class.java).apply {
-					putExtra("plantId", viewModel.plantId)
-				})
+				it.findNavController().navigate(PlantDetailsFragmentDirections.actionWaterPlant(arrayOf(viewModel.plantId), null))
 			}
 		}
 
@@ -118,12 +106,7 @@ class PlantDetailsFragment : Fragment(R.layout.plant_details_view)
 		last_feeding_full_date.text = "${dateFormat.format(actionDate)} ${timeFormat.format(actionDate)}"
 		last_feeding_date.text = getString(R.string.ago, "<b>${DateRenderer(activity).timeAgo(water.date.toDouble()).formattedDate}</b>").asHtml()
 		duplicate_feeding.setOnClickListener {
-
-
-			it.context.startActivity(Intent(it.context, WateringActivity2::class.java).apply {
-				putExtra("plantId", viewModel.plantId)
-				putExtra("actionId", water.id)
-			})
+			it.findNavController().navigate(PlantListFragmentDirections.actionWaterPlant(arrayOf(viewModel.plantId), water.id))
 		}
 	}
 }

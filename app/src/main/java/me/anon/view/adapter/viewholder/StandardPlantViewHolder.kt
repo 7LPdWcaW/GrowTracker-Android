@@ -1,9 +1,9 @@
 package me.anon.view.adapter.viewholder
 
-import android.content.Intent
 import android.text.Html
 import android.text.TextUtils
 import android.view.View
+import androidx.navigation.findNavController
 import androidx.recyclerview.widget.RecyclerView
 import com.nostra13.universalimageloader.core.ImageLoader
 import com.nostra13.universalimageloader.core.imageaware.ImageAware
@@ -11,7 +11,7 @@ import com.nostra13.universalimageloader.core.imageaware.ImageViewAware
 import kotlinx.android.synthetic.main.plant_extreme_item.view.*
 import me.anon.grow.R
 import me.anon.model.Plant
-import me.anon.view.PlantDetailsActivity2
+import me.anon.view.fragment.PlantListFragmentDirections
 
 /**
  * // TODO: Add class description
@@ -44,9 +44,7 @@ class StandardPlantViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView
 		}
 
 		itemView.setOnClickListener {
-			it.context.startActivity(Intent(it.context, PlantDetailsActivity2::class.java).apply {
-				putExtra("plantId", plant.id)
-			})
+			it.findNavController().navigate(PlantListFragmentDirections.actionPlantDetails(plant.id))
 		}
 	}
 }

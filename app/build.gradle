@@ -2,6 +2,7 @@ apply plugin: 'com.android.application'
 apply plugin: 'kotlin-android'
 apply plugin: 'kotlin-android-extensions'
 apply plugin: 'kotlin-kapt'
+apply plugin: "androidx.navigation.safeargs"
 
 repositories {
 	mavenCentral()
@@ -135,6 +136,11 @@ dependencies {
 	implementation "androidx.lifecycle:lifecycle-livedata-ktx:2.2.0"
 	implementation "androidx.fragment:fragment:1.2.4"
 	implementation "androidx.fragment:fragment-ktx:1.2.4"
+	def nav_version = "2.3.0-alpha06"
+
+	// Kotlin
+	implementation "androidx.navigation:navigation-fragment-ktx:$nav_version"
+	implementation "androidx.navigation:navigation-ui-ktx:$nav_version"
 
 	implementation "org.jetbrains.kotlinx:kotlinx-coroutines-android:1.3.0"
 
