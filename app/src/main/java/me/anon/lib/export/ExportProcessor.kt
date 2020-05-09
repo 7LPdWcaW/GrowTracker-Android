@@ -1,5 +1,6 @@
 package me.anon.lib.export
 
+import android.content.Context
 import me.anon.lib.TdsUnit
 import me.anon.lib.TempUnit
 import me.anon.lib.Unit
@@ -13,6 +14,7 @@ import java.util.*
  */
 open abstract class ExportProcessor
 {
+	public var context: Context? = null
 	public var selectedTds: TdsUnit? = null
 	public var selectedMeasurement: Unit? = null
 	public var selectedDelivery: Unit? = null

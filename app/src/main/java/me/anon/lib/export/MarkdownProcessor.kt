@@ -1,5 +1,8 @@
 package me.anon.lib.export
 
+import kotlinx.android.synthetic.main.statistics2_view.*
+import me.anon.grow.R
+import me.anon.grow.fragment.StatisticsFragment2
 import me.anon.lib.TdsUnit
 import me.anon.lib.TempUnit
 import me.anon.lib.Unit
@@ -17,6 +20,7 @@ import java.io.ByteArrayInputStream
 import java.sql.Timestamp
 import java.util.*
 import kotlin.collections.HashMap
+import kotlin.math.ceil
 
 /**
  * // TODO: Add class description
@@ -139,118 +143,181 @@ class MarkdownProcessor : ExportProcessor()
 
 			documentBuilder.append(NEW_LINE + NEW_LINE)
 		}
+
+		documentBuilder.append("![States](stages.jpg)").append(NEW_LINE + NEW_LINE)
 	}
 
 	override fun printPlantStats(plant: Plant)
 	{
-		val startDate = plant.plantDate
-		var endDate = System.currentTimeMillis()
-		var waterDifference = 0L
-		var lastWater = 0L
-		var totalWater = 0
-		var totalWaterUsed = 0.0
-		var totalFlush = 0
-		val additives = HashMap<String, Double>()
-		val tdsNames = TreeSet<TdsUnit>()
+		val viewModel = StatisticsFragment2.StatisticsViewModel(
+			selectedTds ?: throw Exception(),
+			selectedDelivery ?: throw Exception(),
+			selectedMeasurement ?: throw Exception(),
+			selectedTemp ?: throw Exception(),
+			plant
+		)
 
-		plant.actions?.forEach { action ->
-			if (action is StageChange)
-			{
-				if (action.newStage === PlantStage.HARVESTED)
+		fun generateGeneralsStats()
+		{
+			documentBuilder.append("## General Stats")
+				.append(NEW_LINE + NEW_LINE)
+
+			// total time
+			documentBuilder.append(context!!.getString(R.string.total_time_label)).append("${viewModel.totalDays.formatWhole()} ${context!!.resources.getQuantityString(R.plurals.time_day, viewModel.totalDays.toInt())}")
+				.append(NEW_LINE + NEW_LINE)
+
+			documentBuilder.append("## Water stats")
+				.append(NEW_LINE + NEW_LINE)
+
+			// total waters
+			documentBuilder.append(context!!.getString(R.string.total_waters_label)).append("${viewModel.totalWater.formatWhole()}")
+				.append(NEW_LINE + NEW_LINE)
+
+			// total flushes
+			documentBuilder.append(context!!.getString(R.string.total_flushes_label)).append("${viewModel.totalFlush.formatWhole()}")
+				.append(NEW_LINE + NEW_LINE)
+
+			// total water amount
+			documentBuilder.append(context!!.getString(R.string.total_water_amount_label)).append("${Unit.ML.to(viewModel.selectedDeliveryUnit, viewModel.totalWaterAmount).formatWhole()} ${viewModel.selectedDeliveryUnit.label}")
+				.append(NEW_LINE + NEW_LINE)
+
+			// average water amount
+			documentBuilder.append(context!!.getString(R.string.ave_water_amount_label)).append("${Unit.ML.to(viewModel.selectedDeliveryUnit, (viewModel.totalWaterAmount / viewModel.totalWater.toDouble())).formatWhole()} ${viewModel.selectedDeliveryUnit.label}")
+				.append(NEW_LINE + NEW_LINE)
+
+			// ave time between water
+			documentBuilder.append(context!!.getString(R.string.ave_time_between_water_label))
+			documentBuilder.append((TimeHelper.toDays(viewModel.waterDifference) / viewModel.totalWater).let { d ->
+				"${d.formatWhole()} ${context!!.resources.getQuantityString(R.plurals.time_day, ceil(d).toInt())}"
+			}).append(NEW_LINE + NEW_LINE)
+
+			// ave water time between stages
+			viewModel.aveStageWaters
+				.toSortedMap(Comparator { first, second -> first.ordinal.compareTo(second.ordinal) })
+				.forEach { (stage, dates) ->
+					if (dates.isNotEmpty())
+					{
+						var dateDifference = dates.last() - dates.first()
+						documentBuilder.append(context!!.getString(R.string.ave_time_stage_label, stage.enString))
+						documentBuilder.append((TimeHelper.toDays(dateDifference) / dates.size).let { d ->
+							"${d.formatWhole()} ${context!!.resources.getQuantityString(R.plurals.time_day, ceil(d).toInt())}"
+						}).append(NEW_LINE + NEW_LINE)
+					}
+				}
+		}
+
+		fun generateAdditiveStats()
+		{
+			documentBuilder.append("## Additive stats").append(NEW_LINE + NEW_LINE)
+
+			// add graph
+
+			documentBuilder.append("![Additives](additives.jpg)").append(NEW_LINE + NEW_LINE)
+			documentBuilder.append("![Additives over time](additives-over-time.jpg)").append(NEW_LINE + NEW_LINE)
+			documentBuilder.append("![Total Additives](total-additives.jpg)").append(NEW_LINE + NEW_LINE)
+
+			viewModel.additiveStats.forEach { (key, stat) ->
+				documentBuilder.append("### ").append(context!!.getString(R.string.additive_stat_header, key))
+					.append(NEW_LINE + NEW_LINE)
+				documentBuilder.append(context!!.getString(R.string.min)).append("${Unit.ML.to(viewModel.selectedMeasurementUnit, stat.min).formatWhole()} ${viewModel.selectedMeasurementUnit.label}/${viewModel.selectedDeliveryUnit.label}")
+					.append(NEW_LINE + NEW_LINE)
+				documentBuilder.append(context!!.getString(R.string.max)).append("${Unit.ML.to(viewModel.selectedMeasurementUnit, stat.max).formatWhole()} ${viewModel.selectedMeasurementUnit.label}/${viewModel.selectedDeliveryUnit.label}")
+					.append(NEW_LINE + NEW_LINE)
+				documentBuilder.append(context!!.getString(R.string.additive_average_usage_label)).append("${Unit.ML.to(viewModel.selectedMeasurementUnit, stat.total / stat.count.toDouble()).formatWhole()} ${viewModel.selectedMeasurementUnit.label}/${viewModel.selectedDeliveryUnit.label}")
+					.append(NEW_LINE + NEW_LINE)
+				documentBuilder.append(context!!.getString(R.string.additive_usage_count_label)).append("${stat.count}")
+					.append(NEW_LINE + NEW_LINE)
+				documentBuilder.append(context!!.getString(R.string.additive_total_usage_label)).append("${Unit.ML.to(viewModel.selectedMeasurementUnit, stat.totalAdjusted).formatWhole()} ${viewModel.selectedMeasurementUnit.label}")
+					.append(NEW_LINE + NEW_LINE)
+			}
+		}
+
+		fun generatePhStats()
+		{
+			arrayListOf(viewModel.phStats, viewModel.runoffStats).forEach { stat ->
+				documentBuilder.append("## ").append(context!!.getString(when (stat)
 				{
-					endDate = action.date
+					viewModel.phStats -> R.string.stat_input_ph
+					viewModel.runoffStats -> R.string.stat_input_ph
+					else -> throw Exception()
+				}))
+				.append(NEW_LINE + NEW_LINE)
+
+				stat.min?.let {
+					documentBuilder.append(context!!.getString(R.string.min))
+					documentBuilder.append(it.formatWhole())
+						.append(NEW_LINE + NEW_LINE)
+				}
+
+				stat.max?.let {
+					documentBuilder.append(context!!.getString(R.string.max))
+					documentBuilder.append(it.formatWhole())
+						.append(NEW_LINE + NEW_LINE)
+				}
+
+				stat.average?.let {
+					documentBuilder.append(context!!.getString(R.string.ave))
+					documentBuilder.append(it.formatWhole())
+						.append(NEW_LINE + NEW_LINE)
 				}
 			}
 
-			if (action is Water)
-			{
-				if (lastWater != 0L)
+			documentBuilder.append("![pH](ph.jpg)").append(NEW_LINE + NEW_LINE)
+		}
+
+		fun generateTdsStats()
+		{
+			viewModel.tdsStats.forEach { (key, stat) ->
+				if (stat.average?.isNaN() == false)
 				{
-					waterDifference += Math.abs(action.date - lastWater)
-				}
+					documentBuilder.append("## ").append(context!!.getString(selectedTds!!.strRes))
+						.append(NEW_LINE + NEW_LINE)
 
-				totalWaterUsed += action.amount ?: 0.0
-
-				val actionAdditives = action.additives
-				for (additive in actionAdditives)
-				{
-					val delivery: Double = action.amount ?: 1.0
-
-					if (!additives.containsKey(additive.description))
-					{
-						additives.put(additive.description ?: "", 0.0)
+					stat.min?.let {
+						documentBuilder.append(context!!.getString(R.string.min)).append(it.formatWhole())
+							.append(NEW_LINE + NEW_LINE)
 					}
 
-					val totalDelivery = Unit.ML.to(selectedDelivery, delivery)
-					val additiveAmount = Unit.ML.to(selectedMeasurement, additive.amount!!)
+					stat.max?.let {
+						documentBuilder.append(context!!.getString(R.string.max)).append(it.formatWhole())
+							.append(NEW_LINE + NEW_LINE)
+					}
 
-					additives.put(additive.description ?: "", additives[additive.description]!! + (additiveAmount * totalDelivery))
+					stat.average?.let {
+						documentBuilder.append(context!!.getString(R.string.ave)).append(it.formatWhole())
+							.append(NEW_LINE + NEW_LINE)
+					}
+
+					documentBuilder.append("![${key.label}](${key.label}.jpg)").append(NEW_LINE + NEW_LINE)
 				}
-
-				if (action.tds != null)
-				{
-					tdsNames.add(action.tds!!.type)
-				}
-
-				totalWater++
-				lastWater = action.date
-			}
-
-			if (action is EmptyAction && action.action === Action.ActionName.FLUSH)
-			{
-				totalFlush++
 			}
 		}
 
-		val seconds = (endDate - startDate) / 1000
-		val days = seconds.toDouble() * 0.0000115741
-
-		documentBuilder.append("## Stats").append(NEW_LINE + NEW_LINE)
-		documentBuilder.append(" - **Total grow time:** ").append(String.format("%1$,.2f days", days)).append(NEW_LINE)
-		documentBuilder.append(" - **Total waters:** ").append(totalWater.toString()).append(NEW_LINE)
-		documentBuilder.append(" - **Total water used:** ").append(Unit.ML.to(selectedDelivery, totalWaterUsed).formatWhole()).append(selectedDelivery!!.label).append(NEW_LINE)
-		documentBuilder.append(" - **Total flushes:** ").append(totalFlush.toString()).append(NEW_LINE)
-		documentBuilder.append(" - **Average time between watering:** ").append(String.format("%1$,.2f days", TimeHelper.toDays(waterDifference) / totalWater.toDouble())).append(NEW_LINE + NEW_LINE)
-
-		if (additives.isNotEmpty())
+		fun generateTempStats()
 		{
-			documentBuilder.append("### Nutrients used").append(NEW_LINE + NEW_LINE)
-			additives.forEach { (k, v) ->
-				documentBuilder.append(" - ").append(k)
-					.append(" (total: ").append(Unit.ML.to(selectedMeasurement!!, v).formatWhole()).append(selectedMeasurement!!.label).append(")")
-					.append(NEW_LINE)
+			viewModel.tempStats.min?.let {
+				documentBuilder.append(context!!.getString(R.string.min)).append("${it.formatWhole()}°${viewModel.selectedTempUnit.label}")
+					.append(NEW_LINE + NEW_LINE)
 			}
-			documentBuilder.append(NEW_LINE)
+
+			viewModel.tempStats.max?.let {
+				documentBuilder.append(context!!.getString(R.string.max)).append("${it.formatWhole()}°${viewModel.selectedTempUnit.label}")
+					.append(NEW_LINE + NEW_LINE)
+			}
+
+			viewModel.tempStats.average?.let {
+				documentBuilder.append(context!!.getString(R.string.ave)).append("${it.formatWhole()}°${viewModel.selectedTempUnit.label}")
+					.append(NEW_LINE + NEW_LINE)
+			}
+
+			documentBuilder.append("![temp](temp.jpg)").append(NEW_LINE + NEW_LINE)
 		}
 
-		documentBuilder.append("![Additives](additives.jpg)").append(NEW_LINE + NEW_LINE)
-
-		val avePh = arrayOfNulls<String>(3)
-		StatsHelper.setInputData(plant, null, null, avePh)
-		documentBuilder.append("### Input/runoff pH").append(NEW_LINE + NEW_LINE)
-		documentBuilder.append(" - **Minimum input pH:** ").append(avePh[0]).append(NEW_LINE)
-		documentBuilder.append(" - **Maximum input pH:** ").append(avePh[1]).append(NEW_LINE)
-		documentBuilder.append(" - **Average input pH:** ").append(avePh[2]).append(NEW_LINE + NEW_LINE)
-		documentBuilder.append("![pH Chart](input-ph.jpg)").append(NEW_LINE + NEW_LINE)
-
-		tdsNames.forEach { tds ->
-			documentBuilder.append("### ${tds.enStr}").append(NEW_LINE + NEW_LINE)
-
-			val tdsArr = arrayOfNulls<String>(3)
-			StatsHelper.setTdsData(plant, null, null, tdsArr, tds)
-			documentBuilder.append(" - **Minimum input ${tds.enStr}:** ").append(tdsArr[0]).append(tds.label).append(NEW_LINE)
-			documentBuilder.append(" - **Maximum input ${tds.enStr}:** ").append(tdsArr[1]).append(tds.label).append(NEW_LINE)
-			documentBuilder.append(" - **Average input ${tds.enStr}:** ").append(tdsArr[2]).append(tds.label).append(NEW_LINE + NEW_LINE)
-			documentBuilder.append("![${tds.enStr} Chart](${tds.enStr}.jpg)").append(NEW_LINE + NEW_LINE)
-		}
-
-		val aveTemp = arrayOfNulls<String>(3)
-		StatsHelper.setTempData(plant, null, selectedTemp, null, aveTemp)
-		documentBuilder.append("### Temperature (°${selectedTemp!!.label})").append(NEW_LINE + NEW_LINE)
-		documentBuilder.append(" - **Minimum input temperature:** ").append(aveTemp[0]).append("°${selectedTemp!!.label}").append(NEW_LINE)
-		documentBuilder.append(" - **Maximum input temperature:** ").append(aveTemp[1]).append("°${selectedTemp!!.label}").append(NEW_LINE)
-		documentBuilder.append(" - **Average input temperature:** ").append(aveTemp[2]).append("°${selectedTemp!!.label}").append(NEW_LINE + NEW_LINE)
-		documentBuilder.append("![Temp](temp.jpg)").append(NEW_LINE + NEW_LINE)
+		generateGeneralsStats()
+		generateAdditiveStats()
+		generatePhStats()
+		generateTdsStats()
+		generateTempStats()
 	}
 
 	override fun printPlantActions(plant: Plant)

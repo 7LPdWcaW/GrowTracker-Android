@@ -23,6 +23,7 @@ import com.google.android.material.chip.Chip
 import kotlinx.android.synthetic.main.data_label_stub.view.*
 import kotlinx.android.synthetic.main.statistics2_view.*
 import me.anon.grow.R
+import me.anon.grow.fragment.StatisticsFragment2.template.*
 import me.anon.lib.TdsUnit
 import me.anon.lib.TempUnit
 import me.anon.lib.Unit
@@ -41,12 +42,216 @@ import kotlin.math.min
  */
 class StatisticsFragment2 : Fragment()
 {
-	class StageDate(var day: Int, var total: Int, var stage: PlantStage)
-	class StatWrapper(var min: Double? = null, var max: Double? = null, var average: Double? = null)
+	class StatisticsViewModel(
+		val selectedTdsUnit: TdsUnit,
+		val selectedDeliveryUnit: Unit,
+		val selectedMeasurementUnit: Unit,
+		val selectedTempUnit: TempUnit,
+		val plant: Plant
+	)
+	{
+		class StageDate(var day: Int, var total: Int, var stage: PlantStage)
+		class StatWrapper(var min: Double? = null, var max: Double? = null, var average: Double? = null)
+		class AdditiveStat(
+			var total: Double = 0.0,
+			var totalAdjusted: Double = 0.0,
+			var count: Int = 0,
+			var min: Double = Double.NaN,
+			var max: Double = Double.NaN
+		)
 
-	open class template()
-	open class header(var label: String) : template()
-	open class data(label: String, val data: String) : header(label)
+		// stat variables
+		public val stageChanges by lazy {
+		plant.getStages().also {
+			it.toSortedMap(Comparator { first, second ->
+				(it[first]?.date ?: 0).compareTo(it[second]?.date ?: 0)
+			})
+		}
+		}
+
+		public val plantStages by lazy {
+			plant.calculateStageTime().also {
+				it.remove(PlantStage.HARVESTED)
+			}
+		}
+
+		public val aveStageWaters by lazy {
+			LinkedHashMap<PlantStage, ArrayList<Long>>().also { waters ->
+				waters.putAll(plantStages.keys.map { it }.associateWith { arrayListOf<Long>() })
+			}
+		}
+
+		public val additiveStats = LinkedHashMap<String, AdditiveStat>()
+		public val additives = hashMapOf<Water, ArrayList<Additive>>()
+		public val waterDates = arrayListOf<StageDate>()
+		public val additiveValues = hashMapOf<String, ArrayList<Entry>>()
+		public val additiveTotalValues = hashMapOf<String, ArrayList<Entry>>()
+
+		public val phValues = arrayListOf<Entry>()
+		public val phStats = StatWrapper()
+
+		public val runoffValues = arrayListOf<Entry>()
+		public val runoffStats = StatWrapper()
+
+		public val tdsValues = hashMapOf<TdsUnit, ArrayList<Entry>>()
+		public val tdsStats = hashMapOf<TdsUnit, StatWrapper>()
+
+		public val tempValues = ArrayList<Entry>()
+		public val tempStats = StatWrapper()
+
+		public var endDate = System.currentTimeMillis()
+		public var waterDifference = 0L
+		public var lastWater = 0L
+		public var totalWater = 0
+		public var totalWaterAmount = 0.0
+		public var totalFlush = 0
+
+		public val startDate = plant.plantDate
+		public val totalDays = ((endDate - startDate) / 1000.0) * 0.0000115741
+
+		init { calculateStats() }
+
+		public fun calculateStats()
+		{
+			val tempTempValues = arrayListOf<Double>()
+			val tempPhValues = arrayListOf<Double>()
+			val tempRunoffValues = arrayListOf<Double>()
+			val tempTdsValues = hashMapOf<TdsUnit, ArrayList<Double>>()
+			var waterIndex = 0
+			plant.actions?.forEach { action ->
+				when (action)
+				{
+					is StageChange -> {
+						if (action.newStage == PlantStage.HARVESTED) endDate = action.date
+					}
+
+					is Water -> {
+						if (lastWater != 0L) waterDifference += abs(action.date - lastWater)
+						totalWater++
+						totalWaterAmount += action.amount ?: 0.0
+						lastWater = action.date
+
+						// find the stage change where the date is older than the watering
+						val sortedStageChange = stageChanges.filterValues { it.date <= action.date }.toSortedMap()
+						val stage = sortedStageChange.lastKey()
+						val stageChangeDate = sortedStageChange[stage]?.date ?: 0
+						val waterDate = action.date
+						val stageLength = (waterDate - stageChangeDate).toDays().toInt()
+						val totalDate = TimeHelper.toDays(action.date - plant.plantDate).toInt()
+						waterDates.add(StageDate(stageLength, totalDate, stage))
+						aveStageWaters.getOrPut(stage, { arrayListOf() }).add(action.date)
+
+						// pH stats
+						action.ph?.let {
+							tempPhValues += it
+							phStats.max = max(phStats.max ?: Double.MIN_VALUE, it)
+							phStats.min = min(phStats.min ?: Double.MAX_VALUE, it)
+
+							phValues += Entry(waterIndex.toFloat(), it.toFloat())
+						}
+
+						// runoff stats
+						action.runoff?.let {
+							tempRunoffValues += it
+							runoffStats.max = max(runoffStats.max ?: Double.MIN_VALUE, it)
+							runoffStats.min = min(runoffStats.min ?: Double.MAX_VALUE, it)
+
+							runoffValues += Entry(waterIndex.toFloat(), it.toFloat())
+						}
+
+						// tds stats
+						action.tds?.let { tds ->
+							tds.amount?.let { amount ->
+								tempTdsValues.getOrPut(tds.type) { arrayListOf() }.add(amount)
+								tdsStats.getOrPut(tds.type) { StatWrapper() }.apply {
+									this.max = max(this.max ?: Double.MIN_VALUE, amount)
+									this.min = min(this.min ?: Double.MAX_VALUE, amount)
+								}
+
+								tdsValues.getOrPut(tds.type) { arrayListOf() }.add(Entry(waterIndex.toFloat(), amount.toFloat()))
+							}
+						}
+
+						// temp stats
+						action.temp?.let {
+							tempTempValues += it
+							tempStats.max = max(tempStats.max ?: Double.MIN_VALUE, it)
+							tempStats.min = min(tempStats.min ?: Double.MAX_VALUE, it)
+
+							tempValues += Entry(waterIndex.toFloat(), it.toFloat())
+						}
+
+						// add additives to pre calculated list
+						action.additives.forEach { additive ->
+							if (additive.description != null)
+							{
+								additive.amount?.let { amount ->
+									with (additiveValues) {
+										val amount = Unit.ML.to(selectedMeasurementUnit, amount)
+										val entry = Entry(waterIndex.toFloat(), amount.toFloat())
+										getOrPut(additive.description!!, { arrayListOf() }).add(entry)
+									}
+
+									with (additiveTotalValues) {
+										val totalDelivery = Unit.ML.to(selectedDeliveryUnit, action.amount ?: 1000.0)
+										val additiveAmount = Unit.ML.to(selectedMeasurementUnit, amount)
+
+										val entry = Entry(waterIndex.toFloat(), Unit.toTwoDecimalPlaces(additiveAmount * totalDelivery).toFloat())
+										getOrPut(additive.description!!, { arrayListOf() }).add(entry)
+									}
+								}
+							}
+						}
+
+						waterIndex++
+						additives.getOrPut(action) { arrayListOf() }.addAll(action.additives)
+					}
+
+					is EmptyAction -> {
+						if (action.action == Action.ActionName.FLUSH) totalFlush++
+					}
+				}
+			}
+
+			phStats.average = if (tempPhValues.isNotEmpty()) tempPhValues.average() else null
+			runoffStats.average = if (tempRunoffValues.isNotEmpty()) tempRunoffValues.average() else null
+			tempStats.average = if (tempTempValues.isNotEmpty()) tempTempValues.average() else null
+			tdsStats.forEach { (k, v) ->
+				tempTdsValues[k]?.let {
+					tdsStats[k]?.average = if (it.isNotEmpty()) it.average() else null
+				}
+			}
+
+			additives.keys.forEach { water ->
+				additives[water]?.sortedBy { it.description }?.forEach { additive ->
+					additive.description?.let { key ->
+						additiveStats.getOrPut(key, { AdditiveStat() }).apply {
+							total += additive.amount ?: 0.0
+							min = min(min.isNaN() T Double.MAX_VALUE ?: min, additive.amount ?: 0.0)
+							max = max(max.isNaN() T Double.MIN_VALUE ?: max, additive.amount ?: 0.0)
+
+							additiveTotalValues[key]?.let { totalValues ->
+								var total = 0.0
+								totalValues.forEach { entry ->
+									total += entry.y
+								}
+
+								totalAdjusted = total
+							}
+
+							count++
+						}
+					}
+				}
+			}
+		}
+	}
+
+	sealed class template
+	{
+		open class header(var label: String) : template()
+		open class data(label: String, val data: String) : header(label)
+	}
 
 	companion object
 	{
@@ -57,10 +262,7 @@ class StatisticsFragment2 : Fragment()
 	}
 
 	private lateinit var plant: Plant
-	private val selectedTdsUnit by lazy { TdsUnit.getSelectedTdsUnit(activity!!) }
-	private val selectedDeliveryUnit by lazy { Unit.getSelectedDeliveryUnit(activity!!) }
-	private val selectedMeasurementUnit by lazy { Unit.getSelectedMeasurementUnit(activity!!) }
-	private val selectedTempUnit by lazy { TempUnit.getSelectedTemperatureUnit(activity!!) }
+	private lateinit var viewModel: StatisticsViewModel
 	private val checkedAdditives = setOf<String>()
 	private val statsColours by lazy {
 		resources.getStringArray(R.array.stats_colours).map {
@@ -68,56 +270,11 @@ class StatisticsFragment2 : Fragment()
 		}
 	}
 
-	// stat variables
-	val stageChanges by lazy {
-		plant.getStages().also {
-			it.toSortedMap(Comparator { first, second ->
-				(it[first]?.date ?: 0).compareTo(it[second]?.date ?: 0)
-			})
-		}
-	}
-
-	val plantStages by lazy {
-		plant.calculateStageTime().also {
-			it.remove(PlantStage.HARVESTED)
-		}
-	}
-
-	val aveStageWaters by lazy {
-		LinkedHashMap<PlantStage, ArrayList<Long>>().also { waters ->
-			waters.putAll(plantStages.keys.map { it }.associateWith { arrayListOf<Long>() })
-		}
-	}
-
-	val additives = hashMapOf<Water, ArrayList<Additive>>()
-	val waterDates = arrayListOf<StageDate>()
-	val additiveValues = hashMapOf<String, ArrayList<Entry>>()
-	val additiveTotalValues = hashMapOf<String, ArrayList<Entry>>()
-
-	val phValues = arrayListOf<Entry>()
-	val phStats = StatWrapper()
-
-	val runoffValues = arrayListOf<Entry>()
-	val runoffStats = StatWrapper()
-
-	val tdsValues = hashMapOf<TdsUnit, ArrayList<Entry>>()
-	val tdsStats = hashMapOf<TdsUnit, StatWrapper>()
-
-	val tempValues = ArrayList<Entry>()
-	val tempStats = StatWrapper()
-
-	var endDate = System.currentTimeMillis()
-	var waterDifference = 0L
-	var lastWater = 0L
-	var totalWater = 0
-	var totalWaterAmount = 0.0
-	var totalFlush = 0
-
 	val datesFormatter = object : ValueFormatter()
 	{
 		override fun getAxisLabel(value: Float, axis: AxisBase?): String
 		{
-			return waterDates.getOrNull(value.toInt())?.transform {
+			return viewModel.waterDates.getOrNull(value.toInt())?.transform {
 				"${total}/${day}${getString(stage.printString).toLowerCase()[0]}"
 			} ?: ""
 		}
@@ -136,124 +293,23 @@ class StatisticsFragment2 : Fragment()
 
 		if (!::plant.isInitialized) return
 
-		calculateStats()
+		val selectedTdsUnit = TdsUnit.getSelectedTdsUnit(requireContext())
+		val selectedDeliveryUnit = Unit.getSelectedDeliveryUnit(requireContext())
+		val selectedMeasurementUnit = Unit.getSelectedMeasurementUnit(requireContext())
+		val selectedTempUnit = TempUnit.getSelectedTemperatureUnit(requireContext())
+
+		viewModel = StatisticsViewModel(
+			selectedTdsUnit,
+			selectedDeliveryUnit,
+			selectedMeasurementUnit,
+			selectedTempUnit,
+			plant
+		)
 		populateGeneralStats()
 		populateAdditiveStats()
 		populatePhStats()
 		populateTdsStats()
 		populateTempStats()
-	}
-
-	private fun calculateStats()
-	{
-		val tempTempValues = arrayListOf<Double>()
-		val tempPhValues = arrayListOf<Double>()
-		val tempRunoffValues = arrayListOf<Double>()
-		val tempTdsValues = hashMapOf<TdsUnit, ArrayList<Double>>()
-		var waterIndex = 0
-		plant.actions?.forEach { action ->
-			when (action)
-			{
-				is StageChange -> {
-					if (action.newStage == PlantStage.HARVESTED) endDate = action.date
-				}
-
-				is Water -> {
-					if (lastWater != 0L) waterDifference += abs(action.date - lastWater)
-					totalWater++
-					totalWaterAmount += action.amount ?: 0.0
-					lastWater = action.date
-
-					// find the stage change where the date is older than the watering
-					val sortedStageChange = stageChanges.filterValues { it.date <= action.date }.toSortedMap()
-					val stage = sortedStageChange.lastKey()
-					val stageChangeDate = sortedStageChange[stage]?.date ?: 0
-					val waterDate = action.date
-					val stageLength = (waterDate - stageChangeDate).toDays().toInt()
-					val totalDate = TimeHelper.toDays(action.date - plant.plantDate).toInt()
-					waterDates.add(StageDate(stageLength, totalDate, stage))
-					aveStageWaters.getOrPut(stage, { arrayListOf() }).add(action.date)
-
-					// pH stats
-					action.ph?.let {
-						tempPhValues += it
-						phStats.max = max(phStats.max ?: Double.MIN_VALUE, it)
-						phStats.min = min(phStats.min ?: Double.MAX_VALUE, it)
-
-						phValues += Entry(waterIndex.toFloat(), it.toFloat())
-					}
-
-					// runoff stats
-					action.runoff?.let {
-						tempRunoffValues += it
-						runoffStats.max = max(runoffStats.max ?: Double.MIN_VALUE, it)
-						runoffStats.min = min(runoffStats.min ?: Double.MAX_VALUE, it)
-
-						runoffValues += Entry(waterIndex.toFloat(), it.toFloat())
-					}
-
-					// tds stats
-					action.tds?.let { tds ->
-						tds.amount?.let { amount ->
-							tempTdsValues.getOrPut(tds.type) { arrayListOf() }.add(amount)
-							tdsStats.getOrPut(tds.type) { StatWrapper() }.apply {
-								this.max = max(this.max ?: Double.MIN_VALUE, amount)
-								this.min = min(this.min ?: Double.MAX_VALUE, amount)
-							}
-
-							tdsValues.getOrPut(tds.type) { arrayListOf() }.add(Entry(waterIndex.toFloat(), amount.toFloat()))
-						}
-					}
-
-					// temp stats
-					action.temp?.let {
-						tempTempValues += it
-						tempStats.max = max(tempStats.max ?: Double.MIN_VALUE, it)
-						tempStats.min = min(tempStats.min ?: Double.MAX_VALUE, it)
-
-						tempValues += Entry(waterIndex.toFloat(), it.toFloat())
-					}
-
-					// add additives to pre calculated list
-					action.additives.forEach { additive ->
-						if (additive.description != null)
-						{
-							additive.amount?.let { amount ->
-								with (additiveValues) {
-									val amount = Unit.ML.to(selectedMeasurementUnit, amount)
-									val entry = Entry(waterIndex.toFloat(), amount.toFloat())
-									getOrPut(additive.description!!, { arrayListOf() }).add(entry)
-								}
-
-								with (additiveTotalValues) {
-									val totalDelivery = Unit.ML.to(selectedDeliveryUnit, action.amount ?: 1000.0)
-									val additiveAmount = Unit.ML.to(selectedMeasurementUnit, amount)
-
-									val entry = Entry(waterIndex.toFloat(), Unit.toTwoDecimalPlaces(additiveAmount * totalDelivery).toFloat())
-									getOrPut(additive.description!!, { arrayListOf() }).add(entry)
-								}
-							}
-						}
-					}
-
-					waterIndex++
-					additives.getOrPut(action) { arrayListOf() }.addAll(action.additives)
-				}
-
-				is EmptyAction -> {
-					if (action.action == Action.ActionName.FLUSH) totalFlush++
-				}
-			}
-		}
-
-		phStats.average = if (tempPhValues.isNotEmpty()) tempPhValues.average() else null
-		runoffStats.average = if (tempRunoffValues.isNotEmpty()) tempRunoffValues.average() else null
-		tempStats.average = if (tempTempValues.isNotEmpty()) tempTempValues.average() else null
-		tdsStats.forEach { (k, v) ->
-			tempTdsValues[k]?.let {
-				tdsStats[k]?.average = if (it.isNotEmpty()) it.average() else null
-			}
-		}
 	}
 
 	private fun populateGeneralStats()
@@ -263,9 +319,9 @@ class StatisticsFragment2 : Fragment()
 		stats_container.removeAllViews()
 
 		PlantStage.values().forEach { stage ->
-			if (plantStages.containsKey(stage))
+			if (viewModel.plantStages.containsKey(stage))
 			{
-				plantStages[stage]?.let { time ->
+				viewModel.plantStages[stage]?.let { time ->
 					statTemplates += data(
 						label = "${getString(stage.printString)}:",
 						data = "${TimeHelper.toDays(time).toInt()} ${resources.getQuantityString(R.plurals.time_day, TimeHelper.toDays(time).toInt())}"
@@ -274,13 +330,10 @@ class StatisticsFragment2 : Fragment()
 			}
 		}
 
-		val startDate = plant.plantDate
-		val days = ((endDate - startDate) / 1000.0) * 0.0000115741
-
 		// total time
 		statTemplates += data(
 			label = getString(R.string.total_time_label),
-			data = "${days.formatWhole()} ${resources.getQuantityString(R.plurals.time_day, days.toInt())}"
+			data = "${viewModel.totalDays.formatWhole()} ${resources.getQuantityString(R.plurals.time_day, viewModel.totalDays.toInt())}"
 		)
 
 		statTemplates += header("Water stats")
@@ -288,37 +341,37 @@ class StatisticsFragment2 : Fragment()
 		// total waters
 		statTemplates += data(
 			label = getString(R.string.total_waters_label),
-			data = "${totalWater.formatWhole()}"
+			data = "${viewModel.totalWater.formatWhole()}"
 		)
 
 		// total flushes
 		statTemplates += data(
 			label = getString(R.string.total_flushes_label),
-			data = "${totalFlush.formatWhole()}"
+			data = "${viewModel.totalFlush.formatWhole()}"
 		)
 
 		// total water amount
 		statTemplates += data(
 			label = getString(R.string.total_water_amount_label),
-			data = "${Unit.ML.to(selectedDeliveryUnit, totalWaterAmount).formatWhole()} ${selectedDeliveryUnit.label}"
+			data = "${Unit.ML.to(viewModel.selectedDeliveryUnit, viewModel.totalWaterAmount).formatWhole()} ${viewModel.selectedDeliveryUnit.label}"
 		)
 
 		// average water amount
 		statTemplates += data(
 			label = getString(R.string.ave_water_amount_label),
-			data = "${Unit.ML.to(selectedDeliveryUnit, (totalWaterAmount / totalWater.toDouble())).formatWhole()} ${selectedDeliveryUnit.label}"
+			data = "${Unit.ML.to(viewModel.selectedDeliveryUnit, (viewModel.totalWaterAmount / viewModel.totalWater.toDouble())).formatWhole()} ${viewModel.selectedDeliveryUnit.label}"
 		)
 
 		// ave time between water
 		statTemplates += data(
 			label = getString(R.string.ave_time_between_water_label),
-			data = (TimeHelper.toDays(waterDifference) / totalWater).let { d ->
+			data = (TimeHelper.toDays(viewModel.waterDifference) / viewModel.totalWater).let { d ->
 				"${d.formatWhole()} ${resources.getQuantityString(R.plurals.time_day, ceil(d).toInt())}"
 			}
 		)
 
 		// ave water time between stages
-		aveStageWaters
+		viewModel.aveStageWaters
 			.toSortedMap(Comparator { first, second -> first.ordinal.compareTo(second.ordinal) })
 			.forEach { (stage, dates) ->
 				if (dates.isNotEmpty())
@@ -336,18 +389,18 @@ class StatisticsFragment2 : Fragment()
 		renderStats(stats_container, statTemplates)
 
 		// stage chart
-		val labels = arrayOfNulls<String>(plantStages.size)
-		val yVals = FloatArray(plantStages.size)
+		val labels = arrayOfNulls<String>(viewModel.plantStages.size)
+		val yVals = FloatArray(viewModel.plantStages.size)
 
-		var index = plantStages.size - 1
-		for (plantStage in plantStages.keys)
+		var index = viewModel.plantStages.size - 1
+		for (plantStage in viewModel.plantStages.keys)
 		{
-			yVals[index] = max(TimeHelper.toDays(plantStages[plantStage] ?: 0).toFloat(), 1f)
+			yVals[index] = max(TimeHelper.toDays(viewModel.plantStages[plantStage] ?: 0).toFloat(), 1f)
 			labels[index--] = getString(plantStage.printString)
 		}
 
 		val stageEntries = arrayListOf<BarEntry>()
-		stageEntries += BarEntry(0f, yVals, plantStages.keys.toList().asReversed())
+		stageEntries += BarEntry(0f, yVals, viewModel.plantStages.keys.toList().asReversed())
 
 		val stageData = BarDataSet(stageEntries, "")
 		stageData.isHighlightEnabled = false
@@ -403,16 +456,7 @@ class StatisticsFragment2 : Fragment()
 
 	private fun populateAdditiveStats()
 	{
-		class AdditiveStat(
-			var total: Double = 0.0,
-			var totalAdjusted: Double = 0.0,
-			var count: Int = 0,
-			var min: Double = Double.NaN,
-			var max: Double = Double.NaN
-		)
-
 		val selectedAdditives = arrayListOf<String>()
-		val additiveStats = LinkedHashMap<String, AdditiveStat>()
 		var totalMax = Double.MIN_VALUE
 
 		fun displayStats()
@@ -420,20 +464,20 @@ class StatisticsFragment2 : Fragment()
 			additives_stats_container.removeAllViews()
 
 			selectedAdditives.forEach { name ->
-				additiveStats[name]?.let { stat ->
+				viewModel.additiveStats[name]?.let { stat ->
 					val stats = arrayListOf<template>()
 					stats += header(getString(R.string.additive_stat_header, name))
 					stats += data(
 						label = getString(R.string.min),
-						data = "${Unit.ML.to(selectedMeasurementUnit, stat.min).formatWhole()} ${selectedMeasurementUnit.label}/${selectedDeliveryUnit.label}"
+						data = "${Unit.ML.to(viewModel.selectedMeasurementUnit, stat.min).formatWhole()} ${viewModel.selectedMeasurementUnit.label}/${viewModel.selectedDeliveryUnit.label}"
 					)
 					stats += data(
 						label = getString(R.string.max),
-						data = "${Unit.ML.to(selectedMeasurementUnit, stat.max).formatWhole()} ${selectedMeasurementUnit.label}/${selectedDeliveryUnit.label}"
+						data = "${Unit.ML.to(viewModel.selectedMeasurementUnit, stat.max).formatWhole()} ${viewModel.selectedMeasurementUnit.label}/${viewModel.selectedDeliveryUnit.label}"
 					)
 					stats += data(
 						label = getString(R.string.additive_average_usage_label),
-						data = "${Unit.ML.to(selectedMeasurementUnit, stat.total / stat.count.toDouble()).formatWhole()} ${selectedMeasurementUnit.label}/${selectedDeliveryUnit.label}"
+						data = "${Unit.ML.to(viewModel.selectedMeasurementUnit, stat.total / stat.count.toDouble()).formatWhole()} ${viewModel.selectedMeasurementUnit.label}/${viewModel.selectedDeliveryUnit.label}"
 					)
 					stats += data(
 						label = getString(R.string.additive_usage_count_label),
@@ -441,7 +485,7 @@ class StatisticsFragment2 : Fragment()
 					)
 					stats += data(
 						label = getString(R.string.additive_total_usage_label),
-						data = "${Unit.ML.to(selectedMeasurementUnit, stat.totalAdjusted).formatWhole()} ${selectedMeasurementUnit.label}"
+						data = "${Unit.ML.to(viewModel.selectedMeasurementUnit, stat.totalAdjusted).formatWhole()} ${viewModel.selectedMeasurementUnit.label}"
 					)
 
 					renderStats(additives_stats_container, stats)
@@ -453,7 +497,7 @@ class StatisticsFragment2 : Fragment()
 		{
 			val dataSets = arrayListOf<ILineDataSet>()
 			var index = 0
-			additiveValues.toSortedMap().let {
+			viewModel.additiveValues.toSortedMap().let {
 				it.forEach { (k, v) ->
 					if (selectedAdditives.contains(k))
 					{
@@ -481,7 +525,7 @@ class StatisticsFragment2 : Fragment()
 		{
 			val pieData = arrayListOf<PieEntry>()
 			val colors = arrayListOf<Int>()
-			additiveTotalValues.toSortedMap().let { values ->
+			viewModel.additiveTotalValues.toSortedMap().let { values ->
 				var index = 0
 
 				values.forEach { (k, v) ->
@@ -509,7 +553,7 @@ class StatisticsFragment2 : Fragment()
 				{
 					override fun getFormattedValue(value: Float): String
 					{
-						return "${value.formatWhole()}${selectedMeasurementUnit.label}"
+						return "${value.formatWhole()}${viewModel.selectedMeasurementUnit.label}"
 					}
 				}
 			})
@@ -524,7 +568,7 @@ class StatisticsFragment2 : Fragment()
 			var index = 0
 			val newValues = sortedMapOf<String, ArrayList<Entry>>()
 
-			additiveTotalValues.toSortedMap().let {
+			viewModel.additiveTotalValues.toSortedMap().let {
 				it.forEach { (key, entries) ->
 					if (selectedAdditives.contains(key))
 					{
@@ -551,8 +595,8 @@ class StatisticsFragment2 : Fragment()
 				}
 			}
 
-			val stageEntries = plantStages.keys.toList().asReversed()
-			waterDates.forEachIndexed { additiveIndex, date ->
+			val stageEntries = viewModel.plantStages.keys.toList().asReversed()
+			viewModel.waterDates.forEachIndexed { additiveIndex, date ->
 				barSets += BarDataSet(arrayListOf(BarEntry(additiveIndex.toFloat(), totalMax.toFloat())), null).apply {
 					color = ColorUtils.setAlphaComponent(statsColours[stageEntries.indexOf(date.stage) % statsColours.size], 127)
 				}
@@ -573,31 +617,7 @@ class StatisticsFragment2 : Fragment()
 			displayStats()
 		}
 
-		additives.keys.forEach { water ->
-			additives[water]?.sortedBy { it.description }?.forEach { additive ->
-				additive.description?.let { key ->
-					additiveStats.getOrPut(key, { AdditiveStat() }).apply {
-						total += additive.amount ?: 0.0
-						min = min(min.isNaN() T Double.MAX_VALUE ?: min, additive.amount ?: 0.0)
-						max = max(max.isNaN() T Double.MIN_VALUE ?: max, additive.amount ?: 0.0)
-
-						additiveTotalValues[key]?.let { totalValues ->
-							var total = 0.0
-							totalValues.forEach { entry ->
-								total += entry.y
-							}
-
-							totalAdjusted = total
-						}
-
-						count++
-						totalMax = max(totalMax, max)
-					}
-				}
-			}
-		}
-
-		additiveStats.forEach { (k, v) ->
+		viewModel.additiveStats.forEach { (k, v) ->
 			val chip = LayoutInflater.from(context!!).inflate(R.layout.filter_chip_stub, additive_chips_container, false) as Chip
 			chip.text = k
 			chip.isChecked = true
@@ -613,7 +633,7 @@ class StatisticsFragment2 : Fragment()
 		}
 
 		val entries = arrayListOf<LegendEntry>()
-		additiveValues.toSortedMap().let {
+		viewModel.additiveValues.toSortedMap().let {
 			var index = 0
 			it.forEach { (k, v) ->
 				if (selectedAdditives.contains(k))
@@ -639,7 +659,7 @@ class StatisticsFragment2 : Fragment()
 				{
 					val color = additives_concentration_chart.data.dataSets[highlight.dataSetIndex].color
 					with (this.findViewById<TextView>(R.id.content)) {
-						text = "${e.y.formatWhole()} ${selectedMeasurementUnit.label}/${selectedDeliveryUnit.label}"
+						text = "${e.y.formatWhole()} ${viewModel.selectedMeasurementUnit.label}/${viewModel.selectedDeliveryUnit.label}"
 						setTextColor(color)
 					}
 
@@ -654,7 +674,7 @@ class StatisticsFragment2 : Fragment()
 			{
 				override fun getAxisLabel(value: Float, axis: AxisBase?): String
 				{
-					return "${value.formatWhole()}${selectedMeasurementUnit.label}/${selectedDeliveryUnit.label}"
+					return "${value.formatWhole()}${viewModel.selectedMeasurementUnit.label}/${viewModel.selectedDeliveryUnit.label}"
 				}
 			}
 
@@ -675,7 +695,7 @@ class StatisticsFragment2 : Fragment()
 				{
 					val color = additives_overtime_chart.data.dataSets[highlight.dataSetIndex].color
 					with (this.findViewById<TextView>(R.id.content)) {
-						text = "${e.y.formatWhole()} ${selectedMeasurementUnit.label}"
+						text = "${e.y.formatWhole()} ${viewModel.selectedMeasurementUnit.label}"
 						setTextColor(color)
 					}
 
@@ -690,7 +710,7 @@ class StatisticsFragment2 : Fragment()
 			{
 				override fun getAxisLabel(value: Float, axis: AxisBase?): String
 				{
-					return "${value.formatWhole()}${selectedMeasurementUnit.label}/${selectedDeliveryUnit.label}"
+					return "${value.formatWhole()}${viewModel.selectedMeasurementUnit.label}/${viewModel.selectedDeliveryUnit.label}"
 				}
 			}
 
@@ -726,7 +746,7 @@ class StatisticsFragment2 : Fragment()
 
 			if (INPUT_PH in selectedModes)
 			{
-				sets += LineDataSet(phValues, getString(R.string.stat_input_ph)).apply {
+				sets += LineDataSet(viewModel.phValues, getString(R.string.stat_input_ph)).apply {
 					color = statsColours[0]
 					fillColor = color
 					setCircleColor(color)
@@ -735,7 +755,7 @@ class StatisticsFragment2 : Fragment()
 
 				if (AVERAGE_PH in selectedModes)
 				{
-					sets += LineDataSet(phValues.rollingAverage(), getString(R.string.stat_average_runoff_ph)).apply {
+					sets += LineDataSet(viewModel.phValues.rollingAverage(), getString(R.string.stat_average_runoff_ph)).apply {
 						color = ColorUtils.blendARGB(statsColours[0], 0xffffffff.toInt(), 0.4f)
 						setDrawCircles(false)
 						setDrawValues(false)
@@ -750,7 +770,7 @@ class StatisticsFragment2 : Fragment()
 
 			if (RUNOFF_PH in selectedModes)
 			{
-				sets += LineDataSet(runoffValues, getString(R.string.stat_runoff_ph)).apply {
+				sets += LineDataSet(viewModel.runoffValues, getString(R.string.stat_runoff_ph)).apply {
 					color = statsColours[1]
 					fillColor = color
 					setCircleColor(color)
@@ -759,7 +779,7 @@ class StatisticsFragment2 : Fragment()
 
 				if (AVERAGE_PH in selectedModes)
 				{
-					sets += LineDataSet(runoffValues.rollingAverage(), getString(R.string.stat_average_runoff_ph)).apply {
+					sets += LineDataSet(viewModel.runoffValues.rollingAverage(), getString(R.string.stat_average_runoff_ph)).apply {
 						color = ColorUtils.blendARGB(statsColours[1], 0xffffffff.toInt(), 0.4f)
 						setDrawCircles(false)
 						setDrawValues(false)
@@ -787,8 +807,8 @@ class StatisticsFragment2 : Fragment()
 
 				val stat = when (mode)
 				{
-					INPUT_PH -> phStats
-					RUNOFF_PH -> runoffStats
+					INPUT_PH -> viewModel.phStats
+					RUNOFF_PH -> viewModel.runoffStats
 					else -> null
 				}
 
@@ -819,8 +839,8 @@ class StatisticsFragment2 : Fragment()
 		}
 
 		arrayListOf<Int>().apply {
-			if (phValues.isNotEmpty()) add(INPUT_PH)
-			if (runoffValues.isNotEmpty()) add(RUNOFF_PH)
+			if (viewModel.phValues.isNotEmpty()) add(INPUT_PH)
+			if (viewModel.runoffValues.isNotEmpty()) add(RUNOFF_PH)
 			if (isNotEmpty()) add(AVERAGE_PH)
 		}.forEach { mode ->
 			val chip = LayoutInflater.from(context!!).inflate(R.layout.filter_chip_stub, ph_chips_container, false) as Chip
@@ -839,7 +859,7 @@ class StatisticsFragment2 : Fragment()
 		}
 
 		with (input_ph) {
-			setVisibleYRangeMaximum(max(phStats.max?.toFloat() ?: 0.0f, runoffStats.max?.toFloat() ?: 0.0f), YAxis.AxisDependency.LEFT)
+			setVisibleYRangeMaximum(max(viewModel.phStats.max?.toFloat() ?: 0.0f, viewModel.runoffStats.max?.toFloat() ?: 0.0f), YAxis.AxisDependency.LEFT)
 			style()
 
 			marker = object : MarkerView(activity, R.layout.chart_marker)
@@ -867,22 +887,22 @@ class StatisticsFragment2 : Fragment()
 
 	private fun populateTdsStats()
 	{
-		var selectedUnit: TdsUnit = selectedTdsUnit
+		var selectedUnit: TdsUnit = viewModel.selectedTdsUnit
 
 		fun refreshCharts()
 		{
 			val sets = arrayListOf<ILineDataSet>()
 
-			tdsValues[selectedUnit]?.let { values ->
+			viewModel.tdsValues[selectedUnit]?.let { values ->
 				sets += LineDataSet(values, getString(selectedUnit.strRes)).apply {
-					color = statsColours[tdsValues.keys.indexOfFirst { it == selectedUnit }.absoluteValue % statsColours.size]
+					color = statsColours[viewModel.tdsValues.keys.indexOfFirst { it == selectedUnit }.absoluteValue % statsColours.size]
 					fillColor = color
 					setCircleColor(color)
 					styleDataset(context!!, this, color)
 				}
 
 				sets += LineDataSet(values.rollingAverage(), getString(R.string.stat_average_tds, selectedUnit.label)).apply {
-					color = ColorUtils.blendARGB(statsColours[tdsValues.keys.indexOfFirst { it == selectedUnit }.absoluteValue % statsColours.size], 0xffffffff.toInt(), 0.4f)
+					color = ColorUtils.blendARGB(statsColours[viewModel.tdsValues.keys.indexOfFirst { it == selectedUnit }.absoluteValue % statsColours.size], 0xffffffff.toInt(), 0.4f)
 					setDrawCircles(false)
 					setDrawValues(false)
 					setDrawCircleHole(false)
@@ -903,7 +923,7 @@ class StatisticsFragment2 : Fragment()
 		{
 			tds_stats_container.removeAllViews()
 
-			tdsStats[selectedUnit]?.let { stat ->
+			viewModel.tdsStats[selectedUnit]?.let { stat ->
 				val stats = arrayListOf<template>()
 				stats += header(getString(selectedUnit.strRes))
 
@@ -932,7 +952,7 @@ class StatisticsFragment2 : Fragment()
 			}
 		}
 
-		val values = TdsUnit.values().filter { it in tdsValues.keys }
+		val values = TdsUnit.values().filter { it in viewModel.tdsValues.keys }
 		if (values.size > 1)
 		{
 			values.forEach { unit ->
@@ -956,7 +976,7 @@ class StatisticsFragment2 : Fragment()
 		else
 		{
 			tds_chips_container.isVisible = false
-			selectedUnit = values.firstOrNull() ?: selectedTdsUnit
+			selectedUnit = values.firstOrNull() ?: viewModel.selectedTdsUnit
 		}
 
 		with (tds_chart) {
@@ -988,14 +1008,14 @@ class StatisticsFragment2 : Fragment()
 	private fun populateTempStats()
 	{
 		with (temp_chart) {
-			setVisibleYRangeMaximum(tempStats.max?.toFloat() ?: 0.0f, YAxis.AxisDependency.LEFT)
+			setVisibleYRangeMaximum(viewModel.tempStats.max?.toFloat() ?: 0.0f, YAxis.AxisDependency.LEFT)
 			style()
 
 			axisLeft.valueFormatter = object : ValueFormatter()
 			{
 				override fun getAxisLabel(value: Float, axis: AxisBase?): String
 				{
-					return "${value.formatWhole()}°${selectedTempUnit.label}"
+					return "${value.formatWhole()}°${viewModel.selectedTempUnit.label}"
 				}
 			}
 
@@ -1005,7 +1025,7 @@ class StatisticsFragment2 : Fragment()
 				{
 					val color = temp_chart.data.dataSets[highlight.dataSetIndex].color
 					with (this.findViewById<TextView>(R.id.content)) {
-						text = "${e.y.formatWhole()}°${selectedTempUnit.label}"
+						text = "${e.y.formatWhole()}°${viewModel.selectedTempUnit.label}"
 						setTextColor(color)
 					}
 
@@ -1020,14 +1040,14 @@ class StatisticsFragment2 : Fragment()
 
 		val sets = arrayListOf<ILineDataSet>()
 
-		sets += LineDataSet(tempValues, getString(R.string.stat_input_ph)).apply {
+		sets += LineDataSet(viewModel.tempValues, getString(R.string.stat_input_ph)).apply {
 			color = statsColours[0]
 			fillColor = color
 			setCircleColor(color)
 			styleDataset(context!!, this, color)
 		}
 
-		sets += LineDataSet(tempValues.rollingAverage(), getString(R.string.stat_average_temp)).apply {
+		sets += LineDataSet(viewModel.tempValues.rollingAverage(), getString(R.string.stat_average_temp)).apply {
 			color = ColorUtils.blendARGB(statsColours[0], 0xffffffff.toInt(), 0.4f)
 			setDrawCircles(false)
 			setDrawValues(false)
@@ -1041,24 +1061,24 @@ class StatisticsFragment2 : Fragment()
 		temp_chart.data = LineData(sets)
 
 		val stats = arrayListOf<template>()
-		tempStats.min?.let {
+		viewModel.tempStats.min?.let {
 			stats += data(
 				label = getString(R.string.min),
-				data = "${it.formatWhole()}°${selectedTempUnit.label}"
+				data = "${it.formatWhole()}°${viewModel.selectedTempUnit.label}"
 			)
 		}
 
-		tempStats.max?.let {
+		viewModel.tempStats.max?.let {
 			stats += data(
 				label = getString(R.string.max),
-				data = "${it.formatWhole()}°${selectedTempUnit.label}"
+				data = "${it.formatWhole()}°${viewModel.selectedTempUnit.label}"
 			)
 		}
 
-		tempStats.average?.let {
+		viewModel.tempStats.average?.let {
 			stats += data(
 				label = getString(R.string.ave),
-				data = "${it.formatWhole()}°${selectedTempUnit.label}"
+				data = "${it.formatWhole()}°${viewModel.selectedTempUnit.label}"
 			)
 		}
 
