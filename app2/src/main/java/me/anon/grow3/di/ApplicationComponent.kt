@@ -1,7 +1,7 @@
 package me.anon.grow3.di
 
-import androidx.fragment.app.Fragment
 import dagger.Component
+import me.anon.grow3.data.repository.GardensRepository
 import me.anon.grow3.di.module.AppModule
 import me.anon.grow3.ui.gardens.GardenListFragment
 import javax.inject.Singleton
@@ -15,16 +15,7 @@ import javax.inject.Singleton
 ])
 interface ApplicationComponent
 {
-	public fun inject(fragment: GardenListFragment)
+	public fun gardenRepo(): GardensRepository
 
-	companion object
-	{
-		public fun autoInject(component: ApplicationComponent, injectable: Fragment)
-		{
-			when (injectable)
-			{
-				is GardenListFragment -> component.inject(injectable)
-			}
-		}
-	}
+	public fun inject(fragment: GardenListFragment)
 }

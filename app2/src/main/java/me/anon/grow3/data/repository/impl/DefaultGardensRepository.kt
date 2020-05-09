@@ -8,6 +8,7 @@ import me.anon.grow3.data.repository.GardensRepository
 import me.anon.grow3.data.source.GardensDataSource
 import me.anon.grow3.util.DataResult
 import javax.inject.Inject
+import javax.inject.Named
 import javax.inject.Singleton
 
 /**
@@ -16,7 +17,7 @@ import javax.inject.Singleton
 @Singleton
 class DefaultGardensRepository @Inject constructor(
 	private val dataSource: GardensDataSource,
-	private val ioDispatcher: CoroutineDispatcher = Dispatchers.IO
+	@Named("io_dispatcher") private val ioDispatcher: CoroutineDispatcher = Dispatchers.IO
 ) : GardensRepository
 {
 	override fun loaded(): LiveData<DataResult<Boolean>> = dataSource.loaded()

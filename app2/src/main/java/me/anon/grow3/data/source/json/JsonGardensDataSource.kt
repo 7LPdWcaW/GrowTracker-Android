@@ -12,15 +12,17 @@ import me.anon.grow3.util.DataResult
 import me.anon.grow3.util.MoshiHelper
 import java.io.File
 import java.io.FileInputStream
+import javax.inject.Inject
+import javax.inject.Named
 import javax.inject.Singleton
 
 /**
  * // TODO: Add class description
  */
 @Singleton
-class JsonGardensDataSource internal constructor(
-	private var sourcePath: String,
-	private val ioDispatcher: CoroutineDispatcher = Dispatchers.IO
+class JsonGardensDataSource @Inject constructor(
+	@Named("garden_source") private var sourcePath: String,
+	@Named("io_dispatcher") private val ioDispatcher: CoroutineDispatcher = Dispatchers.IO
 ) : GardensDataSource
 {
 	private var _loaded = MutableLiveData<Result<Boolean>>()

@@ -7,7 +7,7 @@ import androidx.lifecycle.observe
 import me.anon.grow3.R
 import me.anon.grow3.ui.gardens.viewmodel.GardenListViewModel
 import me.anon.grow3.util.ViewModelProvider
-import me.anon.grow3.util.inject
+import me.anon.grow3.util.component
 import timber.log.Timber
 import javax.inject.Inject
 
@@ -22,7 +22,9 @@ class GardenListFragment : Fragment(R.layout.fragment_gardens)
 	override fun onActivityCreated(savedInstanceState: Bundle?)
 	{
 		super.onActivityCreated(savedInstanceState)
-		inject()
+		component.inject(this)
+
+		assert(component.gardenRepo() != null)
 
 		setupList()
 	}
