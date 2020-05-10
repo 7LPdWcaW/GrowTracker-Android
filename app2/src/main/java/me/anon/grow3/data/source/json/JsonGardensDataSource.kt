@@ -2,27 +2,21 @@ package me.anon.grow3.data.source.json
 
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
-import com.squareup.moshi.Types
 import kotlinx.coroutines.CoroutineDispatcher
-import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 import me.anon.grow3.data.model.Garden
 import me.anon.grow3.data.source.GardensDataSource
 import me.anon.grow3.util.DataResult
-import me.anon.grow3.util.MoshiHelper
+import me.anon.grow3.util.loadAsGardens
 import java.io.File
-import java.io.FileInputStream
 import javax.inject.Inject
 import javax.inject.Named
 import javax.inject.Singleton
 
-/**
- * // TODO: Add class description
- */
 @Singleton
 class JsonGardensDataSource @Inject constructor(
 	@Named("garden_source") private var sourcePath: String,
-	@Named("io_dispatcher") private val ioDispatcher: CoroutineDispatcher = Dispatchers.IO
+	@Named("io_dispatcher") private val dispatcher: CoroutineDispatcher
 ) : GardensDataSource
 {
 	private var _loaded = MutableLiveData<Result<Boolean>>()
@@ -36,27 +30,12 @@ class JsonGardensDataSource @Inject constructor(
 	{
 		if (_loaded.value == null)
 		{
-			gardens.postValue(withContext(ioDispatcher) {
-				return@withContext try {
-					val file = File(sourcePath, "gardens.json")
-					var data: List<Garden> = arrayListOf()
-					if (file.exists())
-					{
-						data = MoshiHelper.parse(
-							json = FileInputStream(file),
-							type = Types.newParameterizedType(ArrayList::class.java, Garden::class.java)
-						)
-					}
+			gardens.postValue(withContext(dispatcher) {
+				val file = File(sourcePath, "gardens.json")
+				val data = file.loadAsGardens { arrayListOf() }
 
-					_loaded.postValue(Result.success(true))
-					data
-				}
-				catch (e: Exception)
-				{
-					e.printStackTrace()
-					_loaded.postValue(Result.failure(e.cause ?: e.fillInStackTrace()))
-					arrayListOf<Garden>()
-				}
+				_loaded.postValue(Result.success(true))
+				return@withContext data
 			})
 		}
 

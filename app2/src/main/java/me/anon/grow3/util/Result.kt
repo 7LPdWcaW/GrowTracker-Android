@@ -5,7 +5,7 @@ package me.anon.grow3.util
  */
 sealed class DataResult<T>
 {
-	class Success<T>(val data: T)
-	class Failure(val error: String)
-	object Loading
+	data class Success<T>(val data: T) : DataResult<T>()
+	data class Failure(val error: Exception) : DataResult<Nothing>()
+	object Loading : DataResult<Nothing>()
 }

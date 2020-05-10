@@ -17,7 +17,7 @@ import javax.inject.Singleton
 @Singleton
 class DefaultGardensRepository @Inject constructor(
 	private val dataSource: GardensDataSource,
-	@Named("io_dispatcher") private val ioDispatcher: CoroutineDispatcher = Dispatchers.IO
+	@Named("io_dispatcher") private val dispatcher: CoroutineDispatcher = Dispatchers.IO
 ) : GardensRepository
 {
 	override fun loaded(): LiveData<DataResult<Boolean>> = dataSource.loaded()
