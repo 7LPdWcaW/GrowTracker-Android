@@ -10,8 +10,7 @@ class GardenTest
 {
 	private lateinit var gardens: List<Garden>
 
-	init
-	{
+	init {
 		initThreeTen()
 	}
 
@@ -29,8 +28,7 @@ class GardenTest
 
 		garden.size().`should not be null`()
 
-		with(garden.light().`should not be null`())
-		{
+		with(garden.light().`should not be null`()) {
 			type.`should be`(LightType.LED)
 			wattage.`should be equal to`(250.0)
 			brand.`should be equal to`("Custom")
@@ -73,8 +71,7 @@ class GardenTest
 		plantStages.keys.`should not be empty`()
 
 		// planted
-		with (plantStages[garden.plant("0000-000-0000-000001")].`should not be null`())
-		{
+		with (plantStages[garden.plant("0000-000-0000-000001")].`should not be null`()) {
 			size.`should be equal to`(1)
 			val key = keys.elementAt(0)
 			key.type.`should be equal to`(StageType.Planted)
@@ -84,8 +81,7 @@ class GardenTest
 		}
 
 		// planted -> veg
-		with (plantStages[garden.plant("0000-000-0000-000002")].`should not be null`())
-		{
+		with (plantStages[garden.plant("0000-000-0000-000002")].`should not be null`()) {
 			size.`should be equal to`(2)
 			var key = keys.elementAt(0)
 			key.type.`should be equal to`(StageType.Planted)
@@ -101,8 +97,7 @@ class GardenTest
 		}
 
 		// planted -> veg -> flower -> veg
-		with (plantStages[garden.plant("0000-000-0000-000004")].`should not be null`())
-		{
+		with (plantStages[garden.plant("0000-000-0000-000004")].`should not be null`()) {
 			size.`should be equal to`(3)
 			var key = keys.elementAt(0)
 			key.type.`should be equal to`(StageType.Planted)

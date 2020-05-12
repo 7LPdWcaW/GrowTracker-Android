@@ -10,8 +10,7 @@ import java.io.File
 @RunWith(JUnit4::class)
 class ModuleUtilsTest
 {
-	init
-	{
+	init {
 		initThreeTen()
 	}
 

@@ -89,8 +89,7 @@ class Garden(
 			.filterIsInstance<Environment>()
 			.findLast { it.light != null }?.light
 
-	init
-	{
+	init {
 		if (log.isEmpty() || !log.any { it is StageChange })
 		{
 			log += StageChange(StageType.Planted)
