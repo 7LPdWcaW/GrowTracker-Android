@@ -25,6 +25,6 @@ class GardenListViewModel constructor(
 			GardenListViewModel(gardensRepository, handle)
 	}
 
-	private val _gardens = gardensRepository.observeGardens()
-	public val gardens: LiveData<DataResult<List<Garden>>> = _gardens
+//	private val _gardens = TODO()// gardensRepository.observeGardens()
+	public val gardens: LiveData<DataResult<List<Garden>>> = TODO()//_gardens
 }

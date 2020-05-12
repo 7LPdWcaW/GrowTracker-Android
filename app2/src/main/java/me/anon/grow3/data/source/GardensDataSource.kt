@@ -1,16 +1,23 @@
 package me.anon.grow3.data.source
 
-import androidx.lifecycle.LiveData
 import me.anon.grow3.data.model.Garden
-import me.anon.grow3.util.DataResult
 
 /**
  * // TODO: Add class description
  */
 interface GardensDataSource
 {
-	public fun loaded(): LiveData<DataResult<Boolean>>
-	public fun observeGardens(): LiveData<DataResult<List<Garden>>>
+	enum class SyncDirection
+	{
+		SAVE,
+		LOAD
+	}
+
+	suspend fun addGarden(garden: Garden): List<Garden>
+
+	suspend fun getGardenById(gardenId: String): Garden?
 
 	suspend fun getGardens(): List<Garden>
+
+	suspend fun sync(direction: SyncDirection = SyncDirection.SAVE): List<Garden>
 }

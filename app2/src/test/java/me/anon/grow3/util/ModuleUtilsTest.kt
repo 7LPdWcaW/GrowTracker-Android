@@ -1,9 +1,7 @@
 package me.anon.grow3.util
 
-import me.anon.grow3.data.repository.TestConstants
-import org.amshove.kluent.`should contain all`
-import org.amshove.kluent.`should not be empty`
-import org.amshove.kluent.`should not be null`
+import me.anon.grow3.TestConstants
+import org.amshove.kluent.*
 import org.junit.Test
 import org.junit.runner.RunWith
 import org.junit.runners.JUnit4
@@ -12,6 +10,11 @@ import java.io.File
 @RunWith(JUnit4::class)
 class ModuleUtilsTest
 {
+	init
+	{
+		initThreeTen()
+	}
+
 	@Test
 	public fun `test parse gardens string`()
 	{
@@ -46,5 +49,18 @@ class ModuleUtilsTest
 		parsed
 			.`should not be null`()
 			.`should contain all`(TestConstants.gardens)
+	}
+
+	@Test
+	public fun `test save gardens`()
+	{
+		val file = File.createTempFile("test-save-gardens", "json")
+		file.deleteOnExit()
+
+		TestConstants.gardens.saveAsGardens(file)
+		with (file) {
+			exists().`should be`(true)
+			length().`should be greater than`(0)
+		}
 	}
 }

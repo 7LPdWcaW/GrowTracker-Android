@@ -34,7 +34,7 @@ import kotlin.coroutines.ContinuationInterceptor
  * ```
  */
 @ExperimentalCoroutinesApi
-class MainCoroutineRule : TestWatcher(), TestCoroutineScope by TestCoroutineScope()
+public class MainCoroutineRule : TestWatcher(), TestCoroutineScope by TestCoroutineScope()
 {
 	override fun starting(description: Description?)
 	{

@@ -1,6 +1,121 @@
 [
 	{
 		"id": "abcd-efgh-1234-567689",
-		"name": "Hello world"
+		"name": "Hello world",
+		"log": [
+			{
+				"id": "0000-0000-0001-000000",
+				"date": "2020-01-01T00:00:00+00:00",
+				"action": "StageChange",
+				"type": "Planted"
+			},
+			{
+				"id": "0000-0000-0001-000001",
+				"date": "2020-01-01T00:00:00+00:00",
+				"action": "Environment",
+				"size": {
+					"width": 1000.0,
+					"height": 1000.0,
+					"depth": 1000.0
+				},
+				"light": {
+					"type": "LED",
+					"wattage": 250.0,
+					"brand": "Custom"
+				},
+				"schedule": {
+					"timeOn": "00:00",
+					"timeOff": "12:00"
+				},
+				"notes": "Initial environment",
+				"type": "Tent"
+			},
+			{
+				"id": "0000-0000-0001-000002",
+				"date": "2020-01-02T00:00:00+00:00",
+				"action": "Environment",
+				"notes": "Moved to outside",
+				"type": "Outdoors"
+			},
+			{
+				"id": "0000-0000-0001-000003",
+				"date": "2020-01-02T01:00:00+00:00",
+				"action": "Water",
+				"notes": "First water",
+				"inPH": {
+					"amount": 6.5
+				},
+				"outPH": {
+					"amount": 6.0
+				},
+				"tds": {
+					"type": "EC",
+					"amount": 2.0
+				},
+				"amount": 1000.0,
+				"temperature": 27.0,
+				"additives": [
+					{
+						"description": "A&B",
+						"amount": 2.5
+					},
+					{
+						"description": "Calmag",
+						"amount": 3
+					}
+				]
+			},
+			{
+				"id": "0000-0000-0001-000004",
+				"date": "2020-01-02T02:00:00+00:00",
+				"action": "StageChange",
+				"type": "Vegetation",
+				"plantIds": [
+					"0000-000-0000-000002",
+					"0000-000-0000-000004"
+				]
+			},
+			{
+				"id": "0000-0000-0001-000005",
+				"date": "2020-01-05T02:00:00+00:00",
+				"action": "StageChange",
+				"type": "Flower",
+				"plantIds": [
+					"0000-000-0000-000003",
+					"0000-000-0000-000004"
+				]
+			},
+			{
+				"id": "0000-0000-0001-000005",
+				"date": "2020-01-07T02:00:00+00:00",
+				"action": "StageChange",
+				"type": "Vegetation",
+				"plantIds": [
+					"0000-000-0000-000004"
+				]
+			}
+		],
+		"plants": [
+			{
+				"id": "0000-000-0000-000001",
+				"name": "Plant 1",
+				"genetics": "Unknown"
+			},
+			{
+				"id": "0000-000-0000-000002",
+				"name": "Vegetating Plant",
+				"genetics": "Unknown"
+			},
+			{
+				"id": "0000-000-0000-000003",
+				"name": "Flowering Plant",
+				"genetics": "Unknown"
+			},
+			{
+				"id": "0000-000-0000-000004",
+				"name": "Multi Stage Plant",
+				"genetics": "Unknown"
+			}
+		]
 	}
 ]
