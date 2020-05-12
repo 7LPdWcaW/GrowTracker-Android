@@ -1,6 +1,7 @@
 package me.anon.grow3
 
 import android.app.Application
+import com.jakewharton.threetenabp.AndroidThreeTen
 import me.anon.grow3.di.ApplicationComponent
 import me.anon.grow3.di.DaggerApplicationComponent
 import me.anon.grow3.di.module.AppModule
@@ -20,6 +21,7 @@ abstract class BaseApplication : Application()
 	{
 		super.onCreate()
 
+		AndroidThreeTen.init(this)
 		Timber.plant(Timber.DebugTree())
 
 		dataPath = getExternalFilesDir(null)!!.absolutePath
