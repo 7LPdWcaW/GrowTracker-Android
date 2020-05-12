@@ -39,6 +39,20 @@ android {
 			versionNameSuffix "-sample"
 		}
 	}
+
+	android {
+		sourceSets {
+			test {
+				java.srcDirs += 'src/sharedTest/java'
+				resources.srcDirs += 'src/sharedTest/resources'
+				resources.srcDirs += 'src/sample/assets'
+			}
+
+			androidTest {
+				java.srcDirs += 'src/sharedTest/java'
+			}
+		}
+	}
 }
 
 dependencies {
@@ -58,6 +72,7 @@ dependencies {
 	implementation "androidx.fragment:fragment:1.2.4"
 	implementation "androidx.fragment:fragment-ktx:1.2.4"
 
+	implementation 'com.jakewharton.threetenabp:threetenabp:1.2.4'
 	implementation "com.jakewharton.timber:timber:4.7.1"
 
 	def nav_version = "2.3.0-alpha06"
@@ -66,19 +81,18 @@ dependencies {
 	implementation "androidx.navigation:navigation-fragment-ktx:$nav_version"
 	implementation "androidx.navigation:navigation-ui-ktx:$nav_version"
 
-	implementation "org.jetbrains.kotlinx:kotlinx-coroutines-android:1.3.0"
+	implementation "org.jetbrains.kotlinx:kotlinx-coroutines-android:1.3.5"
 
 	implementation 'com.github.prolificinteractive:material-calendarview:2.0.0'
-	implementation 'com.jakewharton.threetenabp:threetenabp:1.1.1'
 
 	implementation 'com.google.android.material:material:1.2.0-alpha06'
 	implementation 'com.google.android:flexbox:1.1.0'
-//	implementation 'com.esotericsoftware:kryo:3.0.3'
 	implementation 'com.squareup.moshi:moshi-kotlin:1.8.0'
-	implementation 'com.squareup:otto:1.3.8'
+
 	implementation 'com.github.PhilJay:MPAndroidChart:v2.1.6'
 	implementation 'com.nostra13.universalimageloader:universal-image-loader:1.9.5'
 	implementation 'com.davemorrissey.labs:subsampling-scale-image-view:3.6.0'
+
 	implementation 'net.lingala.zip4j:zip4j:1.3.2'
 
 	kapt 'com.google.dagger:dagger-compiler:2.27'
@@ -93,8 +107,8 @@ dependencies {
 	androidTestImplementation 'androidx.test.ext:junit:1.1.1'
 	androidTestImplementation 'androidx.test:rules:1.2.0'
 	androidTestImplementation 'androidx.test.espresso:espresso-core:3.2.0'
-	androidTestImplementation 'org.assertj:assertj-core:3.15.0'
 	androidTestImplementation 'androidx.test:runner:1.2.0'
+	androidTestImplementation 'org.assertj:assertj-core:3.15.0'
 	androidTestImplementation "io.mockk:mockk-android:1.10.0"
 
 	// required if you want to use Mockito for unit tests
@@ -102,16 +116,17 @@ dependencies {
 	// required if you want to use Mockito for Android tests
 	androidTestImplementation 'org.mockito:mockito-android:2.25.0'
 
+	// AndroidX Test - JVM testing
 	testImplementation 'junit:junit:4.13'
+	testImplementation "androidx.test:core-ktx:1.2.0"
+	testImplementation "androidx.test.ext:junit-ktx:1.1.1"
+	testImplementation "androidx.test:rules:1.2.0"
 	testImplementation 'androidx.test:core:1.2.0'
 	testImplementation 'androidx.arch.core:core-testing:2.1.0'
 	testImplementation 'org.jetbrains.kotlinx:kotlinx-coroutines-test:1.3.5'
 	testImplementation "org.jetbrains.kotlinx:kotlinx-coroutines-android:1.3.5"
 	testImplementation 'io.mockk:mockk:1.10.0'
-	// for JVM:
 	testImplementation 'org.amshove.kluent:kluent:1.61'
-
-	// for Android:
 	testImplementation 'org.amshove.kluent:kluent-android:1.61'
 }
 
