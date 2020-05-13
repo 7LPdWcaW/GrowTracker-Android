@@ -26,3 +26,5 @@ class Water(
 		public var amount: Double?
 	)
 }
+
+public fun Water(block: Water.() -> Unit): Water = Water(null, null, null, null, null).apply(block)

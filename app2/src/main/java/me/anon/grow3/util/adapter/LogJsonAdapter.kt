@@ -9,6 +9,7 @@ public class LogJsonAdapter : JsonAdapter<Log>()
 {
 	private val moshi: Moshi by lazy { MoshiHelper.addAdapters(Moshi.Builder()).build() }
 	private val environmentAdapter = EnvironmentJsonAdapter(moshi)
+	private val transplantAdapter = TransplantJsonAdapter(moshi)
 	private val harvestAdapter = HarvestJsonAdapter(moshi)
 	private val maintenanceAdapter = MaintenanceJsonAdapter(moshi)
 	private val pesticideAdapter = PesticideJsonAdapter(moshi)
@@ -39,6 +40,7 @@ public class LogJsonAdapter : JsonAdapter<Log>()
 		return when (type)
 		{
 			"Environment" -> environmentAdapter.fromJson(reader)
+			"Transplant" -> transplantAdapter.fromJson(reader)
 			"Harvest" -> harvestAdapter.fromJson(reader)
 			"Maintenance" -> maintenanceAdapter.fromJson(reader)
 			"Pesticide" -> pesticideAdapter.fromJson(reader)
@@ -55,6 +57,7 @@ public class LogJsonAdapter : JsonAdapter<Log>()
 		when (value)
 		{
 			is Environment -> environmentAdapter.toJson(writer, value)
+			is Transplant -> transplantAdapter.toJson(writer, value)
 			is Harvest -> harvestAdapter.toJson(writer, value)
 			is Maintenance -> maintenanceAdapter.toJson(writer, value)
 			is Pesticide -> pesticideAdapter.toJson(writer, value)

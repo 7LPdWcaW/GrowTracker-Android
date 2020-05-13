@@ -1,8 +1,5 @@
 package me.anon.grow3.data.model
 
-/**
- * // TODO: Add class description
- */
 enum class EnvironmentType
 {
 	Tent,

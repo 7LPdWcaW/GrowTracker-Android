@@ -8,3 +8,4 @@ typealias Stage = StageChange
 class StageChange(
 	public var type: StageType
 ) : Log(action = "StageChange")
+

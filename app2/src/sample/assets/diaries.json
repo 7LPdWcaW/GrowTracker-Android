@@ -7,7 +7,8 @@
 				"id": "0001-000000",
 				"date": "2020-01-01T00:00:00+00:00",
 				"action": "StageChange",
-				"type": "Planted"
+				"type": "Planted",
+				"notes": "Initial stage"
 			},
 			{
 				"id": "0001-000001",
@@ -29,6 +30,14 @@
 				},
 				"notes": "Initial environment",
 				"type": "Tent"
+			},
+			{
+				"id": "0001-00000A",
+				"date": "2020-01-01T00:00:00+00:00",
+				"action": "Transplant",
+				"medium": "Coco",
+				"size": 4000.0,
+				"notes": "Initial potting"
 			},
 			{
 				"id": "0001-000002",
@@ -93,32 +102,134 @@
 				"cropIds": [
 					"0002-000004"
 				]
+			},
+			{
+				"id": "0001-000006",
+				"date": "2020-01-08T02:00:00+00:00",
+				"action": "Maintenance",
+				"type": "LowStressTraining",
+				"notes": "LST to third node",
+				"cropIds": [
+					"0002-000001",
+					"0002-000002",
+					"0002-000003"
+				]
+			},
+			{
+				"id": "0001-000007",
+				"date": "2020-01-10T02:00:00+00:00",
+				"action": "Pesticide",
+				"type": "Spray",
+				"amount": 3,
+				"name": "Herbicide"
+			},
+			{
+				"id": "0001-000008",
+				"date": "2020-01-10T02:30:00+00:00",
+				"action": "Photo",
+				"imagePath": "file:///dummy/path",
+				"cropIds": [
+					"0002-000001",
+					"0002-000002",
+					"0002-000003"
+				]
+			},
+			{
+				"id": "0001-000009",
+				"date": "2020-01-10T02:30:00+00:00",
+				"action": "Photo",
+				"imagePath": "file:///dummy/path",
+				"cropIds": [
+					"0002-000004"
+				]
+			},
+			{
+				"id": "0001-00000B",
+				"date": "2020-01-12T02:00:00+00:00",
+				"action": "Transplant",
+				"medium": "Coco",
+				"size": 16000.0,
+				"cropIds": [
+					"0002-000001"
+				]
+			},
+			{
+				"id": "0001-00000C",
+				"date": "2020-01-18T02:00:00+00:00",
+				"action": "Harvest",
+				"amount": 876.0,
+				"cropIds": [
+					"0002-000005"
+				]
+			},
+			{
+				"id": "0001-00000D",
+				"date": "2020-01-20T02:00:00+00:00",
+				"action": "Environment",
+				"light": {
+					"type": "HID",
+					"wattage": 1000.0,
+					"brand": "Sungro"
+				},
+				"notes": "Upgraded light"
+			},
+			{
+				"id": "0001-00000E",
+				"date": "2020-01-22T02:00:00+00:00",
+				"action": "Environment",
+				"temperature": 27.0,
+				"humidity": 66.0,
+				"relativeHumidity": 70.0
+			},
+			{
+				"id": "0001-00000F",
+				"date": "2020-01-24T02:00:00+00:00",
+				"action": "Environment",
+				"type": "Greenhouse",
+				"notes": "Moved to greenhouse",
+				"cropIds": [
+					"0002-000001",
+					"0002-000002",
+					"0002-000003",
+					"0002-000004"
+				],
+				"size": {
+					"width": 10000.0,
+					"height": 3000.0,
+					"depth": 5000.0
+				}
 			}
 		],
 		"crops": [
 			{
 				"id": "0002-000001",
-				"name": "Plant 1",
+				"name": "Crop 1",
 				"genetics": "Unknown",
 				"numberOfPlants": 1
 			},
 			{
 				"id": "0002-000002",
-				"name": "Vegetating Plant",
+				"name": "Vegetating Crop",
 				"genetics": "Unknown",
 				"numberOfPlants": 2
 			},
 			{
 				"id": "0002-000003",
-				"name": "Flowering Plant",
+				"name": "Flowering Crop",
 				"genetics": "Unknown",
 				"numberOfPlants": 5
 			},
 			{
 				"id": "0002-000004",
-				"name": "Multi Stage Plant",
+				"name": "Multi Stage Crop",
 				"genetics": "Unknown",
 				"numberOfPlants": 10
+			},
+			{
+				"id": "0002-000005",
+				"name": "Harvested Crop",
+				"genetics": "Unknown",
+				"numberOfPlants": 4
 			}
 		]
 	}
