@@ -3,7 +3,7 @@ package me.anon.grow3
 import android.os.Bundle
 import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.commit
-import me.anon.grow3.ui.gardens.GardenListFragment
+import me.anon.grow3.ui.diaries.DiariesListFragment
 
 class MainActivity : AppCompatActivity()
 {
@@ -14,7 +14,7 @@ class MainActivity : AppCompatActivity()
 		setContentView(R.layout.activity_main)
 
 		supportFragmentManager.commit {
-			replace(R.id.nav_host_fragment, GardenListFragment())
+			replace(R.id.nav_host_fragment, DiariesListFragment())
 		}
 
 //		val navController = findNavController(R.id.nav_host_fragment)
