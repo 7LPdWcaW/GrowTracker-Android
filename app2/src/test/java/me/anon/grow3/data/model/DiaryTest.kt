@@ -87,7 +87,7 @@ class DiaryTest
 			key.type.`should be equal to`(StageType.Planted)
 			get(key)
 				.`should not be null`()
-				.`should be greater than`(1.0)
+				.`should be greater or equal to`(1.0)
 
 			key = keys.elementAt(1)
 			key.type.`should be equal to`(StageType.Vegetation)
@@ -103,19 +103,21 @@ class DiaryTest
 			key.type.`should be equal to`(StageType.Planted)
 			get(key)
 				.`should not be null`()
-				.`should be greater than`(1.0)
+				.`should be greater or equal to`(1.0)
+				.`should be less than`(2.0)
 
 			key = keys.elementAt(1)
 			key.type.`should be equal to`(StageType.Vegetation)
 			get(key)
 				.`should not be null`()
-				.`should be greater than`(3.0)
+				.`should be greater or equal to`(3.0)
+				.`should be less than`(4.0)
 
 			key = keys.elementAt(2)
 			key.type.`should be equal to`(StageType.Flower)
 			get(key)
 				.`should not be null`()
-				.`should be greater than`(2.0)
+				.`should be greater or equal to`(2.0)
 		}
 	}
 }

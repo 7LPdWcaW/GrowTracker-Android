@@ -47,12 +47,13 @@ class Diary(
 		= if (crop == null) true else (log.cropIds.isNotEmpty() && log.cropIds.contains(crop.id)) || log.cropIds.isEmpty()
 
 	public fun calculateCropStageLengths(): Map<Crop, Map<Stage, Double>>
-		= crops.associateWith { crop ->
+	{
+		return crops.associateWith { crop ->
 			val stages = findAllStages(crop)
 			val unique = stages.uniqueBy { it.type }
 			val ret = unique.associateWith { 0.0 }.toMutableMap()
 
-			// loop through each stage until we move from stage -> different sstage
+			// loop through each stage until we move from stage -> different stage
 			unique.forEach { stage ->
 				var inStage = false
 				var daysInStage = 0.0
@@ -66,6 +67,8 @@ class Diary(
 					else if (inStage && lastStage != null)
 					{
 						daysInStage += ChronoUnit.DAYS.between(lastStage!!.date.asDateTime(), stageChange.date.asDateTime())
+						inStage = false
+						lastStage = null
 					}
 				}
 
@@ -76,6 +79,7 @@ class Diary(
 
 			ret
 		}
+	}
 
 	private fun findAllStages(crop: Crop? = null): List<Stage>
 		= log.sortedBy { it.date }
