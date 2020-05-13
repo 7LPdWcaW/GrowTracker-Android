@@ -26,6 +26,8 @@ class Diary(
 	public fun light(): Light? = findLight()
 	public fun crop(id: String): Crop = crops.first { it.id == id }
 
+	public fun logOf(id: String): Log? = log.first { it.id == id }
+
 	public fun harvestedOf(id: String): Harvest? = harvestedOf(crop(id))
 	public fun harvestedOf(crop: Crop): Harvest?
 		= log.sortedBy { it.date }

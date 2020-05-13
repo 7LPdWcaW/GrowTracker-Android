@@ -138,6 +138,19 @@ class DiaryTest
 	}
 
 	@Test
+	public fun `test editing log reference`()
+	{
+		val diary = diaries.first()
+		val entry = diary.log.random()
+
+		entry.notes = "changed value"
+		val entryId = entry.id
+
+		diary.logOf(entryId).`should not be null`()
+			.notes.`should be equal to`("changed value")
+	}
+
+	@Test
 	public fun `benchmark test`()
 	{
 		var timelineStart = ZonedDateTime.now()
