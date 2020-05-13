@@ -5,7 +5,7 @@ import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
-import me.anon.grow3.data.model.Garden
+import me.anon.grow3.data.model.Diary
 import me.anon.grow3.data.repository.GardensRepository
 import me.anon.grow3.data.source.GardensDataSource
 import me.anon.grow3.util.DataResult
@@ -24,7 +24,7 @@ class DefaultGardensRepository @Inject constructor(
 ) : GardensRepository
 {
 	private val _loaded = MutableLiveData<Boolean>(false)
-	private val _gardens: LiveData<DataResult<List<Garden>>> = _loaded.switchMap { isLoaded ->
+	private val _gardens: LiveData<DataResult<List<Diary>>> = _loaded.switchMap { isLoaded ->
 		liveData {
 			if (isLoaded == false)
 			{
@@ -38,7 +38,7 @@ class DefaultGardensRepository @Inject constructor(
 		}
 	}
 
-	public fun observeGardens(): LiveData<DataResult<List<Garden>>>
+	public fun observeGardens(): LiveData<DataResult<List<Diary>>>
 	{
 		if (_loaded.value != true)
 		{
@@ -48,7 +48,7 @@ class DefaultGardensRepository @Inject constructor(
 		return _gardens
 	}
 
-	public fun observeGarden(gardenId: String): LiveData<DataResult<Garden>> = _gardens.map {
+	public fun observeGarden(gardenId: String): LiveData<DataResult<Diary>> = _gardens.map {
 		when (it)
 		{
 			is DataResult.Success -> DataResult.success(it.data.find { garden -> garden.id == gardenId }!!)
@@ -57,11 +57,11 @@ class DefaultGardensRepository @Inject constructor(
 		}
 	}
 
-	public suspend fun getGardens(): List<Garden> = dataSource.getGardens()
+	public suspend fun getGardens(): List<Diary> = dataSource.getGardens()
 
-	public suspend fun getGardenById(gardenId: String): Garden? = dataSource.getGardenById(gardenId)
+	public suspend fun getGardenById(gardenId: String): Diary? = dataSource.getGardenById(gardenId)
 
-	public suspend fun createGarden(garden: Garden): Garden = dataSource.addGarden(garden).find { it.id == garden.id }!!
+	public suspend fun createGarden(diary: Diary): Diary = dataSource.addGarden(diary).find { it.id == diary.id }!!
 
 	public fun syncToDisk()
 	{

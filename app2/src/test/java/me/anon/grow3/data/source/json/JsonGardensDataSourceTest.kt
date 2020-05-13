@@ -47,7 +47,7 @@ class JsonGardensDataSourceTest
 			dataSource.getGardens().`should be empty`()
 
 			// populate temp file
-			file.writeBytes(TestConstants.gardens_json.toByteArray())
+			file.writeBytes(TestConstants.diaries_json.toByteArray())
 
 			dataSource.sync(GardensDataSource.SyncDirection.LOAD)
 			dataSource.getGardens().`should not be empty`()
@@ -63,18 +63,18 @@ class JsonGardensDataSourceTest
 
 	@Test
 	public fun `test add garden and sync`() = runBlocking<Unit> {
-		dataSource.getGardens().`should not contain`(TestConstants.newGarden)
-		dataSource.addGarden(TestConstants.newGarden)
-		dataSource.getGardens().`should contain`(TestConstants.newGarden)
+		dataSource.getGardens().`should not contain`(TestConstants.newDiary)
+		dataSource.addGarden(TestConstants.newDiary)
+		dataSource.getGardens().`should contain`(TestConstants.newDiary)
 	}
 
 	@Test
 	public fun `test add duplicate garden`() = runBlocking<Unit> {
-		dataSource.addGarden(TestConstants.newGarden)
+		dataSource.addGarden(TestConstants.newDiary)
 
 		try
 		{
-			dataSource.addGarden(TestConstants.newGarden)
+			dataSource.addGarden(TestConstants.newDiary)
 			throw Exception()
 		}
 		catch (e: Exception)
@@ -86,13 +86,13 @@ class JsonGardensDataSourceTest
 	@Test
 	public fun `test edit garden`() = runBlocking<Unit> {
 		val gardens1 = dataSource.getGardens()
-		val gardens2 = dataSource.addGarden(TestConstants.newGarden)
+		val gardens2 = dataSource.addGarden(TestConstants.newDiary)
 
 		// saving should save, but not re-load from disk
 		gardens1.`should be equal to`(gardens2)
 		gardens2.`should not be empty`()
 
-		val garden = dataSource.getGardenById(TestConstants.newGarden.id)
+		val garden = dataSource.getGardenById(TestConstants.newDiary.id)
 		garden
 			.`should not be null`()
 
@@ -108,9 +108,9 @@ class JsonGardensDataSourceTest
 
 	@Test
 	public fun `test load from disk`() = runBlocking<Unit> {
-		dataSource.addGarden(TestConstants.newGarden)
+		dataSource.addGarden(TestConstants.newDiary)
 		dataSource.sync(GardensDataSource.SyncDirection.LOAD)
-		val garden = dataSource.getGardenById(TestConstants.newGarden.id)
+		val garden = dataSource.getGardenById(TestConstants.newDiary.id)
 			.`should not be null`()
 
 		val updateString = "Updated name"
@@ -119,7 +119,7 @@ class JsonGardensDataSourceTest
 		dataSource.sync(GardensDataSource.SyncDirection.LOAD)
 
 		// we didn't save so the garden should not be updated
-		val garden2 = dataSource.getGardenById(TestConstants.newGarden.id)
+		val garden2 = dataSource.getGardenById(TestConstants.newDiary.id)
 		garden2.`should not be null`()
 		garden2.hashCode().`should not be equal to`(garden.hashCode())
 		garden2.name.`should not be equal to`(updateString)

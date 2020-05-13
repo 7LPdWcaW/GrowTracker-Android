@@ -17,7 +17,7 @@ import org.junit.Rule
 import org.junit.Test
 
 @ExperimentalCoroutinesApi
-class GardenDataRepositoryTest
+class DiaryDataRepositoryTest
 {
 	// Set the main coroutines dispatcher for unit testing.
 	@ExperimentalCoroutinesApi
@@ -34,7 +34,7 @@ class GardenDataRepositoryTest
 	@Before
 	public fun initialiseRepositories()
 	{
-		dataSource = FakeGardenDataSource(TestConstants.gardens.toMutableList())
+		dataSource = FakeGardenDataSource(TestConstants.diaries.toMutableList())
 		gardensRepository = DefaultGardensRepository(dataSource)
 	}
 

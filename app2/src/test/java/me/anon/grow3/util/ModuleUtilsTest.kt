@@ -17,8 +17,8 @@ class ModuleUtilsTest
 	@Test
 	public fun `test parse gardens string`()
 	{
-		val gardensString = TestConstants.gardens_json
-		val parsed = gardensString.parseAsGardens()
+		val gardensString = TestConstants.diaries_json
+		val parsed = gardensString.parseAsDiaries()
 		parsed.`should not be empty`()
 	}
 
@@ -26,7 +26,7 @@ class ModuleUtilsTest
 	public fun `test load gardens file`()
 	{
 		// write file to temp
-		val gardensString = TestConstants.gardens_json
+		val gardensString = TestConstants.diaries_json
 		val file = File.createTempFile("gardens", "json")
 		file.deleteOnExit()
 		file.writeBytes(gardensString.toByteArray())
@@ -42,12 +42,12 @@ class ModuleUtilsTest
 	public fun `test load gardens fallback`()
 	{
 		val file = File("does-not-exist")
-		val parsed = file.loadAsGardens { TestConstants.gardens }
+		val parsed = file.loadAsGardens { TestConstants.diaries }
 
 		// all items should be the same
 		parsed
 			.`should not be null`()
-			.`should contain all`(TestConstants.gardens)
+			.`should contain all`(TestConstants.diaries)
 	}
 
 	@Test
@@ -56,7 +56,7 @@ class ModuleUtilsTest
 		val file = File.createTempFile("test-save-gardens", "json")
 		file.deleteOnExit()
 
-		TestConstants.gardens.saveAsGardens(file)
+		TestConstants.diaries.saveAsGardens(file)
 		with (file) {
 			exists().`should be`(true)
 			length().`should be greater than`(0)

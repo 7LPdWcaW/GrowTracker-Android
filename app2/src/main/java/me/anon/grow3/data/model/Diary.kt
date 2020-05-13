@@ -11,27 +11,44 @@ import java.util.*
  * // TODO: Add class description
  */
 @JsonClass(generateAdapter = true)
-class Garden(
+class Diary(
 	public val id: String = UUID.randomUUID().toString(),
 	public var name: String,
 	public val log: ArrayList<Log> = arrayListOf(),
-	public val plants: ArrayList<Plant> = arrayListOf()
+	public val crops: ArrayList<Crop> = arrayListOf()
 )
 {
 	public fun stage(): Stage = findStage()
+	public fun medium(): Medium? = findMedium()
 	public fun type(): Type? = findType()
 	public fun size(): Size? = findSize()
 	public fun light(): Light? = findLight()
-	public fun plant(id: String): Plant = plants.first { it.id == id }
+	public fun crop(id: String): Crop = crops.first { it.id == id }
 
-	public fun mapPlantStages(): Map<Plant, Stage> = plants.associateWith { findStage(it) }
+	public fun stageOf(id: String) = stageOf(crop(id))
+	public fun stageOf(crop: Crop): Stage?
+		= log.sortedBy { it.date }
+			.filterIsInstance<StageChange>()
+			.findLast {
+				cropFilter(crop, it)
+			}
 
-	private fun plantFilter(plant: Plant?, log: Log)
-		= if (plant == null) true else (log.plantIds.isNotEmpty() && log.plantIds.contains(plant.id)) || log.plantIds.isEmpty()
+	public fun mediumOf(id: String) = mediumOf(crop(id))
+	public fun mediumOf(crop: Crop): Medium?
+		= log.sortedBy { it.date }
+			.filterIsInstance<Transplant>()
+			.findLast {
+				cropFilter(crop, it)
+			}
 
-	public fun calculatePlantStageLengths(): Map<Plant, Map<Stage, Double>>
-		= plants.associateWith { plant ->
-			val stages = findAllStages(plant)
+	public fun mapCropStages(): Map<Crop, Stage> = crops.associateWith { findStage(it) }
+
+	private fun cropFilter(crop: Crop?, log: Log)
+		= if (crop == null) true else (log.cropIds.isNotEmpty() && log.cropIds.contains(crop.id)) || log.cropIds.isEmpty()
+
+	public fun calculateCropStageLengths(): Map<Crop, Map<Stage, Double>>
+		= crops.associateWith { crop ->
+			val stages = findAllStages(crop)
 			val unique = stages.uniqueBy { it.type }
 			val ret = unique.associateWith { 0.0 }.toMutableMap()
 
@@ -60,18 +77,18 @@ class Garden(
 			ret
 		}
 
-	private fun findAllStages(plant: Plant? = null): List<Stage>
+	private fun findAllStages(crop: Crop? = null): List<Stage>
 		= log.sortedBy { it.date }
 			.filterIsInstance<StageChange>()
 			.filter {
-				plantFilter(plant, it)
+				cropFilter(crop, it)
 			}
 
-	private fun findStage(plant: Plant? = null): Stage
+	private fun findStage(crop: Crop? = null): Stage
 		= log.sortedBy { it.date }
 			.filterIsInstance<StageChange>()
 			.findLast {
-				plantFilter(plant, it)
+				cropFilter(crop, it)
 			}!!
 
 	private fun findType(): Type?
@@ -89,6 +106,11 @@ class Garden(
 			.filterIsInstance<Environment>()
 			.findLast { it.light != null }?.light
 
+	private fun findMedium(): Medium?
+		= log.sortedBy { it.date }
+			.filterIsInstance<Medium>()
+			.lastOrNull()
+
 	init {
 		if (log.isEmpty() || !log.any { it is StageChange })
 		{
@@ -96,5 +118,5 @@ class Garden(
 		}
 	}
 
-	override fun equals(other: Any?): Boolean = (other as? Garden)?.id == id || super.equals(other)
+	override fun equals(other: Any?): Boolean = (other as? Diary)?.id == id || super.equals(other)
 }

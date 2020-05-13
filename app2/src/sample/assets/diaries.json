@@ -70,7 +70,7 @@
 				"date": "2020-01-02T02:00:00+00:00",
 				"action": "StageChange",
 				"type": "Vegetation",
-				"plantIds": [
+				"cropIds": [
 					"0000-000-0000-000002",
 					"0000-000-0000-000004"
 				]
@@ -80,7 +80,7 @@
 				"date": "2020-01-05T02:00:00+00:00",
 				"action": "StageChange",
 				"type": "Flower",
-				"plantIds": [
+				"cropIds": [
 					"0000-000-0000-000003",
 					"0000-000-0000-000004"
 				]
@@ -90,31 +90,35 @@
 				"date": "2020-01-07T02:00:00+00:00",
 				"action": "StageChange",
 				"type": "Vegetation",
-				"plantIds": [
+				"cropIds": [
 					"0000-000-0000-000004"
 				]
 			}
 		],
-		"plants": [
+		"crops": [
 			{
 				"id": "0000-000-0000-000001",
 				"name": "Plant 1",
-				"genetics": "Unknown"
+				"genetics": "Unknown",
+				"numberOfPlants": 1
 			},
 			{
 				"id": "0000-000-0000-000002",
 				"name": "Vegetating Plant",
-				"genetics": "Unknown"
+				"genetics": "Unknown",
+				"numberOfPlants": 2
 			},
 			{
 				"id": "0000-000-0000-000003",
 				"name": "Flowering Plant",
-				"genetics": "Unknown"
+				"genetics": "Unknown",
+				"numberOfPlants": 5
 			},
 			{
 				"id": "0000-000-0000-000004",
 				"name": "Multi Stage Plant",
-				"genetics": "Unknown"
+				"genetics": "Unknown",
+				"numberOfPlants": 10
 			}
 		]
 	}

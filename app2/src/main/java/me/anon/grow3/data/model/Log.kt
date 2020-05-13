@@ -11,6 +11,6 @@ abstract class Log(
 	open val id: String = UUID.randomUUID().toString(),
 	open var date: String = ZonedDateTime.now().asString(),
 	open var notes: String = "",
-	open var plantIds: ArrayList<String> = arrayListOf(),
+	open var cropIds: ArrayList<String> = arrayListOf(),
 	open var action: String = "Log"
 )

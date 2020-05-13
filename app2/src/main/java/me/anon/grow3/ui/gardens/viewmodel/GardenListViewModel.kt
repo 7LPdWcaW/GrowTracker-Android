@@ -3,7 +3,7 @@ package me.anon.grow3.ui.gardens.viewmodel
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
-import me.anon.grow3.data.model.Garden
+import me.anon.grow3.data.model.Diary
 import me.anon.grow3.data.repository.GardensRepository
 import me.anon.grow3.util.DataResult
 import me.anon.grow3.util.ViewModelFactory
@@ -26,5 +26,5 @@ class GardenListViewModel constructor(
 	}
 
 //	private val _gardens = TODO()// gardensRepository.observeGardens()
-	public val gardens: LiveData<DataResult<List<Garden>>> = TODO()//_gardens
+	public val gardens: LiveData<DataResult<List<Diary>>> = TODO()//_gardens
 }

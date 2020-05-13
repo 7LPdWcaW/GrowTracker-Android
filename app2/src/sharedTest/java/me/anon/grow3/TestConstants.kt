@@ -1,19 +1,19 @@
 package me.anon.grow3
 
-import me.anon.grow3.data.model.Garden
-import me.anon.grow3.util.parseAsGardens
+import me.anon.grow3.data.model.Diary
+import me.anon.grow3.util.parseAsDiaries
 import java.io.File
 
 object TestConstants
 {
-	public val gardens_json: String by lazy {
-		File("src/sample/assets/gardens.json").readText()
+	public val diaries_json: String by lazy {
+		File("src/sample/assets/diaries.json").readText()
 	}
 
-	public val gardens get() = gardens_json.parseAsGardens()
+	public val diaries get() = diaries_json.parseAsDiaries()
 
-	public val newGarden get() = Garden(
+	public val newDiary get() = Diary(
 		id = "test-uuid",
-		name = "New Garden"
+		name = "New Diary"
 	)
 }

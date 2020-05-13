@@ -4,7 +4,7 @@ import androidx.lifecycle.MutableLiveData
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
-import me.anon.grow3.data.model.Garden
+import me.anon.grow3.data.model.Diary
 import me.anon.grow3.data.source.GardensDataSource
 import me.anon.grow3.util.loadAsGardens
 import me.anon.grow3.util.saveAsGardens
@@ -20,35 +20,35 @@ class JsonGardensDataSource @Inject constructor(
 ) : GardensDataSource
 {
 	private var lastSynced = -1L
-	private var _gardens: MutableList<Garden>? = null
+	private var _diaries: MutableList<Diary>? = null
 
-	private val gardens: MutableLiveData<List<Garden>> = MutableLiveData(_gardens ?: arrayListOf())
+	private val gardens: MutableLiveData<List<Diary>> = MutableLiveData(_diaries ?: arrayListOf())
 
-	override suspend fun addGarden(garden: Garden): List<Garden>
+	override suspend fun addGarden(diary: Diary): List<Diary>
 	{
 		with (getGardens() as MutableList) {
-			if (contains(garden)) throw IllegalArgumentException("Garden ${garden.id} already exists")
+			if (contains(diary)) throw IllegalArgumentException("Garden ${diary.id} already exists")
 
-			add(garden)
+			add(diary)
 		}
 
 		return sync(GardensDataSource.SyncDirection.SAVE)
 	}
 
-	override suspend fun getGardenById(gardenId: String): Garden? = getGardens().find { it.id == gardenId }
+	override suspend fun getGardenById(gardenId: String): Diary? = getGardens().find { it.id == gardenId }
 
-	override suspend fun sync(direction: GardensDataSource.SyncDirection): List<Garden>
+	override suspend fun sync(direction: GardensDataSource.SyncDirection): List<Diary>
 	{
 		withContext(dispatcher) {
 			when (direction)
 			{
 				GardensDataSource.SyncDirection.SAVE -> {
-					(_gardens ?: arrayListOf()).saveAsGardens(File(sourcePath))
+					(_diaries ?: arrayListOf()).saveAsGardens(File(sourcePath))
 					lastSynced = System.currentTimeMillis()
 				}
 
 				GardensDataSource.SyncDirection.LOAD -> {
-					_gardens = null
+					_diaries = null
 					lastSynced = -1
 				}
 			}
@@ -57,19 +57,19 @@ class JsonGardensDataSource @Inject constructor(
 		return getGardens()
 	}
 
-	override suspend fun getGardens(): List<Garden>
+	override suspend fun getGardens(): List<Diary>
 	{
-		if (_gardens == null || lastSynced == -1L)
+		if (_diaries == null || lastSynced == -1L)
 		{
-			_gardens = loadFromDisk() as MutableList<Garden>
+			_diaries = loadFromDisk() as MutableList<Diary>
 			lastSynced = System.currentTimeMillis()
-			gardens.postValue(_gardens)
+			gardens.postValue(_diaries)
 		}
 
-		return _gardens!!
+		return _diaries!!
 	}
 
-	private suspend fun loadFromDisk(): List<Garden> = withContext(dispatcher) {
+	private suspend fun loadFromDisk(): List<Diary> = withContext(dispatcher) {
 		File(sourcePath).loadAsGardens { arrayListOf() }
 	}
 }
