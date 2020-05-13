@@ -20,7 +20,7 @@ public class ArrayListJsonAdapter<T>(
 
 			return@Factory when
 			{
-				!annotations.isEmpty() -> null
+				annotations.isNotEmpty() -> null
 				rawType == ArrayList::class.java -> newArrayListAdapter<Any>(type, moshi).nullSafe()
 				else -> null
 			}

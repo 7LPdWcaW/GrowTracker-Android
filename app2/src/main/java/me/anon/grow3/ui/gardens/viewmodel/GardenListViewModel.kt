@@ -4,25 +4,22 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import me.anon.grow3.data.model.Diary
-import me.anon.grow3.data.repository.GardensRepository
+import me.anon.grow3.data.repository.DiariesRepository
 import me.anon.grow3.util.DataResult
 import me.anon.grow3.util.ViewModelFactory
 import javax.inject.Inject
 
-/**
- * // TODO: Add class description
- */
 class GardenListViewModel constructor(
-	private val gardensRepository: GardensRepository,
+	private val diariesRepository: DiariesRepository,
 	private val savedState: SavedStateHandle
 ) : ViewModel()
 {
 	class Factory @Inject constructor(
-		private val gardensRepository: GardensRepository
+		private val diariesRepository: DiariesRepository
 	) : ViewModelFactory<GardenListViewModel>
 	{
 		override fun create(handle: SavedStateHandle): GardenListViewModel =
-			GardenListViewModel(gardensRepository, handle)
+			GardenListViewModel(diariesRepository, handle)
 	}
 
 //	private val _gardens = TODO()// gardensRepository.observeGardens()

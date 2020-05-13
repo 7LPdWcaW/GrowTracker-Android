@@ -19,8 +19,6 @@ public class LogJsonAdapter : JsonAdapter<Log>()
 	@Throws(IOException::class)
 	override fun fromJson(reader: JsonReader): Log
 	{
-		var value: Log? = null
-
 		var type = ""
 		val temp = reader.peekJson()
 		temp.beginObject()
@@ -38,19 +36,17 @@ public class LogJsonAdapter : JsonAdapter<Log>()
 			}
 		}
 
-		when (type)
+		return when (type)
 		{
-			"Environment" -> value = environmentAdapter.fromJson(reader)
-			"Harvest" -> value = harvestAdapter.fromJson(reader)
-			"Maintenance" -> value = maintenanceAdapter.fromJson(reader)
-			"Pesticide" -> value = pesticideAdapter.fromJson(reader)
-			"Photo" -> value = photoAdapter.fromJson(reader)
-			"StageChange" -> value = stageChangeAdapter.fromJson(reader)
-			"Water" -> value = waterAdapter.fromJson(reader)
+			"Environment" -> environmentAdapter.fromJson(reader)
+			"Harvest" -> harvestAdapter.fromJson(reader)
+			"Maintenance" -> maintenanceAdapter.fromJson(reader)
+			"Pesticide" -> pesticideAdapter.fromJson(reader)
+			"Photo" -> photoAdapter.fromJson(reader)
+			"StageChange" -> stageChangeAdapter.fromJson(reader)
+			"Water" -> waterAdapter.fromJson(reader)
 			else -> throw JsonDataException("Log $type not recognised")
 		}
-
-		return value
 	}
 
 	@Throws(IOException::class)

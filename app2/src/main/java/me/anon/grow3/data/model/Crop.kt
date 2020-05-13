@@ -5,9 +5,6 @@ import me.anon.grow3.util.asString
 import org.threeten.bp.ZonedDateTime
 import java.util.*
 
-/**
- * // TODO: Add class description
- */
 @JsonClass(generateAdapter = true)
 class Crop(
 	public val id: String = UUID.randomUUID().toString(),

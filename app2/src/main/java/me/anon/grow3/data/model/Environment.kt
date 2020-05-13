@@ -1,12 +1,8 @@
 package me.anon.grow3.data.model
 
 import com.squareup.moshi.JsonClass
+import java.util.*
 
-typealias Type = EnvironmentType
-
-/**
- * // TODO: Add class description
- */
 @JsonClass(generateAdapter = true)
 class Environment(
 	public var type: EnvironmentType?,
@@ -17,10 +13,12 @@ class Environment(
 	public var light: Light?,
 	public var schedule: LightSchedule?
 ) : Log(action = "Environment")
+{
+	override var cropIds: ArrayList<String>
+		get() = arrayListOf()
+		set(value){}
+}
 
-/**
- * // TODO: Add class description
- */
 @JsonClass(generateAdapter = true)
 data class Size(
 	public var width: Double,
@@ -28,9 +26,6 @@ data class Size(
 	public var depth: Double
 )
 
-/**
- * // TODO: Add class description
- */
 @JsonClass(generateAdapter = true)
 data class Light(
 	public var type: LightType,

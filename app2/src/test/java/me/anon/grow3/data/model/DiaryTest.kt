@@ -34,7 +34,7 @@ class DiaryTest
 			brand.`should be equal to`("Custom")
 		}
 
-		diary.type().`should not be null`()
+		diary.environment().`should not be null`()
 			.`should be`(EnvironmentType.Outdoors)
 		diary.size().`should not be null`()
 			.`should be equal to`(Size(1000.0, 1000.0, 1000.0))
@@ -71,7 +71,7 @@ class DiaryTest
 		cropStages.keys.`should not be empty`()
 
 		// planted
-		with (cropStages[diary.crop("0000-000-0000-000001")].`should not be null`()) {
+		with (cropStages[diary.crop("0002-000001")].`should not be null`()) {
 			size.`should be equal to`(1)
 			val key = keys.elementAt(0)
 			key.type.`should be equal to`(StageType.Planted)
@@ -81,7 +81,7 @@ class DiaryTest
 		}
 
 		// planted -> veg
-		with (cropStages[diary.crop("0000-000-0000-000002")].`should not be null`()) {
+		with (cropStages[diary.crop("0002-000002")].`should not be null`()) {
 			size.`should be equal to`(2)
 			var key = keys.elementAt(0)
 			key.type.`should be equal to`(StageType.Planted)
@@ -97,7 +97,7 @@ class DiaryTest
 		}
 
 		// planted -> veg -> flower -> veg
-		with (cropStages[diary.crop("0000-000-0000-000004")].`should not be null`()) {
+		with (cropStages[diary.crop("0002-000004")].`should not be null`()) {
 			size.`should be equal to`(3)
 			var key = keys.elementAt(0)
 			key.type.`should be equal to`(StageType.Planted)

@@ -45,27 +45,37 @@ gen-external-apklibs
 *.iml
 
 ## Directory-based project format:
-.idea/
+#.idea/
 # if you remove the above rule, at least ignore the following:
 
 # User-specific stuff:
-# .idea/workspace.xml
-# .idea/tasks.xml
-# .idea/dictionaries
+.idea/workspace.xml
+.idea/tasks.xml
+.idea/dictionaries
+.idea/codeStyles
+.idea/caches/
+.idea/inspectionProfiles/
 
 # Sensitive or high-churn files:
-# .idea/dataSources.ids
-# .idea/dataSources.xml
-# .idea/sqlDataSources.xml
-# .idea/dynamic.xml
-# .idea/uiDesigner.xml
+.idea/navEditor.xml
+.idea/modules.xml
+.idea/misc.xml
+.idea/encodings.xml
+.idea/compiler.xml
+.idea/assetWizardSettings.xml
+.idea/dataSources.ids
+.idea/dataSources.xml
+.idea/sqlDataSources.xml
+.idea/dynamic.xml
+.idea/uiDesigner.xml
+.idea/runConfigurations.xml
 
 # Gradle:
-# .idea/gradle.xml
-# .idea/libraries
+.idea/gradle.xml
+.idea/libraries
 
 # Mongo Explorer plugin:
-# .idea/mongoSettings.xml
+.idea/mongoSettings.xml
 
 ## File-based project format:
 *.ipr

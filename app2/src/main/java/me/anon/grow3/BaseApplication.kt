@@ -7,9 +7,6 @@ import me.anon.grow3.di.DaggerApplicationComponent
 import me.anon.grow3.di.module.AppModule
 import timber.log.Timber
 
-/**
- * // TODO: Add class description
- */
 abstract class BaseApplication : Application()
 {
 	// todo: change this to pref to inject

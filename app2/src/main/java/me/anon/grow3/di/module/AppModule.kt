@@ -3,16 +3,13 @@ package me.anon.grow3.di.module
 import android.content.Context
 import dagger.Module
 import dagger.Provides
-import me.anon.grow3.data.repository.GardensRepository
-import me.anon.grow3.data.repository.impl.DefaultGardensRepository
-import me.anon.grow3.data.source.GardensDataSource
-import me.anon.grow3.data.source.json.JsonGardensDataSource
+import me.anon.grow3.data.repository.DiariesRepository
+import me.anon.grow3.data.repository.impl.DefaultDiariesRepository
+import me.anon.grow3.data.source.DiariesDataSource
+import me.anon.grow3.data.source.json.JsonDiariesDataSource
 import me.anon.grow3.util.application
 import javax.inject.Named
 
-/**
- * // TODO: Add class description
- */
 @Module
 class AppModule(
 	private val appContext: Context
@@ -25,8 +22,8 @@ class AppModule(
 	public fun provideGardenSource(): String = appContext.application.dataPath
 
 	@Provides
-	public fun provideGardenDataSource(dataSource: JsonGardensDataSource): GardensDataSource = dataSource
+	public fun provideGardenDataSource(dataSource: JsonDiariesDataSource): DiariesDataSource = dataSource
 
 	@Provides
-	public fun provideGardenRepository(repo: DefaultGardensRepository): GardensRepository = repo
+	public fun provideGardenRepository(repo: DefaultDiariesRepository): DiariesRepository = repo
 }

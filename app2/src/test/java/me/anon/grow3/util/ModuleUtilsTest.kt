@@ -15,34 +15,34 @@ class ModuleUtilsTest
 	}
 
 	@Test
-	public fun `test parse gardens string`()
+	public fun `test parse diaries string`()
 	{
-		val gardensString = TestConstants.diaries_json
-		val parsed = gardensString.parseAsDiaries()
+		val diariesString = TestConstants.diaries_json
+		val parsed = diariesString.parseAsDiaries()
 		parsed.`should not be empty`()
 	}
 
 	@Test
-	public fun `test load gardens file`()
+	public fun `test load diaries file`()
 	{
 		// write file to temp
-		val gardensString = TestConstants.diaries_json
-		val file = File.createTempFile("gardens", "json")
+		val diariesString = TestConstants.diaries_json
+		val file = File.createTempFile("diaries", "json")
 		file.deleteOnExit()
-		file.writeBytes(gardensString.toByteArray())
+		file.writeBytes(diariesString.toByteArray())
 
 		// load file
-		val parsed = file.loadAsGardens()
+		val parsed = file.loadAsDiaries()
 		parsed
 			.`should not be null`()
 			.`should not be empty`()
 	}
 
 	@Test
-	public fun `test load gardens fallback`()
+	public fun `test load diaries fallback`()
 	{
 		val file = File("does-not-exist")
-		val parsed = file.loadAsGardens { TestConstants.diaries }
+		val parsed = file.loadAsDiaries { TestConstants.diaries }
 
 		// all items should be the same
 		parsed
@@ -51,12 +51,12 @@ class ModuleUtilsTest
 	}
 
 	@Test
-	public fun `test save gardens`()
+	public fun `test save diaries`()
 	{
-		val file = File.createTempFile("test-save-gardens", "json")
+		val file = File.createTempFile("test-save-diaries", "json")
 		file.deleteOnExit()
 
-		TestConstants.diaries.saveAsGardens(file)
+		TestConstants.diaries.saveAsDiaries(file)
 		with (file) {
 			exists().`should be`(true)
 			length().`should be greater than`(0)

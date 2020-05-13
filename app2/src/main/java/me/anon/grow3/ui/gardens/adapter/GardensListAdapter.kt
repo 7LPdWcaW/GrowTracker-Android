@@ -3,9 +3,6 @@ package me.anon.grow3.ui.gardens.adapter
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
 
-/**
- * // TODO: Add class description
- */
 class GardensListAdapter : RecyclerView.Adapter<RecyclerView.ViewHolder>()
 {
 	override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): RecyclerView.ViewHolder

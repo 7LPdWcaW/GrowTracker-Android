@@ -11,7 +11,7 @@ public fun String.parseAsDiaries(): List<Diary> = MoshiHelper.parse(
 	type = Types.newParameterizedType(ArrayList::class.java, Diary::class.java)
 )
 
-public fun File.loadAsGardens(default: () -> List<Diary> = { arrayListOf<Diary>() }): List<Diary>
+public fun File.loadAsDiaries(default: () -> List<Diary> = { arrayListOf() }): List<Diary>
 {
 	try
 	{
@@ -21,7 +21,7 @@ public fun File.loadAsGardens(default: () -> List<Diary> = { arrayListOf<Diary>(
 				type = Types.newParameterizedType(ArrayList::class.java, Diary::class.java)
 			)
 			close()
-			return data ?: default()
+			return data
 		}
 	}
 	catch (e: Exception)
@@ -30,11 +30,11 @@ public fun File.loadAsGardens(default: () -> List<Diary> = { arrayListOf<Diary>(
 	}
 }
 
-public fun List<Diary>.saveAsGardens(file: File)
+public fun List<Diary>.saveAsDiaries(file: File)
 {
 	with (FileOutputStream(file)) {
 		MoshiHelper.toJson(
-			obj = this@saveAsGardens,
+			obj = this@saveAsDiaries,
 			type = Types.newParameterizedType(ArrayList::class.java, Diary::class.java),
 			outputStream = this@with
 		)

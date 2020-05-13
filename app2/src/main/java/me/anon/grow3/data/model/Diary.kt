@@ -7,9 +7,6 @@ import org.threeten.bp.ZonedDateTime
 import org.threeten.bp.temporal.ChronoUnit
 import java.util.*
 
-/**
- * // TODO: Add class description
- */
 @JsonClass(generateAdapter = true)
 class Diary(
 	public val id: String = UUID.randomUUID().toString(),
@@ -20,7 +17,7 @@ class Diary(
 {
 	public fun stage(): Stage = findStage()
 	public fun medium(): Medium? = findMedium()
-	public fun type(): Type? = findType()
+	public fun environment(): EnvironmentType? = findEnvironmentType()
 	public fun size(): Size? = findSize()
 	public fun light(): Light? = findLight()
 	public fun crop(id: String): Crop = crops.first { it.id == id }
@@ -95,7 +92,7 @@ class Diary(
 				cropFilter(crop, it)
 			}!!
 
-	private fun findType(): Type?
+	private fun findEnvironmentType(): EnvironmentType?
 		= log.sortedBy { it.date }
 			.filterIsInstance<Environment>()
 			.findLast { it.type != null }?.type

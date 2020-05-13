@@ -4,9 +4,6 @@ import me.anon.grow3.util.asString
 import org.threeten.bp.ZonedDateTime
 import java.util.*
 
-/**
- * // TODO: Add class description
- */
 abstract class Log(
 	open val id: String = UUID.randomUUID().toString(),
 	open var date: String = ZonedDateTime.now().asString(),

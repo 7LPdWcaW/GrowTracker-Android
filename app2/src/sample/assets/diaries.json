@@ -1,16 +1,16 @@
 [
 	{
-		"id": "abcd-efgh-1234-567689",
+		"id": "0000-000000",
 		"name": "Hello world",
 		"log": [
 			{
-				"id": "0000-0000-0001-000000",
+				"id": "0001-000000",
 				"date": "2020-01-01T00:00:00+00:00",
 				"action": "StageChange",
 				"type": "Planted"
 			},
 			{
-				"id": "0000-0000-0001-000001",
+				"id": "0001-000001",
 				"date": "2020-01-01T00:00:00+00:00",
 				"action": "Environment",
 				"size": {
@@ -31,14 +31,14 @@
 				"type": "Tent"
 			},
 			{
-				"id": "0000-0000-0001-000002",
+				"id": "0001-000002",
 				"date": "2020-01-02T00:00:00+00:00",
 				"action": "Environment",
 				"notes": "Moved to outside",
 				"type": "Outdoors"
 			},
 			{
-				"id": "0000-0000-0001-000003",
+				"id": "0001-000003",
 				"date": "2020-01-02T01:00:00+00:00",
 				"action": "Water",
 				"notes": "First water",
@@ -66,56 +66,56 @@
 				]
 			},
 			{
-				"id": "0000-0000-0001-000004",
+				"id": "0001-000004",
 				"date": "2020-01-02T02:00:00+00:00",
 				"action": "StageChange",
 				"type": "Vegetation",
 				"cropIds": [
-					"0000-000-0000-000002",
-					"0000-000-0000-000004"
+					"0002-000002",
+					"0002-000004"
 				]
 			},
 			{
-				"id": "0000-0000-0001-000005",
+				"id": "0001-000005",
 				"date": "2020-01-05T02:00:00+00:00",
 				"action": "StageChange",
 				"type": "Flower",
 				"cropIds": [
-					"0000-000-0000-000003",
-					"0000-000-0000-000004"
+					"0002-000003",
+					"0002-000004"
 				]
 			},
 			{
-				"id": "0000-0000-0001-000005",
+				"id": "0001-000005",
 				"date": "2020-01-07T02:00:00+00:00",
 				"action": "StageChange",
 				"type": "Vegetation",
 				"cropIds": [
-					"0000-000-0000-000004"
+					"0002-000004"
 				]
 			}
 		],
 		"crops": [
 			{
-				"id": "0000-000-0000-000001",
+				"id": "0002-000001",
 				"name": "Plant 1",
 				"genetics": "Unknown",
 				"numberOfPlants": 1
 			},
 			{
-				"id": "0000-000-0000-000002",
+				"id": "0002-000002",
 				"name": "Vegetating Plant",
 				"genetics": "Unknown",
 				"numberOfPlants": 2
 			},
 			{
-				"id": "0000-000-0000-000003",
+				"id": "0002-000003",
 				"name": "Flowering Plant",
 				"genetics": "Unknown",
 				"numberOfPlants": 5
 			},
 			{
-				"id": "0000-000-0000-000004",
+				"id": "0002-000004",
 				"name": "Multi Stage Plant",
 				"genetics": "Unknown",
 				"numberOfPlants": 10

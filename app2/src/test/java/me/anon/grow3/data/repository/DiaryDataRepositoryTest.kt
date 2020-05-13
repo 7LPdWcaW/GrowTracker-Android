@@ -5,12 +5,9 @@ import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.test.runBlockingTest
 import me.anon.grow3.MainCoroutineRule
 import me.anon.grow3.TestConstants
-import me.anon.grow3.data.repository.impl.DefaultGardensRepository
-import me.anon.grow3.data.source.GardensDataSource
-import me.anon.grow3.util.DataResult
-import me.anon.grow3.util.asSuccess
-import me.anon.grow3.util.awaitResult
-import me.anon.grow3.util.getOrAwaitValue
+import me.anon.grow3.data.repository.impl.DefaultDiariesRepository
+import me.anon.grow3.data.source.DiariesDataSource
+import me.anon.grow3.util.*
 import org.amshove.kluent.*
 import org.junit.Before
 import org.junit.Rule
@@ -28,62 +25,66 @@ class DiaryDataRepositoryTest
 	@get:Rule
 	public val instantExecutorRule = InstantTaskExecutorRule()
 
-	private lateinit var dataSource: GardensDataSource
-	private lateinit var gardensRepository: DefaultGardensRepository
+	private lateinit var dataSource: DiariesDataSource
+	private lateinit var diariesRepository: DefaultDiariesRepository
+
+	init {
+		initThreeTen()
+	}
 
 	@Before
 	public fun initialiseRepositories()
 	{
-		dataSource = FakeGardenDataSource(TestConstants.diaries.toMutableList())
-		gardensRepository = DefaultGardensRepository(dataSource)
+		dataSource = FakeDiariesDataSource(TestConstants.diaries.toMutableList())
+		diariesRepository = DefaultDiariesRepository(dataSource)
 	}
 
 	@Test
-	public fun `test observe garden sends states`()
+	public fun `test observe diary sends states`()
 	{
-		val gardens = gardensRepository.observeGardens()
-		gardens.getOrAwaitValue().`should be equal to`(DataResult.Loading)
-		gardens.getOrAwaitValue().`should not be null`()
+		val diaries = diariesRepository.observeDiaries()
+		diaries.getOrAwaitValue().`should be equal to`(DataResult.Loading)
+		diaries.getOrAwaitValue().`should not be null`()
 			.`should be instance of`(DataResult.Success::class)
-		gardens.getOrAwaitValue().asSuccess().`should not be empty`()
+		diaries.getOrAwaitValue().asSuccess().`should not be empty`()
 	}
 
 	@Test
 	public fun `test single livedata observer`() = mainCoroutineRule.runBlockingTest {
-		val gardens1 = gardensRepository.observeGardens()
-		gardens1.awaitResult().`should be instance of`(DataResult.Success::class)
-		val gardens2 = gardensRepository.observeGardens()
-		gardens2.awaitResult().`should be instance of`(DataResult.Success::class)
+		val diaries1 = diariesRepository.observeDiaries()
+		diaries1.awaitResult().`should be instance of`(DataResult.Success::class)
+		val diaries2 = diariesRepository.observeDiaries()
+		diaries2.awaitResult().`should be instance of`(DataResult.Success::class)
 
-		gardens1.`should be equal to`(gardens2)
+		diaries1.`should be equal to`(diaries2)
 
 		// invalidate the data
-		gardensRepository.invalidate()
+		diariesRepository.invalidate()
 
-		val gardens3 = gardensRepository.observeGardens()
-		gardens3.`should be equal to`(gardens1).`should be equal to`(gardens2)
+		val diaries3 = diariesRepository.observeDiaries()
+		diaries3.`should be equal to`(diaries1).`should be equal to`(diaries2)
 	}
 
 	@Test
 	public fun `test invalidate discards changes`() = mainCoroutineRule.runBlockingTest {
-		val gardens = gardensRepository.observeGardens().awaitResult()
-		val garden = gardens.asSuccess().first()
+		val diaries = diariesRepository.observeDiaries().awaitResult()
+		val diary = diaries.asSuccess().first()
 		val changeName = "changed name"
-		garden.name = changeName
+		diary.name = changeName
 
 		// re-set the repository so [invalidate] loads fresh
 		initialiseRepositories()
-		gardensRepository.invalidate()
+		diariesRepository.invalidate()
 
-		val gardens2 = gardensRepository.observeGardens().awaitResult()
-		val garden2 = gardens2.asSuccess().first()
-		garden2.name.`should not be equal to`(changeName)
+		val diaries2 = diariesRepository.observeDiaries().awaitResult()
+		val diary2 = diaries2.asSuccess().first()
+		diary2.name.`should not be equal to`(changeName)
 	}
 
 	@Test
-	public fun `test observe single garden`() = mainCoroutineRule.runBlockingTest {
-		val garden = gardensRepository.observeGarden("abcd-efgh-1234-567890")
-		val data = garden.awaitResult().asSuccess()
+	public fun `test observe single diary`() = mainCoroutineRule.runBlockingTest {
+		val diary = diariesRepository.observeDiary("0000-000000")
+		val data = diary.awaitResult().asSuccess()
 		data.name = "changed name"
 	}
 }

@@ -11,9 +11,6 @@ import me.anon.grow3.util.component
 import timber.log.Timber
 import javax.inject.Inject
 
-/**
- * // TODO: Add class description
- */
 class GardenListFragment : Fragment(R.layout.fragment_gardens)
 {
 	@Inject internal lateinit var viewModelFactory: GardenListViewModel.Factory
