@@ -4,9 +4,6 @@ import android.app.Application
 import android.content.Context
 import androidx.test.runner.AndroidJUnitRunner
 
-/**
- * // TODO: Add class description
- */
 class TestRunner : AndroidJUnitRunner()
 {
 	override fun newApplication(cl: ClassLoader?, className: String?, context: Context?): Application

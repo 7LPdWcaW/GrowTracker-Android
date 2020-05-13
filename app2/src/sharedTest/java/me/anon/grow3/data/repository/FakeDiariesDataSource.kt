@@ -3,9 +3,6 @@ package me.anon.grow3.data.repository
 import me.anon.grow3.data.model.Diary
 import me.anon.grow3.data.source.DiariesDataSource
 
-/**
- * // TODO: Add class description
- */
 public class FakeDiariesDataSource(private val diaries: MutableList<Diary>) : DiariesDataSource
 {
 	override suspend fun addDiary(diary: Diary): List<Diary> = diaries.apply {

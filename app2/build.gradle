@@ -40,17 +40,15 @@ android {
 		}
 	}
 
-	android {
-		sourceSets {
-			test {
-				java.srcDirs += 'src/sharedTest/java'
-				resources.srcDirs += 'src/sharedTest/resources'
-				resources.srcDirs += 'src/sample/assets'
-			}
+	sourceSets {
+		test {
+			java.srcDirs += 'src/sharedTest/java'
+			resources.srcDirs += 'src/sharedTest/resources'
+			resources.srcDirs += 'src/sample/assets'
+		}
 
-			androidTest {
-				java.srcDirs += 'src/sharedTest/java'
-			}
+		androidTest {
+			java.srcDirs += 'src/sharedTest/java'
 		}
 	}
 }
@@ -65,44 +63,33 @@ dependencies {
 	implementation 'androidx.cardview:cardview:1.0.0'
 	implementation 'androidx.exifinterface:exifinterface:1.2.0'
 	implementation 'androidx.documentfile:documentfile:1.0.1'
-
 	implementation "androidx.lifecycle:lifecycle-extensions:2.2.0"
 	implementation "androidx.lifecycle:lifecycle-viewmodel-ktx:2.2.0"
 	implementation "androidx.lifecycle:lifecycle-livedata-ktx:2.2.0"
 	implementation "androidx.fragment:fragment:1.2.4"
 	implementation "androidx.fragment:fragment-ktx:1.2.4"
+	implementation "androidx.navigation:navigation-fragment-ktx:2.3.0-alpha06"
+	implementation "androidx.navigation:navigation-ui-ktx:2.3.0-alpha06"
 
 	implementation 'com.jakewharton.threetenabp:threetenabp:1.2.4'
 	implementation "com.jakewharton.timber:timber:4.7.1"
 
-	def nav_version = "2.3.0-alpha06"
-
-	// Kotlin
-	implementation "androidx.navigation:navigation-fragment-ktx:$nav_version"
-	implementation "androidx.navigation:navigation-ui-ktx:$nav_version"
 
 	implementation "org.jetbrains.kotlinx:kotlinx-coroutines-android:1.3.5"
 
 	implementation 'com.github.prolificinteractive:material-calendarview:2.0.0'
+	implementation 'com.github.PhilJay:MPAndroidChart:v2.1.6'
 
 	implementation 'com.google.android.material:material:1.2.0-alpha06'
 	implementation 'com.google.android:flexbox:1.1.0'
+	implementation 'com.google.dagger:dagger:2.27'
+
 	implementation 'com.squareup.moshi:moshi-kotlin:1.8.0'
 
-	implementation 'com.github.PhilJay:MPAndroidChart:v2.1.6'
 	implementation 'com.nostra13.universalimageloader:universal-image-loader:1.9.5'
 	implementation 'com.davemorrissey.labs:subsampling-scale-image-view:3.6.0'
 
 	implementation 'net.lingala.zip4j:zip4j:1.3.2'
-
-	kapt 'com.google.dagger:dagger-compiler:2.27'
-	kaptAndroidTest 'com.google.dagger:dagger-compiler:2.27'
-	implementation 'com.google.dagger:dagger:2.27'
-
-	api "org.jetbrains.kotlin:kotlin-reflect:1.3.72"
-	api "org.jetbrains.kotlin:kotlin-stdlib-jdk7:1.3.72"
-
-	kapt 'com.squareup.moshi:moshi-kotlin-codegen:1.8.0'
 
 	androidTestImplementation 'androidx.test.ext:junit:1.1.1'
 	androidTestImplementation 'androidx.test:rules:1.2.0'
@@ -111,25 +98,29 @@ dependencies {
 	androidTestImplementation 'org.jetbrains.kotlinx:kotlinx-coroutines-test:1.3.5'
 	androidTestImplementation "org.jetbrains.kotlinx:kotlinx-coroutines-android:1.3.5"
 	androidTestImplementation 'org.assertj:assertj-core:3.15.0'
-	androidTestImplementation "io.mockk:mockk-android:1.10.0"
 	androidTestImplementation 'org.amshove.kluent:kluent-android:1.61'
-
-	// required if you want to use Mockito for unit tests
-	testImplementation 'org.mockito:mockito-core:2.25.0'
-	// required if you want to use Mockito for Android tests
+	androidTestImplementation "io.mockk:mockk-android:1.10.0"
 	androidTestImplementation 'org.mockito:mockito-android:2.25.0'
 
-	// AndroidX Test - JVM testing
-	testImplementation 'junit:junit:4.13'
 	testImplementation "androidx.test:core-ktx:1.2.0"
 	testImplementation "androidx.test.ext:junit-ktx:1.1.1"
 	testImplementation "androidx.test:rules:1.2.0"
 	testImplementation 'androidx.test:core:1.2.0'
 	testImplementation 'androidx.arch.core:core-testing:2.1.0'
+	testImplementation 'junit:junit:4.13'
 	testImplementation 'org.jetbrains.kotlinx:kotlinx-coroutines-test:1.3.5'
 	testImplementation "org.jetbrains.kotlinx:kotlinx-coroutines-android:1.3.5"
 	testImplementation 'io.mockk:mockk:1.10.0'
+	testImplementation 'org.mockito:mockito-core:2.25.0'
 	testImplementation 'org.amshove.kluent:kluent:1.61'
+
+	kapt 'com.google.dagger:dagger-compiler:2.27'
+	kaptAndroidTest 'com.google.dagger:dagger-compiler:2.27'
+
+	api "org.jetbrains.kotlin:kotlin-reflect:1.3.72"
+	api "org.jetbrains.kotlin:kotlin-stdlib-jdk7:1.3.72"
+
+	kapt 'com.squareup.moshi:moshi-kotlin-codegen:1.8.0'
 }
 
 androidExtensions {

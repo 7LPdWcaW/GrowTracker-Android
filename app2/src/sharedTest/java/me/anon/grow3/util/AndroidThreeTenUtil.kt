@@ -5,9 +5,6 @@ import com.jakewharton.threetenabp.AndroidThreeTen
 import org.threeten.bp.zone.TzdbZoneRulesProvider
 import org.threeten.bp.zone.ZoneRulesProvider
 
-/**
- * // TODO: Add class description
- */
 public fun initAndroidThreeTen()
 {
 	val appContext = InstrumentationRegistry.getInstrumentation().targetContext.applicationContext

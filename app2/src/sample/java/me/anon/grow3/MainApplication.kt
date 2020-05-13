@@ -3,9 +3,6 @@ package me.anon.grow3
 import java.io.File
 import java.io.FileOutputStream
 
-/**
- * // TODO: Add class description
- */
 class MainApplication : BaseApplication()
 {
 	override fun setup()

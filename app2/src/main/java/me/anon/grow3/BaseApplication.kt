@@ -29,5 +29,5 @@ abstract class BaseApplication : Application()
 			.build()
 	}
 
-	abstract fun setup()
+	open fun setup() {}
 }
