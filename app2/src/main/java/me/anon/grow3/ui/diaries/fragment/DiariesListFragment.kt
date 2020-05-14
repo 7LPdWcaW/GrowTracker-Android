@@ -1,4 +1,4 @@
-package me.anon.grow3.ui.diaries
+package me.anon.grow3.ui.diaries.fragment
 
 import android.os.Bundle
 import androidx.fragment.app.Fragment

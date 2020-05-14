@@ -1,11 +1,12 @@
-package me.anon.grow3
+package me.anon.grow3.ui
 
 import android.os.Bundle
-import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.commit
-import me.anon.grow3.ui.diaries.DiariesListFragment
+import me.anon.grow3.R
+import me.anon.grow3.ui.base.BaseActivity
+import me.anon.grow3.ui.diaries.fragment.DiariesListFragment
 
-class MainActivity : AppCompatActivity()
+class MainActivity : BaseActivity()
 {
 	override fun onCreate(savedInstanceState: Bundle?)
 	{
