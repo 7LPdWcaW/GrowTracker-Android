@@ -53,6 +53,7 @@ import java.util.*
 import kotlin.collections.ArrayList
 import kotlin.math.absoluteValue
 import kotlin.math.max
+import kotlin.math.roundToInt
 
 /**
  * // TODO: Add class description
@@ -215,12 +216,12 @@ class ExportHelper(
 				processor.printPlantImages(imagePaths)
 
 				// do chart stuff
-				val totalWater = plant.actions?.sumBy { if (it is Water) 1 else 0 } ?: 0
-				val width = 1024 + (totalWater * 20)
-				val height = 512
-
 				val viewModel = StatisticsFragment2.StatisticsViewModel(tdsUnit, deliveryUnit, measureUnit, tempUnit, plant)
-				saveStagesChart(1024 + (viewModel.totalDays * 20).toInt(), height, viewModel, zipPathPrefix, outFile)
+				val totalWater = plant.actions?.sumBy { if (it is Water) 1 else 0 } ?: 0
+				val width = ((1024 + (viewModel.totalDays * 20)) * 1).toInt()
+				val height = (512 * 1).toInt()
+
+				saveStagesChart(width, height, viewModel, zipPathPrefix, outFile)
 				saveTempChart(width, height, viewModel, zipPathPrefix, outFile)
 				saveTdsCharts(width, height, viewModel, zipPathPrefix, outFile)
 				saveInputPhChart(width, height, viewModel, zipPathPrefix, outFile)
@@ -384,7 +385,7 @@ class ExportHelper(
 				parameters.isSourceExternalStream = true
 
 				val outputStream = ByteArrayOutputStream()
-				temp.chartBitmap.compress(Bitmap.CompressFormat.JPEG, 100, outputStream)
+				temp.scaledBitmap().compress(Bitmap.CompressFormat.JPEG, 100, outputStream)
 				val stream = ByteArrayInputStream(outputStream.toByteArray())
 				outZip.addStream(stream, parameters)
 
@@ -428,7 +429,7 @@ class ExportHelper(
 				parameters.isSourceExternalStream = true
 
 				val outputStream = ByteArrayOutputStream()
-				chart.chartBitmap.compress(Bitmap.CompressFormat.JPEG, 100, outputStream)
+				chart.scaledBitmap().compress(Bitmap.CompressFormat.JPEG, 100, outputStream)
 				val stream = ByteArrayInputStream(outputStream.toByteArray())
 				outZip.addStream(stream, parameters)
 
@@ -509,7 +510,7 @@ class ExportHelper(
 
 				axisLeft.setDrawGridLines(false)
 				axisLeft.axisMinimum = 0f
-				axisLeft.textColor = R.attr.colorOnSurface.resolveColor(context!!)
+				axisLeft.textColor = 0xff000000.toInt()
 				axisLeft.valueFormatter = object : ValueFormatter()
 				{
 					override fun getAxisLabel(value: Float, axis: AxisBase?): String
@@ -525,7 +526,7 @@ class ExportHelper(
 				xAxis.setDrawAxisLine(false)
 				xAxis.setDrawLabels(false)
 
-				legend.textColor = R.attr.colorOnSurface.resolveColor(context!!).toInt()
+				legend.textColor = 0xff000000.toInt()
 				legend.isWordWrapEnabled = true
 			}
 
@@ -537,7 +538,7 @@ class ExportHelper(
 				parameters.isSourceExternalStream = true
 
 				val outputStream = ByteArrayOutputStream()
-				stagesChart.chartBitmap.compress(Bitmap.CompressFormat.JPEG, 100, outputStream)
+				stagesChart.scaledBitmap().compress(Bitmap.CompressFormat.JPEG, 100, outputStream)
 				val stream = ByteArrayInputStream(outputStream.toByteArray())
 				outZip.addStream(stream, parameters)
 
@@ -574,6 +575,12 @@ class ExportHelper(
 			with (temp_chart) {
 				setVisibleYRangeMaximum(viewModel.tempStats.max?.toFloat() ?: 0.0f, com.github.mikephil.charting.components.YAxis.AxisDependency.LEFT)
 				style()
+				legend.textColor = 0xff000000.toInt()
+				axisLeft.textColor = 0xff000000.toInt()
+				xAxis.textColor = 0xff000000.toInt()
+				xAxis.labelCount = 25
+				xAxis.textSize = 8.0f
+				axisLeft.textSize = 8.0f
 
 				axisLeft.valueFormatter = object : ValueFormatter()
 				{
@@ -581,22 +588,6 @@ class ExportHelper(
 					{
 						return "${value.formatWhole()}°${viewModel.selectedTempUnit.label}"
 					}
-				}
-
-				marker = object : MarkerView(context, me.anon.grow.R.layout.chart_marker)
-				{
-					override fun refreshContent(e: Entry, highlight: Highlight): kotlin.Unit
-					{
-						val color = temp_chart.data.dataSets[highlight.dataSetIndex].color
-						kotlin.with(this.findViewById<TextView>(me.anon.grow.R.id.content)) {
-							text = "${e.y.formatWhole()}°${viewModel.selectedTempUnit.label}"
-							setTextColor(color)
-						}
-
-						super.refreshContent(e, highlight)
-					}
-
-					override fun getOffset(): MPPointF = com.github.mikephil.charting.utils.MPPointF.getInstance(-(width / 2f), -(height * 1.2f))
 				}
 
 				xAxis.valueFormatter = object : ValueFormatter()
@@ -641,7 +632,7 @@ class ExportHelper(
 				parameters.isSourceExternalStream = true
 
 				val outputStream = ByteArrayOutputStream()
-				temp_chart.chartBitmap.compress(Bitmap.CompressFormat.JPEG, 100, outputStream)
+				temp_chart.scaledBitmap().compress(Bitmap.CompressFormat.JPEG, 100, outputStream)
 				val stream = ByteArrayInputStream(outputStream.toByteArray())
 				outZip.addStream(stream, parameters)
 
@@ -676,22 +667,12 @@ class ExportHelper(
 
 			with (tds) {
 				style()
-
-				marker = object : MarkerView(context, R.layout.chart_marker)
-				{
-					override fun refreshContent(e: Entry, highlight: Highlight): kotlin.Unit
-					{
-						val color = tds.data.dataSets[highlight.dataSetIndex].color
-						kotlin.with(this.findViewById<TextView>(R.id.content)) {
-							text = e.y.formatWhole()
-							setTextColor(color)
-						}
-
-						super.refreshContent(e, highlight)
-					}
-
-					override fun getOffset(): MPPointF = MPPointF.getInstance(-(width / 2f), -(height * 1.2f))
-				}
+				legend.textColor = 0xff000000.toInt()
+				axisLeft.textColor = 0xff000000.toInt()
+				xAxis.textColor = 0xff000000.toInt()
+				xAxis.labelCount = 25
+				xAxis.textSize = 8.0f
+				axisLeft.textSize = 8.0f
 
 				xAxis.valueFormatter = object : ValueFormatter()
 				{
@@ -729,11 +710,11 @@ class ExportHelper(
 			{
 				val parameters = ZipParameters()
 				parameters.compressionMethod = Zip4jConstants.COMP_DEFLATE
-				parameters.fileNameInZip = pathPrefix + name.label + ".jpg"
+				parameters.fileNameInZip = pathPrefix + name.enStr + ".jpg"
 				parameters.isSourceExternalStream = true
 
 				val outputStream = ByteArrayOutputStream()
-				tds.chartBitmap.compress(Bitmap.CompressFormat.JPEG, 100, outputStream)
+				tds.scaledBitmap().compress(Bitmap.CompressFormat.JPEG, 100, outputStream)
 				val stream = ByteArrayInputStream(outputStream.toByteArray())
 				outZip.addStream(stream, parameters)
 
@@ -750,47 +731,61 @@ class ExportHelper(
 	{
 		try
 		{
-			val widthMeasureSpec = View.MeasureSpec.makeMeasureSpec(width, View.MeasureSpec.EXACTLY)
-			val heightMeasureSpec = View.MeasureSpec.makeMeasureSpec(height, View.MeasureSpec.EXACTLY)
+			fun saveChart(sets: ArrayList<ILineDataSet>, name: String)
+			{
+				val widthMeasureSpec = View.MeasureSpec.makeMeasureSpec(width, View.MeasureSpec.EXACTLY)
+				val heightMeasureSpec = View.MeasureSpec.makeMeasureSpec(height, View.MeasureSpec.EXACTLY)
 
-			val inputPh = LineChart(context)
-			inputPh.setExtraOffsets(30f, 30f, 30f, 30f)
-			inputPh.setPadding(100, 100, 100, 100)
-			inputPh.layoutParams = ViewGroup.LayoutParams(width, height)
-			inputPh.minimumWidth = width
-			inputPh.minimumHeight = height
-			inputPh.measure(widthMeasureSpec, heightMeasureSpec)
-			inputPh.requestLayout()
-			inputPh.layout(0, 0, width, height)
+				val inputPh = LineChart(context)
+				inputPh.setExtraOffsets(30f, 30f, 30f, 30f)
+				inputPh.setPadding(100, 100, 100, 100)
+				inputPh.layoutParams = ViewGroup.LayoutParams(width, height)
+				inputPh.minimumWidth = width
+				inputPh.minimumHeight = height
+				inputPh.measure(widthMeasureSpec, heightMeasureSpec)
+				inputPh.requestLayout()
+				inputPh.layout(0, 0, width, height)
 
-			with (inputPh) {
-				setVisibleYRangeMaximum(kotlin.math.max(viewModel.phStats.max?.toFloat() ?: 0.0f, viewModel.runoffStats.max?.toFloat() ?: 0.0f), com.github.mikephil.charting.components.YAxis.AxisDependency.LEFT)
-				style()
+				with (inputPh) {
+					setVisibleYRangeMaximum(max(viewModel.phStats.max?.toFloat() ?: 0.0f, viewModel.runoffStats.max?.toFloat() ?: 0.0f), com.github.mikephil.charting.components.YAxis.AxisDependency.LEFT)
+					style()
+					legend.textColor = 0xff000000.toInt()
+					axisLeft.textColor = 0xff000000.toInt()
+					xAxis.textColor = 0xff000000.toInt()
+					xAxis.labelCount = 25
+					xAxis.textSize = 8.0f
+					axisLeft.textSize = 8.0f
 
-				marker = object : MarkerView(context, me.anon.grow.R.layout.chart_marker)
-				{
-					override fun refreshContent(e: Entry, highlight: Highlight): kotlin.Unit
+					xAxis.valueFormatter = object : ValueFormatter()
 					{
-						val color = inputPh.data.dataSets[highlight.dataSetIndex].color
-						kotlin.with(this.findViewById<TextView>(me.anon.grow.R.id.content)) {
-							text = e.y.formatWhole()
-							setTextColor(color)
+						override fun getAxisLabel(value: Float, axis: AxisBase?): String
+						{
+							return viewModel.waterDates.getOrNull(value.toInt())?.transform {
+								"${total}/${day}${context.getString(stage.printString).toLowerCase()[0]}"
+							} ?: ""
 						}
-
-						super.refreshContent(e, highlight)
 					}
-
-					override fun getOffset(): MPPointF = com.github.mikephil.charting.utils.MPPointF.getInstance(-(width / 2f), -(height * 1.2f))
 				}
+				inputPh.data = LineData(sets)
+				inputPh.data.setDrawValues(true)
 
-				xAxis.valueFormatter = object : ValueFormatter()
+				try
 				{
-					override fun getAxisLabel(value: Float, axis: AxisBase?): String
-					{
-						return viewModel.waterDates.getOrNull(value.toInt())?.transform {
-							"${total}/${day}${context.getString(stage.printString).toLowerCase()[0]}"
-						} ?: ""
-					}
+					val parameters = ZipParameters()
+					parameters.compressionMethod = Zip4jConstants.COMP_DEFLATE
+					parameters.fileNameInZip = "$pathPrefix$name.jpg"
+					parameters.isSourceExternalStream = true
+
+					val outputStream = ByteArrayOutputStream()
+					inputPh.scaledBitmap().compress(Bitmap.CompressFormat.JPEG, 100, outputStream)
+					val stream = ByteArrayInputStream(outputStream.toByteArray())
+					outZip.addStream(stream, parameters)
+
+					stream.close()
+				}
+				catch (e: Exception)
+				{
+					e.printStackTrace()
 				}
 			}
 
@@ -801,54 +796,35 @@ class ExportHelper(
 				setCircleColor(color)
 				styleDataset(context!!, this, color)
 			}
-			sets += LineDataSet(viewModel.phValues.rollingAverage(), context.getString(R.string.stat_average_runoff_ph)).apply {
-						color = ColorUtils.blendARGB(statsColours[0], 0xffffffff.toInt(), 0.4f)
-						setDrawCircles(false)
-						setDrawValues(false)
-						setDrawCircleHole(false)
-						setDrawHighlightIndicators(true)
-						cubicIntensity = 1f
-						lineWidth = 2.0f
-						isHighlightEnabled = false
-					}
+			sets += LineDataSet(viewModel.phValues.rollingAverage(), context.getString(R.string.stat_average_ph)).apply {
+				color = ColorUtils.blendARGB(statsColours[0], 0xffffffff.toInt(), 0.4f)
+				setDrawCircles(false)
+				setDrawValues(false)
+				setDrawCircleHole(false)
+				setDrawHighlightIndicators(true)
+				cubicIntensity = 1f
+				lineWidth = 2.0f
+				isHighlightEnabled = false
+			}
+			saveChart(sets, "input-ph")
+			sets.clear()
 			sets += LineDataSet(viewModel.runoffValues, context.getString(R.string.stat_runoff_ph)).apply {
-					color = statsColours[1]
-					fillColor = color
-					setCircleColor(color)
-					styleDataset(context!!, this, color)
-		}
+				color = statsColours[1]
+				fillColor = color
+				setCircleColor(color)
+				styleDataset(context!!, this, color)
+			}
 			sets += LineDataSet(viewModel.runoffValues.rollingAverage(), context.getString(R.string.stat_average_runoff_ph)).apply {
-						color = ColorUtils.blendARGB(statsColours[1], 0xffffffff.toInt(), 0.4f)
-						setDrawCircles(false)
-						setDrawValues(false)
-						setDrawCircleHole(false)
-						setDrawHighlightIndicators(true)
-						cubicIntensity = 1f
-						lineWidth = 2.0f
-						isHighlightEnabled = false
-					}
-
-			inputPh.data = LineData(sets)
-			inputPh.data.setDrawValues(true)
-
-			try
-			{
-				val parameters = ZipParameters()
-				parameters.compressionMethod = Zip4jConstants.COMP_DEFLATE
-				parameters.fileNameInZip = pathPrefix + "ph.jpg"
-				parameters.isSourceExternalStream = true
-
-				val outputStream = ByteArrayOutputStream()
-				inputPh.chartBitmap.compress(Bitmap.CompressFormat.JPEG, 100, outputStream)
-				val stream = ByteArrayInputStream(outputStream.toByteArray())
-				outZip.addStream(stream, parameters)
-
-				stream.close()
+				color = ColorUtils.blendARGB(statsColours[1], 0xffffffff.toInt(), 0.4f)
+				setDrawCircles(false)
+				setDrawValues(false)
+				setDrawCircleHole(false)
+				setDrawHighlightIndicators(true)
+				cubicIntensity = 1f
+				lineWidth = 2.0f
+				isHighlightEnabled = false
 			}
-			catch (e: Exception)
-			{
-				e.printStackTrace()
-			}
+			saveChart(sets, "runoff-ph")
 		}
 		catch (e: Exception)
 		{
@@ -890,90 +866,86 @@ class ExportHelper(
 				}
 			}
 
-			val lineData = LineData(dataSets)
-			try
+			fun saveChart(lineData: LineData, fileName: String)
 			{
-				val widthMeasureSpec = View.MeasureSpec.makeMeasureSpec(width, View.MeasureSpec.EXACTLY)
-				val heightMeasureSpec = View.MeasureSpec.makeMeasureSpec(height, View.MeasureSpec.EXACTLY)
-
-				val additives = LineChart(context)
-				with (additives) {
-					setExtraOffsets(30f, 30f, 30f, 30f)
-					setPadding(100, 100, 100, 100)
-					layoutParams = ViewGroup.LayoutParams(width, height)
-					minimumWidth = width
-					minimumHeight = height
-					measure(widthMeasureSpec, heightMeasureSpec)
-					requestLayout()
-					layout(0, 0, width, height)
-					style()
-
-					marker = object : MarkerView(context, me.anon.grow.R.layout.chart_marker)
-					{
-						override fun refreshContent(e: Entry, highlight: Highlight): kotlin.Unit
-						{
-							val color = additives.data.dataSets[highlight.dataSetIndex].color
-							kotlin.with(this.findViewById<TextView>(me.anon.grow.R.id.content)) {
-								text = "${e.y.formatWhole()} ${viewModel.selectedMeasurementUnit.label}/${viewModel.selectedDeliveryUnit.label}"
-								setTextColor(color)
-							}
-
-							super.refreshContent(e, highlight)
-						}
-
-						override fun getOffset(): MPPointF = MPPointF.getInstance(-(width / 2f), -(height * 1.2f))
-					}
-
-					axisLeft.granularity = 1f
-					axisLeft.valueFormatter = object : ValueFormatter()
-					{
-						override fun getAxisLabel(value: Float, axis: AxisBase?): String
-						{
-							return "${value.formatWhole()}${viewModel.selectedMeasurementUnit.label}/${viewModel.selectedDeliveryUnit.label}"
-						}
-					}
-
-					xAxis.valueFormatter = object : ValueFormatter()
-					{
-						override fun getAxisLabel(value: Float, axis: AxisBase?): String
-						{
-							return viewModel.waterDates.getOrNull(value.toInt())?.transform {
-								"${total}/${day}${context.getString(stage.printString).toLowerCase()[0]}"
-							} ?: ""
-						}
-					}
-
-					legend.setCustom(entries)
-					legend.yOffset = 10f
-					legend.xOffset = 10f
-					data = lineData
-					data.setDrawValues(true)
-				}
-
 				try
 				{
-					val parameters = ZipParameters()
-					parameters.compressionMethod = Zip4jConstants.COMP_DEFLATE
-					parameters.fileNameInZip = pathPrefix + "additives.jpg"
-					parameters.isSourceExternalStream = true
+					val widthMeasureSpec = View.MeasureSpec.makeMeasureSpec(width, View.MeasureSpec.EXACTLY)
+					val heightMeasureSpec = View.MeasureSpec.makeMeasureSpec(height, View.MeasureSpec.EXACTLY)
 
-					val outputStream = ByteArrayOutputStream()
-					additives.chartBitmap.compress(Bitmap.CompressFormat.JPEG, 100, outputStream)
-					val stream = ByteArrayInputStream(outputStream.toByteArray())
-					outZip.addStream(stream, parameters)
+					val additives = LineChart(context)
+					with (additives) {
+						setExtraOffsets(30f, 30f, 30f, 30f)
+						setPadding(100, 100, 100, 100)
+						layoutParams = ViewGroup.LayoutParams(width, height)
+						minimumWidth = width
+						minimumHeight = height
+						measure(widthMeasureSpec, heightMeasureSpec)
+						requestLayout()
+						layout(0, 0, width, height)
+						style()
+						legend.textColor = 0xff000000.toInt()
+						axisLeft.textColor = 0xff000000.toInt()
+						xAxis.textColor = 0xff000000.toInt()
+						xAxis.labelCount = 25
+						xAxis.textSize = 8.0f
+						axisLeft.textSize = 8.0f
 
-					stream.close()
+						axisLeft.granularity = 1f
+						axisLeft.valueFormatter = object : ValueFormatter()
+						{
+							override fun getAxisLabel(value: Float, axis: AxisBase?): String
+							{
+								return "${value.formatWhole()}${viewModel.selectedMeasurementUnit.label}/${viewModel.selectedDeliveryUnit.label}"
+							}
+						}
+
+						xAxis.valueFormatter = object : ValueFormatter()
+						{
+							override fun getAxisLabel(value: Float, axis: AxisBase?): String
+							{
+								return viewModel.waterDates.getOrNull(value.toInt())?.transform {
+									"${total}/${day}${context.getString(stage.printString).toLowerCase()[0]}"
+								} ?: ""
+							}
+						}
+
+						legend.isWordWrapEnabled = true
+						legend.setCustom(entries)
+						data = lineData
+						data.setDrawValues(true)
+					}
+
+					try
+					{
+						val parameters = ZipParameters()
+						parameters.compressionMethod = Zip4jConstants.COMP_DEFLATE
+						parameters.fileNameInZip = "$pathPrefix$fileName.jpg"
+						parameters.isSourceExternalStream = true
+
+						val outputStream = ByteArrayOutputStream()
+						additives.scaledBitmap().compress(Bitmap.CompressFormat.JPEG, 100, outputStream)
+						val stream = ByteArrayInputStream(outputStream.toByteArray())
+						outZip.addStream(stream, parameters)
+
+						stream.close()
+					}
+					catch (e: Exception)
+					{
+						e.printStackTrace()
+					}
 				}
-				catch (e: Exception)
+				catch (e: java.lang.Exception)
 				{
 					e.printStackTrace()
 				}
 			}
-			catch (e: java.lang.Exception)
-			{
-				e.printStackTrace()
-			}
 
+			saveChart(LineData(dataSets), "additives")
+
+			dataSets.forEach { set ->
+				saveChart(LineData(set), set.label.normalise())
+			}
 		}
 
 		fun displayTotalsChart()
@@ -1000,25 +972,25 @@ class ExportHelper(
 
 			try
 			{
+				val width = 1024
+				val height = 1024
 				val widthMeasureSpec = View.MeasureSpec.makeMeasureSpec(width, View.MeasureSpec.EXACTLY)
 				val heightMeasureSpec = View.MeasureSpec.makeMeasureSpec(height, View.MeasureSpec.EXACTLY)
 
 				val additives = PieChart(context)
 				with (additives) {
-					setExtraOffsets(30f, 30f, 30f, 30f)
-					setPadding(100, 100, 100, 100)
 					layoutParams = ViewGroup.LayoutParams(width, height)
 					minimumWidth = width
-					minimumHeight = height
+					minimumHeight = width
 					measure(widthMeasureSpec, heightMeasureSpec)
 					requestLayout()
-					layout(0, 0, width, height)
+					layout(0, 0, width, width)
 
 					description = null
 					setHoleColor(0x00ffffff)
 					legend.setCustom(entries)
 					legend.form = com.github.mikephil.charting.components.Legend.LegendForm.CIRCLE
-					legend.textColor = me.anon.grow.R.attr.colorOnSurface.resolveColor(context!!)
+					legend.textColor = 0xff000000.toInt()
 					legend.isWordWrapEnabled = true
 
 					data = PieData(PieDataSet(pieData, "").apply {
@@ -1093,6 +1065,7 @@ class ExportHelper(
 			val lineData = LineData(dataSets)
 			try
 			{
+				val height = height * 2
 				val widthMeasureSpec = View.MeasureSpec.makeMeasureSpec(width, View.MeasureSpec.EXACTLY)
 				val heightMeasureSpec = View.MeasureSpec.makeMeasureSpec(height, View.MeasureSpec.EXACTLY)
 
@@ -1107,22 +1080,14 @@ class ExportHelper(
 					requestLayout()
 					layout(0, 0, width, height)
 					style()
-
-					marker = object : MarkerView(context, me.anon.grow.R.layout.chart_marker)
-					{
-						override fun refreshContent(e: Entry, highlight: Highlight): kotlin.Unit
-						{
-							val color = additives.data.dataSets[highlight.dataSetIndex].color
-							kotlin.with(this.findViewById<TextView>(me.anon.grow.R.id.content)) {
-								text = "${e.y.formatWhole()} ${viewModel.selectedMeasurementUnit.label}/${viewModel.selectedDeliveryUnit.label}"
-								setTextColor(color)
-							}
-
-							super.refreshContent(e, highlight)
-						}
-
-						override fun getOffset(): MPPointF = MPPointF.getInstance(-(width / 2f), -(height * 1.2f))
-					}
+					legend.textColor = 0xff000000.toInt()
+					axisLeft.textColor = 0xff000000.toInt()
+					xAxis.textColor = 0xff000000.toInt()
+					axisLeft.labelCount = 25
+					xAxis.labelCount = 25
+					xAxis.textSize = 8.0f
+					axisLeft.textSize = 8.0f
+					axisLeft.axisMinimum = 0.0f
 
 					axisLeft.granularity = 1f
 					axisLeft.valueFormatter = object : ValueFormatter()
@@ -1144,6 +1109,7 @@ class ExportHelper(
 					}
 
 					legend.setCustom(entries)
+					legend.isWordWrapEnabled = true
 					legend.yOffset = 10f
 					legend.xOffset = 10f
 					data = lineData
@@ -1158,7 +1124,7 @@ class ExportHelper(
 					parameters.isSourceExternalStream = true
 
 					val outputStream = ByteArrayOutputStream()
-					additives.chartBitmap.compress(Bitmap.CompressFormat.JPEG, 100, outputStream)
+					additives.scaledBitmap().compress(Bitmap.CompressFormat.JPEG, 100, outputStream)
 					val stream = ByteArrayInputStream(outputStream.toByteArray())
 					outZip.addStream(stream, parameters)
 
@@ -1174,6 +1140,10 @@ class ExportHelper(
 				e.printStackTrace()
 			}
 		}
+
+		displayConcentrationChart()
+		displayTotalsChart()
+		displayOvertimeChart()
 	}
 
 	private fun styleDataset(context: Context, data: LineDataSet, colour: Int)

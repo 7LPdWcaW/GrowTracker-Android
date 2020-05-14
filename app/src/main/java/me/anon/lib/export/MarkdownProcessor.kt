@@ -7,6 +7,7 @@ import me.anon.lib.TdsUnit
 import me.anon.lib.TempUnit
 import me.anon.lib.Unit
 import me.anon.lib.ext.formatWhole
+import me.anon.lib.ext.normalise
 import me.anon.lib.helper.MoshiHelper
 import me.anon.lib.helper.StatsHelper
 import me.anon.lib.helper.TimeHelper
@@ -144,7 +145,7 @@ class MarkdownProcessor : ExportProcessor()
 			documentBuilder.append(NEW_LINE + NEW_LINE)
 		}
 
-		documentBuilder.append("![States](stages.jpg)").append(NEW_LINE + NEW_LINE)
+		documentBuilder.append("![Stages](stages.jpg)").append(NEW_LINE + NEW_LINE)
 	}
 
 	override fun printPlantStats(plant: Plant)
@@ -163,30 +164,35 @@ class MarkdownProcessor : ExportProcessor()
 				.append(NEW_LINE + NEW_LINE)
 
 			// total time
-			documentBuilder.append(context!!.getString(R.string.total_time_label)).append("${viewModel.totalDays.formatWhole()} ${context!!.resources.getQuantityString(R.plurals.time_day, viewModel.totalDays.toInt())}")
+			documentBuilder.append("**").append(context!!.getString(R.string.total_time_label)).append("** ")
+				.append("${viewModel.totalDays.formatWhole()} ${context!!.resources.getQuantityString(R.plurals.time_day, viewModel.totalDays.toInt())}")
 				.append(NEW_LINE + NEW_LINE)
 
 			documentBuilder.append("## Water stats")
 				.append(NEW_LINE + NEW_LINE)
 
 			// total waters
-			documentBuilder.append(context!!.getString(R.string.total_waters_label)).append("${viewModel.totalWater.formatWhole()}")
+			documentBuilder.append("**").append(context!!.getString(R.string.total_waters_label)).append("** ")
+				.append("${viewModel.totalWater.formatWhole()}")
 				.append(NEW_LINE + NEW_LINE)
 
 			// total flushes
-			documentBuilder.append(context!!.getString(R.string.total_flushes_label)).append("${viewModel.totalFlush.formatWhole()}")
+			documentBuilder.append("**").append(context!!.getString(R.string.total_flushes_label)).append("** ")
+				.append("${viewModel.totalFlush.formatWhole()}")
 				.append(NEW_LINE + NEW_LINE)
 
 			// total water amount
-			documentBuilder.append(context!!.getString(R.string.total_water_amount_label)).append("${Unit.ML.to(viewModel.selectedDeliveryUnit, viewModel.totalWaterAmount).formatWhole()} ${viewModel.selectedDeliveryUnit.label}")
+			documentBuilder.append("**").append(context!!.getString(R.string.total_water_amount_label)).append("** ")
+				.append("${Unit.ML.to(viewModel.selectedDeliveryUnit, viewModel.totalWaterAmount).formatWhole()} ${viewModel.selectedDeliveryUnit.label}")
 				.append(NEW_LINE + NEW_LINE)
 
 			// average water amount
-			documentBuilder.append(context!!.getString(R.string.ave_water_amount_label)).append("${Unit.ML.to(viewModel.selectedDeliveryUnit, (viewModel.totalWaterAmount / viewModel.totalWater.toDouble())).formatWhole()} ${viewModel.selectedDeliveryUnit.label}")
+			documentBuilder.append("**").append(context!!.getString(R.string.ave_water_amount_label)).append("** ")
+				.append("${Unit.ML.to(viewModel.selectedDeliveryUnit, (viewModel.totalWaterAmount / viewModel.totalWater.toDouble())).formatWhole()} ${viewModel.selectedDeliveryUnit.label}")
 				.append(NEW_LINE + NEW_LINE)
 
 			// ave time between water
-			documentBuilder.append(context!!.getString(R.string.ave_time_between_water_label))
+			documentBuilder.append("**").append(context!!.getString(R.string.ave_time_between_water_label)).append("** ")
 			documentBuilder.append((TimeHelper.toDays(viewModel.waterDifference) / viewModel.totalWater).let { d ->
 				"${d.formatWhole()} ${context!!.resources.getQuantityString(R.plurals.time_day, ceil(d).toInt())}"
 			}).append(NEW_LINE + NEW_LINE)
@@ -198,7 +204,7 @@ class MarkdownProcessor : ExportProcessor()
 					if (dates.isNotEmpty())
 					{
 						var dateDifference = dates.last() - dates.first()
-						documentBuilder.append(context!!.getString(R.string.ave_time_stage_label, stage.enString))
+						documentBuilder.append("**").append(context!!.getString(R.string.ave_time_stage_label, stage.enString)).append("** ")
 						documentBuilder.append((TimeHelper.toDays(dateDifference) / dates.size).let { d ->
 							"${d.formatWhole()} ${context!!.resources.getQuantityString(R.plurals.time_day, ceil(d).toInt())}"
 						}).append(NEW_LINE + NEW_LINE)
@@ -219,15 +225,23 @@ class MarkdownProcessor : ExportProcessor()
 			viewModel.additiveStats.forEach { (key, stat) ->
 				documentBuilder.append("### ").append(context!!.getString(R.string.additive_stat_header, key))
 					.append(NEW_LINE + NEW_LINE)
-				documentBuilder.append(context!!.getString(R.string.min)).append("${Unit.ML.to(viewModel.selectedMeasurementUnit, stat.min).formatWhole()} ${viewModel.selectedMeasurementUnit.label}/${viewModel.selectedDeliveryUnit.label}")
+
+				documentBuilder.append("![$key](${key.normalise()}.jpg)").append(NEW_LINE + NEW_LINE)
+
+				documentBuilder.append("**").append(context!!.getString(R.string.min)).append("** ")
+					.append("${Unit.ML.to(viewModel.selectedMeasurementUnit, stat.min).formatWhole()} ${viewModel.selectedMeasurementUnit.label}/${viewModel.selectedDeliveryUnit.label}")
 					.append(NEW_LINE + NEW_LINE)
-				documentBuilder.append(context!!.getString(R.string.max)).append("${Unit.ML.to(viewModel.selectedMeasurementUnit, stat.max).formatWhole()} ${viewModel.selectedMeasurementUnit.label}/${viewModel.selectedDeliveryUnit.label}")
+				documentBuilder.append("**").append(context!!.getString(R.string.max)).append("** ")
+					.append("${Unit.ML.to(viewModel.selectedMeasurementUnit, stat.max).formatWhole()} ${viewModel.selectedMeasurementUnit.label}/${viewModel.selectedDeliveryUnit.label}")
 					.append(NEW_LINE + NEW_LINE)
-				documentBuilder.append(context!!.getString(R.string.additive_average_usage_label)).append("${Unit.ML.to(viewModel.selectedMeasurementUnit, stat.total / stat.count.toDouble()).formatWhole()} ${viewModel.selectedMeasurementUnit.label}/${viewModel.selectedDeliveryUnit.label}")
+				documentBuilder.append("**").append(context!!.getString(R.string.additive_average_usage_label)).append("** ")
+					.append("${Unit.ML.to(viewModel.selectedMeasurementUnit, stat.total / stat.count.toDouble()).formatWhole()} ${viewModel.selectedMeasurementUnit.label}/${viewModel.selectedDeliveryUnit.label}")
 					.append(NEW_LINE + NEW_LINE)
-				documentBuilder.append(context!!.getString(R.string.additive_usage_count_label)).append("${stat.count}")
+				documentBuilder.append("**").append(context!!.getString(R.string.additive_usage_count_label)).append("** ")
+					.append("${stat.count}")
 					.append(NEW_LINE + NEW_LINE)
-				documentBuilder.append(context!!.getString(R.string.additive_total_usage_label)).append("${Unit.ML.to(viewModel.selectedMeasurementUnit, stat.totalAdjusted).formatWhole()} ${viewModel.selectedMeasurementUnit.label}")
+				documentBuilder.append("**").append(context!!.getString(R.string.additive_total_usage_label)).append("** ")
+					.append("${Unit.ML.to(viewModel.selectedMeasurementUnit, stat.totalAdjusted).formatWhole()} ${viewModel.selectedMeasurementUnit.label}")
 					.append(NEW_LINE + NEW_LINE)
 			}
 		}
@@ -238,31 +252,38 @@ class MarkdownProcessor : ExportProcessor()
 				documentBuilder.append("## ").append(context!!.getString(when (stat)
 				{
 					viewModel.phStats -> R.string.stat_input_ph
-					viewModel.runoffStats -> R.string.stat_input_ph
+					viewModel.runoffStats -> R.string.stat_runoff_ph
 					else -> throw Exception()
 				}))
 				.append(NEW_LINE + NEW_LINE)
 
 				stat.min?.let {
-					documentBuilder.append(context!!.getString(R.string.min))
+					documentBuilder.append("**").append(context!!.getString(R.string.min)).append("** ")
 					documentBuilder.append(it.formatWhole())
 						.append(NEW_LINE + NEW_LINE)
 				}
 
 				stat.max?.let {
-					documentBuilder.append(context!!.getString(R.string.max))
+					documentBuilder.append("**").append(context!!.getString(R.string.max)).append("** ")
 					documentBuilder.append(it.formatWhole())
 						.append(NEW_LINE + NEW_LINE)
 				}
 
 				stat.average?.let {
-					documentBuilder.append(context!!.getString(R.string.ave))
+					documentBuilder.append("**").append(context!!.getString(R.string.ave)).append("** ")
 					documentBuilder.append(it.formatWhole())
 						.append(NEW_LINE + NEW_LINE)
 				}
-			}
 
-			documentBuilder.append("![pH](ph.jpg)").append(NEW_LINE + NEW_LINE)
+				val name = when (stat)
+				{
+					viewModel.phStats -> "input-ph"
+					viewModel.runoffStats -> "runoff-ph"
+					else -> throw Exception()
+				}
+
+				documentBuilder.append("![$name]($name.jpg)").append(NEW_LINE + NEW_LINE)
+			}
 		}
 
 		fun generateTdsStats()
@@ -270,43 +291,52 @@ class MarkdownProcessor : ExportProcessor()
 			viewModel.tdsStats.forEach { (key, stat) ->
 				if (stat.average?.isNaN() == false)
 				{
-					documentBuilder.append("## ").append(context!!.getString(selectedTds!!.strRes))
+					documentBuilder.append("## ").append(context!!.getString(key.strRes))
 						.append(NEW_LINE + NEW_LINE)
 
 					stat.min?.let {
-						documentBuilder.append(context!!.getString(R.string.min)).append(it.formatWhole())
+						documentBuilder.append("**").append(context!!.getString(R.string.min)).append("** ")
+							.append(it.formatWhole())
 							.append(NEW_LINE + NEW_LINE)
 					}
 
 					stat.max?.let {
-						documentBuilder.append(context!!.getString(R.string.max)).append(it.formatWhole())
+						documentBuilder.append("**").append(context!!.getString(R.string.max)).append("** ")
+							.append(it.formatWhole())
 							.append(NEW_LINE + NEW_LINE)
 					}
 
 					stat.average?.let {
-						documentBuilder.append(context!!.getString(R.string.ave)).append(it.formatWhole())
+						documentBuilder.append("**").append(context!!.getString(R.string.ave)).append("** ")
+							.append(it.formatWhole())
 							.append(NEW_LINE + NEW_LINE)
 					}
 
-					documentBuilder.append("![${key.label}](${key.label}.jpg)").append(NEW_LINE + NEW_LINE)
+					documentBuilder.append("![${key.enStr}](${key.enStr}.jpg)").append(NEW_LINE + NEW_LINE)
 				}
 			}
 		}
 
 		fun generateTempStats()
 		{
+			documentBuilder.append("## ").append(context!!.getString(R.string.temperature_title))
+						.append(NEW_LINE + NEW_LINE)
+
 			viewModel.tempStats.min?.let {
-				documentBuilder.append(context!!.getString(R.string.min)).append("${it.formatWhole()}°${viewModel.selectedTempUnit.label}")
+				documentBuilder.append("**").append(context!!.getString(R.string.min)).append("** ")
+					.append("${it.formatWhole()}°${viewModel.selectedTempUnit.label}")
 					.append(NEW_LINE + NEW_LINE)
 			}
 
 			viewModel.tempStats.max?.let {
-				documentBuilder.append(context!!.getString(R.string.max)).append("${it.formatWhole()}°${viewModel.selectedTempUnit.label}")
+				documentBuilder.append("**").append(context!!.getString(R.string.max)).append("** ")
+					.append("${it.formatWhole()}°${viewModel.selectedTempUnit.label}")
 					.append(NEW_LINE + NEW_LINE)
 			}
 
 			viewModel.tempStats.average?.let {
-				documentBuilder.append(context!!.getString(R.string.ave)).append("${it.formatWhole()}°${viewModel.selectedTempUnit.label}")
+				documentBuilder.append("**").append(context!!.getString(R.string.ave)).append("** ")
+					.append("${it.formatWhole()}°${viewModel.selectedTempUnit.label}")
 					.append(NEW_LINE + NEW_LINE)
 			}
 

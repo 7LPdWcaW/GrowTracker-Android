@@ -189,7 +189,16 @@ class StatisticsFragment2 : Fragment()
 									with (additiveValues) {
 										val amount = Unit.ML.to(selectedMeasurementUnit, amount)
 										val entry = Entry(waterIndex.toFloat(), amount.toFloat())
-										getOrPut(additive.description!!, { arrayListOf() }).add(entry)
+
+										val index = keys.map { it.normalise() }.indexOf(additive.description!!.normalise())
+										var key = additive.description!!
+
+										if (index > -1)
+										{
+											key = keys.toList()[index]
+										}
+
+										getOrPut(key, { arrayListOf() }).add(entry)
 									}
 
 									with (additiveTotalValues) {
@@ -197,7 +206,16 @@ class StatisticsFragment2 : Fragment()
 										val additiveAmount = Unit.ML.to(selectedMeasurementUnit, amount)
 
 										val entry = Entry(waterIndex.toFloat(), Unit.toTwoDecimalPlaces(additiveAmount * totalDelivery).toFloat())
-										getOrPut(additive.description!!, { arrayListOf() }).add(entry)
+
+										val index = keys.map { it.normalise() }.indexOf(additive.description!!.normalise())
+										var key = additive.description!!
+
+										if (index > -1)
+										{
+											key = keys.toList()[index]
+										}
+
+										getOrPut(key, { arrayListOf() }).add(entry)
 									}
 								}
 							}
