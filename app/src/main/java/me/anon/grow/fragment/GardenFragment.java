@@ -49,7 +49,6 @@ import me.anon.lib.Views;
 import me.anon.lib.event.GardenChangeEvent;
 import me.anon.lib.export.ExportHelper;
 import me.anon.lib.export.ExportProcessor;
-import me.anon.lib.ext.IntUtilsKt;
 import me.anon.lib.helper.BusHelper;
 import me.anon.lib.manager.GardenManager;
 import me.anon.lib.manager.PlantManager;
@@ -66,7 +65,7 @@ public class GardenFragment extends Fragment
 	private PlantAdapter adapter;
 	private Garden garden;
 
-	public static GardenFragment newInstance(@Nullable Garden garden)
+	public static GardenFragment newInstance(Garden garden)
 	{
 		GardenFragment fragment = new GardenFragment();
 		fragment.garden = garden;
@@ -265,7 +264,11 @@ public class GardenFragment extends Fragment
 			}
 
 			garden.setPlantIds(orderedPlantIds);
-			GardenManager.getInstance().upsert(garden);
+
+			if (GardenManager.getInstance().getGardens().indexOf(garden) > -1)
+			{
+				GardenManager.getInstance().upsert(garden);
+			}
 		}
 
 		PlantManager.getInstance().upsert(plants);
@@ -453,8 +456,9 @@ public class GardenFragment extends Fragment
 						final int defaultGarden = PreferenceManager.getDefaultSharedPreferences(getActivity()).getInt("default_garden", -1);
 
 						PreferenceManager.getDefaultSharedPreferences(getActivity()).edit().remove("default_garden").apply();
-						GardenManager.getInstance().getGardens().remove(garden);
+						GardenManager.getInstance().getGardens().remove(oldIndex);
 						GardenManager.getInstance().save();
+
 
 						SnackBar.show(getActivity(), R.string.snackbar_garden_deleted, R.string.undo, new SnackBarListener()
 						{
