@@ -3,12 +3,10 @@
 	<item
 		android:id="@+id/navigation_gardens"
 		android:icon="@drawable/ic_home_black_24dp"
-		android:title="@string/nav_gardens"
 	/>
 
 	<item
 		android:id="@+id/navigation_dashboard"
 		android:icon="@drawable/ic_dashboard_black_24dp"
-		android:title="@string/nav_feeding_schedule"
 	/>
 </menu>

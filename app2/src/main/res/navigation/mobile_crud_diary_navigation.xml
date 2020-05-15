@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<navigation
+	xmlns:android="http://schemas.android.com/apk/res/android"
+	xmlns:app="http://schemas.android.com/apk/res-auto"
+	xmlns:tools="http://schemas.android.com/tools"
+	android:id="@+id/crud_diary_navigation"
+	app:startDestination="@+id/navigation_diary_details"
+>
+	<fragment
+		android:id="@+id/navigation_diary_details"
+		android:name="me.anon.grow3.ui.crud.fragment.DiaryDetailsFragment"
+		android:label="@string/navigation_diary_details"
+		tools:layout="@layout/fragment_crud_diary_details"
+	/>
+</navigation>
