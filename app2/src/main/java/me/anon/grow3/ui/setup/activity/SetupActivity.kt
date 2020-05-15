@@ -2,18 +2,24 @@ package me.anon.grow3.ui.setup.activity
 
 import android.Manifest
 import android.os.Bundle
+import android.view.View
+import androidx.constraintlayout.widget.ConstraintLayout
+import androidx.core.view.updateLayoutParams
 import com.github.appintro.AppIntro2
+import com.github.appintro.AppIntroCustomLayoutFragment
 import com.github.appintro.AppIntroFragment
 import me.anon.grow3.R
 import me.anon.grow3.util.resolve
 
 class SetupActivity : AppIntro2()
 {
+	override val layoutId = R.layout.activity_setup
+
 	private val colors by lazy {
 		arrayOf(
 			R.color.colorPrimary.resolve(this),
-			R.color.colorAccent.resolve(this),
-			R.color.colorSecondary.resolve(this)
+			R.color.colorSecondary.resolve(this),
+			R.color.colorAccent.resolve(this)
 		)
 	}
 
@@ -31,13 +37,11 @@ class SetupActivity : AppIntro2()
 			description = "Second screen",
 			backgroundColor = colors[1]
 		))
-		addSlide(AppIntroFragment.newInstance(
-			title = "Welcome",
-			description = "Third screen",
-			backgroundColor = colors[2]
-		))
+		addSlide(FirstDiarySlideFragment())
 
 		isColorTransitionsEnabled = true
+
+		setStatusBarColor(0x00ffffff)
 		showStatusBar(true)
 
 		isIndicatorEnabled = true
@@ -51,12 +55,14 @@ class SetupActivity : AppIntro2()
 			slideNumber = 2,
 			required = true
 		)
-	}
 
-	override fun onPageSelected(position: Int)
-	{
-		super.onPageSelected(position)
-		setStatusBarColor(colors[position])
+		findViewById<View>(R.id.bottom).setOnApplyWindowInsetsListener { view, windowInsets ->
+			view.onApplyWindowInsets(windowInsets).also {
+				view.updateLayoutParams<ConstraintLayout.LayoutParams> {
+					bottomMargin = windowInsets.systemWindowInsetBottom
+				}
+			}
+		}
 	}
 
 	override fun onUserDeniedPermission(permissionName: String)

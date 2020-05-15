@@ -4,5 +4,11 @@
 		<item name="colorPrimaryDark">@color/colorPrimaryDark</item>
 		<item name="colorAccent">@color/colorAccent</item>
 		<item name="colorSecondary">@color/colorSecondary</item>
+
+	</style>
+
+	<style name="AppTheme.FullScrim">
+		<item name="android:windowTranslucentStatus">true</item>
+		<item name="android:windowTranslucentNavigation">true</item>
 	</style>
 </resources>

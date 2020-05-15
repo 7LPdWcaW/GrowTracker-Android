@@ -26,5 +26,6 @@
 
 		<activity android:name=".ui.MainActivity" />
 		<activity android:name=".ui.setup.activity.SetupActivity" />
+		<activity android:name=".ui.setup.activity.SetupActivity" android:theme="@style/AppTheme.FullScrim" />
 	</application>
 </manifest>
