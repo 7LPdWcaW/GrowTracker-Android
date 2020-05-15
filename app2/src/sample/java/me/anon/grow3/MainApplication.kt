@@ -7,9 +7,8 @@ class MainApplication : BaseApplication()
 {
 	override fun setup()
 	{
-		with (resources.assets.open("gardens.json"))
-		{
-			val file = File("$dataPath/gardens.json")
+		with (resources.assets.open("diaries.json")) {
+			val file = File("$dataPath/diaries.json")
 			file.delete()
 
 			val out = FileOutputStream(file)
