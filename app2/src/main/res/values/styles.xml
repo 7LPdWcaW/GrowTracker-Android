@@ -5,6 +5,11 @@
 		<item name="colorAccent">@color/colorAccent</item>
 		<item name="colorSecondary">@color/colorSecondary</item>
 
+		<item name="textOnAccent">#ffffff</item>
+
+		<item name="styleButtonBorderless">@style/Widget.AppCompat.Button.Borderless</item>
+		<item name="styleButtonBordered">@style/Widget.MaterialComponents.Button.OutlinedButton</item>
+		<item name="styleButtonText">@style/Widget.MaterialComponents.Button.TextButton</item>
 	</style>
 
 	<style name="AppTheme.FullScrim">
