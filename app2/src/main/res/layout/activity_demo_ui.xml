@@ -1,0 +1,188 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<androidx.coordinatorlayout.widget.CoordinatorLayout
+	xmlns:android="http://schemas.android.com/apk/res/android"
+	xmlns:app="http://schemas.android.com/apk/res-auto"
+	android:layout_width="match_parent"
+	android:layout_height="match_parent"
+	android:id="@+id/container"
+>
+	<com.google.android.material.appbar.AppBarLayout
+		android:layout_width="match_parent"
+		android:layout_height="wrap_content"
+		android:id="@+id/toolbar_layout"
+		android:theme="@style/ThemeOverlay.AppCompat.ActionBar"
+	>
+		<com.google.android.material.appbar.MaterialToolbar
+			android:layout_width="match_parent"
+			android:layout_height="wrap_content"
+			android:id="@+id/toolbar"
+			app:layout_constraintEnd_toEndOf="parent"
+			app:layout_constraintStart_toStartOf="parent"
+			app:layout_constraintTop_toTopOf="parent"
+			app:popupTheme="@style/ThemeOverlay.AppCompat.Light"
+		/>
+	</com.google.android.material.appbar.AppBarLayout>
+
+	<ScrollView
+		android:layout_width="match_parent"
+		android:layout_height="match_parent"
+		app:layout_anchor="@id/toolbar_layout"
+		app:layout_anchorGravity="bottom"
+		app:layout_behavior="@string/appbar_scrolling_view_behavior"
+	>
+		<androidx.constraintlayout.widget.ConstraintLayout
+			android:layout_width="match_parent"
+			android:layout_height="wrap_content"
+			android:padding="16dp"
+		>
+			<com.google.android.material.textfield.TextInputLayout
+				android:layout_width="match_parent"
+				android:layout_height="wrap_content"
+				android:id="@+id/text_input"
+				android:hint="Text input field"
+				android:layout_marginTop="12dp"
+				app:layout_constraintTop_toTopOf="parent"
+				app:layout_constraintStart_toStartOf="parent"
+				app:layout_constraintEnd_toEndOf="parent"
+				style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
+			>
+				<com.google.android.material.textfield.TextInputEditText
+					android:layout_width="match_parent"
+					android:layout_height="wrap_content"
+					android:singleLine="true"
+					android:maxLines="1"
+					android:imeOptions="actionNext"
+				/>
+			</com.google.android.material.textfield.TextInputLayout>
+
+			<com.google.android.material.textfield.TextInputLayout
+				android:layout_width="match_parent"
+				android:layout_height="wrap_content"
+				android:id="@+id/date"
+				android:hint="Date input date"
+				android:layout_marginTop="18dp"
+				app:layout_constraintTop_toBottomOf="@id/text_input"
+				app:layout_constraintStart_toStartOf="parent"
+				app:layout_constraintEnd_toEndOf="parent"
+				app:startIconDrawable="@drawable/ic_calendar"
+				style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
+			>
+				<com.google.android.material.textfield.TextInputEditText
+					android:layout_width="match_parent"
+					android:layout_height="wrap_content"
+					android:text="01/01/2020 01:01:00"
+					android:editable="false"
+					android:inputType="none"
+				/>
+			</com.google.android.material.textfield.TextInputLayout>
+
+			<androidx.constraintlayout.widget.ConstraintLayout
+				android:layout_width="match_parent"
+				android:layout_height="wrap_content"
+				android:id="@+id/crop"
+				android:orientation="vertical"
+				android:layout_marginTop="24dp"
+				app:layout_constraintTop_toBottomOf="@+id/date"
+			>
+				<com.google.android.material.imageview.ShapeableImageView
+					android:layout_width="0dp"
+					android:layout_height="0dp"
+					android:id="@+id/circle_preview"
+					android:scaleType="centerCrop"
+					android:adjustViewBounds="true"
+					app:shapeAppearanceOverlay="@style/CircleImage"
+					app:srcCompat="@drawable/sample"
+					app:layout_constraintDimensionRatio="1:1"
+					app:layout_constraintWidth_percent="0.25"
+					app:layout_constraintStart_toStartOf="parent"
+					app:layout_constraintTop_toTopOf="parent"
+				/>
+
+				<com.google.android.material.textfield.TextInputLayout
+					android:layout_width="0dp"
+					android:layout_height="wrap_content"
+					android:id="@+id/text_input2"
+					android:hint="Text input field"
+					android:layout_marginStart="18dp"
+					app:layout_constraintTop_toTopOf="parent"
+					app:layout_constraintStart_toEndOf="@id/circle_preview"
+					app:layout_constraintEnd_toEndOf="parent"
+					style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
+				>
+					<com.google.android.material.textfield.TextInputEditText
+						android:layout_width="match_parent"
+						android:layout_height="wrap_content"
+						android:singleLine="true"
+						android:maxLines="1"
+						android:imeOptions="actionNext"
+					/>
+				</com.google.android.material.textfield.TextInputLayout>
+
+				<com.google.android.material.textfield.TextInputLayout
+					android:layout_width="0dp"
+					android:layout_height="wrap_content"
+					android:id="@+id/text_input3"
+					android:hint="Text input field"
+					android:layout_marginStart="18dp"
+					android:layout_marginTop="12dp"
+					app:layout_constraintTop_toBottomOf="@id/text_input2"
+					app:layout_constraintStart_toEndOf="@id/circle_preview"
+					app:layout_constraintEnd_toEndOf="parent"
+					style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
+				>
+					<com.google.android.material.textfield.TextInputEditText
+						android:layout_width="match_parent"
+						android:layout_height="wrap_content"
+						android:singleLine="true"
+						android:maxLines="1"
+						android:imeOptions="actionNext"
+					/>
+				</com.google.android.material.textfield.TextInputLayout>
+
+				<com.google.android.material.textfield.TextInputLayout
+					android:layout_width="0dp"
+					android:layout_height="wrap_content"
+					android:id="@+id/text_input4"
+					android:hint="Text input field"
+					android:layout_marginStart="18dp"
+					android:layout_marginTop="12dp"
+					app:layout_constraintTop_toBottomOf="@id/text_input3"
+					app:layout_constraintStart_toEndOf="@id/circle_preview"
+					app:layout_constraintEnd_toEndOf="parent"
+					style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
+				>
+					<com.google.android.material.textfield.TextInputEditText
+						android:layout_width="match_parent"
+						android:layout_height="wrap_content"
+						android:singleLine="true"
+						android:maxLines="1"
+						android:imeOptions="actionNext"
+					/>
+				</com.google.android.material.textfield.TextInputLayout>
+			</androidx.constraintlayout.widget.ConstraintLayout>
+
+			<com.google.android.material.textfield.TextInputLayout
+				android:layout_width="match_parent"
+				android:layout_height="wrap_content"
+				android:id="@+id/dropdown"
+				android:hint="Dropdown style"
+				android:layout_marginTop="18dp"
+				app:layout_constraintTop_toBottomOf="@id/crop"
+				app:layout_constraintStart_toStartOf="parent"
+				app:layout_constraintEnd_toEndOf="parent"
+				app:startIconDrawable="@drawable/ic_calendar"
+				style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox.ExposedDropdownMenu"
+			>
+				<me.anon.grow3.view.DropDownEditText
+					android:layout_width="match_parent"
+					android:layout_height="match_parent"
+					android:text="Select type"
+					android:editable="false"
+					android:inputType="none"
+					app:menu="@menu/menu_sample"
+				/>
+			</com.google.android.material.textfield.TextInputLayout>
+		</androidx.constraintlayout.widget.ConstraintLayout>
+	</ScrollView>
+</androidx.coordinatorlayout.widget.CoordinatorLayout>
