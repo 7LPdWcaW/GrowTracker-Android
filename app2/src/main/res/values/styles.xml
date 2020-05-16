@@ -1,20 +1,68 @@
 <resources>
-	<style name="AppTheme" parent="Theme.MaterialComponents.DayNight.NoActionBar">
+	<style name="AppTheme" parent="Theme.MaterialComponents.Light.NoActionBar">
 		<item name="colorPrimary">@color/colorPrimary</item>
-<!--		<item name="colorPrimaryDark">@color/colorPrimary</item>-->
-		<item name="colorAccent">@color/colorAccent</item>
-		<item name="colorSecondary">@color/colorSecondary</item>
+		<item name="textOnPrimary">@color/textOnPrimary</item>
 
+		<item name="colorPrimaryDark">@color/colorPrimaryDark</item>
+
+		<item name="colorAccent">@color/colorAccent</item>
 		<item name="textOnAccent">#ffffff</item>
 
-		<item name="styleButtonBorderless">@style/Widget.AppCompat.Button.Borderless</item>
-		<item name="styleButtonBordered">@style/Widget.MaterialComponents.Button.OutlinedButton</item>
-		<item name="styleButtonText">@style/Widget.MaterialComponents.Button.TextButton</item>
+		<item name="colorSurface">@color/colorSurface</item>
+		<item name="textOnSurface">@color/textOnSurface</item>
+
+		<item name="colorSecondary">@color/colorSecondary</item>
+		<item name="colorControlNormal">@color/colorSecondary</item>
+		<item name="colorControlActivated">@color/colorSecondary</item>
+
+		<item name="styleButton">@style/Button</item>
+		<item name="styleButtonBordered">@style/Button.Bordered</item>
+		<item name="styleButtonText">@style/Button.Text</item>
+		<item name="styleCard">@style/Widget.MaterialComponents.CardView</item>
+		<item name="styleHeaderText">@style/TextHeader</item>
+
+		<item name="android:textColor">?textOnSurface</item>
+		<item name="android:windowBackground">@drawable/window_background</item>
+		<item name="android:windowTranslucentNavigation">true</item>
 	</style>
 
 	<style name="AppTheme.FullScrim">
 		<item name="android:windowTranslucentStatus">true</item>
 		<item name="android:windowTranslucentNavigation">true</item>
+	</style>
+
+	<!-- -->
+	<style name="ShapeAppearance" parent="ShapeAppearance.MaterialComponents.LargeComponent">
+		<item name="cornerFamily">rounded</item>
+		<item name="cornerSize">8dp</item>
+	</style>
+
+	<style name="Button" parent="Widget.MaterialComponents.Button">
+		<item name="android:padding">16dp</item>
+		<item name="backgroundTint">?colorAccent</item>
+		<item name="android:textColor">?textOnAccent</item>
+		<item name="shapeAppearance">@style/ShapeAppearance</item>
+	</style>
+
+	<style name="Button.Bordered" parent="Widget.MaterialComponents.Button.OutlinedButton">
+		<item name="shapeAppearance">@style/ShapeAppearance</item>
+		<item name="android:textColor">?colorAccent</item>
+		<item name="strokeColor">?colorAccent</item>
+		<item name="android:padding">16dp</item>
+	</style>
+
+	<style name="Button.Text" parent="Widget.MaterialComponents.Button.TextButton">
+		<item name="shapeAppearance">@style/ShapeAppearance</item>
+		<item name="android:textColor">?colorAccent</item>
+		<item name="android:padding">16dp</item>
+	</style>
+
+	<style name="TextHeader">
+		<item name="android:fontFamily">sans-serif-light</item>
+		<item name="android:textSize">22sp</item>
+		<item name="android:textColor">?textOnSurface</item>
+		<item name="android:paddingBottom">18dp</item>
+		<item name="android:lineSpacingMultiplier">1.2</item>
 	</style>
 
 	<style name="CircleImage">
