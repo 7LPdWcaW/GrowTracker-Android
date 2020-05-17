@@ -129,7 +129,9 @@
 	<string name="germination">Проростання</string>
 	<string name="cutting">Зріз</string>
 	<string name="vegetation">Вегетація</string>
+	<string name="budding">Утворення суцвіть</string>
 	<string name="flowering">Цвітіння</string>
+	<string name="ripening">Дозрівання</string>
 	<string name="drying">Сушіння</string>
 	<string name="curing">Витримка (пролічка)</string>
 	<string name="harvested">Зібрано</string>
@@ -143,9 +145,13 @@
 	<string name="total_time_label">Загальний час:</string>
 	<string name="total_waters_label">Всього поливів:</string>
 	<string name="total_flushes_label">Всього промивань:</string>
+	<string name="total_water_amount_label">Всього води використано:</string>
+	<string name="ave_water_amount_label">Середній об\'єм поливу:</string>
 	<string name="ave_time_between_water_label">Середній час між поливами:</string>
+	<string name="ave_time_stage_label" formatted="true">Середній полив %s:</string>
 	<string name="filter_additives">Фільтр добрив</string>
 	<string name="ph_title">pH</string>
+	<string name="tds_title">Мінералізація</string>
 
 	<string name="min">Мін:</string>
 	<string name="max">Макс:</string>
@@ -163,6 +169,9 @@
 	<string name="action_transplanted">Пересадка</string>
 	<string name="action_trim">Трімінг</string>
 	<string name="action_tuck">Виконання ScrOG</string>
+	<string name="action_supercrop">Суперкропінг</string>
+	<string name="action_monstercrop">Монстркропінг</string>
+
 	<string name="watered">Полито</string>
 	<string name="note">Нотатка</string>
 	<string name="delete_event_dialog_title">Видалити подію?</string>
@@ -264,6 +273,9 @@
 	<string name="stat_input_ph">Вхідний pH</string>
 	<string name="stat_runoff_ph">pH стоків</string>
 	<string name="stat_average_ph">Середній pH</string>
+	<string name="stat_average_temp">Середня температура:</string>
+	<string name="stat_average_runoff_ph">Середній pH стоків</string>
+	<string name="stat_average_tds" formatted="true">Середні %s</string>
 
 	<string name="photos_title">Світлини рослини</string>
 
@@ -428,4 +440,13 @@
 	<string name="settings_import_error">Не вдалося імпортувати</string>
 	<string name="settings_import">Імпортувати рослини з файлу</string>
 	<string name="settings_import_success">Імпорт завершено</string>
+
+	<string name="additive_stat_header" formatted="true">Статистика %s</string>
+	<string name="additive_average_usage_label">Середній об\'єм:</string>
+	<string name="additive_usage_count_label">Використано разів:</string>
+	<string name="additive_total_usage_label">Усього:</string>
+
+	<string name="additives_concentration_title">Концентрація добрив</string>
+	<string name="additives_overtime_title">Добрива з часом</string>
+	<string name="additives_distribution_title">Розподіл добрив</string>
 </resources>
