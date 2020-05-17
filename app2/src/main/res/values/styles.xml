@@ -13,13 +13,16 @@
 
 		<item name="colorSecondary">@color/colorSecondary</item>
 		<item name="colorControlNormal">@color/colorSecondary</item>
-		<item name="colorControlActivated">@color/colorSecondary</item>
+
+		<item name="colorControlHighlight">@color/colorAccent26</item>
 
 		<item name="styleButton">@style/Button</item>
 		<item name="styleButtonBordered">@style/Button.Bordered</item>
 		<item name="styleButtonText">@style/Button.Text</item>
 		<item name="styleCard">@style/Widget.MaterialComponents.CardView</item>
-		<item name="styleHeaderText">@style/TextHeader</item>
+		<item name="styleHeaderText">@style/Text.Header</item>
+		<item name="styleSubHeaderText">@style/Text.Header.Sub</item>
+		<item name="styleLinkText">@style/Text.Link</item>
 
 		<item name="android:textColor">?textOnSurface</item>
 		<item name="android:windowBackground">@drawable/window_background</item>
@@ -57,12 +60,38 @@
 		<item name="android:padding">16dp</item>
 	</style>
 
-	<style name="TextHeader">
+	<style name="Text">
+		<item name="android:textColor">?textOnSurface</item>
+	</style>
+
+	<style name="Text.Header">
 		<item name="android:fontFamily">sans-serif-light</item>
 		<item name="android:textSize">22sp</item>
-		<item name="android:textColor">?textOnSurface</item>
-		<item name="android:paddingBottom">18dp</item>
+		<item name="android:paddingBottom">8dp</item>
 		<item name="android:lineSpacingMultiplier">1.2</item>
+	</style>
+
+	<style name="Text.Header.Sub">
+		<item name="android:textSize">18sp</item>
+		<item name="android:paddingBottom">0dp</item>
+		<item name="android:lineSpacingMultiplier">1.2</item>
+	</style>
+
+	<style name="Text.Link">
+		<item name="android:clickable">true</item>
+		<item name="android:focusable">true</item>
+		<item name="android:textSize">18sp</item>
+		<item name="android:fontFamily">sans-serif</item>
+		<item name="android:paddingStart">12dp</item>
+		<item name="android:gravity">center_vertical</item>
+		<item name="android:background">@drawable/link_drawable</item>
+		<item name="android:drawableEnd">@drawable/ic_arrow_forward</item>
+		<item name="android:drawableStart">@drawable/ic_empty</item>
+		<item name="android:drawablePadding">16dp</item>
+		<item name="android:foreground">@drawable/rounded_selectable_item_background</item>
+		<item name="drawableTint">@color/text_surface_color</item>
+		<item name="android:textColor">@color/text_surface_color</item>
+		<item name="android:minHeight">72dp</item>
 	</style>
 
 	<style name="CircleImage">

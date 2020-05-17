@@ -8,6 +8,7 @@
 	<color name="textOnSurface">#DD000000</color>
 
 	<color name="colorAccent">#D8737F</color>
+	<color name="colorAccent26">#42D8737F</color>
 	<color name="colorAccentAlt">#AB6C82</color>
 
 	<color name="colorSecondary">#465C7A</color>

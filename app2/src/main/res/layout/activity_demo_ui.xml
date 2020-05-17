@@ -71,6 +71,7 @@
 						android:layout_height="wrap_content"
 						android:id="@+id/text_input"
 						android:hint="Text input field"
+						android:layout_marginTop="@dimen/section_spacing"
 						app:layout_constraintTop_toBottomOf="@id/header"
 						app:layout_constraintStart_toStartOf="parent"
 						app:layout_constraintEnd_toEndOf="parent"
@@ -90,7 +91,7 @@
 						android:layout_height="wrap_content"
 						android:id="@+id/date"
 						android:hint="Date input date"
-						android:layout_marginTop="18dp"
+						android:layout_marginTop="@dimen/section_spacing"
 						app:layout_constraintTop_toBottomOf="@id/text_input"
 						app:layout_constraintStart_toStartOf="parent"
 						app:layout_constraintEnd_toEndOf="parent"
@@ -111,7 +112,7 @@
 						android:layout_height="wrap_content"
 						android:id="@+id/crop"
 						android:orientation="vertical"
-						android:layout_marginTop="24dp"
+						android:layout_marginTop="@dimen/subsection_header_spacing"
 						app:layout_constraintTop_toBottomOf="@+id/date"
 					>
 						<com.google.android.material.imageview.ShapeableImageView
@@ -122,6 +123,9 @@
 							android:adjustViewBounds="true"
 							app:shapeAppearanceOverlay="@style/CircleImage"
 							app:srcCompat="@drawable/sample"
+							android:clickable="true"
+							android:focusable="true"
+							android:foreground="@drawable/circular_selectable_item_background"
 							app:layout_constraintDimensionRatio="1:1"
 							app:layout_constraintWidth_percent="0.25"
 							app:layout_constraintStart_toStartOf="parent"
@@ -154,7 +158,7 @@
 							android:id="@+id/text_input3"
 							android:hint="Text input field"
 							android:layout_marginStart="18dp"
-							android:layout_marginTop="12dp"
+							android:layout_marginTop="@dimen/section_spacing"
 							app:layout_constraintTop_toBottomOf="@id/text_input2"
 							app:layout_constraintStart_toEndOf="@id/circle_preview"
 							app:layout_constraintEnd_toEndOf="parent"
@@ -175,7 +179,7 @@
 							android:id="@+id/text_input4"
 							android:hint="Text input field"
 							android:layout_marginStart="18dp"
-							android:layout_marginTop="12dp"
+							android:layout_marginTop="@dimen/section_spacing"
 							app:layout_constraintTop_toBottomOf="@id/text_input3"
 							app:layout_constraintStart_toEndOf="@id/circle_preview"
 							app:layout_constraintEnd_toEndOf="parent"
@@ -196,7 +200,7 @@
 						android:layout_height="wrap_content"
 						android:id="@+id/dropdown"
 						android:hint="Dropdown style"
-						android:layout_marginTop="18dp"
+						android:layout_marginTop="@dimen/subsection_header_spacing"
 						app:layout_constraintTop_toBottomOf="@id/crop"
 						app:layout_constraintStart_toStartOf="parent"
 						app:layout_constraintEnd_toEndOf="parent"
@@ -212,6 +216,39 @@
 							app:menu="@menu/menu_sample"
 						/>
 					</com.google.android.material.textfield.TextInputLayout>
+
+					<TextView
+						android:layout_width="wrap_content"
+						android:layout_height="wrap_content"
+						android:id="@+id/subheader"
+						android:text="Sub header"
+						android:layout_marginTop="@dimen/subsection_header_spacing"
+						app:layout_constraintTop_toBottomOf="@id/dropdown"
+						app:layout_constraintStart_toStartOf="parent"
+						style="?styleSubHeaderText"
+					/>
+
+					<com.google.android.material.textview.MaterialTextView
+						android:layout_width="match_parent"
+						android:layout_height="wrap_content"
+						android:id="@+id/select_item"
+						android:text="Textual link"
+						android:drawableStart="@drawable/menu_ic_calendar"
+						android:layout_marginTop="@dimen/section_spacing"
+						app:layout_constraintTop_toBottomOf="@id/subheader"
+						app:layout_constraintStart_toStartOf="parent"
+						style="?styleLinkText"
+					/>
+
+					<TextView
+						android:layout_width="match_parent"
+						android:layout_height="wrap_content"
+						android:id="@+id/select_item2"
+						android:text="Second Textual link"
+						app:layout_constraintTop_toBottomOf="@id/select_item"
+						app:layout_constraintStart_toStartOf="parent"
+						style="?styleLinkText"
+					/>
 				</androidx.constraintlayout.widget.ConstraintLayout>
 			</com.google.android.material.card.MaterialCardView>
 

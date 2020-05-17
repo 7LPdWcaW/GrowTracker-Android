@@ -13,4 +13,6 @@
 	<attr name="styleButton" format="reference" />
 
 	<attr name="styleHeaderText" format="reference" />
+	<attr name="styleSubHeaderText" format="reference" />
+	<attr name="styleLinkText" format="reference" />
 </resources>
