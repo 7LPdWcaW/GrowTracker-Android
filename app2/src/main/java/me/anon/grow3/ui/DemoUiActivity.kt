@@ -14,5 +14,8 @@ class DemoUiActivity : BaseActivity()
 		setContentView(R.layout.activity_demo_ui)
 		setSupportActionBar(toolbar)
 		title = "Demo UI"
+
+		menu_fab.setOnClickListener { menu_fab.isExpanded = !menu_fab.isExpanded }
+		sheet.setOnClickListener { menu_fab.isExpanded = false }
 	}
 }
