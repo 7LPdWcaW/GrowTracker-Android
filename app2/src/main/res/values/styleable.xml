@@ -4,5 +4,6 @@
 	<declare-styleable name="DropDownEditText">
 		<attr name="android:text" />
 		<attr name="menu" format="reference" />
+		<attr name="singleSelection" format="boolean" />
 	</declare-styleable>
 </resources>

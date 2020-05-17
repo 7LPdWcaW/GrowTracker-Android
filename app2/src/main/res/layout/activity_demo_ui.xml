@@ -217,13 +217,36 @@
 						/>
 					</com.google.android.material.textfield.TextInputLayout>
 
+					<com.google.android.material.textfield.TextInputLayout
+						android:layout_width="match_parent"
+						android:layout_height="wrap_content"
+						android:id="@+id/dropdown2"
+						android:hint="Single dropdown style"
+						android:layout_marginTop="@dimen/subsection_header_spacing"
+						app:layout_constraintTop_toBottomOf="@id/dropdown"
+						app:layout_constraintStart_toStartOf="parent"
+						app:layout_constraintEnd_toEndOf="parent"
+						app:startIconDrawable="@drawable/ic_calendar"
+						style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox.ExposedDropdownMenu"
+					>
+						<me.anon.grow3.view.DropDownEditText
+							android:layout_width="match_parent"
+							android:layout_height="match_parent"
+							android:text="Select type"
+							android:editable="false"
+							android:inputType="none"
+							app:singleSelection="true"
+							app:menu="@menu/menu_sample"
+						/>
+					</com.google.android.material.textfield.TextInputLayout>
+
 					<TextView
 						android:layout_width="wrap_content"
 						android:layout_height="wrap_content"
 						android:id="@+id/subheader"
 						android:text="Sub header"
 						android:layout_marginTop="@dimen/subsection_header_spacing"
-						app:layout_constraintTop_toBottomOf="@id/dropdown"
+						app:layout_constraintTop_toBottomOf="@id/dropdown2"
 						app:layout_constraintStart_toStartOf="parent"
 						style="?styleSubHeaderText"
 					/>

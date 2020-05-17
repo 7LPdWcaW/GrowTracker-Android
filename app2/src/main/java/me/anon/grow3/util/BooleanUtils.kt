@@ -9,6 +9,8 @@ public fun <R> Boolean?.toValue(trueValue: Any?, falseValue: Any?): R
 	}
 }
 
+public inline fun Boolean?.then(block: () -> Unit): Unit = if (this == true) block() else Unit
+
 /**
  * Ternary implementation
  * Usage: <bool val> t <true val> ?: <false val>
