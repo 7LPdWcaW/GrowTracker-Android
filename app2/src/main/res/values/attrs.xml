@@ -2,6 +2,7 @@
 
 <resources>
 	<attr name="textOnPrimary" format="reference|color" />
+	<attr name="textOnSecondary" format="reference|color" />
 	<attr name="textOnAccent" format="reference|color" />
 	<attr name="textOnSurface" format="reference|color" />
 
@@ -17,4 +18,5 @@
 	<attr name="styleSubHeaderText" format="reference" />
 	<attr name="styleLinkText" format="reference" />
 	<attr name="styleCaptionText" format="reference" />
+	<attr name="styleWindowText" format="reference" />
 </resources>

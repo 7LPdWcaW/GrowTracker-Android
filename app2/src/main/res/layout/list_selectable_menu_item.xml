@@ -29,7 +29,6 @@
 		android:layout_height="56dp"
 		android:id="@+id/icon"
 		android:padding="16dp"
-		android:src="@drawable/ic_calendar"
 		android:tint="?textOnSurface"
 		app:layout_constraintTop_toTopOf="parent"
 		app:layout_constraintStart_toStartOf="parent"

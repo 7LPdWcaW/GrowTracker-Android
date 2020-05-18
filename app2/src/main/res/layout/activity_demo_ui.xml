@@ -199,7 +199,6 @@
 						app:layout_constraintTop_toBottomOf="@id/crop"
 						app:layout_constraintStart_toStartOf="parent"
 						app:layout_constraintEnd_toEndOf="parent"
-						app:startIconDrawable="@drawable/ic_calendar"
 						style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox.ExposedDropdownMenu"
 					>
 						<me.anon.grow3.view.DropDownEditText
@@ -221,7 +220,6 @@
 						app:layout_constraintTop_toBottomOf="@id/dropdown"
 						app:layout_constraintStart_toStartOf="parent"
 						app:layout_constraintEnd_toEndOf="parent"
-						app:startIconDrawable="@drawable/ic_calendar"
 						style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox.ExposedDropdownMenu"
 					>
 						<me.anon.grow3.view.DropDownEditText
@@ -231,6 +229,8 @@
 							android:editable="false"
 							android:inputType="none"
 							app:singleSelection="true"
+							android:icon="@drawable/ic_calendar"
+							android:iconTint="@color/text_surface_color"
 							app:menu="@menu/menu_sample"
 						/>
 					</com.google.android.material.textfield.TextInputLayout>
@@ -509,6 +509,17 @@
 					/>
 				</androidx.constraintlayout.widget.ConstraintLayout>
 			</com.google.android.material.card.MaterialCardView>
+
+			<TextView
+				android:layout_width="match_parent"
+				android:layout_height="wrap_content"
+				android:id="@+id/header"
+				android:text="16 March 2020 / 22f / 30"
+				android:layout_gravity="center_horizontal"
+				android:gravity="center_horizontal"
+				android:padding="12dp"
+				style="?styleWindowText"
+			/>
 
 			<com.google.android.material.card.MaterialCardView
 				android:layout_width="match_parent"

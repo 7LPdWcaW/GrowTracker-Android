@@ -3,6 +3,8 @@
 <resources>
 	<declare-styleable name="DropDownEditText">
 		<attr name="android:text" />
+		<attr name="android:icon" format="reference" />
+		<attr name="android:iconTint" format="reference" />
 		<attr name="menu" format="reference" />
 		<attr name="singleSelection" format="boolean" />
 	</declare-styleable>

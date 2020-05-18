@@ -12,6 +12,7 @@
 		<item name="textOnSurface">@color/textOnSurface</item>
 
 		<item name="colorSecondary">@color/colorSecondary</item>
+		<item name="textOnSecondary">@color/textOnSecondary</item>
 		<item name="colorControlNormal">@color/colorSecondary</item>
 		<item name="colorControlActivated">@color/colorSecondary</item>
 
@@ -26,6 +27,7 @@
 		<item name="styleSubHeaderText">@style/Text.Header.Sub</item>
 		<item name="styleLinkText">@style/Text.Link</item>
 		<item name="styleCaptionText">@style/Text.Caption</item>
+		<item name="styleWindowText">@style/Text.Window</item>
 
 		<item name="android:textColor">?textOnSurface</item>
 		<item name="android:windowBackground">@drawable/window_background</item>
@@ -118,6 +120,13 @@
 		<item name="android:textSize">12sp</item>
 		<item name="android:fontFamily">sans-serif-smallcaps</item>
 		<item name="android:textAllCaps">true</item>
+	</style>
+
+	<style name="Text.Window">
+		<item name="android:textSize">18sp</item>
+		<item name="android:fontFamily">sans-serif-smallcaps</item>
+		<item name="android:textAllCaps">true</item>
+		<item name="android:textColor">?textOnPrimary</item>
 	</style>
 
 	<style name="CircleImage">

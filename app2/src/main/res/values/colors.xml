@@ -12,6 +12,7 @@
 	<color name="colorAccentAlt">#AB6C82</color>
 
 	<color name="colorSecondary">#465C7A</color>
+	<color name="textOnSecondary">#ffffff</color>
 
 	<color name="colorSecondaryAlt">#685D79</color>
 	<color name="colorSecondaryAlt0">#00685D79</color>

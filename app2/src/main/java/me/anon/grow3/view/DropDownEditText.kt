@@ -1,6 +1,7 @@
 package me.anon.grow3.view
 
 import android.content.Context
+import android.graphics.drawable.Drawable
 import android.util.AttributeSet
 import android.view.Gravity
 import android.view.MenuItem
@@ -8,14 +9,20 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.BaseAdapter
 import android.widget.CheckBox
+import android.widget.ImageView
 import android.widget.TextView
 import androidx.appcompat.widget.ListPopupWindow
 import androidx.appcompat.widget.PopupMenu
 import androidx.core.view.isVisible
 import androidx.core.view.size
 import com.google.android.material.textfield.MaterialAutoCompleteTextView
+import com.google.android.material.textfield.TextInputLayout
 import me.anon.grow3.R
+import me.anon.lib.ext.afterMeasured
+import me.anon.lib.ext.drawableStart
 import me.anon.lib.ext.inflate
+import me.anon.lib.ext.parentView
+import org.w3c.dom.Text
 
 class DropDownEditText : MaterialAutoCompleteTextView
 {
@@ -23,6 +30,7 @@ class DropDownEditText : MaterialAutoCompleteTextView
 	public var itemSelectListener: MenuItem.OnMenuItemClickListener = MenuItem.OnMenuItemClickListener { _ -> false }
 	public var singleSelection = false
 	private var defaultText = ""
+	private var defaultIcon: Drawable? = null
 	private var menuRes = NO_ID
 	private val popup by lazy { ListPopupWindow(context) }
 
@@ -34,6 +42,8 @@ class DropDownEditText : MaterialAutoCompleteTextView
 			val typedArray = context.obtainStyledAttributes(it, R.styleable.DropDownEditText, 0, 0)
 			menuRes = typedArray.getResourceId(R.styleable.DropDownEditText_menu, NO_ID)
 			defaultText = typedArray.getString(R.styleable.DropDownEditText_android_text) ?: ""
+			defaultIcon = typedArray.getDrawable(R.styleable.DropDownEditText_android_icon)
+			defaultIcon?.setTintList(typedArray.getColorStateList(R.styleable.DropDownEditText_android_iconTint))
 			singleSelection = typedArray.getBoolean(R.styleable.DropDownEditText_singleSelection, false)
 			typedArray.recycle()
 		}
@@ -62,7 +72,21 @@ class DropDownEditText : MaterialAutoCompleteTextView
 		popup.setAdapter(SelectableMenuAdapter())
 		popup.setOnDismissListener {
 			val current: View = rootView.findFocus()
-			current?.clearFocus()
+			current.clearFocus()
+		}
+
+
+	}
+
+	override fun onFinishInflate()
+	{
+		super.onFinishInflate()
+		afterMeasured {
+			defaultIcon ?: return@afterMeasured
+			(parentView.parentView as? TextInputLayout)?.apply {
+				post { startIconDrawable = defaultIcon }
+				postInvalidate()
+			}
 		}
 	}
 
@@ -84,8 +108,11 @@ class DropDownEditText : MaterialAutoCompleteTextView
 			val item = getItem(position)
 			val view = convertView ?: parent.inflate(R.layout.list_selectable_menu_item)
 			val checkbox = view.findViewById<CheckBox>(R.id.checkbox)
+			val icon = view.findViewById<ImageView>(R.id.icon)
 			checkbox.isChecked = item.isChecked
 			checkbox.isVisible = item.isChecked && item.isCheckable
+			icon.isVisible = item.icon != null
+			icon.setImageDrawable(item.icon)
 
 			view.setOnClickListener {
 				with (it.findViewById<CheckBox>(R.id.checkbox)) {
@@ -100,16 +127,21 @@ class DropDownEditText : MaterialAutoCompleteTextView
 						items.forEach { it.isChecked = false }
 						if (isChecked) item.isChecked = true
 						notifyDataSetChanged()
-						this@DropDownEditText.setText(item.title)
 						popup.dismiss()
-
-						return@with
 					}
 				}
 
 				with (items.filter { it.isChecked }) {
-					if (size > 0) this@DropDownEditText.setText(items.filter { it.isChecked }.joinToString { it.title })
-					else this@DropDownEditText.setText(defaultText)
+					if (size > 0)
+					{
+						this@DropDownEditText.setText(joinToString { it.title })
+						(parentView.parentView as? TextInputLayout)?.startIconDrawable = first().icon
+					}
+					else
+					{
+						this@DropDownEditText.setText(defaultText)
+						(parentView.parentView as? TextInputLayout)?.startIconDrawable = defaultIcon
+					}
 				}
 			}
 
