@@ -3,6 +3,6 @@
 <selector xmlns:android="http://schemas.android.com/apk/res/android">
 	<item android:color="?attr/colorPrimary" android:state_focused="true" />
 	<item android:alpha="0.97" android:color="?textOnSurface" android:state_hovered="true" />
-	<item android:alpha="0.42" android:color="?textOnSurface" android:state_enabled="false" />
-	<item android:alpha="0.68" android:color="?textOnSurface" />
+	<item android:alpha="0.40" android:color="?textOnSurface" android:state_enabled="false" />
+	<item android:alpha="0.80" android:color="?textOnSurface" />
 </selector>

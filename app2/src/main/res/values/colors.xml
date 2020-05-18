@@ -5,7 +5,7 @@
 	<color name="colorPrimaryDark">#449182</color>
 
 	<color name="colorSurface">#ffffff</color>
-	<color name="textOnSurface">#DD000000</color>
+	<color name="textOnSurface">#CD000000</color>
 
 	<color name="colorAccent">#D8737F</color>
 	<color name="colorAccent26">#42D8737F</color>

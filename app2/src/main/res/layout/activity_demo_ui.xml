@@ -40,16 +40,11 @@
 			android:layout_height="match_parent"
 			android:clipToPadding="false"
 			android:orientation="vertical"
-			android:paddingTop="8dp"
-			android:paddingBottom="8dp"
 		>
 			<com.google.android.material.card.MaterialCardView
 				android:layout_width="match_parent"
 				android:layout_height="wrap_content"
-				app:cardBackgroundColor="?colorSurface"
-				app:cardUseCompatPadding="true"
-				app:cardElevation="4dp"
-				app:cardCornerRadius="8dp"
+				style="?styleCard"
 			>
 				<androidx.constraintlayout.widget.ConstraintLayout
 					android:layout_width="match_parent"
@@ -278,10 +273,343 @@
 			<com.google.android.material.card.MaterialCardView
 				android:layout_width="match_parent"
 				android:layout_height="wrap_content"
-				app:cardBackgroundColor="?colorSurface"
-				app:cardUseCompatPadding="true"
-				app:cardElevation="4dp"
-				app:cardCornerRadius="8dp"
+				style="?styleCard"
+			>
+				<androidx.constraintlayout.widget.ConstraintLayout
+					android:layout_width="match_parent"
+					android:layout_height="wrap_content"
+					android:paddingTop="16dp"
+					android:paddingStart="16dp"
+					android:paddingBottom="16dp"
+					android:paddingEnd="8dp"
+				>
+					<TextView
+						android:layout_width="wrap_content"
+						android:layout_height="wrap_content"
+						android:id="@+id/header"
+						android:text="Crops"
+						app:layout_constraintTop_toTopOf="parent"
+						app:layout_constraintStart_toStartOf="parent"
+						style="?styleHeaderText"
+					/>
+
+					<LinearLayout
+						android:layout_width="0dp"
+						android:layout_height="wrap_content"
+						android:id="@+id/photo_container"
+						android:orientation="horizontal"
+						android:showDividers="middle"
+						android:layout_marginTop="@dimen/section_spacing"
+						android:divider="@drawable/spacer_16dp"
+						app:layout_constraintStart_toStartOf="parent"
+						app:layout_constraintTop_toBottomOf="@id/header"
+						app:layout_constraintEnd_toStartOf="@id/more"
+						app:layout_constraintBottom_toBottomOf="parent"
+					>
+						<LinearLayout
+							android:layout_width="wrap_content"
+							android:layout_height="wrap_content"
+							android:orientation="vertical"
+						>
+							<com.google.android.material.imageview.ShapeableImageView
+								android:layout_width="92dp"
+								android:layout_height="92dp"
+								android:scaleType="centerCrop"
+								android:adjustViewBounds="true"
+								app:shapeAppearanceOverlay="@style/CircleImage"
+								app:srcCompat="@drawable/sample"
+								android:clickable="true"
+								android:focusable="true"
+								android:foreground="@drawable/circular_selectable_item_background"
+							/>
+
+							<TextView
+								android:layout_width="wrap_content"
+								android:layout_height="wrap_content"
+								android:maxWidth="170dp"
+								android:text="Crop 1"
+								android:layout_gravity="center_horizontal"
+								android:layout_marginTop="6dp"
+								style="?styleCaptionText"
+							/>
+						</LinearLayout>
+
+						<LinearLayout
+							android:layout_width="wrap_content"
+							android:layout_height="wrap_content"
+							android:orientation="vertical"
+						>
+							<com.google.android.material.imageview.ShapeableImageView
+								android:layout_width="92dp"
+								android:layout_height="92dp"
+								android:scaleType="centerCrop"
+								android:adjustViewBounds="true"
+								app:shapeAppearanceOverlay="@style/CircleImage"
+								app:srcCompat="@drawable/sample"
+								android:clickable="true"
+								android:focusable="true"
+								android:foreground="@drawable/circular_selectable_item_background"
+							/>
+
+							<TextView
+								android:layout_width="wrap_content"
+								android:layout_height="wrap_content"
+								android:maxWidth="170dp"
+								android:text="Crop 1"
+								android:layout_gravity="center_horizontal"
+								android:layout_marginTop="6dp"
+								style="?styleCaptionText"
+							/>
+						</LinearLayout>
+
+						<LinearLayout
+							android:layout_width="wrap_content"
+							android:layout_height="wrap_content"
+							android:orientation="vertical"
+						>
+							<com.google.android.material.imageview.ShapeableImageView
+								android:layout_width="92dp"
+								android:layout_height="92dp"
+								android:scaleType="centerCrop"
+								android:adjustViewBounds="true"
+								app:shapeAppearanceOverlay="@style/CircleImage"
+								app:srcCompat="@drawable/sample"
+								android:clickable="true"
+								android:focusable="true"
+								android:foreground="@drawable/circular_selectable_item_background"
+							/>
+
+							<TextView
+								android:layout_width="wrap_content"
+								android:layout_height="wrap_content"
+								android:maxWidth="170dp"
+								android:text="Crop 1"
+								android:layout_gravity="center_horizontal"
+								android:layout_marginTop="6dp"
+								style="?styleCaptionText"
+							/>
+						</LinearLayout>
+					</LinearLayout>
+
+					<ImageView
+						android:layout_width="56dp"
+						android:layout_height="56dp"
+						android:id="@+id/more"
+						android:background="?actionBarItemBackground"
+						android:clickable="true"
+						android:focusable="true"
+						android:padding="16dp"
+						app:srcCompat="@drawable/ic_arrow_forward"
+						app:tint="@color/text_surface_color"
+						app:layout_constraintEnd_toEndOf="parent"
+						app:layout_constraintTop_toBottomOf="@id/header"
+						app:layout_constraintBottom_toBottomOf="parent"
+					/>
+				</androidx.constraintlayout.widget.ConstraintLayout>
+			</com.google.android.material.card.MaterialCardView>
+
+			<com.google.android.material.card.MaterialCardView
+				android:layout_width="match_parent"
+				android:layout_height="wrap_content"
+				style="?styleCard"
+			>
+				<androidx.constraintlayout.widget.ConstraintLayout
+					android:layout_width="match_parent"
+					android:layout_height="wrap_content"
+					android:paddingTop="16dp"
+					android:paddingStart="16dp"
+					android:paddingBottom="16dp"
+					android:paddingEnd="8dp"
+				>
+					<TextView
+						android:layout_width="wrap_content"
+						android:layout_height="wrap_content"
+						android:id="@+id/header"
+						android:text="Recent Photos"
+						app:layout_constraintTop_toTopOf="parent"
+						app:layout_constraintStart_toStartOf="parent"
+						style="?styleHeaderText"
+					/>
+
+					<LinearLayout
+						android:layout_width="0dp"
+						android:layout_height="wrap_content"
+						android:id="@+id/photo_container"
+						android:orientation="horizontal"
+						android:showDividers="middle"
+						android:layout_marginTop="@dimen/section_spacing"
+						android:divider="@drawable/spacer_16dp"
+						app:layout_constraintStart_toStartOf="parent"
+						app:layout_constraintTop_toBottomOf="@id/header"
+						app:layout_constraintEnd_toStartOf="@id/more"
+						app:layout_constraintBottom_toBottomOf="parent"
+					>
+						<com.google.android.material.imageview.ShapeableImageView
+							android:layout_width="92dp"
+							android:layout_height="92dp"
+							android:scaleType="centerCrop"
+							android:adjustViewBounds="true"
+							app:shapeAppearanceOverlay="@style/RoundedImage"
+							app:srcCompat="@drawable/sample"
+							android:clickable="true"
+							android:focusable="true"
+							android:foreground="?selectableItemBackground"
+							app:layout_constraintDimensionRatio="1:1"
+							app:layout_constraintWidth_percent="0.25"
+							app:layout_constraintStart_toStartOf="parent"
+							app:layout_constraintTop_toTopOf="parent"
+						/>
+
+						<com.google.android.material.imageview.ShapeableImageView
+							android:layout_width="92dp"
+							android:layout_height="92dp"
+							android:scaleType="centerCrop"
+							android:adjustViewBounds="true"
+							app:shapeAppearanceOverlay="@style/RoundedImage"
+							app:srcCompat="@drawable/sample"
+							android:clickable="true"
+							android:focusable="true"
+							android:foreground="?selectableItemBackground"
+							app:layout_constraintDimensionRatio="1:1"
+							app:layout_constraintWidth_percent="0.25"
+							app:layout_constraintStart_toStartOf="parent"
+							app:layout_constraintTop_toTopOf="parent"
+						/>
+
+						<com.google.android.material.imageview.ShapeableImageView
+							android:layout_width="92dp"
+							android:layout_height="92dp"
+							android:scaleType="centerCrop"
+							android:adjustViewBounds="true"
+							app:shapeAppearanceOverlay="@style/RoundedImage"
+							app:srcCompat="@drawable/sample"
+							android:clickable="true"
+							android:focusable="true"
+							android:foreground="?selectableItemBackground"
+							app:layout_constraintDimensionRatio="1:1"
+							app:layout_constraintWidth_percent="0.25"
+							app:layout_constraintStart_toStartOf="parent"
+							app:layout_constraintTop_toTopOf="parent"
+						/>
+					</LinearLayout>
+
+					<ImageView
+						android:layout_width="56dp"
+						android:layout_height="56dp"
+						android:id="@+id/more"
+						android:background="?actionBarItemBackground"
+						android:clickable="true"
+						android:focusable="true"
+						android:padding="16dp"
+						app:srcCompat="@drawable/ic_arrow_forward"
+						app:tint="@color/text_surface_color"
+						app:layout_constraintEnd_toEndOf="parent"
+						app:layout_constraintTop_toBottomOf="@id/header"
+						app:layout_constraintBottom_toBottomOf="parent"
+					/>
+				</androidx.constraintlayout.widget.ConstraintLayout>
+			</com.google.android.material.card.MaterialCardView>
+
+			<com.google.android.material.card.MaterialCardView
+				android:layout_width="match_parent"
+				android:layout_height="wrap_content"
+				style="?styleLogCard"
+			>
+				<androidx.constraintlayout.widget.ConstraintLayout
+					android:layout_width="match_parent"
+					android:layout_height="wrap_content"
+					android:padding="16dp"
+				>
+					<TextView
+						android:layout_width="wrap_content"
+						android:layout_height="wrap_content"
+						android:id="@+id/header"
+						android:text="Water"
+						app:layout_constraintHorizontal_bias="0"
+						app:layout_constraintTop_toTopOf="parent"
+						app:layout_constraintStart_toStartOf="parent"
+						app:layout_constraintEnd_toStartOf="@id/date"
+						style="?styleHeaderText"
+					/>
+
+					<TextView
+						android:layout_width="wrap_content"
+						android:layout_height="wrap_content"
+						android:id="@+id/date"
+						android:text="3 days ago (22f/100)"
+						app:layout_constraintTop_toTopOf="parent"
+						app:layout_constraintEnd_toEndOf="parent"
+						android:paddingBottom="8dp"
+						style="?styleSubHeaderText"
+					/>
+
+					<TextView
+						android:layout_width="match_parent"
+						android:layout_height="wrap_content"
+						android:id="@+id/content"
+						android:text="- Some water details to be custom designed for each log type\n- Another \n- Another \n- Another"
+						app:layout_constraintTop_toBottomOf="@id/header"
+						app:layout_constraintStart_toStartOf="parent"
+						app:layout_constraintEnd_toStartOf="parent"
+						android:padding="12dp"
+						android:textSize="18sp"
+					/>
+
+					<LinearLayout
+						android:layout_width="0dp"
+						android:layout_height="wrap_content"
+						android:id="@+id/photo_container"
+						android:orientation="horizontal"
+						android:showDividers="middle"
+						android:layout_marginTop="@dimen/section_spacing"
+						android:divider="@drawable/spacer_8dp"
+						app:layout_constraintStart_toStartOf="parent"
+						app:layout_constraintTop_toBottomOf="@id/content"
+						app:layout_constraintEnd_toEndOf="parent"
+					>
+						<com.google.android.material.imageview.ShapeableImageView
+							android:layout_width="42dp"
+							android:layout_height="42dp"
+							android:scaleType="centerCrop"
+							android:adjustViewBounds="true"
+							app:shapeAppearanceOverlay="@style/CircleImage"
+							app:srcCompat="@drawable/sample"
+							android:clickable="true"
+							android:focusable="true"
+							android:foreground="@drawable/circular_selectable_item_background"
+						/>
+
+						<com.google.android.material.imageview.ShapeableImageView
+							android:layout_width="42dp"
+							android:layout_height="42dp"
+							android:scaleType="centerCrop"
+							android:adjustViewBounds="true"
+							app:shapeAppearanceOverlay="@style/CircleImage"
+							app:srcCompat="@drawable/sample"
+							android:clickable="true"
+							android:focusable="true"
+							android:foreground="@drawable/circular_selectable_item_background"
+						/>
+
+						<com.google.android.material.imageview.ShapeableImageView
+							android:layout_width="42dp"
+							android:layout_height="42dp"
+							android:scaleType="centerCrop"
+							android:adjustViewBounds="true"
+							app:shapeAppearanceOverlay="@style/CircleImage"
+							app:srcCompat="@drawable/sample"
+							android:clickable="true"
+							android:focusable="true"
+							android:foreground="@drawable/circular_selectable_item_background"
+						/>
+					</LinearLayout>
+				</androidx.constraintlayout.widget.ConstraintLayout>
+			</com.google.android.material.card.MaterialCardView>
+
+			<com.google.android.material.card.MaterialCardView
+				android:layout_width="match_parent"
+				android:layout_height="wrap_content"
+				style="?styleCard"
 			>
 				<me.anon.grow3.view.StageView
 					android:layout_width="match_parent"

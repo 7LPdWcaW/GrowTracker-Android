@@ -10,9 +10,11 @@
 	<attr name="styleButtonText" format="reference" />
 
 	<attr name="styleCard" format="reference" />
+	<attr name="styleLogCard" format="reference" />
 	<attr name="styleButton" format="reference" />
 
 	<attr name="styleHeaderText" format="reference" />
 	<attr name="styleSubHeaderText" format="reference" />
 	<attr name="styleLinkText" format="reference" />
+	<attr name="styleCaptionText" format="reference" />
 </resources>

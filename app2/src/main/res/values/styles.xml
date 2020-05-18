@@ -20,10 +20,12 @@
 		<item name="styleButton">@style/Button</item>
 		<item name="styleButtonBordered">@style/Button.Bordered</item>
 		<item name="styleButtonText">@style/Button.Text</item>
-		<item name="styleCard">@style/Widget.MaterialComponents.CardView</item>
+		<item name="styleCard">@style/Card</item>
+		<item name="styleLogCard">@style/Card.Log</item>
 		<item name="styleHeaderText">@style/Text.Header</item>
 		<item name="styleSubHeaderText">@style/Text.Header.Sub</item>
 		<item name="styleLinkText">@style/Text.Link</item>
+		<item name="styleCaptionText">@style/Text.Caption</item>
 
 		<item name="android:textColor">?textOnSurface</item>
 		<item name="android:windowBackground">@drawable/window_background</item>
@@ -36,6 +38,23 @@
 	</style>
 
 	<!-- -->
+	<style name="Card" parent="Widget.MaterialComponents.CardView">
+		<item name="cardBackgroundColor">?colorSurface</item>
+		<item name="cardUseCompatPadding">true</item>
+		<item name="cardElevation">4dp</item>
+		<item name="cardCornerRadius">8dp</item>
+	</style>
+
+	<style name="CardLogTheme">
+<!--		<item name="textOnSurface">#ffffff</item>-->
+	</style>
+
+	<style name="Card.Log">
+		<item name="android:theme">@style/CardLogTheme</item>
+		<item name="cardBackgroundColor">#D4EAE5</item>
+<!--		<item name="cardBackgroundColor">#F3E1E3</item>-->
+	</style>
+
 	<style name="ShapeAppearance" parent="ShapeAppearance.MaterialComponents.LargeComponent">
 		<item name="cornerFamily">rounded</item>
 		<item name="cornerSize">8dp</item>
@@ -63,26 +82,26 @@
 
 	<style name="Text">
 		<item name="android:textColor">?textOnSurface</item>
+		<item name="android:textSize">16sp</item>
+		<item name="android:lineSpacingMultiplier">1.2</item>
+		<item name="android:fontFamily">sans-serif</item>
 	</style>
 
 	<style name="Text.Header">
 		<item name="android:fontFamily">sans-serif-light</item>
 		<item name="android:textSize">22sp</item>
 		<item name="android:paddingBottom">8dp</item>
-		<item name="android:lineSpacingMultiplier">1.2</item>
 	</style>
 
 	<style name="Text.Header.Sub">
 		<item name="android:textSize">18sp</item>
 		<item name="android:paddingBottom">0dp</item>
-		<item name="android:lineSpacingMultiplier">1.2</item>
 	</style>
 
 	<style name="Text.Link">
 		<item name="android:clickable">true</item>
 		<item name="android:focusable">true</item>
 		<item name="android:textSize">18sp</item>
-		<item name="android:fontFamily">sans-serif</item>
 		<item name="android:paddingStart">12dp</item>
 		<item name="android:gravity">center_vertical</item>
 		<item name="android:background">@drawable/link_drawable</item>
@@ -95,8 +114,19 @@
 		<item name="android:minHeight">72dp</item>
 	</style>
 
+	<style name="Text.Caption">
+		<item name="android:textSize">12sp</item>
+		<item name="android:fontFamily">sans-serif-smallcaps</item>
+		<item name="android:textAllCaps">true</item>
+	</style>
+
 	<style name="CircleImage">
 		<item name="cornerFamily">rounded</item>
 		<item name="cornerSize">50%</item>
+	</style>
+
+	<style name="RoundedImage">
+		<item name="cornerFamily">rounded</item>
+		<item name="cornerSize">8dp</item>
 	</style>
 </resources>
