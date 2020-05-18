@@ -145,7 +145,7 @@
 	<string name="total_time_label">Total time:</string>
 	<string name="total_waters_label">Total waters:</string>
 	<string name="total_flushes_label">Total flushes:</string>
-	<string name="total_water_amount_label">Total water used:</string>
+	<string name="total_water_amount_label">Total water:</string>
 	<string name="ave_water_amount_label">Ave. water used:</string>
 	<string name="ave_time_between_water_label">Ave. time between water:</string>
 	<string name="ave_time_stage_label" formatted="true">Ave. %s water:</string>
@@ -448,7 +448,7 @@
 	<string name="additive_stat_header" formatted="true">%s stats</string>
 	<string name="additive_average_usage_label">Ave. per feeding:</string>
 	<string name="additive_usage_count_label">Times used:</string>
-	<string name="additive_total_usage_label">Total amount:</string>
+	<string name="additive_total_usage_label">Total additive:</string>
 
 	<string name="additives_concentration_title">Additive concentration</string>
 	<string name="additives_overtime_title">Additives over time</string>
