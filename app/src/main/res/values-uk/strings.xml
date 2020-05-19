@@ -145,7 +145,7 @@
 	<string name="total_time_label">Загальний час:</string>
 	<string name="total_waters_label">Всього поливів:</string>
 	<string name="total_flushes_label">Всього промивань:</string>
-	<string name="total_water_amount_label">Всього води використано:</string>
+	<string name="total_water_amount_label">Всього води:</string>
 	<string name="ave_water_amount_label">Середній об\'єм поливу:</string>
 	<string name="ave_time_between_water_label">Середній час між поливами:</string>
 	<string name="ave_time_stage_label" formatted="true">Середній полив %s:</string>
@@ -442,9 +442,9 @@
 	<string name="settings_import_success">Імпорт завершено</string>
 
 	<string name="additive_stat_header" formatted="true">Статистика %s</string>
-	<string name="additive_average_usage_label">Середній об\'єм:</string>
+	<string name="additive_average_usage_label">Середня доза:</string>
 	<string name="additive_usage_count_label">Використано разів:</string>
-	<string name="additive_total_usage_label">Усього:</string>
+	<string name="additive_total_usage_label">Всього добрив:</string>
 
 	<string name="additives_concentration_title">Концентрація добрив</string>
 	<string name="additives_overtime_title">Добрива з часом</string>
