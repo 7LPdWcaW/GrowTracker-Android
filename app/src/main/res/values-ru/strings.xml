@@ -275,7 +275,7 @@
 	<string name="stat_average_ph">Средний pH</string>
 	<string name="stat_average_temp">Средняя температура</string>
 	<string name="stat_average_runoff_ph">Средний pH стоков</string>
-	<string name="stat_average_tds" formatted="true">Средние %s</string>
+	<string name="stat_average_tds" formatted="true">Средний %s</string>
 
 	<string name="photos_title">Фото растения</string>
 
@@ -442,9 +442,9 @@
 	<string name="settings_import_success">Растение успешно импортировано из файла</string>
 
 	<string name="additive_stat_header" formatted="true">Статистика %s</string>
-	<string name="additive_average_usage_label">Средняя доза удобрений:</string>
+	<string name="additive_average_usage_label">Средняя доза:</string>
 	<string name="additive_usage_count_label">Использовано раз:</string>
-	<string name="additive_total_usage_label">Общий объём:</string>
+	<string name="additive_total_usage_label">Всего удобрений:</string>
 
 	<string name="additives_concentration_title">Концентрация удобрений:</string>
 	<string name="additives_overtime_title">Удобрений со временем</string>
