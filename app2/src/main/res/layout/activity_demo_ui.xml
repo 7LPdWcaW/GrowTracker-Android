@@ -44,7 +44,7 @@
 			<com.google.android.material.card.MaterialCardView
 				android:layout_width="match_parent"
 				android:layout_height="wrap_content"
-				style="?styleCard"
+				style="@style/Card"
 			>
 				<androidx.constraintlayout.widget.ConstraintLayout
 					android:layout_width="match_parent"
@@ -58,7 +58,7 @@
 						android:text="Card header"
 						app:layout_constraintTop_toTopOf="parent"
 						app:layout_constraintStart_toStartOf="parent"
-						style="?styleHeaderText"
+						style="@style/Text.Header"
 					/>
 
 					<com.google.android.material.textfield.TextInputLayout
@@ -216,7 +216,7 @@
 						android:layout_height="wrap_content"
 						android:id="@+id/dropdown2"
 						android:hint="Single dropdown style"
-						android:layout_marginTop="@dimen/subsection_header_spacing"
+						android:layout_marginTop="@dimen/section_spacing"
 						app:layout_constraintTop_toBottomOf="@id/dropdown"
 						app:layout_constraintStart_toStartOf="parent"
 						app:layout_constraintEnd_toEndOf="parent"
@@ -243,7 +243,7 @@
 						android:layout_marginTop="@dimen/subsection_header_spacing"
 						app:layout_constraintTop_toBottomOf="@id/dropdown2"
 						app:layout_constraintStart_toStartOf="parent"
-						style="?styleSubHeaderText"
+						style="@style/Text.Header.Sub"
 					/>
 
 					<com.google.android.material.textview.MaterialTextView
@@ -255,7 +255,7 @@
 						android:layout_marginTop="@dimen/section_spacing"
 						app:layout_constraintTop_toBottomOf="@id/subheader"
 						app:layout_constraintStart_toStartOf="parent"
-						style="?styleLinkText"
+						style="@style/Text.Link"
 					/>
 
 					<TextView
@@ -265,7 +265,7 @@
 						android:text="Second Textual link"
 						app:layout_constraintTop_toBottomOf="@id/select_item"
 						app:layout_constraintStart_toStartOf="parent"
-						style="?styleLinkText"
+						style="@style/Text.Link.End"
 					/>
 				</androidx.constraintlayout.widget.ConstraintLayout>
 			</com.google.android.material.card.MaterialCardView>
@@ -273,7 +273,7 @@
 			<com.google.android.material.card.MaterialCardView
 				android:layout_width="match_parent"
 				android:layout_height="wrap_content"
-				style="?styleCard"
+				style="@style/Card"
 			>
 				<androidx.constraintlayout.widget.ConstraintLayout
 					android:layout_width="match_parent"
@@ -290,7 +290,7 @@
 						android:text="Crops"
 						app:layout_constraintTop_toTopOf="parent"
 						app:layout_constraintStart_toStartOf="parent"
-						style="?styleHeaderText"
+						style="@style/Text.Header"
 					/>
 
 					<LinearLayout
@@ -330,7 +330,7 @@
 								android:text="Crop 1"
 								android:layout_gravity="center_horizontal"
 								android:layout_marginTop="6dp"
-								style="?styleCaptionText"
+								style="@style/Text.Caption"
 							/>
 						</LinearLayout>
 
@@ -358,7 +358,7 @@
 								android:text="Crop 1"
 								android:layout_gravity="center_horizontal"
 								android:layout_marginTop="6dp"
-								style="?styleCaptionText"
+								style="@style/Text.Caption"
 							/>
 						</LinearLayout>
 
@@ -386,7 +386,7 @@
 								android:text="Crop 1"
 								android:layout_gravity="center_horizontal"
 								android:layout_marginTop="6dp"
-								style="?styleCaptionText"
+								style="@style/Text.Caption"
 							/>
 						</LinearLayout>
 					</LinearLayout>
@@ -411,7 +411,7 @@
 			<com.google.android.material.card.MaterialCardView
 				android:layout_width="match_parent"
 				android:layout_height="wrap_content"
-				style="?styleCard"
+				style="@style/Card"
 			>
 				<androidx.constraintlayout.widget.ConstraintLayout
 					android:layout_width="match_parent"
@@ -428,7 +428,7 @@
 						android:text="Recent Photos"
 						app:layout_constraintTop_toTopOf="parent"
 						app:layout_constraintStart_toStartOf="parent"
-						style="?styleHeaderText"
+						style="@style/Text.Header"
 					/>
 
 					<LinearLayout
@@ -518,13 +518,13 @@
 				android:layout_gravity="center_horizontal"
 				android:gravity="center_horizontal"
 				android:padding="12dp"
-				style="?styleWindowText"
+				style="@style/Text.Window"
 			/>
 
 			<com.google.android.material.card.MaterialCardView
 				android:layout_width="match_parent"
 				android:layout_height="wrap_content"
-				style="?styleLogCard"
+				style="@style/Card.Log"
 			>
 				<androidx.constraintlayout.widget.ConstraintLayout
 					android:layout_width="match_parent"
@@ -540,7 +540,7 @@
 						app:layout_constraintTop_toTopOf="parent"
 						app:layout_constraintStart_toStartOf="parent"
 						app:layout_constraintEnd_toStartOf="@id/date"
-						style="?styleHeaderText"
+						style="@style/Text.Header"
 					/>
 
 					<TextView
@@ -551,7 +551,7 @@
 						app:layout_constraintTop_toTopOf="parent"
 						app:layout_constraintEnd_toEndOf="parent"
 						android:paddingBottom="8dp"
-						style="?styleSubHeaderText"
+						style="@style/Text.Header.Sub"
 					/>
 
 					<TextView
@@ -620,7 +620,7 @@
 			<com.google.android.material.card.MaterialCardView
 				android:layout_width="match_parent"
 				android:layout_height="wrap_content"
-				style="?styleCard"
+				style="@style/Card"
 			>
 				<me.anon.grow3.view.StageView
 					android:layout_width="match_parent"
@@ -636,7 +636,7 @@
 				android:layout_marginTop="4dp"
 				android:layout_marginStart="8dp"
 				android:layout_marginEnd="8dp"
-				style="?styleButton"
+				style="@style/Button"
 			/>
 
 			<com.google.android.material.button.MaterialButton
@@ -647,7 +647,7 @@
 				android:layout_marginTop="8dp"
 				android:layout_marginStart="8dp"
 				android:layout_marginEnd="8dp"
-				style="?styleButtonBordered"
+				style="@style/Button.Bordered"
 			/>
 
 			<com.google.android.material.button.MaterialButton
@@ -658,7 +658,7 @@
 				android:layout_marginTop="8dp"
 				android:layout_marginStart="8dp"
 				android:layout_marginEnd="8dp"
-				style="?styleButtonText"
+				style="@style/Button.Text"
 			/>
 		</LinearLayout>
 	</ScrollView>
@@ -687,7 +687,7 @@
 			android:layout_height="wrap_content"
 			android:layout_gravity="bottom|end"
 			android:layout_margin="16dp"
-			style="?styleCard"
+			style="@style/Card"
 		>
 			<LinearLayout
 				android:layout_width="match_parent"

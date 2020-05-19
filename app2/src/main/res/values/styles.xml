@@ -18,16 +18,7 @@
 
 		<item name="colorControlHighlight">@color/colorAccent26</item>
 
-		<item name="styleButton">@style/Button</item>
-		<item name="styleButtonBordered">@style/Button.Bordered</item>
-		<item name="styleButtonText">@style/Button.Text</item>
-		<item name="styleCard">@style/Card</item>
-		<item name="styleLogCard">@style/Card.Log</item>
-		<item name="styleHeaderText">@style/Text.Header</item>
-		<item name="styleSubHeaderText">@style/Text.Header.Sub</item>
-		<item name="styleLinkText">@style/Text.Link</item>
-		<item name="styleCaptionText">@style/Text.Caption</item>
-		<item name="styleWindowText">@style/Text.Window</item>
+		<item name="buttonStyle">@style/Button</item>
 
 		<item name="android:textColor">?textOnSurface</item>
 		<item name="android:windowBackground">@drawable/window_background</item>
@@ -114,6 +105,10 @@
 		<item name="drawableTint">@color/text_surface_color</item>
 		<item name="android:textColor">@color/text_surface_color</item>
 		<item name="android:minHeight">72dp</item>
+	</style>
+
+	<style name="Text.Link.End">
+
 	</style>
 
 	<style name="Text.Caption">
