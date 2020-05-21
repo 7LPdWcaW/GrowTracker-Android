@@ -163,7 +163,6 @@
 	<string name="action_transplanted">Rempotage</string>
 	<string name="action_trim">Taillée</string>
 	<string name="action_tuck">Tricotage ScrOG</string>
-
 	<string name="watered">Arrosée</string>
 	<string name="note">Note</string>
 	<string name="delete_event_dialog_title">Supprimer cet événement ?</string>
