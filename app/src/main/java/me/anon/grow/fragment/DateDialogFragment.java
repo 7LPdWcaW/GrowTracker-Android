@@ -10,6 +10,7 @@ import android.widget.TimePicker;
 
 import java.util.Calendar;
 
+import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
 
 public class DateDialogFragment extends Fragment
@@ -29,18 +30,29 @@ public class DateDialogFragment extends Fragment
 		this.onDateSelected = onDateSelected;
 	}
 
-	@SuppressLint("ValidFragment")
 	public DateDialogFragment(){}
 
-	@SuppressLint("ValidFragment")
-	public DateDialogFragment(long time)
+	public static DateDialogFragment newInstance(long time)
 	{
-		this.time = time;
+		DateDialogFragment fragment = new DateDialogFragment();
+		fragment.time = time;
+		return fragment;
+	}
+
+	@Override public void onSaveInstanceState(@NonNull Bundle outState)
+	{
+		outState.putLong("time", time);
+		super.onSaveInstanceState(outState);
 	}
 
 	@Override public void onActivityCreated(Bundle savedInstanceState)
 	{
 		super.onActivityCreated(savedInstanceState);
+
+		if (savedInstanceState != null)
+		{
+			time = savedInstanceState.getLong("time");
+		}
 
 		final Calendar date = Calendar.getInstance();
 		date.setTimeInMillis(time);

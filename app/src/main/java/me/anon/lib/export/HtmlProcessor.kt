@@ -3,6 +3,7 @@ package me.anon.lib.export
 import me.anon.model.Garden
 import me.anon.model.Plant
 import net.lingala.zip4j.core.ZipFile
+import java.util.*
 
 /**
  * // TODO: Add class description
@@ -39,7 +40,7 @@ class HtmlProcessor : ExportProcessor()
 		TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
 	}
 
-	override fun printPlantImages(arrayList: ArrayList<String>)
+	override fun printPlantImages(map: SortedMap<String, ArrayList<String>>)
 	{
 		TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
 	}

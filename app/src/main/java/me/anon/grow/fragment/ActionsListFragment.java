@@ -62,7 +62,6 @@ public class ActionsListFragment extends Fragment implements ActionAdapter.OnAct
 
 	@Views.InjectView(R.id.fab_add) private View fabAdd;
 	@Views.InjectView(R.id.recycler_view) private RecyclerView recycler;
-	@Views.InjectView(R.id.calendar) private MaterialCalendarView calendar;
 	@Views.InjectView(R.id.empty) private View empty;
 
 	private Plant plant;
@@ -126,31 +125,10 @@ public class ActionsListFragment extends Fragment implements ActionAdapter.OnAct
 		adapter.setOnActionSelectListener(this);
 		if (plant.getActions() != null && plant.getActions().size() > 0)
 		{
-			calendar.addDecorator(new DayViewDecorator()
-			{
-				@Override public boolean shouldDecorate(CalendarDay calendarDay)
-				{
-					// find an action that is on this day
-					for (Action action : plant.getActions())
-					{
-						LocalDate actionDate = CalendarDay.from(LocalDate.from(Instant.ofEpochMilli(action.getDate()).atZone(ZoneId.systemDefault()))).getDate();
-						if (calendarDay.getDate().equals(actionDate))
-						{
-							return true;
-						}
-					}
-
-					return false;
-				}
-
-				@Override public void decorate(DayViewFacade dayViewFacade)
-				{
-					dayViewFacade.addSpan(new DotSpan(6.0f, IntUtilsKt.resolveColor(R.attr.colorAccent, getActivity())));
-				}
-			});
+//			calendar.
 		}
 
-		calendar.setOnDateChangedListener(new OnDateSelectedListener()
+		adapter.setOnDateChangedListener(new OnDateSelectedListener()
 		{
 			@Override public void onDateSelected(@NonNull MaterialCalendarView materialCalendarView, @NonNull CalendarDay calendarDay, boolean b)
 			{
@@ -159,8 +137,8 @@ public class ActionsListFragment extends Fragment implements ActionAdapter.OnAct
 				adapter.notifyDataSetChanged();
 			}
 		});
-		calendar.setCurrentDate(CalendarDay.today());
-		calendar.setVisibility(filtered && getResources().getBoolean(R.bool.is_portrait) ? View.VISIBLE : View.GONE);
+
+		adapter.showCalendar = filtered;
 		adapter.setFilterDate(selectedFilterDate);
 
 		setActions();
@@ -437,7 +415,7 @@ public class ActionsListFragment extends Fragment implements ActionAdapter.OnAct
 					setActions();
 					adapter.notifyDataSetChanged();
 
-					SnackBar.show(getActivity(), action.getAction().getPrintString() + " " + getString(R.string.updated), getString(R.string.undo), new SnackBarListener()
+					SnackBar.show(getActivity(), getString(action.getAction().getPrintString()) + " " + getString(R.string.updated), getString(R.string.undo), new SnackBarListener()
 					{
 						@Override public void onSnackBarStarted(Object o){}
 						@Override public void onSnackBarFinished(Object o){}
@@ -552,16 +530,16 @@ public class ActionsListFragment extends Fragment implements ActionAdapter.OnAct
 
 		if (item.getItemId() == R.id.menu_calendar)
 		{
-			calendar.setVisibility(calendar.getVisibility() == View.GONE ? View.VISIBLE : View.GONE);
-			filtered = calendar.getVisibility() == View.VISIBLE;
+			adapter.showCalendar = !adapter.showCalendar;
+			filtered = adapter.showCalendar;
 			selectedFilterDate = null;
 			fabAdd.setVisibility(View.VISIBLE);
 
 			if (filtered)
 			{
 				fabAdd.setVisibility(View.GONE);
-				selectedFilterDate = CalendarDay.today();
-				calendar.setSelectedDate(selectedFilterDate);
+				Action lastAction = plant.getActions().get(plant.getActions().size() - 1);
+				selectedFilterDate = CalendarDay.from(LocalDate.from(Instant.ofEpochMilli(lastAction.getDate()).atZone(ZoneId.systemDefault())));
 			}
 
 			adapter.setFilterDate(selectedFilterDate);

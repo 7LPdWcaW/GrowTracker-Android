@@ -7,11 +7,13 @@ import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.pm.PackageManager;
+import android.database.Cursor;
 import android.media.MediaScannerConnection;
 import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Build;
 import android.os.Bundle;
+import android.provider.DocumentsContract;
 import android.provider.MediaStore;
 import android.text.Html;
 import android.text.TextUtils;
@@ -32,16 +34,14 @@ import android.widget.Toast;
 
 import com.esotericsoftware.kryo.Kryo;
 
-import org.jetbrains.annotations.NotNull;
-
 import java.io.File;
 import java.io.IOException;
 import java.text.DateFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Calendar;
-import java.util.Collections;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.Set;
 import java.util.TreeSet;
 import java.util.UUID;
@@ -71,7 +71,6 @@ import me.anon.lib.SnackBarListener;
 import me.anon.lib.Views;
 import me.anon.lib.export.ExportHelper;
 import me.anon.lib.export.ExportProcessor;
-import me.anon.lib.helper.FabAnimator;
 import me.anon.lib.helper.NotificationHelper;
 import me.anon.lib.helper.PermissionHelper;
 import me.anon.lib.manager.FileManager;
@@ -333,7 +332,7 @@ public class PlantDetailsFragment extends Fragment
 		{
 			@Override public void onClick(View v)
 			{
-				final DateDialogFragment fragment = new DateDialogFragment(plant.getPlantDate());
+				final DateDialogFragment fragment = DateDialogFragment.newInstance(plant.getPlantDate());
 				fragment.setOnDateSelected(new DateDialogFragment.OnDateSelectedListener()
 				{
 					@Override public void onDateSelected(Calendar newDate)
@@ -388,17 +387,12 @@ public class PlantDetailsFragment extends Fragment
 				{
 					@Override public void onSnackBarStarted(Object o)
 					{
-						if (getView() != null)
-						{
-							FabAnimator.animateUp(getView().findViewById(R.id.fab_complete));
-						}
 					}
 
 					@Override public void onSnackBarFinished(Object o)
 					{
 						if (getView() != null)
 						{
-							FabAnimator.animateDown(getView().findViewById(R.id.fab_complete));
 							PlantWidgetProvider.triggerUpdateAll(getView().getContext());
 						}
 					}
@@ -565,18 +559,10 @@ public class PlantDetailsFragment extends Fragment
 				{
 					@Override public void onSnackBarStarted(Object o)
 					{
-						if (getView() != null)
-						{
-							FabAnimator.animateUp(getView().findViewById(R.id.fab_complete));
-						}
 					}
 
 					@Override public void onSnackBarFinished(Object o)
 					{
-						if (getView() != null)
-						{
-							FabAnimator.animateDown(getView().findViewById(R.id.fab_complete));
-						}
 					}
 
 					@Override public void onSnackBarAction(View v)
@@ -595,32 +581,7 @@ public class PlantDetailsFragment extends Fragment
 									PlantManager.getInstance().getPlants().get(index).getActions().add(copy);
 								}
 
-								SnackBar.show(getActivity(), R.string.waterings_added, new SnackBarListener()
-								{
-									@Override public void onSnackBarStarted(Object o)
-									{
-										if (getView() != null)
-										{
-											FabAnimator.animateUp(getView().findViewById(R.id.fab_complete));
-										}
-									}
-
-									@Override public void onSnackBarFinished(Object o)
-									{
-										if (getView() != null)
-										{
-											FabAnimator.animateDown(getView().findViewById(R.id.fab_complete));
-										}
-									}
-
-									@Override public void onSnackBarAction(@NotNull View o)
-									{
-										if (getView() != null)
-										{
-											FabAnimator.animateUp(getView().findViewById(R.id.fab_complete));
-										}
-									}
-								});
+								SnackBar.show(getActivity(), R.string.waterings_added, null);
 							}
 						});
 						dialog.show(getFragmentManager(), "plant-select");
@@ -634,10 +595,10 @@ public class PlantDetailsFragment extends Fragment
 			{
 				if (data == null) return;
 
-				ArrayList<Uri> images = new ArrayList<>();
+				HashMap<Uri, Long> images = new HashMap();
 				if (data.getData() != null)
 				{
-					images.add(data.getData());
+					images.put(data.getData(), System.currentTimeMillis());
 
 					try
 					{
@@ -659,10 +620,28 @@ public class PlantDetailsFragment extends Fragment
 				{
 					for (int index = 0; index < data.getClipData().getItemCount(); index++)
 					{
-						images.add(data.getClipData().getItemAt(index).getUri());
+						images.put(data.getClipData().getItemAt(index).getUri(), System.currentTimeMillis());
 					}
 				}
-				images.removeAll(Collections.singleton(null));
+
+				for (Uri key : images.keySet())
+				{
+					try
+					{
+						Cursor query = getActivity().getContentResolver().query(key, null,
+							DocumentsContract.Document.COLUMN_DOCUMENT_ID + " = " + key.getPath(), null, null);
+						long modifiedDate = images.get(key);
+						int modifiedIndex = query.getColumnIndex(DocumentsContract.Document.COLUMN_LAST_MODIFIED);
+						while (query.moveToNext()) {
+							modifiedDate = query.getLong(modifiedIndex);
+							break;
+						}
+
+						images.put(key, modifiedDate == -1 ? images.get(key) : modifiedDate);
+						query.close();
+					}
+					catch (Exception e){}
+				}
 
 				NotificationHelper.sendDataTaskNotification(getActivity(), getString(R.string.app_name), getString(R.string.import_progress_warning));
 				new ImportTask(getActivity(), new AsyncCallback()
@@ -697,19 +676,12 @@ public class PlantDetailsFragment extends Fragment
 
 				SnackBar.show(getActivity(), R.string.snackbar_image_added, R.string.snackbar_action_take_another, new SnackBarListener()
 				{
-					@Override public void onSnackBarStarted(Object o)
-					{
-						if (getView() != null)
-						{
-							FabAnimator.animateUp(getView().findViewById(R.id.fab_complete));
-						}
-					}
+					@Override public void onSnackBarStarted(Object o){}
 
 					@Override public void onSnackBarFinished(Object o)
 					{
 						if (getView() != null)
 						{
-							FabAnimator.animateDown(getView().findViewById(R.id.fab_complete));
 							PlantWidgetProvider.triggerUpdateAll(getView().getContext());
 						}
 					}
@@ -828,18 +800,10 @@ public class PlantDetailsFragment extends Fragment
 				{
 					@Override public void onSnackBarStarted(Object o)
 					{
-						if (getView() != null)
-						{
-							FabAnimator.animateUp(getView().findViewById(R.id.fab_complete));
-						}
 					}
 
 					@Override public void onSnackBarFinished(Object o)
 					{
-						if (getView() != null)
-						{
-							FabAnimator.animateDown(getView().findViewById(R.id.fab_complete));
-						}
 					}
 
 					@Override public void onSnackBarAction(View v)
@@ -882,17 +846,12 @@ public class PlantDetailsFragment extends Fragment
 				{
 					@Override public void onSnackBarStarted(Object o)
 					{
-						if (getView() != null)
-						{
-							FabAnimator.animateUp(getView().findViewById(R.id.fab_complete));
-						}
 					}
 
 					@Override public void onSnackBarFinished(Object o)
 					{
 						if (getView() != null)
 						{
-							FabAnimator.animateDown(getView().findViewById(R.id.fab_complete));
 							PlantWidgetProvider.triggerUpdateAll(getView().getContext());
 						}
 					}
@@ -955,18 +914,10 @@ public class PlantDetailsFragment extends Fragment
 					{
 						@Override public void onSnackBarStarted(Object o)
 						{
-							if (getView() != null)
-							{
-								FabAnimator.animateUp(getView().findViewById(R.id.fab_add));
-							}
 						}
 
 						@Override public void onSnackBarFinished(Object o)
 						{
-							if (getView() != null)
-							{
-								FabAnimator.animateDown(getView().findViewById(R.id.fab_add));
-							}
 						}
 
 						@Override public void onSnackBarAction(View v)

@@ -307,6 +307,7 @@ public class SettingsFragment extends PreferenceFragmentCompat implements Prefer
 		{
 			PreferenceManager.getDefaultSharedPreferences(getActivity()).edit().putBoolean("force_dark", (boolean)newValue).apply();
 			AppCompatDelegate.setDefaultNightMode((boolean)newValue ? AppCompatDelegate.MODE_NIGHT_YES : AppCompatDelegate.MODE_NIGHT_FOLLOW_SYSTEM);
+			getActivity().recreate();
 		}
 		else if ("backup_size".equals(preference.getKey()))
 		{

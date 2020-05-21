@@ -5,22 +5,23 @@
 	xmlns:app="http://schemas.android.com/apk/res-auto"
 	android:layout_width="wrap_content"
 	android:layout_height="wrap_content"
-	android:layout_marginBottom="4dp"
-	app:cardBackgroundColor="#40000000"
+	app:cardBackgroundColor="#F0000000"
 	app:cardCornerRadius="4dp"
 >
 	<TextView
 		android:layout_width="wrap_content"
 		android:layout_height="wrap_content"
 		android:id="@+id/content"
-		android:text=""
+		android:text="test"
 		android:layout_centerHorizontal="true"
-		android:ellipsize="end"
 		android:textStyle="bold"
 		android:textAppearance="?android:attr/textAppearanceSmall"
 		android:textColor="?colorPrimary"
 		android:gravity="center"
 		android:textSize="14dp"
-		android:padding="4dp"
+		android:paddingTop="4dp"
+		android:paddingBottom="4dp"
+		android:paddingStart="6dp"
+		android:paddingEnd="6dp"
 	/>
 </androidx.cardview.widget.CardView>

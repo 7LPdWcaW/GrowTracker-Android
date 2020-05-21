@@ -36,18 +36,21 @@ import androidx.appcompat.app.AlertDialog;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
 import me.anon.controller.provider.PlantWidgetProvider;
+import me.anon.grow.BaseActivity;
 import me.anon.grow.R;
 import me.anon.lib.TdsUnit;
 import me.anon.lib.TempUnit;
 import me.anon.lib.Unit;
 import me.anon.lib.Views;
 import me.anon.lib.ext.NumberUtilsKt;
+import me.anon.lib.manager.GardenManager;
 import me.anon.lib.manager.PlantManager;
 import me.anon.lib.manager.ScheduleManager;
 import me.anon.model.Action;
 import me.anon.model.Additive;
 import me.anon.model.FeedingSchedule;
 import me.anon.model.FeedingScheduleDate;
+import me.anon.model.Garden;
 import me.anon.model.Plant;
 import me.anon.model.Tds;
 import me.anon.model.Water;
@@ -79,6 +82,7 @@ public class WateringFragment extends Fragment
 	@Views.InjectView(R.id.notes) private EditText notes;
 
 	private int[] plantIndex = {-1};
+	private int gardenIndex = -1;
 	private int actionIndex = -1;
 	private ArrayList<Plant> plants = new ArrayList<>();
 	private Water water;
@@ -100,10 +104,11 @@ public class WateringFragment extends Fragment
 	 * @param plantIndex If -1, assume new plant
 	 * @return Instantiated details fragment
 	 */
-	public static WateringFragment newInstance(int[] plantIndex, int feedingIndex)
+	public static WateringFragment newInstance(int[] plantIndex, int feedingIndex, int gardenIndex)
 	{
 		Bundle args = new Bundle();
 		args.putIntArray("plant_index", plantIndex);
+		args.putInt("garden_index", gardenIndex);
 		args.putInt("action_index", feedingIndex);
 
 		WateringFragment fragment = new WateringFragment();
@@ -138,12 +143,14 @@ public class WateringFragment extends Fragment
 		if (savedInstanceState != null)
 		{
 			plantIndex = savedInstanceState.getIntArray("plant_index");
+			gardenIndex = savedInstanceState.getInt("garden_index");
 			actionIndex = savedInstanceState.getInt("action_index");
 			water = savedInstanceState.getParcelable("water");
 		}
 		else if (getArguments() != null)
 		{
 			plantIndex = getArguments().getIntArray("plant_index");
+			gardenIndex = getArguments().getInt("garden_index");
 			actionIndex = getArguments().getInt("action_index");
 
 			if (actionIndex > -1 && plantIndex.length == 1)
@@ -176,6 +183,35 @@ public class WateringFragment extends Fragment
 			return;
 		}
 
+		if (getActivity() instanceof BaseActivity)
+		{
+			Garden garden = null;
+			if (gardenIndex > -1)
+			{
+				garden = GardenManager.getInstance().getGardens().get(gardenIndex);
+			}
+
+			if (plants.size() == 1)
+			{
+				getActivity().setTitle(getString(R.string.feeding_single_title, plants.get(0).getName()));
+			}
+			else
+			{
+				getActivity().setTitle(getString(R.string.feeding_single_title, garden == null ? "" : garden.getName()));
+				String subtitle = "";
+				for (Plant plant : plants)
+				{
+					if (subtitle.length() > 0) subtitle += ", ";
+					subtitle += plant.getName();
+				}
+
+				((BaseActivity)getActivity()).getSupportActionBar().setSubtitle(subtitle);
+			}
+		}
+
+		reattachFeedingDialogListener((ActionSelectDialogFragment)getFragmentManager().findFragmentByTag("actions"));
+		reattachScheduleDialogListener((FeedingScheduleSelectDialogFragment)getFragmentManager().findFragmentByTag("feeding"));
+		reattachDateDialogListener((DateDialogFragment)getFragmentManager().findFragmentByTag("date"));
 		setUi();
 		setHints();
 	}
@@ -183,6 +219,7 @@ public class WateringFragment extends Fragment
 	@Override public void onSaveInstanceState(@NonNull Bundle outState)
 	{
 		outState.putIntArray("plant_index", plantIndex);
+		outState.putInt("garden_index", actionIndex);
 		outState.putInt("action_index", actionIndex);
 		outState.putParcelable("water", water);
 
@@ -254,8 +291,26 @@ public class WateringFragment extends Fragment
 				}
 			});
 
-			ActionSelectDialogFragment actionSelectDialogFragment = new ActionSelectDialogFragment(items);
-			actionSelectDialogFragment.setOnActionSelectedListener(new ActionSelectDialogFragment.OnActionSelectedListener()
+			ActionSelectDialogFragment actionSelectDialogFragment = ActionSelectDialogFragment.newInstance(items);
+			actionSelectDialogFragment.show(getFragmentManager(), "actions");
+			reattachFeedingDialogListener(actionSelectDialogFragment);
+		}
+
+		return super.onOptionsItemSelected(item);
+	}
+
+	private void showScheduleDialog(FeedingSchedule schedule)
+	{
+		FeedingScheduleSelectDialogFragment feedingScheduleSelectDialogFragment = FeedingScheduleSelectDialogFragment.newInstance(schedule, plants);
+		feedingScheduleSelectDialogFragment.show(getFragmentManager(), "feeding");
+		reattachScheduleDialogListener(feedingScheduleSelectDialogFragment);
+	}
+
+	private void reattachFeedingDialogListener(ActionSelectDialogFragment fragment)
+	{
+		if (fragment != null)
+		{
+			fragment.setOnActionSelectedListener(new ActionSelectDialogFragment.OnActionSelectedListener()
 			{
 				@Override public void onActionSelected(Action action)
 				{
@@ -264,31 +319,55 @@ public class WateringFragment extends Fragment
 					setUi();
 				}
 			});
-			actionSelectDialogFragment.show(getFragmentManager(), "actions");
 		}
-
-		return super.onOptionsItemSelected(item);
 	}
 
-	private void showScheduleDialog(FeedingSchedule schedule)
+	private void reattachDateDialogListener(DateDialogFragment fragment)
 	{
-		FeedingScheduleSelectDialogFragment feedingScheduleSelectDialogFragment = new FeedingScheduleSelectDialogFragment(schedule, plants.get(0));
-		feedingScheduleSelectDialogFragment.setOnFeedingSelectedListener(new FeedingScheduleSelectDialogFragment.OnFeedingSelectedListener()
+		if (fragment != null)
 		{
-			@Override public void onFeedingSelected(FeedingScheduleDate date)
+			fragment.setOnDateSelected(new DateDialogFragment.OnDateSelectedListener()
 			{
-				ArrayList<Additive> additives = new ArrayList<>();
-
-				for (Additive additive : date.getAdditives())
+				@Override public void onDateSelected(Calendar date)
 				{
-					additives.add(new Kryo().copy(additive));
+					final DateFormat dateFormat = android.text.format.DateFormat.getDateFormat(getActivity());
+					final DateFormat timeFormat = android.text.format.DateFormat.getTimeFormat(getActivity());
+
+					String dateStr = dateFormat.format(date.getTime()) + " " + timeFormat.format(date.getTime());
+					WateringFragment.this.date.setText(dateStr);
+
+					water.setDate(date.getTimeInMillis());
+					onCancelled();
 				}
 
-				water.setAdditives(additives);
-				populateAdditives();
-			}
-		});
-		feedingScheduleSelectDialogFragment.show(getFragmentManager(), "feeding");
+				@Override public void onCancelled()
+				{
+					getFragmentManager().beginTransaction().remove(fragment).commit();
+				}
+			});
+		}
+	}
+
+	private void reattachScheduleDialogListener(FeedingScheduleSelectDialogFragment fragment)
+	{
+		if (fragment != null)
+		{
+			fragment.setOnFeedingSelectedListener(new FeedingScheduleSelectDialogFragment.OnFeedingSelectedListener()
+			{
+				@Override public void onFeedingSelected(FeedingScheduleDate date)
+				{
+					ArrayList<Additive> additives = new ArrayList<>();
+
+					for (Additive additive : date.getAdditives())
+					{
+						additives.add(new Kryo().copy(additive));
+					}
+
+					water.setAdditives(additives);
+					populateAdditives();
+				}
+			});
+		}
 	}
 
 	private void setHints()
@@ -374,7 +453,7 @@ public class WateringFragment extends Fragment
 
 				if (!averagePh.isNaN())
 				{
-					waterPh.setHint(String.valueOf(averagePh));
+					waterPh.setHint(NumberUtilsKt.formatWhole(averagePh));
 				}
 
 				if (!selectedTdsAverage.isNaN())
@@ -385,13 +464,13 @@ public class WateringFragment extends Fragment
 					}
 					else
 					{
-						waterPpm.setHint(selectedTdsAverage + " " + selectedTdsUnit.getLabel());
+						waterPpm.setHint(NumberUtilsKt.formatWhole(selectedTdsAverage) + " " + selectedTdsUnit.getLabel());
 					}
 				}
 
 				if (!averageRunoff.isNaN())
 				{
-					runoffPh.setHint(String.valueOf(averageRunoff));
+					runoffPh.setHint(NumberUtilsKt.formatWhole(averageRunoff));
 				}
 
 				if (!averageAmount.isNaN())
@@ -421,8 +500,6 @@ public class WateringFragment extends Fragment
 		date.setText("");
 		notes.setText("");
 
-		getActivity().setTitle(plants.size() == 1 ? getString(R.string.feeding_single_title, plants.get(0).getName()) : getString(R.string.feeding_multiple_title));
-
 		Calendar date = Calendar.getInstance();
 		date.setTimeInMillis(water.getDate());
 
@@ -436,24 +513,9 @@ public class WateringFragment extends Fragment
 		{
 			@Override public void onClick(View v)
 			{
-				final DateDialogFragment fragment = new DateDialogFragment(water.getDate());
-				fragment.setOnDateSelected(new DateDialogFragment.OnDateSelectedListener()
-				{
-					@Override public void onDateSelected(Calendar date)
-					{
-						String dateStr = dateFormat.format(date.getTime()) + " " + timeFormat.format(date.getTime());
-						WateringFragment.this.date.setText(dateStr);
-
-						water.setDate(date.getTimeInMillis());
-						onCancelled();
-					}
-
-					@Override public void onCancelled()
-					{
-						getFragmentManager().beginTransaction().remove(fragment).commit();
-					}
-				});
+				final DateDialogFragment fragment = DateDialogFragment.newInstance(water.getDate());
 				getFragmentManager().beginTransaction().add(fragment, "date").commit();
+				reattachDateDialogListener(fragment);
 			}
 		});
 
@@ -503,7 +565,7 @@ public class WateringFragment extends Fragment
 			if (additive == null || additive.getAmount() == null) continue;
 
 			double converted = Unit.ML.to(selectedMeasurementUnit, additive.getAmount());
-			String amountStr = converted == Math.floor(converted) ? String.valueOf((int)converted) : String.valueOf(converted);
+			String amountStr = NumberUtilsKt.formatWhole(converted);
 			amountStr = additive.getDescription() + "   -   " + amountStr + selectedMeasurementUnit.getLabel() + "/" + selectedDeliveryUnit.getLabel();
 			maxChars = Math.max(maxChars, amountStr.length());
 		}
@@ -539,7 +601,7 @@ public class WateringFragment extends Fragment
 				totalDelivery = ML.to(selectedDeliveryUnit, totalDelivery);
 				Double additiveAmount = ML.to(selectedMeasurementUnit, additive.getAmount());
 
-				amountStr = amountStr + "&nbsp;&nbsp;<b>(" + Unit.toTwoDecimalPlaces(additiveAmount * totalDelivery) + selectedMeasurementUnit.getLabel() + " total)</b>";
+				amountStr = amountStr + "&nbsp;&nbsp;<b>(" + NumberUtilsKt.formatWhole(Unit.toTwoDecimalPlaces(additiveAmount * totalDelivery)) + selectedMeasurementUnit.getLabel() + " total)</b>";
 			}
 
 			((TextView)additiveStub).setText(Html.fromHtml(amountStr));

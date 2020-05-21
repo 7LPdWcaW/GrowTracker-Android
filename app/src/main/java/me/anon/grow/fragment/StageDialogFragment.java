@@ -97,7 +97,7 @@ public class StageDialogFragment extends DialogFragment
 		{
 			@Override public void onClick(View v)
 			{
-				final DateDialogFragment fragment = new DateDialogFragment(action.getDate());
+				final DateDialogFragment fragment = DateDialogFragment.newInstance(action.getDate());
 				fragment.setOnDateSelected(new DateDialogFragment.OnDateSelectedListener()
 				{
 					@Override public void onDateSelected(Calendar date)

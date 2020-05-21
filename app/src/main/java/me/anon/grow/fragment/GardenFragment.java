@@ -49,9 +49,7 @@ import me.anon.lib.Views;
 import me.anon.lib.event.GardenChangeEvent;
 import me.anon.lib.export.ExportHelper;
 import me.anon.lib.export.ExportProcessor;
-import me.anon.lib.ext.IntUtilsKt;
 import me.anon.lib.helper.BusHelper;
-import me.anon.lib.helper.FabAnimator;
 import me.anon.lib.manager.GardenManager;
 import me.anon.lib.manager.PlantManager;
 import me.anon.model.EmptyAction;
@@ -67,7 +65,7 @@ public class GardenFragment extends Fragment
 	private PlantAdapter adapter;
 	private Garden garden;
 
-	public static GardenFragment newInstance(@Nullable Garden garden)
+	public static GardenFragment newInstance(Garden garden)
 	{
 		GardenFragment fragment = new GardenFragment();
 		fragment.garden = garden;
@@ -180,7 +178,6 @@ public class GardenFragment extends Fragment
 				{
 					for (int index = fromPosition; index < toPosition; index++)
 					{
-						Collections.swap(PlantManager.getInstance().getPlants(), index, index + 1);
 						Collections.swap(adapter.getPlants(), index, index + 1);
 						adapter.notifyItemChanged(index, Boolean.TRUE);
 						adapter.notifyItemChanged(index + 1, Boolean.TRUE);
@@ -190,7 +187,6 @@ public class GardenFragment extends Fragment
 				{
 					for (int index = fromPosition; index > toPosition; index--)
 					{
-						Collections.swap(PlantManager.getInstance().getPlants(), index, index - 1);
 						Collections.swap(adapter.getPlants(), index, index - 1);
 						adapter.notifyItemChanged(index, Boolean.TRUE);
 						adapter.notifyItemChanged(index - 1, Boolean.TRUE);
@@ -207,7 +203,7 @@ public class GardenFragment extends Fragment
 		if (filterList == null)
 		{
 			filterList = new ArrayList<>();
-			Set<String> prefsList = androidx.preference.PreferenceManager.getDefaultSharedPreferences(getActivity()).getStringSet("filter_list", null);
+			Set<String> prefsList = androidx.preference.PreferenceManager.getDefaultSharedPreferences(getActivity()).getStringSet("new_filter_list", null);
 			if (prefsList == null)
 			{
 				filterList.addAll(Arrays.asList(PlantStage.values()));
@@ -218,8 +214,7 @@ public class GardenFragment extends Fragment
 				{
 					try
 					{
-						int ordinal = IntUtilsKt.toSafeInt(s);
-						filterList.add(PlantStage.values()[ordinal]);
+						filterList.add(PlantStage.valueOf(s));
 					}
 					catch (Exception e)
 					{
@@ -269,7 +264,11 @@ public class GardenFragment extends Fragment
 			}
 
 			garden.setPlantIds(orderedPlantIds);
-			GardenManager.getInstance().save();
+
+			if (GardenManager.getInstance().getGardens().indexOf(garden) > -1)
+			{
+				GardenManager.getInstance().upsert(garden);
+			}
 		}
 
 		PlantManager.getInstance().upsert(plants);
@@ -295,6 +294,7 @@ public class GardenFragment extends Fragment
 
 		Intent feed = new Intent(getActivity(), AddWateringActivity.class);
 		feed.putExtra("plant_index", plants);
+		feed.putExtra("garden_index", GardenManager.getInstance().getGardens().indexOf(garden));
 		startActivityForResult(feed, 2);
 	}
 
@@ -312,28 +312,7 @@ public class GardenFragment extends Fragment
 
 				saveCurrentState();
 
-				SnackBar.show(getActivity(), getString(R.string.snackbar_action_add), new SnackBarListener()
-				{
-					@Override public void onSnackBarStarted(Object o)
-					{
-						if (getView() != null)
-						{
-							FabAnimator.animateUp(getView().findViewById(R.id.fab_add));
-						}
-					}
-
-					@Override public void onSnackBarFinished(Object o)
-					{
-						if (getView() != null)
-						{
-							FabAnimator.animateDown(getView().findViewById(R.id.fab_add));
-						}
-					}
-
-					@Override public void onSnackBarAction(View v)
-					{
-					}
-				});
+				SnackBar.show(getActivity(), getString(R.string.snackbar_action_add), null);
 			}
 		});
 		dialogFragment.show(getFragmentManager(), null);
@@ -354,28 +333,7 @@ public class GardenFragment extends Fragment
 
 				saveCurrentState();
 
-				SnackBar.show(getActivity(), getString(R.string.snackbar_note_add), new SnackBarListener()
-				{
-					@Override public void onSnackBarStarted(Object o)
-					{
-						if (getView() != null)
-						{
-							FabAnimator.animateUp(getView().findViewById(R.id.fab_add));
-						}
-					}
-
-					@Override public void onSnackBarFinished(Object o)
-					{
-						if (getView() != null)
-						{
-							FabAnimator.animateDown(getView().findViewById(R.id.fab_add));
-						}
-					}
-
-					@Override public void onSnackBarAction(View v)
-					{
-					}
-				});
+				SnackBar.show(getActivity(), getString(R.string.snackbar_note_add), null);
 			}
 		});
 		dialogFragment.show(getFragmentManager(), null);
@@ -404,29 +362,7 @@ public class GardenFragment extends Fragment
 			{
 				adapter.notifyDataSetChanged();
 				saveCurrentState();
-				SnackBar.show(getActivity(), getString(R.string.snackbar_watering_add), new SnackBarListener()
-				{
-					@Override public void onSnackBarStarted(Object o)
-					{
-						if (getView() != null)
-						{
-							FabAnimator.animateUp(getView().findViewById(R.id.fab_add));
-						}
-					}
-
-					@Override public void onSnackBarAction(View v)
-					{
-
-					}
-
-					@Override public void onSnackBarFinished(Object o)
-					{
-						if (getView() != null)
-						{
-							FabAnimator.animateDown(getView().findViewById(R.id.fab_add));
-						}
-					}
-				});
+				SnackBar.show(getActivity(), getString(R.string.snackbar_watering_add), null);
 			}
 		}
 
@@ -440,8 +376,20 @@ public class GardenFragment extends Fragment
 		menu.findItem(R.id.export_garden).setVisible(true);
 		menu.findItem(R.id.delete_garden).setVisible(true);
 
-		int[] ids = {R.id.filter_germination, R.id.filter_vegetation, R.id.filter_seedling, R.id.filter_cutting, R.id.filter_flowering, R.id.filter_drying, R.id.filter_curing, R.id.filter_harvested, R.id.filter_planted};
-		PlantStage[] stages = {PlantStage.GERMINATION, PlantStage.VEGETATION, PlantStage.SEEDLING, PlantStage.CUTTING, PlantStage.FLOWER, PlantStage.DRYING, PlantStage.CURING, PlantStage.HARVESTED, PlantStage.PLANTED};
+		int[] ids = {
+			R.id.filter_planted,
+			R.id.filter_germination,
+			R.id.filter_seedling,
+			R.id.filter_cutting,
+			R.id.filter_vegetation,
+			R.id.filter_budding,
+			R.id.filter_flowering,
+			R.id.filter_ripening,
+			R.id.filter_drying,
+			R.id.filter_curing,
+			R.id.filter_harvested
+		};
+		PlantStage[] stages = PlantStage.values();
 
 		for (int index = 0; index < ids.length; index++)
 		{
@@ -508,8 +456,9 @@ public class GardenFragment extends Fragment
 						final int defaultGarden = PreferenceManager.getDefaultSharedPreferences(getActivity()).getInt("default_garden", -1);
 
 						PreferenceManager.getDefaultSharedPreferences(getActivity()).edit().remove("default_garden").apply();
-						GardenManager.getInstance().getGardens().remove(garden);
+						GardenManager.getInstance().getGardens().remove(oldIndex);
 						GardenManager.getInstance().save();
+
 
 						SnackBar.show(getActivity(), R.string.snackbar_garden_deleted, R.string.undo, new SnackBarListener()
 						{
@@ -548,7 +497,19 @@ public class GardenFragment extends Fragment
 				saveCurrentState();
 			}
 
-			int[] ids = {R.id.filter_planted, R.id.filter_germination, R.id.filter_seedling, R.id.filter_cutting, R.id.filter_vegetation, R.id.filter_flowering, R.id.filter_drying, R.id.filter_curing, R.id.filter_harvested};
+			int[] ids = {
+				R.id.filter_planted,
+				R.id.filter_germination,
+				R.id.filter_seedling,
+				R.id.filter_cutting,
+				R.id.filter_vegetation,
+				R.id.filter_budding,
+				R.id.filter_flowering,
+				R.id.filter_ripening,
+				R.id.filter_drying,
+				R.id.filter_curing,
+				R.id.filter_harvested
+			};
 			PlantStage[] stages = PlantStage.values();
 
 			for (int index = 0; index < ids.length; index++)
@@ -572,10 +533,10 @@ public class GardenFragment extends Fragment
 			Set<String> stageOrdinals = new LinkedHashSet<>();
 			for (PlantStage plantStage : filterList)
 			{
-				stageOrdinals.add(plantStage.ordinal() + "");
+				stageOrdinals.add(plantStage.name());
 			}
 			androidx.preference.PreferenceManager.getDefaultSharedPreferences(getActivity()).edit()
-				.putStringSet("filter_list", stageOrdinals)
+				.putStringSet("new_filter_list", stageOrdinals)
 				.apply();
 
 			if (filter)

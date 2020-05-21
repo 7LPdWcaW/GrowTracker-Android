@@ -1,0 +1,267 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<androidx.constraintlayout.widget.ConstraintLayout
+	xmlns:android="http://schemas.android.com/apk/res/android"
+	xmlns:app="http://schemas.android.com/apk/res-auto"
+	android:layout_width="match_parent"
+	android:layout_height="match_parent"
+>
+	<ScrollView
+		android:layout_width="match_parent"
+		android:layout_height="match_parent"
+	>
+		<LinearLayout
+			android:layout_width="match_parent"
+			android:layout_height="wrap_content"
+			android:orientation="vertical"
+		>
+			<LinearLayout
+				android:layout_width="match_parent"
+				android:layout_height="wrap_content"
+				android:orientation="vertical"
+				android:elevation="4dp"
+				style="@style/PaperCard"
+			>
+				<TextView
+					android:layout_width="wrap_content"
+					android:layout_height="wrap_content"
+					android:text="@string/general_title"
+					style="@style/SectionTitle"
+				/>
+
+				<LinearLayout
+					android:layout_width="match_parent"
+					android:layout_height="wrap_content"
+					android:padding="16dp"
+					android:orientation="vertical"
+				>
+					<com.google.android.flexbox.FlexboxLayout
+						android:layout_width="match_parent"
+						android:layout_height="wrap_content"
+						android:id="@+id/stats_container"
+						app:flexWrap="wrap"
+						app:showDividerVertical="middle"
+						app:dividerDrawableVertical="@drawable/divider_8dp"
+					/>
+				</LinearLayout>
+
+				<com.github.mikephil.charting.charts.HorizontalBarChart
+					android:layout_width="match_parent"
+					android:layout_height="120dp"
+					android:id="@+id/stage_chart"
+					android:layout_marginBottom="16dp"
+				/>
+			</LinearLayout>
+
+			<LinearLayout
+				android:layout_width="match_parent"
+				android:layout_height="wrap_content"
+				android:orientation="vertical"
+				android:elevation="4dp"
+				android:layout_marginTop="12dp"
+				style="@style/PaperCard"
+			>
+				<TextView
+					android:layout_width="wrap_content"
+					android:layout_height="wrap_content"
+					android:text="@string/additives_title"
+					style="@style/SectionTitle"
+				/>
+
+				<com.google.android.material.chip.ChipGroup
+					android:layout_width="match_parent"
+					android:layout_height="wrap_content"
+					android:id="@+id/additive_chips_container"
+					android:padding="16dp"
+					app:chipSpacing="4dp"
+					app:chipSpacingVertical="0dp"
+				/>
+
+				<TextView
+					android:layout_width="wrap_content"
+					android:layout_height="wrap_content"
+					android:text="@string/additives_concentration_title"
+					style="@style/SectionTitle"
+				/>
+
+				<com.github.mikephil.charting.charts.LineChart
+					android:layout_width="match_parent"
+					android:layout_height="300dp"
+					android:id="@+id/additives_concentration_chart"
+				/>
+
+				<TextView
+					android:layout_width="wrap_content"
+					android:layout_height="wrap_content"
+					android:text="@string/additives_overtime_title"
+					android:layout_marginTop="18dp"
+					style="@style/SectionTitle"
+				/>
+
+				<com.github.mikephil.charting.charts.LineChart
+					android:layout_width="match_parent"
+					android:layout_height="300dp"
+					android:id="@+id/additives_overtime_chart"
+				/>
+
+				<TextView
+					android:layout_width="wrap_content"
+					android:layout_height="wrap_content"
+					android:text="@string/additives_distribution_title"
+					android:layout_marginTop="18dp"
+					style="@style/SectionTitle"
+				/>
+
+				<com.github.mikephil.charting.charts.PieChart
+					android:layout_width="match_parent"
+					android:layout_height="300dp"
+					android:layout_marginTop="12dp"
+					android:layout_marginStart="32dp"
+					android:layout_marginEnd="32dp"
+					android:id="@+id/additives_count_chart"
+					android:layout_gravity="center"
+				/>
+
+				<com.google.android.flexbox.FlexboxLayout
+					android:layout_width="match_parent"
+					android:layout_height="wrap_content"
+					android:id="@+id/additives_stats_container"
+					android:paddingStart="16dp"
+					android:paddingEnd="16dp"
+					android:paddingBottom="16dp"
+					app:flexWrap="wrap"
+					app:showDividerVertical="middle"
+					app:dividerDrawableVertical="@drawable/divider_8dp"
+				/>
+			</LinearLayout>
+
+			<LinearLayout
+				android:layout_width="match_parent"
+				android:layout_height="wrap_content"
+				android:orientation="vertical"
+				android:elevation="4dp"
+				android:layout_marginTop="12dp"
+				style="@style/PaperCard"
+			>
+				<TextView
+					android:layout_width="wrap_content"
+					android:layout_height="wrap_content"
+					android:text="@string/ph_title"
+					style="@style/SectionTitle"
+				/>
+
+				<com.google.android.material.chip.ChipGroup
+					android:layout_width="match_parent"
+					android:layout_height="wrap_content"
+					android:id="@+id/ph_chips_container"
+					android:padding="16dp"
+					app:chipSpacing="4dp"
+					app:chipSpacingVertical="0dp"
+				/>
+
+				<com.github.mikephil.charting.charts.LineChart
+					android:layout_width="match_parent"
+					android:layout_height="300dp"
+					android:id="@+id/input_ph"
+					android:padding="16dp"
+					android:layout_marginTop="24dp"
+				/>
+
+				<com.google.android.flexbox.FlexboxLayout
+					android:layout_width="match_parent"
+					android:layout_height="wrap_content"
+					android:id="@+id/ph_stats_container"
+					android:paddingStart="16dp"
+					android:paddingEnd="16dp"
+					android:paddingBottom="16dp"
+					app:flexWrap="wrap"
+					app:showDividerVertical="middle"
+					app:dividerDrawableVertical="@drawable/divider_8dp"
+				/>
+			</LinearLayout>
+
+			<LinearLayout
+				android:layout_width="match_parent"
+				android:layout_height="wrap_content"
+				android:orientation="vertical"
+				android:elevation="4dp"
+				android:layout_marginTop="12dp"
+				style="@style/PaperCard"
+			>
+				<TextView
+					android:layout_width="wrap_content"
+					android:layout_height="wrap_content"
+					android:text="@string/tds_title"
+					style="@style/SectionTitle"
+				/>
+
+				<com.google.android.material.chip.ChipGroup
+					android:layout_width="match_parent"
+					android:layout_height="wrap_content"
+					android:id="@+id/tds_chips_container"
+					android:padding="16dp"
+					app:chipSpacing="4dp"
+					app:chipSpacingVertical="0dp"
+					app:singleSelection="true"
+					app:selectionRequired="true"
+				/>
+
+				<com.github.mikephil.charting.charts.LineChart
+					android:layout_width="match_parent"
+					android:layout_height="300dp"
+					android:id="@+id/tds_chart"
+					android:padding="16dp"
+					android:layout_marginTop="24dp"
+				/>
+
+				<com.google.android.flexbox.FlexboxLayout
+					android:layout_width="match_parent"
+					android:layout_height="wrap_content"
+					android:id="@+id/tds_stats_container"
+					android:paddingStart="16dp"
+					android:paddingEnd="16dp"
+					android:paddingBottom="16dp"
+					app:flexWrap="wrap"
+					app:showDividerVertical="middle"
+					app:dividerDrawableVertical="@drawable/divider_8dp"
+				/>
+			</LinearLayout>
+
+			<LinearLayout
+				android:layout_width="match_parent"
+				android:layout_height="wrap_content"
+				android:orientation="vertical"
+				android:elevation="4dp"
+				android:layout_marginTop="12dp"
+				style="@style/PaperCard"
+			>
+				<TextView
+					android:layout_width="wrap_content"
+					android:layout_height="wrap_content"
+					android:text="@string/temperature_title"
+					style="@style/SectionTitle"
+				/>
+
+				<com.github.mikephil.charting.charts.LineChart
+					android:layout_width="match_parent"
+					android:layout_height="300dp"
+					android:id="@+id/temp_chart"
+					android:padding="16dp"
+					android:layout_marginTop="24dp"
+				/>
+
+				<com.google.android.flexbox.FlexboxLayout
+					android:layout_width="match_parent"
+					android:layout_height="wrap_content"
+					android:id="@+id/temp_stats_container"
+					android:paddingStart="16dp"
+					android:paddingEnd="16dp"
+					android:paddingBottom="16dp"
+					app:flexWrap="wrap"
+					app:showDividerVertical="middle"
+					app:dividerDrawableVertical="@drawable/divider_8dp"
+				/>
+			</LinearLayout>
+		</LinearLayout>
+	</ScrollView>
+</androidx.constraintlayout.widget.ConstraintLayout>

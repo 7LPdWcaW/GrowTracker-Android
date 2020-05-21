@@ -16,7 +16,6 @@ import me.anon.controller.adapter.FeedingScheduleAdapter
 import me.anon.grow.FeedingScheduleDetailsActivity
 import me.anon.grow.R
 import me.anon.lib.SnackBar
-import me.anon.lib.helper.FabAnimator
 import me.anon.lib.manager.ScheduleManager
 import java.util.*
 
@@ -47,11 +46,7 @@ class FeedingScheduleListFragment : Fragment()
 			adapter.notifyDataSetChanged()
 			checkAdapter()
 
-			SnackBar().show(activity as AppCompatActivity, R.string.schedule_deleted, R.string.undo, {
-				FabAnimator.animateUp(fab_add)
-			}, {
-				FabAnimator.animateDown(fab_add)
-			}, {
+			SnackBar().show(activity as AppCompatActivity, R.string.schedule_deleted, R.string.undo, action = {
 				ScheduleManager.instance.schedules.add(index, schedule)
 				ScheduleManager.instance.save()
 				adapter.items = ScheduleManager.instance.schedules
@@ -69,11 +64,7 @@ class FeedingScheduleListFragment : Fragment()
 			adapter.notifyDataSetChanged()
 			checkAdapter()
 
-			SnackBar().show(activity as AppCompatActivity, R.string.schedule_copied, R.string.undo, {
-				FabAnimator.animateUp(fab_add)
-			}, {
-				FabAnimator.animateDown(fab_add)
-			}, {
+			SnackBar().show(activity as AppCompatActivity, R.string.schedule_copied, R.string.undo, action = {
 				ScheduleManager.instance.schedules.remove(newSchedule)
 				ScheduleManager.instance.save()
 				adapter.items = ScheduleManager.instance.schedules

@@ -15,6 +15,11 @@ import android.widget.TextView;
 
 import com.esotericsoftware.kryo.Kryo;
 import com.prolificinteractive.materialcalendarview.CalendarDay;
+import com.prolificinteractive.materialcalendarview.DayViewDecorator;
+import com.prolificinteractive.materialcalendarview.DayViewFacade;
+import com.prolificinteractive.materialcalendarview.MaterialCalendarView;
+import com.prolificinteractive.materialcalendarview.OnDateSelectedListener;
+import com.prolificinteractive.materialcalendarview.spans.DotSpan;
 
 import org.jetbrains.annotations.NotNull;
 import org.threeten.bp.Instant;
@@ -75,6 +80,7 @@ public class ActionAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>
 		public void onItemSelected(Action action);
 	}
 
+	private OnDateSelectedListener onDateSelectedListener;
 	private OnItemSelectCallback onItemSelectCallback;
 	private OnActionSelectListener onActionSelectListener;
 	@Nullable private Plant plant;
@@ -83,11 +89,17 @@ public class ActionAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>
 	private TempUnit tempUnit;
 	private boolean showDate = true;
 	private boolean showActions = true;
+	public boolean showCalendar = false;
 	private CalendarDay selectedFilterDate = null;
 
 	public void setFilterDate(CalendarDay selectedFilterDate)
 	{
 		this.selectedFilterDate = selectedFilterDate;
+	}
+
+	public void setOnDateChangedListener(OnDateSelectedListener onDateSelectedListener)
+	{
+		this.onDateSelectedListener = onDateSelectedListener;
 	}
 
 	/**
@@ -268,6 +280,13 @@ public class ActionAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>
 
 	@Override public int getItemViewType(int position)
 	{
+		if (showCalendar && position == 0)
+		{
+			return 3;
+		}
+
+		position = position - (showCalendar ? 1 : 0);
+
 		if (selectedFilterDate != null)
 		{
 			LocalDate actionDate = CalendarDay.from(LocalDate.from(Instant.ofEpochMilli(actions.get(position).getDate()).atZone(ZoneId.systemDefault()))).getDate();
@@ -284,7 +303,11 @@ public class ActionAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>
 
 	@Override public RecyclerView.ViewHolder onCreateViewHolder(ViewGroup viewGroup, int viewType)
 	{
-		if (viewType == 0)
+		if (viewType == 3)
+		{
+			return new RecyclerView.ViewHolder(LayoutInflater.from(viewGroup.getContext()).inflate(R.layout.calendar_item, viewGroup, false)){};
+		}
+		else if (viewType == 0)
 		{
 			return new RecyclerView.ViewHolder(LayoutInflater.from(viewGroup.getContext()).inflate(R.layout.empty, viewGroup, false)){};
 		}
@@ -300,7 +323,41 @@ public class ActionAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>
 	{
 		if (getItemViewType(index) == 0) return;
 
-		final Action action = actions.get(index);
+		if (getItemViewType(index) == 3)
+		{
+			final MaterialCalendarView calendar = (MaterialCalendarView)vh.itemView;
+			calendar.removeDecorators();
+			calendar.addDecorator(new DayViewDecorator()
+			{
+				@Override public boolean shouldDecorate(CalendarDay calendarDay)
+				{
+					// find an action that is on this day
+					for (Action action : plant.getActions())
+					{
+						LocalDate actionDate = CalendarDay.from(LocalDate.from(Instant.ofEpochMilli(action.getDate()).atZone(ZoneId.systemDefault()))).getDate();
+						if (calendarDay.getDate().equals(actionDate))
+						{
+							return true;
+						}
+					}
+
+					return false;
+				}
+
+				@Override public void decorate(DayViewFacade dayViewFacade)
+				{
+					dayViewFacade.addSpan(new DotSpan(6.0f, IntUtilsKt.resolveColor(R.attr.colorAccent, calendar.getContext())));
+				}
+			});
+			calendar.setOnDateChangedListener(onDateSelectedListener);
+			calendar.setSelectedDate(selectedFilterDate);
+			calendar.setCurrentDate(selectedFilterDate);
+
+			return;
+		}
+
+		final int actionIndex = index - (showCalendar ? 1 : 0);
+		final Action action = actions.get(actionIndex);
 		DateFormat dateFormat = android.text.format.DateFormat.getDateFormat(vh.itemView.getContext());
 		DateFormat timeFormat = android.text.format.DateFormat.getTimeFormat(vh.itemView.getContext());
 		TextView dateDay = null;
@@ -343,9 +400,9 @@ public class ActionAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>
 			String fullDateStr = dateFormat.format(actionDate) + " " + timeFormat.format(actionDate);
 			String dateStr = vh.itemView.getContext().getString(R.string.ago, "<b>" + new DateRenderer(viewHolder.itemView.getContext()).timeAgo(action.getDate()).formattedDate + "</b>");
 
-			if (index > 0)
+			if (actionIndex > 0)
 			{
-				long difference = actions.get(index - 1).getDate() - action.getDate();
+				long difference = actions.get(actionIndex - 1).getDate() - action.getDate();
 				int days = (int)Math.round(((double)difference / 60d / 60d / 24d / 1000d));
 
 				dateStr += " (-" + days + vh.itemView.getContext().getString(R.string.day_abbr) + ")";
@@ -486,9 +543,9 @@ public class ActionAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>
 			{
 				String lastDateStr = "";
 
-				if (index - 1 >= 0)
+				if (actionIndex - 1 >= 0)
 				{
-					Date lastActionDate = new Date(actions.get(index - 1).getDate());
+					Date lastActionDate = new Date(actions.get(actionIndex - 1).getDate());
 					Calendar lastActionCalendar = GregorianCalendar.getInstance();
 					lastActionCalendar.setTime(lastActionDate);
 					lastDateStr = lastActionCalendar.get(Calendar.DAY_OF_MONTH) + " " + lastActionCalendar.getDisplayName(Calendar.MONTH, Calendar.SHORT, Locale.getDefault());
@@ -503,13 +560,13 @@ public class ActionAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>
 					StageChange lastChange = null;
 					long currentChangeDate = action.getDate();
 
-					for (int actionIndex = index; actionIndex < actions.size(); actionIndex++)
+					for (int aIndex = actionIndex; aIndex < actions.size(); aIndex++)
 					{
-						if (actions.get(actionIndex) instanceof StageChange)
+						if (actions.get(aIndex) instanceof StageChange)
 						{
 							if (lastChange == null)
 							{
-								lastChange = (StageChange)actions.get(actionIndex);
+								lastChange = (StageChange)actions.get(aIndex);
 								break;
 							}
 						}
@@ -564,7 +621,7 @@ public class ActionAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>
 
 	@Override public int getItemCount()
 	{
-		return actions.size();
+		return actions.size() + (showCalendar ? 1 : 0);
 	}
 
 	@Override public void onItemMove(int fromPosition, int toPosition)

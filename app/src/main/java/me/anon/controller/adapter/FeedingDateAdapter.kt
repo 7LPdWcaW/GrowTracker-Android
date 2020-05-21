@@ -9,6 +9,7 @@ import me.anon.model.Plant
 import me.anon.model.PlantStage
 import me.anon.view.FeedingDateHolder
 import java.util.*
+import kotlin.collections.ArrayList
 
 /**
  * // TODO: Add class description
@@ -23,10 +24,17 @@ class FeedingDateAdapter : RecyclerView.Adapter<FeedingDateHolder>()
 			items.addAll(value)
 			notifyDataSetChanged()
 		}
-	public var plant: Plant = Plant()
-	public val plantStages: SortedMap<PlantStage, Long> by lazy { plant.calculateStageTime() }
+	public var plants: ArrayList<Plant> = arrayListOf()
+	public val plantStages: ArrayList<SortedMap<PlantStage, Long>> by lazy {
+		ArrayList(plants.map { it.calculateStageTime() })
+	}
 
-	public fun getLastStage(): PlantStage = plantStages.toSortedMap().lastKey()
+	public fun getLastStages(): ArrayList<PlantStage>
+	{
+		return ArrayList(plantStages.map {
+			it.toSortedMap().lastKey()
+		})
+	}
 
 	override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): FeedingDateHolder
 		= FeedingDateHolder(this, LayoutInflater.from(parent.context).inflate(R.layout.feeding_date_stub, parent, false))
