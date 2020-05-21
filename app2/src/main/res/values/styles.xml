@@ -20,7 +20,11 @@
 
 		<item name="buttonStyle">@style/Button</item>
 
+		<item name="shapeAppearanceLargeComponent">@style/ShapeAppearance.Large</item>
+		<item name="shapeAppearanceSmallComponent">@style/ShapeAppearance.Small</item>
+
 		<item name="android:textColor">?textOnSurface</item>
+
 		<item name="android:windowBackground">@drawable/window_background</item>
 		<item name="android:windowTranslucentNavigation">true</item>
 	</style>
@@ -48,7 +52,12 @@
 <!--		<item name="cardBackgroundColor">#F3E1E3</item>-->
 	</style>
 
-	<style name="ShapeAppearance" parent="ShapeAppearance.MaterialComponents.LargeComponent">
+	<style name="ShapeAppearance.Large" parent="ShapeAppearance.MaterialComponents.LargeComponent">
+		<item name="cornerFamily">rounded</item>
+		<item name="cornerSize">8dp</item>
+	</style>
+
+	<style name="ShapeAppearance.Small" parent="ShapeAppearance.MaterialComponents.LargeComponent">
 		<item name="cornerFamily">rounded</item>
 		<item name="cornerSize">8dp</item>
 	</style>
@@ -57,25 +66,21 @@
 		<item name="android:padding">16dp</item>
 		<item name="backgroundTint">?colorAccent</item>
 		<item name="android:textColor">?textOnAccent</item>
-		<item name="shapeAppearance">@style/ShapeAppearance</item>
 	</style>
 
 	<style name="Button.Bordered" parent="Widget.MaterialComponents.Button.OutlinedButton">
-		<item name="shapeAppearance">@style/ShapeAppearance</item>
 		<item name="android:textColor">?colorAccent</item>
 		<item name="strokeColor">?colorAccent</item>
 		<item name="android:padding">16dp</item>
 	</style>
 
 	<style name="Button.Text" parent="Widget.MaterialComponents.Button.TextButton">
-		<item name="shapeAppearance">@style/ShapeAppearance</item>
 		<item name="android:textColor">?colorAccent</item>
 		<item name="android:padding">16dp</item>
 	</style>
 
 	<style name="Text">
 		<item name="android:textColor">?textOnSurface</item>
-		<item name="android:textSize">16sp</item>
 		<item name="android:lineSpacingMultiplier">1.2</item>
 		<item name="android:fontFamily">sans-serif</item>
 	</style>
@@ -108,7 +113,7 @@
 	</style>
 
 	<style name="Text.Link.End">
-
+		<item name="android:background">@null</item>
 	</style>
 
 	<style name="Text.Caption">
