@@ -129,7 +129,9 @@
 	<string name="germination">Прорастание</string>
 	<string name="cutting">Срез</string>
 	<string name="vegetation">Вегетация</string>
+	<string name="budding">Формирование соцветий</string>
 	<string name="flowering">Цветение</string>
+	<string name="ripening">Созревание</string>
 	<string name="drying">Сушка</string>
 	<string name="curing">Выдержка (пролечка)</string>
 	<string name="harvested">Собрано</string>
@@ -143,9 +145,13 @@
 	<string name="total_time_label">Общее время:</string>
 	<string name="total_waters_label">Всего поливов:</string>
 	<string name="total_flushes_label">Всего промываний:</string>
+	<string name="total_water_amount_label">Всего воды:</string>
+	<string name="ave_water_amount_label">Средний объём полива:</string>
 	<string name="ave_time_between_water_label">Средний интервал между поливами:</string>
+	<string name="ave_time_stage_label" formatted="true">Сред. полив %s:</string>
 	<string name="filter_additives">Фильтр удобрений</string>
 	<string name="ph_title">pH</string>
+	<string name="tds_title">Минерализация</string>
 
 	<string name="min">Мин:</string>
 	<string name="max">Макс:</string>
@@ -163,6 +169,8 @@
 	<string name="action_transplanted">Пересадка</string>
 	<string name="action_trim">Тримминг</string>
 	<string name="action_tuck">Применение ScrOG</string>
+	<string name="action_supercrop">Суперкроппинг</string>
+	<string name="action_monstercrop">Монстркроппинг</string>
 
 	<string name="watered">Полито</string>
 	<string name="note">Заметка</string>
@@ -265,6 +273,9 @@
 	<string name="stat_input_ph">Входной pH</string>
 	<string name="stat_runoff_ph">pH стока</string>
 	<string name="stat_average_ph">Средний pH</string>
+	<string name="stat_average_temp">Средняя температура</string>
+	<string name="stat_average_runoff_ph">Средний pH стоков</string>
+	<string name="stat_average_tds" formatted="true">Средний %s</string>
 
 	<string name="photos_title">Фото растения</string>
 
@@ -429,4 +440,13 @@
 	<string name="settings_import_error">Не удалось импортировать растения</string>
 	<string name="settings_import">Импортировать растения из файла</string>
 	<string name="settings_import_success">Растение успешно импортировано из файла</string>
+
+	<string name="additive_stat_header" formatted="true">Статистика %s</string>
+	<string name="additive_average_usage_label">Средняя доза:</string>
+	<string name="additive_usage_count_label">Использовано раз:</string>
+	<string name="additive_total_usage_label">Всего удобрений:</string>
+
+	<string name="additives_concentration_title">Концентрация удобрений:</string>
+	<string name="additives_overtime_title">Удобрений со временем</string>
+	<string name="additives_distribution_title">Распределение удобрений:</string>
 </resources>
