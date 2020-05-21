@@ -15,6 +15,7 @@ class BackupService : BroadcastReceiver()
 	{
 		var backup = true
 		File(BackupHelper.FILES_PATH).listFiles()?.let {
+			if (it.isEmpty()) return@let
 			val sorted = ArrayList(it.sortedBy { it.lastModified() })
 			val today = LocalDate.now()
 			backup = DateTimeUtils.toLocalDate(Date(sorted.last().lastModified())) != today
