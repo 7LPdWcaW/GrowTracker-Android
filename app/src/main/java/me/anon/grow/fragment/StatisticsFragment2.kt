@@ -107,7 +107,7 @@ class StatisticsFragment2 : Fragment()
 		public var totalFlush = 0
 
 		public val startDate = plant.plantDate
-		public val totalDays = ((endDate - startDate) / 1000.0) * 0.0000115741
+		public val totalDays get() = ((endDate - startDate) / 1000.0) * 0.0000115741
 
 		init { calculateStats() }
 
@@ -668,7 +668,6 @@ class StatisticsFragment2 : Fragment()
 		}
 
 		with (additives_concentration_chart) {
-			setVisibleYRangeMaximum(totalMax.toFloat(), YAxis.AxisDependency.LEFT)
 			style()
 
 			marker = object : MarkerView(activity, R.layout.chart_marker)
@@ -704,7 +703,6 @@ class StatisticsFragment2 : Fragment()
 		}
 
 		with (additives_overtime_chart) {
-			setVisibleYRangeMaximum(totalMax.toFloat(), YAxis.AxisDependency.LEFT)
 			style()
 
 			marker = object : MarkerView(activity, R.layout.chart_marker)
