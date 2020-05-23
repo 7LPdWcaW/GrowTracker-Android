@@ -2,6 +2,7 @@ package me.anon.grow3.data.model
 
 import com.squareup.moshi.JsonClass
 import me.anon.grow3.util.asDateTime
+import me.anon.grow3.util.asString
 import me.anon.grow3.util.uniqueBy
 import org.dizitart.no2.objects.Id
 import org.threeten.bp.ZonedDateTime
@@ -12,6 +13,7 @@ import java.util.*
 class Diary(
 	@Id public val id: String = UUID.randomUUID().toString(),
 	public var name: String,
+	public var date: String = ZonedDateTime.now().asString(),
 	public val log: ArrayList<Log> = arrayListOf(),
 	public val crops: ArrayList<Crop> = arrayListOf()
 )
