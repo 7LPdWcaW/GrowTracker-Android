@@ -1,10 +1,14 @@
 package me.anon.grow3.data.repository
 
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
+import androidx.lifecycle.asLiveData
 import kotlinx.coroutines.ExperimentalCoroutinesApi
+import kotlinx.coroutines.flow.collect
+import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.test.runBlockingTest
 import me.anon.grow3.MainCoroutineRule
 import me.anon.grow3.TestConstants
+import me.anon.grow3.data.model.Diary
 import me.anon.grow3.data.repository.impl.DefaultDiariesRepository
 import me.anon.grow3.data.source.DiariesDataSource
 import me.anon.grow3.util.*

@@ -7,6 +7,7 @@ import me.anon.grow3.data.repository.DiariesRepository
 import me.anon.grow3.data.repository.impl.DefaultDiariesRepository
 import me.anon.grow3.data.source.DiariesDataSource
 import me.anon.grow3.data.source.json.JsonDiariesDataSource
+import me.anon.grow3.data.source.nitrite.NitriteDiariesDataSource
 import me.anon.grow3.util.application
 import javax.inject.Named
 
@@ -22,7 +23,7 @@ class AppModule(
 	public fun provideGardenSource(): String = appContext.application.dataPath
 
 	@Provides
-	public fun provideGardenDataSource(dataSource: JsonDiariesDataSource): DiariesDataSource = dataSource
+	public fun provideGardenDataSource(dataSource: NitriteDiariesDataSource): DiariesDataSource = dataSource
 
 	@Provides
 	public fun provideGardenRepository(repo: DefaultDiariesRepository): DiariesRepository = repo

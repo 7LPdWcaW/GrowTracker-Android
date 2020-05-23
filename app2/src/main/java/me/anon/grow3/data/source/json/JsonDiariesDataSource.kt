@@ -37,7 +37,10 @@ class JsonDiariesDataSource @Inject constructor(
 
 	override suspend fun getDiaryById(diaryId: String): Diary? = getDiaries().find { it.id == diaryId }
 
-	override suspend fun sync(direction: DiariesDataSource.SyncDirection): List<Diary>
+	suspend fun sync(direction: DiariesDataSource.SyncDirection): List<Diary>
+		= sync(direction, *(_diaries ?: arrayListOf()).map { it }.toTypedArray())
+
+	override suspend fun sync(direction: DiariesDataSource.SyncDirection, vararg diary: Diary): List<Diary>
 	{
 		withContext(dispatcher) {
 			when (direction)
