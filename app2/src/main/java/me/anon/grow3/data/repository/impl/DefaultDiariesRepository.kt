@@ -4,12 +4,18 @@ import androidx.lifecycle.*
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.GlobalScope
+import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.filter
+import kotlinx.coroutines.flow.flow
+import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.launch
 import me.anon.grow3.data.model.Diary
 import me.anon.grow3.data.repository.DiariesRepository
 import me.anon.grow3.data.source.DiariesDataSource
 import me.anon.grow3.util.DataResult
 import me.anon.grow3.util.asFailure
+import me.anon.grow3.util.asSuccess
+import me.anon.grow3.util.isSuccess
 import javax.inject.Inject
 import javax.inject.Named
 import javax.inject.Singleton
@@ -20,6 +26,14 @@ class DefaultDiariesRepository @Inject constructor(
 	@Named("io_dispatcher") private val dispatcher: CoroutineDispatcher = Dispatchers.IO
 ) : DiariesRepository
 {
+	public val testGetDiaries: Flow<List<Diary>> = flow {
+		emit(dataSource.sync(DiariesDataSource.SyncDirection.LOAD))
+	}
+
+	public fun testGetDiaryById(id: String): Flow<Diary> = testGetDiaries.map {
+		it.first { diary -> diary.id == id }
+	}
+
 	private val _loaded = MutableLiveData<Boolean>(false)
 	private val _diaries: LiveData<DataResult<List<Diary>>> = _loaded.switchMap { isLoaded ->
 		liveData {

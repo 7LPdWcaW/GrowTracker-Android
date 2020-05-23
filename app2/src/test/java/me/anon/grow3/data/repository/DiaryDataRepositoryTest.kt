@@ -1,10 +1,14 @@
 package me.anon.grow3.data.repository
 
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
+import androidx.lifecycle.asLiveData
 import kotlinx.coroutines.ExperimentalCoroutinesApi
+import kotlinx.coroutines.flow.collect
+import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.test.runBlockingTest
 import me.anon.grow3.MainCoroutineRule
 import me.anon.grow3.TestConstants
+import me.anon.grow3.data.model.Diary
 import me.anon.grow3.data.repository.impl.DefaultDiariesRepository
 import me.anon.grow3.data.source.DiariesDataSource
 import me.anon.grow3.util.*
@@ -37,6 +41,16 @@ class DiaryDataRepositoryTest
 	{
 		dataSource = FakeDiariesDataSource(TestConstants.diaries.toMutableList())
 		diariesRepository = DefaultDiariesRepository(dataSource)
+	}
+
+	@Test
+	public fun `test flow`() = mainCoroutineRule.runBlockingTest {
+		val diaries = diariesRepository.testGetDiaries.first()
+		diaries.`should not be null`()
+		diaries.`should not be empty`()
+
+		val test2 = diariesRepository.testGetDiaryById("0000-000000").first()
+		test2.`should not be null`()
 	}
 
 	@Test

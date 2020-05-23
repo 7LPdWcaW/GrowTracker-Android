@@ -13,5 +13,5 @@ public class FakeDiariesDataSource(private val diaries: MutableList<Diary>) : Di
 
 	override suspend fun getDiaries(): List<Diary> = diaries
 
-	override suspend fun sync(direction: DiariesDataSource.SyncDirection): List<Diary> = diaries
+	override suspend fun sync(direction: DiariesDataSource.SyncDirection, vararg diary: Diary): List<Diary> = diaries
 }
