@@ -17,6 +17,6 @@
 		android:right="4dp"
 		android:top="4dp"
 		android:bottom="4dp"
-		android:drawable="@android:color/transparent"
+		android:drawable="@drawable/ic_check"
 	/>
 </layer-list>

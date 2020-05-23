@@ -13,10 +13,10 @@
 
 		<item name="colorSecondary">@color/colorSecondary</item>
 		<item name="textOnSecondary">@color/textOnSecondary</item>
-		<item name="colorControlNormal">@color/colorSecondary</item>
-		<item name="colorControlActivated">@color/colorSecondary</item>
 
-		<item name="colorControlHighlight">@color/colorAccent26</item>
+<!--		<item name="colorControlNormal">@color/colorPrimary</item>-->
+		<item name="colorControlActivated">@color/colorPrimary</item>
+		<item name="colorControlHighlight">@color/colorPrimary</item>
 
 		<item name="buttonStyle">@style/Button</item>
 
@@ -128,6 +128,15 @@
 		<item name="android:fontFamily">sans-serif-smallcaps</item>
 		<item name="android:textAllCaps">true</item>
 		<item name="android:textColor">?textOnPrimary</item>
+	</style>
+
+	<style name="Checkbox" parent="Widget.MaterialComponents.CompoundButton.CheckBox">
+		<item name="android:textSize">16sp</item>
+		<item name="android:paddingStart">12dp</item>
+		<item name="android:paddingTop">2dp</item>
+		<item name="android:paddingBottom">2dp</item>
+		<item name="android:paddingEnd">16dp</item>
+		<item name="android:button">@drawable/checkbox_drawable</item>
 	</style>
 
 	<style name="CircleImage">
