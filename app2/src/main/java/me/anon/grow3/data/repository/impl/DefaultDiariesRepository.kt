@@ -76,8 +76,8 @@ class DefaultDiariesRepository @Inject constructor(
 
 	override fun sync()
 	{
-		GlobalScope.launch {
-			dataSource.sync(DiariesDataSource.SyncDirection.SAVE)
+		CoroutineScope(dispatcher).launch {
+			dataSource.sync(DiariesDataSource.SyncDirection.SAVE, *diaries.toTypedArray())
 			invalidate()
 		}
 	}
