@@ -18,10 +18,7 @@ import androidx.core.view.size
 import com.google.android.material.textfield.MaterialAutoCompleteTextView
 import com.google.android.material.textfield.TextInputLayout
 import me.anon.grow3.R
-import me.anon.lib.ext.afterMeasured
-import me.anon.lib.ext.drawableStart
-import me.anon.lib.ext.inflate
-import me.anon.lib.ext.parentView
+import me.anon.lib.ext.*
 import org.w3c.dom.Text
 
 class DropDownEditText : MaterialAutoCompleteTextView
@@ -135,7 +132,10 @@ class DropDownEditText : MaterialAutoCompleteTextView
 					if (size > 0)
 					{
 						this@DropDownEditText.setText(joinToString { it.title })
-						(parentView.parentView as? TextInputLayout)?.startIconDrawable = first().icon
+						(parentView.parentView as? TextInputLayout)?.startIconDrawable = when(size) {
+							1 -> first().icon
+							else -> drawable(R.drawable.ic_more_horiz)
+						}
 					}
 					else
 					{

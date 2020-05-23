@@ -7,10 +7,8 @@ import android.view.View
 import android.view.ViewGroup
 import android.view.inputmethod.InputMethodManager
 import android.widget.TextView
-import androidx.annotation.ColorRes
-import androidx.annotation.DimenRes
-import androidx.annotation.LayoutRes
-import androidx.annotation.StringRes
+import androidx.annotation.*
+import androidx.core.content.res.ResourcesCompat
 import androidx.recyclerview.widget.RecyclerView
 
 /**
@@ -154,6 +152,7 @@ public fun View.dimension(@DimenRes resId: Int): Float = resources.getDimension(
 public fun View.dimensionPixels(@DimenRes resId: Int): Int = resources.getDimensionPixelSize(resId)
 public fun View.string(@StringRes resId: Int): String = resources.getString(resId)
 public fun View.color(@ColorRes resId: Int): Int = resources.getColor(resId)
+public fun View.drawable(@DrawableRes resId: Int): Drawable = ResourcesCompat.getDrawable(resources, resId, context.theme)!!
 
 public var TextView.text: String
 	set(value) {
