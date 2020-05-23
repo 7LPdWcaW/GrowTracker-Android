@@ -10,7 +10,6 @@ import kotlinx.coroutines.test.setMain
 import me.anon.grow3.MainCoroutineRule
 import me.anon.grow3.TestConstants
 import me.anon.grow3.data.source.DiariesDataSource
-import me.anon.grow3.data.source.nitrite.NitriteDiariesDataSource
 import me.anon.grow3.util.initThreeTen
 import org.amshove.kluent.*
 import org.dizitart.no2.exceptions.UniqueConstraintException

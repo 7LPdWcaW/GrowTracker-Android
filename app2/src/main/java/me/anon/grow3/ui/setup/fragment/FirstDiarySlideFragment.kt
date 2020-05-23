@@ -1,6 +1,5 @@
 package me.anon.grow3.ui.setup.fragment
 
-import android.content.Context
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View

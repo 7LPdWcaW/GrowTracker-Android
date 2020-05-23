@@ -18,8 +18,10 @@ import androidx.core.view.size
 import com.google.android.material.textfield.MaterialAutoCompleteTextView
 import com.google.android.material.textfield.TextInputLayout
 import me.anon.grow3.R
-import me.anon.lib.ext.*
-import org.w3c.dom.Text
+import me.anon.lib.ext.afterMeasured
+import me.anon.lib.ext.drawable
+import me.anon.lib.ext.inflate
+import me.anon.lib.ext.parentView
 
 class DropDownEditText : MaterialAutoCompleteTextView
 {
