@@ -6,9 +6,9 @@ import android.view.View
 import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.core.view.updateLayoutParams
 import com.github.appintro.AppIntro2
-import com.github.appintro.AppIntroCustomLayoutFragment
 import com.github.appintro.AppIntroFragment
 import me.anon.grow3.R
+import me.anon.grow3.ui.setup.fragment.FirstDiarySlideFragment
 import me.anon.grow3.util.resolve
 
 class SetupActivity : AppIntro2()

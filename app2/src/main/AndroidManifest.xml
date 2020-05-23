@@ -32,7 +32,11 @@
 			</intent-filter>
 		</activity>
 
-		<activity android:name=".ui.crud.activity.DiaryActivity" />
+		<activity android:name=".ui.crud.activity.DiaryActivity" android:theme="@style/AppTheme.FullScrim">
+			<intent-filter>
+				<action android:name="android.intent.action.MAIN" />
+			</intent-filter>
+		</activity>
 		<activity android:name=".ui.setup.activity.SetupActivity" android:theme="@style/AppTheme.FullScrim" />
 	</application>
 </manifest>

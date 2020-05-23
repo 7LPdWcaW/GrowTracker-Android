@@ -3,36 +3,67 @@
 <androidx.coordinatorlayout.widget.CoordinatorLayout
 	xmlns:android="http://schemas.android.com/apk/res/android"
 	xmlns:app="http://schemas.android.com/apk/res-auto"
+	xmlns:tools="http://schemas.android.com/tools"
 	android:layout_width="match_parent"
 	android:layout_height="match_parent"
 	android:id="@+id/container"
+	android:fitsSystemWindows="true"
 >
-	<com.google.android.material.appbar.AppBarLayout
-		android:layout_width="match_parent"
-		android:layout_height="wrap_content"
-		android:id="@+id/toolbar_layout"
-		android:theme="@style/ThemeOverlay.AppCompat.ActionBar"
-	>
-		<com.google.android.material.appbar.MaterialToolbar
-			android:layout_width="match_parent"
-			android:layout_height="wrap_content"
-			android:id="@+id/toolbar"
-			app:layout_constraintEnd_toEndOf="parent"
-			app:layout_constraintStart_toStartOf="parent"
-			app:layout_constraintTop_toTopOf="parent"
-			app:popupTheme="@style/ThemeOverlay.AppCompat.Light"
-		/>
-	</com.google.android.material.appbar.AppBarLayout>
+	<include android:id="@+id/include_toolbar" layout="@layout/include_toolbar" />
 
-
-	<fragment
+	<androidx.constraintlayout.widget.ConstraintLayout
 		android:layout_width="match_parent"
 		android:layout_height="match_parent"
-		android:id="@+id/nav_host_fragment"
-		android:name="androidx.navigation.fragment.NavHostFragment"
-		app:navGraph="@navigation/mobile_crud_diary_navigation"
-		app:layout_anchor="@id/toolbar_layout"
+		app:layout_anchor="@id/include_toolbar"
 		app:layout_anchorGravity="bottom"
 		app:layout_behavior="@string/appbar_scrolling_view_behavior"
-	/>
+	>
+		<fragment
+			android:layout_width="match_parent"
+			android:layout_height="match_parent"
+			android:id="@+id/nav_host_fragment"
+			android:name="androidx.navigation.fragment.NavHostFragment"
+			app:navGraph="@navigation/mobile_crud_diary_navigation"
+		/>
+
+		<View
+			android:id="@+id/bottom"
+			android:layout_width="0dp"
+			android:layout_height="@dimen/appintro2_bottombar_height"
+			android:background="@color/appintro_bar_color"
+			app:layout_constraintBottom_toBottomOf="parent"
+			app:layout_constraintEnd_toEndOf="parent"
+			app:layout_constraintStart_toStartOf="parent"
+		/>
+
+		<ImageButton
+			android:id="@+id/back"
+			style="@style/AppIntro2ButtonStyleCompat"
+			android:contentDescription="@string/app_intro_back_button"
+			android:rotation="180"
+			android:visibility="gone"
+			app:layout_constraintBottom_toBottomOf="@+id/bottom"
+			app:layout_constraintStart_toStartOf="parent"
+			app:srcCompat="@drawable/ic_appintro_fab_next"
+		/>
+
+		<ImageButton
+			android:id="@+id/next"
+			style="@style/AppIntro2ButtonStyleCompat"
+			android:contentDescription="@string/app_intro_next_button"
+			app:layout_constraintBottom_toBottomOf="@+id/bottom"
+			app:layout_constraintEnd_toEndOf="parent"
+			app:srcCompat="@drawable/ic_appintro_fab_next"
+		/>
+
+		<ImageButton
+			android:id="@+id/done"
+			style="@style/AppIntro2ButtonStyleCompat"
+			android:contentDescription="@string/app_intro_done_button"
+			android:visibility="gone"
+			app:layout_constraintBottom_toBottomOf="@+id/bottom"
+			app:layout_constraintEnd_toEndOf="parent"
+			app:srcCompat="@drawable/ic_appintro_fab_done"
+		/>
+	</androidx.constraintlayout.widget.ConstraintLayout>
 </androidx.coordinatorlayout.widget.CoordinatorLayout>

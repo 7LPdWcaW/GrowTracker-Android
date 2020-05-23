@@ -1,4 +1,4 @@
-package me.anon.grow3.ui.setup.activity
+package me.anon.grow3.ui.setup.fragment
 
 import android.content.Context
 import android.os.Bundle

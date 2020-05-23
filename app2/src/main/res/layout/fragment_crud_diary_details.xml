@@ -1,49 +1,86 @@
 <?xml version="1.0" encoding="utf-8"?>
 
-<ScrollView
+<FrameLayout
 	xmlns:android="http://schemas.android.com/apk/res/android"
 	xmlns:app="http://schemas.android.com/apk/res-auto"
 	android:layout_width="match_parent"
 	android:layout_height="match_parent"
 >
-	<androidx.constraintlayout.widget.ConstraintLayout
+	<ScrollView
 		android:layout_width="match_parent"
-		android:layout_height="wrap_content"
-		android:padding="16dp"
+		android:layout_height="match_parent"
+		android:clipToPadding="false"
+		android:fillViewport="true"
 	>
-		<com.google.android.material.textfield.TextInputLayout
+		<LinearLayout
 			android:layout_width="match_parent"
 			android:layout_height="wrap_content"
-			android:id="@+id/name"
-			android:hint="Diary name"
-			android:layout_marginTop="12dp"
-			app:layout_constraintTop_toTopOf="parent"
-			app:layout_constraintStart_toStartOf="parent"
-			app:layout_constraintEnd_toEndOf="parent"
-			style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
+			android:clipToPadding="false"
+			android:orientation="vertical"
+			android:paddingBottom="72dp"
 		>
-			<com.google.android.material.textfield.TextInputEditText
+			<com.google.android.material.card.MaterialCardView
 				android:layout_width="match_parent"
 				android:layout_height="wrap_content"
-			/>
-		</com.google.android.material.textfield.TextInputLayout>
+				style="@style/Card"
+			>
+				<androidx.constraintlayout.widget.ConstraintLayout
+					android:layout_width="match_parent"
+					android:layout_height="wrap_content"
+					android:padding="16dp"
+				>
+					<TextView
+						android:layout_width="wrap_content"
+						android:layout_height="wrap_content"
+						android:id="@+id/header"
+						android:text="Name your diary"
+						app:layout_constraintTop_toTopOf="parent"
+						app:layout_constraintStart_toStartOf="parent"
+						android:textAppearance="@style/Text.Header"
+					/>
 
-		<com.google.android.material.textfield.TextInputLayout
-			android:layout_width="match_parent"
-			android:layout_height="wrap_content"
-			android:id="@+id/date"
-			android:hint="Start date"
-			android:layout_marginTop="18dp"
-			app:layout_constraintTop_toBottomOf="@id/name"
-			app:layout_constraintStart_toStartOf="parent"
-			app:layout_constraintEnd_toEndOf="parent"
-			style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
-		>
-			<com.google.android.material.textfield.TextInputEditText
-				android:layout_width="match_parent"
-				android:layout_height="wrap_content"
-				android:text="01/01/2020 01:01:00"
-			/>
-		</com.google.android.material.textfield.TextInputLayout>
-	</androidx.constraintlayout.widget.ConstraintLayout>
-</ScrollView>
+					<com.google.android.material.textfield.TextInputLayout
+						android:layout_width="match_parent"
+						android:layout_height="wrap_content"
+						android:id="@+id/text_input"
+						android:hint="Name"
+						android:layout_marginTop="@dimen/section_spacing"
+						app:layout_constraintTop_toBottomOf="@id/header"
+						app:layout_constraintStart_toStartOf="parent"
+						app:layout_constraintEnd_toEndOf="parent"
+						style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
+					>
+						<com.google.android.material.textfield.TextInputEditText
+							android:layout_width="match_parent"
+							android:layout_height="wrap_content"
+							android:singleLine="true"
+							android:maxLines="1"
+							android:imeOptions="actionNext"
+						/>
+					</com.google.android.material.textfield.TextInputLayout>
+
+					<com.google.android.material.textfield.TextInputLayout
+						android:layout_width="match_parent"
+						android:layout_height="wrap_content"
+						android:id="@+id/date"
+						android:hint="Start date"
+						android:layout_marginTop="@dimen/section_spacing"
+						app:layout_constraintTop_toBottomOf="@id/text_input"
+						app:layout_constraintStart_toStartOf="parent"
+						app:layout_constraintEnd_toEndOf="parent"
+						app:startIconDrawable="@drawable/ic_calendar"
+						style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
+					>
+						<com.google.android.material.textfield.TextInputEditText
+							android:layout_width="match_parent"
+							android:layout_height="wrap_content"
+							android:text="01/01/2020 01:01:00"
+							android:editable="false"
+							android:inputType="none"
+						/>
+					</com.google.android.material.textfield.TextInputLayout>
+				</androidx.constraintlayout.widget.ConstraintLayout>
+			</com.google.android.material.card.MaterialCardView>
+		</LinearLayout>
+	</ScrollView>
+</FrameLayout>

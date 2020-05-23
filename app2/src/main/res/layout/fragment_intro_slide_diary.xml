@@ -11,7 +11,7 @@
 		android:layout_width="wrap_content"
 		android:layout_height="wrap_content"
 		android:id="@+id/new_diary"
-		android:text="Add your first diary"
+		android:text="@string/add_diary_first"
 		android:textColor="?textOnAccent"
 		style="@style/Button.Text"
 		app:layout_constraintTop_toTopOf="parent"
