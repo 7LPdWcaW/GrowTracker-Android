@@ -44,16 +44,6 @@ class DiaryDataRepositoryTest
 	}
 
 	@Test
-	public fun `test flow`() = mainCoroutineRule.runBlockingTest {
-		val diaries = diariesRepository.testGetDiaries.first()
-		diaries.`should not be null`()
-		diaries.`should not be empty`()
-
-		val test2 = diariesRepository.testGetDiaryById("0000-000000").first()
-		test2.`should not be null`()
-	}
-
-	@Test
 	public fun `test observe diary sends states`()
 	{
 		val diaries = diariesRepository.observeDiaries()
