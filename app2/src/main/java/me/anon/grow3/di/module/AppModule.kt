@@ -6,7 +6,6 @@ import dagger.Provides
 import me.anon.grow3.data.repository.DiariesRepository
 import me.anon.grow3.data.repository.impl.DefaultDiariesRepository
 import me.anon.grow3.data.source.DiariesDataSource
-import me.anon.grow3.data.source.json.JsonDiariesDataSource
 import me.anon.grow3.data.source.nitrite.NitriteDiariesDataSource
 import me.anon.grow3.util.application
 import javax.inject.Named
@@ -20,7 +19,7 @@ class AppModule(
 
 	@Provides
 	@Named("garden_source")
-	public fun provideGardenSource(): String = appContext.application.dataPath
+	public fun provideGardenSource(): String = appContext.application.dataPath + "diaries.db"
 
 	@Provides
 	public fun provideGardenDataSource(dataSource: NitriteDiariesDataSource): DiariesDataSource = dataSource
