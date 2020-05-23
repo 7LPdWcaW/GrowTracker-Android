@@ -1,9 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
 
 <resources>
+	<attr name="textOnPrimary" format="reference|color" />
+	<attr name="textOnSecondary" format="reference|color" />
 	<attr name="textOnAccent" format="reference|color" />
-
-	<attr name="styleButtonBorderless" format="reference" />
-	<attr name="styleButtonBordered" format="reference" />
-	<attr name="styleButtonText" format="reference" />
+	<attr name="textOnSurface" format="reference|color" />
 </resources>

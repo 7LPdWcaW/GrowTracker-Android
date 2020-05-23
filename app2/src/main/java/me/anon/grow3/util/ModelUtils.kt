@@ -5,28 +5,28 @@ import me.anon.grow3.data.model.Diary
 import java.io.File
 import java.io.FileInputStream
 import java.io.FileOutputStream
+import java.io.InputStream
 
 public fun String.parseAsDiaries(): List<Diary> = MoshiHelper.parse(
 	json = this,
 	type = Types.newParameterizedType(ArrayList::class.java, Diary::class.java)
 )
 
-public fun File.loadAsDiaries(default: () -> List<Diary> = { arrayListOf() }): List<Diary>
+public fun File.loadAsDiaries(default: () -> List<Diary> = { arrayListOf() }): List<Diary> = FileInputStream(this).loadAsDiaries(default)
+public fun InputStream.loadAsDiaries(default: () -> List<Diary> = { arrayListOf() }): List<Diary>
 {
-	try
+	return try
 	{
-		with(FileInputStream(this)) {
-			val data = MoshiHelper.parse<ArrayList<Diary>>(
-				json = this,
-				type = Types.newParameterizedType(ArrayList::class.java, Diary::class.java)
-			)
-			close()
-			return data
-		}
+		val data = MoshiHelper.parse<ArrayList<Diary>>(
+			json = this,
+			type = Types.newParameterizedType(ArrayList::class.java, Diary::class.java)
+		)
+		close()
+		data
 	}
 	catch (e: Exception)
 	{
-		return default()
+		default()
 	}
 }
 

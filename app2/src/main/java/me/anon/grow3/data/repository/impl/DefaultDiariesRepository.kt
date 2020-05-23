@@ -1,15 +1,18 @@
 package me.anon.grow3.data.repository.impl
 
 import androidx.lifecycle.*
-import kotlinx.coroutines.CoroutineDispatcher
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.GlobalScope
-import kotlinx.coroutines.launch
+import kotlinx.coroutines.*
+import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.filter
+import kotlinx.coroutines.flow.flow
+import kotlinx.coroutines.flow.map
 import me.anon.grow3.data.model.Diary
 import me.anon.grow3.data.repository.DiariesRepository
 import me.anon.grow3.data.source.DiariesDataSource
 import me.anon.grow3.util.DataResult
 import me.anon.grow3.util.asFailure
+import me.anon.grow3.util.asSuccess
+import me.anon.grow3.util.isSuccess
 import javax.inject.Inject
 import javax.inject.Named
 import javax.inject.Singleton
@@ -20,7 +23,7 @@ class DefaultDiariesRepository @Inject constructor(
 	@Named("io_dispatcher") private val dispatcher: CoroutineDispatcher = Dispatchers.IO
 ) : DiariesRepository
 {
-	private val _loaded = MutableLiveData<Boolean>(false)
+	private val _loaded = MutableLiveData(false)
 	private val _diaries: LiveData<DataResult<List<Diary>>> = _loaded.switchMap { isLoaded ->
 		liveData {
 			if (isLoaded == false)
@@ -37,11 +40,7 @@ class DefaultDiariesRepository @Inject constructor(
 
 	override fun observeDiaries(): LiveData<DataResult<List<Diary>>>
 	{
-		if (_loaded.value != true)
-		{
-			invalidate()
-		}
-
+		if (_loaded.value != true) invalidate()
 		return _diaries
 	}
 
@@ -62,9 +61,11 @@ class DefaultDiariesRepository @Inject constructor(
 
 	override fun sync()
 	{
-		GlobalScope.launch {
-			dataSource.sync(DiariesDataSource.SyncDirection.SAVE)
-			invalidate()
+		_diaries.value?.asSuccess()?.let { diaries ->
+			CoroutineScope(dispatcher).launch {
+				dataSource.sync(DiariesDataSource.SyncDirection.SAVE, *diaries.toTypedArray())
+				invalidate()
+			}
 		}
 	}
 

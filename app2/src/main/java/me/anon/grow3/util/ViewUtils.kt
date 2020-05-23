@@ -1,15 +1,14 @@
 package me.anon.lib.ext
 
 import android.content.Context
+import android.graphics.drawable.Drawable
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.view.inputmethod.InputMethodManager
 import android.widget.TextView
-import androidx.annotation.ColorRes
-import androidx.annotation.DimenRes
-import androidx.annotation.LayoutRes
-import androidx.annotation.StringRes
+import androidx.annotation.*
+import androidx.core.content.res.ResourcesCompat
 import androidx.recyclerview.widget.RecyclerView
 
 /**
@@ -83,6 +82,22 @@ public fun ViewGroup.removeViewsFrom(start: Int = 0)
 	}
 }
 
+public inline fun <reified T> View.parentViewByInstance(): T
+{
+	var parent: View? = parentView
+	while (parent != null)
+	{
+		if (parent::class is T) return parent as T
+		else
+		{
+			if (parentView.id == android.R.id.content) parent = null
+			else parent = parent.parentView
+		}
+	}
+
+	throw IllegalArgumentException("View of type ${T::class} was not found")
+}
+
 /**
  * Returns a sequence of child views from a given view.
  * If the view is not a [ViewGroup], an empty sequence will be returned
@@ -137,9 +152,26 @@ public fun View.dimension(@DimenRes resId: Int): Float = resources.getDimension(
 public fun View.dimensionPixels(@DimenRes resId: Int): Int = resources.getDimensionPixelSize(resId)
 public fun View.string(@StringRes resId: Int): String = resources.getString(resId)
 public fun View.color(@ColorRes resId: Int): Int = resources.getColor(resId)
+public fun View.drawable(@DrawableRes resId: Int): Drawable = ResourcesCompat.getDrawable(resources, resId, context.theme)!!
 
 public var TextView.text: String
-	public set(value) {
+	set(value) {
 		setText(value)
 	}
-	public get() = text.toString()
+	get() = text.toString()
+
+public var TextView.drawableStart: Drawable
+	set(value) = setCompoundDrawablesWithIntrinsicBounds(value, compoundDrawables[1], compoundDrawables[2], compoundDrawables[3])
+	get() = compoundDrawables[0]
+
+public var TextView.drawableTop: Drawable
+	set(value )= setCompoundDrawablesWithIntrinsicBounds(compoundDrawables[0], value, compoundDrawables[2], compoundDrawables[3])
+	get() = compoundDrawables[1]
+
+public var TextView.drawableEnd: Drawable
+	set(value )= setCompoundDrawablesWithIntrinsicBounds(compoundDrawables[0], compoundDrawables[1], value, compoundDrawables[3])
+	get() = compoundDrawables[2]
+
+public var TextView.drawableBottom: Drawable
+	set(value )= setCompoundDrawablesWithIntrinsicBounds(compoundDrawables[0], compoundDrawables[1], compoundDrawables[2], value)
+	get() = compoundDrawables[3]

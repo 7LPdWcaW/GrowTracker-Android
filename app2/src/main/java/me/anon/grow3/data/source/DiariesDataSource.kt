@@ -16,5 +16,5 @@ interface DiariesDataSource
 
 	suspend fun getDiaries(): List<Diary>
 
-	suspend fun sync(direction: SyncDirection = SyncDirection.SAVE): List<Diary>
+	suspend fun sync(direction: SyncDirection = SyncDirection.SAVE, vararg diary: Diary): List<Diary>
 }
