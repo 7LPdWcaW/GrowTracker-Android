@@ -21,7 +21,8 @@ class DateSelectDialogFragment : Fragment()
 		public const val TAG: String = "date_select_dialog"
 		private const val SAVED_DIALOG_STATE_TAG: String = "dialog_state"
 		private const val SAVED_DIALOG_SELECTED_DATE: String = "selected_date"
-		private const val SAVED_DIALOG_INCLUDE_TIME: String = ""
+		private const val SAVED_DIALOG_CURRENT_DIALOG: String = "current_dialog"
+		private const val SAVED_DIALOG_INCLUDE_TIME: String = "include_time"
 
 		public fun show(selectedDate: String = ZonedDateTime.now().asString(), includeTime: Boolean = true, fm: FragmentManager): DateSelectDialogFragment
 			= show(selectedDate.asDateTime(), includeTime, fm)
@@ -92,7 +93,11 @@ class DateSelectDialogFragment : Fragment()
 		super.onActivityCreated(savedInstanceState)
 
 		savedInstanceState?.getBundle(SAVED_DIALOG_STATE_TAG)?.apply {
-			currentDialog = showDateDialog(this)
+			when (savedInstanceState.getString(SAVED_DIALOG_CURRENT_DIALOG))
+			{
+				TimePickerDialog::class.simpleName!! -> currentDialog = showTimeDialog(this)
+				else -> currentDialog = showDateDialog(this)
+			}
 		} ?: showDateDialog()
 	}
 
@@ -104,6 +109,7 @@ class DateSelectDialogFragment : Fragment()
 			outState.putBundle(SAVED_DIALOG_STATE_TAG, dialogState);
 		}
 		outState.putString(SAVED_DIALOG_SELECTED_DATE, selectedDate.asString())
+		outState.putString(SAVED_DIALOG_CURRENT_DIALOG, currentDialog?.javaClass?.simpleName ?: "")
 		outState.putBoolean(SAVED_DIALOG_INCLUDE_TIME, includeTime)
 	}
 
@@ -142,7 +148,7 @@ class DateSelectDialogFragment : Fragment()
 		return currentDialog!!
 	}
 
-	private fun showTimeDialog()
+	private fun showTimeDialog(savedState: Bundle? = null): Dialog
 	{
 		currentDialog = TimePickerDialog(
 			requireContext(),
@@ -161,6 +167,8 @@ class DateSelectDialogFragment : Fragment()
 
 			show()
 		}
+		savedState?.let { currentDialog?.onRestoreInstanceState(savedState) }
+		return currentDialog!!
 	}
 
 	public fun dismiss()

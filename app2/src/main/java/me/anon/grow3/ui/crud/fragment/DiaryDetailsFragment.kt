@@ -32,7 +32,7 @@ class DiaryDetailsFragment : BaseFragment(R.layout.fragment_crud_diary_details)
 			it.hideKeyboard()
 
 			val current = viewModel.diary.value?.date ?: ZonedDateTime.now().asString()
-			DateSelectDialogFragment.show(current, false, childFragmentManager).apply {
+			DateSelectDialogFragment.show(current, true, childFragmentManager).apply {
 				onDateTimeSelected = ::onDateSelected
 			}
 
