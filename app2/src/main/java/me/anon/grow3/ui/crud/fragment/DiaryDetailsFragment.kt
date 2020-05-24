@@ -32,7 +32,8 @@ class DiaryDetailsFragment : BaseFragment(R.layout.fragment_crud_diary_details)
 	override fun bindUi()
 	{
 		diary_name.editText!!.doAfterTextChanged {
-			viewModel.setDiaryName(it.toString())
+			// don't re-trigger the text change by calling editText.text ...
+			viewModel.diary.value?.name = it.toString()
 		}
 
 		date.editText!!.onFocus {

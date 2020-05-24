@@ -35,7 +35,7 @@
 		<activity
 			android:name=".ui.crud.activity.DiaryActivity"
 			android:theme="@style/AppTheme.FullScrim"
-			android:windowSoftInputMode="stateHidden"
+			android:windowSoftInputMode="stateAlwaysHidden"
 		>
 			<intent-filter>
 				<action android:name="android.intent.action.MAIN" />
