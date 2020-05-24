@@ -2,11 +2,17 @@ package me.anon.grow3.util
 
 import android.content.Context
 import android.graphics.drawable.Drawable
-import androidx.annotation.ColorInt
-import androidx.annotation.ColorRes
-import androidx.annotation.DrawableRes
-import androidx.annotation.StringRes
+import android.util.TypedValue
+import androidx.annotation.*
 import androidx.core.content.res.ResourcesCompat
+
+@AttrRes
+public fun @receiver:ColorInt Int.resColor(context: Context): Int
+{
+	val outValue = TypedValue()
+	context.theme?.resolveAttribute(this, outValue, true) ?: return -1
+	return outValue.data
+}
 
 @ColorInt
 public fun @receiver:ColorRes Int.color(context: Context): Int

@@ -4,6 +4,7 @@ import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.liveData
+import me.anon.grow3.data.model.Crop
 import me.anon.grow3.data.model.Diary
 import me.anon.grow3.data.repository.DiariesRepository
 import me.anon.grow3.util.ViewModelFactory
@@ -27,7 +28,13 @@ class DiaryViewModel(
 
 	private val _diary = liveData {
 		val count = diariesRepository.getDiaries().size
-		emit(Diary(name = "Gen ${count + 1}"))
+		emit(Diary(name = "Gen ${count + 1}").apply {
+			crops.add(Crop(
+				name = "Crop 1",
+				genetics = "Unknown genetics",
+				platedDate = this@apply.date
+			))
+		})
 	} as MutableLiveData
 
 	public val diary = _diary.toLiveData()
@@ -44,6 +51,14 @@ class DiaryViewModel(
 	{
 		_diary.value?.apply {
 			name = newName
+			_diary.postValue(this)
+		}
+	}
+
+	public fun addCrop(crop: Crop)
+	{
+		_diary.value?.apply {
+			crops.add(crop)
 			_diary.postValue(this)
 		}
 	}

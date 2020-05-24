@@ -162,11 +162,11 @@ class DiaryTest
 
 		do
 		{
-			diary.crops += Crop {
-				name = "Test Crop $cropCounter"
-				genetics = "Unknown"
+			diary.crops += Crop(
+				name = "Test Crop $cropCounter",
+				genetics = "Unknown",
 				numberOfPlants = (Math.random() * 10).toInt()
-			}
+			)
 		} while (cropCounter-- >= 0)
 
 		do

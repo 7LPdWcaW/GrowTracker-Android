@@ -14,5 +14,3 @@ class Crop(
 	//public var cloneOf: String? = null,
 	public var platedDate: String = ZonedDateTime.now().asString()
 )
-
-public fun Crop(block: Crop.() -> Unit): Crop = Crop(name = "", genetics = "").apply(block)

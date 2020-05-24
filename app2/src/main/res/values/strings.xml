@@ -14,4 +14,7 @@
 	<string name="add_diary_details_name">Name</string>
 	<string name="add_diary_details_date">Start date</string>
 	<string name="add_diary_stages_title">Stages</string>
+
+	<string name="add_diary_crops_title">Crops</string>
+	<string name="add_diary_crops_add">Add crop</string>
 </resources>
