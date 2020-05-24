@@ -1,6 +1,7 @@
 package me.anon.grow3.ui.crud.fragment
 
 import android.view.View
+import androidx.core.widget.doAfterTextChanged
 import androidx.fragment.app.activityViewModels
 import androidx.lifecycle.observe
 import kotlinx.android.synthetic.main.fragment_crud_diary_details.*
@@ -23,12 +24,17 @@ class DiaryDetailsFragment : BaseFragment(R.layout.fragment_crud_diary_details)
 	override fun bindVm()
 	{
 		viewModel.diary.observe(viewLifecycleOwner) { diary ->
+			diary_name.editText!!.text = diary.name.asEditable()
 			date.editText!!.text = diary.date.asDateTime().asFormattedString().asEditable()
 		}
 	}
 
 	override fun bindUi()
 	{
+		diary_name.editText!!.doAfterTextChanged {
+			viewModel.setDiaryName(it.toString())
+		}
+
 		date.editText!!.onFocus {
 			it.hideKeyboard()
 

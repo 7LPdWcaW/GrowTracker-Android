@@ -33,7 +33,7 @@
 						android:layout_width="wrap_content"
 						android:layout_height="wrap_content"
 						android:id="@+id/header"
-						android:text="Name your diary"
+						android:text="@string/add_diary_details_title"
 						app:layout_constraintTop_toTopOf="parent"
 						app:layout_constraintStart_toStartOf="parent"
 						android:textAppearance="@style/Text.Header"
@@ -42,8 +42,8 @@
 					<com.google.android.material.textfield.TextInputLayout
 						android:layout_width="match_parent"
 						android:layout_height="wrap_content"
-						android:id="@+id/text_input"
-						android:hint="Name"
+						android:id="@+id/diary_name"
+						android:hint="@string/add_diary_details_name"
 						android:layout_marginTop="@dimen/section_spacing"
 						app:layout_constraintTop_toBottomOf="@id/header"
 						app:layout_constraintStart_toStartOf="parent"
@@ -63,9 +63,9 @@
 						android:layout_width="match_parent"
 						android:layout_height="wrap_content"
 						android:id="@+id/date"
-						android:hint="Start date"
+						android:hint="@string/add_diary_details_date"
 						android:layout_marginTop="@dimen/section_spacing"
-						app:layout_constraintTop_toBottomOf="@id/text_input"
+						app:layout_constraintTop_toBottomOf="@id/diary_name"
 						app:layout_constraintStart_toStartOf="parent"
 						app:layout_constraintEnd_toEndOf="parent"
 						app:startIconDrawable="@drawable/ic_calendar"
@@ -79,6 +79,29 @@
 							android:inputType="none"
 						/>
 					</com.google.android.material.textfield.TextInputLayout>
+				</androidx.constraintlayout.widget.ConstraintLayout>
+			</com.google.android.material.card.MaterialCardView>
+
+			<com.google.android.material.card.MaterialCardView
+				android:layout_width="match_parent"
+				android:layout_height="wrap_content"
+				style="@style/Card"
+			>
+				<androidx.constraintlayout.widget.ConstraintLayout
+					android:layout_width="match_parent"
+					android:layout_height="wrap_content"
+					android:padding="16dp"
+				>
+					<TextView
+						android:layout_width="wrap_content"
+						android:layout_height="wrap_content"
+						android:id="@+id/header"
+						android:text="@string/add_diary_stages_title"
+						app:layout_constraintTop_toTopOf="parent"
+						app:layout_constraintStart_toStartOf="parent"
+						android:textAppearance="@style/Text.Header"
+					/>
+
 				</androidx.constraintlayout.widget.ConstraintLayout>
 			</com.google.android.material.card.MaterialCardView>
 		</LinearLayout>

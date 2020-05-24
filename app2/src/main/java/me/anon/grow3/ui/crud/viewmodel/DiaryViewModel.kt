@@ -3,6 +3,7 @@ package me.anon.grow3.ui.crud.viewmodel
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
+import androidx.lifecycle.liveData
 import me.anon.grow3.data.model.Diary
 import me.anon.grow3.data.repository.DiariesRepository
 import me.anon.grow3.util.ViewModelFactory
@@ -24,13 +25,25 @@ class DiaryViewModel(
 			DiaryViewModel(diariesRepository, handle)
 	}
 
-	private val _diary = MutableLiveData(Diary(name = ""))
+	private val _diary = liveData {
+		val count = diariesRepository.getDiaries().size
+		emit(Diary(name = "Gen ${count + 1}"))
+	} as MutableLiveData
+
 	public val diary = _diary.toLiveData()
 
 	public fun setDiaryDate(dateTime: ZonedDateTime)
 	{
 		_diary.value?.apply {
 			date = dateTime.asString()
+			_diary.postValue(this)
+		}
+	}
+
+	public fun setDiaryName(newName: String)
+	{
+		_diary.value?.apply {
+			name = newName
 			_diary.postValue(this)
 		}
 	}
