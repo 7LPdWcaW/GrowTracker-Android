@@ -1,5 +1,6 @@
 package me.anon.grow3.ui.crud.fragment
 
+import android.view.View
 import androidx.fragment.app.activityViewModels
 import androidx.lifecycle.observe
 import kotlinx.android.synthetic.main.fragment_crud_diary_details.*
@@ -50,5 +51,6 @@ class DiaryDetailsFragment : BaseFragment(R.layout.fragment_crud_diary_details)
 	public fun onDateSelected(selectedDate: ZonedDateTime)
 	{
 		viewModel.setDiaryDate(selectedDate)
+		if (date.editText?.focusSearch(View.FOCUS_RIGHT)?.requestFocus() != true) date.editText?.clearFocus()
 	}
 }
