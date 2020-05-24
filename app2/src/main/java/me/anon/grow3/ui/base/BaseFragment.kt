@@ -21,7 +21,9 @@ abstract class BaseFragment(layoutRes: Int) : Fragment(layoutRes)
 		super.onActivityCreated(savedInstanceState)
 
 		bindUi()
+		bindVm()
 	}
 
 	abstract fun bindUi()
+	abstract fun bindVm()
 }
