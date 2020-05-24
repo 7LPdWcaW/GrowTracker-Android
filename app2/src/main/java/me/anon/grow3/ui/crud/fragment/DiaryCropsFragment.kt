@@ -9,6 +9,11 @@ class DiaryCropsFragment : BaseFragment(R.layout.fragment_dashboard)
 	override val inject: (ApplicationComponent) -> Unit
 		get() = {}
 
+	override fun bindVm()
+	{
+
+	}
+
 	override fun bindUi()
 	{
 

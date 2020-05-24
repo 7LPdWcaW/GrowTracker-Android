@@ -6,7 +6,9 @@ import androidx.lifecycle.ViewModel
 import me.anon.grow3.data.model.Diary
 import me.anon.grow3.data.repository.DiariesRepository
 import me.anon.grow3.util.ViewModelFactory
+import me.anon.grow3.util.asString
 import me.anon.grow3.util.toLiveData
+import org.threeten.bp.ZonedDateTime
 import javax.inject.Inject
 
 class DiaryViewModel(
@@ -24,4 +26,12 @@ class DiaryViewModel(
 
 	private val _diary = MutableLiveData(Diary(name = ""))
 	public val diary = _diary.toLiveData()
+
+	public fun setDiaryDate(dateTime: ZonedDateTime)
+	{
+		_diary.value?.apply {
+			date = dateTime.asString()
+			_diary.postValue(this)
+		}
+	}
 }

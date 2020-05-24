@@ -3,11 +3,14 @@ package me.anon.grow3.ui.crud.activity
 import android.os.Bundle
 import androidx.core.view.isVisible
 import androidx.navigation.findNavController
-import androidx.navigation.ui.NavigationUI.setupWithNavController
+import androidx.navigation.ui.NavigationUI
 import kotlinx.android.synthetic.main.activity_crud_diary.*
 import me.anon.grow3.R
 import me.anon.grow3.ui.base.BaseActivity
 
+/**
+ * Wizard activity for creating a new diary
+ */
 class DiaryActivity : BaseActivity(R.layout.activity_crud_diary)
 {
 	private var currentView = R.id.navigation_diary_details
@@ -17,7 +20,6 @@ class DiaryActivity : BaseActivity(R.layout.activity_crud_diary)
 		super.onCreate(savedInstanceState)
 
 		val navController = findNavController(R.id.nav_host_fragment)
-		setupWithNavController(toolbar!!, navController)
 		navController.addOnDestinationChangedListener { controller, destination, arguments ->
 			currentView = destination.id
 			back.isVisible = currentView != R.id.navigation_diary_details
@@ -29,6 +31,7 @@ class DiaryActivity : BaseActivity(R.layout.activity_crud_diary)
 				toolbar?.isVisible = false
 			}
 		}
+		NavigationUI.setupWithNavController(toolbar!!, navController)
 
 		back.setOnClickListener {
 			if (!navController.popBackStack()) finish()
