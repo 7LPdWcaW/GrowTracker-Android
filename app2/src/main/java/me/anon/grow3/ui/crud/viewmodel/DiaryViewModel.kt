@@ -26,15 +26,26 @@ class DiaryViewModel(
 			DiaryViewModel(diariesRepository, handle)
 	}
 
+	private var _diaryId: String? = savedStateHandle["diary_id"]
+		set(value) {
+			savedStateHandle["diary_id"] = value
+			field = value
+		}
+
 	private val _diary = liveData {
 		val count = diariesRepository.getDiaries().size
-		emit(Diary(name = "Gen ${count + 1}").apply {
-			crops.add(Crop(
-				name = "Crop 1",
-				genetics = "Unknown genetics",
-				platedDate = this@apply.date
-			))
-		})
+		val diary = _diaryId?.let { diariesRepository.getDiaryById(it) }
+			?: diariesRepository.createDiary(Diary(name = "Gen ${count + 1}").apply {
+				crops.add(Crop(
+					name = "Crop 1",
+					genetics = "Unknown genetics",
+					platedDate = this@apply.date
+				))
+			}, true)
+
+		_diaryId = diary.id
+		emit(diary)
+
 	} as MutableLiveData
 
 	public val diary = _diary.toLiveData()

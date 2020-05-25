@@ -7,6 +7,7 @@
 	android:layout_height="wrap_content"
 	android:id="@+id/toolbar_layout"
 	android:theme="@style/ThemeOverlay.AppCompat.Dark.ActionBar"
+	android:transitionName="toolbar"
 >
 	<com.google.android.material.appbar.MaterialToolbar
 		android:layout_width="match_parent"

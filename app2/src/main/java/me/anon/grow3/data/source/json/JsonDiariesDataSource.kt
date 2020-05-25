@@ -32,6 +32,11 @@ class JsonDiariesDataSource @Inject constructor(
 		diaries.postValue(arrayListOf())
 	}
 
+	override suspend fun addTempDiary(diary: Diary): Diary
+	{
+		TODO("Not yet implemented")
+	}
+
 	override suspend fun addDiary(diary: Diary): List<Diary>
 	{
 		with (getDiaries() as MutableList) {

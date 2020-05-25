@@ -12,7 +12,23 @@ public fun String.parseAsDiaries(): List<Diary> = MoshiHelper.parse(
 	type = Types.newParameterizedType(ArrayList::class.java, Diary::class.java)
 )
 
-public fun File.loadAsDiaries(default: () -> List<Diary> = { arrayListOf() }): List<Diary> = FileInputStream(this).loadAsDiaries(default)
+public fun File.loadAsDiaries(default: () -> List<Diary> = { arrayListOf() }): List<Diary>
+{
+	return try
+	{
+		with(FileInputStream(this))
+		{
+			loadAsDiaries(default).also {
+				close()
+			}
+		}
+	}
+	catch (e: Exception)
+	{
+		default()
+	}
+}
+
 public fun InputStream.loadAsDiaries(default: () -> List<Diary> = { arrayListOf() }): List<Diary>
 {
 	return try

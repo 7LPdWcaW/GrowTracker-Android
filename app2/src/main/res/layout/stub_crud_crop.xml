@@ -10,9 +10,9 @@
 	android:paddingBottom="12dp"
 	android:paddingStart="6dp"
 	android:paddingEnd="6dp"
-	android:background="?selectableItemBackground"
 	android:clickable="true"
 	android:focusable="true"
+	android:background="?selectableItemBackground"
 >
 	<com.google.android.material.imageview.ShapeableImageView
 		android:layout_width="72dp"
@@ -24,6 +24,7 @@
 		app:srcCompat="@drawable/sample"
 		app:layout_constraintTop_toTopOf="parent"
 		app:layout_constraintStart_toStartOf="parent"
+		android:transitionName="crop_image"
 	/>
 
 	<TextView
@@ -38,6 +39,7 @@
 		app:layout_constraintEnd_toStartOf="@id/duplicate"
 		tools:text="Crop 1"
 		android:textSize="18sp"
+		android:transitionName="crop_name"
 		style="@style/Text.Header.Sub"
 	/>
 
@@ -53,6 +55,7 @@
 		app:layout_constraintTop_toBottomOf="@id/crop_name"
 		app:layout_constraintEnd_toStartOf="@id/duplicate"
 		tools:text="Unknown genetics"
+		android:transitionName="crop_genetics"
 		style="@style/Text"
 	/>
 

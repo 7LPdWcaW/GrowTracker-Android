@@ -32,6 +32,7 @@
 			</intent-filter>
 		</activity>
 
+		<activity android:name=".ui.crud.activity.CropActivity" />
 		<activity
 			android:name=".ui.crud.activity.DiaryActivity"
 			android:theme="@style/AppTheme.FullScrim"

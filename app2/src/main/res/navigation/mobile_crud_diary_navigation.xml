@@ -32,7 +32,7 @@
 
 	<fragment
 		android:id="@+id/navigation_diary_environment"
-		android:name="me.anon.grow3.ui.crud.fragment.DiaryCropsFragment"
+		android:name="me.anon.grow3.ui.crud.fragment.DiaryEnvironmentFragment"
 		android:label="@string/navigation_diary_environment"
 	>
 		<action
@@ -43,6 +43,6 @@
 
 	<fragment
 		android:id="@+id/navigation_diary_complete"
-		android:name="me.anon.grow3.ui.crud.fragment.DiaryCropsFragment"
+		android:name="me.anon.grow3.ui.crud.fragment.DiaryCompleteFragment"
 	/>
 </navigation>

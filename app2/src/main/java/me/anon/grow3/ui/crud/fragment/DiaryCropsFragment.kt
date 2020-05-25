@@ -1,21 +1,19 @@
 package me.anon.grow3.ui.crud.fragment
 
-import android.annotation.SuppressLint
-import android.view.Gravity
+import android.content.Intent
 import android.view.View
-import android.widget.FrameLayout
 import androidx.core.view.plusAssign
 import androidx.fragment.app.activityViewModels
-import me.anon.grow3.R
 import androidx.lifecycle.observe
-import com.google.android.material.badge.BadgeDrawable
-import com.google.android.material.badge.BadgeUtils
 import kotlinx.android.synthetic.main.fragment_crud_diary_crops.*
 import kotlinx.android.synthetic.main.stub_crud_crop.view.*
+import me.anon.grow3.R
 import me.anon.grow3.di.ApplicationComponent
 import me.anon.grow3.ui.base.BaseFragment
+import me.anon.grow3.ui.crud.activity.CropActivity
 import me.anon.grow3.ui.crud.viewmodel.DiaryViewModel
 import me.anon.grow3.util.*
+import timber.log.Timber
 import javax.inject.Inject
 
 class DiaryCropsFragment : BaseFragment(R.layout.fragment_crud_diary_crops)
@@ -27,9 +25,9 @@ class DiaryCropsFragment : BaseFragment(R.layout.fragment_crud_diary_crops)
 
 	override fun bindVm()
 	{
-		viewModel.diary.observe(viewLifecycleOwner) {
+		viewModel.diary.observe(viewLifecycleOwner) { diary ->
 			crops_container.removeAllViews()
-			it.crops.forEach { crop ->
+			diary.crops.forEach { crop ->
 				val view = crops_container.inflate<View>(R.layout.stub_crud_crop)
 				view.crop_name.text = crop.name
 				view.crop_genetics.text = crop.genetics
@@ -38,6 +36,10 @@ class DiaryCropsFragment : BaseFragment(R.layout.fragment_crud_diary_crops)
 				}
 				view.onClick {
 					// reveal crop edit fragment dialog
+					navigateForResult<CropActivity> {
+						putExtra(CropActivity.EXTRA_DIARY_ID, diary.id)
+						putExtra(CropActivity.EXTRA_CROP_ID, crop.id)
+					}
 				}
 
 				// Broken for now
@@ -56,6 +58,21 @@ class DiaryCropsFragment : BaseFragment(R.layout.fragment_crud_diary_crops)
 	{
 		add_crop.onClick {
 			// reveal crop edit fragment dialog
+			navigateForResult<CropActivity> {
+				putExtra(CropActivity.EXTRA_DIARY_ID, viewModel.diary.value?.id)
+			}
 		}
+	}
+
+	override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?)
+	{
+		when (requestCode)
+		{
+			code<CropActivity>() -> {
+				Timber.e("refresh $requestCode $resultCode")
+			}
+		}
+
+		super.onActivityResult(requestCode, resultCode, data)
 	}
 }

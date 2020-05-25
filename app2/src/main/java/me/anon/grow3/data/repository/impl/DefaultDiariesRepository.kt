@@ -55,7 +55,11 @@ class DefaultDiariesRepository @Inject constructor(
 
 	override suspend fun getDiaryById(diaryId: String): Diary? = dataSource.getDiaryById(diaryId)
 
-	override suspend fun createDiary(diary: Diary): Diary = dataSource.addDiary(diary).find { it.id == diary.id }!!
+	override suspend fun createDiary(diary: Diary, isDraft: Boolean): Diary
+	{
+		if (isDraft) return dataSource.addTempDiary(diary)
+		return dataSource.addDiary(diary).find { it.id == diary.id }!!
+	}
 
 	override fun sync()
 	{

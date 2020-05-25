@@ -9,6 +9,13 @@ public class FakeDiariesDataSource(private val diaries: MutableList<Diary>) : Di
 		add(diary)
 	}
 
+	override fun close()
+	{
+		diaries.clear()
+	}
+
+	override suspend fun addTempDiary(diary: Diary): Diary = diaries.add(diary).run { diary }
+
 	override suspend fun getDiaryById(diaryId: String): Diary? = diaries.find { it.id == diaryId }
 
 	override suspend fun getDiaries(): List<Diary> = diaries
