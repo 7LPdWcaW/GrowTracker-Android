@@ -219,7 +219,7 @@ public class WateringFragment extends Fragment
 	@Override public void onSaveInstanceState(@NonNull Bundle outState)
 	{
 		outState.putIntArray("plant_index", plantIndex);
-		outState.putInt("garden_index", actionIndex);
+		outState.putInt("garden_index", gardenIndex);
 		outState.putInt("action_index", actionIndex);
 		outState.putParcelable("water", water);
 
