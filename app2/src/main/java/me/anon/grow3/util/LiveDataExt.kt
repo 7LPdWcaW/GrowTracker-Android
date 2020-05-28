@@ -4,8 +4,13 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MediatorLiveData
 import androidx.lifecycle.MutableLiveData
 
-public fun <T> MutableLiveData<T>.toLiveData()
+public fun <T> MutableLiveData<T>.asLiveData()
 	= this as LiveData<T>
+
+public fun <T> LiveData<T>.asMutableLiveData()
+	= this as MutableLiveData<T>
+
+public fun <T> MutableLiveData<T>.notifyChange() = this.postValue(this.value)
 
 public fun merge(vararg liveData: LiveData<*>): LiveData<ArrayList<*>>
 	= arrayListOf(*liveData).zipMapLiveData()

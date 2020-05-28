@@ -19,7 +19,7 @@ class AppModule(
 
 	@Provides
 	@Named("garden_source")
-	public fun provideGardenSource(): String = appContext.application.dataPath + "diaries.db"
+	public fun provideGardenSource(): String = appContext.application.dataPath + "/diaries.db"
 
 	@Provides
 	public fun provideGardenDataSource(dataSource: NitriteDiariesDataSource): DiariesDataSource = dataSource

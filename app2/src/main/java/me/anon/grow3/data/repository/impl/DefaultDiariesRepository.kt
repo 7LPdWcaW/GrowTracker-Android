@@ -21,32 +21,19 @@ class DefaultDiariesRepository @Inject constructor(
 	@Named("io_dispatcher") private val dispatcher: CoroutineDispatcher = Dispatchers.IO
 ) : DiariesRepository
 {
-	private val _loaded = MutableLiveData(false)
-	private val _diaries: LiveData<DataResult<List<Diary>>> = _loaded.switchMap { isLoaded ->
-		liveData {
-			if (isLoaded == false)
-			{
-				emit(DataResult.Loading)
-				dataSource.sync(DiariesDataSource.SyncDirection.LOAD)
-				_loaded.postValue(true)
-				return@liveData
-			}
-
-			emit(DataResult.success(dataSource.getDiaries()))
+	private val _refresh = MutableLiveData(true)
+	private val _diaries = _refresh.switchMap { force ->
+		liveData<DataResult<List<Diary>>> {
+			emit(DataResult.Success(dataSource.sync(DiariesDataSource.SyncDirection.LOAD)))
 		}
 	}
 
-	override fun observeDiaries(): LiveData<DataResult<List<Diary>>>
-	{
-		if (_loaded.value != true) invalidate()
-		return _diaries
-	}
+	override fun observeDiaries(): LiveData<DataResult<List<Diary>>> = _diaries
 
 	override fun observeDiary(diaryId: String): LiveData<DataResult<Diary>> = _diaries.map {
 		when (it)
 		{
 			is DataResult.Success -> DataResult.success(it.data.find { garden -> garden.id == diaryId }!!)
-			is DataResult.Loading -> it
 			else -> it.asFailure()
 		}
 	}
@@ -55,11 +42,7 @@ class DefaultDiariesRepository @Inject constructor(
 
 	override suspend fun getDiaryById(diaryId: String): Diary? = dataSource.getDiaryById(diaryId)
 
-	override suspend fun createDiary(diary: Diary, isDraft: Boolean): Diary
-	{
-		if (isDraft) return dataSource.addTempDiary(diary)
-		return dataSource.addDiary(diary).find { it.id == diary.id }!!
-	}
+	override suspend fun createDiary(diary: Diary): Diary = dataSource.addDiary(diary).find { it.id == diary.id }!!
 
 	override fun sync()
 	{
@@ -73,6 +56,6 @@ class DefaultDiariesRepository @Inject constructor(
 
 	override fun invalidate()
 	{
-		_loaded.postValue(false)
+		_refresh.postValue(true)
 	}
 }

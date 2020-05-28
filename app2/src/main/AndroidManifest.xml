@@ -32,11 +32,12 @@
 			</intent-filter>
 		</activity>
 
-		<activity android:name=".ui.crud.activity.CropActivity" />
+		<activity android:name=".ui.crud.activity.CropActivity" android:theme="@style/AppTheme.Lightstatus" />
 		<activity
 			android:name=".ui.crud.activity.DiaryActivity"
 			android:theme="@style/AppTheme.FullScrim"
 			android:windowSoftInputMode="stateAlwaysHidden"
+			android:label="@string/navigation_diary_details"
 		>
 			<intent-filter>
 				<action android:name="android.intent.action.MAIN" />

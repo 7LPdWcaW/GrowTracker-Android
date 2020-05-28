@@ -24,6 +24,7 @@ class DiaryDetailsFragment : BaseFragment(R.layout.fragment_crud_diary_details)
 	override fun bindVm()
 	{
 		viewModel.diary.observe(viewLifecycleOwner) { diary ->
+			val diary = (diary as? DataResult.Success)?.data ?: return@observe
 			diary_name.editText!!.text = diary.name.asEditable()
 			date.editText!!.text = diary.date.asDateTime().asFormattedString().asEditable()
 		}
@@ -33,13 +34,17 @@ class DiaryDetailsFragment : BaseFragment(R.layout.fragment_crud_diary_details)
 	{
 		diary_name.editText!!.doAfterTextChanged {
 			// don't re-trigger the text change by calling editText.text ...
-			viewModel.diary.value?.name = it.toString()
+			val diary = (viewModel.diary.value as? DataResult.Success)?.data ?: return@doAfterTextChanged
+			diary.name = it.toString()
 		}
 
 		date.editText!!.onFocus {
+			val diary = (viewModel.diary.value as? DataResult.Success)?.data ?: return@onFocus
+			diary.name = it.toString()
+
 			it.hideKeyboard()
 
-			val current = viewModel.diary.value?.date ?: ZonedDateTime.now().asString()
+			val current = diary.date
 			DateSelectDialogFragment.show(current, true, childFragmentManager).apply {
 				onDateTimeSelected = ::onDateSelected
 			}

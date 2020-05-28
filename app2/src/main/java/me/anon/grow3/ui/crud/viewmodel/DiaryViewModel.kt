@@ -1,15 +1,10 @@
 package me.anon.grow3.ui.crud.viewmodel
 
-import androidx.lifecycle.MutableLiveData
-import androidx.lifecycle.SavedStateHandle
-import androidx.lifecycle.ViewModel
-import androidx.lifecycle.liveData
+import androidx.lifecycle.*
 import me.anon.grow3.data.model.Crop
 import me.anon.grow3.data.model.Diary
 import me.anon.grow3.data.repository.DiariesRepository
-import me.anon.grow3.util.ViewModelFactory
-import me.anon.grow3.util.asString
-import me.anon.grow3.util.toLiveData
+import me.anon.grow3.util.*
 import org.threeten.bp.ZonedDateTime
 import javax.inject.Inject
 
@@ -26,51 +21,57 @@ class DiaryViewModel(
 			DiaryViewModel(diariesRepository, handle)
 	}
 
-	private var _diaryId: String? = savedStateHandle["diary_id"]
-		set(value) {
-			savedStateHandle["diary_id"] = value
-			field = value
+	private var _diaryId: MutableLiveData<String?> = savedStateHandle.getLiveData("diary_id", null)
+
+	private val _diary = _diaryId.switchMap { id ->
+		liveData {
+			id ?: let {
+				val count = diariesRepository.getDiaries().size
+				val diary = diariesRepository.createDiary(Diary(name = "Gen ${count + 1}").apply {
+					isDraft = true
+					crops.add(Crop(
+						name = "Crop 1",
+						genetics = "Unknown genetics",
+						platedDate = this@apply.date
+					))
+				})
+
+				_diaryId.postValue(diary.id)
+				return@liveData
+			}
+
+			emitSource(diariesRepository.observeDiary(id!!))
 		}
-
-	private val _diary = liveData {
-		val count = diariesRepository.getDiaries().size
-		val diary = _diaryId?.let { diariesRepository.getDiaryById(it) }
-			?: diariesRepository.createDiary(Diary(name = "Gen ${count + 1}").apply {
-				crops.add(Crop(
-					name = "Crop 1",
-					genetics = "Unknown genetics",
-					platedDate = this@apply.date
-				))
-			}, true)
-
-		_diaryId = diary.id
-		emit(diary)
-
 	} as MutableLiveData
 
-	public val diary = _diary.toLiveData()
+	public val diary = _diary.asLiveData()
 
 	public fun setDiaryDate(dateTime: ZonedDateTime)
 	{
-		_diary.value?.apply {
+		_diary.value?.asSuccess()!!.apply {
 			date = dateTime.asString()
-			_diary.postValue(this)
+			_diary.notifyChange()
 		}
 	}
 
 	public fun setDiaryName(newName: String)
 	{
 		_diary.value?.apply {
-			name = newName
+			//name = newName
 			_diary.postValue(this)
 		}
 	}
 
 	public fun addCrop(crop: Crop)
 	{
-		_diary.value?.apply {
+		_diary.value?.asSuccess()!!.apply {
 			crops.add(crop)
-			_diary.postValue(this)
+			_diary.notifyChange()
 		}
+	}
+
+	public fun refresh()
+	{
+		_diaryId.postValue(_diaryId.value)
 	}
 }

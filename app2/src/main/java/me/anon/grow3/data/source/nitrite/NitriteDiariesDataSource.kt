@@ -44,19 +44,6 @@ class NitriteDiariesDataSource @Inject constructor(
 		return getDiaries()
 	}
 
-	override suspend fun addTempDiary(diary: Diary): Diary
-	{
-		withContext(dispatcher) {
-			db.getRepository<Diary>("temp") {
-				insert(diary)
-			}
-
-			db.commit()
-		}
-
-		return diary
-	}
-
 	override suspend fun getDiaryById(diaryId: String): Diary?
 	{
 		// check temp repo first

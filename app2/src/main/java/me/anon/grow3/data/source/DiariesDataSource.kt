@@ -14,8 +14,6 @@ interface DiariesDataSource
 
 	suspend fun addDiary(diary: Diary): List<Diary>
 
-	suspend fun addTempDiary(diary: Diary): Diary
-
 	suspend fun getDiaryById(diaryId: String): Diary?
 
 	suspend fun getDiaries(): List<Diary>

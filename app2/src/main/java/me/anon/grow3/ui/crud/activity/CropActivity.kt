@@ -3,6 +3,8 @@ package me.anon.grow3.ui.crud.activity
 import android.os.Bundle
 import android.view.MenuItem
 import androidx.activity.viewModels
+import androidx.appcompat.widget.Toolbar
+import androidx.core.widget.doAfterTextChanged
 import androidx.lifecycle.observe
 import kotlinx.android.synthetic.main.activity_crud_crop.*
 import me.anon.grow3.R
@@ -28,10 +30,11 @@ class CropActivity : BaseActivity(R.layout.activity_crud_crop)
 
 		component.inject(this)
 
-		setSupportActionBar(findViewById(R.id.toolbar))
+		toolbar = findViewById<Toolbar>(R.id.toolbar).apply {
+			navigationIcon = R.drawable.ic_check.drawable(context, R.attr.textOnSurface.resColor(context))
+		}
 		title = "Edit Crop"
-		supportActionBar?.setDisplayHomeAsUpEnabled(true)
-		supportActionBar?.setHomeAsUpIndicator(R.drawable.ic_check.drawable(this, R.attr.textOnSurface.resColor(this)))
+		statusBarColor = 0xffffffff.toInt()
 
 		bindUi()
 		bindVm()
@@ -41,7 +44,15 @@ class CropActivity : BaseActivity(R.layout.activity_crud_crop)
 
 	private fun bindUi()
 	{
+		crop_name.editText!!.doAfterTextChanged {
+			// don't re-trigger the text change by calling editText.text ...
+			viewModel.crop.value?.name = it.toString()
+		}
 
+		crop_genetics.editText!!.doAfterTextChanged {
+			// don't re-trigger the text change by calling editText.text ...
+			viewModel.crop.value?.genetics = it.toString()
+		}
 	}
 
 	private fun bindVm()
@@ -56,7 +67,8 @@ class CropActivity : BaseActivity(R.layout.activity_crud_crop)
 	{
 		if (item.itemId == android.R.id.home)
 		{
-			// save and quit
+//			viewModel.save()
+			onBackPressed()
 		}
 
 		return super.onOptionsItemSelected(item)
@@ -64,7 +76,10 @@ class CropActivity : BaseActivity(R.layout.activity_crud_crop)
 
 	override fun onBackPressed()
 	{
-		super.onBackPressed()
-		// show exit dialog
+		// perhaps all changes should always save?
+//		promptExit {
+			viewModel.reset()
+			super.onBackPressed()
+//		}
 	}
 }
