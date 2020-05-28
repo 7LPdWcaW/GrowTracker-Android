@@ -4,7 +4,7 @@ import com.squareup.moshi.JsonClass
 import java.util.*
 
 @JsonClass(generateAdapter = true)
-class Environment(
+data class Environment(
 	public var type: EnvironmentType?,
 	public var temperature: Double?,
 	public var humidity: Double?,

@@ -10,7 +10,7 @@ import org.threeten.bp.temporal.ChronoUnit
 import java.util.*
 
 @JsonClass(generateAdapter = true)
-class Diary(
+data class Diary(
 	@Id public val id: String = UUID.randomUUID().toString(),
 	public var name: String,
 	public var date: String = ZonedDateTime.now().asString(),
@@ -18,6 +18,8 @@ class Diary(
 	public val crops: ArrayList<Crop> = arrayListOf()
 )
 {
+	public var isDraft = false
+
 	private fun cropFilter(crop: Crop?, log: Log)
 		= if (crop == null) true else (log.cropIds.isNotEmpty() && log.cropIds.contains(crop.id)) || log.cropIds.isEmpty()
 

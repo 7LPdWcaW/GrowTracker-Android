@@ -3,7 +3,7 @@ package me.anon.grow3.data.model
 import com.squareup.moshi.JsonClass
 
 @JsonClass(generateAdapter = true)
-class Water(
+data class Water(
 	public var inPH: PHUnit?,
 	public var outPH: PHUnit?,
 	public var tds: TdsUnit?,

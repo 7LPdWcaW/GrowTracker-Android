@@ -5,7 +5,7 @@ import com.squareup.moshi.JsonClass
 typealias Medium = Transplant
 
 @JsonClass(generateAdapter = true)
-class Transplant(
+data class Transplant(
 	public var medium: MediumType,
 	public var size: Double?
 ) : Log(action = "Transplant")

@@ -6,7 +6,7 @@ import org.threeten.bp.ZonedDateTime
 import java.util.*
 
 @JsonClass(generateAdapter = true)
-class Crop(
+data class Crop(
 	public val id: String = UUID.randomUUID().toString(),
 	public var name: String,
 	public var genetics: String,
