@@ -14,6 +14,8 @@ import me.anon.grow3.ui.base.BaseFragment
 import me.anon.grow3.ui.crud.activity.CropActivity
 import me.anon.grow3.ui.crud.viewmodel.DiaryViewModel
 import me.anon.grow3.util.*
+import me.anon.grow3.util.states.asSuccess
+import me.anon.grow3.util.states.isSuccess
 import timber.log.Timber
 import java.util.*
 import javax.inject.Inject

@@ -8,7 +8,6 @@ import android.view.ViewGroup
 import android.view.inputmethod.InputMethodManager
 import android.widget.TextView
 import androidx.annotation.*
-import androidx.core.content.res.ResourcesCompat
 import androidx.recyclerview.widget.RecyclerView
 
 /**
@@ -185,9 +184,15 @@ public fun RecyclerView.removeAllItemDecorators()
 // Resource convenience methods
 public fun View.dimension(@DimenRes resId: Int): Float = resources.getDimension(resId)
 public fun View.dimensionPixels(@DimenRes resId: Int): Int = resources.getDimensionPixelSize(resId)
-public fun View.string(@StringRes resId: Int): String = resources.getString(resId)
-public fun View.color(@ColorRes resId: Int): Int = resources.getColor(resId)
-public fun View.drawable(@DrawableRes resId: Int): Drawable = ResourcesCompat.getDrawable(resources, resId, context.theme)!!
+public fun View.string(@StringRes resId: Int): String = resId.string(context)
+
+@ColorInt
+public fun View.color(@ColorRes resId: Int): Int = resId.color(context)
+
+@ColorInt
+public fun View.resColor(@AttrRes resId: Int): Int = resId.resColor(context)
+
+public fun View.drawable(@DrawableRes resId: Int, @ColorInt tint: Int? = null): Drawable = resId.drawable(context, tint)
 
 public var TextView.drawableStart: Drawable
 	set(value) = setCompoundDrawablesWithIntrinsicBounds(value, compoundDrawables[1], compoundDrawables[2], compoundDrawables[3])

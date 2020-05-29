@@ -7,6 +7,8 @@ import androidx.lifecycle.switchMap
 import me.anon.grow3.data.model.Crop
 import me.anon.grow3.data.repository.DiariesRepository
 import me.anon.grow3.util.*
+import me.anon.grow3.util.states.asSuccess
+import me.anon.grow3.util.states.isSuccess
 import javax.inject.Inject
 
 class CropViewModel(
@@ -68,7 +70,7 @@ class CropViewModel(
 	{
 		if (!newCrop) return
 
-		// remove if hasnt been changed
+		// remove if nothing has been added
 		if (cropComparator == crop.value?.toJsonString())
 		{
 			diary.value?.asSuccess()?.let { diary ->

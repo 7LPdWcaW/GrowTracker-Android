@@ -2,7 +2,7 @@ package me.anon.grow3.data.repository
 
 import androidx.lifecycle.LiveData
 import me.anon.grow3.data.model.Diary
-import me.anon.grow3.util.DataResult
+import me.anon.grow3.util.states.DataResult
 
 interface DiariesRepository
 {

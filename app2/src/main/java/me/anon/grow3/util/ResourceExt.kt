@@ -5,8 +5,8 @@ import android.graphics.drawable.Drawable
 import android.util.TypedValue
 import androidx.annotation.*
 
-@AttrRes
-public fun @receiver:ColorInt Int.resColor(context: Context): Int
+@ColorInt
+public fun @receiver:AttrRes Int.resColor(context: Context): Int
 {
 	val outValue = TypedValue()
 	context.theme?.resolveAttribute(this, outValue, true) ?: return -1

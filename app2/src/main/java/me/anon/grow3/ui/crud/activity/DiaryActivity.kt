@@ -20,7 +20,7 @@ class DiaryActivity : BaseActivity(R.layout.activity_crud_diary)
 		super.onCreate(savedInstanceState)
 
 		val navController = findNavController(R.id.nav_host_fragment)
-		navController.addOnDestinationChangedListener { controller, destination, arguments ->
+		navController.addOnDestinationChangedListener { _, destination, _ ->
 			currentView = destination.id
 			back.isVisible = currentView != R.id.navigation_diary_details
 

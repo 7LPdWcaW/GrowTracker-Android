@@ -5,7 +5,7 @@ import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import me.anon.grow3.data.model.Diary
 import me.anon.grow3.data.repository.DiariesRepository
-import me.anon.grow3.util.DataResult
+import me.anon.grow3.util.states.DataResult
 import me.anon.grow3.util.ViewModelFactory
 import javax.inject.Inject
 

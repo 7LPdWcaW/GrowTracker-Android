@@ -53,7 +53,7 @@ enum class MaintenanceType
 	Topped,
 	Trimmed,
 	LowStressTraining,
-	FIMM,
+	FIM,
 	ScrogTuck,
 	Lollipop,
 	Supercrop,

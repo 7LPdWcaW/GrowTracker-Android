@@ -10,6 +10,8 @@ import me.anon.grow3.data.model.Diary
 import me.anon.grow3.data.repository.impl.DefaultDiariesRepository
 import me.anon.grow3.data.source.DiariesDataSource
 import me.anon.grow3.util.*
+import me.anon.grow3.util.states.DataResult
+import me.anon.grow3.util.states.asSuccess
 import org.amshove.kluent.*
 import org.junit.Before
 import org.junit.Rule

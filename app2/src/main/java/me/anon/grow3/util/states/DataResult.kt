@@ -1,4 +1,4 @@
-package me.anon.grow3.util
+package me.anon.grow3.util.states
 
 /**
  * Wrapper class for LiveData objects.
