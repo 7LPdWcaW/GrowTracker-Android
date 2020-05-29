@@ -17,4 +17,11 @@
 
 	<string name="add_diary_crops_title">Crops</string>
 	<string name="add_diary_crops_add">Add crop</string>
+
+	<string name="add_diary_environment_type">Environment type</string>
+
+	<string name="environment_type_tent">Tent</string>
+	<string name="environment_type_outdoors">Outdoors</string>
+	<string name="environment_type_indoors">Indoors</string>
+	<string name="environment_type_greenhouse">Greenhouse</string>
 </resources>

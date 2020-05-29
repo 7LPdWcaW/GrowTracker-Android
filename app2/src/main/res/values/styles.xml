@@ -40,6 +40,14 @@
 	</style>
 
 	<!-- -->
+	<style name="DropdownTheme">
+		<item name="android:editable">false</item>
+		<item name="android:inputType">none</item>
+	</style>
+	<style name="Dropdown" parent="Widget.MaterialComponents.TextInputLayout.OutlinedBox.ExposedDropdownMenu">
+		<item name="android:theme">@style/DropdownTheme</item>
+	</style>
+
 	<style name="Card" parent="Widget.MaterialComponents.CardView">
 		<item name="cardBackgroundColor">?colorSurface</item>
 		<item name="cardUseCompatPadding">true</item>

@@ -27,11 +27,21 @@ class DropDownEditText : MaterialAutoCompleteTextView
 {
 	public val items = arrayListOf<MenuItem>()
 	public var itemSelectListener: MenuItem.OnMenuItemClickListener = MenuItem.OnMenuItemClickListener { _ -> false }
+
+	class DropDownMenuItem(
+		var itemId: Int,
+		var isChecked: Boolean = false,
+		var isCheckable: Boolean = false,
+		var iconRes: Int = R.drawable.ic_empty,
+		var titleRes: Int = -1
+	)
+
 	public var singleSelection = false
 	private var defaultText = ""
 	private var defaultIcon: Drawable? = null
 	private var menuRes = NO_ID
 	private val popup by lazy { ListPopupWindow(context) }
+	private val adapter = SelectableMenuAdapter()
 
 	constructor(context: Context) : this(context, null)
 	constructor(context: Context, attrs: AttributeSet?) : this(context, attrs, androidx.appcompat.R.attr.autoCompleteTextViewStyle)
@@ -62,19 +72,34 @@ class DropDownEditText : MaterialAutoCompleteTextView
 		init()
 	}
 
+	public fun setMenu(items: List<DropDownMenuItem>)
+	{
+		this.items.clear()
+
+		val menu = PopupMenu(context, View(context))
+		this.items.addAll(items.map {
+			menu.menu
+				.add(0, it.itemId, 0, it.titleRes)
+				.setIcon(it.iconRes)
+				.setCheckable(it.isCheckable)
+				.setChecked(it.isChecked)
+		})
+
+		popup.height = items.size * 180
+		adapter.notifyDataSetChanged()
+	}
+
 	private fun init()
 	{
 		popup.height = items.size * 180
 		popup.anchorView = this
 		popup.setDropDownGravity(Gravity.END)
 		popup.isModal = true
-		popup.setAdapter(SelectableMenuAdapter())
+		popup.setAdapter(adapter)
 		popup.setOnDismissListener {
 			val current: View = rootView.findFocus()
 			current.clearFocus()
 		}
-
-
 	}
 
 	override fun onFinishInflate()
@@ -96,7 +121,7 @@ class DropDownEditText : MaterialAutoCompleteTextView
 
 	override fun isPopupShowing(): Boolean = popup.isShowing
 
-	private inner class SelectableMenuAdapter() : BaseAdapter()
+	private inner class SelectableMenuAdapter : BaseAdapter()
 	{
 		override fun getItem(position: Int): MenuItem = items[position]
 		override fun getItemId(position: Int): Long = items[position].itemId.toLong()
