@@ -43,6 +43,18 @@ public inline fun <reified T : View> T.onFocus(crossinline listener: (T) -> Unit
 }
 
 /**
+ * Creates a on focus listener. for generic type extending [View] and passes as a typed argument
+ * in the callback. This will only be called when the view is focused
+ */
+public inline fun <reified T : View> T.onFocusLoss(crossinline listener: (T) -> Unit): T
+{
+	setOnFocusChangeListener { v, hasFocus ->
+		if (v == this && !hasFocus) listener(v as T)
+	}
+	return this
+}
+
+/**
  * Convenience method for inflating a view into another. Will return the inflated view, or the parent view if attach = true
  */
 public fun <T : View> View.inflate(@LayoutRes layoutRes: Int, attach: Boolean = false): T
