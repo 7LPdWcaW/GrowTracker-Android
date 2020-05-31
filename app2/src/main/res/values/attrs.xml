@@ -5,4 +5,5 @@
 	<attr name="textOnSecondary" format="reference|color" />
 	<attr name="textOnAccent" format="reference|color" />
 	<attr name="textOnSurface" format="reference|color" />
+	<attr name="textOnWindow" format="reference|color" />
 </resources>

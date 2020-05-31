@@ -105,4 +105,10 @@ class DiaryViewModel(
 	{
 		_diaryId.postValue(_diaryId.value)
 	}
+
+	public fun save(diary: Diary)
+	{
+		diary.isDraft = false
+		diariesRepository.sync()
+	}
 }

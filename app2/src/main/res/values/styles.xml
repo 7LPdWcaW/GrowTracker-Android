@@ -28,7 +28,10 @@
 
 		<item name="android:textColor">?textOnSurface</item>
 		<item name="android:windowContentTransitions">true</item>
+
 		<item name="android:windowBackground">@drawable/window_background</item>
+		<item name="textOnWindow">#ffffff</item>
+
 		<item name="android:windowTranslucentNavigation">true</item>
 	</style>
 

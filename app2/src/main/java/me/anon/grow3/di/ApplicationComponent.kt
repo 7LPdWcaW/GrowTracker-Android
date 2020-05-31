@@ -6,6 +6,7 @@ import me.anon.grow3.data.repository.DiariesRepository
 import me.anon.grow3.di.module.AppModule
 import me.anon.grow3.di.module.DispatcherModule
 import me.anon.grow3.ui.crud.activity.CropActivity
+import me.anon.grow3.ui.crud.fragment.DiaryCompleteFragment
 import me.anon.grow3.ui.crud.fragment.DiaryCropsFragment
 import me.anon.grow3.ui.crud.fragment.DiaryDetailsFragment
 import me.anon.grow3.ui.crud.fragment.DiaryEnvironmentFragment
@@ -27,6 +28,7 @@ interface ApplicationComponent
 	public fun inject(fragment: DiaryDetailsFragment)
 	public fun inject(fragment: DiaryCropsFragment)
 	public fun inject(fragment: DiaryEnvironmentFragment)
-
+	public fun inject(fragment: DiaryCompleteFragment)
+	
 	public fun inject(activity: CropActivity)
 }

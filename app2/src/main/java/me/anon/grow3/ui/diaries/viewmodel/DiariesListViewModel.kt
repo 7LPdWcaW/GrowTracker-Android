@@ -5,8 +5,8 @@ import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import me.anon.grow3.data.model.Diary
 import me.anon.grow3.data.repository.DiariesRepository
-import me.anon.grow3.util.states.DataResult
 import me.anon.grow3.util.ViewModelFactory
+import me.anon.grow3.util.states.DataResult
 import javax.inject.Inject
 
 class DiariesListViewModel constructor(
@@ -22,6 +22,6 @@ class DiariesListViewModel constructor(
 			DiariesListViewModel(diariesRepository, handle)
 	}
 
-//	private val _gardens = TODO()// gardensRepository.observeGardens()
-	public val gardens: LiveData<DataResult<List<Diary>>> = TODO()//_gardens
+	private val _gardens = diariesRepository.observeDiaries()
+	public val gardens: LiveData<DataResult<List<Diary>>> = _gardens
 }
