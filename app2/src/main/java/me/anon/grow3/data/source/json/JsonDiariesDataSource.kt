@@ -3,6 +3,7 @@ package me.anon.grow3.data.source.json
 import androidx.lifecycle.MutableLiveData
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.runBlocking
 import kotlinx.coroutines.withContext
 import me.anon.grow3.data.model.Diary
 import me.anon.grow3.data.source.DiariesDataSource
@@ -23,6 +24,13 @@ class JsonDiariesDataSource @Inject constructor(
 	private var _diaries: MutableList<Diary>? = null
 
 	private val diaries: MutableLiveData<List<Diary>> = MutableLiveData(_diaries ?: arrayListOf())
+
+	override fun close()
+	{
+		runBlocking { sync(DiariesDataSource.SyncDirection.SAVE) }
+		_diaries = null
+		diaries.postValue(arrayListOf())
+	}
 
 	override suspend fun addDiary(diary: Diary): List<Diary>
 	{

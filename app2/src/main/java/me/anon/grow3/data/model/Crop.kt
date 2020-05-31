@@ -6,13 +6,11 @@ import org.threeten.bp.ZonedDateTime
 import java.util.*
 
 @JsonClass(generateAdapter = true)
-class Crop(
+data class Crop(
 	public val id: String = UUID.randomUUID().toString(),
 	public var name: String,
-	public var genetics: String,
+	public var genetics: String?,
 	public var numberOfPlants: Int = 1,
 	//public var cloneOf: String? = null,
 	public var platedDate: String = ZonedDateTime.now().asString()
 )
-
-public fun Crop(block: Crop.() -> Unit): Crop = Crop(name = "", genetics = "").apply(block)

@@ -110,3 +110,5 @@ gradle-app.setting
 
 app/app-discrete-release.apk
 app/app-production-release.apk
+.idea/codeInsightSettings.xml
+.idea/jarRepositories.xml

@@ -1,12 +1,9 @@
 package me.anon.grow3
 
 import kotlinx.coroutines.runBlocking
-import me.anon.grow3.data.source.DiariesDataSource
 import me.anon.grow3.data.source.nitrite.NitriteDiariesDataSource
-import me.anon.grow3.util.component
 import me.anon.grow3.util.loadAsDiaries
 import java.io.File
-import java.io.FileOutputStream
 
 class MainApplication : BaseApplication()
 {
@@ -22,6 +19,7 @@ class MainApplication : BaseApplication()
 				NitriteDiariesDataSource("$dataPath/diaries.db")
 					.apply {
 						diaries.forEach { addDiary(it) }
+						close()
 					}
 			}
 		}

@@ -4,6 +4,7 @@ import org.threeten.bp.LocalDate
 import org.threeten.bp.LocalTime
 import org.threeten.bp.ZonedDateTime
 import org.threeten.bp.format.DateTimeFormatter
+import org.threeten.bp.format.FormatStyle
 
 /**
  * Date util class for formatting/converting strings into date objects
@@ -29,6 +30,8 @@ public fun String.asDateTime(): ZonedDateTime = ZonedDateTime.parse(this, DateTi
  * Converts local date time to string format
  */
 public fun ZonedDateTime.asString(): String = format(DateTimeFormatter.ISO_ZONED_DATE_TIME)
+
+public fun ZonedDateTime.asFormattedString(): String = format(DateTimeFormatter.ofLocalizedDate(FormatStyle.FULL))
 
 /**
  * Parses the given string as HH:mm(:ss) format

@@ -1,0 +1,48 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<navigation
+	xmlns:android="http://schemas.android.com/apk/res/android"
+	xmlns:app="http://schemas.android.com/apk/res-auto"
+	xmlns:tools="http://schemas.android.com/tools"
+	android:id="@+id/crud_diary_navigation"
+	app:startDestination="@+id/navigation_diary_details"
+>
+	<fragment
+		android:id="@+id/navigation_diary_details"
+		android:name="me.anon.grow3.ui.crud.fragment.DiaryDetailsFragment"
+		android:label="@string/navigation_diary_details"
+		tools:layout="@layout/fragment_crud_diary_details"
+	>
+		<action
+			android:id="@+id/page_1_to_2"
+			app:destination="@id/navigation_diary_crops"
+		/>
+	</fragment>
+
+	<fragment
+		android:id="@+id/navigation_diary_crops"
+		android:name="me.anon.grow3.ui.crud.fragment.DiaryCropsFragment"
+		android:label="@string/navigation_diary_crops"
+	>
+		<action
+			android:id="@+id/page_2_to_3"
+			app:destination="@id/navigation_diary_environment"
+		/>
+	</fragment>
+
+	<fragment
+		android:id="@+id/navigation_diary_environment"
+		android:name="me.anon.grow3.ui.crud.fragment.DiaryEnvironmentFragment"
+		android:label="@string/navigation_diary_environment"
+	>
+		<action
+			android:id="@+id/page_3_to_4"
+			app:destination="@id/navigation_diary_complete"
+		/>
+	</fragment>
+
+	<fragment
+		android:id="@+id/navigation_diary_complete"
+		android:name="me.anon.grow3.ui.crud.fragment.DiaryCompleteFragment"
+	/>
+</navigation>

@@ -10,6 +10,8 @@ interface DiariesDataSource
 		LOAD
 	}
 
+	public fun close()
+
 	suspend fun addDiary(diary: Diary): List<Diary>
 
 	suspend fun getDiaryById(diaryId: String): Diary?
