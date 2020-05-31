@@ -23,6 +23,8 @@
 
 		<item name="shapeAppearanceLargeComponent">@style/ShapeAppearance.Large</item>
 		<item name="shapeAppearanceSmallComponent">@style/ShapeAppearance.Small</item>
+		<item name="textInputStyle">@style/Input</item>
+		<item name="materialCardViewStyle">@style/Card</item>
 
 		<item name="android:textColor">?textOnSurface</item>
 		<item name="android:windowContentTransitions">true</item>
@@ -40,6 +42,8 @@
 	</style>
 
 	<!-- -->
+	<style name="Input" parent="Widget.MaterialComponents.TextInputLayout.OutlinedBox" />
+
 	<style name="DropdownTheme">
 		<item name="android:editable">false</item>
 		<item name="android:inputType">none</item>

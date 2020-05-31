@@ -33,6 +33,8 @@ data class Diary(
 
 	public fun logOf(id: String): Log? = log.first { it.id == id }
 
+	public inline fun <reified T> Diary.logOf(id: String): T? = this.logOf(id) as T?
+
 	public fun harvestedOf(id: String): Harvest? = harvestedOf(crop(id))
 	public fun harvestedOf(crop: Crop): Harvest?
 		= log.sortedBy { it.date }

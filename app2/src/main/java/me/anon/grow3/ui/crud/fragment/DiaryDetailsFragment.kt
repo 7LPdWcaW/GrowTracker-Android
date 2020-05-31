@@ -41,7 +41,6 @@ class DiaryDetailsFragment : BaseFragment(R.layout.fragment_crud_diary_details)
 
 		date.editText!!.onFocus {
 			val diary = (viewModel.diary.value as? DataResult.Success)?.data ?: return@onFocus
-			diary.name = it.toString()
 
 			it.hideKeyboard()
 
@@ -58,12 +57,16 @@ class DiaryDetailsFragment : BaseFragment(R.layout.fragment_crud_diary_details)
 
 	private fun attachCallbacks()
 	{
-		DateSelectDialogFragment.attach(childFragmentManager, ::onDateSelected)
+		DateSelectDialogFragment.attach(childFragmentManager, ::onDateSelected, ::onDateDismissed)
 	}
 
 	public fun onDateSelected(selectedDate: ZonedDateTime)
 	{
 		viewModel.setDiaryDate(selectedDate)
+	}
+
+	public fun onDateDismissed()
+	{
 		if (date.editText?.focusSearch(View.FOCUS_RIGHT)?.requestFocus() != true) date.editText?.clearFocus()
 	}
 }

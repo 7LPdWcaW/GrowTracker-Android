@@ -13,6 +13,7 @@ import android.widget.ImageView
 import android.widget.TextView
 import androidx.appcompat.widget.ListPopupWindow
 import androidx.appcompat.widget.PopupMenu
+import androidx.core.view.doOnLayout
 import androidx.core.view.isVisible
 import androidx.core.view.size
 import com.google.android.material.textfield.MaterialAutoCompleteTextView
@@ -26,7 +27,7 @@ import me.anon.grow3.util.parentView
 class DropDownEditText : MaterialAutoCompleteTextView
 {
 	public val items = arrayListOf<MenuItem>()
-	public var itemSelectListener: MenuItem.OnMenuItemClickListener = MenuItem.OnMenuItemClickListener { _ -> false }
+	public var itemSelectListener: (MenuItem) -> Unit = {}
 
 	class DropDownMenuItem(
 		var itemId: Int,
@@ -37,6 +38,7 @@ class DropDownEditText : MaterialAutoCompleteTextView
 	)
 
 	public var singleSelection = false
+	public var requiredSelection = false
 	private var defaultText = ""
 	private var defaultIcon: Drawable? = null
 	private var menuRes = NO_ID
@@ -54,6 +56,7 @@ class DropDownEditText : MaterialAutoCompleteTextView
 			defaultIcon = typedArray.getDrawable(R.styleable.DropDownEditText_android_icon)
 			defaultIcon?.setTintList(typedArray.getColorStateList(R.styleable.DropDownEditText_android_iconTint))
 			singleSelection = typedArray.getBoolean(R.styleable.DropDownEditText_singleSelection, false)
+			requiredSelection = typedArray.getBoolean(R.styleable.DropDownEditText_required, false)
 			typedArray.recycle()
 		}
 
@@ -72,6 +75,12 @@ class DropDownEditText : MaterialAutoCompleteTextView
 		init()
 	}
 
+	public fun checkItems(vararg ids: Int)
+	{
+		items.filter { it.itemId in ids }.forEach { it.isChecked = true }
+		populateText()
+	}
+
 	public fun setMenu(items: List<DropDownMenuItem>)
 	{
 		this.items.clear()
@@ -87,6 +96,7 @@ class DropDownEditText : MaterialAutoCompleteTextView
 
 		popup.height = items.size * 180
 		adapter.notifyDataSetChanged()
+		populateText()
 	}
 
 	private fun init()
@@ -100,7 +110,12 @@ class DropDownEditText : MaterialAutoCompleteTextView
 			val current: View = rootView.findFocus()
 			current.clearFocus()
 		}
+		doOnLayout {
+			populateText()
+		}
 	}
+
+	public fun getSelectedItems(): List<MenuItem> = items.filter { it.isChecked }
 
 	override fun onFinishInflate()
 	{
@@ -121,6 +136,25 @@ class DropDownEditText : MaterialAutoCompleteTextView
 
 	override fun isPopupShowing(): Boolean = popup.isShowing
 
+	private fun populateText()
+	{
+		with (items.filter { it.isChecked }) {
+			if (size > 0)
+			{
+				this@DropDownEditText.setText(joinToString { it.title })
+				(parentView.parentView as? TextInputLayout)?.startIconDrawable = when(size) {
+					1 -> first().icon
+					else -> drawable(R.drawable.ic_more_horiz)
+				}
+			}
+			else
+			{
+				this@DropDownEditText.setText(defaultText)
+				(parentView.parentView as? TextInputLayout)?.startIconDrawable = defaultIcon
+			}
+		}
+	}
+
 	private inner class SelectableMenuAdapter : BaseAdapter()
 	{
 		override fun getItem(position: Int): MenuItem = items[position]
@@ -140,11 +174,11 @@ class DropDownEditText : MaterialAutoCompleteTextView
 
 			view.setOnClickListener {
 				with (it.findViewById<CheckBox>(R.id.checkbox)) {
-					isChecked = !isChecked
+					if (!requiredSelection || getSelectedItems().size != 1 || !isChecked) isChecked = !isChecked
 
 					isVisible = isChecked
 					item.isChecked = isChecked
-					itemSelectListener.onMenuItemClick(item)
+					itemSelectListener(item)
 
 					if (singleSelection)
 					{
@@ -155,21 +189,7 @@ class DropDownEditText : MaterialAutoCompleteTextView
 					}
 				}
 
-				with (items.filter { it.isChecked }) {
-					if (size > 0)
-					{
-						this@DropDownEditText.setText(joinToString { it.title })
-						(parentView.parentView as? TextInputLayout)?.startIconDrawable = when(size) {
-							1 -> first().icon
-							else -> drawable(R.drawable.ic_more_horiz)
-						}
-					}
-					else
-					{
-						this@DropDownEditText.setText(defaultText)
-						(parentView.parentView as? TextInputLayout)?.startIconDrawable = defaultIcon
-					}
-				}
+				populateText()
 			}
 
 			view.findViewById<TextView>(R.id.title).text = item.title

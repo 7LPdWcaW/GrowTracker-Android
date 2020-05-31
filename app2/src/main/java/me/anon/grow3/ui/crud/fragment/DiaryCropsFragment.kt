@@ -39,7 +39,7 @@ class DiaryCropsFragment : BaseFragment(R.layout.fragment_crud_diary_crops)
 				view.crop_name.text = crop.name
 
 				view.crop_genetics.text = crop.genetics
-				view.crop_genetics.isVisible = crop.genetics.isNotBlank()
+				view.crop_genetics.isVisible = !crop.genetics.isNullOrBlank()
 
 				view.duplicate.onClick {
 					viewModel.addCrop(crop.copy(id = UUID.randomUUID().toString()))

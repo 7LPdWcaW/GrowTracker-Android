@@ -16,4 +16,4 @@ public inline fun Boolean?.then(block: () -> Unit): Unit = if (this == true) blo
  * Usage: <bool val> t <true val> ?: <false val>
  */
 @Suppress("FunctionName")
-public infix fun <T : Any> Boolean?.T(value: T): T? = if (this == true) value else null
+public infix fun <T : Any> Boolean?.then(value: T): T? = if (this == true) value else null

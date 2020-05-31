@@ -5,6 +5,8 @@ import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.switchMap
 import me.anon.grow3.data.model.Crop
+import me.anon.grow3.data.model.Medium
+import me.anon.grow3.data.model.MediumType
 import me.anon.grow3.data.repository.DiariesRepository
 import me.anon.grow3.util.*
 import me.anon.grow3.util.states.asSuccess
@@ -24,7 +26,7 @@ class CropViewModel(
 			CropViewModel(diariesRepository, handle)
 	}
 
-	private var newCrop = savedStateHandle.get("new_crop") ?: false
+	public var newCrop = savedStateHandle.get("new_crop") ?: false
 		set(value) { field = value.apply { savedStateHandle["new_crop"] = this } }
 	private var cropComparator = savedStateHandle.get("crop_str") ?: ""
 		set(value) { field = value.apply { savedStateHandle["crop_str"] = this } }
@@ -61,6 +63,37 @@ class CropViewModel(
 	{
 		_diaryId.postValue(diaryId)
 		_cropId.postValue(cropId ?: "")
+	}
+
+	public fun setCrop(
+		name: ValueHolder<String>? = null,
+		genetics: ValueHolder<String?>? = null,
+		numberOfPlants: ValueHolder<Int>? = null,
+		mediumType: ValueHolder<MediumType>? = null,
+		volume: ValueHolder<Double?>? = null
+	)
+	{
+		crop.value?.apply {
+			name?.applyValue { this.name = it }
+			genetics?.applyValue { this.genetics = it.toStringOrNull() }
+			numberOfPlants?.applyValue { this.numberOfPlants = it }
+
+			diary.value?.asSuccess()?.let { diary ->
+				val medium = diary.mediumOf(this) ?: let {
+					mediumType?.let {
+						Medium(it.value).also {
+							diary.log += it
+						}
+					}
+				}
+
+				medium?.apply {
+					mediumType?.applyValue { this.medium = it }
+					volume?.applyValue { this.size = it }
+				}
+			}
+		}
+		crop.notifyChange()
 	}
 
 	/**

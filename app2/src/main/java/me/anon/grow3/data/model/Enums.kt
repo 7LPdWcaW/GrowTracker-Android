@@ -26,6 +26,8 @@ enum class EnvironmentType : Type
 
 	companion object
 	{
+		fun ofId(id: Int): EnvironmentType = values().first { it.strRes == id }
+
 		fun toMenu(): List<DropDownEditText.DropDownMenuItem>
 			= values().map {
 				DropDownEditText.DropDownMenuItem(
@@ -38,12 +40,35 @@ enum class EnvironmentType : Type
 	}
 }
 
-enum class MediumType
+enum class MediumType : Type
 {
-	Soil,
-	Hydro,
-	Coco,
-	Aqua
+	Soil {
+		override val strRes: Int = R.string.medium_type_soil
+	},
+	Hydro {
+		override val strRes: Int = R.string.medium_type_hydro
+	},
+	Coco {
+		override val strRes: Int = R.string.medium_type_coco
+	},
+	Aqua {
+		override val strRes: Int = R.string.medium_type_aqua
+	};
+
+	companion object
+	{
+		fun ofId(id: Int): MediumType = MediumType.values().first { it.strRes == id }
+
+		fun toMenu(): List<DropDownEditText.DropDownMenuItem>
+			= MediumType.values().map {
+				DropDownEditText.DropDownMenuItem(
+					it.strRes,
+					false,
+					true,
+					titleRes = it.strRes
+				)
+			}
+	}
 }
 
 enum class TdsType
@@ -53,14 +78,41 @@ enum class TdsType
 	EC
 }
 
-enum class LightType
+enum class LightType : Type
 {
-	LED,
-	HID,
-	CFL,
-	DE,
-	CMH,
-	Sunlight,
+	LED {
+		override val strRes = R.string.light_type_led
+	},
+	HID {
+		override val strRes = R.string.light_type_hid
+	},
+	CFL {
+		override val strRes = R.string.light_type_cfl
+	},
+	DE {
+		override val strRes = R.string.light_type_de
+	},
+	CMH {
+		override val strRes = R.string.light_type_cmh
+	},
+	Sunlight {
+		override val strRes = R.string.light_type_sunlight
+	};
+
+	companion object
+	{
+		fun ofId(id: Int): LightType = LightType.values().first { it.strRes == id }
+
+		fun toMenu(): List<DropDownEditText.DropDownMenuItem>
+			= LightType.values().map {
+				DropDownEditText.DropDownMenuItem(
+					it.strRes,
+					false,
+					true,
+					titleRes = it.strRes
+				)
+			}
+	}
 }
 
 enum class StageType

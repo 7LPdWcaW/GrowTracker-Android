@@ -37,10 +37,11 @@ class DateSelectDialogFragment : Fragment()
 					}
 				}
 
-		public fun attach(fm: FragmentManager, callback: (ZonedDateTime) -> Unit)
+		public fun attach(fm: FragmentManager, callback: (ZonedDateTime) -> Unit, dismiss: () -> Unit = {})
 		{
 			(fm.findFragmentByTag(TAG) as? DateSelectDialogFragment)?.apply {
 				onDateTimeSelected = callback
+				onDismiss = dismiss
 			}
 		}
 	}
@@ -48,6 +49,7 @@ class DateSelectDialogFragment : Fragment()
 	public lateinit var selectedDate: ZonedDateTime
 	public var includeTime: Boolean = true
 	public var onDateTimeSelected: (ZonedDateTime) -> Unit = {}
+	public var onDismiss: () -> Unit = {}
 
 	private var currentDialog: Dialog? = null
 
@@ -63,7 +65,6 @@ class DateSelectDialogFragment : Fragment()
 		else
 		{
 			onDateTimeSelected(selectedDate)
-			currentDialog?.dismiss()
 			dismiss()
 		}
 	}
@@ -74,7 +75,6 @@ class DateSelectDialogFragment : Fragment()
 			.withMinute(minute)
 
 		onDateTimeSelected(selectedDate)
-		currentDialog?.dismiss()
 		dismiss()
 	}
 
@@ -173,6 +173,9 @@ class DateSelectDialogFragment : Fragment()
 
 	public fun dismiss()
 	{
+		currentDialog?.cancel()
+		currentDialog = null
+		onDismiss()
 		parentFragmentManager.commit { remove(this@DateSelectDialogFragment) }
 	}
 }

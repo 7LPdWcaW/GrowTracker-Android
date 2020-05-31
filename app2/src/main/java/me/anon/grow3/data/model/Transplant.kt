@@ -7,5 +7,5 @@ typealias Medium = Transplant
 @JsonClass(generateAdapter = true)
 data class Transplant(
 	public var medium: MediumType,
-	public var size: Double?
+	public var size: Double? = null
 ) : Log(action = "Transplant")
