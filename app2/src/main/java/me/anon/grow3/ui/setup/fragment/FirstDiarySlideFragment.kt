@@ -1,6 +1,5 @@
-package me.anon.grow3.ui.setup.activity
+package me.anon.grow3.ui.setup.fragment
 
-import android.content.Context
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
@@ -10,8 +9,8 @@ import com.github.appintro.SlideBackgroundColorHolder
 import kotlinx.android.synthetic.main.fragment_intro_slide_diary.*
 import me.anon.grow3.R
 import me.anon.grow3.ui.crud.activity.DiaryActivity
+import me.anon.grow3.util.color
 import me.anon.grow3.util.navigateTo
-import me.anon.grow3.util.resolve
 
 class FirstDiarySlideFragment : Fragment(), SlideBackgroundColorHolder
 {
@@ -31,7 +30,7 @@ class FirstDiarySlideFragment : Fragment(), SlideBackgroundColorHolder
 	}
 
 	override val defaultBackgroundColor: Int
-		get() = R.color.colorAccent.resolve(requireContext())
+		get() = R.color.colorAccent.color(requireContext())
 
 	override fun setBackgroundColor(backgroundColor: Int)
 	{

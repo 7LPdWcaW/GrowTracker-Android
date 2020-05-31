@@ -32,7 +32,17 @@
 			</intent-filter>
 		</activity>
 
-		<activity android:name=".ui.crud.activity.DiaryActivity" />
+		<activity android:name=".ui.crud.activity.CropActivity" android:theme="@style/AppTheme.Lightstatus" />
+		<activity
+			android:name=".ui.crud.activity.DiaryActivity"
+			android:theme="@style/AppTheme.FullScrim"
+			android:windowSoftInputMode="stateAlwaysHidden|adjustPan"
+			android:label="@string/navigation_diary_details"
+		>
+			<intent-filter>
+				<action android:name="android.intent.action.MAIN" />
+			</intent-filter>
+		</activity>
 		<activity android:name=".ui.setup.activity.SetupActivity" android:theme="@style/AppTheme.FullScrim" />
 	</application>
 </manifest>

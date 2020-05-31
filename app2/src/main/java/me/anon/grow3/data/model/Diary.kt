@@ -2,6 +2,7 @@ package me.anon.grow3.data.model
 
 import com.squareup.moshi.JsonClass
 import me.anon.grow3.util.asDateTime
+import me.anon.grow3.util.asString
 import me.anon.grow3.util.uniqueBy
 import org.dizitart.no2.objects.Id
 import org.threeten.bp.ZonedDateTime
@@ -9,13 +10,16 @@ import org.threeten.bp.temporal.ChronoUnit
 import java.util.*
 
 @JsonClass(generateAdapter = true)
-class Diary(
+data class Diary(
 	@Id public val id: String = UUID.randomUUID().toString(),
 	public var name: String,
+	public var date: String = ZonedDateTime.now().asString(),
 	public val log: ArrayList<Log> = arrayListOf(),
 	public val crops: ArrayList<Crop> = arrayListOf()
 )
 {
+	public var isDraft = false
+
 	private fun cropFilter(crop: Crop?, log: Log)
 		= if (crop == null) true else (log.cropIds.isNotEmpty() && log.cropIds.contains(crop.id)) || log.cropIds.isEmpty()
 
@@ -28,6 +32,8 @@ class Diary(
 	public fun crop(id: String): Crop = crops.first { it.id == id }
 
 	public fun logOf(id: String): Log? = log.first { it.id == id }
+
+	public inline fun <reified T> Diary.logOf(id: String): T? = this.logOf(id) as T?
 
 	public fun harvestedOf(id: String): Harvest? = harvestedOf(crop(id))
 	public fun harvestedOf(crop: Crop): Harvest?

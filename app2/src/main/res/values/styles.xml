@@ -3,7 +3,8 @@
 		<item name="colorPrimary">@color/colorPrimary</item>
 		<item name="textOnPrimary">@color/textOnPrimary</item>
 
-		<item name="colorPrimaryDark">@color/colorPrimaryDark</item>
+		<item name="colorPrimaryDark">@color/colorPrimary</item>
+		<item name="android:statusBarColor">@color/colorPrimary</item>
 
 		<item name="colorAccent">@color/colorAccent</item>
 		<item name="textOnAccent">#ffffff</item>
@@ -22,10 +23,15 @@
 
 		<item name="shapeAppearanceLargeComponent">@style/ShapeAppearance.Large</item>
 		<item name="shapeAppearanceSmallComponent">@style/ShapeAppearance.Small</item>
+		<item name="textInputStyle">@style/Input</item>
+		<item name="materialCardViewStyle">@style/Card</item>
 
 		<item name="android:textColor">?textOnSurface</item>
+		<item name="android:windowContentTransitions">true</item>
 
 		<item name="android:windowBackground">@drawable/window_background</item>
+		<item name="textOnWindow">#ffffff</item>
+
 		<item name="android:windowTranslucentNavigation">true</item>
 	</style>
 
@@ -34,7 +40,21 @@
 		<item name="android:windowTranslucentNavigation">true</item>
 	</style>
 
+	<style name="AppTheme.Lightstatus">
+		<item name="android:windowLightStatusBar">true</item>
+	</style>
+
 	<!-- -->
+	<style name="Input" parent="Widget.MaterialComponents.TextInputLayout.OutlinedBox" />
+
+	<style name="DropdownTheme">
+		<item name="android:editable">false</item>
+		<item name="android:inputType">none</item>
+	</style>
+	<style name="Dropdown" parent="Widget.MaterialComponents.TextInputLayout.OutlinedBox.ExposedDropdownMenu">
+		<item name="android:theme">@style/DropdownTheme</item>
+	</style>
+
 	<style name="Card" parent="Widget.MaterialComponents.CardView">
 		<item name="cardBackgroundColor">?colorSurface</item>
 		<item name="cardUseCompatPadding">true</item>

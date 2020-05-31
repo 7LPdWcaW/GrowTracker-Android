@@ -7,5 +7,6 @@
 		<attr name="android:iconTint" format="reference" />
 		<attr name="menu" format="reference" />
 		<attr name="singleSelection" format="boolean" />
+		<attr name="required" format="boolean" />
 	</declare-styleable>
 </resources>

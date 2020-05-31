@@ -1,6 +1,5 @@
 package me.anon.grow3.data.source.nitrite
 
-import com.fasterxml.jackson.databind.module.SimpleModule
 import com.fasterxml.jackson.datatype.joda.JodaModule
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.Dispatchers
@@ -23,7 +22,14 @@ class NitriteDiariesDataSource @Inject constructor(
 {
 	private val db = nitrite {
 		file = File(sourcePath)
+		autoCommit = true
+		autoCommitBufferSize = 1024
 		registerModule(JodaModule())
+	}
+
+	override fun close()
+	{
+		db.close()
 	}
 
 	override suspend fun addDiary(diary: Diary): List<Diary>
@@ -32,6 +38,7 @@ class NitriteDiariesDataSource @Inject constructor(
 			db.getRepository<Diary> {
 				insert(diary)
 			}
+			db.commit()
 		}
 
 		return getDiaries()
@@ -39,6 +46,10 @@ class NitriteDiariesDataSource @Inject constructor(
 
 	override suspend fun getDiaryById(diaryId: String): Diary?
 	{
+		// check temp repo first
+		val temp = db.getRepository<Diary>("temp").find(Diary::id eq diaryId).firstOrNull()
+		temp?.let { return it }
+
 		val repo = db.getRepository<Diary>()
 		return repo.find(Diary::id eq diaryId).first()
 	}
@@ -54,6 +65,8 @@ class NitriteDiariesDataSource @Inject constructor(
 					db.getRepository<Diary> {
 						diary.forEach { update(it) }
 					}
+
+					db.commit()
 				}
 			}
 		}

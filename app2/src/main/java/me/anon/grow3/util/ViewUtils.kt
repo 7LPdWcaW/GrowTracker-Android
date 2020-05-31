@@ -1,4 +1,4 @@
-package me.anon.lib.ext
+package me.anon.grow3.util
 
 import android.content.Context
 import android.graphics.drawable.Drawable
@@ -8,8 +8,51 @@ import android.view.ViewGroup
 import android.view.inputmethod.InputMethodManager
 import android.widget.TextView
 import androidx.annotation.*
-import androidx.core.content.res.ResourcesCompat
 import androidx.recyclerview.widget.RecyclerView
+
+/**
+ * Creates a click listener for generic type extending [View] and passes as a typed argument
+ * in the callback
+ */
+public inline fun <reified T : View> T.onClick(crossinline listener: (T) -> Unit): T
+{
+	setOnClickListener { listener(it as T) }
+	return this
+}
+
+/**
+ * Creates a click listener for generic type extending [View] and passes as a typed argument
+ * in the callback
+ */
+public inline fun <reified T : View> T.onLongClick(crossinline listener: (T) -> Boolean): T
+{
+	setOnLongClickListener { listener(it as T) }
+	return this
+}
+
+/**
+ * Creates a on focus listener. for generic type extending [View] and passes as a typed argument
+ * in the callback. This will only be called when the view is focused
+ */
+public inline fun <reified T : View> T.onFocus(crossinline listener: (T) -> Unit): T
+{
+	setOnFocusChangeListener { v, hasFocus ->
+		if (v == this && hasFocus) listener(v as T)
+	}
+	return this
+}
+
+/**
+ * Creates a on focus listener. for generic type extending [View] and passes as a typed argument
+ * in the callback. This will only be called when the view is focused
+ */
+public inline fun <reified T : View> T.onFocusLoss(crossinline listener: (T) -> Unit): T
+{
+	setOnFocusChangeListener { v, hasFocus ->
+		if (v == this && !hasFocus) listener(v as T)
+	}
+	return this
+}
 
 /**
  * Convenience method for inflating a view into another. Will return the inflated view, or the parent view if attach = true
@@ -139,6 +182,9 @@ inline fun <T : View> T.afterMeasured(crossinline callback: T.() -> Unit)
 	})
 }
 
+/**
+ * Removes all the decorators in a given [RecyclerView]
+ */
 public fun RecyclerView.removeAllItemDecorators()
 {
 	for (index in 0 until this.itemDecorationCount)
@@ -150,15 +196,15 @@ public fun RecyclerView.removeAllItemDecorators()
 // Resource convenience methods
 public fun View.dimension(@DimenRes resId: Int): Float = resources.getDimension(resId)
 public fun View.dimensionPixels(@DimenRes resId: Int): Int = resources.getDimensionPixelSize(resId)
-public fun View.string(@StringRes resId: Int): String = resources.getString(resId)
-public fun View.color(@ColorRes resId: Int): Int = resources.getColor(resId)
-public fun View.drawable(@DrawableRes resId: Int): Drawable = ResourcesCompat.getDrawable(resources, resId, context.theme)!!
+public fun View.string(@StringRes resId: Int): String = resId.string(context)
 
-public var TextView.text: String
-	set(value) {
-		setText(value)
-	}
-	get() = text.toString()
+@ColorInt
+public fun View.color(@ColorRes resId: Int): Int = resId.color(context)
+
+@ColorInt
+public fun View.resColor(@AttrRes resId: Int): Int = resId.resColor(context)
+
+public fun View.drawable(@DrawableRes resId: Int, @ColorInt tint: Int? = null): Drawable = resId.drawable(context, tint)
 
 public var TextView.drawableStart: Drawable
 	set(value) = setCompoundDrawablesWithIntrinsicBounds(value, compoundDrawables[1], compoundDrawables[2], compoundDrawables[3])

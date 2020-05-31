@@ -1,7 +1,7 @@
 package me.anon.grow3.data.model
 
 import me.anon.grow3.TestConstants
-import me.anon.grow3.util.T
+import me.anon.grow3.util.then
 import me.anon.grow3.util.initThreeTen
 import me.anon.grow3.util.uniqueBy
 import org.amshove.kluent.*
@@ -162,11 +162,11 @@ class DiaryTest
 
 		do
 		{
-			diary.crops += Crop {
-				name = "Test Crop $cropCounter"
-				genetics = "Unknown"
+			diary.crops += Crop(
+				name = "Test Crop $cropCounter",
+				genetics = "Unknown",
 				numberOfPlants = (Math.random() * 10).toInt()
-			}
+			)
 		} while (cropCounter-- >= 0)
 
 		do
@@ -202,13 +202,13 @@ class DiaryTest
 	private fun generateWater(): Water
 	{
 		return Water {
-			inPH = ((1..2).random() % 2 == 0) T Water.PHUnit((40..70).random() / 10.0)
-			outPH = ((1..2).random() % 2 == 0) T Water.PHUnit((40..70).random() / 10.0)
-			tds = ((1..2).random() % 2 == 0) T Water.TdsUnit(TdsType.values().random(), (0..1000).random().toDouble())
-			amount = ((1..2).random() % 2 == 0) T (1000..10_000).random().toDouble()
-			temperature = ((1..2).random() % 2 == 0) T (20..35).random().toDouble()
+			inPH = ((1..2).random() % 2 == 0) then Water.PHUnit((40..70).random() / 10.0)
+			outPH = ((1..2).random() % 2 == 0) then Water.PHUnit((40..70).random() / 10.0)
+			tds = ((1..2).random() % 2 == 0) then Water.TdsUnit(TdsType.values().random(), (0..1000).random().toDouble())
+			amount = ((1..2).random() % 2 == 0) then (1000..10_000).random().toDouble()
+			temperature = ((1..2).random() % 2 == 0) then (20..35).random().toDouble()
 			additives.addAll(ArrayList<Water.Additive>().apply {
-				((1..2).random() % 2 == 0) T {
+				((1..2).random() % 2 == 0) then {
 					var counter = (0..5).random()
 					while (counter-- >= 0)
 					{

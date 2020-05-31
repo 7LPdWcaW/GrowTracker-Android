@@ -4,6 +4,10 @@ import androidx.annotation.VisibleForTesting
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.Observer
 import kotlinx.coroutines.runBlocking
+import me.anon.grow3.util.states.DataResult
+import me.anon.grow3.util.states.asSuccess
+import me.anon.grow3.util.states.isFailure
+import me.anon.grow3.util.states.isSuccess
 import java.util.concurrent.CountDownLatch
 import java.util.concurrent.TimeUnit
 import java.util.concurrent.TimeoutException
@@ -57,6 +61,38 @@ public fun <T> LiveData<T>.getOrAwaitValue(
 }
 
 /**
+ * Waits for a [DataResult] to return type of [DataResult.Success]
+ */
+public inline fun <reified J> LiveData<DataResult<J>>.awaitForSuccess(): J
+{
+	var result = getOrAwaitValue()
+	while (!result.isSuccess)
+	{
+		runBlocking {
+			result = getOrAwaitValue()
+		}
+	}
+
+	return result.asSuccess()
+}
+
+/**
+ * Waits for a [DataResult] to return type of [DataResult.Error]
+ */
+public inline fun <reified J> LiveData<DataResult<J>>.awaitForError(): J
+{
+	var result = getOrAwaitValue()
+	while (!result.isFailure)
+	{
+		runBlocking {
+			result = getOrAwaitValue()
+		}
+	}
+
+	return result.asSuccess()
+}
+
+/**
  * Observes a [LiveData] until the `block` is done executing.
  */
 public fun <T> LiveData<T>.observeForTesting(block: () -> Unit)
@@ -71,24 +107,4 @@ public fun <T> LiveData<T>.observeForTesting(block: () -> Unit)
 	{
 		removeObserver(observer)
 	}
-}
-
-/**
- * Observes a [LiveData] until the `block` is done executing.
- */
-public fun <T> LiveData<T>.awaitResult(): T = runBlocking {
-	var response: T? = null
-	val observer = Observer<T> {
-		response = it
-	}
-	try
-	{
-		observeForever(observer)
-	}
-	finally
-	{
-		removeObserver(observer)
-	}
-
-	response as T
 }

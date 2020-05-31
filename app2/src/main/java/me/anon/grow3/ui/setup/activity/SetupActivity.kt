@@ -6,10 +6,10 @@ import android.view.View
 import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.core.view.updateLayoutParams
 import com.github.appintro.AppIntro2
-import com.github.appintro.AppIntroCustomLayoutFragment
 import com.github.appintro.AppIntroFragment
 import me.anon.grow3.R
-import me.anon.grow3.util.resolve
+import me.anon.grow3.ui.setup.fragment.FirstDiarySlideFragment
+import me.anon.grow3.util.color
 
 class SetupActivity : AppIntro2()
 {
@@ -17,9 +17,9 @@ class SetupActivity : AppIntro2()
 
 	private val colors by lazy {
 		arrayOf(
-			R.color.colorPrimary.resolve(this),
-			R.color.colorSecondary.resolve(this),
-			R.color.colorAccent.resolve(this)
+			R.color.colorPrimary.color(this),
+			R.color.colorSecondary.color(this),
+			R.color.colorAccent.color(this)
 		)
 	}
 

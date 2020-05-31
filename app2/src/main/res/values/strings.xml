@@ -5,5 +5,58 @@
 	<string name="version">Version %s</string>
 	<string name="menu_settings">Settings</string>
 
-	<string name="navigation_diary_details">Details</string>
+	<string name="navigation_diary_details">Diary details</string>
+	<string name="navigation_diary_crops">Crops</string>
+	<string name="navigation_diary_environment">Grow environment</string>
+
+	<string name="add_diary_first">Add your first diary</string>
+	<string name="add_diary_details_title">Name your diary</string>
+	<string name="add_diary_details_name">Name</string>
+	<string name="add_diary_details_date">Start date</string>
+	<string name="add_diary_stages_title">Stages</string>
+
+	<string name="add_diary_crops_title">Crops</string>
+	<string name="add_diary_crops_add">Add crop</string>
+
+	<string name="add_diary_environment_title">Environment details</string>
+	<string name="add_diary_environment_size_title">Area size</string>
+	<string name="add_diary_environment_type">Type</string>
+	<string name="add_diary_environment_size_width">Width</string>
+	<string name="add_diary_environment_size_height">Height</string>
+	<string name="add_diary_environment_size_depth">Depth</string>
+
+	<string name="add_diary_light_title">Light details</string>
+	<string name="add_diary_light_type">Type</string>
+	<string name="add_diary_light_wattage">Wattage</string>
+	<string name="add_diary_light_description">Brand/description</string>
+
+	<string name="add_diary_schedule_title">Schedule</string>
+
+	<string name="environment_type_tent">Tent</string>
+	<string name="environment_type_outdoors">Outdoors</string>
+	<string name="environment_type_indoors">Indoors</string>
+	<string name="environment_type_greenhouse">Greenhouse</string>
+
+	<string name="add_crop_title">Add crop</string>
+	<string name="edit_crop_title">Edit crop</string>
+	<string name="add_crop_details_title">Crop details</string>
+	<string name="add_crop_details_name">Crop name</string>
+	<string name="add_crop_details_genetics">Genetics</string>
+	<string name="add_crop_details_number_plants">Number of plants</string>
+	<string name="add_crop_additional_title">Additional</string>
+	<string name="add_crop_medium_type">Medium</string>
+	<string name="add_crop_medium_size">Volume</string>
+	<string name="add_crop_stages_title">Stages</string>
+
+	<string name="light_type_led">LED</string>
+	<string name="light_type_hid">HID</string>
+	<string name="light_type_cfl">CFL</string>
+	<string name="light_type_de">DE</string>
+	<string name="light_type_cmh">CMH</string>
+	<string name="light_type_sunlight">Sunlight</string>
+
+	<string name="medium_type_soil">Soil</string>
+	<string name="medium_type_hydro">Hydro</string>
+	<string name="medium_type_coco">Coco</string>
+	<string name="medium_type_aqua">Aqua</string>
 </resources>
