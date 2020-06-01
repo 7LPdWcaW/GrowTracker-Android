@@ -277,6 +277,25 @@ class StatisticsFragment2 : Fragment()
 		public fun newInstance(args: Bundle) = StatisticsFragment2().apply {
 			this.arguments = args
 		}
+
+		public fun styleDataset(context: Context, data: LineDataSet, colour: Int)
+		{
+			val context = ContextThemeWrapper(context, R.style.AppTheme)
+			data.valueTextColor = R.attr.colorAccent.resolveColor(context)
+			data.setCircleColor(R.attr.colorAccent.resolveColor(context))
+			data.cubicIntensity = 0.2f
+			data.lineWidth = 3.0f
+			data.setDrawCircleHole(true)
+			data.color = colour
+			data.setCircleColor(colour)
+			data.circleRadius = 4.0f
+			data.setDrawHighlightIndicators(true)
+			data.isHighlightEnabled = true
+			data.highlightLineWidth = 2f
+			data.highLightColor = ColorUtils.setAlphaComponent(colour, 96)
+			data.setDrawValues(false)
+			data.valueFormatter = formatter
+		}
 	}
 
 	private lateinit var plant: Plant
@@ -1126,24 +1145,5 @@ class StatisticsFragment2 : Fragment()
 			dataView ?: return
 			container += dataView
 		}
-	}
-
-	fun styleDataset(context: Context, data: LineDataSet, colour: Int)
-	{
-		val context = ContextThemeWrapper(context, R.style.AppTheme)
-		data.valueTextColor = R.attr.colorAccent.resolveColor(context)
-		data.setCircleColor(R.attr.colorAccent.resolveColor(context))
-		data.cubicIntensity = 0.2f
-		data.lineWidth = 3.0f
-		data.setDrawCircleHole(true)
-		data.color = colour
-		data.setCircleColor(colour)
-		data.circleRadius = 4.0f
-		data.setDrawHighlightIndicators(true)
-		data.isHighlightEnabled = true
-		data.highlightLineWidth = 2f
-		data.highLightColor = ColorUtils.setAlphaComponent(colour, 96)
-		data.setDrawValues(false)
-		data.valueFormatter = formatter
 	}
 }

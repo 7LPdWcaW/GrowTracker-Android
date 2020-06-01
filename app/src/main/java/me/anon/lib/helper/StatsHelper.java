@@ -2,19 +2,13 @@ package me.anon.lib.helper;
 
 import android.content.Context;
 import android.graphics.Color;
-import android.widget.TextView;
 
 import com.github.mikephil.charting.charts.BarLineChartBase;
 import com.github.mikephil.charting.charts.LineChart;
-import com.github.mikephil.charting.components.MarkerView;
-import com.github.mikephil.charting.components.XAxis;
-import com.github.mikephil.charting.components.YAxis;
 import com.github.mikephil.charting.data.Entry;
 import com.github.mikephil.charting.data.LineData;
 import com.github.mikephil.charting.data.LineDataSet;
 import com.github.mikephil.charting.formatter.ValueFormatter;
-import com.github.mikephil.charting.highlight.Highlight;
-import com.github.mikephil.charting.utils.ColorTemplate;
 import com.github.mikephil.charting.utils.ViewPortHandler;
 
 import org.threeten.bp.DateTimeUtils;
@@ -24,32 +18,19 @@ import java.sql.Timestamp;
 import java.text.DateFormat;
 import java.util.ArrayList;
 import java.util.Date;
-import java.util.HashSet;
-import java.util.LinkedHashMap;
-import java.util.List;
-import java.util.ListIterator;
-import java.util.Random;
 import java.util.Set;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
-import androidx.appcompat.view.ContextThemeWrapper;
-import androidx.core.graphics.ColorUtils;
-import androidx.core.util.Pair;
 import me.anon.grow.R;
 import me.anon.lib.TdsUnit;
 import me.anon.lib.TempUnit;
-import me.anon.lib.Unit;
-import me.anon.lib.ext.IntUtilsKt;
 import me.anon.lib.ext.NumberUtilsKt;
 import me.anon.model.Action;
-import me.anon.model.Additive;
 import me.anon.model.Garden;
 import me.anon.model.HumidityChange;
 import me.anon.model.Plant;
-import me.anon.model.PlantStage;
 import me.anon.model.TemperatureChange;
-import me.anon.model.Water;
 
 /**
  * Helper class used for generating statistics for plant
@@ -534,93 +515,76 @@ public class StatsHelper
 	 */
 	public static void setTempData(Garden garden, @Nullable Context context, TempUnit tempUnit, @Nullable LineChart chart, String[] additionalRef)
 	{
-//		ArrayList<Entry> vals = new ArrayList<>();
-//		ArrayList<String> xVals = new ArrayList<>();
-//		LineData data = new LineData();
-//		float min = Float.MAX_VALUE;
-//		float max = Float.MIN_VALUE;
-//		float total = 0;
-//
-//		int index = 0;
-//		DateFormat dateFormat = null;
-//
-//		if (context != null)
-//		{
-//			dateFormat = android.text.format.DateFormat.getDateFormat(context);
-//		}
-//
-//		for (Action action : garden.getActions())
-//		{
-//			if (action instanceof TemperatureChange)
-//			{
-//				String date = "";
-//
-//				if (dateFormat != null)
-//				{
-//					date = dateFormat.format(new Date(action.getDate()));
-//				}
-//				else
-//				{
-//					date = DateTimeUtils.toLocalDateTime(new Timestamp(action.getDate())).format(DateTimeFormatter.ofPattern("yyyy/mm/dd"));
-//				}
-//
-//				double temperature = TempUnit.CELCIUS.to(tempUnit, ((TemperatureChange)action).getTemp());
-//
-//				Entry entry = new Entry((float)temperature, index++);
-//				entry.setData(action);
-//				vals.add(entry);
-//				xVals.add(date);
-//
-//				min = (float)Math.min(min, temperature);
-//				max = (float)Math.max(max, temperature);
-//				total += temperature;
-//			}
-//		}
-//
-//		if (chart != null)
-//		{
-//			LineDataSet dataSet = new LineDataSet(vals, context.getString(R.string.stat_temerature));
-//			styleDataset(context, dataSet, Color.parseColor(context.getResources().getStringArray(R.array.stats_colours)[0]));
-//
-//			LineData lineData = new LineData(xVals, dataSet);
-//			lineData.setValueFormatter(new ValueFormatter()
-//			{
-//				@Override public String getFormattedValue(float value, Entry entry, int dataSetIndex, ViewPortHandler viewPortHandler)
-//				{
-//					return formatter.getFormattedValue(value, entry, dataSetIndex, viewPortHandler) + "°" + tempUnit.getLabel();
-//				}
-//			});
-//
-//			chart.getAxisLeft().setAxisMinValue(min - 5f);
-//			chart.getAxisLeft().setAxisMaxValue(max + 5f);
-//			styleGraph(chart);
-//			chart.setData(lineData);
-//			chart.getAxisLeft().setValueFormatter(new YAxisValueFormatter()
-//			{
-//				@Override public String getFormattedValue(float value, YAxis yAxis)
-//				{
-//					return String.format("%s°%s", NumberUtilsKt.formatWhole(value), tempUnit.getLabel());
-//				}
-//			});
-//
-//			chart.getAxisRight().setValueFormatter(new YAxisValueFormatter()
-//			{
-//				@Override public String getFormattedValue(float value, YAxis yAxis)
-//				{
-//					return String.format("%s°%s", NumberUtilsKt.formatWhole(value), tempUnit.getLabel());
-//				}
-//			});
-//
-//			chart.getXAxis().setYOffset(15.0f);
-//			chart.setExtraOffsets(0, 0, 30, 0);
-//		}
-//
-//		if (additionalRef != null)
-//		{
-//			additionalRef[0] = min == Float.MAX_VALUE ? "-" : NumberUtilsKt.formatWhole(min);
-//			additionalRef[1] = max == Float.MIN_VALUE ? "-" : NumberUtilsKt.formatWhole(max);
-//			additionalRef[2] = NumberUtilsKt.formatWhole(total / (double)vals.size());
-//		}
+		ArrayList<Entry> vals = new ArrayList<>();
+		ArrayList<String> xVals = new ArrayList<>();
+		LineData data = new LineData();
+		float min = Float.MAX_VALUE;
+		float max = Float.MIN_VALUE;
+		float total = 0;
+
+		int index = 0;
+		DateFormat dateFormat = null;
+
+		if (context != null)
+		{
+			dateFormat = android.text.format.DateFormat.getDateFormat(context);
+		}
+
+		for (Action action : garden.getActions())
+		{
+			if (action instanceof TemperatureChange)
+			{
+				String date = "";
+
+				if (dateFormat != null)
+				{
+					date = dateFormat.format(new Date(action.getDate()));
+				}
+				else
+				{
+					date = DateTimeUtils.toLocalDateTime(new Timestamp(action.getDate())).format(DateTimeFormatter.ofPattern("yyyy/mm/dd"));
+				}
+
+				double temperature = TempUnit.CELCIUS.to(tempUnit, ((TemperatureChange)action).getTemp());
+
+				Entry entry = new Entry((float)temperature, index++);
+				entry.setData(action);
+				vals.add(entry);
+				xVals.add(date);
+
+				min = (float)Math.min(min, temperature);
+				max = (float)Math.max(max, temperature);
+				total += temperature;
+			}
+		}
+
+		if (chart != null)
+		{
+			LineDataSet dataSet = new LineDataSet(vals, context.getString(R.string.stat_temerature));
+			styleDataset(context, dataSet, Color.parseColor(context.getResources().getStringArray(R.array.stats_colours)[0]));
+
+			LineData lineData = new LineData(dataSet);
+			lineData.setValueFormatter(new ValueFormatter()
+			{
+				@Override public String getFormattedValue(float value, Entry entry, int dataSetIndex, ViewPortHandler viewPortHandler)
+				{
+					return formatter.getFormattedValue(value, entry, dataSetIndex, viewPortHandler) + "°" + tempUnit.getLabel();
+				}
+			});
+
+			styleGraph(chart);
+			chart.setData(lineData);
+
+			chart.getXAxis().setYOffset(15.0f);
+			chart.setExtraOffsets(0, 0, 30, 0);
+		}
+
+		if (additionalRef != null)
+		{
+			additionalRef[0] = min == Float.MAX_VALUE ? "-" : NumberUtilsKt.formatWhole(min);
+			additionalRef[1] = max == Float.MIN_VALUE ? "-" : NumberUtilsKt.formatWhole(max);
+			additionalRef[2] = NumberUtilsKt.formatWhole(total / (double)vals.size());
+		}
 	}
 
 	/**
@@ -632,92 +596,77 @@ public class StatsHelper
 	 */
 	public static void setHumidityData(Garden garden, @Nullable Context context, @Nullable LineChart chart, String[] additionalRef)
 	{
-//		ArrayList<Entry> vals = new ArrayList<>();
-//		ArrayList<String> xVals = new ArrayList<>();
-//		LineData data = new LineData();
-//		float min = Float.MAX_VALUE;
-//		float max = Float.MIN_VALUE;
-//		float total = 0;
-//
-//		int index = 0;
-//		DateFormat dateFormat = null;
-//
-//		if (context != null)
-//		{
-//			dateFormat = android.text.format.DateFormat.getDateFormat(context);
-//		}
-//
-//		for (Action action : garden.getActions())
-//		{
-//			if (action instanceof HumidityChange)
-//			{
-//				String date = "";
-//
-//				if (dateFormat != null)
-//				{
-//					date = dateFormat.format(new Date(action.getDate()));
-//				}
-//				else
-//				{
-//					date = DateTimeUtils.toLocalDateTime(new Timestamp(action.getDate())).format(DateTimeFormatter.ofPattern("yyyy/mm/dd"));
-//				}
-//
-//				double humidity = ((HumidityChange)action).getHumidity();
-//
-//				Entry entry = new Entry((float)humidity, index++);
-//				entry.setData(action);
-//				vals.add(entry);
-//				xVals.add(date);
-//
-//				min = (float)Math.min(min, humidity);
-//				max = (float)Math.max(max, humidity);
-//				total += humidity;
-//			}
-//		}
-//
-//		if (chart != null && context != null)
-//		{
-//			LineDataSet dataSet = new LineDataSet(vals, "%");
-//			styleDataset(context, dataSet, Color.parseColor(context.getResources().getStringArray(R.array.stats_colours)[2]));
-//
-//			LineData lineData = new LineData(xVals, dataSet);
-//			lineData.setValueFormatter(new ValueFormatter()
-//			{
-//				@Override public String getFormattedValue(float value, Entry entry, int dataSetIndex, ViewPortHandler viewPortHandler)
-//				{
-//					return formatter.getFormattedValue(value, entry, dataSetIndex, viewPortHandler) + "%";
-//				}
-//			});
-//
-//			chart.getAxisLeft().setAxisMinValue(min - 5f);
-//			chart.getAxisLeft().setAxisMaxValue(max + 5f);
-//			styleGraph(chart);
-//			chart.setData(lineData);
-//			chart.getAxisLeft().setValueFormatter(new YAxisValueFormatter()
-//			{
-//				@Override public String getFormattedValue(float value, YAxis yAxis)
-//				{
-//					return (int)value + "%";
-//				}
-//			});
-//
-//			chart.getAxisRight().setValueFormatter(new YAxisValueFormatter()
-//			{
-//				@Override public String getFormattedValue(float value, YAxis yAxis)
-//				{
-//					return (int)value + "%";
-//				}
-//			});
-//
-//			chart.getXAxis().setYOffset(15.0f);
-//			chart.setExtraOffsets(0, 0, 30, 0);
-//		}
-//
-//		if (additionalRef != null)
-//		{
-//			additionalRef[0] = min == Float.MAX_VALUE ? "-" : NumberUtilsKt.formatWhole((int)min);
-//			additionalRef[1] = max == Float.MIN_VALUE ? "-" : NumberUtilsKt.formatWhole((int)max);
-//			additionalRef[2] = NumberUtilsKt.formatWhole((int)(total / (double)vals.size()));
-//		}
+		ArrayList<Entry> vals = new ArrayList<>();
+		ArrayList<String> xVals = new ArrayList<>();
+		LineData data = new LineData();
+		float min = Float.MAX_VALUE;
+		float max = Float.MIN_VALUE;
+		float total = 0;
+
+		int index = 0;
+		DateFormat dateFormat = null;
+
+		if (context != null)
+		{
+			dateFormat = android.text.format.DateFormat.getDateFormat(context);
+		}
+
+		for (Action action : garden.getActions())
+		{
+			if (action instanceof HumidityChange)
+			{
+				String date = "";
+
+				if (dateFormat != null)
+				{
+					date = dateFormat.format(new Date(action.getDate()));
+				}
+				else
+				{
+					date = DateTimeUtils.toLocalDateTime(new Timestamp(action.getDate())).format(DateTimeFormatter.ofPattern("yyyy/mm/dd"));
+				}
+
+				double humidity = ((HumidityChange)action).getHumidity();
+
+				Entry entry = new Entry((float)humidity, index++);
+				entry.setData(action);
+				vals.add(entry);
+				xVals.add(date);
+
+				min = (float)Math.min(min, humidity);
+				max = (float)Math.max(max, humidity);
+				total += humidity;
+			}
+		}
+
+		if (chart != null && context != null)
+		{
+			LineDataSet dataSet = new LineDataSet(vals, "%");
+			styleDataset(context, dataSet, Color.parseColor(context.getResources().getStringArray(R.array.stats_colours)[2]));
+
+			LineData lineData = new LineData(dataSet);
+			lineData.setValueFormatter(new ValueFormatter()
+			{
+				@Override public String getFormattedValue(float value, Entry entry, int dataSetIndex, ViewPortHandler viewPortHandler)
+				{
+					return formatter.getFormattedValue(value, entry, dataSetIndex, viewPortHandler) + "%";
+				}
+			});
+
+			chart.getAxisLeft().setAxisMinValue(min - 5f);
+			chart.getAxisLeft().setAxisMaxValue(max + 5f);
+			styleGraph(chart);
+			chart.setData(lineData);
+
+			chart.getXAxis().setYOffset(15.0f);
+			chart.setExtraOffsets(0, 0, 30, 0);
+		}
+
+		if (additionalRef != null)
+		{
+			additionalRef[0] = min == Float.MAX_VALUE ? "-" : NumberUtilsKt.formatWhole((int)min);
+			additionalRef[1] = max == Float.MIN_VALUE ? "-" : NumberUtilsKt.formatWhole((int)max);
+			additionalRef[2] = NumberUtilsKt.formatWhole((int)(total / (double)vals.size()));
+		}
 	}
 }
