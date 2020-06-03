@@ -148,7 +148,6 @@
 	<string name="ave_time_between_water_label">Tiempo promedio entre regados:</string>
 	<string name="filter_additives">Filtrar aditivos</string>
 	<string name="ph_title">PH</string>
-
 	<string name="min">Mín:</string>
 	<string name="max">Máx:</string>
 	<string name="ave">Promedio:</string>
@@ -269,7 +268,6 @@
 	<string name="stat_input_ph">PH de entrada</string>
 	<string name="stat_runoff_ph">Perdida de PH</string>
 	<string name="stat_average_ph">PH promedio</string>
-
 	<string name="photos_title">Fotos de la planta</string>
 
 	<string name="plant_summary_ph">PH de entrada:</string>
@@ -419,4 +417,5 @@
 	<string name="settings_import_error">Falló al importar plantas desde archivo</string>
 	<string name="settings_import">Importar plantas desde archivo</string>
 	<string name="settings_import_success">Plantas importadas de archivo correctamente</string>
-</resources>
+
+	</resources>
