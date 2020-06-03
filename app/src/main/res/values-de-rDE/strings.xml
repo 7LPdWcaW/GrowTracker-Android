@@ -141,7 +141,6 @@
 	<string name="ave_time_between_water_label">Mittlere Zeit zwischen dem Gießen:</string>
 	<string name="filter_additives">Filter-Zusatzstoffe</string>
 	<string name="ph_title">PH</string>
-
 	<string name="min">Min:</string>
 	<string name="max">Max:</string>
 	<string name="ave">Ø:</string>
@@ -161,6 +160,7 @@
 	<string name="note">Notiz</string>
 	<string name="delete_event_dialog_title">Dieses Event löschen?</string>
 	<string name="confirm_delete_item_message">Möchtest du das wirklich löschen?</string>
+	<string name="confirm_delete_photos_message" formatted="true">Möchtest du diese &lt;b&gt;%s&lt;/b&gt; Bilder wirklisch löschen? Sie können danach nicht wiederhergestellt werden.</string>
 	<string name="edit">Bearbeiten</string>
 	<string name="stage">Status</string>
 	<string name="set">Setzen</string>
@@ -175,6 +175,7 @@
 	<string name="added">hinzugefügt</string>
 	<string name="action_duplicated">Maßnahme dupliziert</string>
 	<string name="multiple_plants">mehrere Pflanzen</string>
+	<string name="added_to">Maßnahme hinzugefügt zu</string>
 	<string name="note_updated">Notiz aktualisiert</string>
 	<string name="updated">aktualisiert</string>
 	<string name="stage_updated">Status aktualisiert</string>
@@ -227,11 +228,13 @@
 	<string name="hide_images">Bild verstecken</string>
 	<string name="show_images">Bild anzeigen</string>
 
+	<string name="settings_default_garden">Standard-Garten beim Öffnen, aktuell: &lt;b&gt;%s&lt;/b&gt;</string>
 	<string name="failsafe_message">Gib das Passwort während der Entschlüsselungsphase an, um das Laden von Daten zu verhindern</string>
 	<string name="warning">Warnung</string>
 	<string name="encryption_message">Dies ist eine Standart AES-Verschlüsselung auf der Grundlage einer bereitgestellten Passphrase. Es ist kein garantierter Schutz vor Strafverfolgungsbehörden.</string>
 	<string name="backup_enable_toast" formatted="true">Backup aktiviert, die Backups werden in %s</string>
 	<string name="restore_complete" formatted="true">Wiederherstellen nach %s abgeschlossen</string>
+	<string name="restore_error" formatted="true">Konnte Sicherung %s nicht wiederherstellen. Datei könnte %s sein.</string>
 	<string name="encrypted">verschlüsselt</string>
 	<string name="unencrypted">nicht verschlüsselt</string>
 
@@ -246,7 +249,6 @@
 	<string name="all_none">Alle/Keine</string>
 
 	<string name="stat_average_ph">Durchschnitts pH-Wert</string>
-
 	<string name="photos_title">Pflanzenfotos</string>
 
 	<string name="plant_summary_amount">Menge:</string>
@@ -284,6 +286,7 @@
 	<string name="empty_plant_list">Keine Pflanzen zum Anzeigen vorhanden</string>
 	<string name="empty_schedules">Es gibt keine Zeitpläne</string>
 	<string name="empty_photos">Keine Fotos zum Anzeigen vorhanden</string>
+	<string name="events_title">Vergangene Maßnahmen</string>
 	<string name="show_hide_calendar">Kalender ein-/ausblenden</string>
 	<string name="translations_title">Vielen Dank an</string>
 	<string name="translations_by">Übersetzungen von</string>
@@ -303,6 +306,41 @@
 
 	<string name="view_details_short">Details</string>
 
+	<plurals name="time_second">
+		<item quantity="one">Sekunde</item>
+		<item quantity="other">Sekunden</item>
+	</plurals>
+
+	<plurals name="time_minute">
+		<item quantity="one">Minute</item>
+		<item quantity="other">Minuten</item>
+	</plurals>
+
+	<plurals name="time_hour">
+		<item quantity="one">Stunde</item>
+		<item quantity="other">Stunden</item>
+	</plurals>
+
+	<plurals name="time_day">
+		<item quantity="one">Tag</item>
+		<item quantity="other">Tage</item>
+	</plurals>
+
+	<plurals name="time_week">
+		<item quantity="one">Woche</item>
+		<item quantity="other">Wochen</item>
+	</plurals>
+
+	<plurals name="time_month">
+		<item quantity="one">Monat</item>
+		<item quantity="other">Monate</item>
+	</plurals>
+
+	<plurals name="time_year">
+		<item quantity="one">Jahr</item>
+		<item quantity="other">Jahre</item>
+	</plurals>
+
 	<string-array name="settings_card_entries">
 		<item>Original</item>
 		<item>Kompakt</item>
@@ -313,7 +351,17 @@
 	<string name="accept_quit">Beenden</string>
 	<string name="plants">Pflanzen</string>
 	<string name="humidity">Feuchtigkeit</string>
+	<string name="current_temp">Aktuelle Temperatur:</string>
+	<string name="current_humidity">Aktuelle Feuchtigkeit:</string>
 	<string name="delete_item_dialog_title">Diesen Eintrag löschen?</string>
+	<string name="confirm_delete_item_message_holder">Willst du &lt;b&gt;%s&lt;/b&gt; wirklich löschen?</string>
+	<string name="show">Anzeigen</string>
+	<string name="hide">Verstecken</string>
+	<string name="lights_on">Licht an</string>
+	<string name="lights_off">Licht aus</string>
+
+	<string name="settings_lastbackup_summary" formatted="true">Letzte Sicherung am: &lt;b&gt;%s&lt;/b&gt;</string>
+	<string name="settings_image_location_summary" formatted="true">Bilder-Speicherort, derzeit: &lt;b&gt;%s&lt;/b&gt;</string>
 	<string name="settings_image_location_error">Bildspeicherort konnte nicht festgelegt werden</string>
 	<string name="settings_image_location_title">Speicherort des Bildes</string>
 	<string name="settings_image_cache_title">Bild-Cache löschen</string>
@@ -322,6 +370,7 @@
 	<string name="task_complete">Aufgabe erledigt</string>
 	<string name="empty_actions_list">Es sind keine Aktionen zu zeigen</string>
 
+	<string name="exporting_complete">Export von %s abgeschlossen</string>
 	<string name="exporting_path">Exportiert %s nach %s</string>
 	<string name="export_complete">Export abgeschlossen</string>
 	<string name="export_dialog_label">Bilder einbeziehen?</string>
@@ -335,4 +384,5 @@
 	<string name="settings_import_error">Import von Pflanzen aus Datei fehlgeschlagen</string>
 	<string name="settings_import">Pflanzen aus Datei importieren</string>
 	<string name="settings_import_success">Pflanzen erfolgreich aus Datei importiert</string>
-</resources>
+
+	</resources>
