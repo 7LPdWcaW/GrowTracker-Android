@@ -146,7 +146,6 @@
 	<string name="ave_time_between_water_label">Temps moyen entre arrosage</string>
 	<string name="filter_additives">Filtrer les engrais et additifs</string>
 	<string name="ph_title">pH</string>
-
 	<string name="min">Min:</string>
 	<string name="max">Max:</string>
 	<string name="ave">Moy:</string>
@@ -264,7 +263,6 @@
 	<string name="stat_input_ph">pH de la solution nutritive</string>
 	<string name="stat_runoff_ph">pH du surplus</string>
 	<string name="stat_average_ph">pH moyen</string>
-
 	<string name="photos_title">Photos de la plante</string>
 
 	<string name="plant_summary_ph">pH interne :</string>
@@ -414,4 +412,5 @@
 	<string name="settings_import_error">Impossible d\'importer les plantes depuis le fichier</string>
 	<string name="settings_import">Importer des plantes depuis un fichier</string>
 	<string name="settings_import_success">Plantes bien importées depuis le fichier</string>
-</resources>
+
+	</resources>
