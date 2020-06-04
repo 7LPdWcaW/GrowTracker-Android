@@ -2,12 +2,14 @@ package me.anon.lib.helper;
 
 import android.content.Context;
 import android.graphics.Color;
+import android.view.ContextThemeWrapper;
 
 import com.github.mikephil.charting.charts.BarLineChartBase;
 import com.github.mikephil.charting.charts.LineChart;
 import com.github.mikephil.charting.data.Entry;
 import com.github.mikephil.charting.data.LineData;
 import com.github.mikephil.charting.data.LineDataSet;
+import com.github.mikephil.charting.formatter.IndexAxisValueFormatter;
 import com.github.mikephil.charting.formatter.ValueFormatter;
 import com.github.mikephil.charting.utils.ViewPortHandler;
 
@@ -22,9 +24,11 @@ import java.util.Set;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.core.graphics.ColorUtils;
 import me.anon.grow.R;
 import me.anon.lib.TdsUnit;
 import me.anon.lib.TempUnit;
+import me.anon.lib.ext.IntUtilsKt;
 import me.anon.lib.ext.NumberUtilsKt;
 import me.anon.model.Action;
 import me.anon.model.Garden;
@@ -104,21 +108,20 @@ public class StatsHelper
 
 	public static void styleDataset(Context context, LineDataSet data, int colour)
 	{
-//		context = new ContextThemeWrapper(context, R.style.AppTheme);
-//		data.setValueTextColor(IntUtilsKt.resolveColor(R.attr.colorAccent, context));
-//		data.setCircleColor(IntUtilsKt.resolveColor(R.attr.colorAccent, context));
-//		data.setDrawCubic(true);
-//		data.setCubicIntensity(0.05f);
-//		data.setLineWidth(2.0f);
-//		data.setDrawCircleHole(true);
-//		data.setColor(colour);
-//		data.setCircleColor(colour);
-//		data.setCircleSize(4.0f);
-//		data.setDrawHighlightIndicators(true);
-//		data.setHighlightEnabled(true);
-//		data.setHighlightLineWidth(2f);
-//		data.setHighLightColor(ColorUtils.setAlphaComponent(colour, 96));
-//		data.setDrawValues(false);
+		context = new ContextThemeWrapper(context, R.style.AppTheme);
+		data.setValueTextColor(IntUtilsKt.resolveColor(R.attr.colorAccent, context));
+		data.setCircleColor(IntUtilsKt.resolveColor(R.attr.colorAccent, context));
+		data.setCubicIntensity(0.05f);
+		data.setLineWidth(2.0f);
+		data.setDrawCircleHole(true);
+		data.setColor(colour);
+		data.setCircleColor(colour);
+		data.setCircleSize(4.0f);
+		data.setDrawHighlightIndicators(true);
+		data.setHighlightEnabled(true);
+		data.setHighlightLineWidth(2f);
+		data.setHighLightColor(ColorUtils.setAlphaComponent(colour, 96));
+		data.setDrawValues(false);
 //		data.setValueFormatter(formatter);
 	}
 
@@ -516,7 +519,7 @@ public class StatsHelper
 	public static void setTempData(Garden garden, @Nullable Context context, TempUnit tempUnit, @Nullable LineChart chart, String[] additionalRef)
 	{
 		ArrayList<Entry> vals = new ArrayList<>();
-		ArrayList<String> xVals = new ArrayList<>();
+		final ArrayList<String> xVals = new ArrayList<>();
 		LineData data = new LineData();
 		float min = Float.MAX_VALUE;
 		float max = Float.MIN_VALUE;
@@ -547,7 +550,7 @@ public class StatsHelper
 
 				double temperature = TempUnit.CELCIUS.to(tempUnit, ((TemperatureChange)action).getTemp());
 
-				Entry entry = new Entry((float)temperature, index++);
+				Entry entry = new Entry(index++, (float)temperature);
 				entry.setData(action);
 				vals.add(entry);
 				xVals.add(date);
@@ -564,19 +567,21 @@ public class StatsHelper
 			styleDataset(context, dataSet, Color.parseColor(context.getResources().getStringArray(R.array.stats_colours)[0]));
 
 			LineData lineData = new LineData(dataSet);
-			lineData.setValueFormatter(new ValueFormatter()
-			{
-				@Override public String getFormattedValue(float value, Entry entry, int dataSetIndex, ViewPortHandler viewPortHandler)
-				{
-					return formatter.getFormattedValue(value, entry, dataSetIndex, viewPortHandler) + "°" + tempUnit.getLabel();
-				}
-			});
+
+//			lineData.setValueFormatter(new ValueFormatter()
+//			{
+//				@Override public String getFormattedValue(float value, Entry entry, int dataSetIndex, ViewPortHandler viewPortHandler)
+//				{
+//					return formatter.getFormattedValue(value, entry, dataSetIndex, viewPortHandler) + "°" + tempUnit.getLabel();
+//				}
+//			});
 
 			styleGraph(chart);
 			chart.setData(lineData);
 
 			chart.getXAxis().setYOffset(15.0f);
 			chart.setExtraOffsets(0, 0, 30, 0);
+			chart.getXAxis().setValueFormatter(new IndexAxisValueFormatter(xVals));
 		}
 
 		if (additionalRef != null)
