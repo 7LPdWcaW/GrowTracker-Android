@@ -28,6 +28,7 @@ import androidx.core.graphics.ColorUtils;
 import me.anon.grow.R;
 import me.anon.lib.TdsUnit;
 import me.anon.lib.TempUnit;
+import me.anon.lib.ext.EntryExtKt;
 import me.anon.lib.ext.IntUtilsKt;
 import me.anon.lib.ext.NumberUtilsKt;
 import me.anon.model.Action;
@@ -563,18 +564,19 @@ public class StatsHelper
 
 		if (chart != null)
 		{
+			EntryExtKt.style(chart);
 			LineDataSet dataSet = new LineDataSet(vals, context.getString(R.string.stat_temerature));
 			styleDataset(context, dataSet, Color.parseColor(context.getResources().getStringArray(R.array.stats_colours)[0]));
 
 			LineData lineData = new LineData(dataSet);
 
-//			lineData.setValueFormatter(new ValueFormatter()
-//			{
-//				@Override public String getFormattedValue(float value, Entry entry, int dataSetIndex, ViewPortHandler viewPortHandler)
-//				{
-//					return formatter.getFormattedValue(value, entry, dataSetIndex, viewPortHandler) + "°" + tempUnit.getLabel();
-//				}
-//			});
+			lineData.setValueFormatter(new ValueFormatter()
+			{
+				@Override public String getFormattedValue(float value, Entry entry, int dataSetIndex, ViewPortHandler viewPortHandler)
+				{
+					return formatter.getFormattedValue(value, entry, dataSetIndex, viewPortHandler) + "°" + tempUnit.getLabel();
+				}
+			});
 
 			styleGraph(chart);
 			chart.setData(lineData);
@@ -633,7 +635,7 @@ public class StatsHelper
 
 				double humidity = ((HumidityChange)action).getHumidity();
 
-				Entry entry = new Entry((float)humidity, index++);
+				Entry entry = new Entry(index++, (float)humidity);
 				entry.setData(action);
 				vals.add(entry);
 				xVals.add(date);
@@ -646,6 +648,7 @@ public class StatsHelper
 
 		if (chart != null && context != null)
 		{
+			EntryExtKt.style(chart);
 			LineDataSet dataSet = new LineDataSet(vals, "%");
 			styleDataset(context, dataSet, Color.parseColor(context.getResources().getStringArray(R.array.stats_colours)[2]));
 
@@ -665,6 +668,7 @@ public class StatsHelper
 
 			chart.getXAxis().setYOffset(15.0f);
 			chart.setExtraOffsets(0, 0, 30, 0);
+			chart.getXAxis().setValueFormatter(new IndexAxisValueFormatter(xVals));
 		}
 
 		if (additionalRef != null)

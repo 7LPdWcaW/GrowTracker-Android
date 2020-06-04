@@ -10,19 +10,13 @@ import android.view.ViewGroup
 import android.widget.SeekBar
 import android.widget.TextView
 import androidx.appcompat.app.AlertDialog
-import androidx.core.graphics.ColorUtils
 import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.esotericsoftware.kryo.Kryo
-import com.github.mikephil.charting.components.AxisBase
 import com.github.mikephil.charting.components.MarkerView
-import com.github.mikephil.charting.components.YAxis
 import com.github.mikephil.charting.data.Entry
-import com.github.mikephil.charting.data.LineData
-import com.github.mikephil.charting.data.LineDataSet
-import com.github.mikephil.charting.formatter.ValueFormatter
 import com.github.mikephil.charting.highlight.Highlight
-import com.github.mikephil.charting.interfaces.datasets.ILineDataSet
+import com.github.mikephil.charting.listener.OnChartValueSelectedListener
 import com.github.mikephil.charting.utils.MPPointF
 import kotlinx.android.synthetic.main.data_label_stub.view.*
 import kotlinx.android.synthetic.main.garden_tracker_view.*
@@ -30,7 +24,10 @@ import me.anon.controller.adapter.GardenActionAdapter
 import me.anon.grow.MainActivity
 import me.anon.grow.R
 import me.anon.lib.TempUnit
-import me.anon.lib.ext.*
+import me.anon.lib.ext.formatWhole
+import me.anon.lib.ext.inflate
+import me.anon.lib.ext.round
+import me.anon.lib.helper.StatsHelper
 import me.anon.lib.manager.GardenManager
 import me.anon.model.*
 import org.threeten.bp.Duration
@@ -38,8 +35,6 @@ import org.threeten.bp.LocalTime
 import org.threeten.bp.format.DateTimeFormatter
 import java.util.*
 import kotlin.math.abs
-import kotlin.math.max
-import kotlin.math.min
 
 class GardenTrackerFragment : Fragment()
 {
@@ -299,40 +294,7 @@ class GardenTrackerFragment : Fragment()
 	private fun setStatistics()
 	{
 		val tempUnit = TempUnit.getSelectedTemperatureUnit(activity!!)
-
-		val tempValues = ArrayList<Entry>()
-		val tempStats = StatisticsFragment2.StatisticsViewModel.StatWrapper()
-		val tempTempValues = arrayListOf<Double>()
-		val humidityValues = ArrayList<Entry>()
-		val humidityStats = StatisticsFragment2.StatisticsViewModel.StatWrapper()
-		val humidityTempValues = arrayListOf<Double>()
-		garden.actions.forEach { action ->
-			when (action)
-			{
-				is TemperatureChange -> {
-					action.temp.let {
-						tempTempValues += it
-						tempStats.max = max(tempStats.max ?: Double.MIN_VALUE, it)
-						tempStats.min = min(tempStats.min ?: Double.MAX_VALUE, it)
-
-						tempValues += Entry(tempValues.size.toFloat(), it.toFloat())
-					}
-				}
-
-				is HumidityChange -> {
-					action.humidity?.let {
-						humidityTempValues += it
-						humidityStats.max = max(humidityStats.max ?: Double.MIN_VALUE, it)
-						humidityStats.min = min(humidityStats.min ?: Double.MAX_VALUE, it)
-
-						humidityValues += Entry(humidityValues.size.toFloat(), it.toFloat())
-					}
-				}
-			}
-		}
-		tempStats.average = if (tempTempValues.isNotEmpty()) tempTempValues.average() else null
-		humidityStats.average = if (humidityTempValues.isNotEmpty()) humidityTempValues.average() else null
-
+		val tempAdditional = arrayOfNulls<String>(3)
 		(garden.actions.lastOrNull { it is TemperatureChange } as TemperatureChange?)?.let {
 			val view = data_container.findViewById<View?>(R.id.stats_temp) ?: data_container.inflate(R.layout.data_label_stub)
 			view.label.setText(R.string.current_temp)
@@ -341,11 +303,29 @@ class GardenTrackerFragment : Fragment()
 
 			if (data_container.findViewById<View?>(R.id.stats_temp) == null) data_container.addView(view)
 		}
+		StatsHelper.setTempData(garden, activity!!, temp, tempAdditional)
 
+		temp.marker = object : MarkerView(context, R.layout.chart_marker)
+		{
+			override fun refreshContent(e: Entry, highlight: Highlight)
+			{
+				val timeFormat = android.text.format.DateFormat.getTimeFormat(context)
+				val action = e.data as Action
+				var date = ""
 
-		min_temp.text = "${tempStats.min ?: "-"}°${tempUnit.label}"
-		max_temp.text = "${tempStats.max ?: "-"}°${tempUnit.label}"
-		ave_temp.text = "${tempStats.average ?: "-"}°${tempUnit.label}"
+				if (action != null) date = "\n" + timeFormat.format(Date(action.date))
+
+				(findViewById<View>(R.id.content) as TextView).text = e.y.formatWhole() + "°" + tempUnit.label + date
+				super.refreshContent(e, highlight)
+			}
+
+			override fun getOffset(): MPPointF = MPPointF.getInstance(-(width / 2f), -(height * 1.2f))
+		}
+		temp.notifyDataSetChanged()
+		temp.postInvalidate()
+		min_temp.text = if (tempAdditional[0] == "100") "-" else "${tempAdditional[0]}°${tempUnit.label}"
+		max_temp.text = if (tempAdditional[1] == "-100") "-" else "${tempAdditional[1]}°${tempUnit.label}"
+		ave_temp.text = "${tempAdditional[2]}°${tempUnit.label}"
 
 		val humidityAdditional = arrayOfNulls<String>(3)
 		(garden.actions.lastOrNull { it is HumidityChange } as HumidityChange?)?.let {
@@ -356,117 +336,81 @@ class GardenTrackerFragment : Fragment()
 
 			if (data_container.findViewById<View?>(R.id.stats_humidity) == null) data_container.addView(view)
 		}
-
-		min_humidity.text = "${humidityStats.min ?: "-"}%"
-		max_humidity.text = "${humidityStats.max ?: "-"}%"
-		ave_humidity.text = "${humidityStats.average ?: "-"}%"
-
-		with (temp) {
-			setVisibleYRangeMaximum(tempStats.max?.toFloat() ?: 0.0f, YAxis.AxisDependency.LEFT)
-			style()
-
-			axisLeft.valueFormatter = object : ValueFormatter()
+		StatsHelper.setHumidityData(garden, activity!!, humidity, humidityAdditional)
+		humidity.marker = object : MarkerView(context, R.layout.chart_marker)
+		{
+			override fun refreshContent(e: Entry, highlight: Highlight)
 			{
-				override fun getAxisLabel(value: Float, axis: AxisBase?): String
-				{
-					return "${value.formatWhole()}°${tempUnit.label}"
-				}
+				val timeFormat = android.text.format.DateFormat.getTimeFormat(context)
+				val action = e.data as Action
+				var date = ""
+
+				if (action != null) date = "\n" + timeFormat.format(Date(action.date))
+				(findViewById<View>(R.id.content) as TextView).text = e.y.toInt().toString() + "%" + date
+				super.refreshContent(e, highlight)
 			}
 
-			marker = object : MarkerView(activity, R.layout.chart_marker)
+			override fun getOffset(): MPPointF = MPPointF.getInstance(-(width / 2f), -(height * 1.2f))
+		}
+		humidity.notifyDataSetChanged()
+		humidity.postInvalidate()
+		min_humidity.text = if (humidityAdditional[0] == "100") "-" else "${humidityAdditional[0]}%"
+		max_humidity.text = if (humidityAdditional[1] == "-100") "-" else "${humidityAdditional[1]}%"
+		ave_humidity.text = "${humidityAdditional[2]}%"
+
+		humidity.setOnChartValueSelectedListener(object : OnChartValueSelectedListener
+		{
+			override fun onNothingSelected()
 			{
-				override fun refreshContent(e: Entry, highlight: Highlight): kotlin.Unit
-				{
-					val color = temp.data.dataSets[highlight.dataSetIndex].color
-					with (this.findViewById<TextView>(R.id.content)) {
-						text = "${e.y.formatWhole()}°${tempUnit.label}"
-						setTextColor(color)
+				edit_humidity.visibility = View.GONE
+				delete_humidity.visibility = View.GONE
+			}
+
+			override fun onValueSelected(e: Entry?, h: Highlight?)
+			{
+				edit_humidity.visibility = View.VISIBLE
+				delete_humidity.visibility = View.VISIBLE
+
+				edit_humidity.setOnClickListener {
+					(e?.data as HumidityChange?)?.let { current ->
+						editAction(current)
 					}
-
-					super.refreshContent(e, highlight)
 				}
 
-				override fun getOffset(): MPPointF = MPPointF.getInstance(-(width / 2f), -(height * 1.2f))
+				delete_humidity.setOnClickListener {
+					(e?.data as Action?)?.let {
+						deleteAction(it)
+					}
+				}
+			}
+		})
+
+		temp.setOnChartValueSelectedListener(object : OnChartValueSelectedListener
+		{
+			override fun onNothingSelected()
+			{
+				edit_temp.visibility = View.GONE
+				delete_temp.visibility = View.GONE
 			}
 
-			//xAxis.valueFormatter = datesFormatter
-		}
+			override fun onValueSelected(e: Entry?, h: Highlight?)
+			{
+				edit_temp.visibility = View.VISIBLE
+				delete_temp.visibility = View.VISIBLE
 
-		val sets = arrayListOf<ILineDataSet>()
+				edit_temp.setOnClickListener {
+					(e?.data as TemperatureChange?)?.let { current ->
+						editAction(current)
+					}
+				}
 
-		sets += LineDataSet(tempValues, getString(R.string.stat_input_ph)).apply {
-			color = 0xffe6194B.toInt()
-			fillColor = color
-			setCircleColor(color)
-			StatisticsFragment2.styleDataset(context!!, this, color)
-		}
-
-		sets += LineDataSet(tempValues.rollingAverage(), getString(R.string.stat_average_temp)).apply {
-			color = ColorUtils.blendARGB(0xffe6194B.toInt(), 0xffffffff.toInt(), 0.4f)
-			setDrawCircles(false)
-			setDrawValues(false)
-			setDrawCircleHole(false)
-			setDrawHighlightIndicators(true)
-			cubicIntensity = 1f
-			lineWidth = 2.0f
-			isHighlightEnabled = false
-		}
-
-		temp.data = LineData(sets)
-
-//		humidity.setOnChartValueSelectedListener(object : OnChartValueSelectedListener
-//		{
-//			override fun onNothingSelected()
-//			{
-//				edit_humidity.visibility = View.GONE
-//				delete_humidity.visibility = View.GONE
-//			}
-//
-//			override fun onValueSelected(e: Entry?, dataSetIndex: Int, h: Highlight?)
-//			{
-//				edit_humidity.visibility = View.VISIBLE
-//				delete_humidity.visibility = View.VISIBLE
-//
-//				edit_humidity.setOnClickListener {
-//					(e?.data as HumidityChange?)?.let { current ->
-//						editAction(current)
-//					}
-//				}
-//
-//				delete_humidity.setOnClickListener {
-//					(e?.data as Action?)?.let {
-//						deleteAction(it)
-//					}
-//				}
-//			}
-//		})
-//
-//		temp.setOnChartValueSelectedListener(object : OnChartValueSelectedListener
-//		{
-//			override fun onNothingSelected()
-//			{
-//				edit_temp.visibility = View.GONE
-//				delete_temp.visibility = View.GONE
-//			}
-//
-//			override fun onValueSelected(e: Entry?, dataSetIndex: Int, h: Highlight?)
-//			{
-//				edit_temp.visibility = View.VISIBLE
-//				delete_temp.visibility = View.VISIBLE
-//
-//				edit_temp.setOnClickListener {
-//					(e?.data as TemperatureChange?)?.let { current ->
-//						editAction(current)
-//					}
-//				}
-//
-//				delete_temp.setOnClickListener {
-//					(e?.data as Action?)?.let { current ->
-//						deleteAction(current)
-//					}
-//				}
-//			}
-//		})
+				delete_temp.setOnClickListener {
+					(e?.data as Action?)?.let { current ->
+						deleteAction(current)
+					}
+				}
+			}
+		})
 
 		general_title.visibility = if (data_container.childCount > 0) View.VISIBLE else View.GONE
 		data_container.visibility = if (data_container.childCount > 0) View.VISIBLE else View.GONE
