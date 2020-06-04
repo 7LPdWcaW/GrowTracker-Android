@@ -277,14 +277,17 @@ You can decrypt your files using your passphrase either by writing a script that
 
 Translations provided by;
 
-- German - ![DE - German](https://transifex-open-api.herokuapp.com/badge/growutils/project/growtracker/language/de_DE/translated.png); Acrylic Boy, Alex (Noxmiles), Basti B (Weltenesche), Patrick B (EukalyptusX), Sascha Zenglein (szenglein), Vexatos, W Q (williq)
+- Chinese (Taiwan) - ![TW - Chinese (Taiwan)](https://transifex-open-api.herokuapp.com/badge/growutils/project/growtracker/language/zh_TW/translated.png); Chief Ndora (chiefndora), codecyang
 - Dutch - ![NL - Dutch](https://transifex-open-api.herokuapp.com/badge/growutils/project/growtracker/language/nl_NL/translated.png); Heimen Stoffels (Vistaus)
-- French - ![FR - French](https://transifex-open-api.herokuapp.com/badge/growutils/project/growtracker/language/fr/translated.png); Maxtille
+- French - ![FR - French](https://transifex-open-api.herokuapp.com/badge/growutils/project/growtracker/language/fr/translated.png); Maxtille, yassine azirem (yassix.well)
+- German - ![DE - German](https://transifex-open-api.herokuapp.com/badge/growutils/project/growtracker/language/de_DE/translated.png); Acrylic Boy, Alex (Noxmiles), Basti B (Weltenesche), Patrick B (EukalyptusX), Sascha Zenglein (szenglein), Vexatos, W Q (williq)
+- Hungarian - ![HU - Hungarian](https://transifex-open-api.herokuapp.com/badge/growutils/project/growtracker/language/hu/translated.png);
 - Norwegian Bokmål - ![NB - Norwegian Bokmål](https://transifex-open-api.herokuapp.com/badge/growutils/project/growtracker/language/nb/translated.png); Syver Stensholt (SuperPotato)
-- Slovenian - ![SI - Slovenian](https://transifex-open-api.herokuapp.com/badge/growutils/project/growtracker/language/sl_SI/translated.png); Klemen Skerbiš (aha999)
-- Spanish - ![ES - Spanish](https://transifex-open-api.herokuapp.com/badge/growutils/project/growtracker/language/es/translated.png); EmmanuelMess
-- Ukranian - ![UK - Ukrainian](https://transifex-open-api.herokuapp.com/badge/growutils/project/growtracker/language/uk/translated.png); 9YbQiuEohUu1
 - Russian - ![RU - Russian](https://transifex-open-api.herokuapp.com/badge/growutils/project/growtracker/language/ru/translated.png); 9YbQiuEohUu1
+- Slovenian - ![SI - Slovenian](https://transifex-open-api.herokuapp.com/badge/growutils/project/growtracker/language/sl_SI/translated.png); Klemen Skerbiš (aha999)
+- Spanish - ![ES - Spanish](https://transifex-open-api.herokuapp.com/badge/growutils/project/growtracker/language/es/translated.png); EmmanuelMess, Raul Choque (choqueraul123)
+- Ukranian - ![UK - Ukrainian](https://transifex-open-api.herokuapp.com/badge/growutils/project/growtracker/language/uk/translated.png); 9YbQiuEohUu1
+
 
 See [more](https://github.com/7LPdWcaW/GrowTracker-Android/issues/116) about translating GrowTracker
 
