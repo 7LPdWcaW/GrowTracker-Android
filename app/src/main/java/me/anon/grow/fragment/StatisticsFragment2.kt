@@ -23,7 +23,8 @@ import com.google.android.material.chip.Chip
 import kotlinx.android.synthetic.main.data_label_stub.view.*
 import kotlinx.android.synthetic.main.statistics2_view.*
 import me.anon.grow.R
-import me.anon.grow.fragment.StatisticsFragment2.template.*
+import me.anon.grow.fragment.StatisticsFragment2.template.data
+import me.anon.grow.fragment.StatisticsFragment2.template.header
 import me.anon.lib.TdsUnit
 import me.anon.lib.TempUnit
 import me.anon.lib.Unit
@@ -495,6 +496,8 @@ class StatisticsFragment2 : Fragment()
 	{
 		val selectedAdditives = arrayListOf<String>()
 		var totalMax = Double.MIN_VALUE
+		val hasItems = viewModel.additiveValues.size > 0
+		additive_group.isVisible = hasItems
 
 		fun displayStats()
 		{
@@ -828,6 +831,7 @@ class StatisticsFragment2 : Fragment()
 			}
 
 			input_ph.data = LineData(sets)
+			ph_group.isVisible = input_ph.data.entryCount > 0
 			input_ph.notifyDataSetChanged()
 			input_ph.invalidate()
 		}
@@ -949,6 +953,7 @@ class StatisticsFragment2 : Fragment()
 			}
 
 			tds_chart.data = LineData(sets)
+			tds_group.isVisible = tds_chart.data.entryCount > 0
 			tds_chart.notifyDataSetChanged()
 			tds_chart.fitScreen()
 			tds_chart.invalidate()
@@ -1094,6 +1099,7 @@ class StatisticsFragment2 : Fragment()
 		}
 
 		temp_chart.data = LineData(sets)
+		temp_group.isVisible = temp_chart.data.entryCount > 0
 
 		val stats = arrayListOf<template>()
 		viewModel.tempStats.min?.let {
