@@ -12,7 +12,6 @@ import android.os.AsyncTask
 import android.os.Environment
 import android.view.View
 import android.view.ViewGroup
-import android.widget.TextView
 import androidx.appcompat.view.ContextThemeWrapper
 import androidx.core.app.NotificationCompat
 import androidx.core.content.FileProvider
@@ -22,15 +21,10 @@ import com.github.mikephil.charting.charts.LineChart
 import com.github.mikephil.charting.charts.PieChart
 import com.github.mikephil.charting.components.AxisBase
 import com.github.mikephil.charting.components.LegendEntry
-import com.github.mikephil.charting.components.MarkerView
-import com.github.mikephil.charting.components.YAxis
 import com.github.mikephil.charting.data.*
 import com.github.mikephil.charting.formatter.ValueFormatter
-import com.github.mikephil.charting.highlight.Highlight
 import com.github.mikephil.charting.interfaces.datasets.IBarDataSet
 import com.github.mikephil.charting.interfaces.datasets.ILineDataSet
-import com.github.mikephil.charting.utils.MPPointF
-import kotlinx.android.synthetic.main.statistics2_view.*
 import me.anon.grow.R
 import me.anon.grow.fragment.StatisticsFragment2
 import me.anon.lib.TdsUnit
@@ -48,12 +42,10 @@ import java.io.ByteArrayOutputStream
 import java.io.File
 import java.io.FileInputStream
 import java.text.SimpleDateFormat
-import java.time.format.DateTimeFormatter
 import java.util.*
 import kotlin.collections.ArrayList
 import kotlin.math.absoluteValue
 import kotlin.math.max
-import kotlin.math.roundToInt
 
 /**
  * // TODO: Add class description
@@ -377,6 +369,15 @@ class ExportHelper(
 			StatsHelper.setTempData(garden, context, temp, null)
 			temp.data.setDrawValues(true)
 
+			with (temp) {
+				legend.textColor = 0xff000000.toInt()
+				axisLeft.textColor = 0xff000000.toInt()
+				xAxis.textColor = 0xff000000.toInt()
+				xAxis.labelCount = 25
+				xAxis.textSize = 8.0f
+				axisLeft.textSize = 8.0f
+			}
+
 			try
 			{
 				val parameters = ZipParameters()
@@ -420,6 +421,15 @@ class ExportHelper(
 			chart.layout(0, 0, width, height)
 			StatsHelper.setHumidityData(garden, context, chart, null)
 			chart.data.setDrawValues(true)
+
+			with (chart) {
+				legend.textColor = 0xff000000.toInt()
+				axisLeft.textColor = 0xff000000.toInt()
+				xAxis.textColor = 0xff000000.toInt()
+				xAxis.labelCount = 25
+				xAxis.textSize = 8.0f
+				axisLeft.textSize = 8.0f
+			}
 
 			try
 			{
