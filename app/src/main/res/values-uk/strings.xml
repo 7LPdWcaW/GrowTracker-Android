@@ -217,7 +217,7 @@
 	<string name="passphrase_error">Помилка - пароль не співпадає</string>
 
 	<string name="fatal_error">Під час збереження саду сталася помилка, будь ласка створіть резервну копію цих даних</string>
-	<string name="taken">Готово</string>
+	<string name="taken">Зроблено</string>
 	<string name="ago" formatted="true">%s тому</string>
 	<string name="watered_ago" formatted="true">Полито &lt;b&gt;%s&lt;/b&gt; тому</string>
 	<string name="last_watered_ago" formatted="true">Востаннє полито &lt;b&gt;%s&lt;/b&gt; тому</string>
@@ -275,7 +275,7 @@
 	<string name="stat_average_ph">Середній pH</string>
 	<string name="stat_average_temp">Середня температура:</string>
 	<string name="stat_average_runoff_ph">Середній pH стоків</string>
-	<string name="stat_average_tds" formatted="true">Середні %s</string>
+	<string name="stat_average_tds" formatted="true">Середній %s</string>
 
 	<string name="photos_title">Світлини рослини</string>
 
@@ -335,12 +335,12 @@
 
 	<!-- now = 1 second -->
 	<string name="now_abbr">1с</string>
-	<string name="second_abbr">с</string>
+	<string name="second_abbr">сек</string>
 	<string name="minute_abbr">хв</string>
-	<string name="hour_abbr">г</string>
-	<string name="day_abbr">д</string>
-	<string name="week_abbr">т</string>
-	<string name="month_abbr">м</string>
+	<string name="hour_abbr">год</string>
+	<string name="day_abbr">дн</string>
+	<string name="week_abbr">тиж</string>
+	<string name="month_abbr">міс</string>
 	<string name="year_abbr">р</string>
 
 	<string name="view_details_short">Деталі</string>
