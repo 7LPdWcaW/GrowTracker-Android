@@ -11,13 +11,10 @@ import me.anon.grow3.R
 import me.anon.grow3.ui.base.BaseActivity
 import me.anon.grow3.ui.diaries.fragment.DiariesListFragment
 import me.anon.grow3.ui.diaries.fragment.TestFragment
-import me.anon.grow3.util.dp
-import me.anon.grow3.util.parentView
-import timber.log.Timber
+import me.anon.grow3.ui.diaries.fragment.TestFragment2
 
 class MainActivity : BaseActivity()
 {
-	var lastPosition = -1f
 	override fun onCreate(savedInstanceState: Bundle?)
 	{
 		super.onCreate(savedInstanceState)
@@ -30,7 +27,13 @@ class MainActivity : BaseActivity()
 
 			override fun createFragment(position: Int): Fragment
 			{
-				return if (position == 0) DiariesListFragment() else TestFragment()
+				return when (position)
+				{
+					0 -> DiariesListFragment()
+					1 -> TestFragment()
+					2 -> TestFragment2()
+					else -> throw IndexOutOfBoundsException()
+				}
 			}
 		}
 		view_pager.setCurrentItem(1, false)
@@ -38,26 +41,6 @@ class MainActivity : BaseActivity()
 		view_pager.setPageTransformer { page, position ->
 			page.translationZ = 0f
 
-//			val content = findViewById<View>(R.id.content)
-//			if (position < 1)
-//			{
-//				val border = 0
-//				val speed = -0.2f
-//				val width = content.getWidth()
-//				content.setTranslationX(-(position * width * speed))
-//				val sc = (page.getWidth() - border) / page.getWidth()
-//				if (position == 0f)
-//				{
-//					page.setScaleX(1f)
-//					page.setScaleY(1f)
-//				}
-//				else
-//				{
-//					page.setScaleX(sc.toFloat())
-//					page.setScaleY(sc.toFloat())
-//					page.translationZ = 100f
-//				}
-//			}
 			val index = (page.parent as ViewGroup).indexOfChild(page)
 			page.findViewById<View?>(R.id.fade_overlay)?.apply {
 				setOnClickListener(null)
@@ -66,58 +49,33 @@ class MainActivity : BaseActivity()
 			when
 			{
 				position < -1 -> {
-					page.alpha = 1f
-					//page.translationZ = 100f
 				}
-				position < 0 -> {
-
+				position <= 0 -> {
 					if (index == 0)
 					{
-						page.translationZ = 100f
-						page.elevation = 100f
-						page.x = (page.width / 1f) * position// + (150f.dp(page.context))
+						page.x = (page.width / 1f) * position
 
 						page.findViewById<View?>(R.id.menu_view)?.let {
-							Timber.e("${page.x} ${page.parentView.x} ${position}")
-							if (page.x >= -it.paddingStart)
+							if (page.x >= -(page.width - (page.width * 0.85f)))
 							{
-								page.x = page.x.coerceAtMost(-it.paddingStart.toFloat())
-							}
-							else
-							{
+								page.x = page.x.coerceAtMost(-(page.width - (page.width * 0.85f)))
 							}
 						}
 					}
-//					else if (index == 1)
-//					{
-//						page.x = 0f
-//					}
 				}
 				position <= 1 -> {
 					page.findViewById<View?>(R.id.fade_overlay)?.apply {
 						alpha = position.coerceAtMost(0.7f)
-						isVisible = alpha > 0f
-					}
+						isVisible = alpha >= 0.1f
 
-					if (index != 0)
-//					{
-//						page.findViewById<View?>(R.id.menu_view)?.let {
-//							page.x = page.x.coerceAtMost(-it.paddingStart.toFloat())
-//						}
-//					}
-//					else
-					{
-						page.findViewById<View?>(R.id.fade_overlay)?.apply {
-							setOnClickListener {
-								view_pager.currentItem = 1
-							}
+						setOnClickListener {
+							view_pager.currentItem = 1
 						}
 
-						page.x = (page.width * position).coerceAtMost(page.width - 150f.dp(page.context))
+						page.x = (page.width * position).coerceAtMost(page.width * 0.85f)
 					}
 				}
 				else -> {
-					//page.translationZ = 100f
 				}
 			}
 		}

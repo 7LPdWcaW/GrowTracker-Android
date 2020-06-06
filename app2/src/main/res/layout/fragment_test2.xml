@@ -12,6 +12,7 @@
 		<LinearLayout
 			android:layout_width="match_parent"
 			android:layout_height="wrap_content"
+			android:id="@+id/content"
 			android:orientation="vertical"
 		>
 			<TextView
@@ -54,14 +55,4 @@
 	<!--	/>-->
 	</ScrollView>
 
-	<View
-		android:layout_width="match_parent"
-		android:layout_height="match_parent"
-		android:id="@+id/fade_overlay"
-		android:alpha="0"
-		android:visibility="gone"
-		android:background="#000000"
-		android:focusableInTouchMode="false"
-		android:filterTouchesWhenObscured="false"
-	/>
 </FrameLayout>

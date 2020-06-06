@@ -6,34 +6,11 @@
 	android:layout_width="match_parent"
 	android:layout_height="match_parent"
 	android:id="@+id/container"
-	android:paddingTop="?attr/actionBarSize"
+	android:fitsSystemWindows="true"
 >
 	<androidx.viewpager2.widget.ViewPager2
 		android:layout_width="match_parent"
 		android:layout_height="match_parent"
 		android:id="@+id/view_pager"
 	/>
-<!--	<me.anon.grow3.view.InterceptingHorizontalScrollView-->
-<!--		android:layout_width="match_parent"-->
-<!--		android:layout_height="match_parent"-->
-<!--	>-->
-<!--		<LinearLayout-->
-<!--			android:layout_width="wrap_content"-->
-<!--			android:layout_height="match_parent"-->
-<!--			android:orientation="horizontal"-->
-<!--		>-->
-<!--			<View-->
-<!--				android:layout_width="300dp"-->
-<!--				android:layout_height="match_parent"-->
-<!--				android:background="#ff00ff"-->
-<!--			/>-->
-
-<!--			<fragment-->
-<!--				android:layout_width="450dp"-->
-<!--				android:layout_height="match_parent"-->
-<!--				android:id="@+id/diaries_list"-->
-<!--				android:name="me.anon.grow3.ui.diaries.fragment.DiariesListFragment"-->
-<!--			/>-->
-<!--		</LinearLayout>-->
-<!--	</me.anon.grow3.view.InterceptingHorizontalScrollView>-->
 </androidx.constraintlayout.widget.ConstraintLayout>
