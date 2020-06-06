@@ -12,6 +12,7 @@ import me.anon.grow3.ui.base.BaseActivity
 import me.anon.grow3.ui.diaries.fragment.DiariesListFragment
 import me.anon.grow3.ui.diaries.fragment.TestFragment
 import me.anon.grow3.ui.diaries.fragment.TestFragment2
+import timber.log.Timber
 
 class MainActivity : BaseActivity()
 {
@@ -44,6 +45,24 @@ class MainActivity : BaseActivity()
 			val index = (page.parent as ViewGroup).indexOfChild(page)
 			page.findViewById<View?>(R.id.fade_overlay)?.apply {
 				setOnClickListener(null)
+			}
+
+			page.findViewById<View?>(R.id.main_content)?.let {
+				if (position > -1)// && position < 1)
+				{
+					val width = it.width
+					val translateX = -(position * width * 0.2f)
+					if (translateX < 0)
+					{
+						it.x = 0f
+					}
+					else
+					{
+						it.x = translateX
+					}
+
+					Timber.e("${-(position * width * 0.2f)}")
+				}
 			}
 
 			when
