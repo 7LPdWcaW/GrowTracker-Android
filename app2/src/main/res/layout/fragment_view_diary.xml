@@ -2,68 +2,133 @@
 
 <FrameLayout
 	xmlns:android="http://schemas.android.com/apk/res/android"
+	xmlns:app="http://schemas.android.com/apk/res-auto"
+	xmlns:tools="http://schemas.android.com/tools"
 	android:layout_width="match_parent"
 	android:layout_height="match_parent"
 >
+	<LinearLayout
+		android:layout_width="match_parent"
+		android:layout_height="wrap_content"
+		android:id="@+id/empty_view"
+		android:orientation="vertical"
+		android:layout_gravity="center"
+	>
+		<TextView
+			android:layout_width="wrap_content"
+			android:layout_height="wrap_content"
+			android:text="No diary selected"
+			android:gravity="center"
+			android:layout_gravity="center"
+			android:textColor="?textOnWindow"
+			style="@style/Text.Header"
+		/>
+		<Button
+			android:layout_width="wrap_content"
+			android:layout_height="wrap_content"
+			android:id="@+id/new_diary"
+			android:text="Create new diary"
+			android:layout_gravity="center"
+			android:layout_marginTop="12dp"
+		/>
+	</LinearLayout>
+
 	<ScrollView
 		android:layout_width="match_parent"
 		android:layout_height="match_parent"
-		android:id="@+id/main_content"
+		android:id="@+id/diary_details"
+		android:clipToPadding="false"
+		android:fillViewport="true"
+		android:visibility="gone"
 	>
 		<LinearLayout
 			android:layout_width="match_parent"
 			android:layout_height="wrap_content"
+			android:clipToPadding="false"
 			android:orientation="vertical"
+			android:paddingBottom="72dp"
 		>
-			<Button
+			<com.google.android.material.card.MaterialCardView
 				android:layout_width="match_parent"
-				android:layout_height="match_parent"
-				android:id="@+id/navigate"
-				android:text="Navigate"
-				android:lineSpacingMultiplier="1.5"
-				android:textSize="54dp"
-			/>
+				android:layout_height="wrap_content"
+			>
+				<androidx.constraintlayout.widget.ConstraintLayout
+					android:layout_width="match_parent"
+					android:layout_height="wrap_content"
+					android:padding="16dp"
+				>
+					<TextView
+						android:layout_width="wrap_content"
+						android:layout_height="wrap_content"
+						android:id="@+id/header"
+						android:text="Details"
+						app:layout_constraintTop_toTopOf="parent"
+						app:layout_constraintStart_toStartOf="parent"
+						android:textAppearance="@style/Text.Header"
+					/>
 
-			<TextView
-				android:layout_width="match_parent"
-				android:layout_height="match_parent"
-				android:text="some text to make it so the page will scroll lots and lots"
-				android:lineSpacingMultiplier="1.5"
-				android:textSize="54dp"
-			/>
+					<com.google.android.material.textfield.TextInputLayout
+						android:layout_width="match_parent"
+						android:layout_height="wrap_content"
+						android:id="@+id/diary_name"
+						android:hint="@string/add_diary_details_name"
+						android:layout_marginTop="@dimen/section_spacing"
+						app:layout_constraintTop_toBottomOf="@id/header"
+						app:layout_constraintStart_toStartOf="parent"
+						app:layout_constraintEnd_toEndOf="parent"
+					>
+						<com.google.android.material.textfield.TextInputEditText
+							android:layout_width="match_parent"
+							android:layout_height="wrap_content"
+							android:singleLine="true"
+							android:maxLines="1"
+							android:imeOptions="actionNext"
+						/>
+					</com.google.android.material.textfield.TextInputLayout>
 
-			<TextView
-				android:layout_width="match_parent"
-				android:layout_height="match_parent"
-				android:text="some text to make it so the page will scroll lots and lots"
-				android:lineSpacingMultiplier="1.5"
-				android:textSize="54dp"
-			/>
+					<com.google.android.material.textfield.TextInputLayout
+						android:layout_width="match_parent"
+						android:layout_height="wrap_content"
+						android:id="@+id/date"
+						android:hint="@string/add_diary_details_date"
+						android:layout_marginTop="@dimen/section_spacing"
+						app:layout_constraintTop_toBottomOf="@id/diary_name"
+						app:layout_constraintStart_toStartOf="parent"
+						app:layout_constraintEnd_toEndOf="parent"
+						app:startIconDrawable="@drawable/ic_calendar"
+					>
+						<com.google.android.material.textfield.TextInputEditText
+							android:layout_width="match_parent"
+							android:layout_height="wrap_content"
+							android:text="01/01/2020 01:01:00"
+							android:editable="false"
+							android:inputType="none"
+						/>
+					</com.google.android.material.textfield.TextInputLayout>
+				</androidx.constraintlayout.widget.ConstraintLayout>
+			</com.google.android.material.card.MaterialCardView>
 
-			<TextView
+			<com.google.android.material.card.MaterialCardView
 				android:layout_width="match_parent"
-				android:layout_height="match_parent"
-				android:text="some text to make it so the page will scroll lots and lots"
-				android:lineSpacingMultiplier="1.5"
-				android:textSize="54dp"
-			/>
+				android:layout_height="wrap_content"
+			>
+				<androidx.constraintlayout.widget.ConstraintLayout
+					android:layout_width="match_parent"
+					android:layout_height="wrap_content"
+					android:padding="16dp"
+				>
+					<TextView
+						android:layout_width="wrap_content"
+						android:layout_height="wrap_content"
+						android:id="@+id/header"
+						android:text="@string/add_diary_stages_title"
+						app:layout_constraintTop_toTopOf="parent"
+						app:layout_constraintStart_toStartOf="parent"
+						android:textAppearance="@style/Text.Header"
+					/>
+
+				</androidx.constraintlayout.widget.ConstraintLayout>
+			</com.google.android.material.card.MaterialCardView>
 		</LinearLayout>
-
-	<!--	<androidx.recyclerview.widget.RecyclerView-->
-	<!--		android:layout_width="match_parent"-->
-	<!--		android:layout_height="match_parent"-->
-	<!--		android:id="@+id/recycler_view"-->
-	<!--	/>-->
 	</ScrollView>
-
-	<View
-		android:layout_width="match_parent"
-		android:layout_height="match_parent"
-		android:id="@+id/fade_overlay"
-		android:alpha="0"
-		android:visibility="gone"
-		android:background="#000000"
-		android:focusableInTouchMode="false"
-		android:filterTouchesWhenObscured="false"
-	/>
 </FrameLayout>

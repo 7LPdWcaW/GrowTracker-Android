@@ -20,10 +20,12 @@ abstract class BaseFragment(layoutRes: Int) : Fragment(layoutRes)
 	{
 		super.onActivityCreated(savedInstanceState)
 
+		bindArguments(arguments ?: savedInstanceState)
 		bindUi()
 		bindVm()
 	}
 
+	open fun bindArguments(bundle: Bundle?) {}
 	abstract fun bindUi()
 	abstract fun bindVm()
 }
