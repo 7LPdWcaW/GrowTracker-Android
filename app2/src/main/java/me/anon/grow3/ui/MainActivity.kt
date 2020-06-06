@@ -5,42 +5,43 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.core.view.isVisible
 import androidx.fragment.app.Fragment
+import androidx.fragment.app.FragmentManager
+import androidx.lifecycle.Lifecycle
 import androidx.viewpager2.adapter.FragmentStateAdapter
+import androidx.viewpager2.widget.ViewPager2
 import kotlinx.android.synthetic.main.activity_main.*
 import me.anon.grow3.R
 import me.anon.grow3.ui.base.BaseActivity
 import me.anon.grow3.ui.diaries.fragment.DiariesListFragment
 import me.anon.grow3.ui.diaries.fragment.TestFragment
-import me.anon.grow3.ui.diaries.fragment.TestFragment2
-import timber.log.Timber
 
 class MainActivity : BaseActivity()
 {
+	inner class Adapter(supportFragmentManager: FragmentManager, lifecycle: Lifecycle) : FragmentStateAdapter(supportFragmentManager, lifecycle)
+	{
+		public val pages = arrayListOf<Fragment>().apply {
+			add(DiariesListFragment())
+			add(TestFragment())
+		}
+
+		override fun getItemCount(): Int = pages.size
+		override fun createFragment(position: Int): Fragment = pages[position]
+	}
+
+	val adapter by lazy { Adapter(supportFragmentManager, lifecycle) }
+
 	override fun onCreate(savedInstanceState: Bundle?)
 	{
 		super.onCreate(savedInstanceState)
 
 		setContentView(R.layout.activity_main)
 
-		view_pager.adapter = object : FragmentStateAdapter(supportFragmentManager, lifecycle)
-		{
-			override fun getItemCount(): Int = 3
+		view_pager.adapter = adapter
 
-			override fun createFragment(position: Int): Fragment
-			{
-				return when (position)
-				{
-					0 -> DiariesListFragment()
-					1 -> TestFragment()
-					2 -> TestFragment2()
-					else -> throw IndexOutOfBoundsException()
-				}
-			}
-		}
 		view_pager.setCurrentItem(1, false)
-
 		view_pager.setPageTransformer { page, position ->
 			page.translationZ = 0f
+			val translateX = position * page.width
 
 			val index = (page.parent as ViewGroup).indexOfChild(page)
 			page.findViewById<View?>(R.id.fade_overlay)?.apply {
@@ -48,36 +49,21 @@ class MainActivity : BaseActivity()
 			}
 
 			page.findViewById<View?>(R.id.main_content)?.let {
-				if (position > -1)// && position < 1)
-				{
-					val width = it.width
-					val translateX = -(position * width * 0.2f)
-					if (translateX < 0)
-					{
-						it.x = 0f
-					}
-					else
-					{
-						it.x = translateX
-					}
-
-					Timber.e("${-(position * width * 0.2f)}")
-				}
+				if (position > -1) it.x = if (-translateX <= 0) 0f else -(translateX * 0.85f)
 			}
 
 			when
 			{
-				position < -1 -> {
-				}
 				position <= 0 -> {
 					if (index == 0)
 					{
-						page.x = (page.width / 1f) * position
+						page.x = translateX
 
 						page.findViewById<View?>(R.id.menu_view)?.let {
-							if (page.x >= -(page.width - (page.width * 0.85f)))
+							val menuTranslate = -(page.width - (page.width * 0.85f))
+							if (page.x >= menuTranslate)
 							{
-								page.x = page.x.coerceAtMost(-(page.width - (page.width * 0.85f)))
+								page.x = page.x.coerceAtMost(menuTranslate)
 							}
 						}
 					}
@@ -91,12 +77,51 @@ class MainActivity : BaseActivity()
 							view_pager.currentItem = 1
 						}
 
-						page.x = (page.width * position).coerceAtMost(page.width * 0.85f)
+						page.x = translateX.coerceAtMost(page.width * 0.85f)
 					}
-				}
-				else -> {
 				}
 			}
 		}
+	}
+
+	override fun onBackPressed()
+	{
+		if (view_pager.currentItem == 2)
+		{
+			val callback = object : ViewPager2.OnPageChangeCallback()
+			{
+				override fun onPageScrolled(position: Int, positionOffset: Float, positionOffsetPixels: Int)
+				{
+					if (position == 1 && positionOffsetPixels == 0)
+					{
+						adapter.pages.removeAt(2)
+						adapter.notifyItemRemoved(2)
+						view_pager.unregisterOnPageChangeCallback(this)
+					}
+				}
+			}
+			view_pager.registerOnPageChangeCallback(callback)
+			view_pager.currentItem = 1
+		}
+		else if (view_pager.currentItem == 0)
+		{
+			view_pager.currentItem = 1
+		}
+		else
+		{
+			super.onBackPressed()
+		}
+	}
+
+	public fun openPage(fragmentManager: FragmentManager, fragment: Fragment)
+	{
+		if (adapter.itemCount == 2) adapter.pages += fragment
+		else
+		{
+			adapter.pages[2] = fragment
+		}
+
+		adapter.notifyItemChanged(2)
+		view_pager.setCurrentItem(2, true)
 	}
 }

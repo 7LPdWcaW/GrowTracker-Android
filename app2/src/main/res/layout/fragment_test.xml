@@ -15,10 +15,11 @@
 			android:layout_height="wrap_content"
 			android:orientation="vertical"
 		>
-			<TextView
+			<Button
 				android:layout_width="match_parent"
 				android:layout_height="match_parent"
-				android:text="some text to make it so the page will scroll lots and lots"
+				android:id="@+id/navigate"
+				android:text="Navigate"
 				android:lineSpacingMultiplier="1.5"
 				android:textSize="54dp"
 			/>

@@ -18,7 +18,7 @@
 			<TextView
 				android:layout_width="match_parent"
 				android:layout_height="match_parent"
-				android:text="some text to make it so the page will scroll lots and lots"
+				android:text="different text "
 				android:lineSpacingMultiplier="1.5"
 				android:textSize="54dp"
 			/>
@@ -26,7 +26,7 @@
 			<TextView
 				android:layout_width="match_parent"
 				android:layout_height="match_parent"
-				android:text="some text to make it so the page will scroll lots and lots"
+				android:text="different text "
 				android:lineSpacingMultiplier="1.5"
 				android:textSize="54dp"
 			/>
@@ -34,7 +34,7 @@
 			<TextView
 				android:layout_width="match_parent"
 				android:layout_height="match_parent"
-				android:text="some text to make it so the page will scroll lots and lots"
+				android:text="different text "
 				android:lineSpacingMultiplier="1.5"
 				android:textSize="54dp"
 			/>
@@ -42,7 +42,7 @@
 			<TextView
 				android:layout_width="match_parent"
 				android:layout_height="match_parent"
-				android:text="some text to make it so the page will scroll lots and lots"
+				android:text="different text "
 				android:lineSpacingMultiplier="1.5"
 				android:textSize="54dp"
 			/>
