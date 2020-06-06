@@ -3,6 +3,11 @@
 	<dimen name="activity_horizontal_margin">16dp</dimen>
 	<dimen name="activity_vertical_margin">16dp</dimen>
 
+	<dimen name="text_title1">22sp</dimen>
+	<dimen name="text_title2">18sp</dimen>
+	<dimen name="text_body">16sp</dimen>
+	<dimen name="text_caption">12sp</dimen>
+
 	<dimen name="section_header_spacing">18dp</dimen>
 	<dimen name="section_spacing">12dp</dimen>
 	<dimen name="subsection_header_spacing">32dp</dimen>

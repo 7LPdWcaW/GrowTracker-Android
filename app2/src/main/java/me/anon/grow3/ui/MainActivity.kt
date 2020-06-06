@@ -13,37 +13,42 @@ import kotlinx.android.synthetic.main.activity_main.*
 import me.anon.grow3.R
 import me.anon.grow3.ui.base.BaseActivity
 import me.anon.grow3.ui.diaries.fragment.DiariesListFragment
-import me.anon.grow3.ui.diaries.fragment.TestFragment
+import me.anon.grow3.ui.diaries.fragment.ViewDiaryFragment
+import me.anon.grow3.ui.diaries.fragment.ViewDiaryFragment.Companion.EXTRA_DIARY_ID
 
-class MainActivity : BaseActivity()
+class MainActivity : BaseActivity(R.layout.activity_main)
 {
-	inner class Adapter(supportFragmentManager: FragmentManager, lifecycle: Lifecycle) : FragmentStateAdapter(supportFragmentManager, lifecycle)
+	companion object
+	{
+		const val INDEX_MENU = 0
+		const val INDEX_DIARY = 1
+		const val INDEX_NAVSTACK = 2
+	}
+
+	inner class PageAdapter(supportFragmentManager: FragmentManager, lifecycle: Lifecycle) : FragmentStateAdapter(supportFragmentManager, lifecycle)
 	{
 		public val pages = arrayListOf<Fragment>().apply {
-			add(DiariesListFragment())
-			add(TestFragment())
+			add(INDEX_MENU, DiariesListFragment())
+			add(INDEX_DIARY, ViewDiaryFragment())
 		}
 
 		override fun getItemCount(): Int = pages.size
 		override fun createFragment(position: Int): Fragment = pages[position]
 	}
 
-	val adapter by lazy { Adapter(supportFragmentManager, lifecycle) }
+	private val adapter by lazy { PageAdapter(supportFragmentManager, lifecycle) }
 
 	override fun onCreate(savedInstanceState: Bundle?)
 	{
 		super.onCreate(savedInstanceState)
 
-		setContentView(R.layout.activity_main)
-
 		view_pager.adapter = adapter
-
-		view_pager.setCurrentItem(1, false)
+		view_pager.setCurrentItem(INDEX_DIARY, false)
 		view_pager.setPageTransformer { page, position ->
-			page.translationZ = 0f
 			val translateX = position * page.width
-
 			val index = (page.parent as ViewGroup).indexOfChild(page)
+
+			page.translationZ = 0f
 			page.findViewById<View?>(R.id.fade_overlay)?.apply {
 				setOnClickListener(null)
 			}
@@ -74,7 +79,7 @@ class MainActivity : BaseActivity()
 						isVisible = alpha >= 0.1f
 
 						setOnClickListener {
-							view_pager.currentItem = 1
+							view_pager.currentItem = INDEX_DIARY
 						}
 
 						page.x = translateX.coerceAtMost(page.width * 0.85f)
@@ -86,42 +91,50 @@ class MainActivity : BaseActivity()
 
 	override fun onBackPressed()
 	{
-		if (view_pager.currentItem == 2)
+		when (view_pager.currentItem)
 		{
-			val callback = object : ViewPager2.OnPageChangeCallback()
-			{
-				override fun onPageScrolled(position: Int, positionOffset: Float, positionOffsetPixels: Int)
+			INDEX_MENU -> view_pager.currentItem = INDEX_DIARY
+			INDEX_NAVSTACK -> {
+				val callback = object : ViewPager2.OnPageChangeCallback()
 				{
-					if (position == 1 && positionOffsetPixels == 0)
+					override fun onPageScrolled(position: Int, positionOffset: Float, positionOffsetPixels: Int)
 					{
-						adapter.pages.removeAt(2)
-						adapter.notifyItemRemoved(2)
-						view_pager.unregisterOnPageChangeCallback(this)
+						if (position == INDEX_DIARY && positionOffsetPixels == 0)
+						{
+							adapter.pages.removeAt(INDEX_NAVSTACK)
+							adapter.notifyItemRemoved(INDEX_NAVSTACK)
+							view_pager.unregisterOnPageChangeCallback(this)
+						}
 					}
 				}
+				view_pager.registerOnPageChangeCallback(callback)
+				view_pager.currentItem = INDEX_DIARY
 			}
-			view_pager.registerOnPageChangeCallback(callback)
-			view_pager.currentItem = 1
-		}
-		else if (view_pager.currentItem == 0)
-		{
-			view_pager.currentItem = 1
-		}
-		else
-		{
-			super.onBackPressed()
+			else -> super.onBackPressed()
 		}
 	}
 
-	public fun openPage(fragmentManager: FragmentManager, fragment: Fragment)
+	public fun openPage(fragment: Fragment)
 	{
-		if (adapter.itemCount == 2) adapter.pages += fragment
-		else
-		{
-			adapter.pages[2] = fragment
+		if (adapter.itemCount == 2) adapter.pages.add(INDEX_NAVSTACK, fragment)
+		else adapter.pages[INDEX_NAVSTACK] = fragment
+
+		adapter.notifyItemChanged(INDEX_NAVSTACK)
+		view_pager.setCurrentItem(INDEX_NAVSTACK, true)
+	}
+
+	public fun openDiary(id: String)
+	{
+		val fragment = ViewDiaryFragment().apply {
+			arguments = Bundle().apply {
+				putString(EXTRA_DIARY_ID, id)
+			}
 		}
 
-		adapter.notifyItemChanged(2)
-		view_pager.setCurrentItem(2, true)
+		if (adapter.itemCount == 1) adapter.pages.add(INDEX_DIARY, fragment)
+		else adapter.pages[INDEX_DIARY] = fragment
+
+		adapter.notifyItemChanged(INDEX_DIARY)
+		view_pager.setCurrentItem(INDEX_DIARY, true)
 	}
 }

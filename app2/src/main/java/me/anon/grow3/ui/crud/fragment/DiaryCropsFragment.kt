@@ -16,7 +16,6 @@ import me.anon.grow3.ui.crud.viewmodel.DiaryViewModel
 import me.anon.grow3.util.*
 import me.anon.grow3.util.states.asSuccess
 import me.anon.grow3.util.states.isSuccess
-import timber.log.Timber
 import java.util.*
 import javax.inject.Inject
 
@@ -26,6 +25,16 @@ class DiaryCropsFragment : BaseFragment(R.layout.fragment_crud_diary_crops)
 
 	@Inject internal lateinit var viewModelFactory: DiaryViewModel.Factory
 	private val viewModel: DiaryViewModel by activityViewModels { ViewModelProvider(viewModelFactory, this) }
+
+	override fun bindUi()
+	{
+		add_crop.onClick {
+			// reveal crop edit fragment dialog
+			navigateForResult<CropActivity> {
+				putExtra(CropActivity.EXTRA_DIARY_ID, viewModel.diary.value?.asSuccess()?.id)
+			}
+		}
+	}
 
 	override fun bindVm()
 	{
@@ -65,23 +74,12 @@ class DiaryCropsFragment : BaseFragment(R.layout.fragment_crud_diary_crops)
 		}
 	}
 
-	override fun bindUi()
-	{
-		add_crop.onClick {
-			// reveal crop edit fragment dialog
-			navigateForResult<CropActivity> {
-				putExtra(CropActivity.EXTRA_DIARY_ID, viewModel.diary.value?.asSuccess()?.id)
-			}
-		}
-	}
-
 	override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?)
 	{
 		when (requestCode)
 		{
 			code<CropActivity>() -> {
 				viewModel.refresh()
-				Timber.e("refresh $requestCode $resultCode")
 			}
 		}
 
