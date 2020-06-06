@@ -10,7 +10,6 @@ import me.anon.grow3.util.ViewModelProvider
 import me.anon.grow3.util.component
 import timber.log.Timber
 import javax.inject.Inject
-import kotlin.random.Random
 
 class DiariesListFragment : Fragment(R.layout.fragment_gardens)
 {
@@ -22,7 +21,6 @@ class DiariesListFragment : Fragment(R.layout.fragment_gardens)
 		super.onActivityCreated(savedInstanceState)
 		component.inject(this)
 
-		requireView().setBackgroundColor(Random.nextLong().and(0xffffff).or(0xff000000).toInt())
 		setupList()
 	}
 

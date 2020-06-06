@@ -8,27 +8,32 @@
 	android:id="@+id/container"
 	android:paddingTop="?attr/actionBarSize"
 >
-	<com.google.android.material.bottomnavigation.BottomNavigationView
-		android:layout_width="0dp"
-		android:layout_height="wrap_content"
-		android:id="@+id/nav_view"
-		android:layout_marginEnd="0dp"
-		android:layout_marginStart="0dp"
-		android:background="?android:attr/windowBackground"
-		app:layout_constraintBottom_toBottomOf="parent"
-		app:layout_constraintLeft_toLeftOf="parent"
-		app:layout_constraintRight_toRightOf="parent"
-		android:visibility="gone"
-		app:menu="@menu/bottom_nav_menu"
-	/>
-
-	<FrameLayout
+	<androidx.viewpager2.widget.ViewPager2
 		android:layout_width="match_parent"
 		android:layout_height="match_parent"
-		android:id="@+id/nav_host_fragment"
-		app:layout_constraintBottom_toTopOf="parent"
-		app:layout_constraintLeft_toLeftOf="parent"
-		app:layout_constraintRight_toRightOf="parent"
-		app:layout_constraintTop_toTopOf="parent"
+		android:id="@+id/view_pager"
 	/>
+<!--	<me.anon.grow3.view.InterceptingHorizontalScrollView-->
+<!--		android:layout_width="match_parent"-->
+<!--		android:layout_height="match_parent"-->
+<!--	>-->
+<!--		<LinearLayout-->
+<!--			android:layout_width="wrap_content"-->
+<!--			android:layout_height="match_parent"-->
+<!--			android:orientation="horizontal"-->
+<!--		>-->
+<!--			<View-->
+<!--				android:layout_width="300dp"-->
+<!--				android:layout_height="match_parent"-->
+<!--				android:background="#ff00ff"-->
+<!--			/>-->
+
+<!--			<fragment-->
+<!--				android:layout_width="450dp"-->
+<!--				android:layout_height="match_parent"-->
+<!--				android:id="@+id/diaries_list"-->
+<!--				android:name="me.anon.grow3.ui.diaries.fragment.DiariesListFragment"-->
+<!--			/>-->
+<!--		</LinearLayout>-->
+<!--	</me.anon.grow3.view.InterceptingHorizontalScrollView>-->
 </androidx.constraintlayout.widget.ConstraintLayout>
