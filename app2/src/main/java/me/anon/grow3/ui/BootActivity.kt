@@ -11,7 +11,7 @@ class BootActivity : BaseActivity()
 	{
 		super.onCreate(savedInstanceState)
 
-		val firstRun = true
+		val firstRun = false
 		if (firstRun) navigateTo<SetupActivity>()
 		else navigateTo<MainActivity>()
 

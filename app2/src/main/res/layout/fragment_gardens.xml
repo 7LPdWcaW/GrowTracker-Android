@@ -2,9 +2,15 @@
 
 <androidx.constraintlayout.widget.ConstraintLayout
 	xmlns:android="http://schemas.android.com/apk/res/android"
-	android:layout_width="match_parent"
+	android:layout_width="400dp"
 	android:layout_height="match_parent"
 >
+	<TextView
+		android:layout_width="match_parent"
+		android:layout_height="match_parent"
+		android:text="asd asjdlkasjdlk asjdlkasjd lkasjdlkasjd laksdj"
+		android:textSize="54dp"
+		/>
 	<androidx.recyclerview.widget.RecyclerView
 		android:layout_width="match_parent"
 		android:layout_height="match_parent"
