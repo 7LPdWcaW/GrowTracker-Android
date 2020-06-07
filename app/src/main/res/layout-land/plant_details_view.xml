@@ -181,6 +181,55 @@
 				android:elevation="4dp"
 				android:layout_marginTop="12dp"
 				style="@style/PaperCard"
+				>
+				<TextView
+					android:layout_width="wrap_content"
+					android:layout_height="wrap_content"
+					android:text="@string/stage_details_title"
+					style="@style/SectionTitle"
+					/>
+
+				<LinearLayout
+					android:layout_width="match_parent"
+					android:layout_height="wrap_content"
+					android:id="@+id/plant_stage_container"
+					android:orientation="vertical"
+					android:divider="?android:listDivider"
+					android:showDividers="middle"
+					android:layout_marginTop="8dp"
+					android:background="?selectableItemBackground"
+					>
+					<LinearLayout
+						android:layout_width="match_parent"
+						android:layout_height="wrap_content"
+						android:orientation="vertical"
+						android:padding="16dp"
+						>
+						<TextView
+							android:layout_width="match_parent"
+							android:layout_height="wrap_content"
+							android:text="@string/plant_stage_label"
+							style="@style/SubsectionTitle"
+							/>
+
+						<TextView
+							android:layout_width="match_parent"
+							android:layout_height="wrap_content"
+							android:text="@string/germination"
+							android:id="@+id/plant_stage"
+							style="@style/SubsectionSubTitle"
+							/>
+					</LinearLayout>
+				</LinearLayout>
+			</LinearLayout>
+
+			<LinearLayout
+				android:layout_width="match_parent"
+				android:layout_height="wrap_content"
+				android:orientation="vertical"
+				android:elevation="4dp"
+				android:layout_marginTop="12dp"
+				style="@style/PaperCard"
 			>
 				<TextView
 					android:layout_width="wrap_content"
@@ -302,55 +351,6 @@
 							android:hint="@string/medium_details_hint"
 							android:lines="3"
 							android:gravity="top"
-							style="@style/SubsectionSubTitle"
-						/>
-					</LinearLayout>
-				</LinearLayout>
-			</LinearLayout>
-
-			<LinearLayout
-				android:layout_width="match_parent"
-				android:layout_height="wrap_content"
-				android:orientation="vertical"
-				android:elevation="4dp"
-				android:layout_marginTop="12dp"
-				style="@style/PaperCard"
-			>
-				<TextView
-					android:layout_width="wrap_content"
-					android:layout_height="wrap_content"
-					android:text="@string/stage_details_title"
-					style="@style/SectionTitle"
-				/>
-
-				<LinearLayout
-					android:layout_width="match_parent"
-					android:layout_height="wrap_content"
-					android:id="@+id/plant_stage_container"
-					android:orientation="vertical"
-					android:divider="?android:listDivider"
-					android:showDividers="middle"
-					android:layout_marginTop="8dp"
-					android:background="?selectableItemBackground"
-				>
-					<LinearLayout
-						android:layout_width="match_parent"
-						android:layout_height="wrap_content"
-						android:orientation="vertical"
-						android:padding="16dp"
-					>
-						<TextView
-							android:layout_width="match_parent"
-							android:layout_height="wrap_content"
-							android:text="@string/plant_stage_label"
-							style="@style/SubsectionTitle"
-						/>
-
-						<TextView
-							android:layout_width="match_parent"
-							android:layout_height="wrap_content"
-							android:text="@string/germination"
-							android:id="@+id/plant_stage"
 							style="@style/SubsectionSubTitle"
 						/>
 					</LinearLayout>
