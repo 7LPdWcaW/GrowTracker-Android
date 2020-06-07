@@ -23,6 +23,7 @@ class ViewDiaryFragment : BaseFragment(R.layout.fragment_view_diary)
 	override fun onViewCreated(view: View, savedInstanceState: Bundle?)
 	{
 		super.onViewCreated(view, savedInstanceState)
+		activity?.actionBar?.hide()
 	}
 
 	override fun bindArguments(bundle: Bundle?)

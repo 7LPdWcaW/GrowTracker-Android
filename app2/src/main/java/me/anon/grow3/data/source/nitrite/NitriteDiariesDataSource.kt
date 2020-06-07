@@ -32,24 +32,17 @@ class NitriteDiariesDataSource @Inject constructor(
 		db.close()
 	}
 
-	override suspend fun addDiary(diary: Diary): List<Diary>
-	{
-		withContext(dispatcher) {
-			db.getRepository<Diary> {
-				insert(diary)
-			}
-			db.commit()
+	override suspend fun addDiary(diary: Diary): List<Diary> = withContext(dispatcher) {
+		db.getRepository<Diary> {
+			insert(diary)
 		}
+		db.commit()
 
-		return getDiaries()
+		getDiaries()
 	}
 
 	override suspend fun getDiaryById(diaryId: String): Diary?
 	{
-		// check temp repo first
-		val temp = db.getRepository<Diary>("temp").find(Diary::id eq diaryId).firstOrNull()
-		temp?.let { return it }
-
 		val repo = db.getRepository<Diary>()
 		return repo.find(Diary::id eq diaryId).first()
 	}
