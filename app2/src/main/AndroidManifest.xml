@@ -24,7 +24,7 @@
 			</intent-filter>
 		</activity>
 
-		<activity android:name=".ui.MainActivity" />
+		<activity android:name=".ui.MainActivity" android:theme="@style/AppTheme.FullScrim" />
 		<activity android:name=".ui.DemoUiActivity" android:label="Demo UI">
 			<intent-filter>
 				<action android:name="android.intent.action.MAIN" />

@@ -18,6 +18,7 @@
 		android:paddingTop="12dp"
 		android:paddingStart="8dp"
 		android:paddingEnd="8dp"
+		android:fitsSystemWindows="true"
 	>
 		<TextView
 			android:layout_width="wrap_content"

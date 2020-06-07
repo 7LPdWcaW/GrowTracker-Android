@@ -4,6 +4,7 @@ import android.os.Bundle
 import android.view.View
 import android.view.ViewGroup
 import androidx.core.view.isVisible
+import androidx.core.view.updatePadding
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentManager
 import androidx.fragment.app.commit
@@ -12,11 +13,11 @@ import androidx.viewpager2.adapter.FragmentStateAdapter
 import androidx.viewpager2.widget.ViewPager2
 import kotlinx.android.synthetic.main.activity_main.*
 import kotlinx.android.synthetic.main.fragment_main_host.*
-import kotlinx.android.synthetic.main.include_toolbar.view.*
 import me.anon.grow3.R
 import me.anon.grow3.ui.base.BaseActivity
 import me.anon.grow3.ui.diaries.fragment.DiariesListFragment
 import me.anon.grow3.ui.diaries.fragment.ViewDiaryFragment
+
 
 class MainActivity : BaseActivity(R.layout.activity_main)
 {
@@ -33,7 +34,7 @@ class MainActivity : BaseActivity(R.layout.activity_main)
 		{
 			super.onActivityCreated(savedInstanceState)
 
-			(activity as MainActivity).setSupportActionBar(include_toolbar.toolbar)
+//			(activity as MainActivity).setSupportActionBar(include_toolbar.toolbar)
 
 			if (savedInstanceState == null)
 			{
@@ -41,6 +42,27 @@ class MainActivity : BaseActivity(R.layout.activity_main)
 					replace(R.id.content, ViewDiaryFragment())
 				}
 			}
+
+			requireActivity().view_pager.setOnApplyWindowInsetsListener { v, insets ->
+				v.onApplyWindowInsets(insets).also {
+					val navigationBar = insets.systemWindowInsetBottom
+					menu_fab.translationY = (-navigationBar).toFloat()
+					sheet.updatePadding(bottom = navigationBar)
+				}
+			}
+
+			menu_fab.setOnClickListener { menu_fab.isExpanded = !menu_fab.isExpanded }
+			sheet.setOnClickListener { menu_fab.isExpanded = false }
+		}
+
+		public fun onBackPressed(): Boolean
+		{
+			if (menu_fab.isExpanded)
+			{
+				menu_fab.isExpanded = false
+				return true
+			}
+			return false
 		}
 
 //		public fun openPage(fragment: Fragment, viewPager: ViewPager2)
@@ -66,7 +88,7 @@ class MainActivity : BaseActivity(R.layout.activity_main)
 			}
 
 			viewPager.post {
-				viewPager.adapter!!.notifyItemChanged(1)
+				viewPager.adapter!!.notifyItemChanged(INDEX_MAIN)
 				viewPager.forceLayout()
 				viewPager.setCurrentItem(INDEX_MAIN, true)
 			}
@@ -159,7 +181,9 @@ class MainActivity : BaseActivity(R.layout.activity_main)
 				view_pager.registerOnPageChangeCallback(callback)
 				view_pager.currentItem = INDEX_MAIN
 			}
-			else -> super.onBackPressed()
+			else -> {
+				if (!(adapter.pages[INDEX_MAIN] as MainHostFragment).onBackPressed()) super.onBackPressed()
+			}
 		}
 	}
 

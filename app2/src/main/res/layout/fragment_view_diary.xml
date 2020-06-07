@@ -13,6 +13,7 @@
 		android:id="@+id/empty_view"
 		android:orientation="vertical"
 		android:layout_gravity="center"
+		android:visibility="gone"
 	>
 		<TextView
 			android:layout_width="wrap_content"
@@ -39,7 +40,6 @@
 		android:id="@+id/diary_details"
 		android:clipToPadding="false"
 		android:fillViewport="true"
-		android:visibility="gone"
 	>
 		<LinearLayout
 			android:layout_width="match_parent"
@@ -48,69 +48,63 @@
 			android:orientation="vertical"
 			android:paddingBottom="72dp"
 		>
-			<com.google.android.material.card.MaterialCardView
+			<androidx.constraintlayout.widget.ConstraintLayout
 				android:layout_width="match_parent"
 				android:layout_height="wrap_content"
+				android:elevation="4dp"
 			>
-				<androidx.constraintlayout.widget.ConstraintLayout
+				<ImageView
 					android:layout_width="match_parent"
+					android:layout_height="190dp"
+					android:id="@+id/image_holder"
+					android:src="@drawable/sample"
+					android:scaleType="centerCrop"
+				/>
+
+				<View
+					android:layout_width="0dp"
+					android:layout_height="0dp"
+					android:id="@+id/alpha"
+					android:background="#000000"
+					android:alpha="0.2"
+					app:layout_constraintTop_toTopOf="@id/image_holder"
+					app:layout_constraintStart_toStartOf="@id/image_holder"
+					app:layout_constraintEnd_toEndOf="@id/image_holder"
+					app:layout_constraintBottom_toBottomOf="@id/image_holder"
+				/>
+
+				<TextView
+					android:layout_width="0dp"
 					android:layout_height="wrap_content"
-					android:padding="16dp"
-				>
-					<TextView
-						android:layout_width="wrap_content"
-						android:layout_height="wrap_content"
-						android:id="@+id/header"
-						android:text="Details"
-						app:layout_constraintTop_toTopOf="parent"
-						app:layout_constraintStart_toStartOf="parent"
-						android:textAppearance="@style/Text.Header"
-					/>
+					android:id="@+id/name"
+					android:layout_margin="12dp"
+					android:textSize="@dimen/text_title1"
+					android:textColor="#ffffff"
+					app:layout_constraintBottom_toBottomOf="@id/image_holder"
+					app:layout_constraintStart_toStartOf="@id/image_holder"
+					app:layout_constraintEnd_toStartOf="@id/stage"
+					style="@style/Text.Window"
+					tools:text="Diary 1"
+				/>
 
-					<com.google.android.material.textfield.TextInputLayout
-						android:layout_width="match_parent"
-						android:layout_height="wrap_content"
-						android:id="@+id/diary_name"
-						android:hint="@string/add_diary_details_name"
-						android:layout_marginTop="@dimen/section_spacing"
-						app:layout_constraintTop_toBottomOf="@id/header"
-						app:layout_constraintStart_toStartOf="parent"
-						app:layout_constraintEnd_toEndOf="parent"
-					>
-						<com.google.android.material.textfield.TextInputEditText
-							android:layout_width="match_parent"
-							android:layout_height="wrap_content"
-							android:singleLine="true"
-							android:maxLines="1"
-							android:imeOptions="actionNext"
-						/>
-					</com.google.android.material.textfield.TextInputLayout>
-
-					<com.google.android.material.textfield.TextInputLayout
-						android:layout_width="match_parent"
-						android:layout_height="wrap_content"
-						android:id="@+id/date"
-						android:hint="@string/add_diary_details_date"
-						android:layout_marginTop="@dimen/section_spacing"
-						app:layout_constraintTop_toBottomOf="@id/diary_name"
-						app:layout_constraintStart_toStartOf="parent"
-						app:layout_constraintEnd_toEndOf="parent"
-						app:startIconDrawable="@drawable/ic_calendar"
-					>
-						<com.google.android.material.textfield.TextInputEditText
-							android:layout_width="match_parent"
-							android:layout_height="wrap_content"
-							android:text="01/01/2020 01:01:00"
-							android:editable="false"
-							android:inputType="none"
-						/>
-					</com.google.android.material.textfield.TextInputLayout>
-				</androidx.constraintlayout.widget.ConstraintLayout>
-			</com.google.android.material.card.MaterialCardView>
+				<TextView
+					android:layout_width="wrap_content"
+					android:layout_height="wrap_content"
+					android:id="@+id/stage"
+					android:layout_margin="12dp"
+					android:textSize="@dimen/text_title1"
+					android:textColor="#ffffff"
+					app:layout_constraintBottom_toBottomOf="@id/image_holder"
+					app:layout_constraintEnd_toEndOf="@id/image_holder"
+					style="@style/Text.Header.Sub"
+					tools:text="5g/35v/22f/100"
+				/>
+			</androidx.constraintlayout.widget.ConstraintLayout>
 
 			<com.google.android.material.card.MaterialCardView
 				android:layout_width="match_parent"
 				android:layout_height="wrap_content"
+				android:layout_marginTop="@dimen/section_spacing"
 			>
 				<androidx.constraintlayout.widget.ConstraintLayout
 					android:layout_width="match_parent"
@@ -124,9 +118,81 @@
 						android:text="@string/add_diary_stages_title"
 						app:layout_constraintTop_toTopOf="parent"
 						app:layout_constraintStart_toStartOf="parent"
+						android:layout_marginBottom="0dp"
 						android:textAppearance="@style/Text.Header"
 					/>
+				</androidx.constraintlayout.widget.ConstraintLayout>
+			</com.google.android.material.card.MaterialCardView>
 
+			<com.google.android.material.card.MaterialCardView
+				android:layout_width="match_parent"
+				android:layout_height="wrap_content"
+				style="@style/Card"
+			>
+				<androidx.constraintlayout.widget.ConstraintLayout
+					android:layout_width="match_parent"
+					android:layout_height="wrap_content"
+					android:paddingTop="16dp"
+					android:paddingStart="16dp"
+					android:paddingBottom="16dp"
+					android:paddingEnd="8dp"
+				>
+					<LinearLayout
+						android:layout_width="0dp"
+						android:layout_height="wrap_content"
+						android:id="@+id/photo_container"
+						android:orientation="horizontal"
+						android:showDividers="middle"
+						android:divider="@drawable/spacer_16dp"
+						app:layout_constraintStart_toStartOf="parent"
+						app:layout_constraintTop_toTopOf="parent"
+						app:layout_constraintEnd_toStartOf="@id/more"
+						app:layout_constraintBottom_toBottomOf="parent"
+					>
+						<LinearLayout
+							android:layout_width="wrap_content"
+							android:layout_height="wrap_content"
+							android:orientation="vertical"
+						>
+							<com.google.android.material.imageview.ShapeableImageView
+								android:layout_width="92dp"
+								android:layout_height="92dp"
+								android:scaleType="centerCrop"
+								android:adjustViewBounds="true"
+								app:shapeAppearanceOverlay="@style/CircleImage"
+								app:srcCompat="@drawable/sample"
+								android:clickable="true"
+								android:focusable="true"
+								android:foreground="@drawable/circular_selectable_item_background"
+							/>
+
+							<TextView
+								android:layout_width="wrap_content"
+								android:layout_height="wrap_content"
+								android:maxWidth="170dp"
+								android:text="Crop 1"
+								android:layout_gravity="center_horizontal"
+								android:layout_marginTop="6dp"
+								style="@style/Text.Caption"
+							/>
+						</LinearLayout>
+					</LinearLayout>
+
+					<ImageView
+						android:layout_width="56dp"
+						android:layout_height="56dp"
+						android:id="@+id/more"
+						android:background="?actionBarItemBackground"
+						android:clickable="true"
+						android:focusable="true"
+						android:padding="16dp"
+						app:srcCompat="@drawable/ic_arrow_forward"
+						app:tint="@color/text_surface_color"
+						app:layout_constraintEnd_toEndOf="parent"
+						app:layout_constraintTop_toTopOf="parent"
+						app:layout_constraintBottom_toBottomOf="parent"
+						android:visibility="gone"
+					/>
 				</androidx.constraintlayout.widget.ConstraintLayout>
 			</com.google.android.material.card.MaterialCardView>
 		</LinearLayout>

@@ -1,32 +1,161 @@
 <?xml version="1.0" encoding="utf-8"?>
 
-<FrameLayout
+<androidx.coordinatorlayout.widget.CoordinatorLayout
 	xmlns:android="http://schemas.android.com/apk/res/android"
 	xmlns:app="http://schemas.android.com/apk/res-auto"
 	xmlns:tools="http://schemas.android.com/tools"
 	android:layout_width="match_parent"
 	android:layout_height="match_parent"
+	android:id="@+id/main_content"
 >
-	<androidx.coordinatorlayout.widget.CoordinatorLayout
+<!--			<include android:id="@+id/include_toolbar" layout="@layout/include_toolbar" />-->
+	<FrameLayout
 		android:layout_width="match_parent"
 		android:layout_height="match_parent"
-		android:id="@+id/main_content"
-	>
-		<LinearLayout
-			android:layout_width="match_parent"
-			android:layout_height="match_parent"
-			android:orientation="vertical"
-			app:layout_dodgeInsetEdges="bottom"
-		>
-			<include android:id="@+id/include_toolbar" layout="@layout/include_toolbar" />
+		android:id="@+id/content"
+	/>
 
-			<FrameLayout
+	<com.google.android.material.floatingactionbutton.FloatingActionButton
+		android:layout_width="wrap_content"
+		android:layout_height="wrap_content"
+		android:id="@+id/menu_fab"
+		android:layout_gravity="bottom|end"
+		app:srcCompat="@drawable/ic_add"
+		app:tint="?textOnAccent"
+		app:backgroundTint="?colorAccent"
+		android:layout_margin="16dp"
+		app:layout_dodgeInsetEdges="all"
+	/>
+
+	<com.google.android.material.circularreveal.CircularRevealFrameLayout
+		android:layout_width="match_parent"
+		android:layout_height="match_parent"
+		android:id="@+id/sheet"
+		android:background="#47000000"
+		android:visibility="invisible"
+		app:layout_behavior="com.google.android.material.transformation.FabTransformationSheetBehavior"
+	>
+		<com.google.android.material.card.MaterialCardView
+			android:layout_width="wrap_content"
+			android:layout_height="wrap_content"
+			android:layout_gravity="bottom|end"
+			android:layout_margin="16dp"
+		>
+			<LinearLayout
 				android:layout_width="match_parent"
-				android:layout_height="match_parent"
-				android:id="@+id/content"
-			/>
-		</LinearLayout>
-	</androidx.coordinatorlayout.widget.CoordinatorLayout>
+				android:layout_height="wrap_content"
+				android:orientation="vertical"
+			>
+				<LinearLayout
+					android:layout_width="match_parent"
+					android:layout_height="wrap_content"
+					android:id="@+id/menu_action1"
+					android:orientation="horizontal"
+					android:paddingStart="18dp"
+					android:paddingEnd="18dp"
+					android:paddingTop="12dp"
+					android:paddingBottom="12dp"
+					android:background="?selectableItemBackground"
+					android:clickable="true"
+					android:focusable="true"
+				>
+					<ImageView
+						android:layout_width="42dp"
+						android:layout_height="42dp"
+						android:padding="4dp"
+						app:srcCompat="@drawable/ic_calendar"
+						app:tint="?textOnSurface"
+					/>
+
+					<TextView
+						android:layout_width="wrap_content"
+						android:layout_height="match_parent"
+						android:text="Water"
+						android:textSize="16sp"
+						android:layout_marginStart="18dp"
+						android:gravity="center_vertical"
+					/>
+				</LinearLayout>
+
+				<LinearLayout
+					android:layout_width="match_parent"
+					android:layout_height="wrap_content"
+					android:id="@+id/menu_action1"
+					android:orientation="horizontal"
+					android:paddingStart="18dp"
+					android:paddingEnd="18dp"
+					android:paddingTop="12dp"
+					android:paddingBottom="12dp"
+					android:background="?selectableItemBackground"
+					android:clickable="true"
+					android:focusable="true"
+				>
+					<ImageView
+						android:layout_width="42dp"
+						android:layout_height="42dp"
+						android:padding="4dp"
+						app:srcCompat="@drawable/ic_calendar"
+						app:tint="?textOnSurface"
+					/>
+
+					<TextView
+						android:layout_width="wrap_content"
+						android:layout_height="match_parent"
+						android:text="Transplant"
+						android:textSize="16sp"
+						android:layout_marginStart="18dp"
+						android:gravity="center_vertical"
+					/>
+				</LinearLayout>
+
+				<LinearLayout
+					android:layout_width="match_parent"
+					android:layout_height="wrap_content"
+					android:id="@+id/menu_action1"
+					android:orientation="horizontal"
+					android:paddingStart="18dp"
+					android:paddingEnd="18dp"
+					android:paddingTop="12dp"
+					android:paddingBottom="12dp"
+					android:background="?selectableItemBackground"
+					android:clickable="true"
+					android:focusable="true"
+				>
+					<ImageView
+						android:layout_width="42dp"
+						android:layout_height="42dp"
+						android:padding="4dp"
+						app:srcCompat="@drawable/ic_calendar"
+						app:tint="?textOnSurface"
+					/>
+
+					<TextView
+						android:layout_width="wrap_content"
+						android:layout_height="match_parent"
+						android:text="Environment"
+						android:textSize="16sp"
+						android:layout_marginStart="18dp"
+						android:gravity="center_vertical"
+					/>
+				</LinearLayout>
+
+				<TextView
+					android:layout_width="match_parent"
+					android:layout_height="wrap_content"
+					android:minWidth="240dp"
+					android:text="log action"
+					app:drawableTint="#ffffff"
+					android:gravity="center_horizontal"
+					android:padding="16dp"
+					android:textSize="16sp"
+					android:textColor="#ffffff"
+					android:fontFamily="sans-serif-smallcaps"
+					android:textStyle="bold"
+					android:background="?colorAccent"
+				/>
+			</LinearLayout>
+		</com.google.android.material.card.MaterialCardView>
+	</com.google.android.material.circularreveal.CircularRevealFrameLayout>
 
 	<View
 		android:layout_width="match_parent"
@@ -38,4 +167,4 @@
 		android:focusableInTouchMode="false"
 		android:filterTouchesWhenObscured="false"
 	/>
-</FrameLayout>
+</androidx.coordinatorlayout.widget.CoordinatorLayout>
