@@ -113,4 +113,11 @@ class DiaryViewModel(
 		diary.isDraft = false
 		diariesRepository.sync()
 	}
+
+	public suspend fun cancel()
+	{
+		_diaryId.value?.let {
+			diariesRepository.deleteDiary(it)
+		}
+	}
 }

@@ -13,6 +13,7 @@ interface DiariesDataSource
 	public fun close()
 
 	suspend fun addDiary(diary: Diary): List<Diary>
+	suspend fun deleteDiary(diaryId: String): List<Diary>
 
 	suspend fun getDiaryById(diaryId: String): Diary?
 

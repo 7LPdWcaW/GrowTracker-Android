@@ -82,6 +82,7 @@ dependencies {
 	implementation 'com.github.prolificinteractive:material-calendarview:2.0.0'
 	implementation 'com.github.PhilJay:MPAndroidChart:v2.1.6'
 	implementation 'com.github.AppIntro:AppIntro:6.0.0'
+	implementation 'com.github.Zhuinden:livedata-combinetuple-kt:1.0.0'
 
 	implementation 'com.infideap.drawerbehavior:drawer-behavior:1.0.1'
 

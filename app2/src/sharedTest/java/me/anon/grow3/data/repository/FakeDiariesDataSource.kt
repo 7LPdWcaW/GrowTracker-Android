@@ -14,6 +14,12 @@ public class FakeDiariesDataSource(private val diaries: MutableList<Diary>) : Di
 		cachedData = diaries.toJsonString()
 	}
 
+	override suspend fun deleteDiary(diaryId: String): List<Diary>
+	{
+		diaries.removeAll { it.id == diaryId }
+		return diaries
+	}
+
 	override fun close()
 	{
 		diaries.clear()

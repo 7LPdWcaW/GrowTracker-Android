@@ -1,12 +1,20 @@
 package me.anon.grow3.ui.crud.activity
 
 import android.os.Bundle
+import androidx.activity.viewModels
 import androidx.core.view.isVisible
+import androidx.lifecycle.lifecycleScope
 import androidx.navigation.findNavController
 import androidx.navigation.ui.NavigationUI
 import kotlinx.android.synthetic.main.activity_crud_diary.*
+import kotlinx.coroutines.launch
 import me.anon.grow3.R
 import me.anon.grow3.ui.base.BaseActivity
+import me.anon.grow3.ui.crud.viewmodel.DiaryViewModel
+import me.anon.grow3.util.ViewModelProvider
+import me.anon.grow3.util.component
+import me.anon.grow3.util.promptExit
+import javax.inject.Inject
 
 /**
  * Wizard activity for creating a new diary
@@ -15,9 +23,13 @@ class DiaryActivity : BaseActivity(R.layout.activity_crud_diary)
 {
 	private var currentView = R.id.navigation_diary_details
 
+	@Inject internal lateinit var viewModelFactory: DiaryViewModel.Factory
+	private val viewModel: DiaryViewModel by viewModels { ViewModelProvider(viewModelFactory, this) }
+
 	override fun onCreate(savedInstanceState: Bundle?)
 	{
 		super.onCreate(savedInstanceState)
+		component.inject(this)
 
 		val navController = findNavController(R.id.nav_host_fragment)
 		navController.addOnDestinationChangedListener { _, destination, _ ->
@@ -34,7 +46,15 @@ class DiaryActivity : BaseActivity(R.layout.activity_crud_diary)
 		NavigationUI.setupWithNavController(toolbar!!, navController)
 
 		back.setOnClickListener {
-			if (!navController.popBackStack()) finish()
+			if (!navController.popBackStack())
+			{
+				promptExit {
+					lifecycleScope.launch {
+						viewModel.cancel()
+						finish()
+					}
+				}
+			}
 		}
 
 		next.setOnClickListener {
@@ -46,5 +66,10 @@ class DiaryActivity : BaseActivity(R.layout.activity_crud_diary)
 				R.id.navigation_diary_complete -> finish()
 			}
 		}
+	}
+
+	override fun onBackPressed()
+	{
+		back.performClick()
 	}
 }

@@ -6,6 +6,7 @@ import androidx.activity.viewModels
 import androidx.appcompat.widget.Toolbar
 import androidx.core.widget.doAfterTextChanged
 import androidx.lifecycle.observe
+import com.zhuinden.livedatacombinetuplekt.combineTuple
 import kotlinx.android.synthetic.main.activity_crud_crop.*
 import me.anon.grow3.R
 import me.anon.grow3.data.model.MediumType
@@ -25,7 +26,7 @@ class CropActivity : BaseActivity(R.layout.activity_crud_crop)
 	}
 
 	@Inject internal lateinit var viewModelFactory: CropViewModel.Factory
-	private val viewModel: CropViewModel by viewModels { ViewModelProvider(viewModelFactory, this) }
+	private val viewModel: CropViewModel by viewModels { ViewModelProvider(viewModelFactory, this, intent.extras) }
 
 	override fun onCreate(savedInstanceState: Bundle?)
 	{
@@ -40,8 +41,6 @@ class CropActivity : BaseActivity(R.layout.activity_crud_crop)
 
 		bindUi()
 		bindVm()
-
-		viewModel.init(intent.extras?.getString(EXTRA_DIARY_ID)!!, intent.extras?.getString(EXTRA_CROP_ID))
 	}
 
 	private fun bindUi()
@@ -90,12 +89,9 @@ class CropActivity : BaseActivity(R.layout.activity_crud_crop)
 
 	private fun bindVm()
 	{
-		viewModel.diary.combine(viewModel.crop) { diary, crop ->
-			Pair(diary, crop)
-		}.observe(this) {
-			if (!it.first.isSuccess) return@observe
-			val diary = it.first.asSuccess()
-			val crop = it.second
+		combineTuple(viewModel.diary, viewModel.crop).observe(this) { (diary, crop) ->
+			if (diary?.isSuccess != true || crop == null) return@observe
+			val diary = diary.asSuccess()
 
 			title = string(if (viewModel.newCrop) R.string.add_crop_title else R.string.edit_crop_title)
 			crop_name.editText!!.text = crop.name.asEditable()
