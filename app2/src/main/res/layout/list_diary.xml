@@ -10,6 +10,8 @@
 	app:layout_constraintStart_toStartOf="parent"
 	android:clickable="true"
 	android:focusable="true"
+	android:paddingTop="4dp"
+	android:paddingBottom="4dp"
 >
 	<androidx.constraintlayout.widget.ConstraintLayout
 		android:layout_width="match_parent"

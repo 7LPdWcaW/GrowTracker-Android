@@ -1,5 +1,6 @@
 package me.anon.grow3.ui.crud.fragment
 
+import androidx.core.os.bundleOf
 import androidx.fragment.app.activityViewModels
 import androidx.lifecycle.observe
 import kotlinx.android.synthetic.main.fragment_crud_diary_complete.*
@@ -25,7 +26,9 @@ class DiaryCompleteFragment : BaseFragment(R.layout.fragment_crud_diary_complete
 	override fun bindUi()
 	{
 		close.setOnClickListener {
-			navigateTo<MainActivity>()
+			navigateTo<MainActivity> {
+				putExtras(bundleOf("diary.id" to viewModel.diary.value!!.asSuccess().id))
+			}
 		}
 	}
 

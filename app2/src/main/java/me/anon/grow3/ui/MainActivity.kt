@@ -30,13 +30,17 @@ class MainActivity : BaseActivity(R.layout.activity_main)
 
 	class MainHostFragment : Fragment(R.layout.fragment_main_host)
 	{
+		private val pendingActions = ArrayList<String>(1)
+
 		override fun onActivityCreated(savedInstanceState: Bundle?)
 		{
 			super.onActivityCreated(savedInstanceState)
 
-//			(activity as MainActivity).setSupportActionBar(include_toolbar.toolbar)
-
-			if (savedInstanceState == null)
+			if (pendingActions.isNotEmpty())
+			{
+				openDiary(pendingActions.removeAt(0))
+			}
+			else if (savedInstanceState == null)
 			{
 				childFragmentManager.commit {
 					replace(R.id.content, ViewDiaryFragment())
@@ -50,20 +54,9 @@ class MainActivity : BaseActivity(R.layout.activity_main)
 					sheet.updatePadding(bottom = navigationBar)
 				}
 			}
-
-			menu_fab.setOnClickListener { menu_fab.isExpanded = !menu_fab.isExpanded }
-			sheet.setOnClickListener { menu_fab.isExpanded = false }
 		}
 
-		public fun onBackPressed(): Boolean
-		{
-			if (menu_fab.isExpanded)
-			{
-				menu_fab.isExpanded = false
-				return true
-			}
-			return false
-		}
+		public fun onBackPressed(): Boolean = menu_fab.isExpanded.also { menu_fab.isExpanded = false }
 
 //		public fun openPage(fragment: Fragment, viewPager: ViewPager2)
 //		{
@@ -74,8 +67,14 @@ class MainActivity : BaseActivity(R.layout.activity_main)
 //			viewPager.setCurrentItem(INDEX_NAVSTACK, true)
 //		}
 
-		public fun openDiary(id: String, viewPager: ViewPager2)
+		public fun openDiary(id: String)
 		{
+			if (!isAdded || isDetached)
+			{
+				pendingActions += id
+				return
+			}
+
 			val fragment = ViewDiaryFragment().apply {
 				arguments = Bundle().apply {
 					putString(ViewDiaryFragment.EXTRA_DIARY_ID, id)
@@ -87,11 +86,17 @@ class MainActivity : BaseActivity(R.layout.activity_main)
 				replace(R.id.content, fragment)
 			}
 
-			viewPager.post {
-				viewPager.adapter!!.notifyItemChanged(INDEX_MAIN)
-				viewPager.forceLayout()
-				viewPager.setCurrentItem(INDEX_MAIN, true)
+			(activity as MainActivity).view_pager.apply {
+				post {
+					adapter!!.notifyItemChanged(INDEX_MAIN)
+					forceLayout()
+					setCurrentItem(INDEX_MAIN, true)
+				}
 			}
+
+			menu_fab.isVisible = true
+			menu_fab.setOnClickListener { menu_fab.isExpanded = !menu_fab.isExpanded }
+			sheet.setOnClickListener { menu_fab.isExpanded = false }
 		}
 	}
 
@@ -112,6 +117,16 @@ class MainActivity : BaseActivity(R.layout.activity_main)
 	{
 		super.onCreate(savedInstanceState)
 
+		bindUi()
+
+		if (intent.extras?.containsKey("diary.id") == true)
+		{
+			openDiary(intent.extras!!["diary.id"] as String)
+		}
+	}
+
+	private fun bindUi()
+	{
 		view_pager.adapter = adapter
 		view_pager.setCurrentItem(INDEX_MAIN, false)
 		view_pager.offscreenPageLimit = 3
@@ -189,6 +204,6 @@ class MainActivity : BaseActivity(R.layout.activity_main)
 
 	public fun openDiary(id: String)
 	{
-		(adapter.pages[INDEX_MAIN] as MainHostFragment).openDiary(id, view_pager)
+		(adapter.pages[INDEX_MAIN] as MainHostFragment).openDiary(id)
 	}
 }
