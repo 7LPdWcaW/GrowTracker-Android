@@ -1,9 +1,7 @@
 package me.anon.grow3.data.repository.impl
 
-import androidx.lifecycle.LiveData
-import androidx.lifecycle.MutableLiveData
-import androidx.lifecycle.liveData
-import androidx.lifecycle.switchMap
+import android.content.res.Resources
+import androidx.lifecycle.*
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
@@ -32,19 +30,14 @@ class DefaultDiariesRepository @Inject constructor(
 
 	override fun observeDiaries(): LiveData<DataResult<List<Diary>>> = _diaries
 
-	override fun observeDiary(diaryId: String): LiveData<DataResult<Diary>> = _refresh.switchMap {
-		liveData {
-			emit(try
-			{
-				val diary = dataSource.getDiaryById(diaryId)
-				if (diary != null) DataResult.success(diary)
-				else DataResult.error(Exception())
-			}
-			catch (e: Exception)
-			{
-				DataResult.error(e)
-			})
+	override fun observeDiary(diaryId: String): LiveData<DataResult<Diary>> = _diaries.map {
+		if (it is DataResult.Success)
+		{
+			it.data.firstOrNull { it.id == diaryId }
+				?.let { DataResult.success(it) }
+				?: DataResult.Error(Resources.NotFoundException())
 		}
+		else DataResult.Error(Resources.NotFoundException())
 	}
 
 	override suspend fun getDiaries(): List<Diary> = dataSource.getDiaries()
