@@ -60,6 +60,15 @@ class DefaultDiariesRepository @Inject constructor(
 			}
 	}
 
+	override suspend fun deleteDiary(diaryId: String): Boolean
+	{
+		return !dataSource.deleteDiary(diaryId)
+			.any { it.id == diaryId }
+			.also {
+				invalidate()
+			}
+	}
+
 	override fun sync()
 	{
 		_diaries.value?.asSuccess()?.let { diaries ->

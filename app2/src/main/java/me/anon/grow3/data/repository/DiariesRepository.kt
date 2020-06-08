@@ -15,6 +15,7 @@ interface DiariesRepository
 	public suspend fun getDiaryById(diaryId: String): Diary?
 
 	public suspend fun createDiary(diary: Diary): Diary
+	public suspend fun deleteDiary(diaryId: String): Boolean
 
 	public fun sync()
 
