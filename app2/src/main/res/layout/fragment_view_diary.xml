@@ -152,7 +152,10 @@
 						<LinearLayout
 							android:layout_width="wrap_content"
 							android:layout_height="wrap_content"
+							android:id="@+id/crop1"
 							android:orientation="vertical"
+							android:clickable="true"
+							android:focusable="true"
 						>
 							<com.google.android.material.imageview.ShapeableImageView
 								android:layout_width="92dp"
@@ -161,8 +164,7 @@
 								android:adjustViewBounds="true"
 								app:shapeAppearanceOverlay="@style/CircleImage"
 								app:srcCompat="@drawable/sample"
-								android:clickable="true"
-								android:focusable="true"
+								android:duplicateParentState="true"
 								android:foreground="@drawable/circular_selectable_item_background"
 							/>
 

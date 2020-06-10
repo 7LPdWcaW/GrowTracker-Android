@@ -15,6 +15,7 @@ import me.anon.grow3.R
 import me.anon.grow3.ui.base.BaseActivity
 import me.anon.grow3.ui.base.BaseHostFragment
 import me.anon.grow3.ui.diaries.fragment.DiariesListFragment
+import me.anon.grow3.ui.main.fragment.AdditionalPageHostFragment
 import me.anon.grow3.ui.main.fragment.MainHostFragment
 
 class MainActivity : BaseActivity(R.layout.activity_main)
@@ -27,6 +28,7 @@ class MainActivity : BaseActivity(R.layout.activity_main)
 
 		const val EXTRA_NAVIGATE = "navigation"
 		const val NAVIGATE_TO_DIARY = "open.diary"
+		const val NAVIGATE_TO_CROPS = "open.diary.crops"
 		const val EXTRA_DIARY_ID = "diary.id"
 	}
 
@@ -107,12 +109,32 @@ class MainActivity : BaseActivity(R.layout.activity_main)
 		}
 	}
 
+	public fun setDetail(fragment: Fragment?)
+	{
+		if (fragment == null)
+		{
+			if (adapter.pages.size == 3)
+			{
+				adapter.pages.removeAt(INDEX_NAVSTACK)
+				adapter.notifyItemRemoved(INDEX_NAVSTACK)
+				view_pager.setCurrentItem(INDEX_MAIN, true)
+			}
+		}
+		else
+		{
+			if (adapter.pages.size == 2) adapter.pages.add(INDEX_NAVSTACK, AdditionalPageHostFragment())
+			val pageHost = adapter.pages[INDEX_NAVSTACK] as AdditionalPageHostFragment
+			pageHost.addPage(fragment)
+			notifyPagerChange(pageHost)
+		}
+	}
+
 	public fun notifyPagerChange(fragment: BaseHostFragment)
 	{
 		view_pager.post {
 			adapter.notifyItemChanged(adapter.pages.indexOf(fragment))
 			view_pager.forceLayout()
-			view_pager.setCurrentItem(INDEX_MAIN, true)
+			view_pager.setCurrentItem(adapter.pages.indexOf(fragment), true)
 		}
 	}
 
