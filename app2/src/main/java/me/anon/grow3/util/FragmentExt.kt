@@ -3,9 +3,11 @@ package me.anon.grow3.util
 import android.app.Activity
 import android.content.Intent
 import android.graphics.drawable.Drawable
+import android.view.View
 import androidx.annotation.*
 import androidx.fragment.app.Fragment
 import me.anon.grow3.BaseApplication
+import me.anon.grow3.R
 
 public val Fragment.component get() = (requireContext().applicationContext as BaseApplication).appComponent
 
@@ -17,6 +19,16 @@ public inline fun <reified T : Activity> Fragment.navigateForResult(block: Inten
 
 public inline fun <reified T : Activity> Fragment.navigateForResult(requestCode: Int, block: Intent.() -> Unit = {})
 	= startActivityForResult(Intent(requireContext(), T::class.java).apply(block), requestCode)
+
+public fun Fragment.applyWindowInsets(view: View = requireView())
+{
+	requireActivity().findViewById<View>(R.id.view_pager)?.setOnApplyWindowInsetsListener { v, insets ->
+		v.onApplyWindowInsets(insets).also {
+			view.addSystemWindowInsetToMargin(top = true, bottom = true)
+			view.dispatchApplyWindowInsets(insets)
+		}
+	}
+}
 
 // Resource convenience methods
 public fun Fragment.dimension(@DimenRes resId: Int): Float = resources.getDimension(resId)

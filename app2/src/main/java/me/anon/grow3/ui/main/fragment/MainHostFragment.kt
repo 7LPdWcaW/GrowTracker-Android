@@ -70,7 +70,7 @@ class MainHostFragment : BaseHostFragment(R.layout.fragment_main_host)
 				{
 					NAVIGATE_TO_DIARY -> {
 						openDiary(item.getString(EXTRA_DIARY_ID) ?: throw IllegalArgumentException("No diary ID set"))
-						clearDetail()
+						openDetail(null)
 					}
 
 					NAVIGATE_TO_CROPS -> {
@@ -85,14 +85,9 @@ class MainHostFragment : BaseHostFragment(R.layout.fragment_main_host)
 
 	override fun onBackPressed(): Boolean = menu_fab.isExpanded.also { menu_fab.isExpanded = false }
 
-	private fun openDetail(fragment: Fragment)
+	private fun openDetail(fragment: Fragment?)
 	{
 		activity().setDetail(fragment)
-	}
-
-	private fun clearDetail()
-	{
-		activity().setDetail(null)
 	}
 
 	private fun openDiary(id: String)
@@ -115,13 +110,4 @@ class MainHostFragment : BaseHostFragment(R.layout.fragment_main_host)
 			}
 		}
 	}
-
-	//		public fun openPage(fragment: Fragment, viewPager: ViewPager2)
-//		{
-//			if (adapter.itemCount == 2) adapter.pages.add(INDEX_NAVSTACK, fragment)
-//			else adapter.pages[INDEX_NAVSTACK] = fragment
-//
-//			adapter.notifyItemChanged(INDEX_NAVSTACK)
-//			viewPager.setCurrentItem(INDEX_NAVSTACK, true)
-//		}
 }
