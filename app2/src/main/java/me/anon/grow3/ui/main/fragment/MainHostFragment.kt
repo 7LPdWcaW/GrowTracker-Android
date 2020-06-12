@@ -105,8 +105,14 @@ class MainHostFragment : BaseHostFragment(R.layout.fragment_main_host)
 				activity().notifyPagerChange(this@MainHostFragment)
 
 				menu_fab.isVisible = true
-				menu_fab.setOnClickListener { menu_fab.isExpanded = !menu_fab.isExpanded }
-				sheet.setOnClickListener { menu_fab.isExpanded = false }
+				menu_fab.setOnClickListener {
+					menu_fab.isExpanded = !menu_fab.isExpanded
+					viewPager.isUserInputEnabled = !menu_fab.isExpanded
+				}
+				sheet.setOnClickListener {
+					menu_fab.isExpanded = false
+					viewPager.isUserInputEnabled = true
+				}
 			}
 		}
 	}
