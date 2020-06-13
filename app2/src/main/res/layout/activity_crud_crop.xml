@@ -58,7 +58,7 @@
 						<TextView
 							android:layout_width="wrap_content"
 							android:layout_height="wrap_content"
-							android:id="@+id/header"
+							android:id="@+id/details_header"
 							android:text="@string/add_crop_details_title"
 							app:layout_constraintTop_toTopOf="parent"
 							app:layout_constraintStart_toStartOf="parent"
@@ -80,7 +80,7 @@
 							app:layout_constraintDimensionRatio="1:1"
 							app:layout_constraintWidth_percent="0.25"
 							app:layout_constraintStart_toStartOf="parent"
-							app:layout_constraintTop_toBottomOf="@id/header"
+							app:layout_constraintTop_toBottomOf="@id/details_header"
 							android:transitionName="crop_image"
 						/>
 
@@ -93,7 +93,7 @@
 							android:layout_marginStart="18dp"
 							app:layout_constraintStart_toEndOf="@id/circle_preview"
 							app:layout_constraintEnd_toEndOf="parent"
-							app:layout_constraintTop_toBottomOf="@id/header"
+							app:layout_constraintTop_toBottomOf="@id/details_header"
 							android:transitionName="crop_name"
 						>
 							<com.google.android.material.textfield.TextInputEditText
@@ -159,7 +159,7 @@
 						<TextView
 							android:layout_width="wrap_content"
 							android:layout_height="wrap_content"
-							android:id="@+id/header"
+							android:id="@+id/medium_header"
 							android:text="@string/add_crop_additional_title"
 							app:layout_constraintTop_toTopOf="parent"
 							app:layout_constraintStart_toStartOf="parent"
@@ -172,7 +172,7 @@
 							android:id="@+id/medium_type"
 							android:hint="@string/add_crop_medium_type"
 							android:layout_marginTop="@dimen/section_spacing"
-							app:layout_constraintTop_toBottomOf="@+id/header"
+							app:layout_constraintTop_toBottomOf="@+id/medium_header"
 							app:layout_constraintStart_toStartOf="parent"
 							app:layout_constraintEnd_toEndOf="parent"
 							style="@style/Dropdown"
@@ -233,7 +233,7 @@
 						<TextView
 							android:layout_width="wrap_content"
 							android:layout_height="wrap_content"
-							android:id="@+id/header"
+							android:id="@+id/stages_header"
 							android:text="@string/add_crop_stages_title"
 							app:layout_constraintTop_toTopOf="parent"
 							app:layout_constraintStart_toStartOf="parent"
