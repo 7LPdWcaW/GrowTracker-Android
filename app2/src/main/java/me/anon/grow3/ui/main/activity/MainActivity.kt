@@ -10,15 +10,15 @@ import androidx.fragment.app.FragmentManager
 import androidx.lifecycle.Lifecycle
 import androidx.viewpager2.adapter.FragmentStateAdapter
 import androidx.viewpager2.widget.ViewPager2
-import kotlinx.android.synthetic.main.activity_main.*
 import me.anon.grow3.R
+import me.anon.grow3.databinding.ActivityMainBinding
 import me.anon.grow3.ui.base.BaseActivity
 import me.anon.grow3.ui.base.BaseHostFragment
 import me.anon.grow3.ui.diaries.fragment.DiariesListFragment
 import me.anon.grow3.ui.main.fragment.AdditionalPageHostFragment
 import me.anon.grow3.ui.main.fragment.MainHostFragment
 
-class MainActivity : BaseActivity(R.layout.activity_main)
+class MainActivity : BaseActivity(ActivityMainBinding::class.java)
 {
 	companion object
 	{
@@ -46,6 +46,7 @@ class MainActivity : BaseActivity(R.layout.activity_main)
 	}
 
 	private val adapter by lazy { PageAdapter(supportFragmentManager, lifecycle) }
+	private val viewBindings by lazy { binding<ActivityMainBinding>() }
 
 	override fun onCreate(savedInstanceState: Bundle?)
 	{
@@ -61,10 +62,10 @@ class MainActivity : BaseActivity(R.layout.activity_main)
 
 	private fun bindUi()
 	{
-		view_pager.adapter = adapter
-		view_pager.setCurrentItem(INDEX_MAIN, false)
-		view_pager.offscreenPageLimit = 3
-		view_pager.setPageTransformer { page, position ->
+		viewBindings.viewPager.adapter = adapter
+		viewBindings.viewPager.setCurrentItem(INDEX_MAIN, false)
+		viewBindings.viewPager.offscreenPageLimit = 3
+		viewBindings.viewPager.setPageTransformer { page, position ->
 			val translateX = position * page.width
 			val index = (page.parent as ViewGroup).indexOfChild(page)
 
@@ -99,7 +100,7 @@ class MainActivity : BaseActivity(R.layout.activity_main)
 						isVisible = alpha >= 0.1f
 
 						setOnClickListener {
-							view_pager.currentItem = INDEX_MAIN
+							viewBindings.viewPager.currentItem = INDEX_MAIN
 						}
 
 						page.x = translateX.coerceAtMost(page.width * 0.85f)
@@ -117,7 +118,7 @@ class MainActivity : BaseActivity(R.layout.activity_main)
 			{
 				adapter.pages.removeAt(INDEX_NAVSTACK)
 				adapter.notifyItemRemoved(INDEX_NAVSTACK)
-				view_pager.setCurrentItem(INDEX_MAIN, true)
+				viewBindings.viewPager.setCurrentItem(INDEX_MAIN, true)
 			}
 		}
 		else
@@ -131,18 +132,18 @@ class MainActivity : BaseActivity(R.layout.activity_main)
 
 	public fun notifyPagerChange(fragment: BaseHostFragment)
 	{
-		view_pager.post {
+		viewBindings.viewPager.post {
 			adapter.notifyItemChanged(adapter.pages.indexOf(fragment))
-			view_pager.forceLayout()
-			view_pager.setCurrentItem(adapter.pages.indexOf(fragment), true)
+			viewBindings.viewPager.forceLayout()
+			viewBindings.viewPager.setCurrentItem(adapter.pages.indexOf(fragment), true)
 		}
 	}
 
 	override fun onBackPressed()
 	{
-		when (view_pager.currentItem)
+		when (viewBindings.viewPager.currentItem)
 		{
-			INDEX_MENU -> view_pager.currentItem = INDEX_MAIN
+			INDEX_MENU -> viewBindings.viewPager.currentItem = INDEX_MAIN
 			INDEX_NAVSTACK -> {
 				if (!(adapter.pages[INDEX_NAVSTACK] as BaseHostFragment).onBackPressed())
 				{
@@ -154,12 +155,12 @@ class MainActivity : BaseActivity(R.layout.activity_main)
 							{
 								adapter.pages.removeAt(INDEX_NAVSTACK)
 								adapter.notifyItemRemoved(INDEX_NAVSTACK)
-								view_pager.unregisterOnPageChangeCallback(this)
+								viewBindings.viewPager.unregisterOnPageChangeCallback(this)
 							}
 						}
 					}
-					view_pager.registerOnPageChangeCallback(callback)
-					view_pager.currentItem = INDEX_MAIN
+					viewBindings.viewPager.registerOnPageChangeCallback(callback)
+					viewBindings.viewPager.currentItem = INDEX_MAIN
 				}
 			}
 			else -> {

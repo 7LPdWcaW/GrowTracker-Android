@@ -3,13 +3,12 @@ package me.anon.grow3.ui.crud.activity
 import android.os.Bundle
 import android.view.MenuItem
 import androidx.activity.viewModels
-import androidx.appcompat.widget.Toolbar
 import androidx.core.widget.doAfterTextChanged
 import androidx.lifecycle.observe
 import com.zhuinden.livedatacombinetuplekt.combineTuple
-import kotlinx.android.synthetic.main.activity_crud_crop.*
 import me.anon.grow3.R
 import me.anon.grow3.data.model.MediumType
+import me.anon.grow3.databinding.ActivityCrudCropBinding
 import me.anon.grow3.ui.base.BaseActivity
 import me.anon.grow3.ui.crud.viewmodel.CropViewModel
 import me.anon.grow3.util.*
@@ -17,7 +16,7 @@ import me.anon.grow3.util.states.asSuccess
 import me.anon.grow3.util.states.isSuccess
 import javax.inject.Inject
 
-class CropActivity : BaseActivity(R.layout.activity_crud_crop)
+class CropActivity : BaseActivity(ActivityCrudCropBinding::class.java)
 {
 	companion object
 	{
@@ -27,6 +26,7 @@ class CropActivity : BaseActivity(R.layout.activity_crud_crop)
 
 	@Inject internal lateinit var viewModelFactory: CropViewModel.Factory
 	private val viewModel: CropViewModel by viewModels { ViewModelProvider(viewModelFactory, this, intent.extras) }
+	private val viewBindings by lazy { binding<ActivityCrudCropBinding>() }
 
 	override fun onCreate(savedInstanceState: Bundle?)
 	{
@@ -34,7 +34,7 @@ class CropActivity : BaseActivity(R.layout.activity_crud_crop)
 
 		component.inject(this)
 
-		toolbar = findViewById<Toolbar>(R.id.toolbar).apply {
+		toolbar = viewBindings.toolbar.apply {
 			navigationIcon = R.drawable.ic_check.drawable(context, R.attr.textOnSurface.resColor(context))
 		}
 		statusBarColor = 0xffffffff.toInt()
@@ -45,42 +45,42 @@ class CropActivity : BaseActivity(R.layout.activity_crud_crop)
 
 	private fun bindUi()
 	{
-		crop_name.editText!!.onFocusLoss {
+		viewBindings.cropName.editText!!.onFocusLoss {
 			it.text.toStringOrNull()?.let {
 				viewModel.setCrop(
 					name = ValueHolder(it)
 				)
 			}
 		}
-		crop_name.editText!!.doAfterTextChanged {
-			if (it.isNullOrBlank()) crop_name.error = "Required field"
-			else crop_name.error = null
+		viewBindings.cropName.editText!!.doAfterTextChanged {
+			if (it.isNullOrBlank()) viewBindings.cropName.error = "Required field"
+			else viewBindings.cropName.error = null
 		}
 
-		crop_genetics.editText!!.onFocusLoss {
+		viewBindings.cropGenetics.editText!!.onFocusLoss {
 			viewModel.setCrop(
 				genetics = ValueHolder(it.text.toStringOrNull())
 			)
 		}
 
-		crop_num_plants.editText!!.onFocusLoss {
+		viewBindings.cropNumPlants.editText!!.onFocusLoss {
 			viewModel.setCrop(
 				numberOfPlants = ValueHolder(it.text.toIntOrNull() ?: 1)
 			)
 		}
 
-		medium_type_options.setMenu(MediumType.toMenu())
-		medium_type_options.itemSelectListener = { item ->
+		viewBindings.mediumTypeOptions.setMenu(MediumType.toMenu())
+		viewBindings.mediumTypeOptions.itemSelectListener = { item ->
 			viewModel.setCrop(
 				mediumType = ValueHolder(MediumType.ofId(item.itemId))
 			)
 		}
 
-		medium_size.editText!!.doAfterTextChanged {
-			if (!it.isNullOrBlank() && medium_type_options.getSelectedItems().isEmpty()) medium_type.error = "Required field"
-			else medium_type.error = null
+		viewBindings.mediumSize.editText!!.doAfterTextChanged {
+			if (!it.isNullOrBlank() && viewBindings.mediumTypeOptions.getSelectedItems().isEmpty()) viewBindings.mediumType.error = "Required field"
+			else viewBindings.mediumType.error = null
 		}
-		medium_size.editText!!.onFocusLoss {
+		viewBindings.mediumSize.editText!!.onFocusLoss {
 			viewModel.setCrop(
 				volume = ValueHolder(it.text.toDoubleOrNull())
 			)
@@ -94,14 +94,14 @@ class CropActivity : BaseActivity(R.layout.activity_crud_crop)
 			val diary = diary.asSuccess()
 
 			title = string(if (viewModel.newCrop) R.string.add_crop_title else R.string.edit_crop_title)
-			crop_name.editText!!.text = crop.name.asEditable()
-			crop_genetics.editText!!.text = crop.genetics?.asEditable()
-			crop_num_plants.editText!!.text = crop.numberOfPlants.toString().asEditable()
+			viewBindings.cropName.editText!!.text = crop.name.asEditable()
+			viewBindings.cropGenetics.editText!!.text = crop.genetics?.asEditable()
+			viewBindings.cropNumPlants.editText!!.text = crop.numberOfPlants.toString().asEditable()
 
 			val medium = diary.mediumOf(crop)
 			medium?.let {
-				medium_type_options.checkItems(it.medium.strRes)
-				medium_size.editText!!.text = it.size.asStringOrNull()?.asEditable()
+				viewBindings.mediumTypeOptions.checkItems(it.medium.strRes)
+				viewBindings.mediumSize.editText!!.text = it.size.asStringOrNull()?.asEditable()
 			}
 		}
 	}

@@ -5,9 +5,9 @@ import androidx.core.view.isVisible
 import androidx.core.view.updatePadding
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.commit
-import kotlinx.android.synthetic.main.activity_main.*
-import kotlinx.android.synthetic.main.fragment_main_host.*
+import androidx.viewpager2.widget.ViewPager2
 import me.anon.grow3.R
+import me.anon.grow3.databinding.FragmentMainHostBinding
 import me.anon.grow3.ui.base.BaseHostFragment
 import me.anon.grow3.ui.diaries.fragment.LogListFragment
 import me.anon.grow3.ui.diaries.fragment.ViewDiaryFragment
@@ -17,10 +17,11 @@ import me.anon.grow3.ui.main.activity.MainActivity.Companion.EXTRA_NAVIGATE
 import me.anon.grow3.ui.main.activity.MainActivity.Companion.NAVIGATE_TO_CROPS
 import me.anon.grow3.ui.main.activity.MainActivity.Companion.NAVIGATE_TO_DIARY
 
-class MainHostFragment : BaseHostFragment(R.layout.fragment_main_host)
+class MainHostFragment : BaseHostFragment(FragmentMainHostBinding::class.java)
 {
 	private val pendingActions = ArrayList<Bundle>(1)
-	private val viewPager by lazy { activity().view_pager }
+	private val viewPager by lazy { activity().findViewById<ViewPager2>(R.id.view_pager) }
+	private val viewBindings by lazy { binding<FragmentMainHostBinding>() }
 
 	override fun onActivityCreated(savedInstanceState: Bundle?)
 	{
@@ -42,8 +43,8 @@ class MainHostFragment : BaseHostFragment(R.layout.fragment_main_host)
 		viewPager.setOnApplyWindowInsetsListener { v, insets ->
 			v.onApplyWindowInsets(insets).also {
 				val navigationBar = insets.systemWindowInsetBottom
-				menu_fab.translationY = (-navigationBar).toFloat()
-				sheet.updatePadding(bottom = navigationBar)
+				viewBindings.menuFab.translationY = (-navigationBar).toFloat()
+				viewBindings.sheet.updatePadding(bottom = navigationBar)
 			}
 		}
 	}
@@ -83,7 +84,7 @@ class MainHostFragment : BaseHostFragment(R.layout.fragment_main_host)
 		}
 	}
 
-	override fun onBackPressed(): Boolean = menu_fab.isExpanded.also { menu_fab.isExpanded = false }
+	override fun onBackPressed(): Boolean = viewBindings.menuFab.isExpanded.also { viewBindings.menuFab.isExpanded = false }
 
 	private fun openDetail(fragment: Fragment?)
 	{
@@ -104,13 +105,13 @@ class MainHostFragment : BaseHostFragment(R.layout.fragment_main_host)
 			runOnCommit {
 				activity().notifyPagerChange(this@MainHostFragment)
 
-				menu_fab.isVisible = true
-				menu_fab.setOnClickListener {
-					menu_fab.isExpanded = !menu_fab.isExpanded
-					viewPager.isUserInputEnabled = !menu_fab.isExpanded
+				viewBindings.menuFab.isVisible = true
+				viewBindings.menuFab.setOnClickListener {
+					viewBindings.menuFab.isExpanded = !viewBindings.menuFab.isExpanded
+					viewPager.isUserInputEnabled = !viewBindings.menuFab.isExpanded
 				}
-				sheet.setOnClickListener {
-					menu_fab.isExpanded = false
+				viewBindings.sheet.setOnClickListener {
+					viewBindings.menuFab.isExpanded = false
 					viewPager.isUserInputEnabled = true
 				}
 			}
