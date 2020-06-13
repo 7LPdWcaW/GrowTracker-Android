@@ -25,7 +25,6 @@
 		app:backgroundTint="?colorAccent"
 		android:layout_margin="16dp"
 		app:layout_dodgeInsetEdges="all"
-		android:visibility="gone"
 	/>
 
 	<com.google.android.material.circularreveal.CircularRevealFrameLayout

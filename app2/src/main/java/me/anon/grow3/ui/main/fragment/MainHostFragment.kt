@@ -1,8 +1,8 @@
 package me.anon.grow3.ui.main.fragment
 
 import android.os.Bundle
+import android.view.View
 import androidx.core.view.isVisible
-import androidx.core.view.updatePadding
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.commit
 import androidx.viewpager2.widget.ViewPager2
@@ -16,12 +16,24 @@ import me.anon.grow3.ui.main.activity.MainActivity.Companion.EXTRA_DIARY_ID
 import me.anon.grow3.ui.main.activity.MainActivity.Companion.EXTRA_NAVIGATE
 import me.anon.grow3.ui.main.activity.MainActivity.Companion.NAVIGATE_TO_CROPS
 import me.anon.grow3.ui.main.activity.MainActivity.Companion.NAVIGATE_TO_DIARY
+import me.anon.grow3.util.applyWindowInsets
+import me.anon.grow3.util.applyWindowPaddings
 
 class MainHostFragment : BaseHostFragment(FragmentMainHostBinding::class.java)
 {
 	private val pendingActions = ArrayList<Bundle>(1)
 	private val viewPager by lazy { activity().findViewById<ViewPager2>(R.id.view_pager) }
 	private val viewBindings by lazy { binding<FragmentMainHostBinding>() }
+
+	override fun onViewCreated(view: View, savedInstanceState: Bundle?)
+	{
+		super.onViewCreated(view, savedInstanceState)
+		applyWindowInsets(view)
+		applyWindowInsets(viewBindings.menuFab, top = false)
+		viewBindings.menuFab.post { viewBindings.menuFab.requestApplyInsets() }
+		applyWindowPaddings(viewBindings.sheet)
+		viewBindings.sheet.post { viewBindings.sheet.requestApplyInsets() }
+	}
 
 	override fun onActivityCreated(savedInstanceState: Bundle?)
 	{
@@ -37,14 +49,6 @@ class MainHostFragment : BaseHostFragment(FragmentMainHostBinding::class.java)
 		{
 			childFragmentManager.commit {
 				replace(R.id.content, ViewDiaryFragment())
-			}
-		}
-
-		viewPager.setOnApplyWindowInsetsListener { v, insets ->
-			v.onApplyWindowInsets(insets).also {
-				val navigationBar = insets.systemWindowInsetBottom
-				viewBindings.menuFab.translationY = (-navigationBar).toFloat()
-				viewBindings.sheet.updatePadding(bottom = navigationBar)
 			}
 		}
 	}

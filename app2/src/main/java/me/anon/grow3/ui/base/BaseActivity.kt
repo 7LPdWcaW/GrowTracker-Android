@@ -69,9 +69,9 @@ open class BaseActivity : AppCompatActivity
 		}
 	}
 
-	override fun setContentView(layoutResID: Int)
+	override fun setContentView(view: View)
 	{
-		super.setContentView(layoutResID)
+		super.setContentView(view)
 
 		findViewById<View?>(R.id.include_toolbar)?.let {
 			toolbar = it.toolbar

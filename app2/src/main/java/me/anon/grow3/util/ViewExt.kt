@@ -209,6 +209,20 @@ public fun View.addSystemWindowInsetToMargin(left: Boolean = false, top: Boolean
 	}
 }
 
+public fun View.updateMargin(
+	left: Int = (layoutParams as? ViewGroup.MarginLayoutParams)?.leftMargin ?: 0,
+	top: Int = (layoutParams as? ViewGroup.MarginLayoutParams)?.topMargin ?: 0,
+	right: Int = (layoutParams as? ViewGroup.MarginLayoutParams)?.rightMargin ?: 0,
+	bottom: Int = (layoutParams as? ViewGroup.MarginLayoutParams)?.bottomMargin ?: 0
+)
+{
+	updateLayoutParams {
+		(this as? ViewGroup.MarginLayoutParams)?.let {
+			updateMargins(left = left, top = top, right = right, bottom = bottom)
+		}
+	}
+}
+
 /**
  * Removes all the decorators in a given [RecyclerView]
  */

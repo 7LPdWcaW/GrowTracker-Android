@@ -7,7 +7,7 @@ import android.view.View
 import androidx.annotation.*
 import androidx.fragment.app.Fragment
 import me.anon.grow3.BaseApplication
-import me.anon.grow3.R
+import me.anon.grow3.ui.main.activity.MainActivity
 
 public val Fragment.component get() = (requireContext().applicationContext as BaseApplication).appComponent
 
@@ -22,7 +22,7 @@ public inline fun <reified T : Activity> Fragment.navigateForResult(requestCode:
 
 public fun Fragment.applyWindowInsets(view: View = requireView(), top: Boolean = true, bottom: Boolean = true)
 {
-	requireActivity().findViewById<View>(R.id.view_pager)?.setOnApplyWindowInsetsListener { v, insets ->
+	(requireActivity() as? MainActivity)?.viewPager?.setOnApplyWindowInsetsListener { v, insets ->
 		v.onApplyWindowInsets(insets).also {
 			view.addSystemWindowInsetToMargin(top = top, bottom = bottom)
 			view.dispatchApplyWindowInsets(insets)
@@ -32,7 +32,7 @@ public fun Fragment.applyWindowInsets(view: View = requireView(), top: Boolean =
 
 public fun Fragment.applyWindowPaddings(view: View = requireView(), top: Boolean = true, bottom: Boolean = true)
 {
-	requireActivity().findViewById<View>(R.id.view_pager)?.setOnApplyWindowInsetsListener { v, insets ->
+	(requireActivity() as? MainActivity)?.viewPager?.setOnApplyWindowInsetsListener { v, insets ->
 		v.onApplyWindowInsets(insets).also {
 			view.addSystemWindowInsetToPadding(top = top, bottom = bottom)
 			view.dispatchApplyWindowInsets(insets)

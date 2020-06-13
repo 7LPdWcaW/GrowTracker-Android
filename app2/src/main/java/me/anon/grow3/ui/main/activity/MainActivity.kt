@@ -47,6 +47,7 @@ class MainActivity : BaseActivity(ActivityMainBinding::class.java)
 
 	private val adapter by lazy { PageAdapter(supportFragmentManager, lifecycle) }
 	private val viewBindings by lazy { binding<ActivityMainBinding>() }
+	public val viewPager by lazy { viewBindings.viewPager }
 
 	override fun onCreate(savedInstanceState: Bundle?)
 	{
