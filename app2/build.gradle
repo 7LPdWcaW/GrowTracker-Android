@@ -87,6 +87,7 @@ dependencies {
 	implementation 'com.github.PhilJay:MPAndroidChart:v2.1.6'
 	implementation 'com.github.AppIntro:AppIntro:6.0.0'
 	implementation 'com.github.Zhuinden:livedata-combinetuple-kt:1.0.0'
+	implementation "com.hendraanggrian.material:collapsingtoolbarlayout-subtitle:1.1.0"
 
 	implementation 'com.infideap.drawerbehavior:drawer-behavior:1.0.1'
 

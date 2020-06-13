@@ -1,7 +1,6 @@
 package me.anon.grow3.ui.diaries.fragment
 
 import android.os.Bundle
-import android.view.View
 import androidx.core.os.bundleOf
 import me.anon.grow3.databinding.FragmentViewDiaryBinding
 import me.anon.grow3.di.ApplicationComponent
@@ -21,16 +20,17 @@ class ViewDiaryFragment : BaseFragment(FragmentViewDiaryBinding::class.java)
 	override val inject: (ApplicationComponent) -> Unit = {}
 	private val viewBindings by lazy { binding<FragmentViewDiaryBinding>() }
 
-	override fun onViewCreated(view: View, savedInstanceState: Bundle?)
+	override fun onActivityCreated(savedInstanceState: Bundle?)
 	{
-		super.onViewCreated(view, savedInstanceState)
+		super.onActivityCreated(savedInstanceState)
 		setToolbar(viewBindings.toolbar)
-		applyWindowInsets()
+		applyWindowInsets(viewBindings.toolbar, bottom = false)
 	}
 
 	override fun bindArguments(bundle: Bundle?)
 	{
-		requireActivity().title = "Diary"
+		viewBindings.collapsingToolbarLayout.title = "Diary Name"
+		viewBindings.collapsingToolbarLayout.subtitle = "10a/20b/30c/100"
 	}
 
 	override fun bindUi()

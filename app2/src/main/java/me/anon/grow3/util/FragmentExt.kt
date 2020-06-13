@@ -20,11 +20,21 @@ public inline fun <reified T : Activity> Fragment.navigateForResult(block: Inten
 public inline fun <reified T : Activity> Fragment.navigateForResult(requestCode: Int, block: Intent.() -> Unit = {})
 	= startActivityForResult(Intent(requireContext(), T::class.java).apply(block), requestCode)
 
-public fun Fragment.applyWindowInsets(view: View = requireView())
+public fun Fragment.applyWindowInsets(view: View = requireView(), top: Boolean = true, bottom: Boolean = true)
 {
 	requireActivity().findViewById<View>(R.id.view_pager)?.setOnApplyWindowInsetsListener { v, insets ->
 		v.onApplyWindowInsets(insets).also {
-			view.addSystemWindowInsetToMargin(top = true, bottom = true)
+			view.addSystemWindowInsetToMargin(top = top, bottom = bottom)
+			view.dispatchApplyWindowInsets(insets)
+		}
+	}
+}
+
+public fun Fragment.applyWindowPaddings(view: View = requireView(), top: Boolean = true, bottom: Boolean = true)
+{
+	requireActivity().findViewById<View>(R.id.view_pager)?.setOnApplyWindowInsetsListener { v, insets ->
+		v.onApplyWindowInsets(insets).also {
+			view.addSystemWindowInsetToPadding(top = top, bottom = bottom)
 			view.dispatchApplyWindowInsets(insets)
 		}
 	}
