@@ -4,8 +4,7 @@ import androidx.core.os.bundleOf
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.observe
 import androidx.recyclerview.widget.LinearLayoutManager
-import kotlinx.android.synthetic.main.fragment_diaries.*
-import me.anon.grow3.R
+import me.anon.grow3.databinding.FragmentDiariesBinding
 import me.anon.grow3.di.ApplicationComponent
 import me.anon.grow3.ui.base.BaseFragment
 import me.anon.grow3.ui.crud.activity.DiaryActivity
@@ -19,12 +18,13 @@ import me.anon.grow3.util.onClick
 import me.anon.grow3.util.states.DataResult
 import javax.inject.Inject
 
-class DiariesListFragment : BaseFragment(R.layout.fragment_diaries)
+class DiariesListFragment : BaseFragment(FragmentDiariesBinding::class.java)
 {
 	override val inject: (ApplicationComponent) -> Unit = { it.inject(this) }
 
 	@Inject internal lateinit var viewModelFactory: DiariesListViewModel.Factory
 	private val viewModel: DiariesListViewModel by viewModels { ViewModelProvider(viewModelFactory, this) }
+	private val viewBindings by lazy { binding<FragmentDiariesBinding>() }
 	private val adapter by lazy { DiariesListAdapter() }
 
 	override fun bindUi()
@@ -36,12 +36,12 @@ class DiariesListFragment : BaseFragment(R.layout.fragment_diaries)
 			}
 		}
 
-		new_diary.onClick {
+		viewBindings.newDiary.onClick {
 			navigateForResult<DiaryActivity>()
 		}
 
-		recycler_view.adapter = adapter
-		recycler_view.layoutManager = LinearLayoutManager(requireContext())
+		viewBindings.recyclerView.adapter = adapter
+		viewBindings.recyclerView.layoutManager = LinearLayoutManager(requireContext())
 	}
 
 	override fun bindVm()

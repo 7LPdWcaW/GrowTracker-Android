@@ -3,8 +3,7 @@ package me.anon.grow3.ui.crud.fragment
 import androidx.core.os.bundleOf
 import androidx.fragment.app.activityViewModels
 import androidx.lifecycle.observe
-import kotlinx.android.synthetic.main.fragment_crud_diary_complete.*
-import me.anon.grow3.R
+import me.anon.grow3.databinding.FragmentCrudDiaryCompleteBinding
 import me.anon.grow3.di.ApplicationComponent
 import me.anon.grow3.ui.base.BaseFragment
 import me.anon.grow3.ui.crud.viewmodel.DiaryViewModel
@@ -19,16 +18,17 @@ import me.anon.grow3.util.states.asSuccess
 import me.anon.grow3.util.states.isSuccess
 import javax.inject.Inject
 
-class DiaryCompleteFragment : BaseFragment(R.layout.fragment_crud_diary_complete)
+class DiaryCompleteFragment : BaseFragment(FragmentCrudDiaryCompleteBinding::class.java)
 {
 	override val inject: (ApplicationComponent) -> Unit = { component.inject(this) }
 
 	@Inject internal lateinit var viewModelFactory: DiaryViewModel.Factory
 	private val viewModel: DiaryViewModel by activityViewModels { ViewModelProvider(viewModelFactory, this) }
+	private val viewBindings by lazy { binding<FragmentCrudDiaryCompleteBinding>() }
 
 	override fun bindUi()
 	{
-		close.setOnClickListener {
+		viewBindings.close.setOnClickListener {
 			navigateTo<MainActivity> {
 				putExtras(bundleOf(EXTRA_NAVIGATE to NAVIGATE_TO_DIARY))
 				putExtras(bundleOf(EXTRA_DIARY_ID to viewModel.diary.value!!.asSuccess().id))

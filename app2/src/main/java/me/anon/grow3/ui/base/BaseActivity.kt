@@ -3,6 +3,7 @@ package me.anon.grow3.ui.base
 import android.graphics.Bitmap
 import android.os.Build
 import android.os.Bundle
+import android.view.LayoutInflater
 import android.view.View
 import android.view.WindowManager
 import androidx.annotation.ColorInt
@@ -10,11 +11,29 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.widget.Toolbar
 import androidx.core.graphics.drawable.toBitmap
 import androidx.core.graphics.get
+import androidx.viewbinding.ViewBinding
 import kotlinx.android.synthetic.main.include_toolbar.view.*
 import me.anon.grow3.R
 
-open class BaseActivity(val layoutRes: Int = -1) : AppCompatActivity()
+open class BaseActivity : AppCompatActivity
 {
+	constructor() : super()
+	constructor(layoutRes: Int)
+	{
+		this.layoutRes = layoutRes
+	}
+
+	constructor(viewBinder: Class<out ViewBinding>)
+	{
+		this._viewBinder = viewBinder
+	}
+
+	private var layoutRes = -1
+	private var _viewBinder: Class<out ViewBinding>? = null
+	public lateinit var viewBinder: ViewBinding private set
+
+	public inline fun <reified T> binding(): T = viewBinder as T
+
 	protected var toolbar: Toolbar? = null
 		set(value)
 		{
@@ -38,7 +57,16 @@ open class BaseActivity(val layoutRes: Int = -1) : AppCompatActivity()
 	{
 		super.onCreate(savedInstanceState)
 
-		if (layoutRes != -1) setContentView(layoutRes)
+		if (_viewBinder == null)
+		{
+			if (layoutRes != -1) setContentView(layoutRes)
+		}
+		else
+		{
+			viewBinder = _viewBinder!!.getDeclaredMethod("inflate", LayoutInflater::class.java)
+				.invoke(_viewBinder, layoutInflater) as ViewBinding
+			setContentView(viewBinder.root)
+		}
 	}
 
 	override fun setContentView(layoutResID: Int)
