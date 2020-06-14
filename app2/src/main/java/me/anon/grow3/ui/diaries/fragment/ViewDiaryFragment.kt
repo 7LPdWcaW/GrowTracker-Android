@@ -31,12 +31,15 @@ class ViewDiaryFragment : BaseFragment(FragmentViewDiaryBinding::class)
 		) { v, l, t, r, b ->
 			when (v)
 			{
-				viewBindings.menuFab -> v.updateMarginRelative(bottom = b)
+				viewBindings.menuFab -> v.updateMargin(bottom = b + 16.dp(requireContext()), top = t + 16.dp(requireContext()))
 				viewBindings.sheet -> v.updatePadding(l, t, r, b)
 				viewBindings.toolbar -> v.updateMargin(l, t, r)
 			}
 		}
 	}
+
+	override fun onBackPressed(): Boolean
+		= viewBindings.menuFab.isExpanded.also { viewBindings.menuFab.isExpanded = false }
 
 	override fun bindArguments(bundle: Bundle?)
 	{

@@ -63,6 +63,7 @@ abstract class BaseFragment : Fragment
 		bindVm()
 	}
 
+	open fun onBackPressed(): Boolean = false
 	open fun bindArguments(bundle: Bundle?) {}
 	abstract fun bindUi()
 	abstract fun bindVm()

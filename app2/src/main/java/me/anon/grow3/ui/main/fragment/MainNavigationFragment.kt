@@ -5,6 +5,7 @@ import androidx.fragment.app.Fragment
 import androidx.fragment.app.commitNow
 import me.anon.grow3.R
 import me.anon.grow3.databinding.FragmentMainHostBinding
+import me.anon.grow3.ui.base.BaseFragment
 import me.anon.grow3.ui.base.BaseHostFragment
 import me.anon.grow3.ui.diaries.fragment.LogListFragment
 import me.anon.grow3.ui.diaries.fragment.ViewDiaryFragment
@@ -14,7 +15,11 @@ import me.anon.grow3.ui.main.activity.MainActivity.Companion.EXTRA_NAVIGATE
 import me.anon.grow3.ui.main.activity.MainActivity.Companion.NAVIGATE_TO_CROPS
 import me.anon.grow3.ui.main.activity.MainActivity.Companion.NAVIGATE_TO_DIARY
 
-class MainHostFragment : BaseHostFragment(FragmentMainHostBinding::class.java)
+/**
+ * Main navigator fragment for the application. [MainActivity] controls the UI and distribution
+ * of navigation actions from this class. 
+ */
+class MainNavigationFragment : BaseHostFragment(FragmentMainHostBinding::class.java)
 {
 	private val pendingActions = ArrayList<Bundle>(1)
 	private val viewBindings by lazy { binding<FragmentMainHostBinding>() }
@@ -29,10 +34,6 @@ class MainHostFragment : BaseHostFragment(FragmentMainHostBinding::class.java)
 		{
 			executePendingActions()
 		}
-//		else if (savedInstanceState == null)
-//		{
-//			openDiary("")
-//		}
 	}
 
 	override fun setArguments(args: Bundle?)
@@ -70,7 +71,8 @@ class MainHostFragment : BaseHostFragment(FragmentMainHostBinding::class.java)
 		}
 	}
 
-	override fun onBackPressed(): Boolean = false//viewBindings.menuFab.isExpanded.also { viewBindings.menuFab.isExpanded = false }
+	override fun onBackPressed(): Boolean
+		= (childFragmentManager.findFragmentByTag("fragment") as? BaseFragment)?.onBackPressed() ?: false
 
 	private fun openDetail(fragment: Fragment?)
 	{
@@ -87,8 +89,8 @@ class MainHostFragment : BaseHostFragment(FragmentMainHostBinding::class.java)
 
 		childFragmentManager.commitNow {
 			setCustomAnimations(android.R.anim.fade_in, android.R.anim.fade_out)
-			replace(R.id.content, fragment)
-			activity().notifyPagerChange(this@MainHostFragment)
+			replace(R.id.fragment_container, fragment, "fragment")
+			activity().notifyPagerChange(this@MainNavigationFragment)
 		}
 	}
 }

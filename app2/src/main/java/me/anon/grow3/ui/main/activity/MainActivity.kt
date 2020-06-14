@@ -16,7 +16,7 @@ import me.anon.grow3.ui.base.BaseActivity
 import me.anon.grow3.ui.base.BaseHostFragment
 import me.anon.grow3.ui.diaries.fragment.DiariesListFragment
 import me.anon.grow3.ui.main.fragment.AdditionalPageHostFragment
-import me.anon.grow3.ui.main.fragment.MainHostFragment
+import me.anon.grow3.ui.main.fragment.MainNavigationFragment
 
 class MainActivity : BaseActivity(ActivityMainBinding::class.java)
 {
@@ -36,7 +36,7 @@ class MainActivity : BaseActivity(ActivityMainBinding::class.java)
 	{
 		public val pages = arrayListOf<Fragment>().apply {
 			add(INDEX_MENU, DiariesListFragment())
-			add(INDEX_MAIN, MainHostFragment().apply {
+			add(INDEX_MAIN, MainNavigationFragment().apply {
 				arguments = intent.extras
 			})
 		}
