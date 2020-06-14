@@ -13,7 +13,7 @@ import me.anon.grow3.ui.main.activity.MainActivity.Companion.EXTRA_NAVIGATE
 import me.anon.grow3.ui.main.activity.MainActivity.Companion.NAVIGATE_TO_DIARY
 import me.anon.grow3.util.ViewModelProvider
 import me.anon.grow3.util.component
-import me.anon.grow3.util.navigateTo
+import me.anon.grow3.util.newTask
 import me.anon.grow3.util.states.asSuccess
 import me.anon.grow3.util.states.isSuccess
 import javax.inject.Inject
@@ -29,7 +29,7 @@ class DiaryCompleteFragment : BaseFragment(FragmentCrudDiaryCompleteBinding::cla
 	override fun bindUi()
 	{
 		viewBindings.close.setOnClickListener {
-			navigateTo<MainActivity> {
+			newTask<MainActivity> {
 				putExtras(bundleOf(EXTRA_NAVIGATE to NAVIGATE_TO_DIARY))
 				putExtras(bundleOf(EXTRA_DIARY_ID to viewModel.diary.value!!.asSuccess().id))
 			}

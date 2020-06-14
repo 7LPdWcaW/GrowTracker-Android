@@ -17,7 +17,7 @@ import me.anon.grow3.ui.main.activity.MainActivity.Companion.NAVIGATE_TO_DIARY
 
 /**
  * Main navigator fragment for the application. [MainActivity] controls the UI and distribution
- * of navigation actions from this class. 
+ * of navigation actions from this class.
  */
 class MainNavigationFragment : BaseHostFragment(FragmentMainHostBinding::class.java)
 {
@@ -46,6 +46,9 @@ class MainNavigationFragment : BaseHostFragment(FragmentMainHostBinding::class.j
 		}
 	}
 
+	/**
+	 * The main navigation controller method. All routings happen here
+	 */
 	private fun executePendingActions()
 	{
 		with (pendingActions.asReversed())
@@ -56,12 +59,12 @@ class MainNavigationFragment : BaseHostFragment(FragmentMainHostBinding::class.j
 				val route = item.getString(EXTRA_NAVIGATE) ?: throw IllegalArgumentException("No route set")
 				when (route)
 				{
-					NAVIGATE_TO_DIARY -> {
+					NAVIGATE_TO_DIARY, ViewDiaryFragment::class.java.name -> {
 						openDiary(item.getString(EXTRA_DIARY_ID) ?: throw IllegalArgumentException("No diary ID set"))
 						openDetail(null)
 					}
 
-					NAVIGATE_TO_CROPS -> {
+					NAVIGATE_TO_CROPS, LogListFragment::class.java.name -> {
 						openDetail(LogListFragment().apply {
 							arguments = item
 						})

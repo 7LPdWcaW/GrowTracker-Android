@@ -31,7 +31,7 @@ class DiaryCropsFragment : BaseFragment(FragmentCrudDiaryCropsBinding::class.jav
 	{
 		viewBindings.addCrop.onClick {
 			// reveal crop edit fragment dialog
-			navigateForResult<CropActivity> {
+			newTaskForResult<CropActivity> {
 				putExtra(CropActivity.EXTRA_DIARY_ID, viewModel.diary.value?.asSuccess()?.id)
 			}
 		}
@@ -58,7 +58,7 @@ class DiaryCropsFragment : BaseFragment(FragmentCrudDiaryCropsBinding::class.jav
 
 				view.onClick {
 					// reveal crop edit fragment dialog
-					navigateForResult<CropActivity> {
+					newTaskForResult<CropActivity> {
 						putExtra(CropActivity.EXTRA_DIARY_ID, diary.id)
 						putExtra(CropActivity.EXTRA_CROP_ID, crop.id)
 					}

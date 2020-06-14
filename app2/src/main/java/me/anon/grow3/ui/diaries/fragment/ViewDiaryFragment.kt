@@ -50,9 +50,8 @@ class ViewDiaryFragment : BaseFragment(FragmentViewDiaryBinding::class)
 	override fun bindUi()
 	{
 		viewBindings.crop1.onClick {
-			navigateTo<MainActivity> {
-				putExtras(bundleOf(MainActivity.EXTRA_NAVIGATE to MainActivity.NAVIGATE_TO_CROPS))
-//				putExtras(bundleOf(MainActivity.EXTRA_DIARY_ID to diaryId))
+			navigateTo<LogListFragment> {
+				bundleOf(MainActivity.EXTRA_DIARY_ID to "")
 			}
 		}
 

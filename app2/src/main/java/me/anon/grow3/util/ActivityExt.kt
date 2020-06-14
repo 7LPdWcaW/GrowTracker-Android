@@ -7,7 +7,7 @@ import android.view.View
 import androidx.annotation.*
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
 
-public inline fun <reified T : Activity> Activity.navigateTo(block: Intent.() -> Unit = {})
+public inline fun <reified T : Activity> Activity.newTask(block: Intent.() -> Unit = {})
 	= startActivity(Intent(this, T::class.java).apply(block))
 
 public inline fun Activity.promptExit(crossinline callback: () -> Unit)

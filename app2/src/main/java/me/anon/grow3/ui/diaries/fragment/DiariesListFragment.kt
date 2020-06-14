@@ -12,8 +12,8 @@ import me.anon.grow3.ui.diaries.adapter.DiariesListAdapter
 import me.anon.grow3.ui.diaries.viewmodel.DiariesListViewModel
 import me.anon.grow3.ui.main.activity.MainActivity
 import me.anon.grow3.util.ViewModelProvider
-import me.anon.grow3.util.navigateForResult
 import me.anon.grow3.util.navigateTo
+import me.anon.grow3.util.newTaskForResult
 import me.anon.grow3.util.onClick
 import me.anon.grow3.util.states.DataResult
 import javax.inject.Inject
@@ -30,14 +30,13 @@ class DiariesListFragment : BaseFragment(FragmentDiariesBinding::class.java)
 	override fun bindUi()
 	{
 		adapter.onItemClick = { item ->
-			navigateTo<MainActivity> {
-				putExtras(bundleOf(MainActivity.EXTRA_NAVIGATE to MainActivity.NAVIGATE_TO_DIARY))
-				putExtras(bundleOf(MainActivity.EXTRA_DIARY_ID to item.id))
+			navigateTo<ViewDiaryFragment> {
+				bundleOf(MainActivity.EXTRA_DIARY_ID to item.id)
 			}
 		}
 
 		viewBindings.newDiary.onClick {
-			navigateForResult<DiaryActivity>()
+			newTaskForResult<DiaryActivity>()
 		}
 
 		viewBindings.recyclerView.adapter = adapter
