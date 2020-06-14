@@ -8,7 +8,8 @@ import android.view.ViewGroup
 import android.view.inputmethod.InputMethodManager
 import android.widget.TextView
 import androidx.annotation.*
-import androidx.core.view.*
+import androidx.core.view.updateLayoutParams
+import androidx.core.view.updateMargins
 import androidx.recyclerview.widget.RecyclerView
 
 /**
@@ -183,32 +184,6 @@ inline fun <T : View> T.afterMeasured(crossinline callback: T.() -> Unit)
 	})
 }
 
-public fun View.addSystemWindowInsetToPadding(left: Boolean = false, top: Boolean = false, right: Boolean = false, bottom: Boolean = false)
-{
-	val (initialLeft, initialTop, initialRight, initialBottom) = listOf(paddingLeft, paddingTop, paddingRight, paddingBottom)
-
-	ViewCompat.setOnApplyWindowInsetsListener(this) { view, insets ->
-		view.updatePadding(left = initialLeft + (if (left) insets.systemWindowInsetLeft else 0), top = initialTop + (if (top) insets.systemWindowInsetTop else 0), right = initialRight + (if (right) insets.systemWindowInsetRight else 0), bottom = initialBottom + (if (bottom) insets.systemWindowInsetBottom else 0))
-
-		insets
-	}
-}
-
-public fun View.addSystemWindowInsetToMargin(left: Boolean = false, top: Boolean = false, right: Boolean = false, bottom: Boolean = false)
-{
-	val (initialLeft, initialTop, initialRight, initialBottom) = listOf(marginLeft, marginTop, marginRight, marginBottom)
-
-	ViewCompat.setOnApplyWindowInsetsListener(this) { view, insets ->
-		view.updateLayoutParams {
-			(this as? ViewGroup.MarginLayoutParams)?.let {
-				updateMargins(left = initialLeft + (if (left) insets.systemWindowInsetLeft else 0), top = initialTop + (if (top) insets.systemWindowInsetTop else 0), right = initialRight + (if (right) insets.systemWindowInsetRight else 0), bottom = initialBottom + (if (bottom) insets.systemWindowInsetBottom else 0))
-			}
-		}
-
-		insets
-	}
-}
-
 public fun View.updateMargin(
 	left: Int = (layoutParams as? ViewGroup.MarginLayoutParams)?.leftMargin ?: 0,
 	top: Int = (layoutParams as? ViewGroup.MarginLayoutParams)?.topMargin ?: 0,
@@ -219,6 +194,25 @@ public fun View.updateMargin(
 	updateLayoutParams {
 		(this as? ViewGroup.MarginLayoutParams)?.let {
 			updateMargins(left = left, top = top, right = right, bottom = bottom)
+		}
+	}
+}
+
+public fun View.updateMarginRelative(
+	left: Int = 0,
+	top: Int = 0,
+	right: Int = 0,
+	bottom: Int = 0
+)
+{
+	updateLayoutParams {
+		val l: Int = (layoutParams as? ViewGroup.MarginLayoutParams)?.leftMargin ?: 0
+		val t: Int = (layoutParams as? ViewGroup.MarginLayoutParams)?.topMargin ?: 0
+		val r: Int = (layoutParams as? ViewGroup.MarginLayoutParams)?.rightMargin ?: 0
+		val b: Int = (layoutParams as? ViewGroup.MarginLayoutParams)?.bottomMargin ?: 0
+
+		(this as? ViewGroup.MarginLayoutParams)?.let {
+			updateMargins(left = left + l, top = top + t, right = right + r, bottom = bottom + b)
 		}
 	}
 }
@@ -235,8 +229,8 @@ public fun RecyclerView.removeAllItemDecorators()
 }
 
 // Resource convenience methods
-public fun View.dimension(@DimenRes resId: Int): Float = resources.getDimension(resId)
-public fun View.dimensionPixels(@DimenRes resId: Int): Int = resources.getDimensionPixelSize(resId)
+public fun View.dimen(@DimenRes resId: Int): Float = resources.getDimension(resId)
+public fun View.dimenPx(@DimenRes resId: Int): Int = resources.getDimensionPixelSize(resId)
 public fun View.string(@StringRes resId: Int): String = resId.string(context)
 
 @ColorInt

@@ -1,11 +1,8 @@
 package me.anon.grow3.ui.main.fragment
 
 import android.os.Bundle
-import android.view.View
-import androidx.core.view.isVisible
 import androidx.fragment.app.Fragment
-import androidx.fragment.app.commit
-import androidx.viewpager2.widget.ViewPager2
+import androidx.fragment.app.commitNow
 import me.anon.grow3.R
 import me.anon.grow3.databinding.FragmentMainHostBinding
 import me.anon.grow3.ui.base.BaseHostFragment
@@ -16,24 +13,11 @@ import me.anon.grow3.ui.main.activity.MainActivity.Companion.EXTRA_DIARY_ID
 import me.anon.grow3.ui.main.activity.MainActivity.Companion.EXTRA_NAVIGATE
 import me.anon.grow3.ui.main.activity.MainActivity.Companion.NAVIGATE_TO_CROPS
 import me.anon.grow3.ui.main.activity.MainActivity.Companion.NAVIGATE_TO_DIARY
-import me.anon.grow3.util.applyWindowInsets
-import me.anon.grow3.util.applyWindowPaddings
 
 class MainHostFragment : BaseHostFragment(FragmentMainHostBinding::class.java)
 {
 	private val pendingActions = ArrayList<Bundle>(1)
-	private val viewPager by lazy { activity().findViewById<ViewPager2>(R.id.view_pager) }
 	private val viewBindings by lazy { binding<FragmentMainHostBinding>() }
-
-	override fun onViewCreated(view: View, savedInstanceState: Bundle?)
-	{
-		super.onViewCreated(view, savedInstanceState)
-		applyWindowInsets(view)
-		applyWindowInsets(viewBindings.menuFab, top = false)
-		viewBindings.menuFab.post { viewBindings.menuFab.requestApplyInsets() }
-		applyWindowPaddings(viewBindings.sheet)
-		viewBindings.sheet.post { viewBindings.sheet.requestApplyInsets() }
-	}
 
 	override fun onActivityCreated(savedInstanceState: Bundle?)
 	{
@@ -45,12 +29,10 @@ class MainHostFragment : BaseHostFragment(FragmentMainHostBinding::class.java)
 		{
 			executePendingActions()
 		}
-		else if (savedInstanceState == null)
-		{
-			childFragmentManager.commit {
-				replace(R.id.content, ViewDiaryFragment())
-			}
-		}
+//		else if (savedInstanceState == null)
+//		{
+//			openDiary("")
+//		}
 	}
 
 	override fun setArguments(args: Bundle?)
@@ -88,7 +70,7 @@ class MainHostFragment : BaseHostFragment(FragmentMainHostBinding::class.java)
 		}
 	}
 
-	override fun onBackPressed(): Boolean = viewBindings.menuFab.isExpanded.also { viewBindings.menuFab.isExpanded = false }
+	override fun onBackPressed(): Boolean = false//viewBindings.menuFab.isExpanded.also { viewBindings.menuFab.isExpanded = false }
 
 	private fun openDetail(fragment: Fragment?)
 	{
@@ -103,22 +85,10 @@ class MainHostFragment : BaseHostFragment(FragmentMainHostBinding::class.java)
 			}
 		}
 
-		childFragmentManager.commit {
+		childFragmentManager.commitNow {
 			setCustomAnimations(android.R.anim.fade_in, android.R.anim.fade_out)
 			replace(R.id.content, fragment)
-			runOnCommit {
-				activity().notifyPagerChange(this@MainHostFragment)
-
-				viewBindings.menuFab.isVisible = true
-				viewBindings.menuFab.setOnClickListener {
-					viewBindings.menuFab.isExpanded = !viewBindings.menuFab.isExpanded
-					viewPager.isUserInputEnabled = !viewBindings.menuFab.isExpanded
-				}
-				viewBindings.sheet.setOnClickListener {
-					viewBindings.menuFab.isExpanded = false
-					viewPager.isUserInputEnabled = true
-				}
-			}
+			activity().notifyPagerChange(this@MainHostFragment)
 		}
 	}
 }

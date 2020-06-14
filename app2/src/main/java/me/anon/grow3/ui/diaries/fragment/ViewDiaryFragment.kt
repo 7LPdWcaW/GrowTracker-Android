@@ -2,15 +2,14 @@ package me.anon.grow3.ui.diaries.fragment
 
 import android.os.Bundle
 import androidx.core.os.bundleOf
+import androidx.core.view.updatePadding
 import me.anon.grow3.databinding.FragmentViewDiaryBinding
 import me.anon.grow3.di.ApplicationComponent
 import me.anon.grow3.ui.base.BaseFragment
 import me.anon.grow3.ui.main.activity.MainActivity
-import me.anon.grow3.util.applyWindowInsets
-import me.anon.grow3.util.navigateTo
-import me.anon.grow3.util.onClick
+import me.anon.grow3.util.*
 
-class ViewDiaryFragment : BaseFragment(FragmentViewDiaryBinding::class.java)
+class ViewDiaryFragment : BaseFragment(FragmentViewDiaryBinding::class)
 {
 	companion object
 	{
@@ -24,7 +23,19 @@ class ViewDiaryFragment : BaseFragment(FragmentViewDiaryBinding::class.java)
 	{
 		super.onActivityCreated(savedInstanceState)
 		setToolbar(viewBindings.toolbar)
-		applyWindowInsets(viewBindings.toolbar, bottom = false)
+
+		applyWindowInsets(
+			viewBindings.menuFab,
+			viewBindings.sheet,
+			viewBindings.toolbar
+		) { v, l, t, r, b ->
+			when (v)
+			{
+				viewBindings.menuFab -> v.updateMarginRelative(bottom = b)
+				viewBindings.sheet -> v.updatePadding(l, t, r, b)
+				viewBindings.toolbar -> v.updateMargin(l, t, r)
+			}
+		}
 	}
 
 	override fun bindArguments(bundle: Bundle?)
@@ -40,6 +51,15 @@ class ViewDiaryFragment : BaseFragment(FragmentViewDiaryBinding::class.java)
 				putExtras(bundleOf(MainActivity.EXTRA_NAVIGATE to MainActivity.NAVIGATE_TO_CROPS))
 //				putExtras(bundleOf(MainActivity.EXTRA_DIARY_ID to diaryId))
 			}
+		}
+
+		viewBindings.menuFab.setOnClickListener {
+			viewBindings.menuFab.isExpanded = !viewBindings.menuFab.isExpanded
+			navigationPager?.isUserInputEnabled = !viewBindings.menuFab.isExpanded
+		}
+		viewBindings.sheet.setOnClickListener {
+			viewBindings.menuFab.isExpanded = false
+			navigationPager?.isUserInputEnabled = true
 		}
 	}
 

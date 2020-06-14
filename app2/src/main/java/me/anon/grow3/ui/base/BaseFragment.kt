@@ -10,14 +10,21 @@ import androidx.fragment.app.Fragment
 import androidx.viewbinding.ViewBinding
 import me.anon.grow3.di.ApplicationComponent
 import me.anon.grow3.util.component
+import kotlin.reflect.KClass
 
 abstract class BaseFragment : Fragment
 {
 	constructor() : super()
 	constructor(layoutRes: Int) : super(layoutRes)
+
 	constructor(viewBinder: Class<out ViewBinding>)
 	{
 		this._viewBinder = viewBinder
+	}
+
+	constructor(kClass: KClass<out ViewBinding>)
+	{
+		this._viewBinder = kClass.java
 	}
 
 	private var _viewBinder: Class<out ViewBinding>? = null
