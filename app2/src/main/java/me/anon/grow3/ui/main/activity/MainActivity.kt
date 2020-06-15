@@ -26,6 +26,7 @@ class MainActivity : BaseActivity(ActivityMainBinding::class.java)
 		const val INDEX_MAIN = 1
 		const val INDEX_NAVSTACK = 2
 
+		const val EXTRA_ORIGINATOR = "origin"
 		const val EXTRA_NAVIGATE = "navigation"
 		const val NAVIGATE_TO_DIARY = "open.diary"
 		const val NAVIGATE_TO_CROPS = "open.diary.crops"
@@ -65,7 +66,7 @@ class MainActivity : BaseActivity(ActivityMainBinding::class.java)
 	{
 		viewBindings.viewPager.adapter = adapter
 		viewBindings.viewPager.setCurrentItem(INDEX_MAIN, false)
-		viewBindings.viewPager.offscreenPageLimit = 3
+		viewBindings.viewPager.offscreenPageLimit = 5
 		viewBindings.viewPager.setPageTransformer { page, position ->
 			val translateX = position * page.width
 			val index = (page.parent as ViewGroup).indexOfChild(page)
@@ -124,10 +125,25 @@ class MainActivity : BaseActivity(ActivityMainBinding::class.java)
 		}
 		else
 		{
-			if (adapter.pages.size == 2) adapter.pages.add(INDEX_NAVSTACK, AdditionalPageHostFragment())
-			val pageHost = adapter.pages[INDEX_NAVSTACK] as AdditionalPageHostFragment
+			val pageHost = AdditionalPageHostFragment()
+			adapter.pages.add(pageHost)
 			pageHost.addPage(fragment)
 			notifyPagerChange(pageHost)
+		}
+	}
+
+	public fun clearStack()
+	{
+		viewBindings.viewPager.setCurrentItem(INDEX_MAIN, true)
+		val count = adapter.pages.size
+		if (count > INDEX_MAIN + 1)
+		{
+			while (adapter.pages.size > INDEX_MAIN + 1)
+			{
+				adapter.pages.removeAt(INDEX_MAIN + 1)
+			}
+
+			adapter.notifyItemRangeRemoved(INDEX_MAIN + 1, count - 1)
 		}
 	}
 
@@ -145,27 +161,28 @@ class MainActivity : BaseActivity(ActivityMainBinding::class.java)
 		when (viewBindings.viewPager.currentItem)
 		{
 			INDEX_MENU -> viewBindings.viewPager.currentItem = INDEX_MAIN
-			INDEX_NAVSTACK -> {
-				if (!(adapter.pages[INDEX_NAVSTACK] as BaseHostFragment).onBackPressed())
+			INDEX_MAIN -> {
+				if (!(adapter.pages[INDEX_MAIN] as BaseHostFragment).onBackPressed()) super.onBackPressed()
+			}
+			else -> {
+				if (!(adapter.pages.last() as BaseHostFragment).onBackPressed())
 				{
+					val index = adapter.pages.size - 1
 					val callback = object : ViewPager2.OnPageChangeCallback()
 					{
 						override fun onPageScrolled(position: Int, positionOffset: Float, positionOffsetPixels: Int)
 						{
-							if (position == INDEX_MAIN && positionOffsetPixels == 0)
+							if (position < index && positionOffsetPixels == 0)
 							{
-								adapter.pages.removeAt(INDEX_NAVSTACK)
-								adapter.notifyItemRemoved(INDEX_NAVSTACK)
+								adapter.pages.removeAt(index)
+								adapter.notifyItemRemoved(index)
 								viewBindings.viewPager.unregisterOnPageChangeCallback(this)
 							}
 						}
 					}
 					viewBindings.viewPager.registerOnPageChangeCallback(callback)
-					viewBindings.viewPager.currentItem = INDEX_MAIN
+					viewBindings.viewPager.currentItem = index - 1
 				}
-			}
-			else -> {
-				if (!(adapter.pages[INDEX_MAIN] as BaseHostFragment).onBackPressed()) super.onBackPressed()
 			}
 		}
 	}

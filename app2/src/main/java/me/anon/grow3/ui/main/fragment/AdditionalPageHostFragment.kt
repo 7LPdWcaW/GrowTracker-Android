@@ -14,7 +14,7 @@ class AdditionalPageHostFragment : BaseHostFragment(FragmentHostBinding::class.j
 		lifecycleScope.launchWhenResumed {
 			childFragmentManager.commit {
 				setCustomAnimations(android.R.anim.fade_in, android.R.anim.fade_out)
-				add(R.id.fragment_container, fragment)
+				add(R.id.main_content, fragment)
 			}
 		}
 	}
