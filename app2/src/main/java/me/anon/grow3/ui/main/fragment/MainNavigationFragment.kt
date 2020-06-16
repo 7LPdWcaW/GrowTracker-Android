@@ -7,6 +7,7 @@ import me.anon.grow3.R
 import me.anon.grow3.databinding.FragmentMainHostBinding
 import me.anon.grow3.ui.base.BaseFragment
 import me.anon.grow3.ui.base.BaseHostFragment
+import me.anon.grow3.ui.diaries.fragment.EmptyFragment
 import me.anon.grow3.ui.diaries.fragment.LogListFragment
 import me.anon.grow3.ui.diaries.fragment.ViewDiaryFragment
 import me.anon.grow3.ui.main.activity.MainActivity
@@ -69,6 +70,10 @@ class MainNavigationFragment : BaseHostFragment(FragmentMainHostBinding::class.j
 
 				when (route)
 				{
+					EmptyFragment::class.java.name -> {
+						beginStack(EmptyFragment())
+					}
+
 					NAVIGATE_TO_DIARY, ViewDiaryFragment::class.java.name -> {
 						val id = item.getString(EXTRA_DIARY_ID) ?: throw IllegalArgumentException("No diary ID set")
 						val fragment = ViewDiaryFragment().apply {

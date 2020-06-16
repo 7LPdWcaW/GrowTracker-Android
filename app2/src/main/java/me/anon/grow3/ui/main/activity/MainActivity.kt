@@ -4,6 +4,7 @@ import android.content.Intent
 import android.os.Bundle
 import android.view.View
 import android.view.ViewGroup
+import androidx.core.os.bundleOf
 import androidx.core.view.isVisible
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentManager
@@ -15,6 +16,7 @@ import me.anon.grow3.databinding.ActivityMainBinding
 import me.anon.grow3.ui.base.BaseActivity
 import me.anon.grow3.ui.base.BaseHostFragment
 import me.anon.grow3.ui.diaries.fragment.DiariesListFragment
+import me.anon.grow3.ui.diaries.fragment.EmptyFragment
 import me.anon.grow3.ui.main.fragment.AdditionalPageHostFragment
 import me.anon.grow3.ui.main.fragment.MainNavigationFragment
 
@@ -35,13 +37,7 @@ class MainActivity : BaseActivity(ActivityMainBinding::class.java)
 
 	inner class PageAdapter(supportFragmentManager: FragmentManager, lifecycle: Lifecycle) : FragmentStateAdapter(supportFragmentManager, lifecycle)
 	{
-		public val pages = arrayListOf<Fragment>().apply {
-			add(INDEX_MENU, DiariesListFragment())
-			add(INDEX_MAIN, MainNavigationFragment().apply {
-				arguments = intent.extras
-			})
-		}
-
+		public val pages = arrayListOf<Fragment>()
 		override fun getItemCount(): Int = pages.size
 		override fun createFragment(position: Int): Fragment = pages[position]
 	}
@@ -53,6 +49,17 @@ class MainActivity : BaseActivity(ActivityMainBinding::class.java)
 	override fun onCreate(savedInstanceState: Bundle?)
 	{
 		super.onCreate(savedInstanceState)
+
+		if (savedInstanceState == null)
+		{
+			adapter.pages.apply {
+				add(INDEX_MENU, DiariesListFragment())
+				add(INDEX_MAIN, MainNavigationFragment().apply {
+					arguments = bundleOf(EXTRA_NAVIGATE to EmptyFragment::class.java.name)
+				})
+			}
+		}
+
 		bindUi()
 	}
 
