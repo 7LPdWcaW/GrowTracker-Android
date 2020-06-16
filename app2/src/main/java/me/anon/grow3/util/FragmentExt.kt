@@ -26,6 +26,7 @@ public inline fun <reified T : Activity> Fragment.newTaskForResult(requestCode: 
 
 public inline fun <reified T : BaseFragment> Fragment.navigateTo(arguments: () -> Bundle? = { null })
 	= startActivity(Intent(requireContext(), MainActivity::class.java).apply {
+		putExtra(MainActivity.EXTRA_ORIGINATOR, this@navigateTo::class.java.name)
 		putExtra(MainActivity.EXTRA_NAVIGATE, T::class.java.name)
 		arguments()?.let { putExtras(it) }
 	})

@@ -7,13 +7,13 @@ import me.anon.grow3.R
 import me.anon.grow3.databinding.FragmentMainHostBinding
 import me.anon.grow3.ui.base.BaseFragment
 import me.anon.grow3.ui.base.BaseHostFragment
+import me.anon.grow3.ui.diaries.fragment.EmptyFragment
 import me.anon.grow3.ui.diaries.fragment.LogListFragment
 import me.anon.grow3.ui.diaries.fragment.ViewDiaryFragment
 import me.anon.grow3.ui.main.activity.MainActivity
 import me.anon.grow3.ui.main.activity.MainActivity.Companion.EXTRA_DIARY_ID
 import me.anon.grow3.ui.main.activity.MainActivity.Companion.EXTRA_NAVIGATE
-import me.anon.grow3.ui.main.activity.MainActivity.Companion.NAVIGATE_TO_CROPS
-import me.anon.grow3.ui.main.activity.MainActivity.Companion.NAVIGATE_TO_DIARY
+import me.anon.grow3.util.name
 
 /**
  * Main navigator fragment for the application. [MainActivity] controls the UI and distribution
@@ -22,7 +22,6 @@ import me.anon.grow3.ui.main.activity.MainActivity.Companion.NAVIGATE_TO_DIARY
 class MainNavigationFragment : BaseHostFragment(FragmentMainHostBinding::class.java)
 {
 	private val pendingActions = ArrayList<Bundle>(1)
-	private val viewBindings by lazy { binding<FragmentMainHostBinding>() }
 
 	override fun onActivityCreated(savedInstanceState: Bundle?)
 	{
@@ -57,15 +56,26 @@ class MainNavigationFragment : BaseHostFragment(FragmentMainHostBinding::class.j
 			{
 				val item = this.removeAt(0)
 				val route = item.getString(EXTRA_NAVIGATE) ?: throw IllegalArgumentException("No route set")
+//				val origin = item.getString(EXTRA_ORIGINATOR)
+
 				when (route)
 				{
-					NAVIGATE_TO_DIARY, ViewDiaryFragment::class.java.name -> {
-						openDiary(item.getString(EXTRA_DIARY_ID) ?: throw IllegalArgumentException("No diary ID set"))
-						openDetail(null)
+					name<EmptyFragment>() -> {
+						beginStack(EmptyFragment())
 					}
 
-					NAVIGATE_TO_CROPS, LogListFragment::class.java.name -> {
-						openDetail(LogListFragment().apply {
+					name<ViewDiaryFragment>() -> {
+						val id = item.getString(EXTRA_DIARY_ID) ?: throw IllegalArgumentException("No diary ID set")
+						val fragment = ViewDiaryFragment().apply {
+							arguments = Bundle().apply {
+								putString(ViewDiaryFragment.EXTRA_DIARY_ID, id)
+							}
+						}
+						beginStack(fragment)
+					}
+
+					name<LogListFragment>() -> {
+						addToStack(LogListFragment().apply {
 							arguments = item
 						})
 					}
@@ -77,23 +87,23 @@ class MainNavigationFragment : BaseHostFragment(FragmentMainHostBinding::class.j
 	override fun onBackPressed(): Boolean
 		= (childFragmentManager.findFragmentByTag("fragment") as? BaseFragment)?.onBackPressed() ?: false
 
-	private fun openDetail(fragment: Fragment?)
+	private fun clearStack()
 	{
-		activity().setDetail(fragment)
+		activity().clearStack()
 	}
 
-	private fun openDiary(id: String)
+	private fun beginStack(fragment: Fragment)
 	{
-		val fragment = ViewDiaryFragment().apply {
-			arguments = Bundle().apply {
-				putString(ViewDiaryFragment.EXTRA_DIARY_ID, id)
-			}
-		}
-
+		clearStack()
 		childFragmentManager.commitNow {
 			setCustomAnimations(android.R.anim.fade_in, android.R.anim.fade_out)
 			replace(R.id.fragment_container, fragment, "fragment")
 			activity().notifyPagerChange(this@MainNavigationFragment)
 		}
+	}
+
+	private fun addToStack(fragment: Fragment)
+	{
+		activity().addToStack(fragment)
 	}
 }

@@ -69,6 +69,13 @@ open class BaseActivity : AppCompatActivity
 		}
 	}
 
+	override fun onPostCreate(savedInstanceState: Bundle?)
+	{
+		super.onPostCreate(savedInstanceState)
+		bindUi()
+		bindVm()
+	}
+
 	override fun setContentView(view: View)
 	{
 		super.setContentView(view)
@@ -78,4 +85,7 @@ open class BaseActivity : AppCompatActivity
 			statusBarColor = it.toolbar.background.toBitmap(1, 1, Bitmap.Config.RGB_565)[0,0]
 		}
 	}
+
+	open fun bindUi(){}
+	open fun bindVm(){}
 }

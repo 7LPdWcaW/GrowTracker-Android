@@ -17,7 +17,7 @@
 			android:name=".ui.BootActivity"
 			android:label="@string/app_name"
 			android:excludeFromRecents="true"
-			android:clearTaskOnLaunch="true"
+			android:noHistory="true"
 		>
 			<intent-filter>
 				<action android:name="android.intent.action.MAIN" />

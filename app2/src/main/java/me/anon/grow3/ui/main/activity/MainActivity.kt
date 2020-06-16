@@ -4,6 +4,7 @@ import android.content.Intent
 import android.os.Bundle
 import android.view.View
 import android.view.ViewGroup
+import androidx.core.os.bundleOf
 import androidx.core.view.isVisible
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentManager
@@ -15,8 +16,10 @@ import me.anon.grow3.databinding.ActivityMainBinding
 import me.anon.grow3.ui.base.BaseActivity
 import me.anon.grow3.ui.base.BaseHostFragment
 import me.anon.grow3.ui.diaries.fragment.DiariesListFragment
+import me.anon.grow3.ui.diaries.fragment.EmptyFragment
 import me.anon.grow3.ui.main.fragment.AdditionalPageHostFragment
 import me.anon.grow3.ui.main.fragment.MainNavigationFragment
+import me.anon.grow3.util.name
 
 class MainActivity : BaseActivity(ActivityMainBinding::class.java)
 {
@@ -26,21 +29,17 @@ class MainActivity : BaseActivity(ActivityMainBinding::class.java)
 		const val INDEX_MAIN = 1
 		const val INDEX_NAVSTACK = 2
 
+		const val EXTRA_ORIGINATOR = "origin"
 		const val EXTRA_NAVIGATE = "navigation"
-		const val NAVIGATE_TO_DIARY = "open.diary"
-		const val NAVIGATE_TO_CROPS = "open.diary.crops"
+
 		const val EXTRA_DIARY_ID = "diary.id"
+		const val EXTRA_CROP_ID = "crop.id"
+		const val EXTRA_LOG_ID = "log.id"
 	}
 
 	inner class PageAdapter(supportFragmentManager: FragmentManager, lifecycle: Lifecycle) : FragmentStateAdapter(supportFragmentManager, lifecycle)
 	{
-		public val pages = arrayListOf<Fragment>().apply {
-			add(INDEX_MENU, DiariesListFragment())
-			add(INDEX_MAIN, MainNavigationFragment().apply {
-				arguments = intent.extras
-			})
-		}
-
+		public val pages = arrayListOf<Fragment>()
 		override fun getItemCount(): Int = pages.size
 		override fun createFragment(position: Int): Fragment = pages[position]
 	}
@@ -52,7 +51,16 @@ class MainActivity : BaseActivity(ActivityMainBinding::class.java)
 	override fun onCreate(savedInstanceState: Bundle?)
 	{
 		super.onCreate(savedInstanceState)
-		bindUi()
+
+		if (savedInstanceState == null)
+		{
+			adapter.pages.apply {
+				add(INDEX_MENU, DiariesListFragment())
+				add(INDEX_MAIN, MainNavigationFragment().apply {
+					arguments = bundleOf(EXTRA_NAVIGATE to name<EmptyFragment>())
+				})
+			}
+		}
 	}
 
 	override fun onNewIntent(intent: Intent?)
@@ -61,11 +69,11 @@ class MainActivity : BaseActivity(ActivityMainBinding::class.java)
 		adapter.pages[INDEX_MAIN].apply { arguments = intent?.extras }
 	}
 
-	private fun bindUi()
+	override fun bindUi()
 	{
 		viewBindings.viewPager.adapter = adapter
 		viewBindings.viewPager.setCurrentItem(INDEX_MAIN, false)
-		viewBindings.viewPager.offscreenPageLimit = 3
+		viewBindings.viewPager.offscreenPageLimit = 5
 		viewBindings.viewPager.setPageTransformer { page, position ->
 			val translateX = position * page.width
 			val index = (page.parent as ViewGroup).indexOfChild(page)
@@ -111,23 +119,26 @@ class MainActivity : BaseActivity(ActivityMainBinding::class.java)
 		}
 	}
 
-	public fun setDetail(fragment: Fragment?)
+	public fun addToStack(fragment: Fragment)
 	{
-		if (fragment == null)
+		val pageHost = AdditionalPageHostFragment()
+		adapter.pages.add(pageHost)
+		pageHost.addPage(fragment)
+		notifyPagerChange(pageHost)
+	}
+
+	public fun clearStack()
+	{
+		viewBindings.viewPager.setCurrentItem(INDEX_MAIN, true)
+		val count = adapter.pages.size
+		if (count > INDEX_MAIN + 1)
 		{
-			if (adapter.pages.size == 3)
+			while (adapter.pages.size > INDEX_MAIN + 1)
 			{
-				adapter.pages.removeAt(INDEX_NAVSTACK)
-				adapter.notifyItemRemoved(INDEX_NAVSTACK)
-				viewBindings.viewPager.setCurrentItem(INDEX_MAIN, true)
+				adapter.pages.removeAt(INDEX_MAIN + 1)
 			}
-		}
-		else
-		{
-			if (adapter.pages.size == 2) adapter.pages.add(INDEX_NAVSTACK, AdditionalPageHostFragment())
-			val pageHost = adapter.pages[INDEX_NAVSTACK] as AdditionalPageHostFragment
-			pageHost.addPage(fragment)
-			notifyPagerChange(pageHost)
+
+			adapter.notifyItemRangeRemoved(INDEX_MAIN + 1, count - 1)
 		}
 	}
 
@@ -145,27 +156,34 @@ class MainActivity : BaseActivity(ActivityMainBinding::class.java)
 		when (viewBindings.viewPager.currentItem)
 		{
 			INDEX_MENU -> viewBindings.viewPager.currentItem = INDEX_MAIN
-			INDEX_NAVSTACK -> {
-				if (!(adapter.pages[INDEX_NAVSTACK] as BaseHostFragment).onBackPressed())
+			INDEX_MAIN -> {
+				if (!(adapter.pages[INDEX_MAIN] as BaseHostFragment).onBackPressed()) super.onBackPressed()
+			}
+			else -> {
+				if (!(adapter.pages[viewBindings.viewPager.currentItem] as BaseHostFragment).onBackPressed())
 				{
+					val index = viewBindings.viewPager.currentItem
 					val callback = object : ViewPager2.OnPageChangeCallback()
 					{
 						override fun onPageScrolled(position: Int, positionOffset: Float, positionOffsetPixels: Int)
 						{
-							if (position == INDEX_MAIN && positionOffsetPixels == 0)
+							if (position < index && positionOffsetPixels == 0)
 							{
-								adapter.pages.removeAt(INDEX_NAVSTACK)
-								adapter.notifyItemRemoved(INDEX_NAVSTACK)
+								// remove all pages from current to end of adapter
+								val size = adapter.pages.size
+								while (adapter.pages.size > index)
+								{
+									adapter.pages.removeAt(index)
+								}
+
+								adapter.notifyItemRangeRemoved(index, size - index)
 								viewBindings.viewPager.unregisterOnPageChangeCallback(this)
 							}
 						}
 					}
 					viewBindings.viewPager.registerOnPageChangeCallback(callback)
-					viewBindings.viewPager.currentItem = INDEX_MAIN
+					viewBindings.viewPager.currentItem = index - 1
 				}
-			}
-			else -> {
-				if (!(adapter.pages[INDEX_MAIN] as BaseHostFragment).onBackPressed()) super.onBackPressed()
 			}
 		}
 	}

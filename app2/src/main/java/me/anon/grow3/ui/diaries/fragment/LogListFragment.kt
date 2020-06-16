@@ -1,10 +1,14 @@
 package me.anon.grow3.ui.diaries.fragment
 
 import android.os.Bundle
+import androidx.core.os.bundleOf
 import me.anon.grow3.databinding.FragmentViewDiaryLogsBinding
 import me.anon.grow3.di.ApplicationComponent
 import me.anon.grow3.ui.base.BaseFragment
+import me.anon.grow3.ui.main.activity.MainActivity
 import me.anon.grow3.util.applyWindowInsets
+import me.anon.grow3.util.navigateTo
+import me.anon.grow3.util.onClick
 import me.anon.grow3.util.updateMargin
 
 class LogListFragment : BaseFragment(FragmentViewDiaryLogsBinding::class)
@@ -21,6 +25,12 @@ class LogListFragment : BaseFragment(FragmentViewDiaryLogsBinding::class)
 			viewBindings.includeToolbar.toolbar
 		) { v, l, t, r, b ->
 			v.updateMargin(l, t, r)
+		}
+
+		viewBindings.test.onClick {
+			navigateTo<LogListFragment> {
+				bundleOf(MainActivity.EXTRA_DIARY_ID to "")
+			}
 		}
 	}
 
