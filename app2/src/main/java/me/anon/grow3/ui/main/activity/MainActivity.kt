@@ -19,6 +19,7 @@ import me.anon.grow3.ui.diaries.fragment.DiariesListFragment
 import me.anon.grow3.ui.diaries.fragment.EmptyFragment
 import me.anon.grow3.ui.main.fragment.AdditionalPageHostFragment
 import me.anon.grow3.ui.main.fragment.MainNavigationFragment
+import me.anon.grow3.util.name
 
 class MainActivity : BaseActivity(ActivityMainBinding::class.java)
 {
@@ -30,9 +31,10 @@ class MainActivity : BaseActivity(ActivityMainBinding::class.java)
 
 		const val EXTRA_ORIGINATOR = "origin"
 		const val EXTRA_NAVIGATE = "navigation"
-		const val NAVIGATE_TO_DIARY = "open.diary"
-		const val NAVIGATE_TO_CROPS = "open.diary.crops"
+
 		const val EXTRA_DIARY_ID = "diary.id"
+		const val EXTRA_CROP_ID = "crop.id"
+		const val EXTRA_LOG_ID = "log.id"
 	}
 
 	inner class PageAdapter(supportFragmentManager: FragmentManager, lifecycle: Lifecycle) : FragmentStateAdapter(supportFragmentManager, lifecycle)
@@ -55,12 +57,10 @@ class MainActivity : BaseActivity(ActivityMainBinding::class.java)
 			adapter.pages.apply {
 				add(INDEX_MENU, DiariesListFragment())
 				add(INDEX_MAIN, MainNavigationFragment().apply {
-					arguments = bundleOf(EXTRA_NAVIGATE to EmptyFragment::class.java.name)
+					arguments = bundleOf(EXTRA_NAVIGATE to name<EmptyFragment>())
 				})
 			}
 		}
-
-		bindUi()
 	}
 
 	override fun onNewIntent(intent: Intent?)
@@ -69,7 +69,7 @@ class MainActivity : BaseActivity(ActivityMainBinding::class.java)
 		adapter.pages[INDEX_MAIN].apply { arguments = intent?.extras }
 	}
 
-	private fun bindUi()
+	override fun bindUi()
 	{
 		viewBindings.viewPager.adapter = adapter
 		viewBindings.viewPager.setCurrentItem(INDEX_MAIN, false)
@@ -121,16 +121,6 @@ class MainActivity : BaseActivity(ActivityMainBinding::class.java)
 
 	public fun addToStack(fragment: Fragment)
 	{
-//		if (fragment == null)
-//		{
-//			if (adapter.pages.size == 3)
-//			{
-//				adapter.pages.removeAt(INDEX_NAVSTACK)
-//				adapter.notifyItemRemoved(INDEX_NAVSTACK)
-//				viewBindings.viewPager.setCurrentItem(INDEX_MAIN, true)
-//			}
-//		}
-
 		val pageHost = AdditionalPageHostFragment()
 		adapter.pages.add(pageHost)
 		pageHost.addPage(fragment)

@@ -38,12 +38,9 @@ class CropActivity : BaseActivity(ActivityCrudCropBinding::class.java)
 			navigationIcon = R.drawable.ic_check.drawable(context, R.attr.textOnSurface.resColor(context))
 		}
 		statusBarColor = 0xffffffff.toInt()
-
-		bindUi()
-		bindVm()
 	}
 
-	private fun bindUi()
+	override fun bindUi()
 	{
 		viewBindings.cropName.editText!!.onFocusLoss {
 			it.text.toStringOrNull()?.let {
@@ -87,7 +84,7 @@ class CropActivity : BaseActivity(ActivityCrudCropBinding::class.java)
 		}
 	}
 
-	private fun bindVm()
+	override fun bindVm()
 	{
 		combineTuple(viewModel.diary, viewModel.crop).observe(this) { (diary, crop) ->
 			if (diary?.isSuccess != true || crop == null) return@observe

@@ -13,8 +13,7 @@ import me.anon.grow3.ui.diaries.fragment.ViewDiaryFragment
 import me.anon.grow3.ui.main.activity.MainActivity
 import me.anon.grow3.ui.main.activity.MainActivity.Companion.EXTRA_DIARY_ID
 import me.anon.grow3.ui.main.activity.MainActivity.Companion.EXTRA_NAVIGATE
-import me.anon.grow3.ui.main.activity.MainActivity.Companion.NAVIGATE_TO_CROPS
-import me.anon.grow3.ui.main.activity.MainActivity.Companion.NAVIGATE_TO_DIARY
+import me.anon.grow3.util.name
 
 /**
  * Main navigator fragment for the application. [MainActivity] controls the UI and distribution
@@ -23,7 +22,6 @@ import me.anon.grow3.ui.main.activity.MainActivity.Companion.NAVIGATE_TO_DIARY
 class MainNavigationFragment : BaseHostFragment(FragmentMainHostBinding::class.java)
 {
 	private val pendingActions = ArrayList<Bundle>(1)
-	private val viewBindings by lazy { binding<FragmentMainHostBinding>() }
 
 	override fun onActivityCreated(savedInstanceState: Bundle?)
 	{
@@ -59,22 +57,14 @@ class MainNavigationFragment : BaseHostFragment(FragmentMainHostBinding::class.j
 				val item = this.removeAt(0)
 				val route = item.getString(EXTRA_NAVIGATE) ?: throw IllegalArgumentException("No route set")
 //				val origin = item.getString(EXTRA_ORIGINATOR)
-//
-//				when (origin)
-//				{
-//					DiariesListFragment::class.java.name,
-//					ViewDiaryFragment::class.java.name -> {
-//						clearStack()
-//					}
-//				}
 
 				when (route)
 				{
-					EmptyFragment::class.java.name -> {
+					name<EmptyFragment>() -> {
 						beginStack(EmptyFragment())
 					}
 
-					NAVIGATE_TO_DIARY, ViewDiaryFragment::class.java.name -> {
+					name<ViewDiaryFragment>() -> {
 						val id = item.getString(EXTRA_DIARY_ID) ?: throw IllegalArgumentException("No diary ID set")
 						val fragment = ViewDiaryFragment().apply {
 							arguments = Bundle().apply {
@@ -84,7 +74,7 @@ class MainNavigationFragment : BaseHostFragment(FragmentMainHostBinding::class.j
 						beginStack(fragment)
 					}
 
-					NAVIGATE_TO_CROPS, LogListFragment::class.java.name -> {
+					name<LogListFragment>() -> {
 						addToStack(LogListFragment().apply {
 							arguments = item
 						})

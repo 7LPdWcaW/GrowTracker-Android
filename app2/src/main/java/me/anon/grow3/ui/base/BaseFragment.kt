@@ -66,7 +66,7 @@ abstract class BaseFragment : Fragment
 	open fun onBackPressed(): Boolean = false
 	open fun bindArguments(bundle: Bundle?) {}
 	abstract fun bindUi()
-	abstract fun bindVm()
+	open fun bindVm(){}
 
 	public fun setToolbar(toolbar: Toolbar)
 	{

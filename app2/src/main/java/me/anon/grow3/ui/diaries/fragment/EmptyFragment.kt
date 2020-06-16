@@ -18,9 +18,4 @@ class EmptyFragment : BaseFragment(FragmentEmptyDiariesBinding::class)
 			newTask<DiaryActivity>()
 		}
 	}
-
-	override fun bindVm()
-	{
-
-	}
 }
