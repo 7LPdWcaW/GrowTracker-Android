@@ -112,24 +112,22 @@ class MainActivity : BaseActivity(ActivityMainBinding::class.java)
 		}
 	}
 
-	public fun setDetail(fragment: Fragment?)
+	public fun addToStack(fragment: Fragment)
 	{
-		if (fragment == null)
-		{
-			if (adapter.pages.size == 3)
-			{
-				adapter.pages.removeAt(INDEX_NAVSTACK)
-				adapter.notifyItemRemoved(INDEX_NAVSTACK)
-				viewBindings.viewPager.setCurrentItem(INDEX_MAIN, true)
-			}
-		}
-		else
-		{
-			val pageHost = AdditionalPageHostFragment()
-			adapter.pages.add(pageHost)
-			pageHost.addPage(fragment)
-			notifyPagerChange(pageHost)
-		}
+//		if (fragment == null)
+//		{
+//			if (adapter.pages.size == 3)
+//			{
+//				adapter.pages.removeAt(INDEX_NAVSTACK)
+//				adapter.notifyItemRemoved(INDEX_NAVSTACK)
+//				viewBindings.viewPager.setCurrentItem(INDEX_MAIN, true)
+//			}
+//		}
+
+		val pageHost = AdditionalPageHostFragment()
+		adapter.pages.add(pageHost)
+		pageHost.addPage(fragment)
+		notifyPagerChange(pageHost)
 	}
 
 	public fun clearStack()
@@ -165,17 +163,23 @@ class MainActivity : BaseActivity(ActivityMainBinding::class.java)
 				if (!(adapter.pages[INDEX_MAIN] as BaseHostFragment).onBackPressed()) super.onBackPressed()
 			}
 			else -> {
-				if (!(adapter.pages.last() as BaseHostFragment).onBackPressed())
+				if (!(adapter.pages[viewBindings.viewPager.currentItem] as BaseHostFragment).onBackPressed())
 				{
-					val index = adapter.pages.size - 1
+					val index = viewBindings.viewPager.currentItem
 					val callback = object : ViewPager2.OnPageChangeCallback()
 					{
 						override fun onPageScrolled(position: Int, positionOffset: Float, positionOffsetPixels: Int)
 						{
 							if (position < index && positionOffsetPixels == 0)
 							{
-								adapter.pages.removeAt(index)
-								adapter.notifyItemRemoved(index)
+								// remove all pages from current to end of adapter
+								val size = adapter.pages.size
+								while (adapter.pages.size > index)
+								{
+									adapter.pages.removeAt(index)
+								}
+
+								adapter.notifyItemRangeRemoved(index, size - index)
 								viewBindings.viewPager.unregisterOnPageChangeCallback(this)
 							}
 						}
