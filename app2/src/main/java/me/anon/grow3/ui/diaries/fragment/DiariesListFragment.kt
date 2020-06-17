@@ -24,7 +24,7 @@ class DiariesListFragment : BaseFragment(FragmentDiariesBinding::class.java)
 
 	@Inject internal lateinit var viewModelFactory: DiariesListViewModel.Factory
 	private val viewModel: DiariesListViewModel by viewModels { ViewModelProvider(viewModelFactory, this) }
-	private val viewBindings by lazy { binding<FragmentDiariesBinding>() }
+	private val viewBindings by viewBinding<FragmentDiariesBinding>()
 	private val adapter by lazy { DiariesListAdapter() }
 
 	override fun bindUi()

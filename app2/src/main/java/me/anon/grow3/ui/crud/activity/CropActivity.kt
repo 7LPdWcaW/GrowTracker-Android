@@ -26,7 +26,7 @@ class CropActivity : BaseActivity(ActivityCrudCropBinding::class.java)
 
 	@Inject internal lateinit var viewModelFactory: CropViewModel.Factory
 	private val viewModel: CropViewModel by viewModels { ViewModelProvider(viewModelFactory, this, intent.extras) }
-	private val viewBindings by lazy { binding<ActivityCrudCropBinding>() }
+	private val viewBindings by viewBinding<ActivityCrudCropBinding>()
 
 	override fun onCreate(savedInstanceState: Bundle?)
 	{

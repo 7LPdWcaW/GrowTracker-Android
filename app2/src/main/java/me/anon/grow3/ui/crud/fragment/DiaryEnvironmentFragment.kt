@@ -23,7 +23,7 @@ class DiaryEnvironmentFragment : BaseFragment(FragmentCrudDiaryEnvironmentBindin
 
 	@Inject internal lateinit var viewModelFactory: DiaryViewModel.Factory
 	private val viewModel: DiaryViewModel by activityViewModels { ViewModelProvider(viewModelFactory, this) }
-	private val viewBindings by lazy { binding<FragmentCrudDiaryEnvironmentBinding>() }
+	private val viewBindings by viewBinding<FragmentCrudDiaryEnvironmentBinding>()
 
 	override fun bindUi()
 	{

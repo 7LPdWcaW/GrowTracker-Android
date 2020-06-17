@@ -10,7 +10,7 @@ import me.anon.grow3.util.onClick
 class EmptyFragment : BaseFragment(FragmentEmptyDiariesBinding::class)
 {
 	override val inject: (ApplicationComponent) -> Unit = {}
-	private val viewBindings by lazy { binding<FragmentEmptyDiariesBinding>() }
+	private val viewBindings by viewBinding<FragmentEmptyDiariesBinding>()
 
 	override fun bindUi()
 	{

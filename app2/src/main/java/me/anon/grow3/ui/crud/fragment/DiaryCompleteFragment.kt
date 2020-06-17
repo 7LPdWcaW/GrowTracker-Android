@@ -25,7 +25,7 @@ class DiaryCompleteFragment : BaseFragment(FragmentCrudDiaryCompleteBinding::cla
 
 	@Inject internal lateinit var viewModelFactory: DiaryViewModel.Factory
 	private val viewModel: DiaryViewModel by activityViewModels { ViewModelProvider(viewModelFactory, this) }
-	private val viewBindings by lazy { binding<FragmentCrudDiaryCompleteBinding>() }
+	private val viewBindings by viewBinding<FragmentCrudDiaryCompleteBinding>()
 
 	override fun bindUi()
 	{

@@ -30,7 +30,10 @@ abstract class BaseFragment : Fragment
 	private var _viewBinder: Class<out ViewBinding>? = null
 	public lateinit var viewBinder: ViewBinding private set
 
-	public inline fun <reified T> binding(): T = viewBinder as T
+	public fun <T : ViewBinding> viewBinding()
+		= lazy(LazyThreadSafetyMode.NONE) {
+			viewBinder as T
+		}
 
 	abstract val inject: (ApplicationComponent) -> Unit
 

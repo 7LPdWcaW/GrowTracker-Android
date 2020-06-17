@@ -17,7 +17,7 @@ class ViewDiaryFragment : BaseFragment(FragmentViewDiaryBinding::class)
 	}
 
 	override val inject: (ApplicationComponent) -> Unit = {}
-	private val viewBindings by lazy { binding<FragmentViewDiaryBinding>() }
+	private val viewBindings by viewBinding<FragmentViewDiaryBinding>()
 
 	override fun onActivityCreated(savedInstanceState: Bundle?)
 	{

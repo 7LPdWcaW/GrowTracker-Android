@@ -18,7 +18,7 @@ import me.anon.grow3.ui.base.BaseHostFragment
 import me.anon.grow3.ui.diaries.fragment.DiariesListFragment
 import me.anon.grow3.ui.diaries.fragment.EmptyFragment
 import me.anon.grow3.ui.main.fragment.AdditionalPageHostFragment
-import me.anon.grow3.ui.main.fragment.MainNavigationFragment
+import me.anon.grow3.ui.main.fragment.MainNavigatorFragment
 import me.anon.grow3.util.name
 
 class MainActivity : BaseActivity(ActivityMainBinding::class.java)
@@ -45,8 +45,8 @@ class MainActivity : BaseActivity(ActivityMainBinding::class.java)
 	}
 
 	private val adapter by lazy { PageAdapter(supportFragmentManager, lifecycle) }
-	private val viewBindings by lazy { binding<ActivityMainBinding>() }
-	public val viewPager by lazy { viewBindings.viewPager }
+	private val viewBindings by viewBinding<ActivityMainBinding>()
+	public val viewPager get() = viewBindings.viewPager
 
 	override fun onCreate(savedInstanceState: Bundle?)
 	{
@@ -56,7 +56,7 @@ class MainActivity : BaseActivity(ActivityMainBinding::class.java)
 		{
 			adapter.pages.apply {
 				add(INDEX_MENU, DiariesListFragment())
-				add(INDEX_MAIN, MainNavigationFragment().apply {
+				add(INDEX_MAIN, MainNavigatorFragment().apply {
 					arguments = bundleOf(EXTRA_NAVIGATE to name<EmptyFragment>())
 				})
 			}
