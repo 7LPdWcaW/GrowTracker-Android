@@ -159,17 +159,31 @@ class MainActivity : BaseActivity(ActivityMainBinding::class.java)
 
 	public fun clearStack()
 	{
-		viewBindings.viewPager.setCurrentItem(INDEX_MAIN, true)
-		val count = adapter.pages.size
-		if (count > INDEX_MAIN + 1)
+		val index = viewBindings.viewPager.currentItem
+		val callback = object : ViewPager2.OnPageChangeCallback()
 		{
-			while (adapter.pages.size > INDEX_MAIN + 1)
+			override fun onPageScrolled(position: Int, positionOffset: Float, positionOffsetPixels: Int)
 			{
-				adapter.pages.removeAt(INDEX_MAIN + 1)
-			}
+				if (position < index && positionOffsetPixels == 0)
+				{
+					val count = adapter.pages.size
+					if (count > INDEX_MAIN + 1)
+					{
+						while (adapter.pages.size > INDEX_MAIN + 1)
+						{
+							adapter.pages.removeAt(INDEX_MAIN + 1)
+						}
 
-			adapter.notifyItemRangeRemoved(INDEX_MAIN + 1, count - 1)
+						adapter.notifyItemRangeRemoved(INDEX_MAIN + 1, count - 1)
+					}
+
+					viewBindings.viewPager.unregisterOnPageChangeCallback(this)
+				}
+			}
 		}
+
+		viewBindings.viewPager.registerOnPageChangeCallback(callback)
+		viewBindings.viewPager.setCurrentItem(INDEX_MAIN, true)
 	}
 
 	public fun notifyPagerChange(fragment: BaseHostFragment)
