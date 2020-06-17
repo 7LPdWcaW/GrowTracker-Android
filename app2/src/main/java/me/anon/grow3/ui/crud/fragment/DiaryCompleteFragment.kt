@@ -13,7 +13,7 @@ import me.anon.grow3.ui.main.activity.MainActivity.Companion.EXTRA_DIARY_ID
 import me.anon.grow3.ui.main.activity.MainActivity.Companion.EXTRA_NAVIGATE
 import me.anon.grow3.util.ViewModelProvider
 import me.anon.grow3.util.component
-import me.anon.grow3.util.name
+import me.anon.grow3.util.nameOf
 import me.anon.grow3.util.newTask
 import me.anon.grow3.util.states.asSuccess
 import me.anon.grow3.util.states.isSuccess
@@ -31,7 +31,7 @@ class DiaryCompleteFragment : BaseFragment(FragmentCrudDiaryCompleteBinding::cla
 	{
 		viewBindings.close.setOnClickListener {
 			newTask<MainActivity> {
-				putExtras(bundleOf(EXTRA_NAVIGATE to name<ViewDiaryFragment>()))
+				putExtras(bundleOf(EXTRA_NAVIGATE to nameOf<ViewDiaryFragment>()))
 				putExtras(bundleOf(EXTRA_DIARY_ID to viewModel.diary.value!!.asSuccess().id))
 			}
 		}

@@ -80,7 +80,7 @@ class DiaryCropsFragment : BaseFragment(FragmentCrudDiaryCropsBinding::class.jav
 	{
 		when (requestCode)
 		{
-			code<CropActivity>() -> {
+			codeOf<CropActivity>() -> {
 				viewModel.refresh()
 			}
 		}

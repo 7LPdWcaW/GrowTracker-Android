@@ -19,7 +19,7 @@ public inline fun <reified T : Activity> Fragment.newTask(block: Intent.() -> Un
 	= startActivity(Intent(requireContext(), T::class.java).apply(block))
 
 public inline fun <reified T : Activity> Fragment.newTaskForResult(block: Intent.() -> Unit = {})
-	= this.newTaskForResult<T>(code<T>(), block)
+	= this.newTaskForResult<T>(codeOf<T>(), block)
 
 public inline fun <reified T : Activity> Fragment.newTaskForResult(requestCode: Int, block: Intent.() -> Unit = {})
 	= startActivityForResult(Intent(requireContext(), T::class.java).apply(block), requestCode)
