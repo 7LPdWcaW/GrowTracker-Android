@@ -16,7 +16,6 @@
 		<activity
 			android:name=".ui.BootActivity"
 			android:label="@string/app_name"
-			android:excludeFromRecents="true"
 			android:noHistory="true"
 		>
 			<intent-filter>
@@ -28,7 +27,7 @@
 		<activity
 			android:name=".ui.main.activity.MainActivity"
 			android:theme="@style/AppTheme.FullScrim"
-			android:launchMode="singleTask"
+			android:launchMode="singleTop"
 			android:label=""
 		/>
 

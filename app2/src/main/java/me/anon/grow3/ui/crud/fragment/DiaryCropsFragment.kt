@@ -25,7 +25,7 @@ class DiaryCropsFragment : BaseFragment(FragmentCrudDiaryCropsBinding::class.jav
 
 	@Inject internal lateinit var viewModelFactory: DiaryViewModel.Factory
 	private val viewModel: DiaryViewModel by activityViewModels { ViewModelProvider(viewModelFactory, this) }
-	private val viewBindings by lazy { binding<FragmentCrudDiaryCropsBinding>() }
+	private val viewBindings by viewBinding<FragmentCrudDiaryCropsBinding>()
 
 	override fun bindUi()
 	{
@@ -80,7 +80,7 @@ class DiaryCropsFragment : BaseFragment(FragmentCrudDiaryCropsBinding::class.jav
 	{
 		when (requestCode)
 		{
-			code<CropActivity>() -> {
+			codeOf<CropActivity>() -> {
 				viewModel.refresh()
 			}
 		}

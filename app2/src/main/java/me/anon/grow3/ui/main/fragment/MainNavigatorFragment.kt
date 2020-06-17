@@ -13,13 +13,14 @@ import me.anon.grow3.ui.diaries.fragment.ViewDiaryFragment
 import me.anon.grow3.ui.main.activity.MainActivity
 import me.anon.grow3.ui.main.activity.MainActivity.Companion.EXTRA_DIARY_ID
 import me.anon.grow3.ui.main.activity.MainActivity.Companion.EXTRA_NAVIGATE
-import me.anon.grow3.util.name
+import me.anon.grow3.ui.main.activity.MainActivity.Companion.EXTRA_ORIGINATOR
+import me.anon.grow3.util.nameOf
 
 /**
  * Main navigator fragment for the application. [MainActivity] controls the UI and distribution
  * of navigation actions from this class.
  */
-class MainNavigationFragment : BaseHostFragment(FragmentMainHostBinding::class.java)
+class MainNavigatorFragment : BaseHostFragment(FragmentMainHostBinding::class)
 {
 	private val pendingActions = ArrayList<Bundle>(1)
 
@@ -56,15 +57,22 @@ class MainNavigationFragment : BaseHostFragment(FragmentMainHostBinding::class.j
 			{
 				val item = this.removeAt(0)
 				val route = item.getString(EXTRA_NAVIGATE) ?: throw IllegalArgumentException("No route set")
-//				val origin = item.getString(EXTRA_ORIGINATOR)
+				val origin = item.getString(EXTRA_ORIGINATOR)
+
+				when (origin)
+				{
+					nameOf<ViewDiaryFragment>() -> {
+						clearStack()
+					}
+				}
 
 				when (route)
 				{
-					name<EmptyFragment>() -> {
+					nameOf<EmptyFragment>() -> {
 						beginStack(EmptyFragment())
 					}
 
-					name<ViewDiaryFragment>() -> {
+					nameOf<ViewDiaryFragment>() -> {
 						val id = item.getString(EXTRA_DIARY_ID) ?: throw IllegalArgumentException("No diary ID set")
 						val fragment = ViewDiaryFragment().apply {
 							arguments = Bundle().apply {
@@ -74,7 +82,7 @@ class MainNavigationFragment : BaseHostFragment(FragmentMainHostBinding::class.j
 						beginStack(fragment)
 					}
 
-					name<LogListFragment>() -> {
+					nameOf<LogListFragment>() -> {
 						addToStack(LogListFragment().apply {
 							arguments = item
 						})
@@ -98,7 +106,7 @@ class MainNavigationFragment : BaseHostFragment(FragmentMainHostBinding::class.j
 		childFragmentManager.commitNow {
 			setCustomAnimations(android.R.anim.fade_in, android.R.anim.fade_out)
 			replace(R.id.fragment_container, fragment, "fragment")
-			activity().notifyPagerChange(this@MainNavigationFragment)
+			activity().notifyPagerChange(this@MainNavigatorFragment)
 		}
 	}
 

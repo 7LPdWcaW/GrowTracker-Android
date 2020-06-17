@@ -20,7 +20,7 @@ class DiaryDetailsFragment : BaseFragment(FragmentCrudDiaryDetailsBinding::class
 
 	@Inject internal lateinit var viewModelFactory: DiaryViewModel.Factory
 	private val viewModel: DiaryViewModel by activityViewModels { ViewModelProvider(viewModelFactory, this) }
-	private val viewBindings by lazy { binding<FragmentCrudDiaryDetailsBinding>() }
+	private val viewBindings by viewBinding<FragmentCrudDiaryDetailsBinding>()
 
 	override fun bindVm()
 	{

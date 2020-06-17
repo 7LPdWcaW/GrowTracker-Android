@@ -26,7 +26,7 @@ class DiaryActivity : BaseActivity(ActivityCrudDiaryBinding::class.java)
 
 	@Inject internal lateinit var viewModelFactory: DiaryViewModel.Factory
 	private val viewModel: DiaryViewModel by viewModels { ViewModelProvider(viewModelFactory, this) }
-	private val viewBindings by lazy { binding<ActivityCrudDiaryBinding>() }
+	private val viewBindings by viewBinding<ActivityCrudDiaryBinding>()
 
 	override fun onCreate(savedInstanceState: Bundle?)
 	{

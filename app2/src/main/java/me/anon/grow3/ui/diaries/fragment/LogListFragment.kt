@@ -14,7 +14,7 @@ import me.anon.grow3.util.updateMargin
 class LogListFragment : BaseFragment(FragmentViewDiaryLogsBinding::class)
 {
 	override val inject: (ApplicationComponent) -> Unit = {}
-	private val viewBindings by lazy { binding<FragmentViewDiaryLogsBinding>() }
+	private val viewBindings by viewBinding<FragmentViewDiaryLogsBinding>()
 
 	override fun onActivityCreated(savedInstanceState: Bundle?)
 	{
