@@ -15,10 +15,10 @@ import me.anon.grow3.R
 import me.anon.grow3.databinding.ActivityMainBinding
 import me.anon.grow3.ui.base.BaseActivity
 import me.anon.grow3.ui.base.BaseHostFragment
-import me.anon.grow3.ui.diaries.fragment.DiariesListFragment
 import me.anon.grow3.ui.diaries.fragment.EmptyFragment
 import me.anon.grow3.ui.main.fragment.AdditionalPageHostFragment
 import me.anon.grow3.ui.main.fragment.MainNavigatorFragment
+import me.anon.grow3.ui.main.fragment.NavigationFragment
 import me.anon.grow3.util.name
 
 class MainActivity : BaseActivity(ActivityMainBinding::class.java)
@@ -55,7 +55,7 @@ class MainActivity : BaseActivity(ActivityMainBinding::class.java)
 		if (savedInstanceState == null)
 		{
 			adapter.pages.apply {
-				add(INDEX_MENU, DiariesListFragment())
+				add(INDEX_MENU, NavigationFragment())
 				add(INDEX_MAIN, MainNavigatorFragment().apply {
 					arguments = bundleOf(EXTRA_NAVIGATE to name<EmptyFragment>())
 				})

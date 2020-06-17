@@ -1,3 +1,12 @@
 package me.anon.grow3.ui.main.fragment
 
-//class NavigationFragment : BaseHostFragment()
+import me.anon.grow3.databinding.FragmentNavigationBinding
+import me.anon.grow3.ui.base.BaseHostFragment
+
+class NavigationFragment : BaseHostFragment(FragmentNavigationBinding::class)
+{
+	override fun bindUi()
+	{
+
+	}
+}

@@ -7,7 +7,7 @@ import me.anon.grow3.R
 import me.anon.grow3.databinding.FragmentHostBinding
 import me.anon.grow3.ui.base.BaseHostFragment
 
-class AdditionalPageHostFragment : BaseHostFragment(FragmentHostBinding::class.java)
+class AdditionalPageHostFragment : BaseHostFragment(FragmentHostBinding::class)
 {
 	public fun addPage(fragment: Fragment)
 	{

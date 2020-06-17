@@ -19,7 +19,7 @@ import me.anon.grow3.util.name
  * Main navigator fragment for the application. [MainActivity] controls the UI and distribution
  * of navigation actions from this class.
  */
-class MainNavigatorFragment : BaseHostFragment(FragmentMainHostBinding::class.java)
+class MainNavigatorFragment : BaseHostFragment(FragmentMainHostBinding::class)
 {
 	private val pendingActions = ArrayList<Bundle>(1)
 

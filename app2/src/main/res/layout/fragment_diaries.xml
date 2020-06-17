@@ -6,57 +6,45 @@
 	xmlns:tools="http://schemas.android.com/tools"
 	android:layout_width="match_parent"
 	android:layout_height="match_parent"
-	android:background="?colorPrimary"
 >
-	<androidx.constraintlayout.widget.ConstraintLayout
-		android:layout_width="0dp"
-		android:layout_height="match_parent"
-		android:id="@+id/menu_view"
-		app:layout_constraintEnd_toEndOf="parent"
+	<TextView
+		android:layout_width="wrap_content"
+		android:layout_height="wrap_content"
+		android:id="@+id/title"
+		android:text="Diaries"
 		app:layout_constraintTop_toTopOf="parent"
-		app:layout_constraintWidth_percent="0.85"
-		android:paddingTop="24dp"
-		android:fitsSystemWindows="true"
-	>
-		<TextView
-			android:layout_width="wrap_content"
-			android:layout_height="wrap_content"
-			android:id="@+id/title"
-			android:text="Diaries"
-			app:layout_constraintTop_toTopOf="parent"
-			app:layout_constraintStart_toStartOf="parent"
-			android:layout_marginTop="24dp"
-			android:layout_marginStart="12dp"
-			android:textSize="@dimen/text_title1"
-			android:textStyle="bold"
-			style="@style/Text.Window"
-		/>
+		app:layout_constraintStart_toStartOf="parent"
+		android:layout_marginTop="24dp"
+		android:layout_marginStart="12dp"
+		android:textSize="@dimen/text_title1"
+		android:textStyle="bold"
+		style="@style/Text.Window"
+	/>
 
-		<Button
-			android:layout_width="wrap_content"
-			android:layout_height="wrap_content"
-			android:id="@+id/new_diary"
-			android:text="New"
-			app:layout_constraintEnd_toEndOf="parent"
-			app:layout_constraintTop_toTopOf="@id/title"
-			app:layout_constraintBottom_toBottomOf="@id/title"
-			android:layout_marginEnd="12dp"
-			android:padding="2dp"
-			style="@style/Button.Bordered"
-		/>
+	<Button
+		android:layout_width="wrap_content"
+		android:layout_height="wrap_content"
+		android:id="@+id/new_diary"
+		android:text="New"
+		app:layout_constraintEnd_toEndOf="parent"
+		app:layout_constraintTop_toTopOf="@id/title"
+		app:layout_constraintBottom_toBottomOf="@id/title"
+		android:layout_marginEnd="12dp"
+		android:padding="2dp"
+		style="@style/Button.Bordered"
+	/>
 
-		<androidx.recyclerview.widget.RecyclerView
-			android:layout_width="match_parent"
-			android:layout_height="0dp"
-			android:id="@+id/recycler_view"
-			android:layout_marginTop="12dp"
-			android:paddingStart="6dp"
-			android:paddingEnd="6dp"
-			android:clipToPadding="false"
-			app:layout_constraintTop_toBottomOf="@id/new_diary"
-			app:layout_constraintStart_toStartOf="parent"
-			app:layout_constraintBottom_toBottomOf="parent"
-			tools:listitem="@layout/list_diary"
-		/>
-	</androidx.constraintlayout.widget.ConstraintLayout>
+	<androidx.recyclerview.widget.RecyclerView
+		android:layout_width="match_parent"
+		android:layout_height="0dp"
+		android:id="@+id/recycler_view"
+		android:layout_marginTop="12dp"
+		android:paddingStart="6dp"
+		android:paddingEnd="6dp"
+		android:clipToPadding="false"
+		app:layout_constraintTop_toBottomOf="@id/new_diary"
+		app:layout_constraintStart_toStartOf="parent"
+		app:layout_constraintBottom_toBottomOf="parent"
+		tools:listitem="@layout/list_diary"
+	/>
 </androidx.constraintlayout.widget.ConstraintLayout>
