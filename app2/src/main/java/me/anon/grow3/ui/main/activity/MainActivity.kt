@@ -40,6 +40,7 @@ class MainActivity : BaseActivity(ActivityMainBinding::class.java)
 	inner class PageAdapter(supportFragmentManager: FragmentManager, lifecycle: Lifecycle) : FragmentStateAdapter(supportFragmentManager, lifecycle)
 	{
 		public val pages = arrayListOf<Fragment>()
+
 		override fun getItemCount(): Int = pages.size
 		override fun createFragment(position: Int): Fragment = pages[position]
 	}
@@ -61,6 +62,36 @@ class MainActivity : BaseActivity(ActivityMainBinding::class.java)
 				})
 			}
 		}
+		else
+		{
+			val navFragment = supportFragmentManager.fragments.first { it is NavigationFragment }
+			val mainFragment = supportFragmentManager.fragments.first { it is MainNavigatorFragment }
+			adapter.pages.apply {
+				add(INDEX_MENU, navFragment)
+				add(INDEX_MAIN, mainFragment)
+
+				if (supportFragmentManager.fragments.size > 2)
+				{
+					for (index in 2 until supportFragmentManager.fragments.size)
+					{
+						add(supportFragmentManager.fragments[index])
+					}
+				}
+			}
+		}
+	}
+
+	override fun onPostCreate(savedInstanceState: Bundle?)
+	{
+		super.onPostCreate(savedInstanceState)
+		val position = savedInstanceState?.getInt("state.viewpager_position", INDEX_MAIN) ?: INDEX_MAIN
+		viewBindings.viewPager.setCurrentItem(position, false)
+	}
+
+	override fun onSaveInstanceState(outState: Bundle)
+	{
+		super.onSaveInstanceState(outState)
+		outState.putInt("state.viewpager_position", viewPager.currentItem)
 	}
 
 	override fun onNewIntent(intent: Intent?)
@@ -72,7 +103,6 @@ class MainActivity : BaseActivity(ActivityMainBinding::class.java)
 	override fun bindUi()
 	{
 		viewBindings.viewPager.adapter = adapter
-		viewBindings.viewPager.setCurrentItem(INDEX_MAIN, false)
 		viewBindings.viewPager.offscreenPageLimit = 3
 		viewBindings.viewPager.setPageTransformer { page, position ->
 			val translateX = position * page.width
