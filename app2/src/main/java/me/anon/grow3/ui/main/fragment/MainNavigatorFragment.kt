@@ -63,7 +63,7 @@ class MainNavigatorFragment : BaseHostFragment(FragmentMainHostBinding::class)
 				when (origin)
 				{
 					nameOf<ViewDiaryFragment>() -> {
-						clearStack()
+						clearStack(true)
 					}
 				}
 
@@ -96,14 +96,14 @@ class MainNavigatorFragment : BaseHostFragment(FragmentMainHostBinding::class)
 	override fun onBackPressed(): Boolean
 		= (childFragmentManager.findFragmentByTag("fragment") as? BaseFragment)?.onBackPressed() ?: false
 
-	private fun clearStack()
+	private fun clearStack(now: Boolean)
 	{
-		activity().clearStack()
+		activity().clearStack(now)
 	}
 
 	private fun beginStack(fragment: Fragment)
 	{
-		clearStack()
+		clearStack(true)
 		childFragmentManager.commitNow {
 			setCustomAnimations(android.R.anim.fade_in, android.R.anim.fade_out)
 			replace(R.id.fragment_container, fragment, "fragment")

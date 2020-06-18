@@ -157,33 +157,40 @@ class MainActivity : BaseActivity(ActivityMainBinding::class)
 		notifyPagerChange(pageHost)
 	}
 
-	public fun clearStack()
+	public fun clearStack(now: Boolean = false)
 	{
+		// only remove stack if there is a stack to remove
 		val index = viewBindings.viewPager.currentItem
-		val callback = object : ViewPager2.OnPageChangeCallback()
+		if (adapter.pages.size - 1 > INDEX_MAIN)
 		{
-			override fun onPageScrolled(position: Int, positionOffset: Float, positionOffsetPixels: Int)
-			{
-				if (position < index && positionOffsetPixels == 0)
-				{
-					val count = adapter.pages.size
-					if (count > INDEX_MAIN + 1)
-					{
-						while (adapter.pages.size > INDEX_MAIN + 1)
-						{
-							adapter.pages.removeAt(INDEX_MAIN + 1)
-						}
+//			val callback = object : ViewPager2.OnPageChangeCallback()
+//			{
+//				override fun onPageScrolled(position: Int, positionOffset: Float, positionOffsetPixels: Int)
+//				{
+//					if (position <= index && positionOffsetPixels <= 1)
+//					{
+//						viewBindings.viewPager.unregisterOnPageChangeCallback(this)
+//					}
+//				}
+//			}
 
-						adapter.notifyItemRangeRemoved(INDEX_MAIN + 1, count - 1)
+			if (now)
+			{
+				val count = adapter.pages.size
+				if (count > INDEX_MAIN + 1)
+				{
+					while (adapter.pages.size > INDEX_MAIN + 1)
+					{
+						adapter.pages.removeAt(INDEX_MAIN + 1)
 					}
 
-					viewBindings.viewPager.unregisterOnPageChangeCallback(this)
+					adapter.notifyItemRangeRemoved(INDEX_MAIN + 1, count - 1)
 				}
 			}
-		}
 
-		viewBindings.viewPager.registerOnPageChangeCallback(callback)
-		viewBindings.viewPager.setCurrentItem(INDEX_MAIN, true)
+//			viewBindings.viewPager.registerOnPageChangeCallback(callback)
+			viewBindings.viewPager.setCurrentItem(INDEX_MAIN, !now)
+		}
 	}
 
 	public fun notifyPagerChange(fragment: BaseHostFragment)
