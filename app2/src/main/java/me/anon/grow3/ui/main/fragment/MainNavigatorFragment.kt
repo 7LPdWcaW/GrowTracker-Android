@@ -42,6 +42,7 @@ class MainNavigatorFragment : BaseHostFragment(FragmentMainHostBinding::class)
 
 		args?.let {
 			pendingActions += it
+			arguments = null
 			if (isAdded && !isDetached) executePendingActions()
 		}
 	}

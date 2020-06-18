@@ -20,6 +20,9 @@ class LogListFragment : BaseFragment(FragmentViewDiaryLogsBinding::class)
 	{
 		super.onActivityCreated(savedInstanceState)
 		setToolbar(viewBindings.includeToolbar.toolbar)
+		viewBindings.includeToolbar.toolbar.setNavigationOnClickListener {
+			(requireActivity() as MainActivity).clearStack()
+		}
 
 		applyWindowInsets(
 			viewBindings.includeToolbar.toolbar

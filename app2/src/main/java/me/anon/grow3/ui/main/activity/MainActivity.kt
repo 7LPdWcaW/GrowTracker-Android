@@ -40,6 +40,7 @@ class MainActivity : BaseActivity(ActivityMainBinding::class.java)
 	inner class PageAdapter(supportFragmentManager: FragmentManager, lifecycle: Lifecycle) : FragmentStateAdapter(supportFragmentManager, lifecycle)
 	{
 		public val pages = arrayListOf<Fragment>()
+
 		override fun getItemCount(): Int = pages.size
 		override fun createFragment(position: Int): Fragment = pages[position]
 	}
@@ -61,6 +62,36 @@ class MainActivity : BaseActivity(ActivityMainBinding::class.java)
 				})
 			}
 		}
+		else
+		{
+			val navFragment = supportFragmentManager.fragments.first { it is NavigationFragment }
+			val mainFragment = supportFragmentManager.fragments.first { it is MainNavigatorFragment }
+			adapter.pages.apply {
+				add(INDEX_MENU, navFragment)
+				add(INDEX_MAIN, mainFragment)
+
+				if (supportFragmentManager.fragments.size > 2)
+				{
+					for (index in 2 until supportFragmentManager.fragments.size)
+					{
+						add(supportFragmentManager.fragments[index])
+					}
+				}
+			}
+		}
+	}
+
+	override fun onPostCreate(savedInstanceState: Bundle?)
+	{
+		super.onPostCreate(savedInstanceState)
+		val position = savedInstanceState?.getInt("state.viewpager_position", INDEX_MAIN) ?: INDEX_MAIN
+		viewBindings.viewPager.setCurrentItem(position, false)
+	}
+
+	override fun onSaveInstanceState(outState: Bundle)
+	{
+		super.onSaveInstanceState(outState)
+		outState.putInt("state.viewpager_position", viewPager.currentItem)
 	}
 
 	override fun onNewIntent(intent: Intent?)
@@ -72,7 +103,6 @@ class MainActivity : BaseActivity(ActivityMainBinding::class.java)
 	override fun bindUi()
 	{
 		viewBindings.viewPager.adapter = adapter
-		viewBindings.viewPager.setCurrentItem(INDEX_MAIN, false)
 		viewBindings.viewPager.offscreenPageLimit = 3
 		viewBindings.viewPager.setPageTransformer { page, position ->
 			val translateX = position * page.width
@@ -129,17 +159,31 @@ class MainActivity : BaseActivity(ActivityMainBinding::class.java)
 
 	public fun clearStack()
 	{
-		viewBindings.viewPager.setCurrentItem(INDEX_MAIN, true)
-		val count = adapter.pages.size
-		if (count > INDEX_MAIN + 1)
+		val index = viewBindings.viewPager.currentItem
+		val callback = object : ViewPager2.OnPageChangeCallback()
 		{
-			while (adapter.pages.size > INDEX_MAIN + 1)
+			override fun onPageScrolled(position: Int, positionOffset: Float, positionOffsetPixels: Int)
 			{
-				adapter.pages.removeAt(INDEX_MAIN + 1)
-			}
+				if (position < index && positionOffsetPixels == 0)
+				{
+					val count = adapter.pages.size
+					if (count > INDEX_MAIN + 1)
+					{
+						while (adapter.pages.size > INDEX_MAIN + 1)
+						{
+							adapter.pages.removeAt(INDEX_MAIN + 1)
+						}
 
-			adapter.notifyItemRangeRemoved(INDEX_MAIN + 1, count - 1)
+						adapter.notifyItemRangeRemoved(INDEX_MAIN + 1, count - 1)
+					}
+
+					viewBindings.viewPager.unregisterOnPageChangeCallback(this)
+				}
+			}
 		}
+
+		viewBindings.viewPager.registerOnPageChangeCallback(callback)
+		viewBindings.viewPager.setCurrentItem(INDEX_MAIN, true)
 	}
 
 	public fun notifyPagerChange(fragment: BaseHostFragment)
