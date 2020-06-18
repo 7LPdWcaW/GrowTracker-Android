@@ -9,6 +9,7 @@ import com.zhuinden.livedatacombinetuplekt.combineTuple
 import me.anon.grow3.R
 import me.anon.grow3.data.model.MediumType
 import me.anon.grow3.databinding.ActivityCrudCropBinding
+import me.anon.grow3.di.ApplicationComponent
 import me.anon.grow3.ui.base.BaseActivity
 import me.anon.grow3.ui.crud.viewmodel.CropViewModel
 import me.anon.grow3.util.*
@@ -16,7 +17,7 @@ import me.anon.grow3.util.states.asSuccess
 import me.anon.grow3.util.states.isSuccess
 import javax.inject.Inject
 
-class CropActivity : BaseActivity(ActivityCrudCropBinding::class.java)
+class CropActivity : BaseActivity(ActivityCrudCropBinding::class)
 {
 	companion object
 	{
@@ -24,6 +25,7 @@ class CropActivity : BaseActivity(ActivityCrudCropBinding::class.java)
 		public const val EXTRA_CROP_ID = "crop.id"
 	}
 
+	override val inject: (ApplicationComponent) -> Unit = { component.inject(this) }
 	@Inject internal lateinit var viewModelFactory: CropViewModel.Factory
 	private val viewModel: CropViewModel by viewModels { ViewModelProvider(viewModelFactory, this, intent.extras) }
 	private val viewBindings by viewBinding<ActivityCrudCropBinding>()
@@ -31,8 +33,6 @@ class CropActivity : BaseActivity(ActivityCrudCropBinding::class.java)
 	override fun onCreate(savedInstanceState: Bundle?)
 	{
 		super.onCreate(savedInstanceState)
-
-		component.inject(this)
 
 		toolbar = viewBindings.toolbar.apply {
 			navigationIcon = R.drawable.ic_check.drawable(context, R.attr.textOnSurface.resColor(context))

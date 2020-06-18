@@ -18,7 +18,7 @@ import me.anon.grow3.util.onClick
 import me.anon.grow3.util.states.DataResult
 import javax.inject.Inject
 
-class DiariesListFragment : BaseFragment(FragmentDiariesBinding::class.java)
+class DiariesListFragment : BaseFragment(FragmentDiariesBinding::class)
 {
 	override val inject: (ApplicationComponent) -> Unit = { it.inject(this) }
 

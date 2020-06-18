@@ -14,6 +14,9 @@ import androidx.core.graphics.get
 import androidx.viewbinding.ViewBinding
 import kotlinx.android.synthetic.main.include_toolbar.view.*
 import me.anon.grow3.R
+import me.anon.grow3.di.ApplicationComponent
+import me.anon.grow3.util.component
+import kotlin.reflect.KClass
 
 open class BaseActivity : AppCompatActivity
 {
@@ -23,10 +26,12 @@ open class BaseActivity : AppCompatActivity
 		this.layoutRes = layoutRes
 	}
 
-	constructor(viewBinder: Class<out ViewBinding>)
+	constructor(viewBinder: KClass<out ViewBinding>)
 	{
-		this._viewBinder = viewBinder
+		this._viewBinder = viewBinder.java
 	}
+
+	open val inject: (ApplicationComponent) -> Unit = {}
 
 	private var layoutRes = -1
 	private var _viewBinder: Class<out ViewBinding>? = null
@@ -58,6 +63,8 @@ open class BaseActivity : AppCompatActivity
 
 	override fun onCreate(savedInstanceState: Bundle?)
 	{
+		inject(component)
+
 		super.onCreate(savedInstanceState)
 
 		if (_viewBinder == null)

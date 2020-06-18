@@ -10,6 +10,7 @@ import kotlinx.android.synthetic.main.activity_crud_diary.*
 import kotlinx.coroutines.launch
 import me.anon.grow3.R
 import me.anon.grow3.databinding.ActivityCrudDiaryBinding
+import me.anon.grow3.di.ApplicationComponent
 import me.anon.grow3.ui.base.BaseActivity
 import me.anon.grow3.ui.crud.viewmodel.DiaryViewModel
 import me.anon.grow3.util.ViewModelProvider
@@ -20,10 +21,11 @@ import javax.inject.Inject
 /**
  * Wizard activity for creating a new diary
  */
-class DiaryActivity : BaseActivity(ActivityCrudDiaryBinding::class.java)
+class DiaryActivity : BaseActivity(ActivityCrudDiaryBinding::class)
 {
 	private var currentView = R.id.navigation_diary_details
 
+	override val inject: (ApplicationComponent) -> Unit = { component.inject(this) }
 	@Inject internal lateinit var viewModelFactory: DiaryViewModel.Factory
 	private val viewModel: DiaryViewModel by viewModels { ViewModelProvider(viewModelFactory, this) }
 	private val viewBindings by viewBinding<ActivityCrudDiaryBinding>()
@@ -31,7 +33,6 @@ class DiaryActivity : BaseActivity(ActivityCrudDiaryBinding::class.java)
 	override fun onCreate(savedInstanceState: Bundle?)
 	{
 		super.onCreate(savedInstanceState)
-		component.inject(this)
 
 		val navController = findNavController(R.id.nav_host_fragment)
 		navController.addOnDestinationChangedListener { _, destination, _ ->

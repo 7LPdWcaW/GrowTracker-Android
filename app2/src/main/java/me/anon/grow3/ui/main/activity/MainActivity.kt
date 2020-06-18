@@ -21,7 +21,7 @@ import me.anon.grow3.ui.main.fragment.MainNavigatorFragment
 import me.anon.grow3.ui.main.fragment.NavigationFragment
 import me.anon.grow3.util.nameOf
 
-class MainActivity : BaseActivity(ActivityMainBinding::class.java)
+class MainActivity : BaseActivity(ActivityMainBinding::class)
 {
 	companion object
 	{
