@@ -143,6 +143,22 @@ public inline fun <reified T> View.parentViewByInstance(): T
 	throw IllegalArgumentException("View of type ${T::class} was not found")
 }
 
+public fun <T> View.parentViewById(@IdRes id: Int): T
+{
+	var parent: View? = parentView
+	while (parent != null)
+	{
+		if (parent.id == id) return parent as T
+		else
+		{
+			if (parentView.id == android.R.id.content) parent = null
+			else parent = parent.parentView
+		}
+	}
+
+	throw IllegalArgumentException("View with id $id was not found")
+}
+
 /**
  * Returns a sequence of child views from a given view.
  * If the view is not a [ViewGroup], an empty sequence will be returned

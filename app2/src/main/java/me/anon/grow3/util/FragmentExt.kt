@@ -24,16 +24,20 @@ public inline fun <reified T : Activity> Fragment.newTaskForResult(block: Intent
 public inline fun <reified T : Activity> Fragment.newTaskForResult(requestCode: Int, block: Intent.() -> Unit = {})
 	= startActivityForResult(Intent(requireContext(), T::class.java).apply(block), requestCode)
 
-public inline fun <reified T : BaseFragment> Fragment.navigateTo(arguments: () -> Bundle? = { null })
+public inline fun <reified T : BaseFragment> Fragment.navigateTo(ontop: Boolean = false, arguments: () -> Bundle? = { null })
 	= startActivity(Intent(requireContext(), MainActivity::class.java).apply {
-		putExtra(MainActivity.EXTRA_ORIGINATOR, this@navigateTo::class.java.name)
+		if (!ontop)
+		{
+			putExtra(MainActivity.EXTRA_ORIGINATOR, this@navigateTo::class.java.name)
+		}
+
 		putExtra(MainActivity.EXTRA_NAVIGATE, T::class.java.name)
 		arguments()?.let { putExtras(it) }
 	})
 
 public fun Fragment.applyWindowInsets(vararg view: View = arrayOf(requireView()), apply: (v: View, left: Int, top: Int, right: Int, bottom: Int) -> Unit)
 {
-	((requireActivity() as? MainActivity)?.viewPager ?: requireActivity().findViewById(android.R.id.content)).setOnApplyWindowInsetsListener { v, insets ->
+	((requireActivity() as? MainActivity)?.viewBindings!!.rootView ?: requireActivity().findViewById(android.R.id.content)).setOnApplyWindowInsetsListener { v, insets ->
 		v.onApplyWindowInsets(insets).also {
 			view.forEach {
 				apply(it, insets.systemWindowInsetLeft, insets.systemWindowInsetTop, insets.systemWindowInsetRight, insets.systemWindowInsetBottom)

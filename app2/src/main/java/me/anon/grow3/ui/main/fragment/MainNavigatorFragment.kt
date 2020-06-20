@@ -5,6 +5,7 @@ import androidx.fragment.app.Fragment
 import androidx.fragment.app.commitNow
 import me.anon.grow3.R
 import me.anon.grow3.databinding.FragmentMainHostBinding
+import me.anon.grow3.ui.action.fragment.LogActionBottomSheetFragment
 import me.anon.grow3.ui.base.BaseFragment
 import me.anon.grow3.ui.base.BaseHostFragment
 import me.anon.grow3.ui.diaries.fragment.EmptyFragment
@@ -69,6 +70,10 @@ class MainNavigatorFragment : BaseHostFragment(FragmentMainHostBinding::class)
 
 				when (route)
 				{
+					nameOf<LogActionBottomSheetFragment>() -> {
+						activity().openSheet(LogActionBottomSheetFragment())
+					}
+
 					nameOf<EmptyFragment>() -> {
 						beginStack(EmptyFragment())
 					}

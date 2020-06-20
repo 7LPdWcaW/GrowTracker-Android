@@ -1,5 +1,9 @@
 package me.anon.grow3.util
 
+import me.anon.grow3.di.ApplicationComponent
+
+typealias Injector = (ApplicationComponent) -> Unit
+
 public inline fun <reified T : Any> codeOf(): Int = T::class.java.name.hashCode().and(0xffff)
 public inline fun <reified T : Any> nameOf(): String = T::class.java.name
 

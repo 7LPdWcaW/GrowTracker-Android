@@ -8,9 +8,13 @@ import androidx.core.os.bundleOf
 import androidx.core.view.isVisible
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentManager
+import androidx.fragment.app.commit
+import androidx.fragment.app.commitNow
 import androidx.lifecycle.Lifecycle
 import androidx.viewpager2.adapter.FragmentStateAdapter
 import androidx.viewpager2.widget.ViewPager2
+import com.google.android.material.bottomsheet.BottomSheetBehavior
+import com.google.android.material.bottomsheet.BottomSheetBehavior.STATE_HIDDEN
 import me.anon.grow3.R
 import me.anon.grow3.databinding.ActivityMainBinding
 import me.anon.grow3.ui.base.BaseActivity
@@ -20,6 +24,7 @@ import me.anon.grow3.ui.main.fragment.AdditionalPageHostFragment
 import me.anon.grow3.ui.main.fragment.MainNavigatorFragment
 import me.anon.grow3.ui.main.fragment.NavigationFragment
 import me.anon.grow3.util.nameOf
+
 
 class MainActivity : BaseActivity(ActivityMainBinding::class)
 {
@@ -46,7 +51,7 @@ class MainActivity : BaseActivity(ActivityMainBinding::class)
 	}
 
 	private val adapter by lazy { PageAdapter(supportFragmentManager, lifecycle) }
-	private val viewBindings by viewBinding<ActivityMainBinding>()
+	public val viewBindings by viewBinding<ActivityMainBinding>()
 	public val viewPager get() = viewBindings.viewPager
 
 	override fun onCreate(savedInstanceState: Bundle?)
@@ -102,6 +107,9 @@ class MainActivity : BaseActivity(ActivityMainBinding::class)
 
 	override fun bindUi()
 	{
+		val layoutSheetBehavior = BottomSheetBehavior.from(viewBindings.bottomSheet)
+		layoutSheetBehavior.state = BottomSheetBehavior.STATE_HIDDEN
+
 		viewBindings.viewPager.adapter = adapter
 		viewBindings.viewPager.offscreenPageLimit = 3
 		viewBindings.viewPager.setPageTransformer { page, position ->
@@ -146,6 +154,33 @@ class MainActivity : BaseActivity(ActivityMainBinding::class)
 					}
 				}
 			}
+		}
+	}
+
+	public fun openSheet(fragment: Fragment)
+	{
+		val sheetBehavior = BottomSheetBehavior.from(viewBindings.bottomSheet)
+		sheetBehavior.addBottomSheetCallback(object : BottomSheetBehavior.BottomSheetCallback()
+		{
+			override fun onSlide(bottomSheet: View, slideOffset: Float){}
+
+			override fun onStateChanged(bottomSheet: View, newState: Int)
+			{
+				if (newState == STATE_HIDDEN)
+				{
+					supportFragmentManager.findFragmentById(R.id.bottom_sheet)?.let {
+						supportFragmentManager.commit {
+							remove(it)
+						}
+						
+						sheetBehavior.removeBottomSheetCallback(this)
+					}
+				}
+			}
+		})
+
+		supportFragmentManager.commitNow {
+			replace(R.id.bottom_sheet, fragment)
 		}
 	}
 

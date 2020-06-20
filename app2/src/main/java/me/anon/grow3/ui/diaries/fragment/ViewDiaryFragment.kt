@@ -5,6 +5,7 @@ import androidx.core.os.bundleOf
 import androidx.core.view.updatePadding
 import me.anon.grow3.databinding.FragmentViewDiaryBinding
 import me.anon.grow3.di.ApplicationComponent
+import me.anon.grow3.ui.action.fragment.LogActionBottomSheetFragment
 import me.anon.grow3.ui.base.BaseFragment
 import me.anon.grow3.ui.main.activity.MainActivity
 import me.anon.grow3.util.*
@@ -59,9 +60,16 @@ class ViewDiaryFragment : BaseFragment(FragmentViewDiaryBinding::class)
 			viewBindings.menuFab.isExpanded = !viewBindings.menuFab.isExpanded
 			navigationPager?.isUserInputEnabled = !viewBindings.menuFab.isExpanded
 		}
+
 		viewBindings.sheet.setOnClickListener {
 			viewBindings.menuFab.isExpanded = false
 			navigationPager?.isUserInputEnabled = true
+		}
+
+		viewBindings.menuAction1.onClick {
+			viewBindings.menuFab.isExpanded = false
+			navigationPager?.isUserInputEnabled = true
+			navigateTo<LogActionBottomSheetFragment>(true)
 		}
 	}
 

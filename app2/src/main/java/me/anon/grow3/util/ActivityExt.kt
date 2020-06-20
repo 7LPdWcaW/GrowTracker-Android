@@ -5,22 +5,9 @@ import android.content.Intent
 import android.graphics.drawable.Drawable
 import android.view.View
 import androidx.annotation.*
-import com.google.android.material.dialog.MaterialAlertDialogBuilder
 
 public inline fun <reified T : Activity> Activity.newTask(block: Intent.() -> Unit = {})
 	= startActivity(Intent(this, T::class.java).apply(block))
-
-public inline fun Activity.promptExit(crossinline callback: () -> Unit)
-{
-	MaterialAlertDialogBuilder(this)
-		.setTitle("Are you sure?")
-		.setMessage("You will lose any unsaved changes")
-		.setPositiveButton("Quit") { dialog, which ->
-			callback()
-		}
-		.setNegativeButton("Cancel", null)
-		.show()
-}
 
 public fun Activity.clearFocus()
 {

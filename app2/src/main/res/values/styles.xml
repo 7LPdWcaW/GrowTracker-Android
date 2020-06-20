@@ -25,6 +25,7 @@
 		<item name="shapeAppearanceSmallComponent">@style/ShapeAppearance.Small</item>
 		<item name="textInputStyle">@style/Input</item>
 		<item name="materialCardViewStyle">@style/Card</item>
+		<item name="bottomSheetStyle">@style/BottomSheet</item>
 
 		<item name="android:textColor">?textOnSurface</item>
 		<item name="android:windowContentTransitions">true</item>
@@ -45,6 +46,11 @@
 	</style>
 
 	<!-- -->
+	<style name="BottomSheet" parent="Widget.Design.BottomSheet.Modal">
+		<item name="android:background">@drawable/bottom_sheet_bg_drawable</item>
+		<item name="elevation">16dp</item>
+	</style>
+
 	<style name="Input" parent="Widget.MaterialComponents.TextInputLayout.OutlinedBox" />
 
 	<style name="DropdownTheme">

@@ -8,7 +8,7 @@ import android.view.ViewGroup
 import androidx.appcompat.widget.Toolbar
 import androidx.fragment.app.Fragment
 import androidx.viewbinding.ViewBinding
-import me.anon.grow3.di.ApplicationComponent
+import me.anon.grow3.util.Injector
 import me.anon.grow3.util.component
 import kotlin.reflect.KClass
 
@@ -35,7 +35,7 @@ abstract class BaseFragment : Fragment
 			viewBinder as T
 		}
 
-	abstract val inject: (ApplicationComponent) -> Unit
+	abstract val inject: Injector
 
 	override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View?
 	{
