@@ -1,34 +1,24 @@
 <?xml version="1.0" encoding="utf-8"?>
 
-<androidx.constraintlayout.widget.ConstraintLayout
+<androidx.coordinatorlayout.widget.CoordinatorLayout
 	xmlns:android="http://schemas.android.com/apk/res/android"
 	xmlns:app="http://schemas.android.com/apk/res-auto"
 	android:layout_width="match_parent"
 	android:layout_height="match_parent"
-	android:id="@+id/container"
-	android:paddingTop="?attr/actionBarSize"
+	android:id="@+id/root_view"
 >
-	<com.google.android.material.bottomnavigation.BottomNavigationView
-		android:layout_width="0dp"
-		android:layout_height="wrap_content"
-		android:id="@+id/nav_view"
-		android:layout_marginEnd="0dp"
-		android:layout_marginStart="0dp"
-		android:background="?android:attr/windowBackground"
-		app:layout_constraintBottom_toBottomOf="parent"
-		app:layout_constraintLeft_toLeftOf="parent"
-		app:layout_constraintRight_toRightOf="parent"
-		android:visibility="gone"
-		app:menu="@menu/bottom_nav_menu"
-	/>
-
-	<FrameLayout
+	<androidx.viewpager2.widget.ViewPager2
 		android:layout_width="match_parent"
 		android:layout_height="match_parent"
-		android:id="@+id/nav_host_fragment"
-		app:layout_constraintBottom_toTopOf="parent"
-		app:layout_constraintLeft_toLeftOf="parent"
-		app:layout_constraintRight_toRightOf="parent"
-		app:layout_constraintTop_toTopOf="parent"
+		android:id="@+id/view_pager"
 	/>
-</androidx.constraintlayout.widget.ConstraintLayout>
+
+	<androidx.fragment.app.FragmentContainerView
+		android:layout_width="match_parent"
+		android:layout_height="match_parent"
+		android:id="@+id/bottom_sheet"
+		app:layout_behavior="com.google.android.material.bottomsheet.BottomSheetBehavior"
+		app:behavior_peekHeight="0dp"
+		style="@style/BottomSheet"
+	/>
+</androidx.coordinatorlayout.widget.CoordinatorLayout>

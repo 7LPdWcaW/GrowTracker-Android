@@ -8,6 +8,8 @@ import android.view.ViewGroup
 import android.view.inputmethod.InputMethodManager
 import android.widget.TextView
 import androidx.annotation.*
+import androidx.core.view.updateLayoutParams
+import androidx.core.view.updateMargins
 import androidx.recyclerview.widget.RecyclerView
 
 /**
@@ -141,6 +143,22 @@ public inline fun <reified T> View.parentViewByInstance(): T
 	throw IllegalArgumentException("View of type ${T::class} was not found")
 }
 
+public fun <T> View.parentViewById(@IdRes id: Int): T
+{
+	var parent: View? = parentView
+	while (parent != null)
+	{
+		if (parent.id == id) return parent as T
+		else
+		{
+			if (parentView.id == android.R.id.content) parent = null
+			else parent = parent.parentView
+		}
+	}
+
+	throw IllegalArgumentException("View with id $id was not found")
+}
+
 /**
  * Returns a sequence of child views from a given view.
  * If the view is not a [ViewGroup], an empty sequence will be returned
@@ -182,6 +200,39 @@ inline fun <T : View> T.afterMeasured(crossinline callback: T.() -> Unit)
 	})
 }
 
+public fun View.updateMargin(
+	left: Int = (layoutParams as? ViewGroup.MarginLayoutParams)?.leftMargin ?: 0,
+	top: Int = (layoutParams as? ViewGroup.MarginLayoutParams)?.topMargin ?: 0,
+	right: Int = (layoutParams as? ViewGroup.MarginLayoutParams)?.rightMargin ?: 0,
+	bottom: Int = (layoutParams as? ViewGroup.MarginLayoutParams)?.bottomMargin ?: 0
+)
+{
+	updateLayoutParams {
+		(this as? ViewGroup.MarginLayoutParams)?.let {
+			updateMargins(left = left, top = top, right = right, bottom = bottom)
+		}
+	}
+}
+
+public fun View.updateMarginRelative(
+	left: Int = 0,
+	top: Int = 0,
+	right: Int = 0,
+	bottom: Int = 0
+)
+{
+	updateLayoutParams {
+		val l: Int = (layoutParams as? ViewGroup.MarginLayoutParams)?.leftMargin ?: 0
+		val t: Int = (layoutParams as? ViewGroup.MarginLayoutParams)?.topMargin ?: 0
+		val r: Int = (layoutParams as? ViewGroup.MarginLayoutParams)?.rightMargin ?: 0
+		val b: Int = (layoutParams as? ViewGroup.MarginLayoutParams)?.bottomMargin ?: 0
+
+		(this as? ViewGroup.MarginLayoutParams)?.let {
+			updateMargins(left = left + l, top = top + t, right = right + r, bottom = bottom + b)
+		}
+	}
+}
+
 /**
  * Removes all the decorators in a given [RecyclerView]
  */
@@ -194,8 +245,8 @@ public fun RecyclerView.removeAllItemDecorators()
 }
 
 // Resource convenience methods
-public fun View.dimension(@DimenRes resId: Int): Float = resources.getDimension(resId)
-public fun View.dimensionPixels(@DimenRes resId: Int): Int = resources.getDimensionPixelSize(resId)
+public fun View.dimen(@DimenRes resId: Int): Float = resources.getDimension(resId)
+public fun View.dimenPx(@DimenRes resId: Int): Int = resources.getDimensionPixelSize(resId)
 public fun View.string(@StringRes resId: Int): String = resId.string(context)
 
 @ColorInt

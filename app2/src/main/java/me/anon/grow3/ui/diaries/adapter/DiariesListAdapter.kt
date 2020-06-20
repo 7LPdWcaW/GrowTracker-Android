@@ -2,21 +2,27 @@ package me.anon.grow3.ui.diaries.adapter
 
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
+import me.anon.grow3.R
+import me.anon.grow3.data.model.Diary
+import me.anon.grow3.ui.diaries.adapter.viewholder.DiaryViewHolder
+import me.anon.grow3.util.inflate
+import me.anon.grow3.util.onClick
 
-class DiariesListAdapter : RecyclerView.Adapter<RecyclerView.ViewHolder>()
+class DiariesListAdapter : RecyclerView.Adapter<DiaryViewHolder>()
 {
-	override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): RecyclerView.ViewHolder
-	{
-		TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
-	}
+	public var items: List<Diary> = arrayListOf()
+	public var onItemClick: (Diary) -> Unit = {}
 
-	override fun getItemCount(): Int
-	{
-		TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
-	}
+	override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): DiaryViewHolder
+		= DiaryViewHolder(parent.inflate(R.layout.list_diary))
 
-	override fun onBindViewHolder(holder: RecyclerView.ViewHolder, position: Int)
+	override fun getItemCount(): Int = items.size
+
+	override fun onBindViewHolder(holder: DiaryViewHolder, position: Int)
 	{
-		TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
+		holder.bind(items[position])
+		holder.itemView.onClick {
+			onItemClick(items[position])
+		}
 	}
 }

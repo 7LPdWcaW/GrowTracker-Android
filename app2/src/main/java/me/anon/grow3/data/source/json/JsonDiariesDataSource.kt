@@ -43,6 +43,15 @@ class JsonDiariesDataSource @Inject constructor(
 		return sync(DiariesDataSource.SyncDirection.SAVE)
 	}
 
+	override suspend fun deleteDiary(diaryId: String): List<Diary>
+	{
+		with (getDiaries() as MutableList) {
+			removeAll { it.id == diaryId }
+		}
+
+		return sync(DiariesDataSource.SyncDirection.SAVE)
+	}
+
 	override suspend fun getDiaryById(diaryId: String): Diary? = getDiaries().find { it.id == diaryId }
 
 	suspend fun sync(direction: DiariesDataSource.SyncDirection): List<Diary>

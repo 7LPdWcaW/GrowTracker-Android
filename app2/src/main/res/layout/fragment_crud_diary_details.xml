@@ -31,7 +31,7 @@
 					<TextView
 						android:layout_width="wrap_content"
 						android:layout_height="wrap_content"
-						android:id="@+id/header"
+						android:id="@+id/details_header"
 						android:text="@string/add_diary_details_title"
 						app:layout_constraintTop_toTopOf="parent"
 						app:layout_constraintStart_toStartOf="parent"
@@ -44,7 +44,7 @@
 						android:id="@+id/diary_name"
 						android:hint="@string/add_diary_details_name"
 						android:layout_marginTop="@dimen/section_spacing"
-						app:layout_constraintTop_toBottomOf="@id/header"
+						app:layout_constraintTop_toBottomOf="@id/details_header"
 						app:layout_constraintStart_toStartOf="parent"
 						app:layout_constraintEnd_toEndOf="parent"
 					>
@@ -91,7 +91,7 @@
 					<TextView
 						android:layout_width="wrap_content"
 						android:layout_height="wrap_content"
-						android:id="@+id/header"
+						android:id="@+id/stages_header"
 						android:text="@string/add_diary_stages_title"
 						app:layout_constraintTop_toTopOf="parent"
 						app:layout_constraintStart_toStartOf="parent"

@@ -1,6 +1,11 @@
 package me.anon.grow3.util
 
-public inline fun <reified T : Any> code(): Int = T::class.java.name.hashCode().and(0xffff)
+import me.anon.grow3.di.ApplicationComponent
+
+typealias Injector = (ApplicationComponent) -> Unit
+
+public inline fun <reified T : Any> codeOf(): Int = T::class.java.name.hashCode().and(0xffff)
+public inline fun <reified T : Any> nameOf(): String = T::class.java.name
 
 public fun <I, O> I.transform(block: I.() -> O): O = block(this)
 

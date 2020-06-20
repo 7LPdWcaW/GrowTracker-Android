@@ -10,7 +10,7 @@ import kotlinx.android.synthetic.main.fragment_intro_slide_diary.*
 import me.anon.grow3.R
 import me.anon.grow3.ui.crud.activity.DiaryActivity
 import me.anon.grow3.util.color
-import me.anon.grow3.util.navigateTo
+import me.anon.grow3.util.newTask
 
 class FirstDiarySlideFragment : Fragment(), SlideBackgroundColorHolder
 {
@@ -25,7 +25,7 @@ class FirstDiarySlideFragment : Fragment(), SlideBackgroundColorHolder
 		super.onViewCreated(view, savedInstanceState)
 
 		new_diary.setOnClickListener {
-			navigateTo<DiaryActivity>()
+			newTask<DiaryActivity>()
 		}
 	}
 

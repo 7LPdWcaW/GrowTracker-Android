@@ -37,11 +37,13 @@ class DiaryViewModel(
 					))
 				})
 
-				_diaryId.postValue(diary.id)
+				_diaryId.value = diary.id
 				return@liveData
 			}
 
-			emitSource(diariesRepository.observeDiary(id!!))
+			id?.let {
+				emitSource(diariesRepository.observeDiary(it))
+			}
 		}
 	} as MutableLiveData
 
@@ -110,5 +112,12 @@ class DiaryViewModel(
 	{
 		diary.isDraft = false
 		diariesRepository.sync()
+	}
+
+	public suspend fun cancel()
+	{
+		_diaryId.value?.let {
+			diariesRepository.deleteDiary(it)
+		}
 	}
 }

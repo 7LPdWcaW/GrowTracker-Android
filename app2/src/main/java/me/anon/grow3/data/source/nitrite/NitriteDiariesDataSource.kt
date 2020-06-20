@@ -44,14 +44,17 @@ class NitriteDiariesDataSource @Inject constructor(
 		return getDiaries()
 	}
 
+	override suspend fun deleteDiary(diaryId: String): List<Diary>
+	{
+		val repo = db.getRepository<Diary>()
+		repo.remove(Diary::id eq diaryId)
+		return getDiaries()
+	}
+
 	override suspend fun getDiaryById(diaryId: String): Diary?
 	{
-		// check temp repo first
-		val temp = db.getRepository<Diary>("temp").find(Diary::id eq diaryId).firstOrNull()
-		temp?.let { return it }
-
 		val repo = db.getRepository<Diary>()
-		return repo.find(Diary::id eq diaryId).first()
+		return repo.find(Diary::id eq diaryId).firstOrNull()
 	}
 
 	override suspend fun getDiaries(): List<Diary> = db.getRepository<Diary>().find().toList()

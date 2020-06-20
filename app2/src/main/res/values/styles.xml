@@ -25,6 +25,7 @@
 		<item name="shapeAppearanceSmallComponent">@style/ShapeAppearance.Small</item>
 		<item name="textInputStyle">@style/Input</item>
 		<item name="materialCardViewStyle">@style/Card</item>
+		<item name="bottomSheetStyle">@style/BottomSheet</item>
 
 		<item name="android:textColor">?textOnSurface</item>
 		<item name="android:windowContentTransitions">true</item>
@@ -45,6 +46,11 @@
 	</style>
 
 	<!-- -->
+	<style name="BottomSheet" parent="Widget.Design.BottomSheet.Modal">
+		<item name="android:background">@drawable/bottom_sheet_bg_drawable</item>
+		<item name="elevation">16dp</item>
+	</style>
+
 	<style name="Input" parent="Widget.MaterialComponents.TextInputLayout.OutlinedBox" />
 
 	<style name="DropdownTheme">
@@ -107,19 +113,19 @@
 
 	<style name="Text.Header">
 		<item name="android:fontFamily">sans-serif-light</item>
-		<item name="android:textSize">22sp</item>
+		<item name="android:textSize">@dimen/text_title1</item>
 		<item name="android:paddingBottom">8dp</item>
 	</style>
 
 	<style name="Text.Header.Sub">
-		<item name="android:textSize">18sp</item>
+		<item name="android:textSize">@dimen/text_title2</item>
 		<item name="android:paddingBottom">0dp</item>
 	</style>
 
 	<style name="Text.Link">
 		<item name="android:clickable">true</item>
 		<item name="android:focusable">true</item>
-		<item name="android:textSize">18sp</item>
+		<item name="android:textSize">@dimen/text_title2</item>
 		<item name="android:paddingStart">12dp</item>
 		<item name="android:gravity">center_vertical</item>
 		<item name="android:background">@drawable/link_drawable</item>
@@ -138,20 +144,20 @@
 	</style>
 
 	<style name="Text.Caption">
-		<item name="android:textSize">12sp</item>
+		<item name="android:textSize">@dimen/text_caption</item>
 		<item name="android:fontFamily">sans-serif-smallcaps</item>
 		<item name="android:textAllCaps">true</item>
 	</style>
 
 	<style name="Text.Window">
-		<item name="android:textSize">18sp</item>
+		<item name="android:textSize">@dimen/text_title2</item>
 		<item name="android:fontFamily">sans-serif-smallcaps</item>
 		<item name="android:textAllCaps">true</item>
 		<item name="android:textColor">?textOnPrimary</item>
 	</style>
 
 	<style name="Checkbox" parent="Widget.MaterialComponents.CompoundButton.CheckBox">
-		<item name="android:textSize">16sp</item>
+		<item name="android:textSize">@dimen/text_body</item>
 		<item name="android:paddingStart">12dp</item>
 		<item name="android:paddingTop">2dp</item>
 		<item name="android:paddingBottom">2dp</item>

@@ -4,8 +4,7 @@ import android.view.View
 import androidx.core.widget.doAfterTextChanged
 import androidx.fragment.app.activityViewModels
 import androidx.lifecycle.observe
-import kotlinx.android.synthetic.main.fragment_crud_diary_details.*
-import me.anon.grow3.R
+import me.anon.grow3.databinding.FragmentCrudDiaryDetailsBinding
 import me.anon.grow3.di.ApplicationComponent
 import me.anon.grow3.ui.base.BaseFragment
 import me.anon.grow3.ui.common.fragment.DateSelectDialogFragment
@@ -15,31 +14,32 @@ import me.anon.grow3.util.states.DataResult
 import org.threeten.bp.ZonedDateTime
 import javax.inject.Inject
 
-class DiaryDetailsFragment : BaseFragment(R.layout.fragment_crud_diary_details)
+class DiaryDetailsFragment : BaseFragment(FragmentCrudDiaryDetailsBinding::class)
 {
 	override val inject: (ApplicationComponent) -> Unit = { it.inject(this) }
 
 	@Inject internal lateinit var viewModelFactory: DiaryViewModel.Factory
 	private val viewModel: DiaryViewModel by activityViewModels { ViewModelProvider(viewModelFactory, this) }
+	private val viewBindings by viewBinding<FragmentCrudDiaryDetailsBinding>()
 
 	override fun bindVm()
 	{
 		viewModel.diary.observe(viewLifecycleOwner) { diary ->
 			val diary = (diary as? DataResult.Success)?.data ?: return@observe
-			diary_name.editText!!.text = diary.name.asEditable()
-			date.editText!!.text = diary.date.asDateTime().asFormattedString().asEditable()
+			viewBindings.diaryName.editText!!.text = diary.name.asEditable()
+			viewBindings.date.editText!!.text = diary.date.asDateTime().asFormattedString().asEditable()
 		}
 	}
 
 	override fun bindUi()
 	{
-		diary_name.editText!!.doAfterTextChanged {
+		viewBindings.diaryName.editText!!.doAfterTextChanged {
 			// don't re-trigger the text change by calling editText.text ...
 			val diary = (viewModel.diary.value as? DataResult.Success)?.data ?: return@doAfterTextChanged
 			diary.name = it.toString()
 		}
 
-		date.editText!!.onFocus {
+		viewBindings.date.editText!!.onFocus {
 			val diary = (viewModel.diary.value as? DataResult.Success)?.data ?: return@onFocus
 
 			it.hideKeyboard()
@@ -67,6 +67,6 @@ class DiaryDetailsFragment : BaseFragment(R.layout.fragment_crud_diary_details)
 
 	public fun onDateDismissed()
 	{
-		if (date.editText?.focusSearch(View.FOCUS_RIGHT)?.requestFocus() != true) date.editText?.clearFocus()
+		if (viewBindings.date.editText?.focusSearch(View.FOCUS_RIGHT)?.requestFocus() != true) viewBindings.date.editText?.clearFocus()
 	}
 }

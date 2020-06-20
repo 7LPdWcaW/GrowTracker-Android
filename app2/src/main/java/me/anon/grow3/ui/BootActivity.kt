@@ -2,8 +2,9 @@ package me.anon.grow3.ui
 
 import android.os.Bundle
 import me.anon.grow3.ui.base.BaseActivity
+import me.anon.grow3.ui.main.activity.MainActivity
 import me.anon.grow3.ui.setup.activity.SetupActivity
-import me.anon.grow3.util.navigateTo
+import me.anon.grow3.util.newTask
 
 class BootActivity : BaseActivity()
 {
@@ -11,9 +12,9 @@ class BootActivity : BaseActivity()
 	{
 		super.onCreate(savedInstanceState)
 
-		val firstRun = true
-		if (firstRun) navigateTo<SetupActivity>()
-		else navigateTo<MainActivity>()
+		val firstRun = false
+		if (firstRun) newTask<SetupActivity>()
+		else newTask<MainActivity>()
 
 		finish()
 	}

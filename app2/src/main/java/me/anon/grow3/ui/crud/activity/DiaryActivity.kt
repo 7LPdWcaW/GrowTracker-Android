@@ -1,19 +1,34 @@
 package me.anon.grow3.ui.crud.activity
 
 import android.os.Bundle
+import androidx.activity.viewModels
 import androidx.core.view.isVisible
+import androidx.lifecycle.lifecycleScope
 import androidx.navigation.findNavController
 import androidx.navigation.ui.NavigationUI
 import kotlinx.android.synthetic.main.activity_crud_diary.*
+import kotlinx.coroutines.launch
 import me.anon.grow3.R
+import me.anon.grow3.databinding.ActivityCrudDiaryBinding
+import me.anon.grow3.di.ApplicationComponent
 import me.anon.grow3.ui.base.BaseActivity
+import me.anon.grow3.ui.crud.viewmodel.DiaryViewModel
+import me.anon.grow3.util.ViewModelProvider
+import me.anon.grow3.util.component
+import me.anon.grow3.util.promptExit
+import javax.inject.Inject
 
 /**
  * Wizard activity for creating a new diary
  */
-class DiaryActivity : BaseActivity(R.layout.activity_crud_diary)
+class DiaryActivity : BaseActivity(ActivityCrudDiaryBinding::class)
 {
 	private var currentView = R.id.navigation_diary_details
+
+	override val inject: (ApplicationComponent) -> Unit = { component.inject(this) }
+	@Inject internal lateinit var viewModelFactory: DiaryViewModel.Factory
+	private val viewModel: DiaryViewModel by viewModels { ViewModelProvider(viewModelFactory, this) }
+	private val viewBindings by viewBinding<ActivityCrudDiaryBinding>()
 
 	override fun onCreate(savedInstanceState: Bundle?)
 	{
@@ -31,13 +46,21 @@ class DiaryActivity : BaseActivity(R.layout.activity_crud_diary)
 				toolbar?.isVisible = false
 			}
 		}
-		NavigationUI.setupWithNavController(toolbar!!, navController)
+		NavigationUI.setupWithNavController(viewBindings.includeToolbar.toolbar, navController)
 
-		back.setOnClickListener {
-			if (!navController.popBackStack()) finish()
+		viewBindings.back.setOnClickListener {
+			if (!navController.popBackStack())
+			{
+				promptExit {
+					lifecycleScope.launch {
+						viewModel.cancel()
+						finish()
+					}
+				}
+			}
 		}
 
-		next.setOnClickListener {
+		viewBindings.next.setOnClickListener {
 			when (currentView)
 			{
 				R.id.navigation_diary_details -> navController.navigate(R.id.page_1_to_2)
@@ -46,5 +69,10 @@ class DiaryActivity : BaseActivity(R.layout.activity_crud_diary)
 				R.id.navigation_diary_complete -> finish()
 			}
 		}
+	}
+
+	override fun onBackPressed()
+	{
+		viewBindings.back.performClick()
 	}
 }

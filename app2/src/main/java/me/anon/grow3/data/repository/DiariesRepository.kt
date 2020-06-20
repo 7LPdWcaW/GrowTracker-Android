@@ -8,13 +8,14 @@ interface DiariesRepository
 {
 	public fun observeDiaries(): LiveData<DataResult<List<Diary>>>
 
-	public fun observeDiary(gardenId: String): LiveData<DataResult<Diary>>
+	public fun observeDiary(diaryId: String): LiveData<DataResult<Diary>>
 
 	public suspend fun getDiaries(): List<Diary>
 
 	public suspend fun getDiaryById(diaryId: String): Diary?
 
 	public suspend fun createDiary(diary: Diary): Diary
+	public suspend fun deleteDiary(diaryId: String): Boolean
 
 	public fun sync()
 
