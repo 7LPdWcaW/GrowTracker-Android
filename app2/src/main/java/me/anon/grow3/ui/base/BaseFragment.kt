@@ -1,6 +1,7 @@
 package me.anon.grow3.ui.base
 
 import android.content.Context
+import android.graphics.Rect
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
@@ -17,11 +18,6 @@ abstract class BaseFragment : Fragment
 	constructor() : super()
 	constructor(layoutRes: Int) : super(layoutRes)
 
-	constructor(viewBinder: Class<out ViewBinding>)
-	{
-		this._viewBinder = viewBinder
-	}
-
 	constructor(kClass: KClass<out ViewBinding>)
 	{
 		this._viewBinder = kClass.java
@@ -34,6 +30,10 @@ abstract class BaseFragment : Fragment
 		= lazy(LazyThreadSafetyMode.NONE) {
 			viewBinder as T
 		}
+
+	open var insets: Rect
+		get() = (activity as BaseActivity).insets
+		set(value) { (activity as BaseActivity).insets = value }
 
 	abstract val inject: Injector
 

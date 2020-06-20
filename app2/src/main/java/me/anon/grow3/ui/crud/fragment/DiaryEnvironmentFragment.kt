@@ -17,7 +17,7 @@ import me.anon.grow3.util.states.isSuccess
 import me.anon.grow3.view.DropDownEditText
 import javax.inject.Inject
 
-class DiaryEnvironmentFragment : BaseFragment(FragmentCrudDiaryEnvironmentBinding::class.java)
+class DiaryEnvironmentFragment : BaseFragment(FragmentCrudDiaryEnvironmentBinding::class)
 {
 	override val inject: (ApplicationComponent) -> Unit = { it.inject(this) }
 

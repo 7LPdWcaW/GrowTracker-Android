@@ -16,7 +16,6 @@
 		app:layout_constraintTop_toTopOf="parent"
 		app:layout_constraintWidth_percent="0.85"
 		android:paddingTop="24dp"
-		android:fitsSystemWindows="true"
 	>
 		<androidx.fragment.app.FragmentContainerView
 			android:layout_width="match_parent"
@@ -32,10 +31,8 @@
 			android:layout_height="wrap_content"
 			android:id="@+id/navigation_container"
 			app:layout_constraintBottom_toBottomOf="parent"
-			android:fitsSystemWindows="true"
 			android:orientation="vertical"
 			android:divider="@drawable/spacer_8dp"
-			android:paddingBottom="12dp"
 			android:paddingEnd="16dp"
 			android:showDividers="middle"
 		>

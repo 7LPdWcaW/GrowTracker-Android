@@ -4,7 +4,6 @@ import android.app.Activity
 import android.content.Intent
 import android.graphics.drawable.Drawable
 import android.os.Bundle
-import android.view.View
 import androidx.annotation.*
 import androidx.fragment.app.Fragment
 import androidx.viewpager2.widget.ViewPager2
@@ -34,19 +33,6 @@ public inline fun <reified T : BaseFragment> Fragment.navigateTo(ontop: Boolean 
 		putExtra(MainActivity.EXTRA_NAVIGATE, T::class.java.name)
 		arguments()?.let { putExtras(it) }
 	})
-
-public fun Fragment.applyWindowInsets(vararg view: View = arrayOf(requireView()), apply: (v: View, left: Int, top: Int, right: Int, bottom: Int) -> Unit)
-{
-	((requireActivity() as? MainActivity)?.viewBindings!!.rootView ?: requireActivity().findViewById(android.R.id.content)).setOnApplyWindowInsetsListener { v, insets ->
-		v.onApplyWindowInsets(insets).also {
-			view.forEach {
-				apply(it, insets.systemWindowInsetLeft, insets.systemWindowInsetTop, insets.systemWindowInsetRight, insets.systemWindowInsetBottom)
-				it.dispatchApplyWindowInsets(insets)
-			}
-		}
-		insets.consumeSystemWindowInsets()
-	}
-}
 
 // Resource convenience methods
 public fun Fragment.dimen(@DimenRes resId: Int): Float = resources.getDimension(resId)

@@ -14,7 +14,7 @@ import me.anon.grow3.util.states.DataResult
 import org.threeten.bp.ZonedDateTime
 import javax.inject.Inject
 
-class DiaryDetailsFragment : BaseFragment(FragmentCrudDiaryDetailsBinding::class.java)
+class DiaryDetailsFragment : BaseFragment(FragmentCrudDiaryDetailsBinding::class)
 {
 	override val inject: (ApplicationComponent) -> Unit = { it.inject(this) }
 

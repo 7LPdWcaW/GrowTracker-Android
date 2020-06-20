@@ -1,6 +1,7 @@
 package me.anon.grow3.ui.base
 
 import android.graphics.Bitmap
+import android.graphics.Rect
 import android.os.Build
 import android.os.Bundle
 import android.view.LayoutInflater
@@ -21,10 +22,6 @@ import kotlin.reflect.KClass
 open class BaseActivity : AppCompatActivity
 {
 	constructor() : super()
-	constructor(layoutRes: Int)
-	{
-		this.layoutRes = layoutRes
-	}
 
 	constructor(viewBinder: KClass<out ViewBinding>)
 	{
@@ -49,6 +46,8 @@ open class BaseActivity : AppCompatActivity
 			field = value
 		}
 
+	open var insets: Rect = Rect()
+
 	@ColorInt
 	protected var statusBarColor: Int = -1
 		set(value) {
@@ -67,15 +66,18 @@ open class BaseActivity : AppCompatActivity
 
 		super.onCreate(savedInstanceState)
 
-		if (_viewBinder == null)
-		{
-			if (layoutRes != -1) setContentView(layoutRes)
-		}
-		else
+		if (_viewBinder != null)
 		{
 			viewBinder = _viewBinder!!.getDeclaredMethod("inflate", LayoutInflater::class.java)
 				.invoke(_viewBinder, layoutInflater) as ViewBinding
 			setContentView(viewBinder.root)
+
+			viewBinder.root.setOnApplyWindowInsetsListener { v, i ->
+				v.onApplyWindowInsets(i).also {
+					insets = Rect(i.systemWindowInsetLeft, i.systemWindowInsetTop, i.systemWindowInsetRight, i.systemWindowInsetBottom)
+				}
+				i.consumeSystemWindowInsets()
+			}
 		}
 	}
 

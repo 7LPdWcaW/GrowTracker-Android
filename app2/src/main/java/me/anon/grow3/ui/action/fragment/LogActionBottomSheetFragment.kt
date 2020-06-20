@@ -1,6 +1,5 @@
 package me.anon.grow3.ui.action.fragment
 
-import android.graphics.Rect
 import android.view.View
 import com.google.android.material.bottomsheet.BottomSheetBehavior
 import me.anon.grow3.R
@@ -14,8 +13,7 @@ class LogActionBottomSheetFragment : BaseFragment(FragmentActionLogBinding::clas
 {
 	override val inject: Injector = {}
 	private val viewBindings by viewBinding<FragmentActionLogBinding>()
-	
-	private val insets: Rect = Rect()
+
 	private val layoutSheetBehavior by lazy { BottomSheetBehavior.from(requireView().parentViewById<View>(R.id.bottom_sheet)) }
 	private val sheetListener = object : BottomSheetBehavior.BottomSheetCallback()
 	{
@@ -43,16 +41,6 @@ class LogActionBottomSheetFragment : BaseFragment(FragmentActionLogBinding::clas
 
 	override fun bindUi()
 	{
-		applyWindowInsets(requireView()) { v, l, t, r, b ->
-			//viewBindings.header.updateMargin(l, t, r, b)
-			insets.apply {
-				left = l
-				top = t
-				right = r
-				bottom = b
-			}
-		}
-
 		layoutSheetBehavior.isGestureInsetBottomIgnored = false
 		layoutSheetBehavior.isFitToContents = false
 		layoutSheetBehavior.state = BottomSheetBehavior.STATE_HIDDEN

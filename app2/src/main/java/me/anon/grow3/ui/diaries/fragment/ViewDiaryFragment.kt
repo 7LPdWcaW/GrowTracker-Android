@@ -1,5 +1,6 @@
 package me.anon.grow3.ui.diaries.fragment
 
+import android.graphics.Rect
 import android.os.Bundle
 import androidx.core.os.bundleOf
 import androidx.core.view.updatePadding
@@ -19,23 +20,23 @@ class ViewDiaryFragment : BaseFragment(FragmentViewDiaryBinding::class)
 
 	override val inject: (ApplicationComponent) -> Unit = {}
 	private val viewBindings by viewBinding<FragmentViewDiaryBinding>()
+	override var insets: Rect
+		get() = super.insets
+		set(value)
+		{
+			super.insets = value
+		}
 
 	override fun onActivityCreated(savedInstanceState: Bundle?)
 	{
 		super.onActivityCreated(savedInstanceState)
 		setToolbar(viewBindings.toolbar)
 
-		applyWindowInsets(
-			viewBindings.menuFab,
-			viewBindings.sheet,
-			viewBindings.toolbar
-		) { v, l, t, r, b ->
-			when (v)
-			{
-				viewBindings.menuFab -> v.updateMargin(bottom = b + 16.dp(requireContext()), top = t + 16.dp(requireContext()))
-				viewBindings.sheet -> v.updatePadding(l, t, r, b)
-				viewBindings.toolbar -> v.updateMargin(l, t, r)
-			}
+		with (insets) {
+			viewBindings.menuFab.updateMargin(bottom = bottom + 16.dp(requireContext()), top = top + 16.dp(requireContext()))
+			viewBindings.sheet.updatePadding(left, top, right, bottom)
+			viewBindings.toolbar.updateMargin(left, top, right)
+			viewBindings.content.updatePadding(left, right = right, bottom = bottom + 72.dp(requireContext()))
 		}
 	}
 

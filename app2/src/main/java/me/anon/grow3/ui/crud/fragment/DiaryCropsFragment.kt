@@ -19,7 +19,7 @@ import me.anon.grow3.util.states.isSuccess
 import java.util.*
 import javax.inject.Inject
 
-class DiaryCropsFragment : BaseFragment(FragmentCrudDiaryCropsBinding::class.java)
+class DiaryCropsFragment : BaseFragment(FragmentCrudDiaryCropsBinding::class)
 {
 	override val inject: (ApplicationComponent) -> Unit = { it.inject(this) }
 
