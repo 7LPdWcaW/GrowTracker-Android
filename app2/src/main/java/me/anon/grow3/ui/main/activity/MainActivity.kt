@@ -215,18 +215,7 @@ class MainActivity : BaseActivity(ActivityMainBinding::class)
 		val index = viewBindings.viewPager.currentItem
 		if (adapter.pages.size - 1 > INDEX_MAIN)
 		{
-//			val callback = object : ViewPager2.OnPageChangeCallback()
-//			{
-//				override fun onPageScrolled(position: Int, positionOffset: Float, positionOffsetPixels: Int)
-//				{
-//					if (position <= index && positionOffsetPixels <= 1)
-//					{
-//						viewBindings.viewPager.unregisterOnPageChangeCallback(this)
-//					}
-//				}
-//			}
-
-			if (now)
+			fun removePages()
 			{
 				val count = adapter.pages.size
 				if (count > INDEX_MAIN + 1)
@@ -240,7 +229,27 @@ class MainActivity : BaseActivity(ActivityMainBinding::class)
 				}
 			}
 
-//			viewBindings.viewPager.registerOnPageChangeCallback(callback)
+			if (now)
+			{
+				removePages()
+			}
+			else
+			{
+				val callback = object : ViewPager2.OnPageChangeCallback()
+				{
+					override fun onPageScrolled(position: Int, positionOffset: Float, positionOffsetPixels: Int)
+					{
+						if (position <= index && positionOffsetPixels <= 1)
+						{
+							removePages()
+							viewBindings.viewPager.unregisterOnPageChangeCallback(this)
+						}
+					}
+				}
+
+				viewBindings.viewPager.registerOnPageChangeCallback(callback)
+			}
+
 			viewBindings.viewPager.setCurrentItem(INDEX_MAIN, !now)
 		}
 	}
