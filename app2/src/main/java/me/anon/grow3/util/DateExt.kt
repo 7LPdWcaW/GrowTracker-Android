@@ -33,6 +33,8 @@ public fun ZonedDateTime.asString(): String = format(DateTimeFormatter.ISO_ZONED
 
 public fun ZonedDateTime.asFormattedString(): String = format(DateTimeFormatter.ofLocalizedDate(FormatStyle.FULL))
 
+public fun LocalDate.asFormattedString(): String = format(DateTimeFormatter.ofLocalizedDate(FormatStyle.SHORT))
+
 /**
  * Parses the given string as HH:mm(:ss) format
  */

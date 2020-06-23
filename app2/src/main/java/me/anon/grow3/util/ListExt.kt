@@ -18,3 +18,9 @@ public inline fun <T, R> List<T>.uniqueBy(crossinline predicate: (T) -> R): List
 
 	return subList
 }
+
+public inline fun <T> Iterable<T>.forEachPair(action: (T, T?) -> Unit): Unit
+{
+	val count = count()
+	for (index in 0 until count() step 2) action(elementAt(index), elementAtOrNull(index + 1))
+}

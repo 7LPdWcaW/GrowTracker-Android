@@ -2,18 +2,21 @@ package me.anon.grow3.view
 
 import android.content.Context
 import android.util.AttributeSet
-import android.view.View
+import android.view.LayoutInflater
+import android.view.MotionEvent
 import android.widget.FrameLayout
 import android.widget.HorizontalScrollView
 import android.widget.LinearLayout
-import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.core.view.plusAssign
 import me.anon.grow3.R
 import me.anon.grow3.data.model.Crop
 import me.anon.grow3.data.model.Diary
 import me.anon.grow3.data.model.Stage
-import me.anon.grow3.util.inflate
-import me.anon.grow3.util.parentView
+import me.anon.grow3.databinding.StubViewArrowBinding
+import me.anon.grow3.databinding.StubViewStageBinding
+import me.anon.grow3.util.*
+import org.threeten.bp.LocalDate
+import org.threeten.bp.temporal.ChronoUnit
 
 class StageView : HorizontalScrollView
 {
@@ -44,14 +47,31 @@ class StageView : HorizontalScrollView
 	private fun layoutStages()
 	{
 		container.removeAllViews()
-		(stages + stages).forEach { stage ->
-			val stub = StageViewStub(context)
-			container += stub
+		for (stageIndex in 0 until stages.size)
+		{
+			val stage = stages[stageIndex]
+			val stageView = StageViewStub(context)
+			stageView.setStage(stage)
+			container += stageView
+
 			val arrow = ArrowViewStub(context)
 			container += arrow
+
+			var stage2Date = LocalDate.now()
+			stages.getOrNull(stageIndex + 1)?.let { next ->
+				stage2Date = next.date.asLocalDate()
+			}
+
+			val stage1Date = stage.date.asLocalDate()
+			val days = ChronoUnit.DAYS.between(stage1Date, stage2Date)
+			arrow.setLength(days)
 		}
 
+		val end = StageViewStub(context)
+		container += end
+
 		requestLayout()
+		container.requestLayout()
 	}
 
 	override fun onLayout(changed: Boolean, l: Int, t: Int, r: Int, b: Int)
@@ -64,10 +84,16 @@ class StageView : HorizontalScrollView
 		}
 	}
 
-	override fun onScrollChanged(l: Int, t: Int, oldl: Int, oldt: Int)
+	override fun onTouchEvent(ev: MotionEvent?): Boolean
 	{
-		super.onScrollChanged(l, t, oldl, oldt)
-		val end = l + measuredWidth
+		ev?.let { event ->
+			if (event.actionMasked == MotionEvent.ACTION_UP)
+			{
+				// scroll to closest stage view stub
+			}
+		}
+
+		return super.onTouchEvent(ev)
 	}
 
 	inner class StageViewContainer : LinearLayout
@@ -78,43 +104,66 @@ class StageView : HorizontalScrollView
 		{
 			orientation = HORIZONTAL
 			isFillViewport = true
+			setPadding(12.dp(this), 0, 12.dp(this), 0)
 		}
 	}
 
-	inner class StageViewStub : ConstraintLayout
+	inner class StageViewStub : FrameLayout
 	{
+		private val bindings: StubViewStageBinding
+		private var stage: Stage? = null
+
 		constructor(context: Context) : this(context, null)
 		constructor(context: Context, attrs: AttributeSet?) : this(context, attrs, 0)
 		constructor(context: Context, attrs: AttributeSet?, defStyleAttr: Int) : super(context, attrs, defStyleAttr)
 		{
-			inflate<View>(R.layout.stub_view_stage, true)
+			bindings = StubViewStageBinding.inflate(LayoutInflater.from(context), this, true)
+			setStage(null)
 		}
 
-//		override fun onMeasure(widthMeasureSpec: Int, heightMeasureSpec: Int)
-//		{
-//			val width = parentView.parentView.measuredWidth
-//			super.onMeasure(MeasureSpec.makeMeasureSpec(width / 3, MeasureSpec.EXACTLY), heightMeasureSpec)
-////			updatePadding(left = measuredWidth / 3)
-//		}
+		public fun setStage(stage: Stage?)
+		{
+			this.stage = stage
+
+			if (stage == null)
+			{
+				bindings.stageLabel.text = "Today"
+				bindings.stageDate.text = LocalDate.now().asFormattedString()
+			}
+			else
+			{
+				bindings.stageLabel.text = stage.type.strRes.string(context)
+				bindings.stageDate.text = stage.date.asLocalDate().asFormattedString()
+				bindings.stageIcon.setImageResource(stage.type.iconRes)
+			}
+		}
 	}
 
 	inner class ArrowViewStub : FrameLayout
 	{
+		private val bindings: StubViewArrowBinding
+
 		constructor(context: Context) : this(context, null)
 		constructor(context: Context, attrs: AttributeSet?) : this(context, attrs, 0)
 		constructor(context: Context, attrs: AttributeSet?, defStyleAttr: Int) : super(context, attrs, defStyleAttr)
 		{
-			inflate<View>(R.layout.stub_view_arrow, true)
+			bindings = StubViewArrowBinding.inflate(LayoutInflater.from(context), this, true)
+		}
+
+		public fun setLength(days: Long)
+		{
+			bindings.stageLabel.text = R.string.days.string(context, days)
 		}
 
 		override fun onMeasure(widthMeasureSpec: Int, heightMeasureSpec: Int)
 		{
-			val width = parentView.parentView.measuredWidth
-			val height = parentView.parentView.measuredHeight
-			super.onMeasure(MeasureSpec.makeMeasureSpec(width / 3, MeasureSpec.EXACTLY),
+			val parent = parentView.parentView
+			val width = parent.measuredWidth
+			val height = parent.measuredHeight - parent.paddingTop - parent.paddingBottom
+			super.onMeasure(
+				MeasureSpec.makeMeasureSpec(width / 3, MeasureSpec.EXACTLY),
 				MeasureSpec.makeMeasureSpec(height, MeasureSpec.EXACTLY)
 			)
-//			updatePadding(left = measuredWidth / 3)
 		}
 	}
 }

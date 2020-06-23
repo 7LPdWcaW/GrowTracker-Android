@@ -115,19 +115,69 @@ enum class LightType : Type
 	}
 }
 
-enum class StageType
+enum class StageType() : Type
 {
-	Planted,
-	Germination,
-	Seedling,
-	Cutting,
-	Vegetation,
-	Budding,
-	Flower,
-	Ripening,
-	Drying,
-	Curing,
-	Harvested
+	Planted {
+		override val strRes = R.string.stage_type_planted
+		override val iconRes = R.drawable.ic_coloured_icon
+	},
+	Germination {
+		override val strRes = R.string.stage_type_germination
+		override val iconRes = R.drawable.ic_coloured_icon
+	},
+	Seedling {
+		override val strRes = R.string.stage_type_seedling
+		override val iconRes = R.drawable.ic_coloured_icon
+	},
+	Cutting {
+		override val strRes = R.string.stage_type_cutting
+		override val iconRes = R.drawable.ic_coloured_icon
+	},
+	Vegetation {
+		override val strRes = R.string.stage_type_vegetation
+		override val iconRes = R.drawable.ic_coloured_icon
+	},
+	Budding {
+		override val strRes = R.string.stage_type_budding
+		override val iconRes = R.drawable.ic_coloured_icon
+	},
+	Flower {
+		override val strRes = R.string.stage_type_flower
+		override val iconRes = R.drawable.ic_coloured_icon
+	},
+	Ripening {
+		override val strRes = R.string.stage_type_ripening
+		override val iconRes = R.drawable.ic_coloured_icon
+	},
+	Drying {
+		override val strRes = R.string.stage_type_drying
+		override val iconRes = R.drawable.ic_coloured_icon
+	},
+	Curing {
+		override val strRes = R.string.stage_type_curing
+		override val iconRes = R.drawable.ic_coloured_icon
+	},
+	Harvested {
+		override val strRes = R.string.stage_type_harvested
+		override val iconRes = R.drawable.ic_coloured_icon
+	};
+
+	abstract val iconRes: Int
+
+	companion object
+	{
+		fun ofId(id: Int): StageType = StageType.values().first { it.strRes == id }
+
+		fun toMenu(): List<DropDownEditText.DropDownMenuItem>
+			= StageType.values().map {
+				DropDownEditText.DropDownMenuItem(
+					it.strRes,
+					false,
+					true,
+					titleRes = it.strRes
+				)
+			}
+	}
 }
 
 enum class MaintenanceType

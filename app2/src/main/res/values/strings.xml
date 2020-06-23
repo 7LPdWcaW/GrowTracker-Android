@@ -59,4 +59,18 @@
 	<string name="medium_type_hydro">Hydro</string>
 	<string name="medium_type_coco">Coco</string>
 	<string name="medium_type_aqua">Aqua</string>
+
+	<string name="stage_type_planted">Planted</string>
+	<string name="stage_type_germination">Germination</string>
+	<string name="stage_type_seedling">Seedling</string>
+	<string name="stage_type_cutting">Cutting</string>
+	<string name="stage_type_vegetation">Vegetation</string>
+	<string name="stage_type_budding">Budding</string>
+	<string name="stage_type_flower">Flower</string>
+	<string name="stage_type_ripening">Ripening</string>
+	<string name="stage_type_drying">Drying</string>
+	<string name="stage_type_curing">Curing</string>
+	<string name="stage_type_harvested">Harvested</string>
+
+	<string name="days" formatted="true">%d days</string>
 </resources>

@@ -22,5 +22,5 @@ public fun @receiver:DrawableRes Int.drawable(context: Context, @ColorInt tint: 
 		tint?.let { setTint(it) }
 	}
 
-public fun @receiver:StringRes Int.string(context: Context, vararg params: String = arrayOf()): String
-	= context.getString(this, params)
+public fun @receiver:StringRes Int.string(context: Context, vararg params: Any = arrayOf()): String
+	= context.getString(this, *params)
