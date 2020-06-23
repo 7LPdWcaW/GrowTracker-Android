@@ -5,6 +5,7 @@ import dagger.Component
 import me.anon.grow3.data.repository.DiariesRepository
 import me.anon.grow3.di.module.AppModule
 import me.anon.grow3.di.module.DispatcherModule
+import me.anon.grow3.ui.DemoUiActivity
 import me.anon.grow3.ui.crud.activity.CropActivity
 import me.anon.grow3.ui.crud.activity.DiaryActivity
 import me.anon.grow3.ui.crud.fragment.DiaryCompleteFragment
@@ -33,4 +34,5 @@ interface ApplicationComponent
 
 	public fun inject(activity: CropActivity)
 	public fun inject(activity: DiaryActivity)
+	public fun inject(activity: DemoUiActivity)
 }

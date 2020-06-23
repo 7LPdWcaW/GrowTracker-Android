@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<androidx.constraintlayout.widget.ConstraintLayout
+	xmlns:android="http://schemas.android.com/apk/res/android"
+	xmlns:app="http://schemas.android.com/apk/res-auto"
+	xmlns:tools="http://schemas.android.com/tools"
+	android:layout_width="match_parent"
+	android:layout_height="wrap_content"
+>
+	<com.google.android.material.imageview.ShapeableImageView
+		android:layout_width="56dp"
+		android:layout_height="56dp"
+		android:id="@+id/stage_icon"
+		android:scaleType="centerCrop"
+		android:adjustViewBounds="true"
+		app:shapeAppearanceOverlay="@style/RoundedImage"
+		app:srcCompat="@drawable/ic_coloured_icon"
+		android:clickable="true"
+		android:focusable="true"
+		android:foreground="?selectableItemBackground"
+		app:layout_constraintDimensionRatio="1:1"
+		app:layout_constraintStart_toStartOf="parent"
+		app:layout_constraintTop_toTopOf="parent"
+		app:layout_constraintEnd_toEndOf="parent"
+	/>
+
+	<TextView
+		android:layout_width="wrap_content"
+		android:layout_height="wrap_content"
+		android:maxWidth="200dp"
+		android:id="@+id/stage_label"
+		app:layout_constraintTop_toBottomOf="@id/stage_icon"
+		app:layout_constraintStart_toStartOf="parent"
+		app:layout_constraintEnd_toEndOf="parent"
+		android:layout_marginTop="6dp"
+		android:text="01/01/00"
+		style="@style/Text.Caption"
+	/>
+</androidx.constraintlayout.widget.ConstraintLayout>
