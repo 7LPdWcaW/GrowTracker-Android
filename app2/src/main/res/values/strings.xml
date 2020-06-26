@@ -73,4 +73,5 @@
 	<string name="stage_type_harvested">Harvested</string>
 
 	<string name="days" formatted="true">%d days</string>
+	<string name="today">Today</string>
 </resources>

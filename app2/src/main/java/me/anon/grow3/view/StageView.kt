@@ -104,7 +104,7 @@ class StageView : HorizontalScrollView
 		{
 			orientation = HORIZONTAL
 			isFillViewport = true
-			setPadding(12.dp(this), 0, 12.dp(this), 0)
+			setPadding(12.dp(this), 8.dp(this), 12.dp(this), 8.dp(this))
 		}
 	}
 
@@ -127,7 +127,7 @@ class StageView : HorizontalScrollView
 
 			if (stage == null)
 			{
-				bindings.stageLabel.text = "Today"
+				bindings.stageLabel.setText(R.string.today)
 				bindings.stageDate.text = LocalDate.now().asFormattedString()
 			}
 			else

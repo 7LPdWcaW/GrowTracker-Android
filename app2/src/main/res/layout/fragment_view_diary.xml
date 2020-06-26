@@ -84,6 +84,14 @@
 						android:layout_marginBottom="0dp"
 						android:textAppearance="@style/Text.Header"
 					/>
+
+					<me.anon.grow3.view.StageView
+						android:layout_width="match_parent"
+						android:layout_height="wrap_content"
+						android:id="@+id/stages_view"
+						app:layout_constraintTop_toBottomOf="@id/stages_header"
+						android:layout_marginTop="@dimen/section_header_spacing"
+					/>
 				</androidx.constraintlayout.widget.ConstraintLayout>
 			</com.google.android.material.card.MaterialCardView>
 
