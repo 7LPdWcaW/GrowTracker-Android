@@ -22,6 +22,9 @@ class StageView : HorizontalScrollView
 {
 	private val stages = mutableListOf<Stage>()
 	private val container: StageViewContainer
+	private var diary: Diary? = null
+	private var crop: Crop? = null
+	public var onNewStageClick: () -> Unit = {}
 
 	constructor(context: Context) : this(context, null)
 	constructor(context: Context, attrs: AttributeSet?) : this(context, attrs, 0)
@@ -33,13 +36,19 @@ class StageView : HorizontalScrollView
 
 	public fun setStages(diary: Diary, crop: Crop)
 	{
-		setStages(diary.stagesOf(crop))
+		this.diary = diary
+		this.crop = crop
+		this.stages.clear()
+		this.stages.addAll(diary.stagesOf(crop))
+
+		layoutStages()
 	}
 
-	public fun setStages(stages: List<Stage>)
+	public fun setStages(diary: Diary)
 	{
+		this.diary = diary
 		this.stages.clear()
-		this.stages.addAll(stages)
+		this.stages.addAll(diary.stages())
 
 		layoutStages()
 	}
@@ -68,6 +77,9 @@ class StageView : HorizontalScrollView
 		}
 
 		val end = StageViewStub(context)
+		end.setOnClickListener {
+			onNewStageClick()
+		}
 		container += end
 
 		requestLayout()
@@ -104,7 +116,7 @@ class StageView : HorizontalScrollView
 		{
 			orientation = HORIZONTAL
 			isFillViewport = true
-			setPadding(12.dp(this), 8.dp(this), 12.dp(this), 8.dp(this))
+			setPadding(12.dp(this), 0, 12.dp(this), 0)
 		}
 	}
 
@@ -160,8 +172,10 @@ class StageView : HorizontalScrollView
 			val parent = parentView.parentView
 			val width = parent.measuredWidth
 			val height = parent.measuredHeight - parent.paddingTop - parent.paddingBottom
+			val longWidth = context.resources.getBoolean(R.bool.long_width)
+			val arrowWidth = longWidth then width / 4 ?: width / 3
 			super.onMeasure(
-				MeasureSpec.makeMeasureSpec(width / 3, MeasureSpec.EXACTLY),
+				MeasureSpec.makeMeasureSpec(arrowWidth, MeasureSpec.EXACTLY),
 				MeasureSpec.makeMeasureSpec(height, MeasureSpec.EXACTLY)
 			)
 		}
