@@ -30,6 +30,7 @@ data class Diary(
 	public fun size(): Size? = findSize()
 	public fun light(): Light? = findLight()
 	public fun crop(id: String): Crop = crops.first { it.id == id }
+	public fun stages(): List<Stage> = findAllStages().filter { it.cropIds.isEmpty() }
 
 	public fun logOf(id: String): Log? = log.first { it.id == id }
 
