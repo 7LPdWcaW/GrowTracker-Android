@@ -13,6 +13,7 @@ import me.anon.grow3.ui.crud.fragment.DiaryCropsFragment
 import me.anon.grow3.ui.crud.fragment.DiaryDetailsFragment
 import me.anon.grow3.ui.crud.fragment.DiaryEnvironmentFragment
 import me.anon.grow3.ui.diaries.fragment.DiariesListFragment
+import me.anon.grow3.ui.diaries.fragment.ViewDiaryFragment
 import me.anon.grow3.util.handler.ExceptionHandler
 import javax.inject.Singleton
 
@@ -31,6 +32,7 @@ interface ApplicationComponent
 	public fun inject(fragment: DiaryCropsFragment)
 	public fun inject(fragment: DiaryEnvironmentFragment)
 	public fun inject(fragment: DiaryCompleteFragment)
+	public fun inject(fragment: ViewDiaryFragment)
 
 	public fun inject(activity: CropActivity)
 	public fun inject(activity: DiaryActivity)

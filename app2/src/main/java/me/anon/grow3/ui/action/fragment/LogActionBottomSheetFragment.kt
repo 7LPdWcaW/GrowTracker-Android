@@ -11,7 +11,7 @@ import kotlin.math.abs
 
 class LogActionBottomSheetFragment : BaseFragment(FragmentActionLogBinding::class)
 {
-	override val inject: Injector = {}
+	override val injector: Injector = {}
 	private val viewBindings by viewBinding<FragmentActionLogBinding>()
 
 	private val layoutSheetBehavior by lazy { BottomSheetBehavior.from(requireView().parentViewById<View>(R.id.bottom_sheet)) }

@@ -38,10 +38,6 @@ class MainActivity : BaseActivity(ActivityMainBinding::class)
 
 		const val EXTRA_ORIGINATOR = "origin"
 		const val EXTRA_NAVIGATE = "navigation"
-
-		const val EXTRA_DIARY_ID = "diary.id"
-		const val EXTRA_CROP_ID = "crop.id"
-		const val EXTRA_LOG_ID = "log.id"
 	}
 
 	inner class PageAdapter(supportFragmentManager: FragmentManager, lifecycle: Lifecycle) : FragmentStateAdapter(supportFragmentManager, lifecycle)

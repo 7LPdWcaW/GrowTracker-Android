@@ -5,7 +5,6 @@ import androidx.core.widget.doAfterTextChanged
 import androidx.fragment.app.activityViewModels
 import androidx.lifecycle.observe
 import me.anon.grow3.databinding.FragmentCrudDiaryDetailsBinding
-import me.anon.grow3.di.ApplicationComponent
 import me.anon.grow3.ui.base.BaseFragment
 import me.anon.grow3.ui.common.fragment.DateSelectDialogFragment
 import me.anon.grow3.ui.crud.viewmodel.DiaryViewModel
@@ -16,7 +15,7 @@ import javax.inject.Inject
 
 class DiaryDetailsFragment : BaseFragment(FragmentCrudDiaryDetailsBinding::class)
 {
-	override val inject: (ApplicationComponent) -> Unit = { it.inject(this) }
+	override val injector: Injector = { it.inject(this) }
 
 	@Inject internal lateinit var viewModelFactory: DiaryViewModel.Factory
 	private val viewModel: DiaryViewModel by activityViewModels { ViewModelProvider(viewModelFactory, this) }

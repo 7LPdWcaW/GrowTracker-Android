@@ -1,31 +1,16 @@
 package me.anon.grow3.ui.diaries.fragment
 
-import android.graphics.Rect
 import android.os.Bundle
-import androidx.core.os.bundleOf
 import androidx.core.view.updatePadding
 import me.anon.grow3.databinding.FragmentViewDiaryBinding
-import me.anon.grow3.di.ApplicationComponent
 import me.anon.grow3.ui.action.fragment.LogActionBottomSheetFragment
 import me.anon.grow3.ui.base.BaseFragment
-import me.anon.grow3.ui.main.activity.MainActivity
 import me.anon.grow3.util.*
 
 class ViewDiaryFragment : BaseFragment(FragmentViewDiaryBinding::class)
 {
-	companion object
-	{
-		public const val EXTRA_DIARY_ID = "diary.id"
-	}
-
-	override val inject: (ApplicationComponent) -> Unit = {}
+	override val injector: Injector = { it.inject(this) }
 	private val viewBindings by viewBinding<FragmentViewDiaryBinding>()
-	override var insets: Rect
-		get() = super.insets
-		set(value)
-		{
-			super.insets = value
-		}
 
 	override fun onActivityCreated(savedInstanceState: Bundle?)
 	{
@@ -51,12 +36,6 @@ class ViewDiaryFragment : BaseFragment(FragmentViewDiaryBinding::class)
 
 	override fun bindUi()
 	{
-		viewBindings.crop1.onClick {
-			navigateTo<LogListFragment> {
-				bundleOf(MainActivity.EXTRA_DIARY_ID to "")
-			}
-		}
-
 		viewBindings.menuFab.setOnClickListener {
 			viewBindings.menuFab.isExpanded = !viewBindings.menuFab.isExpanded
 			navigationPager?.isUserInputEnabled = !viewBindings.menuFab.isExpanded

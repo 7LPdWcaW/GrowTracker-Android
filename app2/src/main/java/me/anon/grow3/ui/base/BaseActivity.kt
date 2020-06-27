@@ -15,7 +15,7 @@ import androidx.core.graphics.get
 import androidx.viewbinding.ViewBinding
 import kotlinx.android.synthetic.main.include_toolbar.view.*
 import me.anon.grow3.R
-import me.anon.grow3.di.ApplicationComponent
+import me.anon.grow3.util.Injector
 import me.anon.grow3.util.component
 import kotlin.reflect.KClass
 
@@ -28,7 +28,7 @@ open class BaseActivity : AppCompatActivity
 		this._viewBinder = viewBinder.java
 	}
 
-	open val inject: (ApplicationComponent) -> Unit = {}
+	open val injector: Injector = {}
 
 	private var layoutRes = -1
 	private var _viewBinder: Class<out ViewBinding>? = null
@@ -62,7 +62,7 @@ open class BaseActivity : AppCompatActivity
 
 	override fun onCreate(savedInstanceState: Bundle?)
 	{
-		inject(component)
+		injector(component)
 
 		super.onCreate(savedInstanceState)
 

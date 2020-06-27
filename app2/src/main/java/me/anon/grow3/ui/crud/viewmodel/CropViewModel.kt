@@ -8,8 +8,8 @@ import me.anon.grow3.data.model.Crop
 import me.anon.grow3.data.model.Medium
 import me.anon.grow3.data.model.MediumType
 import me.anon.grow3.data.repository.DiariesRepository
-import me.anon.grow3.ui.crud.activity.CropActivity.Companion.EXTRA_CROP_ID
-import me.anon.grow3.ui.crud.activity.CropActivity.Companion.EXTRA_DIARY_ID
+import me.anon.grow3.ui.common.Extras.EXTRA_CROP_ID
+import me.anon.grow3.ui.common.Extras.EXTRA_DIARY_ID
 import me.anon.grow3.util.*
 import me.anon.grow3.util.states.asSuccess
 import me.anon.grow3.util.states.isSuccess

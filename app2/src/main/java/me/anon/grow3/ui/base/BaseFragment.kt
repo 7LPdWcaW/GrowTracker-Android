@@ -35,7 +35,7 @@ abstract class BaseFragment : Fragment
 		get() = (activity as BaseActivity).insets
 		set(value) { (activity as BaseActivity).insets = value }
 
-	abstract val inject: Injector
+	abstract val injector: Injector
 
 	override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View?
 	{
@@ -54,7 +54,7 @@ abstract class BaseFragment : Fragment
 	override fun onAttach(context: Context)
 	{
 		super.onAttach(context)
-		inject(component)
+		injector(component)
 	}
 
 	override fun onActivityCreated(savedInstanceState: Bundle?)

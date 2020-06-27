@@ -10,11 +10,10 @@ import kotlinx.android.synthetic.main.activity_crud_diary.*
 import kotlinx.coroutines.launch
 import me.anon.grow3.R
 import me.anon.grow3.databinding.ActivityCrudDiaryBinding
-import me.anon.grow3.di.ApplicationComponent
 import me.anon.grow3.ui.base.BaseActivity
 import me.anon.grow3.ui.crud.viewmodel.DiaryViewModel
+import me.anon.grow3.util.Injector
 import me.anon.grow3.util.ViewModelProvider
-import me.anon.grow3.util.component
 import me.anon.grow3.util.promptExit
 import javax.inject.Inject
 
@@ -25,7 +24,7 @@ class DiaryActivity : BaseActivity(ActivityCrudDiaryBinding::class)
 {
 	private var currentView = R.id.navigation_diary_details
 
-	override val inject: (ApplicationComponent) -> Unit = { component.inject(this) }
+	override val injector: Injector = { it.inject(this) }
 	@Inject internal lateinit var viewModelFactory: DiaryViewModel.Factory
 	private val viewModel: DiaryViewModel by viewModels { ViewModelProvider(viewModelFactory, this) }
 	private val viewBindings by viewBinding<ActivityCrudDiaryBinding>()

@@ -8,11 +8,11 @@ import me.anon.grow3.databinding.FragmentMainHostBinding
 import me.anon.grow3.ui.action.fragment.LogActionBottomSheetFragment
 import me.anon.grow3.ui.base.BaseFragment
 import me.anon.grow3.ui.base.BaseHostFragment
+import me.anon.grow3.ui.common.Extras.EXTRA_DIARY_ID
 import me.anon.grow3.ui.diaries.fragment.EmptyFragment
 import me.anon.grow3.ui.diaries.fragment.LogListFragment
 import me.anon.grow3.ui.diaries.fragment.ViewDiaryFragment
 import me.anon.grow3.ui.main.activity.MainActivity
-import me.anon.grow3.ui.main.activity.MainActivity.Companion.EXTRA_DIARY_ID
 import me.anon.grow3.ui.main.activity.MainActivity.Companion.EXTRA_NAVIGATE
 import me.anon.grow3.ui.main.activity.MainActivity.Companion.EXTRA_ORIGINATOR
 import me.anon.grow3.util.nameOf
@@ -82,7 +82,7 @@ class MainNavigatorFragment : BaseHostFragment(FragmentMainHostBinding::class)
 						val id = item.getString(EXTRA_DIARY_ID) ?: throw IllegalArgumentException("No diary ID set")
 						val fragment = ViewDiaryFragment().apply {
 							arguments = Bundle().apply {
-								putString(ViewDiaryFragment.EXTRA_DIARY_ID, id)
+								putString(EXTRA_DIARY_ID, id)
 							}
 						}
 						beginStack(fragment)

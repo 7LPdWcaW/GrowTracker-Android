@@ -6,12 +6,11 @@ import me.anon.grow3.data.repository.DiariesRepository
 import me.anon.grow3.databinding.ActivityDemoUiBinding
 import me.anon.grow3.ui.base.BaseActivity
 import me.anon.grow3.util.Injector
-import me.anon.grow3.util.component
 import javax.inject.Inject
 
 class DemoUiActivity : BaseActivity(ActivityDemoUiBinding::class)
 {
-	override val inject: Injector = { component.inject(this) }
+	override val injector: Injector = { it.inject(this) }
 	public val viewBindings by viewBinding<ActivityDemoUiBinding>()
 	@Inject internal lateinit var repository: DiariesRepository
 

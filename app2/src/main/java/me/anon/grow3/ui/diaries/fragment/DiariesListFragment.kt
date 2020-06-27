@@ -5,22 +5,18 @@ import androidx.fragment.app.viewModels
 import androidx.lifecycle.observe
 import androidx.recyclerview.widget.LinearLayoutManager
 import me.anon.grow3.databinding.FragmentDiariesBinding
-import me.anon.grow3.di.ApplicationComponent
 import me.anon.grow3.ui.base.BaseFragment
+import me.anon.grow3.ui.common.Extras.EXTRA_DIARY_ID
 import me.anon.grow3.ui.crud.activity.DiaryActivity
 import me.anon.grow3.ui.diaries.adapter.DiariesListAdapter
 import me.anon.grow3.ui.diaries.viewmodel.DiariesListViewModel
-import me.anon.grow3.ui.main.activity.MainActivity
-import me.anon.grow3.util.ViewModelProvider
-import me.anon.grow3.util.navigateTo
-import me.anon.grow3.util.newTaskForResult
-import me.anon.grow3.util.onClick
+import me.anon.grow3.util.*
 import me.anon.grow3.util.states.DataResult
 import javax.inject.Inject
 
 class DiariesListFragment : BaseFragment(FragmentDiariesBinding::class)
 {
-	override val inject: (ApplicationComponent) -> Unit = { it.inject(this) }
+	override val injector: Injector = { it.inject(this) }
 
 	@Inject internal lateinit var viewModelFactory: DiariesListViewModel.Factory
 	private val viewModel: DiariesListViewModel by viewModels { ViewModelProvider(viewModelFactory, this) }
@@ -31,7 +27,7 @@ class DiariesListFragment : BaseFragment(FragmentDiariesBinding::class)
 	{
 		adapter.onItemClick = { item ->
 			navigateTo<ViewDiaryFragment> {
-				bundleOf(MainActivity.EXTRA_DIARY_ID to item.id)
+				bundleOf(EXTRA_DIARY_ID to item.id)
 			}
 		}
 
