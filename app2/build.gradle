@@ -87,12 +87,13 @@ dependencies {
 	implementation 'com.github.PhilJay:MPAndroidChart:v2.1.6'
 	implementation 'com.github.AppIntro:AppIntro:6.0.0'
 	implementation 'com.github.Zhuinden:livedata-combinetuple-kt:1.0.0'
+	implementation 'com.github.haiithust:flexbox-layout:9cbd2c96ff'
 	implementation "com.hendraanggrian.material:collapsingtoolbarlayout-subtitle:1.1.0"
 
 	implementation 'com.infideap.drawerbehavior:drawer-behavior:1.0.1'
 
 	implementation 'com.google.android.material:material:1.2.0-beta01'
-	implementation 'com.google.android:flexbox:1.1.0'
+//	implementation 'com.google.android:flexbox:2.0.1'
 	implementation 'com.google.dagger:dagger:2.27'
 
 	implementation 'com.squareup.moshi:moshi-kotlin:1.8.0'

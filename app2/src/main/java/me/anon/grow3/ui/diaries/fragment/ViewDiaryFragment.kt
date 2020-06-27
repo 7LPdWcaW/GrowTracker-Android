@@ -2,14 +2,26 @@ package me.anon.grow3.ui.diaries.fragment
 
 import android.os.Bundle
 import androidx.core.view.updatePadding
+import androidx.fragment.app.viewModels
+import androidx.lifecycle.observe
+import me.anon.grow3.data.model.Crop
+import me.anon.grow3.data.model.Diary
+import me.anon.grow3.data.model.shortSummary
 import me.anon.grow3.databinding.FragmentViewDiaryBinding
+import me.anon.grow3.databinding.StubCropBinding
 import me.anon.grow3.ui.action.fragment.LogActionBottomSheetFragment
 import me.anon.grow3.ui.base.BaseFragment
+import me.anon.grow3.ui.diaries.viewmodel.ViewDiaryViewModel
 import me.anon.grow3.util.*
+import me.anon.grow3.util.states.DataResult
+import javax.inject.Inject
 
 class ViewDiaryFragment : BaseFragment(FragmentViewDiaryBinding::class)
 {
 	override val injector: Injector = { it.inject(this) }
+
+	@Inject internal lateinit var viewModelFactory: ViewDiaryViewModel.Factory
+	private val viewModel: ViewDiaryViewModel by viewModels { ViewModelProvider(viewModelFactory, this) }
 	private val viewBindings by viewBinding<FragmentViewDiaryBinding>()
 
 	override fun onActivityCreated(savedInstanceState: Bundle?)
@@ -27,12 +39,6 @@ class ViewDiaryFragment : BaseFragment(FragmentViewDiaryBinding::class)
 
 	override fun onBackPressed(): Boolean
 		= viewBindings.menuFab.isExpanded.also { viewBindings.menuFab.isExpanded = false }
-
-	override fun bindArguments(bundle: Bundle?)
-	{
-		viewBindings.collapsingToolbarLayout.title = "Diary Name"
-		viewBindings.collapsingToolbarLayout.subtitle = "10a/20b/30c/100"
-	}
 
 	override fun bindUi()
 	{
@@ -55,6 +61,29 @@ class ViewDiaryFragment : BaseFragment(FragmentViewDiaryBinding::class)
 
 	override fun bindVm()
 	{
+		viewModel.diary.observe(viewLifecycleOwner) { diary ->
+			when (diary)
+			{
+				is DataResult.Error -> {}
+				is DataResult.Success -> {
+					updateDiaryUi(diary.data)
+				}
+			}
+		}
+	}
 
+	private fun updateDiaryUi(diary: Diary)
+	{
+		viewBindings.collapsingToolbarLayout.title = diary.name
+		viewBindings.collapsingToolbarLayout.subtitle = diary.stages().shortSummary()
+		viewBindings.stagesView.setStages(diary)
+
+		viewBindings.cropsContainer.removeAllViews()
+		diary.crops.mapToView<Crop, StubCropBinding>(container = viewBindings.cropsContainer, mapper = { crop, view ->
+			view.cropName.text = crop.name
+			view.root.onClick {
+
+			}
+		})
 	}
 }

@@ -48,6 +48,8 @@
 	<string name="add_crop_medium_size">Volume</string>
 	<string name="add_crop_stages_title">Stages</string>
 
+	<string name="view_diary_crops_title">Crops</string>
+
 	<string name="light_type_led">LED</string>
 	<string name="light_type_hid">HID</string>
 	<string name="light_type_cfl">CFL</string>
@@ -71,6 +73,7 @@
 	<string name="stage_type_drying">Drying</string>
 	<string name="stage_type_curing">Curing</string>
 	<string name="stage_type_harvested">Harvested</string>
+
 
 	<string name="days" formatted="true">%d days</string>
 	<string name="today">Today</string>
