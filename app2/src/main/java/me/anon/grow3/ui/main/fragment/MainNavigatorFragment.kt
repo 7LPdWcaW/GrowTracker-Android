@@ -119,6 +119,7 @@ class MainNavigatorFragment : BaseHostFragment(FragmentMainHostBinding::class)
 		childFragmentManager.commitNow {
 			setCustomAnimations(android.R.anim.fade_in, android.R.anim.fade_out)
 			replace(R.id.fragment_container, fragment, "fragment")
+
 			activity().notifyPagerChange(this@MainNavigatorFragment)
 		}
 	}

@@ -46,6 +46,16 @@ class MainActivity : BaseActivity(ActivityMainBinding::class)
 
 		override fun getItemCount(): Int = pages.size
 		override fun createFragment(position: Int): Fragment = pages[position]
+
+		override fun getItemId(position: Int): Long
+		{
+			return pages[position].hashCode().toLong()
+		}
+
+		override fun containsItem(itemId: Long): Boolean
+		{
+			return pages.any { it.hashCode().toLong() == itemId }
+		}
 	}
 
 	private val adapter by lazy { PageAdapter(supportFragmentManager, lifecycle) }
@@ -199,10 +209,15 @@ class MainActivity : BaseActivity(ActivityMainBinding::class)
 
 	public fun addToStack(fragment: Fragment)
 	{
+		val index = adapter.pages.size
 		val pageHost = AdditionalPageHostFragment()
-		adapter.pages.add(pageHost)
 		pageHost.addPage(fragment)
-		notifyPagerChange(pageHost)
+		pageHost.launchWhenAttached {
+			viewBindings.viewPager.setCurrentItem(index, true)
+		}
+
+		adapter.pages.add(pageHost)
+		adapter.notifyItemInserted(index)
 	}
 
 	public fun clearStack(now: Boolean = false)
@@ -218,10 +233,16 @@ class MainActivity : BaseActivity(ActivityMainBinding::class)
 				{
 					while (adapter.pages.size > INDEX_MAIN + 1)
 					{
-						adapter.pages.removeAt(INDEX_MAIN + 1)
+						val page = adapter.pages.removeAt(INDEX_MAIN + 1)
+						supportFragmentManager.commitNow {
+							remove(page)
+						}
+
+						adapter.notifyItemRemoved(INDEX_MAIN + 1)
 					}
 
-					adapter.notifyItemRangeRemoved(INDEX_MAIN + 1, count - 1)
+					viewBindings.viewPager.forceLayout()
+					viewBindings.viewPager.invalidate()
 				}
 			}
 

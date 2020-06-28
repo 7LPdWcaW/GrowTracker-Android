@@ -1,6 +1,7 @@
 package me.anon.grow3.ui.diaries.fragment
 
 import android.os.Bundle
+import androidx.core.os.bundleOf
 import androidx.core.view.updatePadding
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.observe
@@ -11,6 +12,8 @@ import me.anon.grow3.databinding.FragmentViewDiaryBinding
 import me.anon.grow3.databinding.StubCropBinding
 import me.anon.grow3.ui.action.fragment.LogActionBottomSheetFragment
 import me.anon.grow3.ui.base.BaseFragment
+import me.anon.grow3.ui.common.Extras.EXTRA_CROP_ID
+import me.anon.grow3.ui.common.Extras.EXTRA_DIARY_ID
 import me.anon.grow3.ui.diaries.viewmodel.ViewDiaryViewModel
 import me.anon.grow3.util.*
 import me.anon.grow3.util.states.DataResult
@@ -82,7 +85,12 @@ class ViewDiaryFragment : BaseFragment(FragmentViewDiaryBinding::class)
 		diary.crops.mapToView<Crop, StubCropBinding>(container = viewBindings.cropsContainer, mapper = { crop, view ->
 			view.cropName.text = crop.name
 			view.cropImage.onClick {
-				navigateTo<ViewCropFragment>()
+				navigateTo<ViewCropFragment>() {
+					bundleOf(
+						EXTRA_DIARY_ID to diary.id,
+						EXTRA_CROP_ID to crop.id
+					)
+				}
 			}
 		})
 	}

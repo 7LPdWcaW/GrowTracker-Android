@@ -20,6 +20,7 @@ import me.anon.grow3.util.*
 import org.threeten.bp.LocalDate
 import org.threeten.bp.temporal.ChronoUnit
 
+
 class StageView : HorizontalScrollView
 {
 	private val stages = mutableListOf<Stage>()
@@ -126,7 +127,7 @@ class StageView : HorizontalScrollView
 		{
 			super.onLayout(changed, l, t, r, b)
 
-			if (changed && childCount == 3)
+			if (changed && (parentView as StageView).stages.size == 1)
 			{
 				var stageWidth = 0
 				childViews.forEachIndexed { index, view ->

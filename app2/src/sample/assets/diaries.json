@@ -242,9 +242,39 @@
 	},
 	{
 		"id": "0000-000001",
-		"name": "Test secondary diary",
+		"name": "Secondary diary",
 		"date": "2020-01-01T00:00:00+00:00",
-		"log": [],
-		"crops": []
+		"log": [
+			{
+				"id": "0001-000000",
+				"date": "2020-01-01T00:00:00+00:00",
+				"action": "StageChange",
+				"type": "Planted",
+				"notes": "Initial stage"
+			},{
+				"id": "0001-000001",
+				"date": "2020-02-01T00:00:00+00:00",
+				"action": "StageChange",
+				"type": "Vegetation"
+			},{
+				"id": "0001-000002",
+				"date": "2020-03-01T00:00:00+00:00",
+				"action": "StageChange",
+				"type": "Flower"
+			},{
+				"id": "0001-000003",
+				"date": "2020-06-01T00:00:00+00:00",
+				"action": "StageChange",
+				"type": "Curing"
+			}
+		],
+		"crops": [
+			{
+				"id": "0002-000001",
+				"name": "Default",
+				"genetics": "Unknown",
+				"numberOfPlants": 1
+			}
+		]
 	}
 ]
