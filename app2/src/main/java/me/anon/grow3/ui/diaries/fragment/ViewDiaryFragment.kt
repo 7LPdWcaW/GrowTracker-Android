@@ -81,8 +81,8 @@ class ViewDiaryFragment : BaseFragment(FragmentViewDiaryBinding::class)
 		viewBindings.cropsContainer.removeAllViews()
 		diary.crops.mapToView<Crop, StubCropBinding>(container = viewBindings.cropsContainer, mapper = { crop, view ->
 			view.cropName.text = crop.name
-			view.root.onClick {
-
+			view.cropImage.onClick {
+				navigateTo<ViewCropFragment>()
 			}
 		})
 	}
