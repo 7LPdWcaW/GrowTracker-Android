@@ -1,5 +1,6 @@
 package me.anon.grow3.ui.diaries.fragment
 
+import androidx.core.view.isVisible
 import androidx.core.view.updatePadding
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.observe
@@ -44,6 +45,12 @@ class ViewCropFragment : BaseFragment(FragmentViewCropBinding::class)
 		viewModel.diary.value?.asSuccess()?.let { diary ->
 			viewBindings.stagesView.setStages(diary, crop)
 			viewBindings.stagesView.isNestedScrollingEnabled = true
+
+			diary.mediumOf(crop)?.let { medium ->
+				viewBindings.lastMediumContainer.isVisible = true
+				viewBindings.mediumContent.text = medium.summary()
+				viewBindings.mediumDate.text = medium.date
+			}
 		}
 
 		viewBindings.cropName.editText!!.text = crop.name.asEditable()

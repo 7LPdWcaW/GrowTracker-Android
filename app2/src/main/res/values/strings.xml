@@ -48,6 +48,9 @@
 	<string name="add_crop_medium_size">Volume</string>
 	<string name="add_crop_stages_title">Stages</string>
 
+	<string name="view_crop_stages_title">Stages</string>
+
+	<string name="view_diary_stages_title">Stages summary</string>
 	<string name="view_diary_crops_title">Crops</string>
 
 	<string name="light_type_led">LED</string>

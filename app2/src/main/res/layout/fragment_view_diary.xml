@@ -79,7 +79,7 @@
 						android:layout_width="wrap_content"
 						android:layout_height="wrap_content"
 						android:id="@+id/stages_header"
-						android:text="@string/add_diary_stages_title"
+						android:text="@string/view_diary_stages_title"
 						app:layout_constraintTop_toTopOf="parent"
 						app:layout_constraintStart_toStartOf="parent"
 						android:layout_marginBottom="0dp"
