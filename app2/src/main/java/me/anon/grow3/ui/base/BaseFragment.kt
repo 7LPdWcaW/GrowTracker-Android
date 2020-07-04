@@ -14,7 +14,6 @@ import kotlinx.coroutines.*
 import me.anon.grow3.util.Injector
 import me.anon.grow3.util.component
 import me.anon.grow3.util.then
-import timber.log.Timber
 import kotlin.reflect.KClass
 
 abstract class BaseFragment : Fragment
@@ -86,7 +85,6 @@ abstract class BaseFragment : Fragment
 			attachJob?.await()
 		}
 
-		Timber.e("from instance %s", savedInstanceState)
 		bindArguments(arguments ?: savedInstanceState)
 		bindUi()
 		bindVm()
