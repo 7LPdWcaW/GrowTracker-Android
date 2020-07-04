@@ -2,6 +2,7 @@ package me.anon.grow3.ui.diaries.fragment
 
 import android.os.Bundle
 import androidx.core.os.bundleOf
+import androidx.lifecycle.observe
 import me.anon.grow3.databinding.FragmentViewDiaryLogsBinding
 import me.anon.grow3.ui.base.BaseFragment
 import me.anon.grow3.ui.common.Extras.EXTRA_DIARY_ID
@@ -24,7 +25,10 @@ class LogListFragment : BaseFragment(FragmentViewDiaryLogsBinding::class)
 			(requireActivity() as MainActivity).clearStack()
 		}
 
-		viewBindings.includeToolbar.toolbar.updateMargin(insets.left, insets.top, insets.right)
+		insets.observe(viewLifecycleOwner) {
+			viewBindings.includeToolbar.toolbar.updateMargin(it.left, it.top, it.right)
+		}
+
 		viewBindings.test.onClick {
 			navigateTo<LogListFragment> {
 				bundleOf(EXTRA_DIARY_ID to "")

@@ -22,9 +22,9 @@ class ViewCropFragment : BaseFragment(FragmentViewCropBinding::class)
 
 	override fun bindUi()
 	{
-		with (insets) {
-			viewBindings.includeToolbar.toolbar.updateMargin(left, top, right)
-			viewBindings.content.updatePadding(left, right = right, bottom = bottom + 72.dp(requireContext()))
+		insets.observe(viewLifecycleOwner) {
+			viewBindings.includeToolbar.toolbar.updateMargin(it.left, it.top, it.right)
+			viewBindings.content.updatePadding(it.left, right = it.right, bottom = it.bottom + 72.dp(requireContext()))
 		}
 	}
 

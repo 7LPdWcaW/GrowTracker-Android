@@ -163,7 +163,7 @@ class MainActivity : BaseActivity(ActivityMainBinding::class)
 			override fun onStateChanged(bottomSheet: View, newState: Int)
 			{
 				adapter.getFragment(INDEX_MENU)?.let {
-					it.requireView().updatePadding(bottom = insets.bottom)
+					it.requireView().updatePadding(bottom = insets.value?.bottom ?: 0)
 					if (newState == STATE_COLLAPSED)
 					{
 						it.requireView().updatePadding(bottom = layoutSheetBehavior.peekHeight)

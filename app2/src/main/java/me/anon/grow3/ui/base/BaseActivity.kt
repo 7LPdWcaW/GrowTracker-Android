@@ -12,6 +12,8 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.widget.Toolbar
 import androidx.core.graphics.drawable.toBitmap
 import androidx.core.graphics.get
+import androidx.lifecycle.LiveData
+import androidx.lifecycle.MutableLiveData
 import androidx.viewbinding.ViewBinding
 import kotlinx.android.synthetic.main.include_toolbar.view.*
 import me.anon.grow3.R
@@ -46,7 +48,8 @@ open class BaseActivity : AppCompatActivity
 			field = value
 		}
 
-	open var insets: Rect = Rect()
+	private val _insets: MutableLiveData<Rect> = MutableLiveData(Rect())
+	open val insets: LiveData<Rect> = _insets
 
 	@ColorInt
 	protected var statusBarColor: Int = -1
@@ -74,7 +77,7 @@ open class BaseActivity : AppCompatActivity
 
 			viewBinder.root.setOnApplyWindowInsetsListener { v, i ->
 				v.onApplyWindowInsets(i).also {
-					insets = Rect(i.systemWindowInsetLeft, i.systemWindowInsetTop, i.systemWindowInsetRight, i.systemWindowInsetBottom)
+					_insets.postValue(Rect(i.systemWindowInsetLeft, i.systemWindowInsetTop, i.systemWindowInsetRight, i.systemWindowInsetBottom))
 				}
 				i.consumeSystemWindowInsets()
 			}

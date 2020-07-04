@@ -8,10 +8,10 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.appcompat.widget.Toolbar
 import androidx.fragment.app.Fragment
+import androidx.lifecycle.LiveData
 import androidx.viewbinding.ViewBinding
 import me.anon.grow3.util.Injector
 import me.anon.grow3.util.component
-import timber.log.Timber
 import kotlin.reflect.KClass
 
 abstract class BaseFragment : Fragment
@@ -32,9 +32,8 @@ abstract class BaseFragment : Fragment
 			viewBinder as T
 		}
 
-	open var insets: Rect
+	open val insets: LiveData<Rect>
 		get() = (activity as BaseActivity).insets
-		set(value) { (activity as BaseActivity).insets = value }
 
 	abstract val injector: Injector
 
@@ -62,7 +61,6 @@ abstract class BaseFragment : Fragment
 	{
 		super.onActivityCreated(savedInstanceState)
 
-		Timber.e("from instance %s", savedInstanceState)
 		bindArguments(arguments ?: savedInstanceState)
 		bindUi()
 		bindVm()

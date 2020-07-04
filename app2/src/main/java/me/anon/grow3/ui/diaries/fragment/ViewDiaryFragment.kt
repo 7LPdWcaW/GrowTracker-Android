@@ -31,13 +31,6 @@ class ViewDiaryFragment : BaseFragment(FragmentViewDiaryBinding::class)
 	{
 		super.onActivityCreated(savedInstanceState)
 		setToolbar(viewBindings.toolbar)
-
-		with (insets) {
-			viewBindings.menuFab.updateMargin(bottom = bottom + 16.dp(requireContext()), top = top + 16.dp(requireContext()))
-			viewBindings.sheet.updatePadding(left, top, right, bottom)
-			viewBindings.toolbar.updateMargin(left, top, right)
-			viewBindings.content.updatePadding(left, right = right, bottom = bottom + 72.dp(requireContext()))
-		}
 	}
 
 	override fun onBackPressed(): Boolean
@@ -45,6 +38,15 @@ class ViewDiaryFragment : BaseFragment(FragmentViewDiaryBinding::class)
 
 	override fun bindUi()
 	{
+		insets.observe(viewLifecycleOwner) {
+			with (it) {
+				viewBindings.menuFab.updateMargin(bottom = bottom + 16.dp(requireContext()), top = top + 16.dp(requireContext()))
+				viewBindings.sheet.updatePadding(left, top, right, bottom)
+				viewBindings.toolbar.updateMargin(left, top, right)
+				viewBindings.content.updatePadding(left, right = right, bottom = bottom + 72.dp(requireContext()))
+			}
+		}
+
 		viewBindings.menuFab.setOnClickListener {
 			viewBindings.menuFab.isExpanded = !viewBindings.menuFab.isExpanded
 			navigationPager?.isUserInputEnabled = !viewBindings.menuFab.isExpanded
