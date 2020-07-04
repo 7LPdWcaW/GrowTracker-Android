@@ -4,6 +4,7 @@ import androidx.core.view.isVisible
 import androidx.core.view.updatePadding
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.observe
+import me.anon.grow3.R
 import me.anon.grow3.data.model.Crop
 import me.anon.grow3.databinding.FragmentViewCropBinding
 import me.anon.grow3.ui.base.BaseFragment
@@ -49,7 +50,12 @@ class ViewCropFragment : BaseFragment(FragmentViewCropBinding::class)
 			diary.mediumOf(crop)?.let { medium ->
 				viewBindings.lastMediumContainer.isVisible = true
 				viewBindings.mediumContent.text = medium.summary()
-				viewBindings.mediumDate.text = medium.date
+				viewBindings.mediumDate.text = R.string.days.string(medium.date.nowDifferenceDays()) +
+					"/" +
+					diary.stageWhen(crop, medium).transform {
+						"" + this.days + this.stage.type.strRes.string()[0]
+					}
+
 			}
 		}
 

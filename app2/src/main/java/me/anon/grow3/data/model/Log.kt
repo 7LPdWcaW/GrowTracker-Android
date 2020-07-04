@@ -2,7 +2,7 @@ package me.anon.grow3.data.model
 
 import com.fasterxml.jackson.annotation.JsonSubTypes
 import com.fasterxml.jackson.annotation.JsonTypeInfo
-import me.anon.grow3.util.asString
+import me.anon.grow3.util.*
 import org.threeten.bp.ZonedDateTime
 import java.util.*
 
@@ -27,3 +27,9 @@ abstract class Log(
 {
 	open fun summary(): CharSequence = ""
 }
+
+data class LogChange(
+	var days: Int
+) : Delta()
+
+public fun Duo<Log>.difference(): LogChange = LogChange((first.date and second!!.date).dateDifferenceDays())
