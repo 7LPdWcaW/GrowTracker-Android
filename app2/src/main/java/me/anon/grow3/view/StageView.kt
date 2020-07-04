@@ -4,22 +4,23 @@ import android.content.Context
 import android.util.AttributeSet
 import android.view.LayoutInflater
 import android.view.MotionEvent
+import android.view.ViewGroup
+import android.view.ViewGroup.LayoutParams.MATCH_PARENT
 import android.widget.FrameLayout
 import android.widget.HorizontalScrollView
 import android.widget.LinearLayout
+import androidx.core.view.get
 import androidx.core.view.plusAssign
+import androidx.core.view.updateLayoutParams
 import me.anon.grow3.R
 import me.anon.grow3.data.model.Crop
 import me.anon.grow3.data.model.Diary
 import me.anon.grow3.data.model.Stage
 import me.anon.grow3.databinding.StubViewArrowBinding
 import me.anon.grow3.databinding.StubViewStageBinding
-import me.anon.grow3.util.asFormattedString
-import me.anon.grow3.util.asLocalDate
-import me.anon.grow3.util.string
+import me.anon.grow3.util.*
 import org.threeten.bp.LocalDate
 import org.threeten.bp.temporal.ChronoUnit
-
 
 class StageView : HorizontalScrollView
 {
@@ -68,6 +69,11 @@ class StageView : HorizontalScrollView
 
 			val arrow = ArrowViewStub(context)
 			arrow.single = stages.size == 1
+			arrow.layoutParams = ViewGroup.LayoutParams(
+				MATCH_PARENT,
+				MATCH_PARENT
+			)
+
 			container += arrow
 
 			var stage2Date = LocalDate.now()
@@ -88,6 +94,28 @@ class StageView : HorizontalScrollView
 
 		requestLayout()
 		container.requestLayout()
+	}
+
+	override fun onMeasure(widthMeasureSpec: Int, heightMeasureSpec: Int)
+	{
+		super.onMeasure(widthMeasureSpec, heightMeasureSpec)
+		val width = MeasureSpec.getSize(widthMeasureSpec)
+
+		if (container.childCount == 3)
+		{
+			val stageWidth = container[0].measuredWidth
+			(container[1] as ArrowViewStub).updateLayoutParams {
+				this.width = width - (stageWidth * 2)
+			}
+		}
+		else
+		{
+			container.childViews.forEach {
+				(it as? ArrowViewStub)?.updateLayoutParams {
+					this.width = width / 3
+				}
+			}
+		}
 	}
 
 	override fun onLayout(changed: Boolean, l: Int, t: Int, r: Int, b: Int)
@@ -121,27 +149,6 @@ class StageView : HorizontalScrollView
 			orientation = HORIZONTAL
 			isFillViewport = true
 			//setPadding(12.dp(this), 0, 12.dp(this), 0)
-		}
-
-		override fun onLayout(changed: Boolean, l: Int, t: Int, r: Int, b: Int)
-		{
-			super.onLayout(changed, l, t, r, b)
-
-//			if (changed && (parentView as StageView).stages.size == 1)
-//			{
-//				var stageWidth = 0
-//				childViews.forEachIndexed { index, view ->
-//					when (index)
-//					{
-//						0 -> {
-//							view.layout(l, t, view.measuredWidth, b)
-//							stageWidth = view.measuredWidth
-//						}
-//						1 -> view.layout(stageWidth, t, r - stageWidth, b)
-//						2 -> view.layout(r - stageWidth, t, r, b)
-//					}
-//				}
-//			}
 		}
 	}
 
@@ -193,43 +200,19 @@ class StageView : HorizontalScrollView
 			bindings.stageLabel.text = R.string.days.string(context, days)
 		}
 
-		override fun onLayout(changed: Boolean, left: Int, top: Int, right: Int, bottom: Int)
-		{
-			super.onLayout(changed, left, top, right + 300, bottom)
-		}
-
 		override fun onMeasure(widthMeasureSpec: Int, heightMeasureSpec: Int)
 		{
 			super.onMeasure(widthMeasureSpec, heightMeasureSpec)
-			
-			setMeasuredDimension(measuredWidth + 300, measuredHeight)
-		}
 
-//		override fun onMeasure(widthMeasureSpec: Int, heightMeasureSpec: Int)
-//		{
-//			if (single)
-//			{
-//				val parent = parentView.parentView
-////				val width = parentView.measuredWidth - ((parentView as ViewGroup)[0].measuredWidth * 2)
-//				val height = parent.measuredHeight - parent.paddingTop - parent.paddingBottom
-//				super.onMeasure(
-////					MeasureSpec.makeMeasureSpec(width, MeasureSpec.EXACTLY),
-////					MeasureSpec.makeMeasureSpec(height, MeasureSpec.EXACTLY)
-//				widthMeasureSpec, MeasureSpec.makeMeasureSpec(height, MeasureSpec.EXACTLY)
-//				)
-//			}
-//			else
-//			{
-//				val parent = parentView.parentView
-//				val width = parent.measuredWidth
-//				val height = parent.measuredHeight - parent.paddingTop - parent.paddingBottom
-//				val longWidth = context.resources.getBoolean(R.bool.long_width)
-//				val arrowWidth = longWidth then width / 4 ?: width / 3
-//				super.onMeasure(
-//					MeasureSpec.makeMeasureSpec(arrowWidth, MeasureSpec.EXACTLY),
-//					MeasureSpec.makeMeasureSpec(height, MeasureSpec.EXACTLY)
-//				)
-//			}
-//		}
+			var width = MeasureSpec.getSize(widthMeasureSpec)
+			val mode = MeasureSpec.getMode(widthMeasureSpec)
+
+			if (parentView.parentView.measuredWidth != 0 && mode == MeasureSpec.AT_MOST)
+			{
+				width = parentView.parentView.measuredWidth / 3
+			}
+
+			setMeasuredDimension(width, measuredHeight)
+		}
 	}
 }

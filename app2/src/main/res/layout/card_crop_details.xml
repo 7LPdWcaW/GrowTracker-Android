@@ -1,0 +1,76 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<com.google.android.material.card.MaterialCardView
+	xmlns:android="http://schemas.android.com/apk/res/android"
+	xmlns:app="http://schemas.android.com/apk/res-auto"
+	xmlns:tools="http://schemas.android.com/tools"
+	android:layout_width="match_parent"
+	android:layout_height="wrap_content"
+	style="@style/Card"
+>
+	<androidx.constraintlayout.widget.ConstraintLayout
+		android:layout_width="match_parent"
+		android:layout_height="wrap_content"
+		android:padding="@dimen/content_margin"
+	>
+		<com.google.android.material.textfield.TextInputLayout
+			android:layout_width="0dp"
+			android:layout_height="wrap_content"
+			android:id="@+id/crop_name"
+			android:hint="Crop name"
+			app:layout_constraintTop_toTopOf="parent"
+			app:layout_constraintStart_toStartOf="parent"
+			app:layout_constraintEnd_toEndOf="parent"
+			style="@style/Input"
+		>
+			<com.google.android.material.textfield.TextInputEditText
+				android:layout_width="match_parent"
+				android:layout_height="wrap_content"
+				android:singleLine="true"
+				android:maxLines="1"
+				android:imeOptions="actionNext"
+			/>
+		</com.google.android.material.textfield.TextInputLayout>
+
+		<com.google.android.material.textfield.TextInputLayout
+			android:layout_width="0dp"
+			android:layout_height="wrap_content"
+			android:id="@+id/crop_genetics"
+			android:hint="@string/add_crop_details_genetics"
+			android:layout_marginTop="@dimen/section_spacing"
+			app:layout_constraintTop_toBottomOf="@id/crop_name"
+			app:layout_constraintEnd_toEndOf="parent"
+			app:layout_constraintStart_toStartOf="parent"
+		>
+			<com.google.android.material.textfield.TextInputEditText
+				android:layout_width="match_parent"
+				android:layout_height="wrap_content"
+				android:singleLine="true"
+				android:maxLines="1"
+				android:imeOptions="actionNext"
+			/>
+		</com.google.android.material.textfield.TextInputLayout>
+
+		<com.google.android.material.textfield.TextInputLayout
+			android:layout_width="0dp"
+			android:layout_height="wrap_content"
+			android:id="@+id/crop_num_plants"
+			android:hint="@string/add_crop_details_number_plants"
+			android:layout_marginTop="@dimen/section_spacing"
+			app:layout_constraintTop_toBottomOf="@id/crop_genetics"
+			app:layout_constraintStart_toStartOf="parent"
+			app:layout_constraintEnd_toEndOf="parent"
+			android:transitionName="crop_genetics"
+		>
+			<com.google.android.material.textfield.TextInputEditText
+				android:layout_width="match_parent"
+				android:layout_height="wrap_content"
+				android:singleLine="true"
+				android:maxLines="1"
+				android:imeOptions="actionNext"
+				android:text="1"
+				android:inputType="number"
+			/>
+		</com.google.android.material.textfield.TextInputLayout>
+	</androidx.constraintlayout.widget.ConstraintLayout>
+</com.google.android.material.card.MaterialCardView>

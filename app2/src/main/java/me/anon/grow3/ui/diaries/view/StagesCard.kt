@@ -2,6 +2,7 @@ package me.anon.grow3.ui.diaries.view
 
 import android.view.LayoutInflater
 import android.view.View
+import android.view.ViewGroup
 import androidx.core.view.isVisible
 import me.anon.grow3.data.model.Crop
 import me.anon.grow3.data.model.Diary
@@ -14,7 +15,8 @@ class StagesCard(
 	title: String? = null
 ) : Card<CardStagesBinding>(title)
 {
-	override fun createView(inflater: LayoutInflater): CardStagesBinding = CardStagesBinding.inflate(inflater)
+	override fun createView(inflater: LayoutInflater, parent: ViewGroup): CardStagesBinding
+		= CardStagesBinding.inflate(inflater, parent, false)
 	override fun bindView(view: View): CardStagesBinding = CardStagesBinding.bind(view)
 
 	override fun bind(view: CardStagesBinding)

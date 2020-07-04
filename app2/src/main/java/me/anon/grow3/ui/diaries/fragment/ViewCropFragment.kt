@@ -7,6 +7,9 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import me.anon.grow3.data.model.Crop
 import me.anon.grow3.databinding.FragmentViewCropBinding
 import me.anon.grow3.ui.base.BaseFragment
+import me.anon.grow3.ui.diaries.view.CropDetailsCard
+import me.anon.grow3.ui.diaries.view.CropLinksCard
+import me.anon.grow3.ui.diaries.view.LogMediumCard
 import me.anon.grow3.ui.diaries.view.StagesCard
 import me.anon.grow3.ui.diaries.viewmodel.ViewCropViewModel
 import me.anon.grow3.util.Injector
@@ -52,27 +55,17 @@ class ViewCropFragment : BaseFragment(FragmentViewCropBinding::class)
 	private fun updateCropUi(crop: Crop)
 	{
 		viewModel.diary.value?.asSuccess()?.let { diary ->
-			viewAdapter.cards.add(StagesCard(title = "TEST", diary = diary, crop = crop))
+			viewAdapter.cards.clear()
+			viewAdapter.cards.add(StagesCard(diary = diary, crop = crop))
+			viewAdapter.cards.add(CropDetailsCard(diary = diary, crop = crop))
+
+			diary.mediumOf(crop)?.let { medium ->
+				viewAdapter.cards.add(LogMediumCard(diary = diary, crop = crop, medium = medium))
+			}
+
+			viewAdapter.cards.add(CropLinksCard(diary = diary, crop = crop))
 
 			viewAdapter.notifyDataSetChanged()
-
-//			viewBindings.stagesView.setStages(diary, crop)
-//			viewBindings.stagesView.isNestedScrollingEnabled = true
-//
-//			diary.mediumOf(crop)?.let { medium ->
-//				viewBindings.lastMediumContainer.isVisible = true
-//				viewBindings.mediumContent.text = medium.summary()
-//				viewBindings.mediumDate.text = R.string.days.string(medium.date.nowDifferenceDays()) +
-//					"/" +
-//					diary.stageWhen(crop, medium).transform {
-//						"" + this.days + this.stage.type.strRes.string()[0]
-//					}
-//
-//			}
 		}
-//
-//		viewBindings.cropName.editText!!.text = crop.name.asEditable()
-//		viewBindings.cropGenetics.editText!!.text = crop.genetics?.asEditable()
-//		viewBindings.cropNumPlants.editText!!.text = crop.numberOfPlants.asString().asEditable()
 	}
 }

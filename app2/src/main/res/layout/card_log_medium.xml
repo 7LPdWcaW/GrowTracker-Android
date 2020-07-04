@@ -1,0 +1,59 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<com.google.android.material.card.MaterialCardView
+	xmlns:android="http://schemas.android.com/apk/res/android"
+	xmlns:app="http://schemas.android.com/apk/res-auto"
+	xmlns:tools="http://schemas.android.com/tools"
+	android:layout_width="match_parent"
+	android:layout_height="wrap_content"
+	android:id="@+id/last_medium_container"
+	android:visibility="gone"
+	tools:visibility="visible"
+	style="@style/Card"
+>
+	<androidx.constraintlayout.widget.ConstraintLayout
+		android:layout_width="match_parent"
+		android:layout_height="wrap_content"
+		android:padding="16dp"
+	>
+		<TextView
+			android:layout_width="wrap_content"
+			android:layout_height="wrap_content"
+			android:id="@+id/medium_header"
+			android:text="Medium change"
+			app:layout_constraintHorizontal_bias="0"
+			app:layout_constraintTop_toTopOf="parent"
+			app:layout_constraintStart_toStartOf="parent"
+			app:layout_constraintEnd_toStartOf="@id/medium_date"
+			style="@style/Text.Header"
+		/>
+
+		<TextView
+			android:layout_width="0dp"
+			android:layout_height="wrap_content"
+			android:id="@+id/medium_date"
+			android:gravity="end"
+			android:layout_marginStart="12dp"
+			app:layout_constraintTop_toTopOf="parent"
+			app:layout_constraintEnd_toEndOf="parent"
+			app:layout_constraintStart_toEndOf="@id/medium_header"
+			app:layout_constraintHorizontal_bias="1"
+			android:maxLines="2"
+			android:paddingBottom="8dp"
+			tools:text="3 days ago (22f/100)"
+			style="@style/Text.Header.Sub"
+		/>
+
+		<com.google.android.material.textview.MaterialTextView
+			android:layout_width="match_parent"
+			android:layout_height="wrap_content"
+			android:id="@+id/medium_content"
+			android:padding="12dp"
+			app:layout_constraintTop_toBottomOf="@id/medium_date"
+			app:layout_constraintStart_toStartOf="parent"
+			app:layout_constraintEnd_toStartOf="parent"
+			tools:text="- Some water details to be custom designed for each log type\n- Another \n- Another \n- Another"
+			style="@style/Text"
+		/>
+	</androidx.constraintlayout.widget.ConstraintLayout>
+</com.google.android.material.card.MaterialCardView>

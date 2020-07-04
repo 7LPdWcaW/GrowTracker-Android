@@ -6,31 +6,35 @@
 	xmlns:tools="http://schemas.android.com/tools"
 	android:layout_width="match_parent"
 	android:layout_height="wrap_content"
+	style="@style/Card"
 >
 	<androidx.constraintlayout.widget.ConstraintLayout
 		android:layout_width="match_parent"
 		android:layout_height="wrap_content"
 		android:padding="16dp"
 	>
-		<TextView
-			android:layout_width="wrap_content"
+		<com.google.android.material.textview.MaterialTextView
+			android:layout_width="0dp"
 			android:layout_height="wrap_content"
-			android:id="@+id/stages_header"
-			android:text="@string/view_diary_stages_title"
+			android:id="@+id/view_logs"
+			android:text="Filter logs"
+			android:drawableStart="@drawable/menu_ic_calendar"
 			app:layout_constraintTop_toTopOf="parent"
 			app:layout_constraintStart_toStartOf="parent"
-			app:layout_constraintBottom_toTopOf="@id/stages_view"
-			android:layout_marginBottom="@dimen/section_spacing"
-			app:layout_goneMarginBottom="0dp"
-			android:visibility="gone"
-			android:textAppearance="@style/Text.Header"
+			app:layout_constraintEnd_toEndOf="parent"
+			style="@style/Text.Link"
 		/>
 
-		<me.anon.grow3.view.StageView
-			android:layout_width="match_parent"
+		<com.google.android.material.textview.MaterialTextView
+			android:layout_width="0dp"
 			android:layout_height="wrap_content"
-			android:id="@+id/stages_view"
-			app:layout_constraintBottom_toBottomOf="parent"
+			android:id="@+id/view_stats"
+			android:text="Filter stats"
+			android:drawableStart="@drawable/menu_ic_calendar"
+			app:layout_constraintTop_toBottomOf="@id/view_logs"
+			app:layout_constraintStart_toStartOf="parent"
+			app:layout_constraintEnd_toEndOf="parent"
+			style="@style/Text.Link.End"
 		/>
 	</androidx.constraintlayout.widget.ConstraintLayout>
 </com.google.android.material.card.MaterialCardView>
