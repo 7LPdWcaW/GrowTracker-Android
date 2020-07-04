@@ -111,8 +111,13 @@ class MainNavigatorFragment : BaseHostFragment(FragmentMainHostBinding::class)
 			setCustomAnimations(android.R.anim.fade_in, android.R.anim.fade_out)
 			replace(R.id.fragment_container, fragment.newInstance().apply {
 				arguments = args
-				launchWhenAttached { activity().notifyPagerChange(INDEX_MAIN) }
 			}, "fragment")
+
+			runOnCommit {
+				activity().viewBindings.viewPager.post {
+					activity().viewBindings.viewPager.setCurrentItem(INDEX_MAIN, true)
+				}
+			}
 		}
 	}
 

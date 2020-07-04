@@ -8,12 +8,10 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.appcompat.widget.Toolbar
 import androidx.fragment.app.Fragment
-import androidx.lifecycle.lifecycleScope
 import androidx.viewbinding.ViewBinding
-import kotlinx.coroutines.*
 import me.anon.grow3.util.Injector
 import me.anon.grow3.util.component
-import me.anon.grow3.util.then
+import timber.log.Timber
 import kotlin.reflect.KClass
 
 abstract class BaseFragment : Fragment
@@ -39,21 +37,6 @@ abstract class BaseFragment : Fragment
 		set(value) { (activity as BaseActivity).insets = value }
 
 	abstract val injector: Injector
-	private var attachJob: Deferred<Unit>? = null
-	private val scope = CoroutineScope(Job() + Dispatchers.Main)
-
-	public fun launchWhenAttached(block: suspend CoroutineScope.() -> Unit)
-	{
-		attachJob = scope.async(start = isAdded then CoroutineStart.DEFAULT ?: CoroutineStart.LAZY) {
-			block()
-		}
-	}
-
-	override fun onDestroy()
-	{
-		super.onDestroy()
-		scope.cancel()
-	}
 
 	override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View?
 	{
@@ -73,18 +56,13 @@ abstract class BaseFragment : Fragment
 	{
 		super.onAttach(context)
 		injector(component)
-
-
 	}
 
 	override fun onActivityCreated(savedInstanceState: Bundle?)
 	{
 		super.onActivityCreated(savedInstanceState)
 
-		lifecycleScope.launch {
-			attachJob?.await()
-		}
-
+		Timber.e("from instance %s", savedInstanceState)
 		bindArguments(arguments ?: savedInstanceState)
 		bindUi()
 		bindVm()

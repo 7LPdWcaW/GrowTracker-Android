@@ -11,6 +11,7 @@ import androidx.core.view.updatePadding
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.commit
 import androidx.fragment.app.commitNow
+import androidx.lifecycle.lifecycleScope
 import androidx.viewpager2.adapter.FragmentStateAdapter
 import androidx.viewpager2.widget.ViewPager2
 import com.google.android.material.bottomsheet.BottomSheetBehavior
@@ -47,14 +48,16 @@ class MainActivity : BaseActivity(ActivityMainBinding::class)
 	)
 	{
 		open val id: Long = args?.let { codeOf(it).toLong() } ?: -1L
-		open fun newInstance(): Fragment = fragment.newInstance().apply {
+		open fun newInstance(): BaseFragment = fragment.newInstance().apply {
 			arguments = args
-		}
+		} as BaseFragment
+
 		public fun saveState(): Bundle = Bundle().apply {
 			args?.let { putAll(it) }
 			putLong("state.id", id)
 			putString("state.fragment", fragment.name)
 		}
+
 		public fun restoreState(bundle: Bundle)
 		{
 			//id = bundle.getLong("state.id")
@@ -91,8 +94,6 @@ class MainActivity : BaseActivity(ActivityMainBinding::class)
 		override fun getItemId(position: Int): Long = pages[position].id
 		override fun containsItem(itemId: Long): Boolean = pages.any { it.id == itemId }
 		public fun getFragment(position: Int): Fragment? = activity.supportFragmentManager.findFragmentByTag("f" + getItemId(position))
-
-
 	}
 
 	private var adapter = PageAdapter(this)
@@ -118,7 +119,6 @@ class MainActivity : BaseActivity(ActivityMainBinding::class)
 			}
 
 			adapter.notifyDataSetChanged()
-//			adapter.restoreState(savedInstanceState.getParcelable("state.adapter")!!)
 		}
 	}
 
@@ -256,9 +256,8 @@ class MainActivity : BaseActivity(ActivityMainBinding::class)
 
 		adapter.pages.add(index, object : FragmentInstance(AdditionalPageHostFragment::class.java, transaction)
 		{
-			override fun newInstance(): Fragment = AdditionalPageHostFragment().apply {
-				arguments = args
-				launchWhenAttached {
+			override fun newInstance(): BaseFragment = super.newInstance().apply {
+				lifecycleScope.launchWhenCreated {
 					viewBindings.viewPager.post {
 						viewBindings.viewPager.setCurrentItem(index, true)
 					}
