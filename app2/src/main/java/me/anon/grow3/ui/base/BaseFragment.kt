@@ -11,6 +11,7 @@ import androidx.fragment.app.Fragment
 import androidx.viewbinding.ViewBinding
 import me.anon.grow3.util.Injector
 import me.anon.grow3.util.component
+import timber.log.Timber
 import kotlin.reflect.KClass
 
 abstract class BaseFragment : Fragment
@@ -61,6 +62,7 @@ abstract class BaseFragment : Fragment
 	{
 		super.onActivityCreated(savedInstanceState)
 
+		Timber.e("from instance %s", savedInstanceState)
 		bindArguments(arguments ?: savedInstanceState)
 		bindUi()
 		bindVm()
@@ -68,7 +70,7 @@ abstract class BaseFragment : Fragment
 
 	open fun onBackPressed(): Boolean = false
 	open fun bindArguments(bundle: Bundle?) {}
-	abstract fun bindUi()
+	open fun bindUi(){}
 	open fun bindVm(){}
 
 	public fun setToolbar(toolbar: Toolbar)

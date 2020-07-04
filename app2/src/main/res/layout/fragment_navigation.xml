@@ -15,7 +15,6 @@
 		app:layout_constraintEnd_toEndOf="parent"
 		app:layout_constraintTop_toTopOf="parent"
 		app:layout_constraintWidth_percent="0.85"
-		android:paddingTop="24dp"
 	>
 		<androidx.fragment.app.FragmentContainerView
 			android:layout_width="match_parent"
