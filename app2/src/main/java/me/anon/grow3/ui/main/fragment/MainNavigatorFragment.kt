@@ -17,6 +17,7 @@ import me.anon.grow3.ui.main.activity.MainActivity.Companion.EXTRA_NAVIGATE
 import me.anon.grow3.ui.main.activity.MainActivity.Companion.EXTRA_ORIGINATOR
 import me.anon.grow3.ui.main.activity.MainActivity.Companion.INDEX_MAIN
 import me.anon.grow3.util.nameOf
+import kotlin.random.Random
 
 /**
  * Main navigator fragment for the application. [MainActivity] controls the UI and distribution
@@ -68,6 +69,11 @@ class MainNavigatorFragment : BaseHostFragment(FragmentMainHostBinding::class)
 						clearStack(true)
 					}
 				}
+
+				// TODO: we should re-open a page if it exists in the stack,
+				// but we cant because we clear the stack also. Possibly look
+				// for the fragment in childFragmentManager first?
+				item.putInt("nonce", Random.nextInt())
 
 				when (route)
 				{
