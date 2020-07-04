@@ -194,11 +194,11 @@
 						android:layout_width="wrap_content"
 						android:layout_height="wrap_content"
 						android:id="@+id/medium_header"
+						android:text="Medium change"
 						app:layout_constraintHorizontal_bias="0"
 						app:layout_constraintTop_toTopOf="parent"
 						app:layout_constraintStart_toStartOf="parent"
 						app:layout_constraintEnd_toStartOf="@id/medium_date"
-						tools:text="Medium change"
 						style="@style/Text.Header"
 					/>
 

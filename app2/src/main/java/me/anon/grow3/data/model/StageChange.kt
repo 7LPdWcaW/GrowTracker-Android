@@ -40,3 +40,12 @@ public fun List<StageChange>.shortSummary(): Spannable
 
 	return SpannableString.valueOf(stringBuilder.toString())
 }
+
+/**
+ * Data holder for describing the stage at the period of the provided log
+ */
+data class StageAt(
+	val days: Int,
+	val stage: Stage,
+	val log: Log
+)
