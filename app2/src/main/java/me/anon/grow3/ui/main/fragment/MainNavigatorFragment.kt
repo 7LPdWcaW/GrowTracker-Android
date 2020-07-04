@@ -1,7 +1,6 @@
 package me.anon.grow3.ui.main.fragment
 
 import android.os.Bundle
-import androidx.fragment.app.Fragment
 import androidx.fragment.app.commitNow
 import me.anon.grow3.R
 import me.anon.grow3.databinding.FragmentMainHostBinding
@@ -16,6 +15,7 @@ import me.anon.grow3.ui.diaries.fragment.ViewDiaryFragment
 import me.anon.grow3.ui.main.activity.MainActivity
 import me.anon.grow3.ui.main.activity.MainActivity.Companion.EXTRA_NAVIGATE
 import me.anon.grow3.ui.main.activity.MainActivity.Companion.EXTRA_ORIGINATOR
+import me.anon.grow3.ui.main.activity.MainActivity.Companion.INDEX_MAIN
 import me.anon.grow3.util.nameOf
 
 /**
@@ -76,29 +76,20 @@ class MainNavigatorFragment : BaseHostFragment(FragmentMainHostBinding::class)
 					}
 
 					nameOf<EmptyFragment>() -> {
-						beginStack(EmptyFragment())
+						beginStack(EmptyFragment::class.java, item)
 					}
 
 					nameOf<ViewDiaryFragment>() -> {
-						val id = item.getString(EXTRA_DIARY_ID) ?: throw IllegalArgumentException("No diary ID set")
-						val fragment = ViewDiaryFragment().apply {
-							arguments = Bundle().apply {
-								putString(EXTRA_DIARY_ID, id)
-							}
-						}
-						beginStack(fragment)
+						item.getString(EXTRA_DIARY_ID) ?: throw IllegalArgumentException("No diary ID set")
+						beginStack(ViewDiaryFragment::class.java, item)
 					}
 
 					nameOf<ViewCropFragment>() -> {
-						addToStack(ViewCropFragment().apply {
-							arguments = item
-						})
+						addToStack(ViewCropFragment::class.java, item)
 					}
 
 					nameOf<LogListFragment>() -> {
-						addToStack(LogListFragment().apply {
-							arguments = item
-						})
+						addToStack(LogListFragment::class.java, item)
 					}
 				}
 			}
@@ -113,19 +104,20 @@ class MainNavigatorFragment : BaseHostFragment(FragmentMainHostBinding::class)
 		activity().clearStack(now)
 	}
 
-	private fun beginStack(fragment: Fragment)
+	private fun beginStack(fragment: Class<out BaseFragment>, args: Bundle?)
 	{
 		clearStack(true)
 		childFragmentManager.commitNow {
 			setCustomAnimations(android.R.anim.fade_in, android.R.anim.fade_out)
-			replace(R.id.fragment_container, fragment, "fragment")
-
-			activity().notifyPagerChange(this@MainNavigatorFragment)
+			replace(R.id.fragment_container, fragment.newInstance().apply {
+				arguments = args
+				launchWhenAttached { activity().notifyPagerChange(INDEX_MAIN) }
+			}, "fragment")
 		}
 	}
 
-	private fun addToStack(fragment: Fragment)
+	private fun addToStack(fragment: Class<out BaseFragment>, args: Bundle?)
 	{
-		activity().addToStack(fragment)
+		activity().addToStack(fragment, args)
 	}
 }

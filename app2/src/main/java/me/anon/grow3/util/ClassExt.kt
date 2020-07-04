@@ -8,10 +8,11 @@ import kotlin.reflect.KClass
 
 typealias Injector = (ApplicationComponent) -> Unit
 
+public fun codeOf(any: Any): Int = any.toString().toCharArray().sumBy { it.toInt() }
 public inline fun <reified T : Any> codeOf(): Int = T::class.java.name.hashCode().and(0xffff)
 public inline fun <reified T : Any> nameOf(): String = T::class.java.name
 
-public fun <I, O> I.transform(block: I.() -> O): O = block(this)
+public inline fun <I, O> I.transform(crossinline block: I.() -> O): O = block(this)
 
 public fun Any?.toStringOrNull(): String? = this?.toString()?.takeIf { it.isNotBlank() }
 

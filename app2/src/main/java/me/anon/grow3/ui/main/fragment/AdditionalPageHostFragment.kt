@@ -1,35 +1,42 @@
 package me.anon.grow3.ui.main.fragment
 
-import android.content.Context
-import androidx.fragment.app.Fragment
+import android.os.Bundle
 import androidx.fragment.app.commitNow
-import androidx.lifecycle.lifecycleScope
 import kotlinx.coroutines.*
 import me.anon.grow3.R
 import me.anon.grow3.databinding.FragmentHostBinding
+import me.anon.grow3.ui.base.BaseFragment
 import me.anon.grow3.ui.base.BaseHostFragment
-import me.anon.grow3.util.then
+import me.anon.grow3.ui.main.activity.MainActivity
 
 class AdditionalPageHostFragment : BaseHostFragment(FragmentHostBinding::class)
 {
 	private var transactionJob: Deferred<Unit>? = null
-	private var attachJob: Deferred<Unit>? = null
 	private val scope = CoroutineScope(Job() + Dispatchers.Main)
 
-	public fun launchWhenAttached(block: suspend CoroutineScope.() -> Unit)
+	override fun onCreate(savedInstanceState: Bundle?)
 	{
-		attachJob = scope.async(start = isAdded then CoroutineStart.DEFAULT ?: CoroutineStart.LAZY) {
-			block()
-		}
-	}
+		super.onCreate(savedInstanceState)
 
-	override fun onAttach(context: Context)
-	{
-		super.onAttach(context)
+		if (savedInstanceState == null && arguments != null)
+		{
+			try
+			{
+				val page = Class.forName(requireArguments().getString(MainActivity.EXTRA_NAVIGATE)!!).newInstance() as BaseFragment
+				page.arguments = arguments
 
-		lifecycleScope.launch {
-			transactionJob?.await()
-			attachJob?.await()
+				childFragmentManager.commitNow {
+					setCustomAnimations(android.R.anim.fade_in, android.R.anim.fade_out)
+					replace(R.id.main_content, page, "fragment")
+					page.launchWhenAttached {
+						transactionJob?.await()
+					}
+				}
+			}
+			catch (e: Exception)
+			{
+				e.printStackTrace()
+			}
 		}
 	}
 
@@ -37,19 +44,5 @@ class AdditionalPageHostFragment : BaseHostFragment(FragmentHostBinding::class)
 	{
 		super.onDestroy()
 		scope.cancel()
-	}
-
-	public fun addPage(fragment: Fragment)
-	{
-		transactionJob = scope.async(start = CoroutineStart.LAZY) {
-			childFragmentManager.commitNow {
-				setCustomAnimations(android.R.anim.fade_in, android.R.anim.fade_out)
-				replace(R.id.main_content, fragment)
-			}
-		}
-
-		if (isAdded) lifecycleScope.launch {
-			transactionJob?.await()
-		}
 	}
 }
