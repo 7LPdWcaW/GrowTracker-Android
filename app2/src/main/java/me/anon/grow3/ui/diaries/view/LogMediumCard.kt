@@ -27,7 +27,9 @@ class LogMediumCard(
 
 	override fun bind(view: CardLogMediumBinding)
 	{
-		view.lastMediumContainer.isVisible = true
+		view.mediumHeader.text = title
+		view.mediumHeader.isVisible = !title.isNullOrBlank()
+
 		view.mediumContent.text = medium.summary()
 		view.mediumDate.text = R.string.days.string(medium.date.nowDifferenceDays()) +
 			"/" +
