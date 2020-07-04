@@ -24,3 +24,6 @@ abstract class Log(
 	open var cropIds: ArrayList<String> = arrayListOf(),
 	open var action: String = "Log"
 )
+{
+	open fun summary(): CharSequence = ""
+}
