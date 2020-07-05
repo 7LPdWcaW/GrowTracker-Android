@@ -2,6 +2,8 @@
 
 Welcome to grow tracker. This is a utility app designed for gardening and tracking various parameters of your grow.
 
+[![3.0 Development build](https://github.com/7LPdWcaW/GrowTracker-Android/workflows/3.0%20Development%20build/badge.svg)](https://github.com/7LPdWcaW/GrowTracker-Android/actions?query=workflow%3A%223.0+Development+build%22)
+
 [![Latest Nightly](https://travis-ci.com/7LPdWcaW/GrowTracker-Android.svg?branch=alpha)](https://travis-ci.com/7LPdWcaW/GrowTracker-Android)
 
 [Latest Nightly Build (Experimental!)](https://github.com/7LPdWcaW/GrowTracker-Android/releases/tag/alpha)
