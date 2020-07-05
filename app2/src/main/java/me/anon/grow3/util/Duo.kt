@@ -6,4 +6,4 @@ class Duo<A>(
 )
 
 public infix fun <A> A.and(that: A?): Duo<A> = Duo(this, that)
-public operator fun <A> A.plus(second: A?): Duo<A> = Duo(this, second)
+//public operator fun <A> A.plus(second: A?): Duo<A> = Duo(this, second)
