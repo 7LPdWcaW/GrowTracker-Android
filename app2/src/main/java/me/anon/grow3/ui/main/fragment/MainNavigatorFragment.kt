@@ -1,21 +1,23 @@
 package me.anon.grow3.ui.main.fragment
 
 import android.os.Bundle
-import androidx.fragment.app.Fragment
 import androidx.fragment.app.commitNow
 import me.anon.grow3.R
 import me.anon.grow3.databinding.FragmentMainHostBinding
 import me.anon.grow3.ui.action.fragment.LogActionBottomSheetFragment
 import me.anon.grow3.ui.base.BaseFragment
 import me.anon.grow3.ui.base.BaseHostFragment
+import me.anon.grow3.ui.common.Extras.EXTRA_DIARY_ID
 import me.anon.grow3.ui.diaries.fragment.EmptyFragment
 import me.anon.grow3.ui.diaries.fragment.LogListFragment
+import me.anon.grow3.ui.crops.fragment.ViewCropFragment
 import me.anon.grow3.ui.diaries.fragment.ViewDiaryFragment
 import me.anon.grow3.ui.main.activity.MainActivity
-import me.anon.grow3.ui.main.activity.MainActivity.Companion.EXTRA_DIARY_ID
 import me.anon.grow3.ui.main.activity.MainActivity.Companion.EXTRA_NAVIGATE
 import me.anon.grow3.ui.main.activity.MainActivity.Companion.EXTRA_ORIGINATOR
+import me.anon.grow3.ui.main.activity.MainActivity.Companion.INDEX_MAIN
 import me.anon.grow3.util.nameOf
+import kotlin.random.Random
 
 /**
  * Main navigator fragment for the application. [MainActivity] controls the UI and distribution
@@ -68,6 +70,11 @@ class MainNavigatorFragment : BaseHostFragment(FragmentMainHostBinding::class)
 					}
 				}
 
+				// TODO: we should re-open a page if it exists in the stack,
+				// but we cant because we clear the stack also. Possibly look
+				// for the fragment in childFragmentManager first?
+				item.putInt("nonce", Random.nextInt())
+
 				when (route)
 				{
 					nameOf<LogActionBottomSheetFragment>() -> {
@@ -75,23 +82,20 @@ class MainNavigatorFragment : BaseHostFragment(FragmentMainHostBinding::class)
 					}
 
 					nameOf<EmptyFragment>() -> {
-						beginStack(EmptyFragment())
+						beginStack(EmptyFragment::class.java, item)
 					}
 
 					nameOf<ViewDiaryFragment>() -> {
-						val id = item.getString(EXTRA_DIARY_ID) ?: throw IllegalArgumentException("No diary ID set")
-						val fragment = ViewDiaryFragment().apply {
-							arguments = Bundle().apply {
-								putString(ViewDiaryFragment.EXTRA_DIARY_ID, id)
-							}
-						}
-						beginStack(fragment)
+						item.getString(EXTRA_DIARY_ID) ?: throw IllegalArgumentException("No diary ID set")
+						beginStack(ViewDiaryFragment::class.java, item)
+					}
+
+					nameOf<ViewCropFragment>() -> {
+						addToStack(ViewCropFragment::class.java, item)
 					}
 
 					nameOf<LogListFragment>() -> {
-						addToStack(LogListFragment().apply {
-							arguments = item
-						})
+						addToStack(LogListFragment::class.java, item)
 					}
 				}
 			}
@@ -106,18 +110,25 @@ class MainNavigatorFragment : BaseHostFragment(FragmentMainHostBinding::class)
 		activity().clearStack(now)
 	}
 
-	private fun beginStack(fragment: Fragment)
+	private fun beginStack(fragment: Class<out BaseFragment>, args: Bundle?)
 	{
 		clearStack(true)
 		childFragmentManager.commitNow {
 			setCustomAnimations(android.R.anim.fade_in, android.R.anim.fade_out)
-			replace(R.id.fragment_container, fragment, "fragment")
-			activity().notifyPagerChange(this@MainNavigatorFragment)
+			replace(R.id.fragment_container, fragment.newInstance().apply {
+				arguments = args
+			}, "fragment")
+
+			runOnCommit {
+				activity().viewBindings.viewPager.post {
+					activity().viewBindings.viewPager.setCurrentItem(INDEX_MAIN, true)
+				}
+			}
 		}
 	}
 
-	private fun addToStack(fragment: Fragment)
+	private fun addToStack(fragment: Class<out BaseFragment>, args: Bundle?)
 	{
-		activity().addToStack(fragment)
+		activity().addToStack(fragment, args)
 	}
 }

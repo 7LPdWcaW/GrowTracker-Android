@@ -1,0 +1,63 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<com.google.android.material.card.MaterialCardView
+	xmlns:android="http://schemas.android.com/apk/res/android"
+	xmlns:app="http://schemas.android.com/apk/res-auto"
+	xmlns:tools="http://schemas.android.com/tools"
+	android:layout_width="match_parent"
+	android:layout_height="wrap_content"
+	style="@style/Card"
+>
+	<androidx.constraintlayout.widget.ConstraintLayout
+		android:layout_width="match_parent"
+		android:layout_height="wrap_content"
+		android:paddingTop="16dp"
+		android:paddingStart="16dp"
+		android:paddingBottom="16dp"
+		android:paddingEnd="8dp"
+	>
+		<TextView
+			android:layout_width="wrap_content"
+			android:layout_height="wrap_content"
+			android:id="@+id/crops_title"
+			android:text="@string/view_diary_crops_title"
+			app:layout_constraintTop_toTopOf="parent"
+			app:layout_constraintStart_toStartOf="parent"
+			style="@style/Text.Header"
+		/>
+
+		<com.google.android.flexbox.FlexboxLayout
+			android:layout_width="0dp"
+			android:layout_height="wrap_content"
+			android:id="@+id/crops_container"
+			android:orientation="horizontal"
+			android:layout_marginTop="@dimen/section_spacing"
+			app:layout_constraintStart_toStartOf="parent"
+			app:layout_constraintTop_toBottomOf="@id/crops_title"
+			app:layout_constraintEnd_toStartOf="@id/more_crops"
+			app:layout_constraintBottom_toBottomOf="parent"
+			app:flexDirection="row"
+			app:flexWrap="wrap"
+			app:maxLine="1"
+			app:dividerDrawable="@drawable/spacer_16dp"
+			app:dividerDrawableVertical="@drawable/spacer_16dp"
+			app:showDivider="middle"
+			app:showDividerVertical="middle"
+		/>
+
+		<ImageView
+			android:layout_width="56dp"
+			android:layout_height="56dp"
+			android:id="@+id/more_crops"
+			android:background="?actionBarItemBackground"
+			android:clickable="true"
+			android:focusable="true"
+			android:padding="16dp"
+			app:srcCompat="@drawable/ic_arrow_forward"
+			app:tint="@color/text_surface_color"
+			app:layout_constraintEnd_toEndOf="parent"
+			app:layout_constraintTop_toBottomOf="@id/crops_title"
+			app:layout_constraintBottom_toBottomOf="parent"
+		/>
+	</androidx.constraintlayout.widget.ConstraintLayout>
+</com.google.android.material.card.MaterialCardView>

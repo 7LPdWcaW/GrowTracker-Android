@@ -4,6 +4,7 @@ import android.content.Context
 import android.graphics.drawable.Drawable
 import android.util.TypedValue
 import androidx.annotation.*
+import me.anon.grow3.BaseApplication
 
 @ColorInt
 public fun @receiver:AttrRes Int.resColor(context: Context): Int
@@ -21,6 +22,9 @@ public fun @receiver:DrawableRes Int.drawable(context: Context, @ColorInt tint: 
 	= context.resources.getDrawable(this, context.theme)!!.apply {
 		tint?.let { setTint(it) }
 	}
+
+public fun @receiver:StringRes Int.string(vararg params: Any = arrayOf()): String
+	= BaseApplication.context.getString(this, *params)
 
 public fun @receiver:StringRes Int.string(context: Context, vararg params: Any = arrayOf()): String
 	= context.getString(this, *params)

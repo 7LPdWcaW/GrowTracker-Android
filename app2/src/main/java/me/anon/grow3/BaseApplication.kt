@@ -1,6 +1,7 @@
 package me.anon.grow3
 
 import android.app.Application
+import android.content.Context
 import com.jakewharton.threetenabp.AndroidThreeTen
 import me.anon.grow3.di.ApplicationComponent
 import me.anon.grow3.di.DaggerApplicationComponent
@@ -9,6 +10,15 @@ import timber.log.Timber
 
 abstract class BaseApplication : Application()
 {
+	companion object
+	{
+		/**
+		 * Do not use this except for string/resource access!
+		 */
+		@JvmStatic
+		public lateinit var context: Context
+	}
+
 	// todo: change this to pref to inject
 	public var dataPath: String = ""
 
@@ -18,6 +28,7 @@ abstract class BaseApplication : Application()
 	{
 		super.onCreate()
 
+		context = this
 		AndroidThreeTen.init(this)
 		Timber.plant(Timber.DebugTree())
 

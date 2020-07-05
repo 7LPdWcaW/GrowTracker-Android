@@ -2,17 +2,19 @@ package me.anon.grow3.ui.diaries.fragment
 
 import android.os.Bundle
 import androidx.core.os.bundleOf
+import androidx.lifecycle.observe
 import me.anon.grow3.databinding.FragmentViewDiaryLogsBinding
-import me.anon.grow3.di.ApplicationComponent
 import me.anon.grow3.ui.base.BaseFragment
+import me.anon.grow3.ui.common.Extras.EXTRA_DIARY_ID
 import me.anon.grow3.ui.main.activity.MainActivity
+import me.anon.grow3.util.Injector
 import me.anon.grow3.util.navigateTo
 import me.anon.grow3.util.onClick
 import me.anon.grow3.util.updateMargin
 
 class LogListFragment : BaseFragment(FragmentViewDiaryLogsBinding::class)
 {
-	override val inject: (ApplicationComponent) -> Unit = {}
+	override val injector: Injector = {}
 	private val viewBindings by viewBinding<FragmentViewDiaryLogsBinding>()
 
 	override fun onActivityCreated(savedInstanceState: Bundle?)
@@ -23,10 +25,13 @@ class LogListFragment : BaseFragment(FragmentViewDiaryLogsBinding::class)
 			(requireActivity() as MainActivity).clearStack()
 		}
 
-		viewBindings.includeToolbar.toolbar.updateMargin(insets.left, insets.top, insets.right)
+		insets.observe(viewLifecycleOwner) {
+			viewBindings.includeToolbar.toolbar.updateMargin(it.left, it.top, it.right)
+		}
+
 		viewBindings.test.onClick {
 			navigateTo<LogListFragment> {
-				bundleOf(MainActivity.EXTRA_DIARY_ID to "")
+				bundleOf(EXTRA_DIARY_ID to "")
 			}
 		}
 	}

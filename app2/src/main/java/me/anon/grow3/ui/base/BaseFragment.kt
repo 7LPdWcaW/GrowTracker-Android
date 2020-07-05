@@ -8,6 +8,7 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.appcompat.widget.Toolbar
 import androidx.fragment.app.Fragment
+import androidx.lifecycle.LiveData
 import androidx.viewbinding.ViewBinding
 import me.anon.grow3.util.Injector
 import me.anon.grow3.util.component
@@ -31,11 +32,10 @@ abstract class BaseFragment : Fragment
 			viewBinder as T
 		}
 
-	open var insets: Rect
+	open val insets: LiveData<Rect>
 		get() = (activity as BaseActivity).insets
-		set(value) { (activity as BaseActivity).insets = value }
 
-	abstract val inject: Injector
+	abstract val injector: Injector
 
 	override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View?
 	{
@@ -54,7 +54,7 @@ abstract class BaseFragment : Fragment
 	override fun onAttach(context: Context)
 	{
 		super.onAttach(context)
-		inject(component)
+		injector(component)
 	}
 
 	override fun onActivityCreated(savedInstanceState: Bundle?)
@@ -68,7 +68,7 @@ abstract class BaseFragment : Fragment
 
 	open fun onBackPressed(): Boolean = false
 	open fun bindArguments(bundle: Bundle?) {}
-	abstract fun bindUi()
+	open fun bindUi(){}
 	open fun bindVm(){}
 
 	public fun setToolbar(toolbar: Toolbar)

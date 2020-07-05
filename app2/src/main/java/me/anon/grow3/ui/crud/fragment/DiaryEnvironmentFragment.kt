@@ -8,7 +8,6 @@ import me.anon.grow3.data.model.Light
 import me.anon.grow3.data.model.LightType
 import me.anon.grow3.data.model.Size
 import me.anon.grow3.databinding.FragmentCrudDiaryEnvironmentBinding
-import me.anon.grow3.di.ApplicationComponent
 import me.anon.grow3.ui.base.BaseFragment
 import me.anon.grow3.ui.crud.viewmodel.DiaryViewModel
 import me.anon.grow3.util.*
@@ -19,7 +18,7 @@ import javax.inject.Inject
 
 class DiaryEnvironmentFragment : BaseFragment(FragmentCrudDiaryEnvironmentBinding::class)
 {
-	override val inject: (ApplicationComponent) -> Unit = { it.inject(this) }
+	override val injector: Injector = { it.inject(this) }
 
 	@Inject internal lateinit var viewModelFactory: DiaryViewModel.Factory
 	private val viewModel: DiaryViewModel by activityViewModels { ViewModelProvider(viewModelFactory, this) }

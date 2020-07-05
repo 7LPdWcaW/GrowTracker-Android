@@ -1,61 +1,57 @@
 package me.anon.grow3.ui.diaries.fragment
 
-import android.graphics.Rect
 import android.os.Bundle
-import androidx.core.os.bundleOf
 import androidx.core.view.updatePadding
+import androidx.fragment.app.viewModels
+import androidx.lifecycle.observe
+import androidx.recyclerview.widget.LinearLayoutManager
+import me.anon.grow3.data.model.Diary
+import me.anon.grow3.data.model.shortSummary
 import me.anon.grow3.databinding.FragmentViewDiaryBinding
-import me.anon.grow3.di.ApplicationComponent
 import me.anon.grow3.ui.action.fragment.LogActionBottomSheetFragment
 import me.anon.grow3.ui.base.BaseFragment
-import me.anon.grow3.ui.main.activity.MainActivity
+import me.anon.grow3.ui.common.view.StagesCard
+import me.anon.grow3.ui.diaries.view.DiaryCropsCard
+import me.anon.grow3.ui.diaries.view.DiaryLinksCard
+import me.anon.grow3.ui.diaries.viewmodel.ViewDiaryViewModel
 import me.anon.grow3.util.*
+import me.anon.grow3.util.states.DataResult
+import me.anon.grow3.view.adapter.CardListAdapter
+import me.anon.grow3.view.adapter.plusAssign
+import javax.inject.Inject
 
 class ViewDiaryFragment : BaseFragment(FragmentViewDiaryBinding::class)
 {
-	companion object
-	{
-		public const val EXTRA_DIARY_ID = "diary.id"
-	}
+	override val injector: Injector = { it.inject(this) }
 
-	override val inject: (ApplicationComponent) -> Unit = {}
+	@Inject internal lateinit var viewModelFactory: ViewDiaryViewModel.Factory
+	private val viewModel: ViewDiaryViewModel by viewModels { ViewModelProvider(viewModelFactory, this) }
 	private val viewBindings by viewBinding<FragmentViewDiaryBinding>()
-	override var insets: Rect
-		get() = super.insets
-		set(value)
-		{
-			super.insets = value
-		}
+	private val viewAdapter = CardListAdapter()
 
 	override fun onActivityCreated(savedInstanceState: Bundle?)
 	{
 		super.onActivityCreated(savedInstanceState)
 		setToolbar(viewBindings.toolbar)
-
-		with (insets) {
-			viewBindings.menuFab.updateMargin(bottom = bottom + 16.dp(requireContext()), top = top + 16.dp(requireContext()))
-			viewBindings.sheet.updatePadding(left, top, right, bottom)
-			viewBindings.toolbar.updateMargin(left, top, right)
-			viewBindings.content.updatePadding(left, right = right, bottom = bottom + 72.dp(requireContext()))
-		}
 	}
 
 	override fun onBackPressed(): Boolean
 		= viewBindings.menuFab.isExpanded.also { viewBindings.menuFab.isExpanded = false }
 
-	override fun bindArguments(bundle: Bundle?)
-	{
-		viewBindings.collapsingToolbarLayout.title = "Diary Name"
-		viewBindings.collapsingToolbarLayout.subtitle = "10a/20b/30c/100"
-	}
-
 	override fun bindUi()
 	{
-		viewBindings.crop1.onClick {
-			navigateTo<LogListFragment> {
-				bundleOf(MainActivity.EXTRA_DIARY_ID to "")
+		insets.observe(viewLifecycleOwner) {
+			with (it) {
+				viewBindings.menuFab.updateMargin(bottom = bottom + 16.dp(requireContext()), top = top + 16.dp(requireContext()))
+				viewBindings.sheet.updatePadding(left, top, right, bottom)
+				viewBindings.toolbar.updateMargin(left, top, right)
+				viewBindings.recyclerView.updatePadding(left, right = right, bottom = bottom + 72.dp(requireContext()))
 			}
 		}
+
+		viewBindings.recyclerView.adapter = viewAdapter
+		viewBindings.recyclerView.layoutManager = LinearLayoutManager(requireContext())
+		viewAdapter.cards.clear()
 
 		viewBindings.menuFab.setOnClickListener {
 			viewBindings.menuFab.isExpanded = !viewBindings.menuFab.isExpanded
@@ -76,6 +72,25 @@ class ViewDiaryFragment : BaseFragment(FragmentViewDiaryBinding::class)
 
 	override fun bindVm()
 	{
+		viewModel.diary.observe(viewLifecycleOwner) { diary ->
+			when (diary)
+			{
+				is DataResult.Error -> {}
+				is DataResult.Success -> {
+					updateDiaryUi(diary.data)
+				}
+			}
+		}
+	}
 
+	private fun updateDiaryUi(diary: Diary)
+	{
+		viewBindings.collapsingToolbarLayout.title = diary.name
+		viewBindings.collapsingToolbarLayout.subtitle = diary.stages().shortSummary()
+
+		viewAdapter += StagesCard(diary = diary, title = "Stages summary")
+		viewAdapter += DiaryCropsCard(diary = diary, title = "Crops")
+		viewAdapter += DiaryLinksCard(diary = diary)
+		viewAdapter.notifyDataSetChanged()
 	}
 }

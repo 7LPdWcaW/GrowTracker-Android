@@ -9,8 +9,9 @@ import androidx.lifecycle.observe
 import me.anon.grow3.R
 import me.anon.grow3.databinding.FragmentCrudDiaryCropsBinding
 import me.anon.grow3.databinding.StubCrudCropBinding
-import me.anon.grow3.di.ApplicationComponent
 import me.anon.grow3.ui.base.BaseFragment
+import me.anon.grow3.ui.common.Extras.EXTRA_CROP_ID
+import me.anon.grow3.ui.common.Extras.EXTRA_DIARY_ID
 import me.anon.grow3.ui.crud.activity.CropActivity
 import me.anon.grow3.ui.crud.viewmodel.DiaryViewModel
 import me.anon.grow3.util.*
@@ -21,7 +22,7 @@ import javax.inject.Inject
 
 class DiaryCropsFragment : BaseFragment(FragmentCrudDiaryCropsBinding::class)
 {
-	override val inject: (ApplicationComponent) -> Unit = { it.inject(this) }
+	override val injector: Injector = { it.inject(this) }
 
 	@Inject internal lateinit var viewModelFactory: DiaryViewModel.Factory
 	private val viewModel: DiaryViewModel by activityViewModels { ViewModelProvider(viewModelFactory, this) }
@@ -32,7 +33,7 @@ class DiaryCropsFragment : BaseFragment(FragmentCrudDiaryCropsBinding::class)
 		viewBindings.addCrop.onClick {
 			// reveal crop edit fragment dialog
 			newTaskForResult<CropActivity> {
-				putExtra(CropActivity.EXTRA_DIARY_ID, viewModel.diary.value?.asSuccess()?.id)
+				putExtra(EXTRA_DIARY_ID, viewModel.diary.value?.asSuccess()?.id)
 			}
 		}
 	}
@@ -59,8 +60,8 @@ class DiaryCropsFragment : BaseFragment(FragmentCrudDiaryCropsBinding::class)
 				view.onClick {
 					// reveal crop edit fragment dialog
 					newTaskForResult<CropActivity> {
-						putExtra(CropActivity.EXTRA_DIARY_ID, diary.id)
-						putExtra(CropActivity.EXTRA_CROP_ID, crop.id)
+						putExtra(EXTRA_DIARY_ID, diary.id)
+						putExtra(EXTRA_CROP_ID, crop.id)
 					}
 				}
 

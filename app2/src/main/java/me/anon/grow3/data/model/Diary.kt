@@ -1,12 +1,9 @@
 package me.anon.grow3.data.model
 
 import com.squareup.moshi.JsonClass
-import me.anon.grow3.util.asDateTime
-import me.anon.grow3.util.asString
-import me.anon.grow3.util.uniqueBy
+import me.anon.grow3.util.*
 import org.dizitart.no2.objects.Id
 import org.threeten.bp.ZonedDateTime
-import org.threeten.bp.temporal.ChronoUnit
 import java.util.*
 
 @JsonClass(generateAdapter = true)
@@ -32,8 +29,37 @@ data class Diary(
 	public fun crop(id: String): Crop = crops.first { it.id == id }
 	public fun stages(): List<Stage> = findAllStages().filter { it.cropIds.isEmpty() }
 
-	public fun logOf(id: String): Log? = log.first { it.id == id }
+	/**
+	 * Calculates the stage info at the time of the given log for the provided crop
+	 */
+	public fun stageWhen(log: Log): StageAt
+	{
+		val stage = stages()
+			.last { it.date.asDateTime() <= log.date.asDateTime() } // should at least return Planted
 
+		return StageAt(
+			days = (stage.date and log.date).dateDifferenceDays(),
+			stage = stage,
+			log = log
+		)
+	}
+
+	/**
+	 * Calculates the stage info at the time of the given log for the provided crop
+	 */
+	public fun stageWhen(crop: Crop, log: Log): StageAt
+	{
+		val stage = stagesOf(crop)
+			.last { it.date.asDateTime() <= log.date.asDateTime() } // should at least return Planted
+
+		return StageAt(
+			days = (stage.date and log.date).dateDifferenceDays(),
+			stage = stage,
+			log = log
+		)
+	}
+
+	public fun logOf(id: String): Log? = log.first { it.id == id }
 	public inline fun <reified T> Diary.logOf(id: String): T? = this.logOf(id) as T?
 
 	public fun harvestedOf(id: String): Harvest? = harvestedOf(crop(id))
@@ -95,14 +121,14 @@ data class Diary(
 					}
 					else if (inStage && lastStage != null)
 					{
-						daysInStage += ChronoUnit.DAYS.between(lastStage!!.date.asDateTime(), stageChange.date.asDateTime())
+						daysInStage += (lastStage!!.date and stageChange.date).dateDifferenceDays()
 						inStage = false
 						lastStage = null
 					}
 				}
 
 				// ongoing
-				if (lastStage == stage) daysInStage += ChronoUnit.DAYS.between(lastStage!!.date.asDateTime(), ZonedDateTime.now())
+				if (lastStage == stage) daysInStage += (lastStage!!.date and ZonedDateTime.now().asString()).dateDifferenceDays()
 				ret[stage] = ret.getOrElse(stage, { 0.0 }) + daysInStage
 			}
 
