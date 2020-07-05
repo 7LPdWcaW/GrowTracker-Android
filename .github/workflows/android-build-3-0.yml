@@ -1,4 +1,4 @@
-name: Android Feature Branch CI
+name: 3.0 Development build
 
 on:
   push:
@@ -17,4 +17,22 @@ jobs:
       with:
         java-version: 1.8
     - name: Unit tests
-      run: bash ./gradlew test --stacktrace
+      run: bash ./gradlew app2:testProductionDebugUnitTest --stacktrace
+
+  apk:
+    name: Generate APK
+    runs-on: ubuntu-18.04
+
+    steps:
+      - uses: actions/checkout@v1
+      - name: set up JDK 1.8
+        uses: actions/setup-java@v1
+        with:
+          java-version: 1.8
+      - name: Build debug APK
+        run: bash ./gradlew app2:assembleProductionRelease --stacktrace
+      - name: Upload APK
+        uses: actions/upload-artifact@v1
+        with:
+          name: app2
+          path: app2/build/outputs/apk/production/release/app2-production-release.apk
