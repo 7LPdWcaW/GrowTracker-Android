@@ -28,6 +28,7 @@ import me.anon.grow3.ui.main.fragment.MainNavigatorFragment
 import me.anon.grow3.ui.main.fragment.NavigationFragment
 import me.anon.grow3.util.codeOf
 import me.anon.grow3.util.nameOf
+import me.anon.grow3.util.promptExit
 
 
 class MainActivity : BaseActivity(ActivityMainBinding::class)
@@ -336,11 +337,31 @@ class MainActivity : BaseActivity(ActivityMainBinding::class)
 
 	override fun onBackPressed()
 	{
+		supportFragmentManager.findFragmentById(R.id.bottom_sheet)?.let {
+			if ((it as? BaseFragment)?.onBackPressed() == true) return@onBackPressed
+		}
+
 		when (viewBindings.viewPager.currentItem)
 		{
 			INDEX_MENU -> viewBindings.viewPager.currentItem = INDEX_MAIN
 			INDEX_MAIN -> {
-				if (!(adapter.getFragment(INDEX_MAIN) as BaseHostFragment).onBackPressed()) super.onBackPressed()
+				if (!(adapter.getFragment(INDEX_MAIN) as BaseHostFragment).onBackPressed())
+				{
+					// also check in case the bottom sheet is collapsed!
+					supportFragmentManager.findFragmentById(R.id.bottom_sheet)?.let {
+						val layoutSheetBehavior = BottomSheetBehavior.from(viewBindings.bottomSheet)
+						if (layoutSheetBehavior.state == STATE_COLLAPSED)
+						{
+							promptExit {
+								super.onBackPressed()
+							}
+
+							return@onBackPressed
+						}
+					}
+
+					super.onBackPressed()
+				}
 			}
 			else -> {
 				if (!(adapter.getFragment(viewBindings.viewPager.currentItem) as BaseHostFragment).onBackPressed())
