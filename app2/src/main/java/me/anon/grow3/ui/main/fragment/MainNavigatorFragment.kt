@@ -10,7 +10,7 @@ import me.anon.grow3.ui.base.BaseHostFragment
 import me.anon.grow3.ui.common.Extras.EXTRA_DIARY_ID
 import me.anon.grow3.ui.diaries.fragment.EmptyFragment
 import me.anon.grow3.ui.diaries.fragment.LogListFragment
-import me.anon.grow3.ui.diaries.fragment.ViewCropFragment
+import me.anon.grow3.ui.crops.fragment.ViewCropFragment
 import me.anon.grow3.ui.diaries.fragment.ViewDiaryFragment
 import me.anon.grow3.ui.main.activity.MainActivity
 import me.anon.grow3.ui.main.activity.MainActivity.Companion.EXTRA_NAVIGATE

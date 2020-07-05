@@ -1,4 +1,4 @@
-package me.anon.grow3.ui.diaries.fragment
+package me.anon.grow3.ui.crops.fragment
 
 import androidx.core.view.updatePadding
 import androidx.fragment.app.viewModels
@@ -7,18 +7,18 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import me.anon.grow3.data.model.Crop
 import me.anon.grow3.databinding.FragmentViewCropBinding
 import me.anon.grow3.ui.base.BaseFragment
-import me.anon.grow3.ui.diaries.view.CropDetailsCard
-import me.anon.grow3.ui.diaries.view.CropLinksCard
-import me.anon.grow3.ui.diaries.view.LogMediumCard
-import me.anon.grow3.ui.diaries.view.StagesCard
-import me.anon.grow3.ui.diaries.viewmodel.ViewCropViewModel
+import me.anon.grow3.ui.common.view.LogMediumCard
+import me.anon.grow3.ui.common.view.StagesCard
+import me.anon.grow3.ui.crops.view.CropDetailsCard
+import me.anon.grow3.ui.crops.view.CropLinksCard
+import me.anon.grow3.ui.crops.viewmodel.ViewCropViewModel
 import me.anon.grow3.util.Injector
 import me.anon.grow3.util.ViewModelProvider
 import me.anon.grow3.util.dp
 import me.anon.grow3.util.states.DataResult
 import me.anon.grow3.util.states.asSuccess
 import me.anon.grow3.util.updateMargin
-import me.anon.grow3.view.adapter.CardUiAdapter
+import me.anon.grow3.view.adapter.CardListAdapter
 import javax.inject.Inject
 
 class ViewCropFragment : BaseFragment(FragmentViewCropBinding::class)
@@ -28,7 +28,7 @@ class ViewCropFragment : BaseFragment(FragmentViewCropBinding::class)
 	@Inject internal lateinit var viewModelFactory: ViewCropViewModel.Factory
 	private val viewModel: ViewCropViewModel by viewModels { ViewModelProvider(viewModelFactory, this) }
 	private val viewBindings by viewBinding<FragmentViewCropBinding>()
-	private val viewAdapter = CardUiAdapter()
+	private val viewAdapter = CardListAdapter()
 
 	override fun bindUi()
 	{

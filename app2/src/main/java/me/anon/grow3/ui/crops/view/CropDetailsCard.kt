@@ -1,4 +1,4 @@
-package me.anon.grow3.ui.diaries.view
+package me.anon.grow3.ui.crops.view
 
 import android.view.LayoutInflater
 import android.view.View

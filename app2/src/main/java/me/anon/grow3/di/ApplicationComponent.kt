@@ -13,7 +13,7 @@ import me.anon.grow3.ui.crud.fragment.DiaryCropsFragment
 import me.anon.grow3.ui.crud.fragment.DiaryDetailsFragment
 import me.anon.grow3.ui.crud.fragment.DiaryEnvironmentFragment
 import me.anon.grow3.ui.diaries.fragment.DiariesListFragment
-import me.anon.grow3.ui.diaries.fragment.ViewCropFragment
+import me.anon.grow3.ui.crops.fragment.ViewCropFragment
 import me.anon.grow3.ui.diaries.fragment.ViewDiaryFragment
 import me.anon.grow3.util.handler.ExceptionHandler
 import javax.inject.Singleton

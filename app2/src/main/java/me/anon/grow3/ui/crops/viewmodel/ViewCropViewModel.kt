@@ -1,4 +1,4 @@
-package me.anon.grow3.ui.diaries.viewmodel
+package me.anon.grow3.ui.crops.viewmodel
 
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.SavedStateHandle

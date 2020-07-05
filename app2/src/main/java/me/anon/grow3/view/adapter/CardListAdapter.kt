@@ -5,7 +5,7 @@ import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
 import me.anon.grow3.view.model.Card
 
-open class CardUiAdapter : RecyclerView.Adapter<RecyclerView.ViewHolder>()
+open class CardListAdapter : RecyclerView.Adapter<RecyclerView.ViewHolder>()
 {
 	public val cards: ArrayList<Card<*>> = arrayListOf()
 
