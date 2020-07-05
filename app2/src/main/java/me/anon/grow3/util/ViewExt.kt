@@ -2,6 +2,7 @@ package me.anon.grow3.util
 
 import android.content.Context
 import android.graphics.drawable.Drawable
+import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -10,7 +11,12 @@ import android.widget.TextView
 import androidx.annotation.*
 import androidx.core.view.updateLayoutParams
 import androidx.core.view.updateMargins
+import androidx.fragment.app.findFragment
 import androidx.recyclerview.widget.RecyclerView
+import me.anon.grow3.ui.base.BaseFragment
+
+public inline fun <reified T : BaseFragment> View.navigateTo(ontop: Boolean = false, arguments: () -> Bundle? = { null })
+	= findFragment<BaseFragment>().navigateTo<T>(ontop, arguments)
 
 /**
  * Creates a click listener for generic type extending [View] and passes as a typed argument

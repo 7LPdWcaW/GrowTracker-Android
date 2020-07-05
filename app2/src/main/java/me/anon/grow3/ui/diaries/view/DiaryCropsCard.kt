@@ -34,7 +34,7 @@ class DiaryCropsCard(
 		diary.crops.mapToView<Crop, StubCropBinding>(container = view.cropsContainer, mapper = { crop, view ->
 			view.cropName.text = crop.name
 			view.cropImage.onClick {
-				it.context.navigateTo<ViewCropFragment>() {
+				it.navigateTo<ViewCropFragment>() {
 					bundleOf(
 						Extras.EXTRA_DIARY_ID to diary.id,
 						Extras.EXTRA_CROP_ID to crop.id
