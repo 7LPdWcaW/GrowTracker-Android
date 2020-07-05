@@ -1,23 +1,23 @@
 package me.anon.grow3.ui.diaries.fragment
 
 import android.os.Bundle
-import androidx.core.os.bundleOf
 import androidx.core.view.updatePadding
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.observe
-import me.anon.grow3.data.model.Crop
+import androidx.recyclerview.widget.LinearLayoutManager
 import me.anon.grow3.data.model.Diary
 import me.anon.grow3.data.model.shortSummary
 import me.anon.grow3.databinding.FragmentViewDiaryBinding
-import me.anon.grow3.databinding.StubCropBinding
 import me.anon.grow3.ui.action.fragment.LogActionBottomSheetFragment
 import me.anon.grow3.ui.base.BaseFragment
-import me.anon.grow3.ui.common.Extras.EXTRA_CROP_ID
-import me.anon.grow3.ui.common.Extras.EXTRA_DIARY_ID
-import me.anon.grow3.ui.crops.fragment.ViewCropFragment
+import me.anon.grow3.ui.common.view.StagesCard
+import me.anon.grow3.ui.diaries.view.DiaryCropsCard
+import me.anon.grow3.ui.diaries.view.DiaryLinksCard
 import me.anon.grow3.ui.diaries.viewmodel.ViewDiaryViewModel
 import me.anon.grow3.util.*
 import me.anon.grow3.util.states.DataResult
+import me.anon.grow3.view.adapter.CardListAdapter
+import me.anon.grow3.view.adapter.plusAssign
 import javax.inject.Inject
 
 class ViewDiaryFragment : BaseFragment(FragmentViewDiaryBinding::class)
@@ -27,6 +27,7 @@ class ViewDiaryFragment : BaseFragment(FragmentViewDiaryBinding::class)
 	@Inject internal lateinit var viewModelFactory: ViewDiaryViewModel.Factory
 	private val viewModel: ViewDiaryViewModel by viewModels { ViewModelProvider(viewModelFactory, this) }
 	private val viewBindings by viewBinding<FragmentViewDiaryBinding>()
+	private val viewAdapter = CardListAdapter()
 
 	override fun onActivityCreated(savedInstanceState: Bundle?)
 	{
@@ -44,9 +45,13 @@ class ViewDiaryFragment : BaseFragment(FragmentViewDiaryBinding::class)
 				viewBindings.menuFab.updateMargin(bottom = bottom + 16.dp(requireContext()), top = top + 16.dp(requireContext()))
 				viewBindings.sheet.updatePadding(left, top, right, bottom)
 				viewBindings.toolbar.updateMargin(left, top, right)
-				viewBindings.content.updatePadding(left, right = right, bottom = bottom + 72.dp(requireContext()))
+				viewBindings.recyclerView.updatePadding(left, right = right, bottom = bottom + 72.dp(requireContext()))
 			}
 		}
+
+		viewBindings.recyclerView.adapter = viewAdapter
+		viewBindings.recyclerView.layoutManager = LinearLayoutManager(requireContext())
+		viewAdapter.cards.clear()
 
 		viewBindings.menuFab.setOnClickListener {
 			viewBindings.menuFab.isExpanded = !viewBindings.menuFab.isExpanded
@@ -82,19 +87,10 @@ class ViewDiaryFragment : BaseFragment(FragmentViewDiaryBinding::class)
 	{
 		viewBindings.collapsingToolbarLayout.title = diary.name
 		viewBindings.collapsingToolbarLayout.subtitle = diary.stages().shortSummary()
-		viewBindings.stagesView.setStages(diary)
 
-		viewBindings.cropsContainer.removeAllViews()
-		diary.crops.mapToView<Crop, StubCropBinding>(container = viewBindings.cropsContainer, mapper = { crop, view ->
-			view.cropName.text = crop.name
-			view.cropImage.onClick {
-				navigateTo<ViewCropFragment>() {
-					bundleOf(
-						EXTRA_DIARY_ID to diary.id,
-						EXTRA_CROP_ID to crop.id
-					)
-				}
-			}
-		})
+		viewAdapter += StagesCard(diary = diary, title = "Stages summary")
+		viewAdapter += DiaryCropsCard(diary = diary, title = "Crops")
+		viewAdapter += DiaryLinksCard(diary = diary)
+		viewAdapter.notifyDataSetChanged()
 	}
 }

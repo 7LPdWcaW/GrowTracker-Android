@@ -9,6 +9,11 @@ open class CardListAdapter : RecyclerView.Adapter<RecyclerView.ViewHolder>()
 {
 	public val cards: ArrayList<Card<*>> = arrayListOf()
 
+	public fun clear()
+	{
+		cards.clear()
+	}
+
 	override fun getItemViewType(position: Int): Int = position
 
 	override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): RecyclerView.ViewHolder
@@ -20,4 +25,9 @@ open class CardListAdapter : RecyclerView.Adapter<RecyclerView.ViewHolder>()
 	{
 		cards[position]._bindView(holder.itemView)
 	}
+}
+
+public operator fun CardListAdapter.plusAssign(other: Card<*>)
+{
+	this.cards.add(other)
 }

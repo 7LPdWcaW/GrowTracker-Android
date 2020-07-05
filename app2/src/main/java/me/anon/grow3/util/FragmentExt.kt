@@ -24,15 +24,7 @@ public inline fun <reified T : Activity> Fragment.newTaskForResult(requestCode: 
 	= startActivityForResult(Intent(requireContext(), T::class.java).apply(block), requestCode)
 
 public inline fun <reified T : BaseFragment> Fragment.navigateTo(ontop: Boolean = false, arguments: () -> Bundle? = { null })
-	= startActivity(Intent(requireContext(), MainActivity::class.java).apply {
-		if (!ontop)
-		{
-			putExtra(MainActivity.EXTRA_ORIGINATOR, this@navigateTo::class.java.name)
-		}
-
-		putExtra(MainActivity.EXTRA_NAVIGATE, T::class.java.name)
-		arguments()?.let { putExtras(it) }
-	})
+	= requireContext().navigateTo<T>(ontop, arguments)
 
 // Resource convenience methods
 public fun Fragment.dimen(@DimenRes resId: Int): Float = resources.getDimension(resId)

@@ -11,7 +11,7 @@ import me.anon.grow3.view.model.Card
 
 class StagesCard(
 	val diary: Diary,
-	val crop: Crop?,
+	val crop: Crop? = null,
 	title: String? = null
 ) : Card<CardStagesBinding>(title)
 {
