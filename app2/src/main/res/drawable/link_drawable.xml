@@ -7,11 +7,11 @@
 		<shape android:shape="rectangle">
 			<corners android:radius="4dp" />
 			<solid android:color="@android:color/transparent" />
-			<padding android:left="8dp" android:bottom="8dp" android:right="8dp" android:top="8dp" />
+			<padding android:bottom="8dp" android:right="8dp" android:top="8dp" />
 		</shape>
 	</item>
 
-	<item android:height="1dp" android:gravity="bottom" android:left="84dp">
+	<item android:height="1dp" android:gravity="bottom" android:left="72dp">
 		<shape android:shape="rectangle">
 			<size android:width="1000dp" android:height="1dp" />
 			<solid android:color="@color/divider_surface_color" />

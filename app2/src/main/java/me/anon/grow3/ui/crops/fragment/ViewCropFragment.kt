@@ -36,6 +36,8 @@ class ViewCropFragment : CardListFragment()
 
 	private fun updateCropUi(crop: Crop)
 	{
+		requireActivity().title = crop.name
+
 		viewModel.diary.value?.asSuccess()?.let { diary ->
 			viewAdapter += StagesCard(diary = diary, crop = crop)
 			viewAdapter += CropDetailsCard(diary = diary, crop = crop)
