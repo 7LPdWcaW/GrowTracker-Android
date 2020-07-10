@@ -11,6 +11,7 @@ import me.anon.grow3.ui.common.Extras.EXTRA_LOG_TYPE
 import me.anon.grow3.util.ViewModelFactory
 import me.anon.grow3.util.nameOf
 import me.anon.grow3.util.states.DataResult
+import me.anon.grow3.util.states.asSuccess
 import javax.inject.Inject
 
 class LogActionViewModel constructor(
@@ -67,12 +68,22 @@ class LogActionViewModel constructor(
 		}
 	}
 
-	public fun saveLog()
+	public fun saveLog(draft: Boolean = false)
 	{
 		log.value ?: return
 
-		viewModelScope.launch {
-			diariesRepository.draftLog(log.value!!)
+		if (draft)
+		{
+			viewModelScope.launch {
+				diariesRepository.draftLog(log.value!!)
+			}
+		}
+		else
+		{
+			diary.value?.asSuccess()?.let {
+				it.log += log.value!!
+				diariesRepository.sync()
+			}
 		}
 	}
 }

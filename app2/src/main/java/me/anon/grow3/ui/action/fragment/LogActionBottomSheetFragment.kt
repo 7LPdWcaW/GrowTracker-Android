@@ -27,6 +27,7 @@ class LogActionBottomSheetFragment : BaseFragment(FragmentActionLogBinding::clas
 	private val viewModel: LogActionViewModel by viewModels { ViewModelProvider(viewModelFactory, this) }
 	private val viewBindings by viewBinding<FragmentActionLogBinding>()
 	private var logView: LogView<*>? = null
+	private var isFinishing = false
 
 	private val layoutSheetBehavior by lazy { BottomSheetBehavior.from(requireView().parentViewById<View>(R.id.bottom_sheet)) }
 	private val sheetListener = object : BottomSheetBehavior.BottomSheetCallback()
@@ -81,6 +82,23 @@ class LogActionBottomSheetFragment : BaseFragment(FragmentActionLogBinding::clas
 		}
 
 		layoutSheetBehavior.addBottomSheetCallback(sheetListener)
+
+		viewBindings.actionDone.onClick {
+			logView?.let {
+				it.saveView()
+				viewModel.saveLog()
+				finish()
+			}
+		}
+	}
+
+	private fun finish()
+	{
+		requireView().hideKeyboard()
+
+		isFinishing = true
+		layoutSheetBehavior.isHideable = true
+		layoutSheetBehavior.state = BottomSheetBehavior.STATE_HIDDEN
 	}
 
 	override fun bindVm()
@@ -92,9 +110,12 @@ class LogActionBottomSheetFragment : BaseFragment(FragmentActionLogBinding::clas
 
 	override fun onDestroyView()
 	{
-		logView?.let {
-			it.saveView()
-			viewModel.saveLog()
+		if (!isFinishing)
+		{
+			logView?.let {
+				it.saveView()
+				viewModel.saveLog(draft = true)
+			}
 		}
 
 		super.onDestroyView()
