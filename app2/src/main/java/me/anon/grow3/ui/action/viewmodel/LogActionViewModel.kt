@@ -1,6 +1,7 @@
 package me.anon.grow3.ui.action.viewmodel
 
 import androidx.lifecycle.*
+import kotlinx.coroutines.launch
 import me.anon.grow3.data.model.Log
 import me.anon.grow3.data.model.Water
 import me.anon.grow3.data.repository.DiariesRepository
@@ -63,6 +64,15 @@ class LogActionViewModel constructor(
 		else
 		{
 			throw IllegalArgumentException("Failed to load diary")
+		}
+	}
+
+	public fun saveLog()
+	{
+		log.value ?: return
+
+		viewModelScope.launch {
+			diariesRepository.draftLog(log.value!!)
 		}
 	}
 }

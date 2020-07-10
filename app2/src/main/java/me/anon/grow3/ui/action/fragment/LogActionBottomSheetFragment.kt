@@ -90,6 +90,16 @@ class LogActionBottomSheetFragment : BaseFragment(FragmentActionLogBinding::clas
 		}
 	}
 
+	override fun onDestroyView()
+	{
+		logView?.let {
+			it.saveView()
+			viewModel.saveLog()
+		}
+
+		super.onDestroyView()
+	}
+
 	private fun renderLogView(log: Log)
 	{
 		when (log)

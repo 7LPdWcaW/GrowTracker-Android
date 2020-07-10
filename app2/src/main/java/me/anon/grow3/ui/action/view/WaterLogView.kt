@@ -5,9 +5,13 @@ import android.view.View
 import android.view.ViewGroup
 import me.anon.grow3.data.model.Water
 import me.anon.grow3.databinding.FragmentActionLogWaterBinding
+import me.anon.grow3.util.asEditable
+import me.anon.grow3.util.asStringOrNull
+import me.anon.grow3.util.onFocusLoss
+import me.anon.grow3.util.toDoubleOrNull
 
 class WaterLogView(
-	log: Water? = null
+	log: Water
 ) : LogView<Water>(log)
 {
 	override fun createView(inflater: LayoutInflater, parent: ViewGroup): View
@@ -16,7 +20,18 @@ class WaterLogView(
 	override fun bindView(view: View)
 	{
 		val bindings = FragmentActionLogWaterBinding.bind(view)
+
+		bindings.waterPh.editText!!.onFocusLoss {
+			log.inPH = Water.PHUnit(it.text.toDoubleOrNull())
+		}
+
+		bindings.waterRunoff.editText!!.onFocusLoss {
+			log.outPH = Water.PHUnit(it.text.toDoubleOrNull())
+		}
+
+		bindings.waterPh.editText!!.text = log.inPH?.amount.asStringOrNull()?.asEditable()
+		bindings.waterRunoff.editText!!.text = log.outPH?.amount.asStringOrNull()?.asEditable()
 	}
 
-	override fun provideTitle(): String? = log?.let { "Edit water log" }
+	override fun provideTitle(): String? = "Edit water log"
 }
