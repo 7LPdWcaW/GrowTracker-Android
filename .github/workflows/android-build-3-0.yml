@@ -36,7 +36,6 @@ jobs:
           keystore_alias_password: ${{ secrets.KEYSTORE_ALIAS_PASSWORD }}
         run: bash ./gradlew app2:assembleProductionRelease --stacktrace
       - name: Upload APK
-        uses: actions/upload-artifact@v1
+        uses: actions/upload-artifact@v2
         with:
-          name: app2
           path: app2/build/outputs/apk/production/release/app2-production-release.apk

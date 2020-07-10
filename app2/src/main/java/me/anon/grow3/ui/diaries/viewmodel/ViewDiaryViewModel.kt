@@ -23,7 +23,8 @@ class ViewDiaryViewModel constructor(
 			ViewDiaryViewModel(diariesRepository, handle)
 	}
 
-	private val diaryId: String = savedState[EXTRA_DIARY_ID] ?: throw kotlin.IllegalArgumentException("No diary id set")
+	public val diaryId: String = savedState[EXTRA_DIARY_ID] ?: throw kotlin.IllegalArgumentException("No diary id set")
+
 	private val _diary = diariesRepository.observeDiary(diaryId)
 	public val diary: LiveData<DataResult<Diary>> = _diary
 }

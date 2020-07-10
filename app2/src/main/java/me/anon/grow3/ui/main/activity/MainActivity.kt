@@ -167,7 +167,7 @@ class MainActivity : BaseActivity(ActivityMainBinding::class)
 					it.requireView().updatePadding(bottom = insets.value?.bottom ?: 0)
 					if (newState == STATE_COLLAPSED)
 					{
-						it.requireView().updatePadding(bottom = layoutSheetBehavior.peekHeight)
+						it.requireView().updatePadding(bottom = layoutSheetBehavior.peekHeight - (insets.value?.bottom ?: 0))
 					}
 				}
 			}

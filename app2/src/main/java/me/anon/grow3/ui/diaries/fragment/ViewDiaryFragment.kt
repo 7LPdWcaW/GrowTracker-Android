@@ -1,15 +1,18 @@
 package me.anon.grow3.ui.diaries.fragment
 
 import android.os.Bundle
+import androidx.core.os.bundleOf
 import androidx.core.view.updatePadding
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.observe
 import androidx.recyclerview.widget.LinearLayoutManager
 import me.anon.grow3.data.model.Diary
+import me.anon.grow3.data.model.Water
 import me.anon.grow3.data.model.shortSummary
 import me.anon.grow3.databinding.FragmentViewDiaryBinding
 import me.anon.grow3.ui.action.fragment.LogActionBottomSheetFragment
 import me.anon.grow3.ui.base.BaseFragment
+import me.anon.grow3.ui.common.Extras
 import me.anon.grow3.ui.common.view.StagesCard
 import me.anon.grow3.ui.diaries.view.DiaryCropsCard
 import me.anon.grow3.ui.diaries.view.DiaryLinksCard
@@ -66,7 +69,12 @@ class ViewDiaryFragment : BaseFragment(FragmentViewDiaryBinding::class)
 		viewBindings.menuAction1.onClick {
 			viewBindings.menuFab.isExpanded = false
 			navigationPager?.isUserInputEnabled = true
-			navigateTo<LogActionBottomSheetFragment>(true)
+			navigateTo<LogActionBottomSheetFragment>(true) {
+				bundleOf(
+					Extras.EXTRA_DIARY_ID to viewModel.diaryId,
+					Extras.EXTRA_LOG_TYPE to nameOf<Water>()
+				)
+			}
 		}
 	}
 

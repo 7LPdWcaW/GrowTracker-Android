@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 
-<LinearLayout
+<androidx.coordinatorlayout.widget.CoordinatorLayout
 	xmlns:android="http://schemas.android.com/apk/res/android"
 	xmlns:app="http://schemas.android.com/apk/res-auto"
 	xmlns:tools="http://schemas.android.com/tools"
@@ -30,52 +30,24 @@
 	<androidx.core.widget.NestedScrollView
 		android:layout_width="match_parent"
 		android:layout_height="match_parent"
+		android:clipToPadding="false"
+		app:layout_behavior="@string/appbar_scrolling_view_behavior"
 	>
-		<LinearLayout
+		<FrameLayout
 			android:layout_width="match_parent"
 			android:layout_height="wrap_content"
-			android:orientation="vertical"
-			android:padding="16dp"
-			android:divider="@drawable/spacer_16dp"
-			android:showDividers="middle"
-		>
-			<Button
-				android:layout_width="match_parent"
-				android:layout_height="wrap_content"
-				android:id="@+id/test"
-				android:text="Sample text"
-			/>
-
-			<TextView
-				android:layout_width="match_parent"
-				android:layout_height="wrap_content"
-				android:text="Sample text"
-				style="@style/Text.Header"
-			/>
-			<TextView
-				android:layout_width="match_parent"
-				android:layout_height="wrap_content"
-				android:text="Sample text"
-				style="@style/Text.Header"
-			/>
-			<TextView
-				android:layout_width="match_parent"
-				android:layout_height="wrap_content"
-				android:text="Sample text"
-				style="@style/Text.Header"
-			/>
-			<TextView
-				android:layout_width="match_parent"
-				android:layout_height="wrap_content"
-				android:text="Sample text"
-				style="@style/Text.Header"
-			/>
-			<TextView
-				android:layout_width="match_parent"
-				android:layout_height="wrap_content"
-				android:text="Sample text"
-				style="@style/Text.Header"
-			/>
-		</LinearLayout>
+			android:id="@+id/log_content"
+		/>
 	</androidx.core.widget.NestedScrollView>
-</LinearLayout>
+
+	<com.google.android.material.floatingactionbutton.FloatingActionButton
+		android:layout_width="wrap_content"
+		android:layout_height="wrap_content"
+		android:id="@+id/action_done"
+		android:layout_gravity="bottom|end"
+		app:srcCompat="@drawable/ic_appintro_done"
+		android:layout_margin="16dp"
+		android:foregroundTint="?colorOnPrimary"
+		app:backgroundTint="?colorPrimary"
+	/>
+</androidx.coordinatorlayout.widget.CoordinatorLayout>
