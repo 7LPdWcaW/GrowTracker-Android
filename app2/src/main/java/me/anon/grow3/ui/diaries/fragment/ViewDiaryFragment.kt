@@ -20,7 +20,7 @@ import me.anon.grow3.ui.diaries.viewmodel.ViewDiaryViewModel
 import me.anon.grow3.util.*
 import me.anon.grow3.util.states.DataResult
 import me.anon.grow3.view.adapter.CardListAdapter
-import me.anon.grow3.view.adapter.plusAssign
+import me.anon.grow3.view.adapter.newStack
 import javax.inject.Inject
 
 class ViewDiaryFragment : BaseFragment(FragmentViewDiaryBinding::class)
@@ -96,9 +96,10 @@ class ViewDiaryFragment : BaseFragment(FragmentViewDiaryBinding::class)
 		viewBindings.collapsingToolbarLayout.title = diary.name
 		viewBindings.collapsingToolbarLayout.subtitle = diary.stages().shortSummary()
 
-		viewAdapter += StagesCard(diary = diary, title = "Stages summary")
-		viewAdapter += DiaryCropsCard(diary = diary, title = "Crops")
-		viewAdapter += DiaryLinksCard(diary = diary)
-		viewAdapter.notifyDataSetChanged()
+		viewAdapter.newStack {
+			cards += StagesCard(diary = diary, title = "Stages summary")
+			cards += DiaryCropsCard(diary = diary, title = "Crops")
+			cards += DiaryLinksCard(diary = diary)
+		}
 	}
 }

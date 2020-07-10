@@ -27,6 +27,13 @@ open class CardListAdapter : RecyclerView.Adapter<RecyclerView.ViewHolder>()
 	}
 }
 
+public fun CardListAdapter.newStack(block: CardListAdapter.() -> Unit)
+{
+	this.clear()
+	block()
+	this.notifyDataSetChanged()
+}
+
 public operator fun CardListAdapter.plusAssign(other: Card<*>)
 {
 	this.cards.add(other)
