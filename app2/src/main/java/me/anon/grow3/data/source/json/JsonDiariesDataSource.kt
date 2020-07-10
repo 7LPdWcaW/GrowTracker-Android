@@ -6,6 +6,7 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.runBlocking
 import kotlinx.coroutines.withContext
 import me.anon.grow3.data.model.Diary
+import me.anon.grow3.data.model.Log
 import me.anon.grow3.data.source.DiariesDataSource
 import me.anon.grow3.util.loadAsDiaries
 import me.anon.grow3.util.saveAsDiaries
@@ -92,4 +93,7 @@ class JsonDiariesDataSource @Inject constructor(
 	private suspend fun loadFromDisk(): List<Diary> = withContext(dispatcher) {
 		File(sourcePath).loadAsDiaries { arrayListOf() }
 	}
+
+	override suspend fun cache(log: Log): Log = log
+	override suspend fun get(logId: String): Log? = null
 }

@@ -16,7 +16,6 @@ import me.anon.grow3.ui.action.view.WaterLogView
 import me.anon.grow3.ui.action.viewmodel.LogActionViewModel
 import me.anon.grow3.ui.base.BaseFragment
 import me.anon.grow3.util.*
-import me.anon.grow3.util.states.DataResult
 import javax.inject.Inject
 import kotlin.math.abs
 
@@ -87,25 +86,22 @@ class LogActionBottomSheetFragment : BaseFragment(FragmentActionLogBinding::clas
 	override fun bindVm()
 	{
 		viewModel.log.observe(viewLifecycleOwner) { log ->
-			when (log)
-			{
-				is DataResult.Success -> renderLogView(log.data)
-			}
+			renderLogView(log)
 		}
 	}
 
-	private fun renderLogView(log: Log?)
+	private fun renderLogView(log: Log)
 	{
-		var log = log
-		when (viewModel.logType)
+		when (log)
 		{
-			nameOf<Water>() -> {
-				log = Water {}
+			is Water -> {
 				logView = WaterLogView(log)
 			}
 		}
 
 		logView?.let { logView ->
+			viewBindings.toolbar.title = logView.provideTitle() ?: R.string.log_action_new_title.string()
+
 			viewBindings.logContent.removeAllViews()
 			val view = logView.createView(layoutInflater, viewBindings.logContent)
 			logView.bindView(view)

@@ -7,7 +7,7 @@ import me.anon.grow3.data.model.Water
 import me.anon.grow3.databinding.FragmentActionLogWaterBinding
 
 class WaterLogView(
-	log: Water = Water {  }
+	log: Water? = null
 ) : LogView<Water>(log)
 {
 	override fun createView(inflater: LayoutInflater, parent: ViewGroup): View
@@ -17,4 +17,6 @@ class WaterLogView(
 	{
 		val bindings = FragmentActionLogWaterBinding.bind(view)
 	}
+
+	override fun provideTitle(): String? = log?.let { "Edit water log" }
 }

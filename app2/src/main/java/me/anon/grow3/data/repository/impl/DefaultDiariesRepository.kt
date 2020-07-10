@@ -7,6 +7,7 @@ import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import me.anon.grow3.data.model.Diary
+import me.anon.grow3.data.model.Log
 import me.anon.grow3.data.repository.DiariesRepository
 import me.anon.grow3.data.source.DiariesDataSource
 import me.anon.grow3.util.states.DataResult
@@ -71,6 +72,14 @@ class DefaultDiariesRepository @Inject constructor(
 			}
 		}
 	}
+
+	override suspend fun draftLog(log: Log): Log
+	{
+		dataSource.cache(log)
+		return log
+	}
+
+	override suspend fun getDraftLog(logId: String): Log? = dataSource.get(logId)
 
 	override fun invalidate()
 	{
