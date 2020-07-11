@@ -21,7 +21,7 @@ abstract class Log(
 	open val id: String = UUID.randomUUID().toString(),
 	open var date: String = ZonedDateTime.now().asString(),
 	open var notes: String = "",
-	open var cropIds: ArrayList<String> = arrayListOf(),
+	open var cropIds: List<String> = arrayListOf(),
 	open var action: String = "Log"
 )
 {

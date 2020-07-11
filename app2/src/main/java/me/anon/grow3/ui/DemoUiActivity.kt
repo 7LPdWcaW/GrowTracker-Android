@@ -27,6 +27,7 @@ class DemoUiActivity : BaseActivity(ActivityDemoUiBinding::class)
 		lifecycleScope.launchWhenCreated {
 			val diary = repository.getDiaryById("0000-000000") ?: return@launchWhenCreated
 			viewBindings.stageView.setStages(diary, diary.crop("0002-000004"))
+			viewBindings.cropSelectView.setDiary(diary)
 		}
 	}
 }
