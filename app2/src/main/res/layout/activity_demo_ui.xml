@@ -60,6 +60,22 @@
 				android:layout_height="wrap_content"
 				style="@style/Card"
 			>
+				<me.anon.grow3.view.CropSelectView
+					android:layout_width="match_parent"
+					android:layout_height="wrap_content"
+					android:paddingStart="12dp"
+					android:paddingEnd="12dp"
+					android:paddingTop="8dp"
+					android:paddingBottom="8dp"
+					android:id="@+id/crop_select_view"
+				/>
+			</com.google.android.material.card.MaterialCardView>
+
+			<com.google.android.material.card.MaterialCardView
+				android:layout_width="match_parent"
+				android:layout_height="wrap_content"
+				style="@style/Card"
+			>
 				<androidx.constraintlayout.widget.ConstraintLayout
 					android:layout_width="match_parent"
 					android:layout_height="wrap_content"

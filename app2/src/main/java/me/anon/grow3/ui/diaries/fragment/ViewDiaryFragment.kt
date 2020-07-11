@@ -54,7 +54,6 @@ class ViewDiaryFragment : BaseFragment(FragmentViewDiaryBinding::class)
 
 		viewBindings.recyclerView.adapter = viewAdapter
 		viewBindings.recyclerView.layoutManager = LinearLayoutManager(requireContext())
-		viewAdapter.cards.clear()
 
 		viewBindings.menuFab.setOnClickListener {
 			viewBindings.menuFab.isExpanded = !viewBindings.menuFab.isExpanded

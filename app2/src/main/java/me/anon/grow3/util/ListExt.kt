@@ -31,11 +31,12 @@ public inline fun <T> Iterable<T>.forEachPair(action: (T, T?) -> Unit): Unit
 	for (index in 0 until count() step 2) action(elementAt(index), elementAtOrNull(index + 1))
 }
 
-public inline fun <T, reified J : ViewBinding> Iterable<T>.mapToView(container: View, mapper: (T, J) -> Unit)
+public inline fun <T, reified J : ViewBinding> Iterable<T>.mapToView(container: View, crossinline mapper: (T, J) -> Unit)
 {
 	forEach {
-		val viewBinder = J::class.java.getDeclaredMethod("inflate", LayoutInflater::class.java, ViewGroup::class.java, Boolean::class.java)
-		.invoke(null, LayoutInflater.from(container.context), container, false) as ViewBinding
+		val viewBinder = J::class.java
+			.getDeclaredMethod("inflate", LayoutInflater::class.java, ViewGroup::class.java, Boolean::class.java)
+			.invoke(null, LayoutInflater.from(container.context), container, false) as ViewBinding
 		val viewBinding = viewBinder as J
 
 		mapper(it, viewBinding)
