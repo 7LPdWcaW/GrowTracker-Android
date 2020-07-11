@@ -62,7 +62,7 @@ class CropSelectView : ChipGroup
 				selectedCrops.remove(chip.tag as Crop)
 			}
 		}
-		
+
 		stateCheck.clear()
 	}
 

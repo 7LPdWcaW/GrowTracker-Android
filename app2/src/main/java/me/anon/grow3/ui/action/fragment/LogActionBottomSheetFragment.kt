@@ -8,6 +8,7 @@ import androidx.fragment.app.viewModels
 import androidx.lifecycle.observe
 import com.google.android.material.bottomsheet.BottomSheetBehavior
 import me.anon.grow3.R
+import me.anon.grow3.data.model.Diary
 import me.anon.grow3.data.model.Log
 import me.anon.grow3.data.model.Water
 import me.anon.grow3.databinding.FragmentActionLogBinding
@@ -16,6 +17,8 @@ import me.anon.grow3.ui.action.view.WaterLogView
 import me.anon.grow3.ui.action.viewmodel.LogActionViewModel
 import me.anon.grow3.ui.base.BaseFragment
 import me.anon.grow3.util.*
+import me.anon.grow3.util.states.asSuccess
+import me.anon.grow3.view.CropSelectView
 import javax.inject.Inject
 import kotlin.math.abs
 
@@ -50,7 +53,16 @@ class LogActionBottomSheetFragment : BaseFragment(FragmentActionLogBinding::clas
 			}
 		}
 
-		override fun onStateChanged(bottomSheet: View, newState: Int){}
+		override fun onStateChanged(bottomSheet: View, newState: Int)
+		{
+			when (newState)
+			{
+				BottomSheetBehavior.STATE_COLLAPSED -> {
+					viewBindings.logContent.visibility = View.INVISIBLE
+				}
+				else -> viewBindings.logContent.visibility = View.VISIBLE
+			}
+		}
 	}
 
 	override fun bindUi()
@@ -104,7 +116,8 @@ class LogActionBottomSheetFragment : BaseFragment(FragmentActionLogBinding::clas
 	override fun bindVm()
 	{
 		viewModel.log.observe(viewLifecycleOwner) { log ->
-			renderLogView(log)
+			val diary = viewModel.diary.value!!.asSuccess()
+			renderLogView(diary, log)
 		}
 	}
 
@@ -121,7 +134,7 @@ class LogActionBottomSheetFragment : BaseFragment(FragmentActionLogBinding::clas
 		super.onDestroyView()
 	}
 
-	private fun renderLogView(log: Log)
+	private fun renderLogView(diary: Diary, log: Log)
 	{
 		when (log)
 		{
@@ -137,23 +150,29 @@ class LogActionBottomSheetFragment : BaseFragment(FragmentActionLogBinding::clas
 			val view = logView.createView(layoutInflater, viewBindings.logContent)
 			logView.bindView(view)
 			viewBindings.logContent += view
+
+			view.findViewById<CropSelectView>(R.id.crop_select_view)?.let {
+				it.setDiary(diary)
+			}
 		}
 	}
 
 	override fun onBackPressed(): Boolean
 	{
-		if (layoutSheetBehavior.state == BottomSheetBehavior.STATE_COLLAPSED)
+		when (layoutSheetBehavior.state)
 		{
-			requireActivity().promptExit {
-				layoutSheetBehavior.isHideable = true
-				layoutSheetBehavior.state = BottomSheetBehavior.STATE_HIDDEN
+			BottomSheetBehavior.STATE_COLLAPSED -> {
+				requireActivity().promptExit {
+					layoutSheetBehavior.isHideable = true
+					layoutSheetBehavior.state = BottomSheetBehavior.STATE_HIDDEN
+				}
+				return true
 			}
-			return true
-		}
-		else if (layoutSheetBehavior.state == BottomSheetBehavior.STATE_EXPANDED)
-		{
-			layoutSheetBehavior.state = BottomSheetBehavior.STATE_COLLAPSED
-			return true
+
+			BottomSheetBehavior.STATE_EXPANDED, BottomSheetBehavior.STATE_HALF_EXPANDED -> {
+				layoutSheetBehavior.state = BottomSheetBehavior.STATE_COLLAPSED
+				return true
+			}
 		}
 
 		return false

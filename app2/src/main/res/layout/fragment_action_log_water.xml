@@ -8,10 +8,6 @@
 	android:layout_height="match_parent"
 	android:orientation="vertical"
 	android:padding="16dp"
-	app:dividerDrawable="@drawable/section_spacer"
-	app:flexDirection="row"
-	app:flexWrap="wrap"
-	app:showDivider="middle"
 >
 	<com.google.android.material.textfield.TextInputLayout
 		android:layout_width="0dp"
@@ -54,4 +50,14 @@
 			android:inputType="numberDecimal"
 		/>
 	</com.google.android.material.textfield.TextInputLayout>
+
+	<me.anon.grow3.view.CropSelectView
+		android:layout_width="0dp"
+		android:layout_height="wrap_content"
+		android:id="@+id/crop_select_view"
+		android:layout_marginTop="@dimen/section_header_spacing"
+		app:layout_constraintTop_toBottomOf="@id/water_ph"
+		app:layout_constraintStart_toStartOf="parent"
+		app:layout_constraintEnd_toEndOf="parent"
+	/>
 </androidx.constraintlayout.widget.ConstraintLayout>

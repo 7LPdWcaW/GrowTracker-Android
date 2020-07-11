@@ -14,12 +14,14 @@ class WaterLogView(
 	log: Water
 ) : LogView<Water>(log)
 {
+	private lateinit var bindings: FragmentActionLogWaterBinding
+
 	override fun createView(inflater: LayoutInflater, parent: ViewGroup): View
 		= FragmentActionLogWaterBinding.inflate(inflater, parent, false).root
 
 	override fun bindView(view: View)
 	{
-		val bindings = FragmentActionLogWaterBinding.bind(view)
+		bindings = FragmentActionLogWaterBinding.bind(view)
 
 		bindings.waterPh.editText!!.onFocusLoss {
 			log.inPH = Water.PHUnit(it.text.toDoubleOrNull())
@@ -31,6 +33,11 @@ class WaterLogView(
 
 		bindings.waterPh.editText!!.text = log.inPH?.amount.asStringOrNull()?.asEditable()
 		bindings.waterRunoff.editText!!.text = log.outPH?.amount.asStringOrNull()?.asEditable()
+	}
+
+	override fun saveView()
+	{
+		log.cropIds = bindings.cropSelectView.selectedCrops.map { it.id }.toList()
 	}
 
 	override fun provideTitle(): String? = "Edit water log"
