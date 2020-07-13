@@ -75,7 +75,7 @@ data class Diary(
 			if (harvest != null)
 			{
 				StageChange(StageType.Harvested).apply {
-					cropIds.add(crop.id)
+					cropIds as ArrayList += crop.id
 					date = harvest.date
 				}
 			}

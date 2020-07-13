@@ -1,7 +1,6 @@
 package me.anon.grow3.data.model
 
 import com.squareup.moshi.JsonClass
-import java.util.*
 
 @JsonClass(generateAdapter = true)
 data class Environment(
@@ -14,8 +13,8 @@ data class Environment(
 	public var schedule: LightSchedule? = null
 ) : Log(action = "Environment")
 {
-	override var cropIds: ArrayList<String>
-		get() = arrayListOf()
+	override var cropIds: List<String>
+		get() = listOf()
 		set(value){}
 }
 

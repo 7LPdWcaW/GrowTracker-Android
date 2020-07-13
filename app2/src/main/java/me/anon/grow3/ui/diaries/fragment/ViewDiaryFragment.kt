@@ -65,7 +65,7 @@ class ViewDiaryFragment : BaseFragment(FragmentViewDiaryBinding::class)
 			navigationPager?.isUserInputEnabled = true
 		}
 
-		viewBindings.menuAction1.onClick {
+		viewBindings.menuLogWater.onClick {
 			viewBindings.menuFab.isExpanded = false
 			navigationPager?.isUserInputEnabled = true
 			navigateTo<LogActionBottomSheetFragment>(true) {
