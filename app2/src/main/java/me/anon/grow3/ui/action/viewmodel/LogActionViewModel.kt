@@ -72,17 +72,16 @@ class LogActionViewModel constructor(
 	{
 		log.value ?: return
 
-		if (draft)
-		{
-			viewModelScope.launch {
+		viewModelScope.launch {
+			if (draft)
+			{
 				diariesRepository.draftLog(log.value!!)
 			}
-		}
-		else
-		{
-			diary.value?.asSuccess()?.let {
-				it.log += log.value!!
-				diariesRepository.sync()
+			else
+			{
+				diary.value?.asSuccess()?.let {
+					diariesRepository.addLog(log.value!!, it)
+				}
 			}
 		}
 	}

@@ -2,6 +2,8 @@ package me.anon.grow3.data.repository.impl
 
 import android.content.res.Resources
 import androidx.lifecycle.*
+import com.zhuinden.eventemitter.EventEmitter
+import com.zhuinden.eventemitter.EventSource
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
@@ -28,8 +30,10 @@ class DefaultDiariesRepository @Inject constructor(
 			emit(DataResult.Success(dataSource.sync(DiariesDataSource.SyncDirection.LOAD)))
 		}
 	}
-
 	override fun observeDiaries(): LiveData<DataResult<List<Diary>>> = _diaries
+
+	private val _logEvents: EventEmitter<LogEvent> = EventEmitter()
+	override fun observeLogEvents(): EventSource<LogEvent> = _logEvents
 
 	override fun observeDiary(diaryId: String): LiveData<DataResult<Diary>> = _diaries.map {
 		if (it is DataResult.Success)
@@ -76,6 +80,14 @@ class DefaultDiariesRepository @Inject constructor(
 	override suspend fun draftLog(log: Log): Log
 	{
 		dataSource.cache(log)
+		return log
+	}
+
+	override suspend fun addLog(log: Log, diary: Diary): Log
+	{
+		_logEvents.emit(LogEvent.Added(log, diary))
+		diary.log(log)
+		dataSource.sync(DiariesDataSource.SyncDirection.SAVE, diary)
 		return log
 	}
 

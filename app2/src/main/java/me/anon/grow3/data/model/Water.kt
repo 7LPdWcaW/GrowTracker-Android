@@ -25,6 +25,8 @@ data class Water(
 		public var description: String = "",
 		public var amount: Double?
 	)
+
+	override fun equals(other: Any?): Boolean = id == (other as? Log)?.id || super.equals(other)
 }
 
 public fun Water(block: Water.() -> Unit): Water = Water(null, null, null, null, null).apply(block)
