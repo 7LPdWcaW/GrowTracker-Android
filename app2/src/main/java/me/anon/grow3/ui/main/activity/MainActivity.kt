@@ -4,6 +4,8 @@ import android.content.Intent
 import android.os.Bundle
 import android.view.View
 import android.view.ViewGroup
+import android.widget.Toast
+import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.os.bundleOf
 import androidx.core.view.isVisible
@@ -18,6 +20,7 @@ import com.google.android.material.bottomsheet.BottomSheetBehavior
 import com.google.android.material.bottomsheet.BottomSheetBehavior.STATE_COLLAPSED
 import com.google.android.material.bottomsheet.BottomSheetBehavior.STATE_HIDDEN
 import me.anon.grow3.R
+import me.anon.grow3.data.repository.impl.LogEvent
 import me.anon.grow3.databinding.ActivityMainBinding
 import me.anon.grow3.ui.base.BaseActivity
 import me.anon.grow3.ui.base.BaseFragment
@@ -26,9 +29,9 @@ import me.anon.grow3.ui.diaries.fragment.EmptyFragment
 import me.anon.grow3.ui.main.fragment.AdditionalPageHostFragment
 import me.anon.grow3.ui.main.fragment.MainNavigatorFragment
 import me.anon.grow3.ui.main.fragment.NavigationFragment
-import me.anon.grow3.util.codeOf
-import me.anon.grow3.util.nameOf
-import me.anon.grow3.util.promptExit
+import me.anon.grow3.ui.main.viewmodel.MainViewModel
+import me.anon.grow3.util.*
+import javax.inject.Inject
 
 
 class MainActivity : BaseActivity(ActivityMainBinding::class)
@@ -98,6 +101,10 @@ class MainActivity : BaseActivity(ActivityMainBinding::class)
 	}
 
 	private var adapter = PageAdapter(this)
+	override val injector: Injector = { it.inject(this) }
+
+	@Inject internal lateinit var viewModelFactory: MainViewModel.Factory
+	private val viewModel: MainViewModel by viewModels { ViewModelProvider(viewModelFactory, this, intent.extras) }
 	public val viewBindings by viewBinding<ActivityMainBinding>()
 	public val viewPager get() = viewBindings.viewPager
 
@@ -148,6 +155,18 @@ class MainActivity : BaseActivity(ActivityMainBinding::class)
 
 		supportFragmentManager.findFragmentByTag("f" + adapter.getItemId(INDEX_MAIN).toInt())?.let {
 			 it.apply { arguments = intent?.extras }
+		}
+	}
+
+	override fun bindVm()
+	{
+		viewModel.logEvents.observe(this) { event ->
+			when (event)
+			{
+				is LogEvent.Added -> {
+					Toast.makeText(this, "${event.log} added to ${event.diary.name}", Toast.LENGTH_LONG).show()
+				}
+			}
 		}
 	}
 
