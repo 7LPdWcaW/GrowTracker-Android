@@ -37,6 +37,7 @@ class WaterLogView(
 
 	override fun saveView()
 	{
+		bindings.root.clearFocus()
 		log.cropIds = bindings.cropSelectView.selectedCrops.map { it.id }.toList()
 	}
 
