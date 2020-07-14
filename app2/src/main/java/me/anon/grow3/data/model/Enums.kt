@@ -89,9 +89,6 @@ enum class LightType : Type
 	CFL {
 		override val strRes = R.string.light_type_cfl
 	},
-	DE {
-		override val strRes = R.string.light_type_de
-	},
 	CMH {
 		override val strRes = R.string.light_type_cmh
 	},

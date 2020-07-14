@@ -1,6 +1,7 @@
 package me.anon.grow3.util
 
 import android.content.Context
+import android.graphics.Rect
 import android.graphics.drawable.Drawable
 import android.os.Bundle
 import android.view.LayoutInflater
@@ -205,6 +206,8 @@ inline fun <T : View> T.afterMeasured(crossinline callback: T.() -> Unit)
 		}
 	})
 }
+
+public fun View.updateMargin(rect: Rect) = this.updateMargin(rect.left, rect.top, rect.right, rect.bottom)
 
 public fun View.updateMargin(
 	left: Int = (layoutParams as? ViewGroup.MarginLayoutParams)?.leftMargin ?: 0,

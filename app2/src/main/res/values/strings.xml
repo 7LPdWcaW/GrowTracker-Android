@@ -53,6 +53,8 @@
 	<string name="view_diary_stages_title">Stages summary</string>
 	<string name="view_diary_crops_title">Crops</string>
 
+	<string name="log_action_new_title">New log</string>
+
 	<string name="light_type_led">LED</string>
 	<string name="light_type_hid">HID</string>
 	<string name="light_type_cfl">CFL</string>
@@ -76,7 +78,6 @@
 	<string name="stage_type_drying">Drying</string>
 	<string name="stage_type_curing">Curing</string>
 	<string name="stage_type_harvested">Harvested</string>
-
 
 	<string name="days" formatted="true">%d days</string>
 	<string name="today">Today</string>

@@ -1,9 +1,7 @@
 package me.anon.grow3.ui.crud.viewmodel
 
-import androidx.lifecycle.SavedStateHandle
-import androidx.lifecycle.ViewModel
-import androidx.lifecycle.liveData
-import androidx.lifecycle.switchMap
+import androidx.lifecycle.*
+import kotlinx.coroutines.launch
 import me.anon.grow3.data.model.Crop
 import me.anon.grow3.data.model.Medium
 import me.anon.grow3.data.model.MediumType
@@ -79,7 +77,9 @@ class CropViewModel(
 				val medium = diary.mediumOf(this) ?: let {
 					mediumType?.let {
 						Medium(it.value).also {
-							diary.log += it
+							viewModelScope.launch {
+								diariesRepository.addLog(it, diary)
+							}
 						}
 					}
 				}

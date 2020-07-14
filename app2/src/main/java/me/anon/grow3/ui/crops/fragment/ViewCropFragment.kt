@@ -13,7 +13,7 @@ import me.anon.grow3.util.Injector
 import me.anon.grow3.util.ViewModelProvider
 import me.anon.grow3.util.states.DataResult
 import me.anon.grow3.util.states.asSuccess
-import me.anon.grow3.view.adapter.plusAssign
+import me.anon.grow3.view.adapter.newStack
 import javax.inject.Inject
 
 class ViewCropFragment : CardListFragment()
@@ -39,15 +39,14 @@ class ViewCropFragment : CardListFragment()
 		requireActivity().title = crop.name
 
 		viewModel.diary.value?.asSuccess()?.let { diary ->
-			viewAdapter += StagesCard(diary = diary, crop = crop)
-			viewAdapter += CropDetailsCard(diary = diary, crop = crop)
-
-			diary.mediumOf(crop)?.let { medium ->
-				viewAdapter += LogMediumCard(title = "Medium details", diary = diary, crop = crop, medium = medium)
+			viewAdapter.newStack {
+				cards += StagesCard(diary = diary, crop = crop)
+				cards += CropDetailsCard(diary = diary, crop = crop)
+				diary.mediumOf(crop)?.let { medium ->
+					cards += LogMediumCard(title = "Medium details", diary = diary, crop = crop, medium = medium)
+				}
+				cards += CropLinksCard(diary = diary, crop = crop)
 			}
-
-			viewAdapter += CropLinksCard(diary = diary, crop = crop)
-			viewAdapter.notifyDataSetChanged()
 		}
 	}
 }

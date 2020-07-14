@@ -11,7 +11,7 @@ data class Diary(
 	@Id public val id: String = UUID.randomUUID().toString(),
 	public var name: String,
 	public var date: String = ZonedDateTime.now().asString(),
-	public val log: ArrayList<Log> = arrayListOf(),
+	public val log: List<Log> = arrayListOf(),
 	public val crops: ArrayList<Crop> = arrayListOf()
 )
 {
@@ -59,6 +59,16 @@ data class Diary(
 		)
 	}
 
+	/**
+	 * Adds a new log to the diary
+	 */
+	public fun log(log: Log): Log
+	{
+		this.log as ArrayList += log
+		this.log.sortBy { it.date }
+		return log
+	}
+
 	public fun logOf(id: String): Log? = log.first { it.id == id }
 	public inline fun <reified T> Diary.logOf(id: String): T? = this.logOf(id) as T?
 
@@ -75,7 +85,7 @@ data class Diary(
 			if (harvest != null)
 			{
 				StageChange(StageType.Harvested).apply {
-					cropIds.add(crop.id)
+					cropIds as ArrayList += crop.id
 					date = harvest.date
 				}
 			}
@@ -178,8 +188,10 @@ data class Diary(
 	init {
 		if (log.isEmpty() || !log.any { it is StageChange })
 		{
-			log += StageChange(StageType.Planted)
+			log as ArrayList += StageChange(StageType.Planted)
 		}
+
+		log.sortedBy { it.date }
 	}
 
 	override fun equals(other: Any?): Boolean = (other as? Diary)?.id == id || super.equals(other)

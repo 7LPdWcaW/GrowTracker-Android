@@ -5,6 +5,7 @@ import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 import me.anon.grow3.data.model.Diary
+import me.anon.grow3.data.model.Log
 import me.anon.grow3.data.source.DiariesDataSource
 import org.dizitart.kno2.filters.eq
 import org.dizitart.kno2.getRepository
@@ -75,5 +76,30 @@ class NitriteDiariesDataSource @Inject constructor(
 		}
 
 		return getDiaries()
+	}
+
+	override suspend fun cache(log: Log): Log
+	{
+		withContext(dispatcher) {
+			db.getRepository<Log>(key = "draft_logs") {
+				insert(log)
+			}
+
+			db.commit()
+		}
+
+		return log
+	}
+
+	override suspend fun get(logId: String): Log?
+	{
+		var log: Log? = null
+		withContext(dispatcher) {
+			db.getRepository<Log>(key = "draft_logs") {
+				log = find(Log::id eq logId).firstOrNull()
+			}
+		}
+
+		return log
 	}
 }

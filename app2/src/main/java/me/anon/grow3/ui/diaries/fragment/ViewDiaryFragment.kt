@@ -1,15 +1,18 @@
 package me.anon.grow3.ui.diaries.fragment
 
 import android.os.Bundle
+import androidx.core.os.bundleOf
 import androidx.core.view.updatePadding
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.observe
 import androidx.recyclerview.widget.LinearLayoutManager
 import me.anon.grow3.data.model.Diary
+import me.anon.grow3.data.model.Water
 import me.anon.grow3.data.model.shortSummary
 import me.anon.grow3.databinding.FragmentViewDiaryBinding
 import me.anon.grow3.ui.action.fragment.LogActionBottomSheetFragment
 import me.anon.grow3.ui.base.BaseFragment
+import me.anon.grow3.ui.common.Extras
 import me.anon.grow3.ui.common.view.StagesCard
 import me.anon.grow3.ui.diaries.view.DiaryCropsCard
 import me.anon.grow3.ui.diaries.view.DiaryLinksCard
@@ -17,7 +20,7 @@ import me.anon.grow3.ui.diaries.viewmodel.ViewDiaryViewModel
 import me.anon.grow3.util.*
 import me.anon.grow3.util.states.DataResult
 import me.anon.grow3.view.adapter.CardListAdapter
-import me.anon.grow3.view.adapter.plusAssign
+import me.anon.grow3.view.adapter.newStack
 import javax.inject.Inject
 
 class ViewDiaryFragment : BaseFragment(FragmentViewDiaryBinding::class)
@@ -51,7 +54,6 @@ class ViewDiaryFragment : BaseFragment(FragmentViewDiaryBinding::class)
 
 		viewBindings.recyclerView.adapter = viewAdapter
 		viewBindings.recyclerView.layoutManager = LinearLayoutManager(requireContext())
-		viewAdapter.cards.clear()
 
 		viewBindings.menuFab.setOnClickListener {
 			viewBindings.menuFab.isExpanded = !viewBindings.menuFab.isExpanded
@@ -63,10 +65,15 @@ class ViewDiaryFragment : BaseFragment(FragmentViewDiaryBinding::class)
 			navigationPager?.isUserInputEnabled = true
 		}
 
-		viewBindings.menuAction1.onClick {
+		viewBindings.menuLogWater.onClick {
 			viewBindings.menuFab.isExpanded = false
 			navigationPager?.isUserInputEnabled = true
-			navigateTo<LogActionBottomSheetFragment>(true)
+			navigateTo<LogActionBottomSheetFragment>(true) {
+				bundleOf(
+					Extras.EXTRA_DIARY_ID to viewModel.diaryId,
+					Extras.EXTRA_LOG_TYPE to nameOf<Water>()
+				)
+			}
 		}
 	}
 
@@ -88,9 +95,10 @@ class ViewDiaryFragment : BaseFragment(FragmentViewDiaryBinding::class)
 		viewBindings.collapsingToolbarLayout.title = diary.name
 		viewBindings.collapsingToolbarLayout.subtitle = diary.stages().shortSummary()
 
-		viewAdapter += StagesCard(diary = diary, title = "Stages summary")
-		viewAdapter += DiaryCropsCard(diary = diary, title = "Crops")
-		viewAdapter += DiaryLinksCard(diary = diary)
-		viewAdapter.notifyDataSetChanged()
+		viewAdapter.newStack {
+			cards += StagesCard(diary = diary, title = "Stages summary")
+			cards += DiaryCropsCard(diary = diary, title = "Crops")
+			cards += DiaryLinksCard(diary = diary)
+		}
 	}
 }

@@ -93,7 +93,7 @@
 				<LinearLayout
 					android:layout_width="match_parent"
 					android:layout_height="wrap_content"
-					android:id="@+id/menu_action1"
+					android:id="@+id/menu_log_water"
 					android:orientation="horizontal"
 					android:paddingStart="18dp"
 					android:paddingEnd="18dp"
@@ -124,7 +124,7 @@
 				<LinearLayout
 					android:layout_width="match_parent"
 					android:layout_height="wrap_content"
-					android:id="@+id/menu_action2"
+					android:id="@+id/menu_log_transplant"
 					android:orientation="horizontal"
 					android:paddingStart="18dp"
 					android:paddingEnd="18dp"
@@ -155,7 +155,7 @@
 				<LinearLayout
 					android:layout_width="match_parent"
 					android:layout_height="wrap_content"
-					android:id="@+id/menu_action3"
+					android:id="@+id/menu_log_environment"
 					android:orientation="horizontal"
 					android:paddingStart="18dp"
 					android:paddingEnd="18dp"
@@ -177,6 +177,99 @@
 						android:layout_width="wrap_content"
 						android:layout_height="match_parent"
 						android:text="Environment"
+						android:textSize="16sp"
+						android:layout_marginStart="18dp"
+						android:gravity="center_vertical"
+					/>
+				</LinearLayout>
+
+				<LinearLayout
+					android:layout_width="match_parent"
+					android:layout_height="wrap_content"
+					android:id="@+id/menu_log_maintenance"
+					android:orientation="horizontal"
+					android:paddingStart="18dp"
+					android:paddingEnd="18dp"
+					android:paddingTop="12dp"
+					android:paddingBottom="12dp"
+					android:background="?selectableItemBackground"
+					android:clickable="true"
+					android:focusable="true"
+				>
+					<ImageView
+						android:layout_width="42dp"
+						android:layout_height="42dp"
+						android:padding="4dp"
+						app:srcCompat="@drawable/ic_calendar"
+						app:tint="?textOnSurface"
+					/>
+
+					<TextView
+						android:layout_width="wrap_content"
+						android:layout_height="match_parent"
+						android:text="Maintenance"
+						android:textSize="16sp"
+						android:layout_marginStart="18dp"
+						android:gravity="center_vertical"
+					/>
+				</LinearLayout>
+
+				<LinearLayout
+					android:layout_width="match_parent"
+					android:layout_height="wrap_content"
+					android:id="@+id/menu_log_pesticide"
+					android:orientation="horizontal"
+					android:paddingStart="18dp"
+					android:paddingEnd="18dp"
+					android:paddingTop="12dp"
+					android:paddingBottom="12dp"
+					android:background="?selectableItemBackground"
+					android:clickable="true"
+					android:focusable="true"
+				>
+					<ImageView
+						android:layout_width="42dp"
+						android:layout_height="42dp"
+						android:padding="4dp"
+						app:srcCompat="@drawable/ic_calendar"
+						app:tint="?textOnSurface"
+					/>
+
+					<TextView
+						android:layout_width="wrap_content"
+						android:layout_height="match_parent"
+						android:text="Pesticide"
+						android:textSize="16sp"
+						android:layout_marginStart="18dp"
+						android:gravity="center_vertical"
+					/>
+				</LinearLayout>
+
+				<LinearLayout
+					android:layout_width="match_parent"
+					android:layout_height="wrap_content"
+					android:id="@+id/menu_log_photo"
+					android:orientation="horizontal"
+					android:paddingStart="18dp"
+					android:paddingEnd="18dp"
+					android:paddingTop="12dp"
+					android:paddingBottom="12dp"
+					android:background="?selectableItemBackground"
+					android:clickable="true"
+					android:focusable="true"
+				>
+					<ImageView
+						android:layout_width="42dp"
+						android:layout_height="42dp"
+						android:padding="4dp"
+						app:srcCompat="@drawable/ic_calendar"
+						app:tint="?textOnSurface"
+					/>
+
+					<TextView
+						android:layout_width="wrap_content"
+						android:layout_height="match_parent"
+						android:text="Photo"
 						android:textSize="16sp"
 						android:layout_marginStart="18dp"
 						android:gravity="center_vertical"

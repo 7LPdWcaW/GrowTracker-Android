@@ -1,6 +1,7 @@
 package me.anon.grow3.ui.crud.viewmodel
 
 import androidx.lifecycle.*
+import kotlinx.coroutines.launch
 import me.anon.grow3.data.model.*
 import me.anon.grow3.data.repository.DiariesRepository
 import me.anon.grow3.util.*
@@ -78,8 +79,9 @@ class DiaryViewModel(
 		_diary.value?.asSuccess()!!.apply {
 			// We're in a wizard so there should only be one instance
 			val id = _environmentId.value ?: let {
-				log.add(Environment())
-				log.last().id
+				val log = Environment()
+				viewModelScope.launch { diariesRepository.addLog(log, it) }
+				log.id
 			}.also { _environmentId.value = it }
 
 			logOf<Environment>(id)?.apply {
