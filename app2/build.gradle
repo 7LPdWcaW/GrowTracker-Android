@@ -105,6 +105,7 @@ dependencies {
 	implementation 'com.github.PhilJay:MPAndroidChart:v2.1.6'
 	implementation 'com.github.AppIntro:AppIntro:6.0.0'
 	implementation 'com.github.Zhuinden:livedata-combinetuple-kt:1.0.0'
+	implementation 'com.github.Zhuinden:event-emitter:1.1.0'
 	implementation 'com.github.haiithust:flexbox-layout:9cbd2c96ff'
 	implementation "com.hendraanggrian.material:collapsingtoolbarlayout-subtitle:1.1.0"
 
