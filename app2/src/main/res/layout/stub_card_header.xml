@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<merge
+	xmlns:android="http://schemas.android.com/apk/res/android"
+	xmlns:app="http://schemas.android.com/apk/res-auto"
+	xmlns:tools="http://schemas.android.com/tools"
+>
+	<TextView
+		android:layout_width="wrap_content"
+		android:layout_height="wrap_content"
+		android:id="@+id/header"
+		tools:text="Log"
+		app:layout_constraintHorizontal_bias="0"
+		app:layout_constraintTop_toTopOf="parent"
+		app:layout_constraintStart_toStartOf="parent"
+		app:layout_constraintEnd_toStartOf="@id/date"
+		style="@style/Text.Header"
+	/>
+
+	<TextView
+		android:layout_width="0dp"
+		android:layout_height="wrap_content"
+		android:id="@+id/date"
+		android:gravity="end"
+		android:layout_marginStart="12dp"
+		app:layout_constraintBaseline_toBaselineOf="@id/header"
+		app:layout_constraintTop_toTopOf="parent"
+		app:layout_constraintEnd_toEndOf="parent"
+		app:layout_constraintStart_toEndOf="@id/header"
+		app:layout_constraintHorizontal_bias="1"
+		android:maxLines="2"
+		android:paddingBottom="8dp"
+		tools:text="3 days ago (22f/100)"
+		style="@style/Text.Header.Sub"
+	/>
+</merge>
+

@@ -15,7 +15,7 @@ import me.anon.grow3.ui.crud.fragment.DiaryCropsFragment
 import me.anon.grow3.ui.crud.fragment.DiaryDetailsFragment
 import me.anon.grow3.ui.crud.fragment.DiaryEnvironmentFragment
 import me.anon.grow3.ui.diaries.fragment.DiariesListFragment
-import me.anon.grow3.ui.diaries.fragment.LogListFragment
+import me.anon.grow3.ui.logs.fragment.LogListFragment
 import me.anon.grow3.ui.diaries.fragment.ViewDiaryFragment
 import me.anon.grow3.ui.main.activity.MainActivity
 import me.anon.grow3.util.handler.ExceptionHandler

@@ -11,6 +11,9 @@ import org.threeten.bp.temporal.ChronoUnit
 
 typealias Stage = StageChange
 
+/**
+ * See [me.anon.grow3.ui.logs.view.StageChangeLogCard]
+ */
 @JsonClass(generateAdapter = true)
 data class StageChange(
 	public var type: StageType

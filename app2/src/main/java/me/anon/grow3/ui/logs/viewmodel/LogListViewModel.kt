@@ -1,4 +1,4 @@
-package me.anon.grow3.ui.diaries.viewmodel
+package me.anon.grow3.ui.logs.viewmodel
 
 import androidx.lifecycle.*
 import me.anon.grow3.data.model.Diary
