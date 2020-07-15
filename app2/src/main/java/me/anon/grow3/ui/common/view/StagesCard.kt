@@ -9,12 +9,18 @@ import me.anon.grow3.data.model.Diary
 import me.anon.grow3.databinding.CardStagesBinding
 import me.anon.grow3.view.model.Card
 
-class StagesCard(
-	val diary: Diary,
-	val crop: Crop? = null,
-	title: String? = null
-) : Card<CardStagesBinding>(title)
+class StagesCard : Card<CardStagesBinding>
 {
+	private lateinit var diary: Diary
+	private var crop: Crop? = null
+
+	constructor() : super(null)
+	constructor(diary: Diary, crop: Crop? = null, title: String? = null) : super(title)
+	{
+		this.diary = diary
+		this.crop = crop
+	}
+
 	override fun createView(inflater: LayoutInflater, parent: ViewGroup): CardStagesBinding
 		= CardStagesBinding.inflate(inflater, parent, false)
 	override fun bindView(view: View): CardStagesBinding = CardStagesBinding.bind(view)
@@ -26,7 +32,7 @@ class StagesCard(
 
 		if (crop != null)
 		{
-			view.stagesView.setStages(diary, crop)
+			view.stagesView.setStages(diary, crop!!)
 		}
 		else
 		{
