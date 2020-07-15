@@ -5,7 +5,7 @@ import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import me.anon.grow3.data.model.Diary
 import me.anon.grow3.data.repository.DiariesRepository
-import me.anon.grow3.ui.common.Extras.EXTRA_DIARY_ID
+import me.anon.grow3.ui.common.Extras
 import me.anon.grow3.util.ViewModelFactory
 import me.anon.grow3.util.states.DataResult
 import javax.inject.Inject
@@ -23,7 +23,7 @@ class ViewDiaryViewModel constructor(
 			ViewDiaryViewModel(diariesRepository, handle)
 	}
 
-	public val diaryId: String = savedState[EXTRA_DIARY_ID] ?: throw kotlin.IllegalArgumentException("No diary id set")
+	public val diaryId: String = savedState[Extras.EXTRA_DIARY_ID] ?: throw kotlin.IllegalArgumentException("No diary id set")
 
 	private val _diary = diariesRepository.observeDiary(diaryId)
 	public val diary: LiveData<DataResult<Diary>> = _diary

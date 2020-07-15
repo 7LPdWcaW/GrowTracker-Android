@@ -1,5 +1,6 @@
 package me.anon.grow3.util
 
+import me.anon.grow3.util.DateUtils.DATE_FORMAT
 import org.threeten.bp.LocalDate
 import org.threeten.bp.LocalTime
 import org.threeten.bp.ZonedDateTime
@@ -32,6 +33,7 @@ public fun String.asDateTime(): ZonedDateTime = ZonedDateTime.parse(this, DateTi
 public fun ZonedDateTime.asString(): String = format(DateTimeFormatter.ISO_ZONED_DATE_TIME)
 
 public fun ZonedDateTime.asFormattedString(): String = format(DateTimeFormatter.ofLocalizedDate(FormatStyle.FULL))
+public fun ZonedDateTime.formatDate(): String = format(DateTimeFormatter.ofPattern(DATE_FORMAT))
 
 public fun LocalDate.asFormattedString(): String = format(DateTimeFormatter.ofLocalizedDate(FormatStyle.SHORT))
 

@@ -15,6 +15,7 @@ import me.anon.grow3.ui.crud.fragment.DiaryCropsFragment
 import me.anon.grow3.ui.crud.fragment.DiaryDetailsFragment
 import me.anon.grow3.ui.crud.fragment.DiaryEnvironmentFragment
 import me.anon.grow3.ui.diaries.fragment.DiariesListFragment
+import me.anon.grow3.ui.diaries.fragment.LogListFragment
 import me.anon.grow3.ui.diaries.fragment.ViewDiaryFragment
 import me.anon.grow3.ui.main.activity.MainActivity
 import me.anon.grow3.util.handler.ExceptionHandler
@@ -37,6 +38,7 @@ interface ApplicationComponent
 	public fun inject(fragment: DiaryCompleteFragment)
 	public fun inject(fragment: ViewDiaryFragment)
 	public fun inject(fragment: ViewCropFragment)
+	public fun inject(fragment: LogListFragment)
 	public fun inject(fragment: LogActionBottomSheetFragment)
 
 	public fun inject(activity: MainActivity)

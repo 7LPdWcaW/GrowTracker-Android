@@ -1,48 +1,47 @@
 package me.anon.grow3.ui.diaries.fragment
 
-import android.os.Bundle
-import androidx.core.os.bundleOf
+import androidx.fragment.app.viewModels
 import androidx.lifecycle.observe
-import me.anon.grow3.databinding.FragmentViewDiaryLogsBinding
-import me.anon.grow3.ui.base.BaseFragment
-import me.anon.grow3.ui.common.Extras.EXTRA_DIARY_ID
-import me.anon.grow3.ui.main.activity.MainActivity
+import me.anon.grow3.ui.base.CardListFragment
+import me.anon.grow3.ui.diaries.view.LogCard
+import me.anon.grow3.ui.diaries.view.LogDateSeparator
+import me.anon.grow3.ui.diaries.viewmodel.LogListViewModel
 import me.anon.grow3.util.Injector
-import me.anon.grow3.util.navigateTo
-import me.anon.grow3.util.onClick
-import me.anon.grow3.util.updateMargin
+import me.anon.grow3.util.ViewModelProvider
+import me.anon.grow3.util.asDateTime
+import me.anon.grow3.util.formatDate
+import me.anon.grow3.util.states.asSuccess
+import javax.inject.Inject
 
-class LogListFragment : BaseFragment(FragmentViewDiaryLogsBinding::class)
+class LogListFragment : CardListFragment()
 {
-	override val injector: Injector = {}
-	private val viewBindings by viewBinding<FragmentViewDiaryLogsBinding>()
+	override val injector: Injector = { it.inject(this) }
 
-	override fun onActivityCreated(savedInstanceState: Bundle?)
-	{
-		super.onActivityCreated(savedInstanceState)
-		setToolbar(viewBindings.includeToolbar.toolbar)
-		viewBindings.includeToolbar.toolbar.setNavigationOnClickListener {
-			(requireActivity() as MainActivity).clearStack()
-		}
-
-		insets.observe(viewLifecycleOwner) {
-			viewBindings.includeToolbar.toolbar.updateMargin(it.left, it.top, it.right)
-		}
-
-		viewBindings.test.onClick {
-			navigateTo<LogListFragment> {
-				bundleOf(EXTRA_DIARY_ID to "")
-			}
-		}
-	}
+	@Inject internal lateinit var viewModelFactory: LogListViewModel.Factory
+	private val viewModel: LogListViewModel by viewModels { ViewModelProvider(viewModelFactory, this) }
 
 	override fun bindUi()
 	{
-
+		super.bindUi()
 	}
 
 	override fun bindVm()
 	{
+		viewModel.logs.observe(viewLifecycleOwner) { logs ->
+			val diary = viewModel.diary.value!!.asSuccess()
+			viewAdapter.newStack {
+				val group = logs.groupBy { log ->
+					log.date.asDateTime().formatDate()
+				}
 
+				group.forEach { (date, logs) ->
+					add(LogDateSeparator(date))
+
+					logs.forEach { log ->
+						add(LogCard(diary, log))
+					}
+				}
+			}
+		}
 	}
 }
