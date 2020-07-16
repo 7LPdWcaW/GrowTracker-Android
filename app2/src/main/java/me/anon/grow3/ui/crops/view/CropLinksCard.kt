@@ -8,12 +8,18 @@ import me.anon.grow3.data.model.Diary
 import me.anon.grow3.databinding.CardCropLinksBinding
 import me.anon.grow3.view.model.Card
 
-class CropLinksCard(
-	val diary: Diary,
-	val crop: Crop,
-	title: String? = null
-) : Card<CardCropLinksBinding>(title)
+class CropLinksCard : Card<CardCropLinksBinding>
 {
+	private lateinit var diary: Diary
+	private lateinit var crop: Crop
+
+	constructor() : super(null)
+	constructor(diary: Diary, crop: Crop, title: String? = null) : super(title)
+	{
+		this.diary = diary
+		this.crop = crop
+	}
+
 	override fun createView(inflater: LayoutInflater, parent: ViewGroup): CardCropLinksBinding
 		= CardCropLinksBinding.inflate(inflater, parent, false)
 	override fun bindView(view: View): CardCropLinksBinding = CardCropLinksBinding.bind(view)
