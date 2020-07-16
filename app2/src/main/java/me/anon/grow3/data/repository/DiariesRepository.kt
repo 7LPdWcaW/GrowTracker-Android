@@ -4,7 +4,7 @@ import androidx.lifecycle.LiveData
 import com.zhuinden.eventemitter.EventSource
 import me.anon.grow3.data.model.Diary
 import me.anon.grow3.data.model.Log
-import me.anon.grow3.data.repository.impl.LogEvent
+import me.anon.grow3.data.event.LogEvent
 import me.anon.grow3.util.states.DataResult
 
 interface DiariesRepository

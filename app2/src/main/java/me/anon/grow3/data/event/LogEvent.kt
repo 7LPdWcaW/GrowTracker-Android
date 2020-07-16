@@ -1,4 +1,4 @@
-package me.anon.grow3.data.repository.impl
+package me.anon.grow3.data.event
 
 import me.anon.grow3.data.model.Diary
 import me.anon.grow3.data.model.Log
