@@ -188,8 +188,8 @@ class DiaryTest
 			)
 
 			val log = actionGenerators[(actionGenerators.indices).random()].invoke()
-			log.cropIds.addAll(crops)
-			diary.log += log
+			log.cropIds = ArrayList(log.cropIds).apply { addAll(crops) }
+			diary.log(log)
 
 			timelineStart.plusDays((0L..10L).random())
 		} while (logCounter-- > 0)

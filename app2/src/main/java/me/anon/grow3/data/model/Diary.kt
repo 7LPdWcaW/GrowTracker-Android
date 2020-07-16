@@ -65,7 +65,7 @@ data class Diary(
 	public fun log(log: Log): Log
 	{
 		this.log as ArrayList += log
-		this.log.sortBy { it.date }
+		//this.log.sortBy { it.date }
 		return log
 	}
 

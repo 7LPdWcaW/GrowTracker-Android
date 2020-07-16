@@ -7,5 +7,5 @@ import com.squareup.moshi.JsonClass
  */
 @JsonClass(generateAdapter = true)
 data class Photo(
-	public val imagePath: ArrayList<String> = arrayListOf()
+	public val imagePaths: ArrayList<String> = arrayListOf()
 ) : Log(action = "Photo")
