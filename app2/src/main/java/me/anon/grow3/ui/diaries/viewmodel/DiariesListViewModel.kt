@@ -22,6 +22,6 @@ class DiariesListViewModel constructor(
 			DiariesListViewModel(diariesRepository, handle)
 	}
 
-	private val _gardens = diariesRepository.observeDiaries()
-	public val gardens: LiveData<DataResult<List<Diary>>> = _gardens
+	private val _diaries = diariesRepository.observeDiaries()
+	public val diaries: LiveData<DataResult<List<Diary>>> = _diaries
 }
