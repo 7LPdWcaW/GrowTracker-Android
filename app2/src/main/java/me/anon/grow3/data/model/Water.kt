@@ -16,17 +16,17 @@ data class Water(
 ) : Log(action = "Water")
 {
 	class PHUnit(
-		public var amount: Double?
+		public var amount: Double
 	)
 
 	class TdsUnit(
 		public var type: TdsType,
-		public var amount: Double?
+		public var amount: Double
 	)
 
 	class Additive(
 		public var description: String = "",
-		public var amount: Double?
+		public var amount: Double
 	)
 
 	override fun equals(other: Any?): Boolean = id == (other as? Log)?.id || super.equals(other)

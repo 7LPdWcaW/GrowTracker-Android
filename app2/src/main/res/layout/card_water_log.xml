@@ -15,7 +15,7 @@
 	>
 		<include layout="@layout/stub_card_header" android:id="@+id/stub_card_header" />
 
-		<com.google.android.material.textview.MaterialTextView
+		<com.google.android.flexbox.FlexboxLayout
 			android:layout_width="match_parent"
 			android:layout_height="wrap_content"
 			android:id="@+id/content"
@@ -23,8 +23,10 @@
 			app:layout_constraintTop_toBottomOf="@id/stub_card_header"
 			app:layout_constraintStart_toStartOf="parent"
 			app:layout_constraintEnd_toStartOf="parent"
-			tools:text="- Some water details to be custom designed for each log type\n- Another \n- Another \n- Another"
-			style="@style/Text"
+			app:flexWrap="wrap"
+			app:flexDirection="row"
+			app:dividerDrawable="@drawable/section_spacer"
+			app:showDivider="middle"
 		/>
 	</androidx.constraintlayout.widget.ConstraintLayout>
 </com.google.android.material.card.MaterialCardView>
