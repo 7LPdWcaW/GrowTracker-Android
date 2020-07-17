@@ -154,7 +154,7 @@ class DiaryTest
 	public fun `benchmark test`()
 	{
 		var timelineStart = ZonedDateTime.now()
-		var logCounter = 100000
+		var logCounter = 10000
 		var cropCounter = 100
 		val diary = Diary {
 			name = "Test diary"

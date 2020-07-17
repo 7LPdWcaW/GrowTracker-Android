@@ -11,7 +11,8 @@ public class FakeCacheDataSource() : CacheDataSource
 
 	override suspend fun cache(log: Log): String
 	{
-		TODO("Not yet implemented")
+		tempCache.add(log)
+		return log.id
 	}
 
 	override suspend fun retrieveLog(id: String): Log
@@ -24,27 +25,23 @@ public class FakeCacheDataSource() : CacheDataSource
 	}
 
 	override suspend fun retrieveCrop(id: String): Crop
-	{
-		TODO("Not yet implemented")
-	}
+		= tempCache.find { it is Crop && it.id == id } as Crop
 
 	override suspend fun cache(diary: Diary): String
 	{
-		TODO("Not yet implemented")
+		tempCache.add(diary)
+		return diary.id
 	}
 
 	override suspend fun retrieveDiary(id: String): Diary
-	{
-		TODO("Not yet implemented")
-	}
+		= tempCache.find { it is Diary && it.id == id } as Diary
 
 	override suspend fun cache(map: Map<String, Any?>): String
 	{
-		TODO("Not yet implemented")
+		tempCache.add(map)
+		return (tempCache.size - 1).toString()
 	}
 
 	override suspend fun retrieveMap(id: String): Map<String, Any?>
-	{
-		TODO("Not yet implemented")
-	}
+		= tempCache[id.toInt()] as Map<String, Any?>
 }
