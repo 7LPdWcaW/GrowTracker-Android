@@ -8,8 +8,11 @@ import me.anon.grow3.TestConstants
 import me.anon.grow3.data.model.Crop
 import me.anon.grow3.data.model.Diary
 import me.anon.grow3.data.repository.impl.DefaultDiariesRepository
+import me.anon.grow3.data.source.CacheDataSource
 import me.anon.grow3.data.source.DiariesDataSource
-import me.anon.grow3.util.*
+import me.anon.grow3.util.awaitForSuccess
+import me.anon.grow3.util.getOrAwaitValue
+import me.anon.grow3.util.initThreeTen
 import me.anon.grow3.util.states.DataResult
 import me.anon.grow3.util.states.asSuccess
 import org.amshove.kluent.*
@@ -30,6 +33,7 @@ class DiaryDataRepositoryTest
 	public val instantExecutorRule = InstantTaskExecutorRule()
 
 	private lateinit var dataSource: DiariesDataSource
+	private lateinit var cacheSource: CacheDataSource
 	private lateinit var diariesRepository: DefaultDiariesRepository
 
 	init {
@@ -40,7 +44,8 @@ class DiaryDataRepositoryTest
 	public fun initialiseRepositories()
 	{
 		dataSource = FakeDiariesDataSource(TestConstants.diaries.toMutableList())
-		diariesRepository = DefaultDiariesRepository(dataSource)
+		cacheSource = FakeCacheDataSource()
+		diariesRepository = DefaultDiariesRepository(dataSource, cacheSource)
 	}
 
 	@Test
@@ -107,10 +112,8 @@ class DiaryDataRepositoryTest
 
 	@Test
 	public fun `test single livedata observer for diary`() = mainCoroutineRule.runBlockingTest {
-		System.out.println("diary1")
 		val diary1 = diariesRepository.observeDiary("0000-000000")
 			.awaitForSuccess()
-		System.out.println("diary2")
 		val diary2 = diariesRepository.observeDiary("0000-000000")
 			.awaitForSuccess()
 

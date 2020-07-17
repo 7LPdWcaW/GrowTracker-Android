@@ -43,9 +43,11 @@ class NitriteCacheDataSource @Inject constructor(
 
 	override suspend fun retrieveLog(id: String): Log
 		= withContext(dispatcher) {
-			db.getRepository<Log>()
-				.find(Log::id eq id)
+			val repo = db.getRepository<Log>()
+			val log = repo.find(Log::id eq id)
 				.first()
+			repo.remove(Log::id eq id)
+			log
 		}
 
 	override suspend fun cache(crop: Crop): String
@@ -59,9 +61,11 @@ class NitriteCacheDataSource @Inject constructor(
 
 	override suspend fun retrieveCrop(id: String): Crop
 		= withContext(dispatcher) {
-			db.getRepository<Crop>()
-				.find(Crop::id eq id)
+			val repo = db.getRepository<Crop>()
+			val crop = repo.find(Crop::id eq id)
 				.first()
+			repo.remove(Crop::id eq id)
+			crop
 		}
 
 	override suspend fun cache(diary: Diary): String
@@ -75,9 +79,11 @@ class NitriteCacheDataSource @Inject constructor(
 
 	override suspend fun retrieveDiary(id: String): Diary
 		= withContext(dispatcher) {
-			db.getRepository<Diary>()
-				.find(Diary::id eq id)
+			val repo = db.getRepository<Diary>()
+			val diary = repo.find(Diary::id eq id)
 				.first()
+			repo.remove(Diary::id eq id)
+			diary
 		}
 
 	override suspend fun cache(map: Map<String, Any?>): String
@@ -97,7 +103,10 @@ class NitriteCacheDataSource @Inject constructor(
 
 	override suspend fun retrieveMap(id: String): Map<String, Any?>
 		= withContext(dispatcher) {
-			db.getCollection("map")
+			val document = db.getCollection("map")
 				.getById(NitriteId.createId(id.toLong()))
+			db.getCollection("map")
+				.remove(document)
+			document
 		}
 }

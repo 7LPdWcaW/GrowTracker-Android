@@ -12,9 +12,11 @@ import me.anon.grow3.data.event.LogEvent
 import me.anon.grow3.data.model.Diary
 import me.anon.grow3.data.model.Log
 import me.anon.grow3.data.repository.DiariesRepository
+import me.anon.grow3.data.source.CacheDataSource
 import me.anon.grow3.data.source.DiariesDataSource
 import me.anon.grow3.util.states.DataResult
 import me.anon.grow3.util.states.asSuccess
+import me.anon.grow3.util.tryNull
 import javax.inject.Inject
 import javax.inject.Named
 import javax.inject.Singleton
@@ -22,6 +24,7 @@ import javax.inject.Singleton
 @Singleton
 class DefaultDiariesRepository @Inject constructor(
 	private val dataSource: DiariesDataSource,
+	private val cacheSource: CacheDataSource,
 	@Named("io_dispatcher") private val dispatcher: CoroutineDispatcher = Dispatchers.IO
 ) : DiariesRepository
 {
@@ -51,22 +54,18 @@ class DefaultDiariesRepository @Inject constructor(
 	override suspend fun getDiaryById(diaryId: String): Diary? = dataSource.getDiaryById(diaryId)
 
 	override suspend fun createDiary(diary: Diary): Diary
-	{
-		return dataSource.addDiary(diary)
+		= dataSource.addDiary(diary)
 			.find { it.id == diary.id }!!
 			.also {
 				invalidate()
 			}
-	}
 
 	override suspend fun deleteDiary(diaryId: String): Boolean
-	{
-		return !dataSource.deleteDiary(diaryId)
+		= !dataSource.deleteDiary(diaryId)
 			.any { it.id == diaryId }
 			.also {
 				invalidate()
 			}
-	}
 
 	override fun sync()
 	{
@@ -78,12 +77,6 @@ class DefaultDiariesRepository @Inject constructor(
 		}
 	}
 
-	override suspend fun draftLog(log: Log): Log
-	{
-		dataSource.cache(log)
-		return log
-	}
-
 	override suspend fun addLog(log: Log, diary: Diary): Log
 	{
 		_logEvents.emit(LogEvent.Added(log, diary))
@@ -92,7 +85,21 @@ class DefaultDiariesRepository @Inject constructor(
 		return log
 	}
 
-	override suspend fun getDraftLog(logId: String): Log? = dataSource.get(logId)
+	override suspend fun getLog(logId: String, diary: Diary): Log?
+	{
+		var cached: Log? = tryNull { cacheSource.retrieveLog(logId) }
+		if (cached == null) cached = diary.logOf(logId)
+		return cached
+	}
+
+	override suspend fun draftLog(log: Log): Log
+	{
+		cacheSource.cache(log)
+		return log
+	}
+
+	override suspend fun getDraftLog(logId: String): Log?
+		= tryNull { cacheSource.retrieveLog(logId) }
 
 	override fun invalidate()
 	{

@@ -1,7 +1,6 @@
 package me.anon.grow3.data.repository
 
 import me.anon.grow3.data.model.Diary
-import me.anon.grow3.data.model.Log
 import me.anon.grow3.data.source.DiariesDataSource
 import me.anon.grow3.util.parseAsDiaries
 import me.anon.grow3.util.toJsonString
@@ -25,17 +24,6 @@ public class FakeDiariesDataSource(private val diaries: MutableList<Diary>) : Di
 	override fun close()
 	{
 		diaries.clear()
-	}
-
-	override suspend fun cache(log: Log): Log
-	{
-		tempCache.add(log)
-		return log
-	}
-
-	override suspend fun get(logId: String): Log?
-	{
-		return tempCache.find { it is Log && it.id == logId } as? Log
 	}
 
 	override suspend fun getDiaryById(diaryId: String): Diary? = diaries.find { it.id == diaryId }

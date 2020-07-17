@@ -40,9 +40,9 @@ class LogActionViewModel constructor(
 	public val log: LiveData<Log> = diary.switchMap { diaryResult ->
 		if (diaryResult is DataResult.Success)
 		{
-			if (logId == null)
-			{
-				liveData<Log> {
+			liveData<Log> {
+				if (logId == null)
+				{
 					var newLog: Log
 					when (logType)
 					{
@@ -56,10 +56,10 @@ class LogActionViewModel constructor(
 					diariesRepository.draftLog(newLog)
 					emit(newLog)
 				}
-			}
-			else
-			{
-				MutableLiveData(diaryResult.data.logOf(logId!!) ?: throw IllegalArgumentException("Failed to load log"))
+				else
+				{
+					emit(diariesRepository.getLog(logId!!, diaryResult.data) ?: throw IllegalArgumentException("Failed to load log"))
+				}
 			}
 		}
 		else
