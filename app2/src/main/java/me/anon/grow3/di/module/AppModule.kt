@@ -22,6 +22,10 @@ class AppModule(
 	public fun provideGardenSource(): String = appContext.application.dataPath + "/diaries.db"
 
 	@Provides
+	@Named("cache_source")
+	public fun provideCacheSource(): String = appContext.application.dataPath + "/cache.db"
+
+	@Provides
 	public fun provideGardenDataSource(dataSource: NitriteDiariesDataSource): DiariesDataSource = dataSource
 
 	@Provides
