@@ -100,8 +100,8 @@ class GardenTrackerFragment : Fragment()
 
 		(activity as MainActivity).toolbarLayout.findViewById<View>(R.id.note).setOnClickListener {
 			val dialogFragment = NoteDialogFragment()
-			dialogFragment.setOnDialogConfirmed {
-				garden.actions.add(NoteAction(notes = it))
+			dialogFragment.setOnDialogConfirmed { notes, date ->
+				garden.actions.add(NoteAction(notes = notes, date = date.time))
 				updateDataReferences()
 			}
 			dialogFragment.show(childFragmentManager, null)
@@ -258,8 +258,13 @@ class GardenTrackerFragment : Fragment()
 
 			is NoteAction -> {
 				val dialogFragment = NoteDialogFragment(action)
-				dialogFragment.setOnDialogConfirmed { notes ->
-					if (index > -1) garden.actions[index].notes = notes
+				dialogFragment.setOnDialogConfirmed { notes, dates ->
+					if (index > -1)
+					{
+						garden.actions[index].notes = notes
+						garden.actions[index].date = dates.time
+					}
+
 					updateDataReferences()
 				}
 				dialogFragment.show(childFragmentManager, null)

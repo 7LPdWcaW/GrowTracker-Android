@@ -376,9 +376,9 @@ public class PlantDetailsFragment extends Fragment
 		NoteDialogFragment dialogFragment = new NoteDialogFragment();
 		dialogFragment.setOnDialogConfirmed(new NoteDialogFragment.OnDialogConfirmed()
 		{
-			@Override public void onDialogConfirmed(String notes)
+			@Override public void onDialogConfirmed(String notes, Date date)
 			{
-				final NoteAction action = new NoteAction(System.currentTimeMillis(), notes);
+				final NoteAction action = new NoteAction(date.getTime(), notes);
 
 				plant.getActions().add(action);
 				PlantManager.getInstance().upsert(plant);

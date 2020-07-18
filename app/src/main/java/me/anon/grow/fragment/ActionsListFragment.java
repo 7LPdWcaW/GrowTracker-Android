@@ -27,6 +27,7 @@ import org.threeten.bp.ZoneId;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
+import java.util.Date;
 import java.util.Random;
 
 import androidx.annotation.NonNull;
@@ -370,9 +371,9 @@ public class ActionsListFragment extends Fragment implements ActionAdapter.OnAct
 			NoteDialogFragment dialogFragment = new NoteDialogFragment((NoteAction)action);
 			dialogFragment.setOnDialogConfirmed(new NoteDialogFragment.OnDialogConfirmed()
 			{
-				@Override public void onDialogConfirmed(String notes)
+				@Override public void onDialogConfirmed(String notes, Date date)
 				{
-					final NoteAction noteAction = new NoteAction(System.currentTimeMillis(), notes);
+					final NoteAction noteAction = new NoteAction(date.getTime(), notes);
 
 					plant.getActions().set(originalIndex, noteAction);
 					PlantManager.getInstance().upsert(plant);

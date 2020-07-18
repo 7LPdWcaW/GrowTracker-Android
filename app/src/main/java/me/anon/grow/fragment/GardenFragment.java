@@ -21,6 +21,7 @@ import com.esotericsoftware.kryo.Kryo;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
+import java.util.Date;
 import java.util.LinkedHashSet;
 import java.util.Set;
 
@@ -323,11 +324,11 @@ public class GardenFragment extends Fragment
 		NoteDialogFragment dialogFragment = new NoteDialogFragment();
 		dialogFragment.setOnDialogConfirmed(new NoteDialogFragment.OnDialogConfirmed()
 		{
-			@Override public void onDialogConfirmed(String notes)
+			@Override public void onDialogConfirmed(String notes, Date date)
 			{
 				for (Plant plant : adapter.getPlants())
 				{
-					NoteAction action = new NoteAction(System.currentTimeMillis(), notes);
+					NoteAction action = new NoteAction(date.getTime(), notes);
 					plant.getActions().add(action);
 				}
 

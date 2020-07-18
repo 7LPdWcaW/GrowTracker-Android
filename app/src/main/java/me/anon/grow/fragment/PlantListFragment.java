@@ -19,6 +19,7 @@ import com.esotericsoftware.kryo.Kryo;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
+import java.util.Date;
 import java.util.LinkedHashSet;
 import java.util.Set;
 
@@ -39,9 +40,7 @@ import me.anon.grow.MainApplication;
 import me.anon.grow.PlantDetailsActivity;
 import me.anon.grow.R;
 import me.anon.lib.SnackBar;
-import me.anon.lib.SnackBarListener;
 import me.anon.lib.Views;
-import me.anon.lib.ext.IntUtilsKt;
 import me.anon.lib.manager.PlantManager;
 import me.anon.model.EmptyAction;
 import me.anon.model.NoteAction;
@@ -282,11 +281,11 @@ public class PlantListFragment extends Fragment
 		NoteDialogFragment dialogFragment = new NoteDialogFragment();
 		dialogFragment.setOnDialogConfirmed(new NoteDialogFragment.OnDialogConfirmed()
 		{
-			@Override public void onDialogConfirmed(String notes)
+			@Override public void onDialogConfirmed(String notes, Date date)
 			{
 				for (Plant plant : adapter.getPlants())
 				{
-					NoteAction action = new NoteAction(System.currentTimeMillis(), notes);
+					NoteAction action = new NoteAction(date.getTime(), notes);
 					plant.getActions().add(action);
 				}
 
