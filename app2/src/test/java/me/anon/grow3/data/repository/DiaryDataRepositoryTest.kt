@@ -163,7 +163,7 @@ class DiaryDataRepositoryTest
 		val data = diary.awaitForSuccess()
 		val log = Water {}
 
-		diariesRepository.draftLog(log)
+		diariesRepository.addLog(log)
 		val retrieved = diariesRepository.getLog(log.id, data)
 		retrieved.`should be equal to`(log)
 		data.logOf(log.id).`should be null`()

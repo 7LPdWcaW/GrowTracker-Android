@@ -9,6 +9,7 @@ import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import me.anon.grow3.data.event.LogEvent
+import me.anon.grow3.data.model.Crop
 import me.anon.grow3.data.model.Diary
 import me.anon.grow3.data.model.Log
 import me.anon.grow3.data.repository.DiariesRepository
@@ -77,11 +78,19 @@ class DefaultDiariesRepository @Inject constructor(
 		}
 	}
 
-	override suspend fun addLog(log: Log, diary: Diary): Log
+	override suspend fun addLog(log: Log, diary: Diary?): Log
 	{
-		_logEvents.emit(LogEvent.Added(log, diary))
-		diary.log(log)
-		dataSource.sync(DiariesDataSource.SyncDirection.SAVE, diary)
+		if (diary == null)
+		{
+			cacheSource.cache(log)
+		}
+		else
+		{
+			_logEvents.emit(LogEvent.Added(log, diary))
+			diary.log(log)
+			dataSource.sync(DiariesDataSource.SyncDirection.SAVE, diary)
+		}
+
 		return log
 	}
 
@@ -92,14 +101,27 @@ class DefaultDiariesRepository @Inject constructor(
 		return cached
 	}
 
-	override suspend fun draftLog(log: Log): Log
+	override suspend fun addCrop(crop: Crop, diary: Diary?): Crop
 	{
-		cacheSource.cache(log)
-		return log
+		if (diary == null)
+		{
+			cacheSource.cache(crop)
+		}
+		else
+		{
+			diary.crops += crop
+			dataSource.sync(DiariesDataSource.SyncDirection.SAVE, diary)
+		}
+
+		return crop
 	}
 
-	override suspend fun getDraftLog(logId: String): Log?
-		= tryNull { cacheSource.retrieveLog(logId) }
+	override suspend fun getCrop(cropId: String, diary: Diary): Crop?
+	{
+		var cached: Crop? = tryNull { cacheSource.retrieveCrop(cropId) }
+		if (cached == null) cached = diary.crop(cropId)
+		return cached
+	}
 
 	override fun invalidate()
 	{
