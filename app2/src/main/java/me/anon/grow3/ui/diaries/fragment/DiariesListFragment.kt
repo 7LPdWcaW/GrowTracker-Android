@@ -41,7 +41,7 @@ class DiariesListFragment : BaseFragment(FragmentDiariesBinding::class)
 
 	override fun bindVm()
 	{
-		viewModel.gardens.observe(viewLifecycleOwner) {
+		viewModel.diaries.observe(viewLifecycleOwner) {
 			when (it)
 			{
 				is DataResult.Success -> {

@@ -44,17 +44,17 @@ class CropViewModel(
 			if (_cropId.isNullOrBlank())
 			{
 				val crop = Crop(name = "", genetics = "")
-				diary.crops += crop
-				newCrop = true
-				_cropId = crop.id
 				cropComparator = crop.toJsonString()
-				diariesRepository.sync()
-				return@liveData
-			}
+				_cropId = diariesRepository.addCrop(crop).id
 
-			emit(diary.crop(_cropId!!).also {
-				cropComparator = it.toJsonString()
-			})
+				emit(crop)
+			}
+			else
+			{
+				emit(diariesRepository.getCrop(_cropId!!, diary)!!.also {
+					cropComparator = it.toJsonString()
+				})
+			}
 		}
 	}.asMutableLiveData()
 

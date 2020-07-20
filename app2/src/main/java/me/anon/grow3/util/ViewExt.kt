@@ -10,6 +10,7 @@ import android.view.ViewGroup
 import android.view.inputmethod.InputMethodManager
 import android.widget.TextView
 import androidx.annotation.*
+import androidx.core.view.isVisible
 import androidx.core.view.updateLayoutParams
 import androidx.core.view.updateMargins
 import androidx.fragment.app.findFragment
@@ -251,6 +252,12 @@ public fun RecyclerView.removeAllItemDecorators()
 	{
 		removeItemDecorationAt(index)
 	}
+}
+
+public fun View.hideIfEmpty(): Boolean
+{
+	if (this is ViewGroup) this.isVisible = childCount > 0
+	return this.isVisible
 }
 
 // Resource convenience methods

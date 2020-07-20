@@ -139,7 +139,7 @@
 				"id": "0001-000009",
 				"date": "2020-01-10T02:30:00+00:00",
 				"action": "Photo",
-				"imagePath": "file:///dummy/path",
+				"imagePaths": ["file:///dummy/path"],
 				"cropIds": [
 					"0002-000004"
 				]
@@ -204,7 +204,7 @@
 				"id": "0001-00000G",
 				"date": "2020-01-26T02:00:00+00:00",
 				"action": "Photo",
-				"imagePath": "assets://images/1.jpg"
+				"imagePaths": ["assets://images/1.jpg"]
 			}
 		],
 		"crops": [

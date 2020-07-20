@@ -8,12 +8,16 @@ import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
+import me.anon.grow3.data.event.LogEvent
+import me.anon.grow3.data.model.Crop
 import me.anon.grow3.data.model.Diary
 import me.anon.grow3.data.model.Log
 import me.anon.grow3.data.repository.DiariesRepository
+import me.anon.grow3.data.source.CacheDataSource
 import me.anon.grow3.data.source.DiariesDataSource
 import me.anon.grow3.util.states.DataResult
 import me.anon.grow3.util.states.asSuccess
+import me.anon.grow3.util.tryNull
 import javax.inject.Inject
 import javax.inject.Named
 import javax.inject.Singleton
@@ -21,6 +25,7 @@ import javax.inject.Singleton
 @Singleton
 class DefaultDiariesRepository @Inject constructor(
 	private val dataSource: DiariesDataSource,
+	private val cacheSource: CacheDataSource,
 	@Named("io_dispatcher") private val dispatcher: CoroutineDispatcher = Dispatchers.IO
 ) : DiariesRepository
 {
@@ -50,22 +55,18 @@ class DefaultDiariesRepository @Inject constructor(
 	override suspend fun getDiaryById(diaryId: String): Diary? = dataSource.getDiaryById(diaryId)
 
 	override suspend fun createDiary(diary: Diary): Diary
-	{
-		return dataSource.addDiary(diary)
+		= dataSource.addDiary(diary)
 			.find { it.id == diary.id }!!
 			.also {
 				invalidate()
 			}
-	}
 
 	override suspend fun deleteDiary(diaryId: String): Boolean
-	{
-		return !dataSource.deleteDiary(diaryId)
+		= !dataSource.deleteDiary(diaryId)
 			.any { it.id == diaryId }
 			.also {
 				invalidate()
 			}
-	}
 
 	override fun sync()
 	{
@@ -77,21 +78,50 @@ class DefaultDiariesRepository @Inject constructor(
 		}
 	}
 
-	override suspend fun draftLog(log: Log): Log
+	override suspend fun addLog(log: Log, diary: Diary?): Log
 	{
-		dataSource.cache(log)
+		if (diary == null)
+		{
+			cacheSource.cache(log)
+		}
+		else
+		{
+			_logEvents.emit(LogEvent.Added(log, diary))
+			diary.log(log)
+			dataSource.sync(DiariesDataSource.SyncDirection.SAVE, diary)
+		}
+
 		return log
 	}
 
-	override suspend fun addLog(log: Log, diary: Diary): Log
+	override suspend fun getLog(logId: String, diary: Diary): Log?
 	{
-		_logEvents.emit(LogEvent.Added(log, diary))
-		diary.log(log)
-		dataSource.sync(DiariesDataSource.SyncDirection.SAVE, diary)
-		return log
+		var cached: Log? = tryNull { cacheSource.retrieveLog(logId) }
+		if (cached == null) cached = diary.logOf(logId)
+		return cached
 	}
 
-	override suspend fun getDraftLog(logId: String): Log? = dataSource.get(logId)
+	override suspend fun addCrop(crop: Crop, diary: Diary?): Crop
+	{
+		if (diary == null)
+		{
+			cacheSource.cache(crop)
+		}
+		else
+		{
+			diary.crops += crop
+			dataSource.sync(DiariesDataSource.SyncDirection.SAVE, diary)
+		}
+
+		return crop
+	}
+
+	override suspend fun getCrop(cropId: String, diary: Diary): Crop?
+	{
+		var cached: Crop? = tryNull { cacheSource.retrieveCrop(cropId) }
+		if (cached == null) cached = diary.crop(cropId)
+		return cached
+	}
 
 	override fun invalidate()
 	{

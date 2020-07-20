@@ -40,7 +40,8 @@ data class Diary(
 		return StageAt(
 			days = (stage.date and log.date).dateDifferenceDays(),
 			stage = stage,
-			log = log
+			log = log,
+			total = (date and log.date).dateDifferenceDays()
 		)
 	}
 
@@ -55,7 +56,8 @@ data class Diary(
 		return StageAt(
 			days = (stage.date and log.date).dateDifferenceDays(),
 			stage = stage,
-			log = log
+			log = log,
+			total = (crop.platedDate and log.date).dateDifferenceDays()
 		)
 	}
 
@@ -69,7 +71,7 @@ data class Diary(
 		return log
 	}
 
-	public fun logOf(id: String): Log? = log.first { it.id == id }
+	public fun logOf(id: String): Log? = log.firstOrNull { it.id == id }
 	public inline fun <reified T> Diary.logOf(id: String): T? = this.logOf(id) as T?
 
 	public fun harvestedOf(id: String): Harvest? = harvestedOf(crop(id))

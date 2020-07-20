@@ -81,4 +81,7 @@
 
 	<string name="days" formatted="true">%d days</string>
 	<string name="today">Today</string>
+
+	<string name="log_water_field_inputph">Input pH</string>
+	<string name="log_water_field_outputph">Runoff pH</string>
 </resources>

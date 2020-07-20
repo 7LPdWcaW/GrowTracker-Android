@@ -5,6 +5,9 @@ import me.anon.grow3.util.*
 
 typealias Medium = Transplant
 
+/**
+ * See [me.anon.grow3.ui.logs.view.TransplantLogCard]
+ */
 @JsonClass(generateAdapter = true)
 data class Transplant(
 	public var medium: MediumType,

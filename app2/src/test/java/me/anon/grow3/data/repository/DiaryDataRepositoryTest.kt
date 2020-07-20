@@ -7,9 +7,13 @@ import me.anon.grow3.MainCoroutineRule
 import me.anon.grow3.TestConstants
 import me.anon.grow3.data.model.Crop
 import me.anon.grow3.data.model.Diary
+import me.anon.grow3.data.model.Water
 import me.anon.grow3.data.repository.impl.DefaultDiariesRepository
+import me.anon.grow3.data.source.CacheDataSource
 import me.anon.grow3.data.source.DiariesDataSource
-import me.anon.grow3.util.*
+import me.anon.grow3.util.awaitForSuccess
+import me.anon.grow3.util.getOrAwaitValue
+import me.anon.grow3.util.initThreeTen
 import me.anon.grow3.util.states.DataResult
 import me.anon.grow3.util.states.asSuccess
 import org.amshove.kluent.*
@@ -30,6 +34,7 @@ class DiaryDataRepositoryTest
 	public val instantExecutorRule = InstantTaskExecutorRule()
 
 	private lateinit var dataSource: DiariesDataSource
+	private lateinit var cacheSource: CacheDataSource
 	private lateinit var diariesRepository: DefaultDiariesRepository
 
 	init {
@@ -40,7 +45,8 @@ class DiaryDataRepositoryTest
 	public fun initialiseRepositories()
 	{
 		dataSource = FakeDiariesDataSource(TestConstants.diaries.toMutableList())
-		diariesRepository = DefaultDiariesRepository(dataSource)
+		cacheSource = FakeCacheDataSource()
+		diariesRepository = DefaultDiariesRepository(dataSource, cacheSource)
 	}
 
 	@Test
@@ -107,10 +113,8 @@ class DiaryDataRepositoryTest
 
 	@Test
 	public fun `test single livedata observer for diary`() = mainCoroutineRule.runBlockingTest {
-		System.out.println("diary1")
 		val diary1 = diariesRepository.observeDiary("0000-000000")
 			.awaitForSuccess()
-		System.out.println("diary2")
 		val diary2 = diariesRepository.observeDiary("0000-000000")
 			.awaitForSuccess()
 
@@ -151,5 +155,17 @@ class DiaryDataRepositoryTest
 		val diary = diariesRepository.observeDiary("0000-000000")
 		val data = diary.awaitForSuccess()
 		data.name = "changed name"
+	}
+
+	@Test
+	public fun `test cache log`() = mainCoroutineRule.runBlockingTest {
+		val diary = diariesRepository.observeDiary("0000-000000")
+		val data = diary.awaitForSuccess()
+		val log = Water {}
+
+		diariesRepository.addLog(log)
+		val retrieved = diariesRepository.getLog(log.id, data)
+		retrieved.`should be equal to`(log)
+		data.logOf(log.id).`should be null`()
 	}
 }

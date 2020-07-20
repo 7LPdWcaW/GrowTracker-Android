@@ -14,13 +14,20 @@ import me.anon.grow3.util.string
 import me.anon.grow3.util.transform
 import me.anon.grow3.view.model.Card
 
-class LogMediumCard(
-	val diary: Diary,
-	val crop: Crop,
-	val medium: Medium,
-	title: String? = null
-) : Card<CardLogMediumBinding>(title)
+class LogMediumCard : Card<CardLogMediumBinding>
 {
+	private lateinit var diary: Diary
+	private lateinit var crop: Crop
+	private lateinit var medium: Medium
+
+	constructor() : super(null)
+	constructor(diary: Diary, crop: Crop, medium: Medium, title: String? = null) : super(title)
+	{
+		this.diary = diary
+		this.crop = crop
+		this.medium = medium
+	}
+
 	override fun createView(inflater: LayoutInflater, parent: ViewGroup): CardLogMediumBinding
 		= CardLogMediumBinding.inflate(inflater, parent, false)
 	override fun bindView(view: View): CardLogMediumBinding = CardLogMediumBinding.bind(view)

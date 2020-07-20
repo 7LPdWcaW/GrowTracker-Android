@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<androidx.constraintlayout.widget.ConstraintLayout
+	xmlns:android="http://schemas.android.com/apk/res/android"
+	xmlns:app="http://schemas.android.com/apk/res-auto"
+	xmlns:tools="http://schemas.android.com/tools"
+	android:layout_width="wrap_content"
+	android:layout_height="wrap_content"
+>
+	<com.google.android.material.imageview.ShapeableImageView
+		android:layout_width="42dp"
+		android:layout_height="42dp"
+		android:id="@+id/crop_image"
+		android:scaleType="centerCrop"
+		android:adjustViewBounds="true"
+		app:shapeAppearanceOverlay="@style/CircleImage"
+		app:srcCompat="@drawable/sample"
+		android:clickable="true"
+		android:focusable="true"
+		android:foreground="@drawable/circular_selectable_item_background"
+		app:layout_constraintTop_toTopOf="parent"
+		app:layout_constraintStart_toStartOf="parent"
+		app:layout_constraintEnd_toEndOf="parent"
+	/>
+</androidx.constraintlayout.widget.ConstraintLayout>

@@ -11,6 +11,9 @@ import org.threeten.bp.temporal.ChronoUnit
 
 typealias Stage = StageChange
 
+/**
+ * See [me.anon.grow3.ui.logs.view.StageChangeLogCard]
+ */
 @JsonClass(generateAdapter = true)
 data class StageChange(
 	public var type: StageType
@@ -47,5 +50,12 @@ public fun List<StageChange>.shortSummary(): Spannable
 data class StageAt(
 	val days: Int,
 	val stage: Stage,
-	val log: Log
+	val log: Log,
+	val total: Int
 )
+{
+	override fun toString(): String
+	{
+		return "$days${stage.type.strRes.string()[0]}"
+	}
+}

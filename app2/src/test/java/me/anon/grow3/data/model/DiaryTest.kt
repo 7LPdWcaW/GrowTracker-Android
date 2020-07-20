@@ -154,7 +154,7 @@ class DiaryTest
 	public fun `benchmark test`()
 	{
 		var timelineStart = ZonedDateTime.now()
-		var logCounter = 100000
+		var logCounter = 10000
 		var cropCounter = 100
 		val diary = Diary {
 			name = "Test diary"
@@ -188,8 +188,8 @@ class DiaryTest
 			)
 
 			val log = actionGenerators[(actionGenerators.indices).random()].invoke()
-			log.cropIds.addAll(crops)
-			diary.log += log
+			log.cropIds = ArrayList(log.cropIds).apply { addAll(crops) }
+			diary.log(log)
 
 			timelineStart.plusDays((0L..10L).random())
 		} while (logCounter-- > 0)

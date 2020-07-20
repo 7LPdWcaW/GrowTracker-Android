@@ -2,6 +2,9 @@ package me.anon.grow3.data.model
 
 import com.squareup.moshi.JsonClass
 
+/**
+ * See [me.anon.grow3.ui.logs.view.EnvironmentLogCard]
+ */
 @JsonClass(generateAdapter = true)
 data class Environment(
 	public var type: EnvironmentType? = null,

@@ -3,21 +3,28 @@ package me.anon.grow3.view.adapter
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
+import me.anon.grow3.util.uniqueBy
 import me.anon.grow3.view.model.Card
 
 open class CardListAdapter : RecyclerView.Adapter<RecyclerView.ViewHolder>()
 {
-	public val cards: ArrayList<Card<*>> = arrayListOf()
+	protected val cards: ArrayList<Card<*>> = arrayListOf()
+	public val cardTypes: ArrayList<Class<out Card<*>>> = arrayListOf()
 
 	public fun clear()
 	{
 		cards.clear()
 	}
 
-	override fun getItemViewType(position: Int): Int = position
+	override fun getItemViewType(position: Int): Int = cardTypes.indexOf(cards[position]::class.java)
 
 	override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): RecyclerView.ViewHolder
-		= object : RecyclerView.ViewHolder(cards[viewType].createView(LayoutInflater.from(parent.context), parent).root) {}
+	{
+		val binder = cardTypes[viewType].newInstance()
+			.createView(LayoutInflater.from(parent.context), parent)
+
+		return object : RecyclerView.ViewHolder(binder.root) {}
+	}
 
 	override fun getItemCount(): Int = cards.size
 
@@ -25,16 +32,13 @@ open class CardListAdapter : RecyclerView.Adapter<RecyclerView.ViewHolder>()
 	{
 		cards[position]._bindView(holder.itemView)
 	}
-}
 
-public fun CardListAdapter.newStack(block: CardListAdapter.() -> Unit)
-{
-	this.clear()
-	block()
-	this.notifyDataSetChanged()
-}
-
-public operator fun CardListAdapter.plusAssign(other: Card<*>)
-{
-	this.cards.add(other)
+	public fun newStack(block: ArrayList<Card<*>>.() -> Unit)
+	{
+		this.clear()
+		block(this.cards)
+		cardTypes.clear()
+		cardTypes.addAll(cards.map { it::class.java }.uniqueBy { it })
+		this.notifyDataSetChanged()
+	}
 }

@@ -16,11 +16,16 @@ import me.anon.grow3.util.navigateTo
 import me.anon.grow3.util.onClick
 import me.anon.grow3.view.model.Card
 
-class DiaryCropsCard(
-	val diary: Diary,
-	title: String? = null
-) : Card<CardDiaryCropsBinding>(title)
+class DiaryCropsCard : Card<CardDiaryCropsBinding>
 {
+	private lateinit var diary: Diary
+
+	constructor() : super(null)
+	constructor(diary: Diary, title: String? = null) : super(title)
+	{
+		this.diary = diary
+	}
+
 	override fun createView(inflater: LayoutInflater, parent: ViewGroup): CardDiaryCropsBinding
 		= CardDiaryCropsBinding.inflate(inflater, parent, false)
 	override fun bindView(view: View): CardDiaryCropsBinding = CardDiaryCropsBinding.bind(view)

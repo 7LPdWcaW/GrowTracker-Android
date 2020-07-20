@@ -22,3 +22,16 @@ public inline fun <reified T: ViewBinding> KClass<ViewBinding>.inflate(container
 		.invoke(this, LayoutInflater.from(container.context), container, false) as ViewBinding
 	return viewBinder as T
 }
+
+public suspend fun <T> tryNull(block: suspend () -> T?): T?
+{
+	try
+	{
+		return block()
+	}
+	catch (e: Exception)
+	{
+		return null
+	}
+}
+

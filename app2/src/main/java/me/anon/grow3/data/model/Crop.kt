@@ -9,7 +9,7 @@ import java.util.*
 data class Crop(
 	public val id: String = UUID.randomUUID().toString(),
 	public var name: String,
-	public var genetics: String?,
+	public var genetics: String? = null,
 	public var numberOfPlants: Int = 1,
 	//public var cloneOf: String? = null,
 	public var platedDate: String = ZonedDateTime.now().asString()

@@ -24,11 +24,11 @@ class WaterLogView(
 		bindings = FragmentActionLogWaterBinding.bind(view)
 
 		bindings.waterPh.editText!!.onFocusLoss {
-			log.inPH = Water.PHUnit(it.text.toDoubleOrNull())
+			it.text.toDoubleOrNull()?.let { log.inPH = Water.PHUnit(it) }
 		}
 
 		bindings.waterRunoff.editText!!.onFocusLoss {
-			log.outPH = Water.PHUnit(it.text.toDoubleOrNull())
+			it.text.toDoubleOrNull()?.let { log.outPH = Water.PHUnit(it) }
 		}
 
 		bindings.waterPh.editText!!.text = log.inPH?.amount.asStringOrNull()?.asEditable()

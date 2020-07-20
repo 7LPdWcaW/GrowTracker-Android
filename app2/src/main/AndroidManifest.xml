@@ -29,7 +29,11 @@
 			android:theme="@style/AppTheme.FullScrim"
 			android:launchMode="singleTask"
 			android:label=""
-		/>
+		>
+			<intent-filter>
+				<action android:name="android.intent.action.MAIN" />
+			</intent-filter>
+		</activity>
 
 		<activity android:name=".ui.DemoUiActivity" android:label="Demo UI">
 			<intent-filter>
