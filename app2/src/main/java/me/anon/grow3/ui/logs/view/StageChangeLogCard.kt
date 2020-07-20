@@ -26,6 +26,6 @@ class StageChangeLogCard : Card<CardWaterLogBinding>
 
 	override fun bind(view: CardWaterLogBinding)
 	{
-		view.stubCardHeader.header.text = log.summary()
+		//view.stubCardHeader.header.text = log.summary()
 	}
 }

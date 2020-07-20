@@ -128,6 +128,8 @@ class MainActivity : BaseActivity(ActivityMainBinding::class)
 
 			adapter.notifyDataSetChanged()
 		}
+
+		if (intent.extras != null) onNewIntent(intent)
 	}
 
 	override fun onPostCreate(savedInstanceState: Bundle?)

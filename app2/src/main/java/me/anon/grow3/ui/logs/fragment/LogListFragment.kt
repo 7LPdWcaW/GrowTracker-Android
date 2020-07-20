@@ -8,8 +8,8 @@ import me.anon.grow3.ui.logs.view.*
 import me.anon.grow3.ui.logs.viewmodel.LogListViewModel
 import me.anon.grow3.util.Injector
 import me.anon.grow3.util.ViewModelProvider
-import me.anon.grow3.util.asDateTime
-import me.anon.grow3.util.formatDate
+import me.anon.grow3.util.asFormattedString
+import me.anon.grow3.util.asLocalDate
 import me.anon.grow3.util.states.asSuccess
 import javax.inject.Inject
 
@@ -32,14 +32,14 @@ class LogListFragment : CardListFragment()
 			viewAdapter.newStack {
 				val group =
 					logs.groupBy { log ->
-						log.date.asDateTime().formatDate()
+						log.date.asLocalDate()
 					}
 					.toSortedMap(Comparator { o1, o2 ->
 						-o1.compareTo(o2)
 					})
 
 				group.forEach { (date, logs) ->
-					add(LogDateSeparator(date))
+					add(LogDateSeparator(date.asFormattedString()))
 
 					logs.forEach { log ->
 						add(when (log)

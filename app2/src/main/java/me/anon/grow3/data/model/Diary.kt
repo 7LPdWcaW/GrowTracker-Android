@@ -40,7 +40,8 @@ data class Diary(
 		return StageAt(
 			days = (stage.date and log.date).dateDifferenceDays(),
 			stage = stage,
-			log = log
+			log = log,
+			total = (date and log.date).dateDifferenceDays()
 		)
 	}
 
@@ -55,7 +56,8 @@ data class Diary(
 		return StageAt(
 			days = (stage.date and log.date).dateDifferenceDays(),
 			stage = stage,
-			log = log
+			log = log,
+			total = (crop.platedDate and log.date).dateDifferenceDays()
 		)
 	}
 
