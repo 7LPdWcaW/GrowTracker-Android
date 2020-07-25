@@ -10,8 +10,8 @@ class LogDateSeparator : Card<CardLogDateSeparatorBinding>
 {
 	private lateinit var date: String
 
-	constructor() : super(null)
-	constructor(date: String, title: String? = null) : super(title)
+	constructor() : super()
+	constructor(date: String) : super()
 	{
 		this.date = date
 	}

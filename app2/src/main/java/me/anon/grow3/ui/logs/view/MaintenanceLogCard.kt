@@ -13,8 +13,8 @@ class MaintenanceLogCard : Card<CardWaterLogBinding>
 	private lateinit var diary: Diary
 	private lateinit var log: Maintenance
 
-	constructor() : super(null)
-	constructor(diary: Diary, log: Maintenance, title: String? = null) : super(title)
+	constructor() : super()
+	constructor(diary: Diary, log: Maintenance) : super()
 	{
 		this.diary = diary
 		this.log = log

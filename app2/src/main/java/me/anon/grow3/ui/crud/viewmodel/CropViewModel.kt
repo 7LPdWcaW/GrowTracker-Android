@@ -104,7 +104,7 @@ class CropViewModel(
 		if (cropComparator == crop.value?.toJsonString())
 		{
 			diary.value?.asSuccess()?.let { diary ->
-				diary.crops.removeAll { it.id == _cropId }
+				(diary.crops as ArrayList).removeAll { it.id == _cropId }
 			}
 		}
 	}

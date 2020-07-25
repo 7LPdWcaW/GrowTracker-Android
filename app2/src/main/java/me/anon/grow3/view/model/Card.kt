@@ -10,9 +10,7 @@ import androidx.viewbinding.ViewBinding
  * Subclasses must contain a no-args constructor and [createView] must
  * only return the inflated view.
  */
-abstract class Card<T : ViewBinding>(
-	var title: String? = null
-)
+abstract class Card<T : ViewBinding>
 {
 	/**
 	 * Inflates the view for the adapter. This must not contain other UI or

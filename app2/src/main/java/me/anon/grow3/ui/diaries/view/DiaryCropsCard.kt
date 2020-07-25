@@ -18,11 +18,13 @@ import me.anon.grow3.view.model.Card
 
 class DiaryCropsCard : Card<CardDiaryCropsBinding>
 {
+	private var title: String? = null
 	private lateinit var diary: Diary
 
-	constructor() : super(null)
-	constructor(diary: Diary, title: String? = null) : super(title)
+	constructor() : super()
+	constructor(diary: Diary, title: String? = null) : super()
 	{
+		this.title = title
 		this.diary = diary
 	}
 

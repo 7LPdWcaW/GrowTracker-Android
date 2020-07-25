@@ -109,7 +109,7 @@ class DefaultDiariesRepository @Inject constructor(
 		}
 		else
 		{
-			diary.crops += crop
+			diary.crops as ArrayList += crop
 			dataSource.sync(DiariesDataSource.SyncDirection.SAVE, diary)
 		}
 

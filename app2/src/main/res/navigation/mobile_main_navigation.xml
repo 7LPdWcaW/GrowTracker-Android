@@ -9,13 +9,11 @@
 >
 	<fragment
 		android:id="@+id/navigation_gardens"
-		android:name="me.anon.grow3.ui.diaries.fragment.DiariesListFragment"
-		tools:layout="@layout/fragment_home"
+		android:name="me.anon.grow3.ui.diaries.fragment.DiaryListFragment"
 	/>
 
 	<fragment
 		android:id="@+id/navigation_schedules"
-		android:name="me.anon.grow3.ui.diaries.fragment.DiariesListFragment"
-		tools:layout="@layout/fragment_dashboard"
+		android:name="me.anon.grow3.ui.diaries.fragment.DiaryListFragment"
 	/>
 </navigation>

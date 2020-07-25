@@ -11,12 +11,14 @@ import me.anon.grow3.view.model.Card
 
 class StagesCard : Card<CardStagesBinding>
 {
+	private var title: String? = null
 	private lateinit var diary: Diary
 	private var crop: Crop? = null
 
-	constructor() : super(null)
-	constructor(diary: Diary, crop: Crop? = null, title: String? = null) : super(title)
+	constructor() : super()
+	constructor(diary: Diary, crop: Crop? = null, title: String? = null) : super()
 	{
+		this.title = title
 		this.diary = diary
 		this.crop = crop
 	}

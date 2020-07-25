@@ -12,7 +12,7 @@ data class Diary(
 	public var name: String,
 	public var date: String = ZonedDateTime.now().asString(),
 	public val log: List<Log> = arrayListOf(),
-	public val crops: ArrayList<Crop> = arrayListOf()
+	public val crops: List<Crop> = arrayListOf()
 )
 {
 	public var isDraft = false

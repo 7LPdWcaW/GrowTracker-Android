@@ -8,20 +8,20 @@ import me.anon.grow3.databinding.FragmentDiariesBinding
 import me.anon.grow3.ui.base.BaseFragment
 import me.anon.grow3.ui.common.Extras.EXTRA_DIARY_ID
 import me.anon.grow3.ui.crud.activity.DiaryActivity
-import me.anon.grow3.ui.diaries.adapter.DiariesListAdapter
-import me.anon.grow3.ui.diaries.viewmodel.DiariesListViewModel
+import me.anon.grow3.ui.diaries.adapter.DiaryListAdapter
+import me.anon.grow3.ui.diaries.viewmodel.DiaryListViewModel
 import me.anon.grow3.util.*
 import me.anon.grow3.util.states.DataResult
 import javax.inject.Inject
 
-class DiariesListFragment : BaseFragment(FragmentDiariesBinding::class)
+class DiaryListFragment : BaseFragment(FragmentDiariesBinding::class)
 {
 	override val injector: Injector = { it.inject(this) }
 
-	@Inject internal lateinit var viewModelFactory: DiariesListViewModel.Factory
-	private val viewModel: DiariesListViewModel by viewModels { ViewModelProvider(viewModelFactory, this) }
+	@Inject internal lateinit var viewModelFactory: DiaryListViewModel.Factory
+	private val viewModel: DiaryListViewModel by viewModels { ViewModelProvider(viewModelFactory, this) }
 	private val viewBindings by viewBinding<FragmentDiariesBinding>()
-	private val adapter by lazy { DiariesListAdapter() }
+	private val adapter by lazy { DiaryListAdapter() }
 
 	override fun bindUi()
 	{

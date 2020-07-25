@@ -9,17 +9,17 @@ import me.anon.grow3.util.ViewModelFactory
 import me.anon.grow3.util.states.DataResult
 import javax.inject.Inject
 
-class DiariesListViewModel constructor(
+class DiaryListViewModel constructor(
 	private val diariesRepository: DiariesRepository,
 	private val savedState: SavedStateHandle
 ) : ViewModel()
 {
 	class Factory @Inject constructor(
 		private val diariesRepository: DiariesRepository
-	) : ViewModelFactory<DiariesListViewModel>
+	) : ViewModelFactory<DiaryListViewModel>
 	{
-		override fun create(handle: SavedStateHandle): DiariesListViewModel =
-			DiariesListViewModel(diariesRepository, handle)
+		override fun create(handle: SavedStateHandle): DiaryListViewModel =
+			DiaryListViewModel(diariesRepository, handle)
 	}
 
 	private val _diaries = diariesRepository.observeDiaries()
