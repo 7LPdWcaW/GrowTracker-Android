@@ -35,14 +35,8 @@
 			</intent-filter>
 		</activity>
 
-		<activity android:name=".ui.DemoUiActivity" android:label="Demo UI">
-			<intent-filter>
-				<action android:name="android.intent.action.MAIN" />
-				<category android:name="android.intent.category.LAUNCHER" />
-			</intent-filter>
-		</activity>
-
 		<activity android:name=".ui.crud.activity.CropActivity" android:theme="@style/AppTheme.Lightstatus" />
+
 		<activity
 			android:name=".ui.crud.activity.DiaryActivity"
 			android:theme="@style/AppTheme.FullScrim"
@@ -53,6 +47,25 @@
 				<action android:name="android.intent.action.MAIN" />
 			</intent-filter>
 		</activity>
+
 		<activity android:name=".ui.setup.activity.SetupActivity" android:theme="@style/AppTheme.FullScrim" />
+
+		<activity
+			android:name=".ui.settings.activity.SettingsActivity"
+			android:theme="@style/AppTheme.FullScrim"
+			android:windowSoftInputMode="stateAlwaysHidden|adjustPan"
+			android:label="@string/menu_settings"
+		>
+			<intent-filter>
+				<action android:name="android.intent.action.MAIN" />
+			</intent-filter>
+		</activity>
+
+		<activity android:name=".ui.DemoUiActivity" android:label="Demo UI">
+			<intent-filter>
+				<action android:name="android.intent.action.MAIN" />
+				<category android:name="android.intent.category.LAUNCHER" />
+			</intent-filter>
+		</activity>
 	</application>
 </manifest>
