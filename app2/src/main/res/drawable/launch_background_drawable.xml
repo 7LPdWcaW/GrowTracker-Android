@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<layer-list xmlns:android="http://schemas.android.com/apk/res/android">
+	<item>
+		<shape
+			android:shape="rectangle"
+		>
+			<gradient
+				android:centerX="0.5"
+				android:centerY="0.5"
+				android:startColor="@color/colorPrimaryDark"
+				android:endColor="@color/colorPrimary"
+				android:gradientRadius="200dp"
+				android:type="radial"
+			/>
+		</shape>
+	</item>
+
+	<item
+		android:gravity="center"
+		android:drawable="@drawable/ic_plant_coloured"
+		android:top="200dp"
+		android:bottom="200dp"
+		android:start="200dp"
+		android:end="200dp"
+	/>
+</layer-list>

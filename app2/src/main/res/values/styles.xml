@@ -36,6 +36,10 @@
 		<item name="android:windowTranslucentNavigation">true</item>
 	</style>
 
+	<style name="AppTheme.Launch" parent="AppTheme.FullScrim">
+		<item name="android:windowBackground">@drawable/launch_background_drawable</item>
+	</style>
+
 	<style name="AppTheme.FullScrim">
 		<item name="android:windowTranslucentStatus">true</item>
 		<item name="android:windowTranslucentNavigation">true</item>

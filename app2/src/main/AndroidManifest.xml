@@ -17,6 +17,7 @@
 			android:name=".ui.BootActivity"
 			android:label="@string/app_name"
 			android:noHistory="true"
+			android:theme="@style/AppTheme.Launch"
 		>
 			<intent-filter>
 				<action android:name="android.intent.action.MAIN" />
@@ -55,6 +56,7 @@
 			android:theme="@style/AppTheme.FullScrim"
 			android:windowSoftInputMode="stateAlwaysHidden|adjustPan"
 			android:label="@string/menu_settings"
+			android:parentActivityName=".ui.main.activity.MainActivity"
 		>
 			<intent-filter>
 				<action android:name="android.intent.action.MAIN" />
