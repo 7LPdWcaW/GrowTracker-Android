@@ -4,6 +4,7 @@ import android.content.Context
 import android.util.TypedValue
 import android.view.View
 import androidx.fragment.app.Fragment
+import me.anon.grow3.BaseApplication
 
 public fun Double.round(decimals: Int): Double
 {
@@ -33,19 +34,24 @@ public fun Number?.asStringOrNull(): String?
 	}
 }
 
+public val Int.dp: Int get() = dip.toInt()
+public val Float.dp: Float get() = dip
+public val Double.dp: Double get() = dip.toDouble()
+public val Number.dip: Float get() = dip(BaseApplication.context)
+
 public fun Int.dp(context: Context): Int = dip(context).toInt()
 public fun Float.dp(context: Context): Float = dip(context)
-public fun Double.dp(context: Context): Float = dip(context)
+public fun Double.dp(context: Context): Double = dip(context).toDouble()
 public fun Number.dip(context: Context): Float = TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, this.toFloat(), context.resources.displayMetrics)
 
 public fun Int.dp(view: View): Int = dip(view.context).toInt()
 public fun Float.dp(view: View): Float = dip(view.context)
-public fun Double.dp(view: View): Float = dip(view.context)
+public fun Double.dp(view: View): Double = dip(view.context).toDouble()
 public fun Number.dip(view: View): Float = dip(view.context)
 
 public fun Int.dp(fragment: Fragment): Int = dip(fragment.requireContext()).toInt()
 public fun Float.dp(fragment: Fragment): Float = dip(fragment.requireContext())
-public fun Double.dp(fragment: Fragment): Float = dip(fragment.requireContext())
+public fun Double.dp(fragment: Fragment): Double = dip(fragment.requireContext()).toDouble()
 public fun Number.dip(fragment: Fragment): Float = dip(fragment.requireContext())
 
 public fun Number.sp(context: Context): Float = TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_SP, this.toFloat(), context.resources.displayMetrics)

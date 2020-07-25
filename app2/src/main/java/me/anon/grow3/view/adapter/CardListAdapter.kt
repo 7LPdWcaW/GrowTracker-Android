@@ -8,12 +8,29 @@ import me.anon.grow3.view.model.Card
 
 open class CardListAdapter : RecyclerView.Adapter<RecyclerView.ViewHolder>()
 {
-	protected val cards: ArrayList<Card<*>> = arrayListOf()
-	public val cardTypes: ArrayList<Class<out Card<*>>> = arrayListOf()
+	private val cards: ArrayList<Card<*>> = arrayListOf()
+	private val cardTypes: ArrayList<Class<out Card<*>>> = arrayListOf()
 
-	public fun clear()
+	/**
+	 * Clears the stack of cards
+	 */
+	public fun clearStack()
 	{
 		cards.clear()
+		cardTypes.clear()
+		this.notifyDataSetChanged()
+	}
+
+	/**
+	 * Clears the adapter and provides a new stack of cards to display
+	 */
+	public fun newStack(block: ArrayList<Card<*>>.() -> Unit)
+	{
+		cards.clear()
+		block(this.cards)
+		cardTypes.clear()
+		cardTypes.addAll(cards.map { it::class.java }.uniqueBy { it })
+		this.notifyDataSetChanged()
 	}
 
 	override fun getItemViewType(position: Int): Int = cardTypes.indexOf(cards[position]::class.java)
@@ -31,14 +48,5 @@ open class CardListAdapter : RecyclerView.Adapter<RecyclerView.ViewHolder>()
 	override fun onBindViewHolder(holder: RecyclerView.ViewHolder, position: Int)
 	{
 		cards[position]._bindView(holder.itemView)
-	}
-
-	public fun newStack(block: ArrayList<Card<*>>.() -> Unit)
-	{
-		this.clear()
-		block(this.cards)
-		cardTypes.clear()
-		cardTypes.addAll(cards.map { it::class.java }.uniqueBy { it })
-		this.notifyDataSetChanged()
 	}
 }
