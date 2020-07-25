@@ -11,7 +11,6 @@ import me.anon.grow3.ui.crops.view.CropLinksCard
 import me.anon.grow3.ui.crops.viewmodel.ViewCropViewModel
 import me.anon.grow3.util.Injector
 import me.anon.grow3.util.ViewModelProvider
-import me.anon.grow3.util.states.DataResult
 import me.anon.grow3.util.states.asSuccess
 import javax.inject.Inject
 
@@ -25,11 +24,7 @@ class ViewCropFragment : CardListFragment()
 	override fun bindVm()
 	{
 		viewModel.crop.observe(viewLifecycleOwner) {
-			when (it)
-			{
-				is DataResult.Success -> updateCropUi(it.data)
-				else -> throw IllegalAccessError("Could not load crop")
-			}
+			updateCropUi(it)
 		}
 	}
 

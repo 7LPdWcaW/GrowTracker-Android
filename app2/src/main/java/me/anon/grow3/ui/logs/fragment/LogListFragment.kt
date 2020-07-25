@@ -2,6 +2,7 @@ package me.anon.grow3.ui.logs.fragment
 
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.observe
+import me.anon.grow3.data.exceptions.GrowTrackerException.*
 import me.anon.grow3.data.model.*
 import me.anon.grow3.ui.base.CardListFragment
 import me.anon.grow3.ui.logs.view.*
@@ -52,7 +53,7 @@ class LogListFragment : CardListFragment()
 							is StageChange -> StageChangeLogCard(diary, log)
 							is Transplant -> TransplantLogCard(diary, log)
 							is Water -> WaterLogCard(diary, log)
-							else -> throw IllegalArgumentException("Could not handle $log")
+							else -> throw InvalidLog(log)
 						})
 					}
 				}
