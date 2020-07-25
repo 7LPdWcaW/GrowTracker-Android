@@ -9,6 +9,7 @@ import com.github.appintro.AppIntro2
 import com.github.appintro.AppIntroFragment
 import me.anon.grow3.R
 import me.anon.grow3.ui.setup.fragment.FirstDiarySlideFragment
+import me.anon.grow3.ui.setup.fragment.ImportSlideFragment
 import me.anon.grow3.util.color
 
 class SetupActivity : AppIntro2()
@@ -17,7 +18,7 @@ class SetupActivity : AppIntro2()
 
 	private val colors by lazy {
 		arrayOf(
-			R.color.colorPrimary.color(this),
+			R.color.colorPrimaryDark.color(this),
 			R.color.colorSecondary.color(this),
 			R.color.colorAccent.color(this)
 		)
@@ -29,14 +30,15 @@ class SetupActivity : AppIntro2()
 
 		addSlide(AppIntroFragment.newInstance(
 			title = "Welcome",
-			description = "First screen",
+			description = "Welcome to GrowTracker 3.0",
 			backgroundColor = colors[0]
 		))
 		addSlide(AppIntroFragment.newInstance(
-			title = "Welcome",
-			description = "Second screen",
+			title = "Application permissions",
+			description = "GrowTracker requires Storage permissions to function fully",
 			backgroundColor = colors[1]
 		))
+		addSlide(ImportSlideFragment())
 		addSlide(FirstDiarySlideFragment())
 
 		isColorTransitionsEnabled = true

@@ -10,6 +10,8 @@
 	<color name="colorSecondaryAlt40">#66685D79</color>
 	<color name="colorSecondaryAlt80">#CC685D79</color>
 
+	<color name="colorTertiary">#9F5860</color>
+
 	<color name="colorSurface">#ffffff</color>
 	<color name="textOnSurface">#CD000000</color>
 

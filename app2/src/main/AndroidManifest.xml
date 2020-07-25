@@ -49,7 +49,7 @@
 			</intent-filter>
 		</activity>
 
-		<activity android:name=".ui.setup.activity.SetupActivity" android:theme="@style/AppTheme.FullScrim" />
+		<activity android:name=".ui.setup.activity.SetupActivity" android:theme="@style/AppTheme.Launch" />
 
 		<activity
 			android:name=".ui.settings.activity.SettingsActivity"

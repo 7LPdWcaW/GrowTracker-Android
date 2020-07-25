@@ -30,7 +30,7 @@ class FirstDiarySlideFragment : Fragment(), SlideBackgroundColorHolder
 	}
 
 	override val defaultBackgroundColor: Int
-		get() = R.color.colorAccent.color(requireContext())
+		get() = R.color.colorTertiary.color(requireContext())
 
 	override fun setBackgroundColor(backgroundColor: Int)
 	{
