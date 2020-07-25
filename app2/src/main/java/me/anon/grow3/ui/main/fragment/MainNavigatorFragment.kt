@@ -3,6 +3,7 @@ package me.anon.grow3.ui.main.fragment
 import android.os.Bundle
 import androidx.fragment.app.commitNow
 import me.anon.grow3.R
+import me.anon.grow3.data.exceptions.GrowTrackerException.*
 import me.anon.grow3.databinding.FragmentMainHostBinding
 import me.anon.grow3.ui.action.fragment.LogActionBottomSheetFragment
 import me.anon.grow3.ui.base.BaseFragment
@@ -32,7 +33,7 @@ class MainNavigatorFragment : BaseHostFragment(FragmentMainHostBinding::class)
 	{
 		super.onActivityCreated(savedInstanceState)
 
-		if (activity !is MainActivity) throw IllegalStateException("Main host not attached to Main activity")
+		if (activity !is MainActivity) throw InvalidHostActivity()
 
 		if (pendingActions.isNotEmpty())
 		{
@@ -61,7 +62,7 @@ class MainNavigatorFragment : BaseHostFragment(FragmentMainHostBinding::class)
 			while (size > 0)
 			{
 				val item = this.removeAt(0)
-				val route = item.getString(EXTRA_NAVIGATE) ?: throw IllegalArgumentException("No route set")
+				val route = item.getString(EXTRA_NAVIGATE) ?: throw NoRoute()
 				val origin = item.getString(EXTRA_ORIGINATOR)
 
 				when (origin)
@@ -89,7 +90,7 @@ class MainNavigatorFragment : BaseHostFragment(FragmentMainHostBinding::class)
 					}
 
 					nameOf<ViewDiaryFragment>() -> {
-						item.getString(EXTRA_DIARY_ID) ?: throw IllegalArgumentException("No diary ID set")
+						item.getString(EXTRA_DIARY_ID) ?: throw InvalidDiaryId()
 						beginStack(ViewDiaryFragment::class.java, item)
 					}
 
@@ -105,7 +106,7 @@ class MainNavigatorFragment : BaseHostFragment(FragmentMainHostBinding::class)
 						addToStack(LogListFragment::class.java, item)
 					}
 
-					else -> throw IllegalArgumentException("Could not route to $route")
+					else -> throw InvalidRoute(route)
 				}
 			}
 		}

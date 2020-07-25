@@ -2,6 +2,7 @@ package me.anon.grow3.ui.crud.viewmodel
 
 import androidx.lifecycle.*
 import kotlinx.coroutines.launch
+import me.anon.grow3.data.exceptions.GrowTrackerException.*
 import me.anon.grow3.data.model.Crop
 import me.anon.grow3.data.model.Medium
 import me.anon.grow3.data.model.MediumType
@@ -37,7 +38,7 @@ class CropViewModel(
 	public val diary = diariesRepository.observeDiary(_diaryId)
 
 	private val _crop = diary.switchMap { diary ->
-		if (!diary.isSuccess) throw IllegalArgumentException("Unable to load diary")
+		if (!diary.isSuccess) throw DiaryLoadFailed(_diaryId)
 		val diary = diary.asSuccess()
 
 		liveData {

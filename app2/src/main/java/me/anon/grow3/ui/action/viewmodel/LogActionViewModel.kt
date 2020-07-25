@@ -2,6 +2,7 @@ package me.anon.grow3.ui.action.viewmodel
 
 import androidx.lifecycle.*
 import kotlinx.coroutines.launch
+import me.anon.grow3.data.exceptions.GrowTrackerException.*
 import me.anon.grow3.data.model.Log
 import me.anon.grow3.data.model.Water
 import me.anon.grow3.data.repository.DiariesRepository
@@ -27,14 +28,14 @@ class LogActionViewModel constructor(
 			LogActionViewModel(diariesRepository, handle)
 	}
 
-	private val diaryId: String = savedState[EXTRA_DIARY_ID] ?: throw kotlin.IllegalArgumentException("No diary id set")
+	private val diaryId: String = savedState[EXTRA_DIARY_ID] ?: throw InvalidDiaryId()
 	private var logId: String? = savedState[EXTRA_LOG_ID]
 		set(value) {
 			field = value
 			savedState[EXTRA_LOG_ID] = value
 		}
 
-	private val logType: String = savedState[EXTRA_LOG_TYPE] ?: throw kotlin.IllegalArgumentException("No log type set")
+	private val logType: String = savedState[EXTRA_LOG_TYPE] ?: throw InvalidLogType()
 
 	public val diary = diariesRepository.observeDiary(diaryId)
 	public val log: LiveData<Log> = diary.switchMap { diaryResult ->
@@ -58,7 +59,7 @@ class LogActionViewModel constructor(
 				}
 				else
 				{
-					emit(diariesRepository.getLog(logId!!, diaryResult.data) ?: throw IllegalArgumentException("Failed to load log"))
+					emit(diariesRepository.getLog(logId!!, diaryResult.data) ?: throw LogLoadFailed(logId!!))
 				}
 			}
 		}
