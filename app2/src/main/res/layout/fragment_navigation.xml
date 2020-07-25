@@ -20,7 +20,7 @@
 			android:layout_width="match_parent"
 			android:layout_height="0dp"
 			android:id="@+id/diaries_list"
-			android:name="me.anon.grow3.ui.diaries.fragment.DiariesListFragment"
+			android:name="me.anon.grow3.ui.diaries.fragment.DiaryListFragment"
 			app:layout_constraintTop_toTopOf="parent"
 			app:layout_constraintBottom_toTopOf="@id/navigation_container"
 		/>

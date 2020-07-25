@@ -31,11 +31,11 @@ class DiaryViewModel(
 				val count = diariesRepository.getDiaries().size
 				val diary = diariesRepository.createDiary(Diary(name = "Gen ${count + 1}").apply {
 					isDraft = true
-					crops.add(Crop(
+					crops as ArrayList += Crop(
 						name = "Crop 1",
 						genetics = "Unknown genetics",
 						platedDate = this@apply.date
-					))
+					)
 				})
 
 				_diaryId.value = diary.id
@@ -100,7 +100,7 @@ class DiaryViewModel(
 	public fun addCrop(crop: Crop)
 	{
 		_diary.value?.asSuccess()!!.apply {
-			crops.add(crop)
+			crops as ArrayList += crop
 			_diary.notifyChange()
 		}
 	}

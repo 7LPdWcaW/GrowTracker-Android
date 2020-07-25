@@ -8,7 +8,7 @@ import me.anon.grow3.ui.diaries.adapter.viewholder.DiaryViewHolder
 import me.anon.grow3.util.inflate
 import me.anon.grow3.util.onClick
 
-class DiariesListAdapter : RecyclerView.Adapter<DiaryViewHolder>()
+class DiaryListAdapter : RecyclerView.Adapter<DiaryViewHolder>()
 {
 	public var items: List<Diary> = arrayListOf()
 	public var onItemClick: (Diary) -> Unit = {}

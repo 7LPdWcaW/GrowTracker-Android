@@ -16,13 +16,15 @@ import me.anon.grow3.view.model.Card
 
 class LogMediumCard : Card<CardLogMediumBinding>
 {
+	private var title: String? = null
 	private lateinit var diary: Diary
 	private lateinit var crop: Crop
 	private lateinit var medium: Medium
 
-	constructor() : super(null)
-	constructor(diary: Diary, crop: Crop, medium: Medium, title: String? = null) : super(title)
+	constructor() : super()
+	constructor(diary: Diary, crop: Crop, medium: Medium, title: String? = null) : super()
 	{
+		this.title = title
 		this.diary = diary
 		this.crop = crop
 		this.medium = medium

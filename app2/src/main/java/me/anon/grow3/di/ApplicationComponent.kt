@@ -7,6 +7,7 @@ import me.anon.grow3.di.module.AppModule
 import me.anon.grow3.di.module.DispatcherModule
 import me.anon.grow3.ui.DemoUiActivity
 import me.anon.grow3.ui.action.fragment.LogActionBottomSheetFragment
+import me.anon.grow3.ui.crops.fragment.CropListFragment
 import me.anon.grow3.ui.crops.fragment.ViewCropFragment
 import me.anon.grow3.ui.crud.activity.CropActivity
 import me.anon.grow3.ui.crud.activity.DiaryActivity
@@ -14,7 +15,7 @@ import me.anon.grow3.ui.crud.fragment.DiaryCompleteFragment
 import me.anon.grow3.ui.crud.fragment.DiaryCropsFragment
 import me.anon.grow3.ui.crud.fragment.DiaryDetailsFragment
 import me.anon.grow3.ui.crud.fragment.DiaryEnvironmentFragment
-import me.anon.grow3.ui.diaries.fragment.DiariesListFragment
+import me.anon.grow3.ui.diaries.fragment.DiaryListFragment
 import me.anon.grow3.ui.diaries.fragment.ViewDiaryFragment
 import me.anon.grow3.ui.logs.fragment.LogListFragment
 import me.anon.grow3.ui.main.activity.MainActivity
@@ -31,13 +32,14 @@ interface ApplicationComponent
 	public fun exceptionHandler(): ExceptionHandler
 	public fun diariesRepo(): DiariesRepository
 
-	public fun inject(fragment: DiariesListFragment)
+	public fun inject(fragment: DiaryListFragment)
 	public fun inject(fragment: DiaryDetailsFragment)
 	public fun inject(fragment: DiaryCropsFragment)
 	public fun inject(fragment: DiaryEnvironmentFragment)
 	public fun inject(fragment: DiaryCompleteFragment)
 	public fun inject(fragment: ViewDiaryFragment)
 	public fun inject(fragment: ViewCropFragment)
+	public fun inject(fragment: CropListFragment)
 	public fun inject(fragment: LogListFragment)
 	public fun inject(fragment: LogActionBottomSheetFragment)
 

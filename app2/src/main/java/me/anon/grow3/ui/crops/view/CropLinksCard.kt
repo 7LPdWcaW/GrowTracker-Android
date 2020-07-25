@@ -13,8 +13,8 @@ class CropLinksCard : Card<CardCropLinksBinding>
 	private lateinit var diary: Diary
 	private lateinit var crop: Crop
 
-	constructor() : super(null)
-	constructor(diary: Diary, crop: Crop, title: String? = null) : super(title)
+	constructor() : super()
+	constructor(diary: Diary, crop: Crop) : super()
 	{
 		this.diary = diary
 		this.crop = crop

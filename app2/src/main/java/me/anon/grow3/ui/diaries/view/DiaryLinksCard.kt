@@ -16,8 +16,8 @@ class DiaryLinksCard : Card<CardDiaryLinksBinding>
 {
 	private lateinit var diary: Diary
 
-	constructor() : super(null)
-	constructor(diary: Diary, title: String? = null) : super(title)
+	constructor() : super()
+	constructor(diary: Diary) : super()
 	{
 		this.diary = diary
 	}

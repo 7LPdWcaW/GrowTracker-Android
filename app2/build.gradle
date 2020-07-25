@@ -115,7 +115,7 @@ dependencies {
 //	implementation 'com.google.android:flexbox:2.0.1'
 	implementation 'com.google.dagger:dagger:2.27'
 
-	implementation 'com.squareup.moshi:moshi-kotlin:1.8.0'
+	implementation 'com.squareup.moshi:moshi-kotlin:1.9.2'
 
 	implementation 'com.nostra13.universalimageloader:universal-image-loader:1.9.5'
 	implementation 'com.davemorrissey.labs:subsampling-scale-image-view:3.6.0'
@@ -124,7 +124,10 @@ dependencies {
 
 	implementation ('org.dizitart:potassium-nitrite:3.4.1') {
 		exclude group: 'com.squareup.okhttp3'
+		exclude group: 'com.fasterxml.jackson.datatype', module: 'jackson-datatype-jdk8'
+		exclude group: 'com.fasterxml.jackson.datatype', module: 'jackson-datatype-jsr310'
 	}
+
 	implementation 'com.fasterxml.jackson.datatype:jackson-datatype-joda:2.9.5'
 
 	androidTestImplementation 'androidx.test.ext:junit:1.1.1'

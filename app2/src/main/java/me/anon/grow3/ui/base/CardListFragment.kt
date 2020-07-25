@@ -24,6 +24,6 @@ abstract class CardListFragment : BaseFragment(FragmentCardListBinding::class)
 
 		viewBindings.recyclerView.adapter = viewAdapter
 		viewBindings.recyclerView.layoutManager = LinearLayoutManager(requireContext())
-		viewAdapter.clear()
+		viewAdapter.clearStack()
 	}
 }

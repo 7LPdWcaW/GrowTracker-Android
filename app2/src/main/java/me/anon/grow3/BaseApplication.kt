@@ -40,5 +40,11 @@ abstract class BaseApplication : Application()
 			.build()
 	}
 
+	override fun attachBaseContext(base: Context?)
+	{
+		super.attachBaseContext(base)
+		context = base ?: context
+	}
+
 	open fun setup() {}
 }

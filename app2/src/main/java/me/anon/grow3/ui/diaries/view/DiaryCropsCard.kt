@@ -10,6 +10,7 @@ import me.anon.grow3.data.model.Diary
 import me.anon.grow3.databinding.CardDiaryCropsBinding
 import me.anon.grow3.databinding.StubCropBinding
 import me.anon.grow3.ui.common.Extras
+import me.anon.grow3.ui.crops.fragment.CropListFragment
 import me.anon.grow3.ui.crops.fragment.ViewCropFragment
 import me.anon.grow3.util.mapToView
 import me.anon.grow3.util.navigateTo
@@ -18,11 +19,13 @@ import me.anon.grow3.view.model.Card
 
 class DiaryCropsCard : Card<CardDiaryCropsBinding>
 {
+	private var title: String? = null
 	private lateinit var diary: Diary
 
-	constructor() : super(null)
-	constructor(diary: Diary, title: String? = null) : super(title)
+	constructor() : super()
+	constructor(diary: Diary, title: String? = null) : super()
 	{
+		this.title = title
 		this.diary = diary
 	}
 
@@ -47,5 +50,13 @@ class DiaryCropsCard : Card<CardDiaryCropsBinding>
 				}
 			}
 		})
+
+		// TODO: Hide when there's an overflow
+		view.moreCrops.isVisible = view.cropsContainer.totalItemDisplayed < diary.crops.size
+		view.moreCrops.onClick {
+			it.navigateTo<CropListFragment> {
+				bundleOf(Extras.EXTRA_DIARY_ID to diary.id)
+			}
+		}
 	}
 }
