@@ -8,10 +8,11 @@ import me.anon.grow3.ui.action.fragment.LogActionBottomSheetFragment
 import me.anon.grow3.ui.base.BaseFragment
 import me.anon.grow3.ui.base.BaseHostFragment
 import me.anon.grow3.ui.common.Extras.EXTRA_DIARY_ID
+import me.anon.grow3.ui.crops.fragment.CropListFragment
 import me.anon.grow3.ui.crops.fragment.ViewCropFragment
 import me.anon.grow3.ui.diaries.fragment.EmptyFragment
-import me.anon.grow3.ui.logs.fragment.LogListFragment
 import me.anon.grow3.ui.diaries.fragment.ViewDiaryFragment
+import me.anon.grow3.ui.logs.fragment.LogListFragment
 import me.anon.grow3.ui.main.activity.MainActivity
 import me.anon.grow3.ui.main.activity.MainActivity.Companion.EXTRA_NAVIGATE
 import me.anon.grow3.ui.main.activity.MainActivity.Companion.EXTRA_ORIGINATOR
@@ -96,9 +97,15 @@ class MainNavigatorFragment : BaseHostFragment(FragmentMainHostBinding::class)
 						addToStack(ViewCropFragment::class.java, item)
 					}
 
+					nameOf<CropListFragment>() -> {
+						addToStack(CropListFragment::class.java, item)
+					}
+
 					nameOf<LogListFragment>() -> {
 						addToStack(LogListFragment::class.java, item)
 					}
+
+					else -> throw IllegalArgumentException("Could not route to $route")
 				}
 			}
 		}

@@ -2,6 +2,7 @@ package me.anon.grow3.ui.crops.viewmodel
 
 import androidx.lifecycle.*
 import me.anon.grow3.data.model.Crop
+import me.anon.grow3.data.model.Diary
 import me.anon.grow3.data.repository.DiariesRepository
 import me.anon.grow3.ui.common.Extras
 import me.anon.grow3.util.ViewModelFactory
@@ -23,7 +24,8 @@ class CropListViewModel constructor(
 
 	public val diaryId: String = savedState[Extras.EXTRA_DIARY_ID] ?: throw kotlin.IllegalArgumentException("No diary id set")
 
-	public val crops: LiveData<List<Crop>> = diariesRepository.observeDiary(diaryId).switchMap { dataResult ->
+	public val diary: LiveData<DataResult<Diary>> = diariesRepository.observeDiary(diaryId)
+	public val crops: LiveData<List<Crop>> = diary.switchMap { dataResult ->
 		when (dataResult)
 		{
 			is DataResult.Success -> {
