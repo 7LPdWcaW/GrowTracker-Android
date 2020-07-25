@@ -1,6 +1,5 @@
 package me.anon.grow3.data.source.nitrite
 
-import com.fasterxml.jackson.datatype.joda.JodaModule
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
@@ -8,6 +7,8 @@ import me.anon.grow3.data.model.Crop
 import me.anon.grow3.data.model.Diary
 import me.anon.grow3.data.model.Log
 import me.anon.grow3.data.source.CacheDataSource
+import me.anon.grow3.util.NitriteFacade
+import org.dizitart.kno2.KNO2JacksonMapper
 import org.dizitart.kno2.filters.eq
 import org.dizitart.kno2.getCollection
 import org.dizitart.kno2.getRepository
@@ -26,10 +27,10 @@ class NitriteCacheDataSource @Inject constructor(
 ) : CacheDataSource
 {
 	private val db = nitrite {
+		nitriteMapper = KNO2JacksonMapper(NitriteFacade())
 		file = File(sourcePath)
 		autoCommit = true
 		autoCommitBufferSize = 1024
-		registerModule(JodaModule())
 	}
 
 	override suspend fun cache(log: Log): String
