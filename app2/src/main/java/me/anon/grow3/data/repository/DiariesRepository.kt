@@ -20,7 +20,7 @@ interface DiariesRepository
 
 	public suspend fun getDiaryById(diaryId: String): Diary?
 
-	public suspend fun createDiary(diary: Diary): Diary
+	public suspend fun addDiary(diary: Diary): Diary
 	public suspend fun deleteDiary(diaryId: String): Boolean
 
 	public suspend fun addLog(log: Log, diary: Diary? = null): Log

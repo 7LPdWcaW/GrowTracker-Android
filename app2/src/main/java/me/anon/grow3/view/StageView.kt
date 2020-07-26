@@ -10,12 +10,14 @@ import android.widget.FrameLayout
 import android.widget.HorizontalScrollView
 import android.widget.LinearLayout
 import androidx.core.view.get
+import androidx.core.view.isVisible
 import androidx.core.view.plusAssign
 import androidx.core.view.updateLayoutParams
 import me.anon.grow3.R
 import me.anon.grow3.data.model.Crop
 import me.anon.grow3.data.model.Diary
 import me.anon.grow3.data.model.Stage
+import me.anon.grow3.data.model.StageChange
 import me.anon.grow3.databinding.StubViewArrowBinding
 import me.anon.grow3.databinding.StubViewStageBinding
 import me.anon.grow3.util.*
@@ -29,6 +31,7 @@ class StageView : HorizontalScrollView
 	private var diary: Diary? = null
 	private var crop: Crop? = null
 	public var onNewStageClick: () -> Unit = {}
+	public var onStageClick: (StageChange) -> Unit = {}
 
 	constructor(context: Context) : this(context, null)
 	constructor(context: Context, attrs: AttributeSet?) : this(context, attrs, 0)
@@ -65,6 +68,9 @@ class StageView : HorizontalScrollView
 			val stage = stages[stageIndex]
 			val stageView = StageViewStub(context)
 			stageView.setStage(stage)
+			stageView.onClick {
+				onStageClick(stage)
+			}
 			container += stageView
 
 			val arrow = ArrowViewStub(context)
@@ -87,7 +93,7 @@ class StageView : HorizontalScrollView
 		}
 
 		val end = StageViewStub(context)
-		end.setOnClickListener {
+		end.onClick {
 			onNewStageClick()
 		}
 		container += end
@@ -163,6 +169,15 @@ class StageView : HorizontalScrollView
 		{
 			bindings = StubViewStageBinding.inflate(LayoutInflater.from(context), this, true)
 			setStage(null)
+			isClickable = true
+			isFocusable = true
+		}
+
+		override fun setOnClickListener(l: OnClickListener?)
+		{
+			bindings.stageIcon.onClick {
+				l?.onClick(this@StageViewStub)
+			}
 		}
 
 		public fun setStage(stage: Stage?)
@@ -173,6 +188,7 @@ class StageView : HorizontalScrollView
 			{
 				bindings.stageLabel.setText(R.string.today)
 				bindings.stageDate.text = LocalDate.now().asFormattedString()
+				bindings.stageIcon.setImageDrawable(R.drawable.ic_add.drawable(context, tint = R.attr.textOnSurface.resColor(context)))
 			}
 			else
 			{
@@ -197,6 +213,7 @@ class StageView : HorizontalScrollView
 
 		public fun setLength(days: Long)
 		{
+			bindings.stageLabel.isVisible = days > 0
 			bindings.stageLabel.text = R.string.days.string(context, days)
 		}
 

@@ -54,7 +54,7 @@ class DefaultDiariesRepository @Inject constructor(
 
 	override suspend fun getDiaryById(diaryId: String): Diary? = dataSource.getDiaryById(diaryId)
 
-	override suspend fun createDiary(diary: Diary): Diary
+	override suspend fun addDiary(diary: Diary): Diary
 		= dataSource.addDiary(diary)
 			.find { it.id == diary.id }!!
 			.also {

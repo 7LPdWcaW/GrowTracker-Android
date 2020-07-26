@@ -55,6 +55,7 @@ abstract class BaseFragment : Fragment
 	{
 		super.onAttach(context)
 		injector(component)
+		(activity as? BaseActivity)?.onFragmentAdded(this)
 	}
 
 	override fun onActivityCreated(savedInstanceState: Bundle?)
@@ -74,5 +75,11 @@ abstract class BaseFragment : Fragment
 	public fun setToolbar(toolbar: Toolbar)
 	{
 		(activity as BaseActivity).setSupportActionBar(toolbar)
+	}
+
+	override fun onDestroy()
+	{
+		(activity as? BaseActivity)?.onFragmentRemoved(this)
+		super.onDestroy()
 	}
 }

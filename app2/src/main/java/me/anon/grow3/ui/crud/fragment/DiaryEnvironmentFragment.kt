@@ -11,8 +11,6 @@ import me.anon.grow3.databinding.FragmentCrudDiaryEnvironmentBinding
 import me.anon.grow3.ui.base.BaseFragment
 import me.anon.grow3.ui.crud.viewmodel.DiaryViewModel
 import me.anon.grow3.util.*
-import me.anon.grow3.util.states.asSuccess
-import me.anon.grow3.util.states.isSuccess
 import me.anon.grow3.view.DropDownEditText
 import javax.inject.Inject
 
@@ -34,9 +32,6 @@ class DiaryEnvironmentFragment : BaseFragment(FragmentCrudDiaryEnvironmentBindin
 	override fun bindVm()
 	{
 		viewModel.diary.observe(viewLifecycleOwner) { diary ->
-			if (!diary.isSuccess) return@observe
-
-			val diary = diary.asSuccess()
 			diary.environment()?.let { environment ->
 				viewBindings.environmentTypeOptions.checkItems(environment.strRes)
 			}

@@ -47,7 +47,6 @@ class NitriteCacheDataSource @Inject constructor(
 			val repo = db.getRepository<Log>()
 			val log = repo.find(Log::id eq id)
 				.first()
-			repo.remove(Log::id eq id)
 			log
 		}
 
@@ -65,7 +64,6 @@ class NitriteCacheDataSource @Inject constructor(
 			val repo = db.getRepository<Crop>()
 			val crop = repo.find(Crop::id eq id)
 				.first()
-			repo.remove(Crop::id eq id)
 			crop
 		}
 
@@ -83,7 +81,6 @@ class NitriteCacheDataSource @Inject constructor(
 			val repo = db.getRepository<Diary>()
 			val diary = repo.find(Diary::id eq id)
 				.first()
-			repo.remove(Diary::id eq id)
 			diary
 		}
 
@@ -106,8 +103,6 @@ class NitriteCacheDataSource @Inject constructor(
 		= withContext(dispatcher) {
 			val document = db.getCollection("map")
 				.getById(NitriteId.createId(id.toLong()))
-			db.getCollection("map")
-				.remove(document)
 			document
 		}
 }

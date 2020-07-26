@@ -1,15 +1,20 @@
 package me.anon.grow3.ui.crud.fragment
 
 import android.view.View
+import androidx.core.os.bundleOf
+import androidx.core.view.isVisible
 import androidx.core.widget.doAfterTextChanged
 import androidx.fragment.app.activityViewModels
 import androidx.lifecycle.observe
+import me.anon.grow3.data.model.StageChange
 import me.anon.grow3.databinding.FragmentCrudDiaryDetailsBinding
+import me.anon.grow3.ui.action.fragment.LogActionFragment
 import me.anon.grow3.ui.base.BaseFragment
+import me.anon.grow3.ui.common.Extras
 import me.anon.grow3.ui.common.fragment.DateSelectDialogFragment
+import me.anon.grow3.ui.crud.activity.DiaryActivity
 import me.anon.grow3.ui.crud.viewmodel.DiaryViewModel
 import me.anon.grow3.util.*
-import me.anon.grow3.util.states.DataResult
 import org.threeten.bp.ZonedDateTime
 import javax.inject.Inject
 
@@ -24,9 +29,9 @@ class DiaryDetailsFragment : BaseFragment(FragmentCrudDiaryDetailsBinding::class
 	override fun bindVm()
 	{
 		viewModel.diary.observe(viewLifecycleOwner) { diary ->
-			val diary = (diary as? DataResult.Success)?.data ?: return@observe
 			viewBindings.diaryName.editText!!.text = diary.name.asEditable()
 			viewBindings.date.editText!!.text = diary.date.asDateTime().asFormattedString().asEditable()
+			viewBindings.includeCardStages.stagesView.setStages(diary)
 		}
 	}
 
@@ -34,12 +39,12 @@ class DiaryDetailsFragment : BaseFragment(FragmentCrudDiaryDetailsBinding::class
 	{
 		viewBindings.diaryName.editText!!.doAfterTextChanged {
 			// don't re-trigger the text change by calling editText.text ...
-			val diary = (viewModel.diary.value as? DataResult.Success)?.data ?: return@doAfterTextChanged
+			val diary = viewModel.diary.value!!
 			diary.name = it.toString()
 		}
 
 		viewBindings.date.editText!!.onFocus {
-			val diary = (viewModel.diary.value as? DataResult.Success)?.data ?: return@onFocus
+			val diary = viewModel.diary.value!!
 
 			it.hideKeyboard()
 
@@ -49,6 +54,16 @@ class DiaryDetailsFragment : BaseFragment(FragmentCrudDiaryDetailsBinding::class
 			}
 
 			viewModel.setDiaryDate(current.asDateTime())
+		}
+
+		viewBindings.includeCardStages.stagesHeader.isVisible = true
+		viewBindings.includeCardStages.stagesView.onNewStageClick = {
+			(activity as DiaryActivity).openModal(LogActionFragment().apply {
+				arguments = bundleOf(
+					Extras.EXTRA_LOG_TYPE to nameOf<StageChange>(),
+					Extras.EXTRA_DIARY_ID to viewModel.diary.value!!.id
+				)
+			})
 		}
 
 		attachCallbacks()

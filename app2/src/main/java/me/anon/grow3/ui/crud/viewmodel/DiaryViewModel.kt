@@ -2,67 +2,78 @@ package me.anon.grow3.ui.crud.viewmodel
 
 import androidx.lifecycle.*
 import kotlinx.coroutines.launch
+import me.anon.grow3.data.exceptions.GrowTrackerException.DiaryLoadFailed
 import me.anon.grow3.data.model.*
 import me.anon.grow3.data.repository.DiariesRepository
-import me.anon.grow3.util.*
-import me.anon.grow3.util.states.asSuccess
+import me.anon.grow3.data.source.CacheDataSource
+import me.anon.grow3.ui.common.Extras
+import me.anon.grow3.util.ValueHolder
+import me.anon.grow3.util.ViewModelFactory
+import me.anon.grow3.util.asString
+import me.anon.grow3.util.notifyChange
+import me.anon.grow3.util.states.DataResult
 import org.threeten.bp.ZonedDateTime
 import javax.inject.Inject
 
 class DiaryViewModel(
 	private val diariesRepository: DiariesRepository,
+	private val cacheRepository: CacheDataSource,
 	private val savedStateHandle: SavedStateHandle
 ) : ViewModel()
 {
 	class Factory @Inject constructor(
-		private val diariesRepository: DiariesRepository
+		private val diariesRepository: DiariesRepository,
+		private val cacheRepository: CacheDataSource
 	) : ViewModelFactory<DiaryViewModel>
 	{
 		override fun create(handle: SavedStateHandle): DiaryViewModel =
-			DiaryViewModel(diariesRepository, handle)
+			DiaryViewModel(diariesRepository, cacheRepository, handle)
 	}
 
-	private var _diaryId: MutableLiveData<String?> = savedStateHandle.getLiveData("diary_id", null)
+	private var diaryId: String? = savedStateHandle.get(Extras.EXTRA_DIARY_ID)
 	private var _environmentId: MutableLiveData<String?> = savedStateHandle.getLiveData("environment_id", null)
 
-	private val _diary = _diaryId.switchMap { id ->
-		liveData {
-			id ?: let {
-				val count = diariesRepository.getDiaries().size
-				val diary = diariesRepository.createDiary(Diary(name = "Gen ${count + 1}").apply {
-					isDraft = true
-					crops as ArrayList += Crop(
-						name = "Crop 1",
-						genetics = "Unknown genetics",
-						platedDate = this@apply.date
-					)
-				})
-
-				_diaryId.value = diary.id
-				return@liveData
+	public val diary = liveData {
+		if (diaryId.isNullOrBlank())
+		{
+			val count = diariesRepository.getDiaries().size
+			val diary = Diary(name = "Gen ${count + 1}").apply {
+				isDraft = true
+				crops as ArrayList += Crop(
+					name = "Crop 1",
+					genetics = "Unknown genetics",
+					platedDate = this@apply.date
+				)
 			}
-
-			id?.let {
-				emitSource(diariesRepository.observeDiary(it))
-			}
+			diaryId = cacheRepository.cache(diary)
+			emit(diary)
+			return@liveData
 		}
-	} as MutableLiveData
-
-	public val diary = _diary.asLiveData()
+		else
+		{
+			emitSource(diariesRepository.observeDiary(diaryId!!).map { diaryResult ->
+				when (diaryResult)
+				{
+					is DataResult.Success -> diaryResult.data
+					else -> throw DiaryLoadFailed(diaryId!!)
+				}
+			})
+		}
+	}
 
 	public fun setDiaryDate(dateTime: ZonedDateTime)
 	{
-		_diary.value?.asSuccess()!!.apply {
+		diary.value!!.apply {
 			date = dateTime.asString()
-			_diary.notifyChange()
+			(diary as MutableLiveData).notifyChange()
 		}
 	}
 
 	public fun setDiaryName(newName: String)
 	{
-		_diary.value?.apply {
+		diary.value!!.apply {
 			//name = newName
-			_diary.postValue(this)
+			(diary as MutableLiveData).notifyChange()
 		}
 	}
 
@@ -76,7 +87,7 @@ class DiaryViewModel(
 		schedule: ValueHolder<LightSchedule?>? = null
 	)
 	{
-		_diary.value?.asSuccess()!!.apply {
+		diary.value!!.apply {
 			// We're in a wizard so there should only be one instance
 			val id = _environmentId.value ?: let {
 				val log = Environment()
@@ -94,32 +105,26 @@ class DiaryViewModel(
 				schedule?.applyValue { this.schedule = it }
 			}
 		}
-		_diary.notifyChange()
+		(diary as MutableLiveData).notifyChange()
 	}
 
 	public fun addCrop(crop: Crop)
 	{
-		_diary.value?.asSuccess()!!.apply {
+		diary.value!!.apply {
 			crops as ArrayList += crop
-			_diary.notifyChange()
+			(diary as MutableLiveData).notifyChange()
 		}
 	}
 
 	public fun refresh()
 	{
-		_diaryId.postValue(_diaryId.value)
+		//_diaryId.postValue(_diaryId.value)
 	}
 
-	public fun save(diary: Diary)
+	public fun save()
 	{
-		diary.isDraft = false
+
+		//diariesRepository.addDiary(diary)
 		diariesRepository.sync()
-	}
-
-	public suspend fun cancel()
-	{
-		_diaryId.value?.let {
-			diariesRepository.deleteDiary(it)
-		}
 	}
 }

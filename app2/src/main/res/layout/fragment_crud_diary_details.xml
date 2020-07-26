@@ -79,27 +79,10 @@
 				</androidx.constraintlayout.widget.ConstraintLayout>
 			</com.google.android.material.card.MaterialCardView>
 
-			<com.google.android.material.card.MaterialCardView
-				android:layout_width="match_parent"
-				android:layout_height="wrap_content"
-			>
-				<androidx.constraintlayout.widget.ConstraintLayout
-					android:layout_width="match_parent"
-					android:layout_height="wrap_content"
-					android:padding="16dp"
-				>
-					<TextView
-						android:layout_width="wrap_content"
-						android:layout_height="wrap_content"
-						android:id="@+id/stages_header"
-						android:text="@string/add_diary_stages_title"
-						app:layout_constraintTop_toTopOf="parent"
-						app:layout_constraintStart_toStartOf="parent"
-						android:textAppearance="@style/Text.Header"
-					/>
-
-				</androidx.constraintlayout.widget.ConstraintLayout>
-			</com.google.android.material.card.MaterialCardView>
+			<include
+				layout="@layout/card_stages"
+				android:id="@+id/include_card_stages"
+			/>
 		</LinearLayout>
 	</ScrollView>
 </FrameLayout>

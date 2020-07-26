@@ -3,6 +3,8 @@ package me.anon.grow3.ui.crud.activity
 import android.os.Bundle
 import androidx.activity.viewModels
 import androidx.core.view.isVisible
+import androidx.fragment.app.Fragment
+import androidx.fragment.app.commitNow
 import androidx.lifecycle.lifecycleScope
 import androidx.navigation.findNavController
 import androidx.navigation.ui.NavigationUI
@@ -10,10 +12,12 @@ import kotlinx.android.synthetic.main.activity_crud_diary.*
 import kotlinx.coroutines.launch
 import me.anon.grow3.R
 import me.anon.grow3.databinding.ActivityCrudDiaryBinding
+import me.anon.grow3.ui.action.fragment.LogActionFragment
 import me.anon.grow3.ui.base.BaseActivity
 import me.anon.grow3.ui.crud.viewmodel.DiaryViewModel
 import me.anon.grow3.util.Injector
 import me.anon.grow3.util.ViewModelProvider
+import me.anon.grow3.util.onClick
 import me.anon.grow3.util.promptExit
 import javax.inject.Inject
 
@@ -47,19 +51,19 @@ class DiaryActivity : BaseActivity(ActivityCrudDiaryBinding::class)
 		}
 		NavigationUI.setupWithNavController(viewBindings.includeToolbar.toolbar, navController)
 
-		viewBindings.back.setOnClickListener {
+		viewBindings.back.onClick {
 			if (!navController.popBackStack())
 			{
 				promptExit {
 					lifecycleScope.launch {
-						viewModel.cancel()
+						//viewModel.cancel()
 						finish()
 					}
 				}
 			}
 		}
 
-		viewBindings.next.setOnClickListener {
+		viewBindings.next.onClick {
 			when (currentView)
 			{
 				R.id.navigation_diary_details -> navController.navigate(R.id.page_1_to_2)
@@ -72,6 +76,45 @@ class DiaryActivity : BaseActivity(ActivityCrudDiaryBinding::class)
 
 	override fun onBackPressed()
 	{
-		viewBindings.back.performClick()
+		if (viewBindings.dialogHolder.isVisible)
+		{
+			supportFragmentManager.findFragmentById(R.id.dialog_fragment_container)?.let {
+				if (it is LogActionFragment)
+				{
+					promptExit {
+						supportFragmentManager.commitNow {
+							remove(it)
+						}
+					}
+				}
+			}
+		}
+		else
+		{
+			viewBindings.back.performClick()
+		}
+	}
+
+	override fun onFragmentAdded(fragment: Fragment)
+	{
+		if (fragment is LogActionFragment)
+		{
+			viewBindings.dialogHolder.isVisible = true
+		}
+	}
+
+	override fun onFragmentRemoved(fragment: Fragment)
+	{
+		if (fragment is LogActionFragment)
+		{
+			viewBindings.dialogHolder.isVisible = false
+		}
+	}
+
+	public fun openModal(fragment: Fragment)
+	{
+		supportFragmentManager.commitNow {
+			replace(R.id.dialog_fragment_container, fragment)
+		}
 	}
 }

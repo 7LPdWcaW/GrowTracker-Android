@@ -15,8 +15,6 @@ import me.anon.grow3.ui.common.Extras.EXTRA_DIARY_ID
 import me.anon.grow3.ui.crud.activity.CropActivity
 import me.anon.grow3.ui.crud.viewmodel.DiaryViewModel
 import me.anon.grow3.util.*
-import me.anon.grow3.util.states.asSuccess
-import me.anon.grow3.util.states.isSuccess
 import java.util.*
 import javax.inject.Inject
 
@@ -33,7 +31,7 @@ class DiaryCropsFragment : BaseFragment(FragmentCrudDiaryCropsBinding::class)
 		viewBindings.addCrop.onClick {
 			// reveal crop edit fragment dialog
 			newTaskForResult<CropActivity> {
-				putExtra(EXTRA_DIARY_ID, viewModel.diary.value?.asSuccess()?.id)
+				putExtra(EXTRA_DIARY_ID, viewModel.diary.value?.id)
 			}
 		}
 	}
@@ -41,9 +39,6 @@ class DiaryCropsFragment : BaseFragment(FragmentCrudDiaryCropsBinding::class)
 	override fun bindVm()
 	{
 		viewModel.diary.observe(viewLifecycleOwner) { diary ->
-			if (!diary.isSuccess) return@observe
-
-			val diary = diary.asSuccess()
 			viewBindings.cropsContainer.removeAllViews()
 			diary.crops.forEach { crop ->
 				val view = viewBindings.cropsContainer.inflate<View>(R.layout.stub_crud_crop)

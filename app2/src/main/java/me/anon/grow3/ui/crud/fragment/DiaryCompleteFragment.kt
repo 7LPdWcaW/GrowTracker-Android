@@ -10,7 +10,6 @@ import me.anon.grow3.ui.diaries.fragment.ViewDiaryFragment
 import me.anon.grow3.util.Injector
 import me.anon.grow3.util.ViewModelProvider
 import me.anon.grow3.util.navigateTo
-import me.anon.grow3.util.states.asSuccess
 import javax.inject.Inject
 
 class DiaryCompleteFragment : BaseFragment(FragmentCrudDiaryCompleteBinding::class)
@@ -25,7 +24,7 @@ class DiaryCompleteFragment : BaseFragment(FragmentCrudDiaryCompleteBinding::cla
 	{
 		viewBindings.close.setOnClickListener {
 			navigateTo<ViewDiaryFragment> {
-				bundleOf(EXTRA_DIARY_ID to viewModel.diary.value!!.asSuccess().id)
+				bundleOf(EXTRA_DIARY_ID to viewModel.diary.value!!.id)
 			}
 		}
 	}
@@ -34,7 +33,7 @@ class DiaryCompleteFragment : BaseFragment(FragmentCrudDiaryCompleteBinding::cla
 	{
 		viewModel.diary.value ?: throw IllegalArgumentException("No diary to save")
 		viewModel.diary.value?.let {
-			viewModel.save(it.asSuccess())
+			viewModel.save()
 		}
 	}
 }
