@@ -13,6 +13,7 @@ import me.anon.grow3.R
 import me.anon.grow3.databinding.ActivityCrudDiaryBinding
 import me.anon.grow3.ui.action.fragment.LogActionFragment
 import me.anon.grow3.ui.base.BaseActivity
+import me.anon.grow3.ui.base.BaseFragment
 import me.anon.grow3.ui.crud.viewmodel.DiaryViewModel
 import me.anon.grow3.util.Injector
 import me.anon.grow3.util.ViewModelProvider
@@ -61,15 +62,7 @@ class DiaryActivity : BaseActivity(ActivityCrudDiaryBinding::class)
 		}
 
 		viewBindings.back.onClick {
-			if (!navController.popBackStack())
-			{
-				promptExit {
-					lifecycleScope.launch {
-						//viewModel.cancel()
-						finish()
-					}
-				}
-			}
+			onBackPressed()
 		}
 
 		viewBindings.next.onClick {
@@ -99,7 +92,21 @@ class DiaryActivity : BaseActivity(ActivityCrudDiaryBinding::class)
 		}
 		else
 		{
-			viewBindings.back.performClick()
+			val host = supportFragmentManager.findFragmentById(R.id.nav_host_fragment)
+			val current = host?.childFragmentManager?.primaryNavigationFragment
+
+			if ((current as? BaseFragment)?.onBackPressed() != true)
+			{
+				if (!navController.popBackStack())
+				{
+					promptExit {
+						lifecycleScope.launch {
+							//viewModel.cancel()
+							finish()
+						}
+					}
+				}
+			}
 		}
 	}
 

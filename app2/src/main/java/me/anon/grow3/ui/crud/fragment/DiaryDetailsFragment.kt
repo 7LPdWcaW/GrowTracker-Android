@@ -45,7 +45,7 @@ class DiaryDetailsFragment : BaseFragment(FragmentCrudDiaryDetailsBinding::class
 				cropBindings.cropGenetics.isVisible = !crop.genetics.isNullOrBlank()
 
 				cropBindings.duplicate.onClick {
-					viewModel.addCrop(crop.copy(id = UUID.randomUUID().toString()))
+					viewModel.saveCrop(crop.copy(id = UUID.randomUUID().toString()))
 				}
 
 				view.onClick {

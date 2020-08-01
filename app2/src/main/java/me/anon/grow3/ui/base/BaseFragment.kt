@@ -29,13 +29,9 @@ abstract class BaseFragment : Fragment
 	public lateinit var viewBinder: ViewBinding private set
 
 	public fun <T : ViewBinding> viewBinding() = Retriever<T>()
-
-	inner class Retriever<T : ViewBinding>()
+	inner class Retriever<T : ViewBinding>
 	{
-		operator fun getValue(thisRef: Any?, property: KProperty<*>): T
-			= (thisRef as BaseFragment).viewBinder as T
-
-		operator fun setValue(thisRef: Any?, property: KProperty<*>, value: T){}
+		operator fun getValue(thisRef: BaseFragment, property: KProperty<*>): T = thisRef.viewBinder as T
 	}
 
 	open val insets: LiveData<Rect>

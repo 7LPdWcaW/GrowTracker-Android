@@ -74,7 +74,7 @@ class LogActionViewModel constructor(
 				}
 
 				logId = newLog.id
-				diariesRepository.addLog(newLog)
+				cacheData.cache(newLog)
 				emit(newLog)
 			}
 			else
@@ -91,12 +91,12 @@ class LogActionViewModel constructor(
 		viewModelScope.launch {
 			if (draft)
 			{
-				diariesRepository.addLog(log.value!!)
+				cacheData.cache(log.value!!)
 			}
 			else
 			{
-				diary.value.let {
-					//diariesRepository.addLog(log.value!!, it)
+				diary.value?.let {
+					diariesRepository.addLog(log.value!!, it)
 				}
 			}
 		}

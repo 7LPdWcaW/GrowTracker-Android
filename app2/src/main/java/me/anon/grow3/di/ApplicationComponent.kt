@@ -11,7 +11,6 @@ import me.anon.grow3.ui.action.fragment.LogActionBottomSheetFragment
 import me.anon.grow3.ui.action.fragment.LogActionFragment
 import me.anon.grow3.ui.crops.fragment.CropListFragment
 import me.anon.grow3.ui.crops.fragment.ViewCropFragment
-import me.anon.grow3.ui.crud.activity.CropActivity
 import me.anon.grow3.ui.crud.activity.DiaryActivity
 import me.anon.grow3.ui.crud.fragment.DiaryCompleteFragment
 import me.anon.grow3.ui.crud.fragment.DiaryCropFragment
@@ -48,7 +47,6 @@ interface ApplicationComponent
 
 	public fun inject(activity: BootActivity)
 	public fun inject(activity: MainActivity)
-	public fun inject(activity: CropActivity)
 	public fun inject(activity: DiaryActivity)
 	public fun inject(activity: DemoUiActivity)
 }

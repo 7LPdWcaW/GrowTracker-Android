@@ -23,10 +23,10 @@ interface DiariesRepository
 	public suspend fun addDiary(diary: Diary): Diary
 	public suspend fun deleteDiary(diaryId: String): Boolean
 
-	public suspend fun addLog(log: Log, diary: Diary? = null): Log
+	public suspend fun addLog(log: Log, diary: Diary): Log
 	public suspend fun getLog(logId: String, diary: Diary): Log?
 
-	public suspend fun addCrop(crop: Crop, diary: Diary? = null): Crop
+	public suspend fun addCrop(crop: Crop, diary: Diary): Crop
 	public suspend fun getCrop(cropId: String, diary: Diary): Crop?
 
 	public fun sync()

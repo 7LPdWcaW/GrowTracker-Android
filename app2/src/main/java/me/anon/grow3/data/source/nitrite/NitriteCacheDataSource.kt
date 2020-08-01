@@ -15,6 +15,7 @@ import org.dizitart.kno2.getRepository
 import org.dizitart.kno2.nitrite
 import org.dizitart.no2.Document
 import org.dizitart.no2.NitriteId
+import org.dizitart.no2.objects.ObjectFilter
 import java.io.File
 import javax.inject.Inject
 import javax.inject.Named
@@ -105,4 +106,28 @@ class NitriteCacheDataSource @Inject constructor(
 				.getById(NitriteId.createId(id.toLong()))
 			document
 		}
+
+	override fun clearLog()
+	{
+		val repo = db.getRepository<Log>()
+		repo.remove(null as ObjectFilter?)
+	}
+
+	override fun clearCrop()
+	{
+		val repo = db.getRepository<Crop>()
+		repo.remove(null as ObjectFilter?)
+	}
+
+	override fun clearDiary()
+	{
+		val repo = db.getRepository<Diary>()
+		repo.remove(null as ObjectFilter?)
+	}
+
+	override fun clearMap()
+	{
+		val repo = db.getCollection("map")
+		repo.remove(null as ObjectFilter?)
+	}
 }

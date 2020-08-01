@@ -122,7 +122,7 @@ class DiaryViewModel(
 
 	public fun newCrop()
 	{
-		val crop = Crop(name = "")
+		val crop = Crop(name = "Crop " + (diary.value!!.crops.size + 1))
 		runBlocking {
 			cacheRepository.cache(crop)
 			(_cropId as MutableLiveData).postValue(crop.id)
@@ -134,12 +134,54 @@ class DiaryViewModel(
 		(_cropId as MutableLiveData).postValue(cropId)
 	}
 
-	public fun addCrop(crop: Crop)
+	public fun saveCrop(newCrop: Crop)
 	{
-		diary.value!!.apply {
-			crops as ArrayList += crop
+		viewModelScope.launch {
+			diariesRepository.addCrop(newCrop, diary.value!!)
 			(diary as MutableLiveData).notifyChange()
+			removeCrop()
 		}
+	}
+
+	public fun removeCrop()
+	{
+		(crop as MutableLiveData).value = null
+		cacheRepository.clearCrop()
+	}
+
+	public fun setCrop(
+		name: ValueHolder<String>? = null,
+		genetics: ValueHolder<String?>? = null,
+		numberOfPlants: ValueHolder<Int>? = null,
+		mediumType: ValueHolder<MediumType>? = null,
+		volume: ValueHolder<Double?>? = null
+	)
+	{
+		crop.value?.apply {
+			name?.applyValue { this.name = it }
+			genetics?.applyValue { this.genetics = it.toStringOrNull() }
+			numberOfPlants?.applyValue { this.numberOfPlants = it }
+
+			// medium - only 1 medium type to set
+			diary.value?.let { diary ->
+				val medium = diary.mediumOf(this) ?: let {
+					mediumType?.let {
+						Medium(it.value).also {
+							viewModelScope.launch {
+								diariesRepository.addLog(it, diary)
+							}
+						}
+					}
+				}
+
+				medium?.apply {
+					mediumType?.applyValue { this.medium = it }
+					volume?.applyValue { this.size = it }
+				}
+			}
+		}
+
+		(crop as MutableLiveData).notifyChange()
 	}
 
 	public fun refresh()

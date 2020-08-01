@@ -27,7 +27,7 @@
 	<fragment
 		android:id="@+id/navigation_diary_crop"
 		android:name="me.anon.grow3.ui.crud.fragment.DiaryCropFragment"
-		android:label="@string/navigation_diary_crops"
+		android:label="@string/navigation_diary_crop"
 	>
 		<action
 			android:id="@+id/page_2_to_1"
