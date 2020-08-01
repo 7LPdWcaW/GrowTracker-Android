@@ -8,7 +8,6 @@ import androidx.fragment.app.commitNow
 import androidx.lifecycle.lifecycleScope
 import androidx.navigation.findNavController
 import androidx.navigation.ui.NavigationUI
-import kotlinx.android.synthetic.main.activity_crud_diary.*
 import kotlinx.coroutines.launch
 import me.anon.grow3.R
 import me.anon.grow3.databinding.ActivityCrudDiaryBinding
@@ -32,24 +31,34 @@ class DiaryActivity : BaseActivity(ActivityCrudDiaryBinding::class)
 	@Inject internal lateinit var viewModelFactory: DiaryViewModel.Factory
 	private val viewModel: DiaryViewModel by viewModels { ViewModelProvider(viewModelFactory, this) }
 	private val viewBindings by viewBinding<ActivityCrudDiaryBinding>()
+	private val navController by lazy { findNavController(R.id.nav_host_fragment) }
 
 	override fun onCreate(savedInstanceState: Bundle?)
 	{
 		super.onCreate(savedInstanceState)
 
-		val navController = findNavController(R.id.nav_host_fragment)
 		navController.addOnDestinationChangedListener { _, destination, _ ->
 			currentView = destination.id
-			back.isVisible = currentView != R.id.navigation_diary_details
+			viewBindings.back.isVisible = currentView != R.id.navigation_diary_details
+			viewBindings.next.isVisible = currentView != R.id.navigation_diary_crop
+			viewBindings.done.isVisible = currentView == R.id.navigation_diary_crop
 
 			if (currentView == R.id.navigation_diary_complete)
 			{
-				next.isVisible = currentView != R.id.navigation_diary_complete
-				back.isVisible = currentView != R.id.navigation_diary_complete
-				toolbar?.isVisible = false
+				viewBindings.next.isVisible = currentView != R.id.navigation_diary_complete
+				viewBindings.back.isVisible = currentView != R.id.navigation_diary_complete
+				viewBindings.includeToolbar.toolbar?.isVisible = false
 			}
 		}
+
 		NavigationUI.setupWithNavController(viewBindings.includeToolbar.toolbar, navController)
+	}
+
+	override fun bindUi()
+	{
+		viewBindings.done.setOnClickListener {
+			navController.navigate(R.id.page_2_to_1)
+		}
 
 		viewBindings.back.onClick {
 			if (!navController.popBackStack())
@@ -66,8 +75,7 @@ class DiaryActivity : BaseActivity(ActivityCrudDiaryBinding::class)
 		viewBindings.next.onClick {
 			when (currentView)
 			{
-				R.id.navigation_diary_details -> navController.navigate(R.id.page_1_to_2)
-				R.id.navigation_diary_crops -> navController.navigate(R.id.page_2_to_3)
+				R.id.navigation_diary_details -> navController.navigate(R.id.page_1_to_3)
 				R.id.navigation_diary_environment -> navController.navigate(R.id.page_3_to_4)
 				R.id.navigation_diary_complete -> finish()
 			}

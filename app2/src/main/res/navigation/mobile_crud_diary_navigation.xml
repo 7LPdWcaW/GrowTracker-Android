@@ -15,18 +15,23 @@
 	>
 		<action
 			android:id="@+id/page_1_to_2"
-			app:destination="@id/navigation_diary_crops"
+			app:destination="@id/navigation_diary_crop"
+		/>
+
+		<action
+			android:id="@+id/page_1_to_3"
+			app:destination="@id/navigation_diary_environment"
 		/>
 	</fragment>
 
 	<fragment
-		android:id="@+id/navigation_diary_crops"
-		android:name="me.anon.grow3.ui.crud.fragment.DiaryCropsFragment"
+		android:id="@+id/navigation_diary_crop"
+		android:name="me.anon.grow3.ui.crud.fragment.DiaryCropFragment"
 		android:label="@string/navigation_diary_crops"
 	>
 		<action
-			android:id="@+id/page_2_to_3"
-			app:destination="@id/navigation_diary_environment"
+			android:id="@+id/page_2_to_1"
+			app:destination="@id/navigation_diary_details"
 		/>
 	</fragment>
 

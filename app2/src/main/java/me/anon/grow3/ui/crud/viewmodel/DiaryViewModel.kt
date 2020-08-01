@@ -1,16 +1,15 @@
 package me.anon.grow3.ui.crud.viewmodel
 
 import androidx.lifecycle.*
+import com.zhuinden.livedatacombinetuplekt.combineTuple
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.runBlocking
 import me.anon.grow3.data.exceptions.GrowTrackerException.DiaryLoadFailed
 import me.anon.grow3.data.model.*
 import me.anon.grow3.data.repository.DiariesRepository
 import me.anon.grow3.data.source.CacheDataSource
 import me.anon.grow3.ui.common.Extras
-import me.anon.grow3.util.ValueHolder
-import me.anon.grow3.util.ViewModelFactory
-import me.anon.grow3.util.asString
-import me.anon.grow3.util.notifyChange
+import me.anon.grow3.util.*
 import me.anon.grow3.util.states.DataResult
 import org.threeten.bp.ZonedDateTime
 import javax.inject.Inject
@@ -32,6 +31,7 @@ class DiaryViewModel(
 
 	private var diaryId: String? = savedStateHandle.get(Extras.EXTRA_DIARY_ID)
 	private var _environmentId: MutableLiveData<String?> = savedStateHandle.getLiveData("environment_id", null)
+	private var _cropId: LiveData<String> = savedStateHandle.getLiveData(Extras.EXTRA_CROP_ID)
 
 	public val diary = liveData {
 		if (diaryId.isNullOrBlank())
@@ -58,6 +58,18 @@ class DiaryViewModel(
 					else -> throw DiaryLoadFailed(diaryId!!)
 				}
 			})
+		}
+	}
+
+	public val crop: LiveData<Crop> = combineTuple(diary, _cropId).switchMap { tuple ->
+		liveData<Crop> {
+			if (tuple.first != null && tuple.second != null)
+			{
+				val diary = tuple.first!!
+				val cropId = tuple.second!!
+				val crop = tryNull { cacheRepository.retrieveCrop(cropId) }
+				emit(crop ?: diary.crop(cropId))
+			}
 		}
 	}
 
@@ -106,6 +118,20 @@ class DiaryViewModel(
 			}
 		}
 		(diary as MutableLiveData).notifyChange()
+	}
+
+	public fun newCrop()
+	{
+		val crop = Crop(name = "")
+		runBlocking {
+			cacheRepository.cache(crop)
+			(_cropId as MutableLiveData).postValue(crop.id)
+		}
+	}
+
+	public fun editCrop(cropId: String)
+	{
+		(_cropId as MutableLiveData).postValue(cropId)
 	}
 
 	public fun addCrop(crop: Crop)

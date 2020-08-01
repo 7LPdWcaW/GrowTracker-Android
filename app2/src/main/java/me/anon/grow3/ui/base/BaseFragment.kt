@@ -13,6 +13,7 @@ import androidx.viewbinding.ViewBinding
 import me.anon.grow3.util.Injector
 import me.anon.grow3.util.component
 import kotlin.reflect.KClass
+import kotlin.reflect.KProperty
 
 abstract class BaseFragment : Fragment
 {
@@ -27,10 +28,15 @@ abstract class BaseFragment : Fragment
 	private var _viewBinder: Class<out ViewBinding>? = null
 	public lateinit var viewBinder: ViewBinding private set
 
-	public fun <T : ViewBinding> viewBinding()
-		= lazy(LazyThreadSafetyMode.NONE) {
-			viewBinder as T
-		}
+	public fun <T : ViewBinding> viewBinding() = Retriever<T>()
+
+	inner class Retriever<T : ViewBinding>()
+	{
+		operator fun getValue(thisRef: Any?, property: KProperty<*>): T
+			= (thisRef as BaseFragment).viewBinder as T
+
+		operator fun setValue(thisRef: Any?, property: KProperty<*>, value: T){}
+	}
 
 	open val insets: LiveData<Rect>
 		get() = (activity as BaseActivity).insets
