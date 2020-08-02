@@ -112,7 +112,7 @@ enum class LightType : Type
 	}
 }
 
-enum class StageType() : Type
+enum class StageType : Type
 {
 	Planted {
 		override val strRes = R.string.stage_type_planted
@@ -163,10 +163,10 @@ enum class StageType() : Type
 
 	companion object
 	{
-		fun ofId(id: Int): StageType = StageType.values().first { it.strRes == id }
+		fun ofId(id: Int): StageType = values().first { it.strRes == id }
 
 		fun toMenu(): List<DropDownEditText.DropDownMenuItem>
-			= StageType.values().map {
+			= values().map {
 				DropDownEditText.DropDownMenuItem(
 					it.strRes,
 					false,

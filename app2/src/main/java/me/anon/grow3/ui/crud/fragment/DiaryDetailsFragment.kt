@@ -77,6 +77,7 @@ class DiaryDetailsFragment : BaseFragment(FragmentCrudDiaryDetailsBinding::class
 			val current = diary.date
 			DateSelectDialogFragment.show(current, true, childFragmentManager).apply {
 				onDateTimeSelected = ::onDateSelected
+				onDismiss = ::onDateDismissed
 			}
 
 			viewModel.setDiaryDate(current.asDateTime())

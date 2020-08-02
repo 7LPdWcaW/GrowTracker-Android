@@ -34,6 +34,7 @@ public fun String.asDateTime(): ZonedDateTime = ZonedDateTime.parse(this, DateTi
 public fun ZonedDateTime.asString(): String = format(DateTimeFormatter.ISO_ZONED_DATE_TIME)
 
 public fun ZonedDateTime.asFormattedString(): String = format(DateTimeFormatter.ofLocalizedDate(FormatStyle.FULL))
+public fun ZonedDateTime.asNumericalString(): String = format(DateTimeFormatter.ofLocalizedDateTime(FormatStyle.LONG))
 public fun ZonedDateTime.formatDate(): String = format(DateTimeFormatter.ofPattern(DATE_FORMAT))
 public fun ZonedDateTime.formatTime(): String = format(DateTimeFormatter.ofPattern(TIME_FORMAT))
 

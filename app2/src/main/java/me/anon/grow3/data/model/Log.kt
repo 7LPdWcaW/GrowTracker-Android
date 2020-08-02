@@ -26,6 +26,7 @@ abstract class Log(
 )
 {
 	open fun summary(): CharSequence = ""
+	open val typeRes: Int = -1
 }
 
 data class LogChange(

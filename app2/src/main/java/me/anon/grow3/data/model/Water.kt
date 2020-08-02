@@ -30,6 +30,8 @@ data class Water(
 	)
 
 	override fun equals(other: Any?): Boolean = id == (other as? Log)?.id || super.equals(other)
+
+	override val typeRes: Int = me.anon.grow3.R.string.log_type_water
 }
 
 public fun Water(block: Water.() -> Unit): Water = Water(null, null, null, null, null).apply(block)

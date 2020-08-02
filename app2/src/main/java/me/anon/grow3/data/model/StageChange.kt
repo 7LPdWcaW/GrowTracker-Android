@@ -18,6 +18,9 @@ typealias Stage = StageChange
 data class StageChange(
 	public var type: StageType
 ) : Log(action = "StageChange")
+{
+	override val typeRes: Int = me.anon.grow3.R.string.log_type_stage_change
+}
 
 public fun List<StageChange>.shortSummary(): Spannable
 {

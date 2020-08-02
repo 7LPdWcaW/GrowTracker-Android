@@ -1,0 +1,77 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<androidx.constraintlayout.widget.ConstraintLayout
+	xmlns:android="http://schemas.android.com/apk/res/android"
+	xmlns:app="http://schemas.android.com/apk/res-auto"
+	xmlns:tools="http://schemas.android.com/tools"
+	android:layout_width="match_parent"
+	android:layout_height="match_parent"
+	android:orientation="vertical"
+	android:padding="16dp"
+>
+	<com.google.android.material.textfield.TextInputLayout
+		android:layout_width="0dp"
+		android:layout_height="wrap_content"
+		android:id="@+id/stage"
+		android:hint="Stage"
+		app:layout_constraintTop_toTopOf="parent"
+		app:layout_constraintStart_toStartOf="parent"
+		app:layout_constraintEnd_toEndOf="parent"
+		style="@style/Dropdown"
+	>
+		<me.anon.grow3.view.DropDownEditText
+			android:layout_width="match_parent"
+			android:layout_height="wrap_content"
+			android:id="@+id/stages"
+			app:singleSelection="true"
+		/>
+	</com.google.android.material.textfield.TextInputLayout>
+
+	<com.google.android.material.textfield.TextInputLayout
+		android:layout_width="match_parent"
+		android:layout_height="wrap_content"
+		android:id="@+id/date"
+		android:hint="Date"
+		android:layout_marginTop="@dimen/section_spacing"
+		app:layout_constraintTop_toBottomOf="@id/stage"
+		app:layout_constraintStart_toStartOf="parent"
+		app:layout_constraintEnd_toEndOf="parent"
+		app:startIconDrawable="@drawable/ic_calendar"
+	>
+		<com.google.android.material.textfield.TextInputEditText
+			android:layout_width="match_parent"
+			android:layout_height="wrap_content"
+			android:text="01/01/2020 01:01:00"
+			android:editable="false"
+			android:inputType="none"
+		/>
+	</com.google.android.material.textfield.TextInputLayout>
+
+	<com.google.android.material.textfield.TextInputLayout
+		android:layout_width="0dp"
+		android:layout_height="wrap_content"
+		android:id="@+id/notes"
+		android:hint="Notes"
+		android:layout_marginTop="@dimen/section_spacing"
+		style="@style/Input"
+		app:layout_constraintTop_toBottomOf="@id/date"
+		app:layout_constraintStart_toStartOf="parent"
+		app:layout_constraintEnd_toEndOf="parent"
+	>
+		<com.google.android.material.textfield.TextInputEditText
+			android:layout_width="match_parent"
+			android:layout_height="wrap_content"
+			android:imeOptions="actionDone"
+		/>
+	</com.google.android.material.textfield.TextInputLayout>
+
+	<me.anon.grow3.view.CropSelectView
+		android:layout_width="0dp"
+		android:layout_height="wrap_content"
+		android:id="@+id/crop_select_view"
+		android:layout_marginTop="@dimen/section_header_spacing"
+		app:layout_constraintTop_toBottomOf="@id/notes"
+		app:layout_constraintStart_toStartOf="parent"
+		app:layout_constraintEnd_toEndOf="parent"
+	/>
+</androidx.constraintlayout.widget.ConstraintLayout>

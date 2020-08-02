@@ -3,6 +3,7 @@ package me.anon.grow3.ui.action.view
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import me.anon.grow3.data.model.Diary
 import me.anon.grow3.data.model.Water
 import me.anon.grow3.databinding.FragmentActionLogWaterBinding
 import me.anon.grow3.util.asEditable
@@ -11,8 +12,9 @@ import me.anon.grow3.util.onFocusLoss
 import me.anon.grow3.util.toDoubleOrNull
 
 class WaterLogView(
+	diary: Diary,
 	log: Water
-) : LogView<Water>(log)
+) : LogView<Water>(diary, log)
 {
 	private lateinit var bindings: FragmentActionLogWaterBinding
 
