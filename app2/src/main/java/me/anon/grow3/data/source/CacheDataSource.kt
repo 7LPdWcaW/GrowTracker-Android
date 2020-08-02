@@ -1,7 +1,6 @@
 package me.anon.grow3.data.source
 
 import me.anon.grow3.data.model.Crop
-import me.anon.grow3.data.model.Diary
 import me.anon.grow3.data.model.Log
 
 interface CacheDataSource
@@ -13,10 +12,6 @@ interface CacheDataSource
 	public suspend fun cache(crop: Crop): String
 	public suspend fun retrieveCrop(id: String): Crop
 	public fun clearCrop()
-
-	public suspend fun cache(diary: Diary): String
-	public suspend fun retrieveDiary(id: String): Diary
-	public fun clearDiary()
 
 	public suspend fun cache(map: Map<String, Any?>): String
 	public suspend fun retrieveMap(id: String): Map<String, Any?>

@@ -4,7 +4,6 @@ import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 import me.anon.grow3.data.model.Crop
-import me.anon.grow3.data.model.Diary
 import me.anon.grow3.data.model.Log
 import me.anon.grow3.data.source.CacheDataSource
 import me.anon.grow3.util.NitriteFacade
@@ -68,23 +67,6 @@ class NitriteCacheDataSource @Inject constructor(
 			crop
 		}
 
-	override suspend fun cache(diary: Diary): String
-		= withContext(dispatcher) {
-			db.getRepository<Diary> {
-				insert(diary)
-			}
-			db.commit()
-			diary.id
-		}
-
-	override suspend fun retrieveDiary(id: String): Diary
-		= withContext(dispatcher) {
-			val repo = db.getRepository<Diary>()
-			val diary = repo.find(Diary::id eq id)
-				.first()
-			diary
-		}
-
 	override suspend fun cache(map: Map<String, Any?>): String
 		= withContext(dispatcher) {
 			var _id = NitriteId.newId()
@@ -116,12 +98,6 @@ class NitriteCacheDataSource @Inject constructor(
 	override fun clearCrop()
 	{
 		val repo = db.getRepository<Crop>()
-		repo.remove(null as ObjectFilter?)
-	}
-
-	override fun clearDiary()
-	{
-		val repo = db.getRepository<Diary>()
 		repo.remove(null as ObjectFilter?)
 	}
 

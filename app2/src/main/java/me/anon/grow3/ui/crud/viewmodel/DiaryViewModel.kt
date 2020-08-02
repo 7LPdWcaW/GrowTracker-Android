@@ -33,7 +33,7 @@ class DiaryViewModel(
 	private var _environmentId: MutableLiveData<String?> = savedStateHandle.getLiveData("environment_id", null)
 	private var cropId: LiveData<String> = savedStateHandle.getLiveData(Extras.EXTRA_CROP_ID)
 
-	public val diary = liveData {
+	public val diary: LiveData<Diary> = liveData {
 		if (diaryId.isNullOrBlank())
 		{
 			val count = diariesRepository.getDiaries().size
@@ -45,20 +45,16 @@ class DiaryViewModel(
 					platedDate = this@apply.date
 				)
 			}
-			diaryId = cacheRepository.cache(diary)
-			emit(diary)
-			return@liveData
+			diaryId = diariesRepository.addDiary(diary).id
 		}
-		else
-		{
-			emitSource(diariesRepository.observeDiary(diaryId!!).map { diaryResult ->
-				when (diaryResult)
-				{
-					is DataResult.Success -> diaryResult.data
-					else -> throw DiaryLoadFailed(diaryId!!)
-				}
-			})
-		}
+
+		emitSource(diariesRepository.observeDiary(diaryId!!).map { diaryResult ->
+			when (diaryResult)
+			{
+				is DataResult.Success -> diaryResult.data
+				else -> throw DiaryLoadFailed(diaryId!!)
+			}
+		})
 	}
 
 	public val crop: LiveData<Crop> = combineTuple(diary, cropId).switchMap { tuple ->

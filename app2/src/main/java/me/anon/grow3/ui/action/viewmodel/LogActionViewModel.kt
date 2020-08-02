@@ -16,7 +16,6 @@ import me.anon.grow3.util.ViewModelFactory
 import me.anon.grow3.util.nameOf
 import me.anon.grow3.util.states.DataResult
 import me.anon.grow3.util.states.asSuccess
-import me.anon.grow3.util.tryNull
 import javax.inject.Inject
 
 class LogActionViewModel constructor(
@@ -44,21 +43,13 @@ class LogActionViewModel constructor(
 	private val logType: String = savedState[EXTRA_LOG_TYPE] ?: throw InvalidLogType()
 
 	public val diary = liveData<Diary> {
-		val diary = tryNull { cacheData.retrieveDiary(diaryId) }
-		if (diary == null)
-		{
-			emitSource(diariesRepository.observeDiary(diaryId).map { result ->
-				when (result)
-				{
-					is DataResult.Success -> result.asSuccess()
-					else -> throw DiaryLoadFailed(diaryId)
-				}
-			})
-		}
-		else
-		{
-			emit(diary)
-		}
+		emitSource(diariesRepository.observeDiary(diaryId).map { result ->
+			when (result)
+			{
+				is DataResult.Success -> result.asSuccess()
+				else -> throw DiaryLoadFailed(diaryId)
+			}
+		})
 	}
 
 	public val log: LiveData<Log> = diary.switchMap { diary ->
