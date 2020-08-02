@@ -99,14 +99,23 @@ open class LogActionFragment : BaseFragment(FragmentActionLogBinding::class)
 		}
 	}
 
+	private var toConfirm = true
 	override fun onBackPressed(): Boolean
 	{
-		requireActivity().promptExit {
+		if (toConfirm)
+		{
+			requireActivity().promptExit {
+				toConfirm = false
+				activity?.onBackPressed()
+			}
+		}
+		else
+		{
 			requireActivity().supportFragmentManager.commitNow {
 				remove(this@LogActionFragment)
 			}
 		}
 
-		return false
+		return true
 	}
 }

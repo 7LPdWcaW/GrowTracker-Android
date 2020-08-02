@@ -1,5 +1,7 @@
 package me.anon.grow3.ui.crud.activity
 
+import android.animation.Animator
+import android.animation.AnimatorListenerAdapter
 import android.os.Bundle
 import androidx.activity.viewModels
 import androidx.core.view.isVisible
@@ -40,7 +42,7 @@ class DiaryActivity : BaseActivity(ActivityCrudDiaryBinding::class)
 
 		navController.addOnDestinationChangedListener { _, destination, _ ->
 			currentView = destination.id
-			viewBindings.back.isVisible = currentView != R.id.navigation_diary_details
+			viewBindings.back.isVisible = currentView != R.id.navigation_diary_details && currentView != R.id.navigation_diary_crop
 			viewBindings.next.isVisible = currentView != R.id.navigation_diary_crop
 			viewBindings.done.isVisible = currentView == R.id.navigation_diary_crop
 
@@ -48,7 +50,7 @@ class DiaryActivity : BaseActivity(ActivityCrudDiaryBinding::class)
 			{
 				viewBindings.next.isVisible = currentView != R.id.navigation_diary_complete
 				viewBindings.back.isVisible = currentView != R.id.navigation_diary_complete
-				viewBindings.includeToolbar.toolbar?.isVisible = false
+				viewBindings.includeToolbar.toolbar.isVisible = false
 			}
 		}
 
@@ -77,33 +79,21 @@ class DiaryActivity : BaseActivity(ActivityCrudDiaryBinding::class)
 
 	override fun onBackPressed()
 	{
-		if (viewBindings.dialogHolder.isVisible)
-		{
-			supportFragmentManager.findFragmentById(R.id.dialog_fragment_container)?.let {
-				if (it is LogActionFragment)
-				{
-					promptExit {
-						supportFragmentManager.commitNow {
-							remove(it)
-						}
-					}
-				}
-			}
+		supportFragmentManager.findFragmentByTag("modal")?.let {
+			if ((it as? BaseFragment)?.onBackPressed() == true) return@onBackPressed
 		}
-		else
-		{
-			val host = supportFragmentManager.findFragmentById(R.id.nav_host_fragment)
-			val current = host?.childFragmentManager?.primaryNavigationFragment
 
-			if ((current as? BaseFragment)?.onBackPressed() != true)
+		val host = supportFragmentManager.findFragmentById(R.id.nav_host_fragment)
+		val current = host?.childFragmentManager?.primaryNavigationFragment
+
+		if ((current as? BaseFragment)?.onBackPressed() != true)
+		{
+			if (!navController.popBackStack())
 			{
-				if (!navController.popBackStack())
-				{
-					promptExit {
-						lifecycleScope.launch {
-							//viewModel.cancel()
-							finish()
-						}
+				promptExit {
+					lifecycleScope.launch {
+						//viewModel.cancel()
+						finish()
 					}
 				}
 			}
@@ -112,9 +102,15 @@ class DiaryActivity : BaseActivity(ActivityCrudDiaryBinding::class)
 
 	override fun onFragmentAdded(fragment: Fragment)
 	{
-		if (fragment is LogActionFragment)
+		if (supportFragmentManager.findFragmentById(R.id.dialog_fragment_container) == fragment)
 		{
+			viewBindings.dialogHolder.alpha = 0f
 			viewBindings.dialogHolder.isVisible = true
+			viewBindings.dialogHolder.animate()
+				.alpha(1.0f)
+				.setDuration(300L)
+				.setListener(null)
+				.start()
 		}
 	}
 
@@ -122,14 +118,25 @@ class DiaryActivity : BaseActivity(ActivityCrudDiaryBinding::class)
 	{
 		if (fragment is LogActionFragment)
 		{
-			viewBindings.dialogHolder.isVisible = false
+			viewBindings.dialogHolder.alpha = 1f
+			viewBindings.dialogHolder.animate()
+				.alpha(0.0f)
+				.setDuration(300L)
+				.setListener(object : AnimatorListenerAdapter()
+				{
+                    override fun onAnimationEnd(animation: Animator)
+					{
+                        viewBindings.dialogHolder.isVisible = false
+                    }
+                })
+				.start()
 		}
 	}
 
 	public fun openModal(fragment: Fragment)
 	{
 		supportFragmentManager.commitNow {
-			replace(R.id.dialog_fragment_container, fragment)
+			replace(R.id.dialog_fragment_container, fragment, "modal")
 		}
 	}
 }

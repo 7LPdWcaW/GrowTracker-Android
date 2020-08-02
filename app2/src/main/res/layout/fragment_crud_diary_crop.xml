@@ -17,7 +17,7 @@
 			android:layout_height="wrap_content"
 			android:clipToPadding="false"
 			android:orientation="vertical"
-			android:paddingBottom="72dp"
+			android:paddingBottom="92dp"
 		>
 			<com.google.android.material.card.MaterialCardView
 				android:layout_width="match_parent"
@@ -29,16 +29,6 @@
 					android:layout_height="wrap_content"
 					android:padding="16dp"
 				>
-					<TextView
-						android:layout_width="wrap_content"
-						android:layout_height="wrap_content"
-						android:id="@+id/details_header"
-						android:text="@string/add_crop_details_title"
-						app:layout_constraintTop_toTopOf="parent"
-						app:layout_constraintStart_toStartOf="parent"
-						android:textAppearance="@style/Text.Header"
-					/>
-
 					<com.google.android.material.imageview.ShapeableImageView
 						android:layout_width="0dp"
 						android:layout_height="0dp"
@@ -50,11 +40,10 @@
 						android:clickable="true"
 						android:focusable="true"
 						android:foreground="@drawable/circular_selectable_item_background"
-						android:layout_marginTop="@dimen/section_header_spacing"
 						app:layout_constraintDimensionRatio="1:1"
 						app:layout_constraintWidth_percent="0.25"
 						app:layout_constraintStart_toStartOf="parent"
-						app:layout_constraintTop_toBottomOf="@id/details_header"
+						app:layout_constraintTop_toTopOf="parent"
 						android:transitionName="crop_image"
 					/>
 
@@ -63,11 +52,10 @@
 						android:layout_height="wrap_content"
 						android:id="@+id/crop_name"
 						android:hint="@string/add_crop_details_name"
-						android:layout_marginTop="@dimen/section_header_spacing"
 						android:layout_marginStart="18dp"
 						app:layout_constraintStart_toEndOf="@id/circle_preview"
 						app:layout_constraintEnd_toEndOf="parent"
-						app:layout_constraintTop_toBottomOf="@id/details_header"
+						app:layout_constraintTop_toTopOf="parent"
 						android:transitionName="crop_name"
 					>
 						<com.google.android.material.textfield.TextInputEditText
@@ -125,6 +113,8 @@
 				</androidx.constraintlayout.widget.ConstraintLayout>
 			</com.google.android.material.card.MaterialCardView>
 
+			<include layout="@layout/card_stages" android:id="@+id/include_card_stages" />
+
 			<com.google.android.material.card.MaterialCardView
 				android:layout_width="match_parent"
 				android:layout_height="wrap_content"
@@ -134,7 +124,6 @@
 					android:layout_width="match_parent"
 					android:layout_height="wrap_content"
 					android:padding="16dp"
-					android:layout_marginTop="@dimen/section_spacing"
 				>
 					<TextView
 						android:layout_width="wrap_content"
@@ -204,8 +193,6 @@
 					</com.google.android.material.textfield.TextInputLayout>
 				</androidx.constraintlayout.widget.ConstraintLayout>
 			</com.google.android.material.card.MaterialCardView>
-
-			<include layout="@layout/card_stages" android:id="@+id/include_card_stages" />
 		</LinearLayout>
 	</ScrollView>
 </FrameLayout>

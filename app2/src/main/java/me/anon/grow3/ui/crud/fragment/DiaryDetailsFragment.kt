@@ -3,12 +3,12 @@ package me.anon.grow3.ui.crud.fragment
 import android.view.View
 import androidx.core.os.bundleOf
 import androidx.core.view.isVisible
-import androidx.core.view.plusAssign
 import androidx.core.widget.doAfterTextChanged
 import androidx.fragment.app.activityViewModels
 import androidx.lifecycle.observe
 import androidx.navigation.fragment.findNavController
 import me.anon.grow3.R
+import me.anon.grow3.data.model.Crop
 import me.anon.grow3.databinding.FragmentCrudDiaryDetailsBinding
 import me.anon.grow3.databinding.StubCrudCropBinding
 import me.anon.grow3.ui.base.BaseFragment
@@ -33,12 +33,9 @@ class DiaryDetailsFragment : BaseFragment(FragmentCrudDiaryDetailsBinding::class
 		viewModel.diary.observe(viewLifecycleOwner) { diary ->
 			viewBindings.diaryName.editText!!.text = diary.name.asEditable()
 			viewBindings.date.editText!!.text = diary.date.asDateTime().asFormattedString().asEditable()
-//			viewBindings.includeCardStages.stagesView.setStages(diary)
 
 			viewBindings.cropsContainer.removeAllViews()
-			diary.crops.forEach { crop ->
-				val view = viewBindings.cropsContainer.inflate<View>(R.layout.stub_crud_crop)
-				val cropBindings = StubCrudCropBinding.bind(view)
+			diary.crops.mapToView<Crop, StubCrudCropBinding>(viewBindings.cropsContainer) { crop, cropBindings ->
 				cropBindings.cropName.text = crop.name
 
 				cropBindings.cropGenetics.text = crop.genetics
@@ -48,7 +45,7 @@ class DiaryDetailsFragment : BaseFragment(FragmentCrudDiaryDetailsBinding::class
 					viewModel.saveCrop(crop.copy(id = UUID.randomUUID().toString()))
 				}
 
-				view.onClick {
+				cropBindings.root.onClick {
 					// reveal crop edit fragment dialog
 					val navController = findNavController()
 					navController.navigate(R.id.page_1_to_2, bundleOf(Extras.EXTRA_CROP_ID to crop.id))
@@ -60,8 +57,6 @@ class DiaryDetailsFragment : BaseFragment(FragmentCrudDiaryDetailsBinding::class
 //					this.backgroundColor = R.attr.colorSecondary.resColor(view.context)
 //					this.badgeGravity = BadgeDrawable.TOP_END
 //				}, view.crop_image, null))
-
-				viewBindings.cropsContainer += view
 			}
 		}
 	}
@@ -92,16 +87,6 @@ class DiaryDetailsFragment : BaseFragment(FragmentCrudDiaryDetailsBinding::class
 			val navController = findNavController()
 			navController.navigate(R.id.page_1_to_2)
 		}
-
-//		viewBindings.includeCardStages.stagesHeader.isVisible = true
-//		viewBindings.includeCardStages.stagesView.onNewStageClick = {
-//			(activity as DiaryActivity).openModal(LogActionFragment().apply {
-//				arguments = bundleOf(
-//					Extras.EXTRA_LOG_TYPE to nameOf<StageChange>(),
-//					Extras.EXTRA_DIARY_ID to viewModel.diary.value!!.id
-//				)
-//			})
-//		}
 
 		attachCallbacks()
 	}

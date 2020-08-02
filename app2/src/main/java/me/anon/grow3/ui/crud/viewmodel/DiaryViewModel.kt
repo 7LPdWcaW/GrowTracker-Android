@@ -31,7 +31,7 @@ class DiaryViewModel(
 
 	private var diaryId: String? = savedStateHandle.get(Extras.EXTRA_DIARY_ID)
 	private var _environmentId: MutableLiveData<String?> = savedStateHandle.getLiveData("environment_id", null)
-	private var _cropId: LiveData<String> = savedStateHandle.getLiveData(Extras.EXTRA_CROP_ID)
+	private var cropId: LiveData<String> = savedStateHandle.getLiveData(Extras.EXTRA_CROP_ID)
 
 	public val diary = liveData {
 		if (diaryId.isNullOrBlank())
@@ -61,7 +61,7 @@ class DiaryViewModel(
 		}
 	}
 
-	public val crop: LiveData<Crop> = combineTuple(diary, _cropId).switchMap { tuple ->
+	public val crop: LiveData<Crop> = combineTuple(diary, cropId).switchMap { tuple ->
 		liveData<Crop> {
 			if (tuple.first != null && tuple.second != null)
 			{
@@ -125,13 +125,13 @@ class DiaryViewModel(
 		val crop = Crop(name = "Crop " + (diary.value!!.crops.size + 1))
 		runBlocking {
 			cacheRepository.cache(crop)
-			(_cropId as MutableLiveData).postValue(crop.id)
+			(cropId as MutableLiveData).postValue(crop.id)
 		}
 	}
 
 	public fun editCrop(cropId: String)
 	{
-		(_cropId as MutableLiveData).postValue(cropId)
+		(this.cropId as MutableLiveData).postValue(cropId)
 	}
 
 	public fun saveCrop(newCrop: Crop)
