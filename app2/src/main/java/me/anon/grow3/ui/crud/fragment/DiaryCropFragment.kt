@@ -32,7 +32,8 @@ class DiaryCropFragment : BaseFragment(FragmentCrudDiaryCropBinding::class)
 	{
 		super.bindArguments(bundle)
 		bundle?.getString(Extras.EXTRA_CROP_ID).let {
-			it.isNullOrBlank() then viewModel.newCrop() ?: viewModel.editCrop(it!!)
+			if (it.isNullOrBlank()) viewModel.newCrop()
+			else viewModel.editCrop(it)
 		}
 	}
 
@@ -98,6 +99,8 @@ class DiaryCropFragment : BaseFragment(FragmentCrudDiaryCropBinding::class)
 			viewBindings.includeCardStages.stagesHeader.isVisible = true
 			viewBindings.includeCardStages.stagesView.setStages(diary, crop)
 			viewBindings.includeCardStages.stagesView.onNewStageClick = {
+				// save the diary so it includes the new crop?
+				viewModel.saveCrop(crop)
 				(activity as DiaryActivity).openModal(LogActionFragment().apply {
 					arguments = bundleOf(
 						Extras.EXTRA_DIARY_ID to diary.id,

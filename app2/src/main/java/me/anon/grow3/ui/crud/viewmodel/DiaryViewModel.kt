@@ -7,26 +7,27 @@ import kotlinx.coroutines.runBlocking
 import me.anon.grow3.data.exceptions.GrowTrackerException.DiaryLoadFailed
 import me.anon.grow3.data.model.*
 import me.anon.grow3.data.repository.DiariesRepository
-import me.anon.grow3.data.source.CacheDataSource
 import me.anon.grow3.ui.common.Extras
 import me.anon.grow3.util.*
 import me.anon.grow3.util.states.DataResult
 import org.threeten.bp.ZonedDateTime
 import javax.inject.Inject
 
+/**
+ * why are we saving to the cache repository? just save to the diaries and remove it if the user cancels the process?
+ * cant pass diary with new crop because crop doesnt exist in diary so log action doesnt show it
+ */
 class DiaryViewModel(
 	private val diariesRepository: DiariesRepository,
-	private val cacheRepository: CacheDataSource,
 	private val savedStateHandle: SavedStateHandle
 ) : ViewModel()
 {
 	class Factory @Inject constructor(
-		private val diariesRepository: DiariesRepository,
-		private val cacheRepository: CacheDataSource
+		private val diariesRepository: DiariesRepository
 	) : ViewModelFactory<DiaryViewModel>
 	{
 		override fun create(handle: SavedStateHandle): DiaryViewModel =
-			DiaryViewModel(diariesRepository, cacheRepository, handle)
+			DiaryViewModel(diariesRepository, handle)
 	}
 
 	private var diaryId: String? = savedStateHandle.get(Extras.EXTRA_DIARY_ID)
@@ -58,13 +59,14 @@ class DiaryViewModel(
 	}
 
 	public val crop: LiveData<Crop> = combineTuple(diary, cropId).switchMap { tuple ->
-		liveData<Crop> {
+		liveData {
 			if (tuple.first != null && tuple.second != null)
 			{
 				val diary = tuple.first!!
 				val cropId = tuple.second!!
-				val crop = tryNull { cacheRepository.retrieveCrop(cropId) }
-				emit(crop ?: diary.crop(cropId))
+				diariesRepository.getCrop(cropId, diary)?.let {
+					emit(it)
+				}
 			}
 		}
 	}
@@ -120,7 +122,7 @@ class DiaryViewModel(
 	{
 		val crop = Crop(name = "Crop " + (diary.value!!.crops.size + 1))
 		runBlocking {
-			cacheRepository.cache(crop)
+			diariesRepository.addCrop(crop, diary.value!!)
 			(cropId as MutableLiveData).postValue(crop.id)
 		}
 	}
@@ -141,8 +143,12 @@ class DiaryViewModel(
 
 	public fun removeCrop()
 	{
-		(crop as MutableLiveData).value = null
-		cacheRepository.clearCrop()
+		crop.value?.let {
+			viewModelScope.launch {
+				diariesRepository.removeCrop(it.id, diary.value!!)
+				(crop as MutableLiveData).value = null
+			}
+		}
 	}
 
 	public fun setCrop(

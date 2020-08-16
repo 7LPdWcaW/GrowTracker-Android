@@ -28,6 +28,7 @@ interface DiariesRepository
 
 	public suspend fun addCrop(crop: Crop, diary: Diary): Crop
 	public suspend fun getCrop(cropId: String, diary: Diary): Crop?
+	public suspend fun removeCrop(cropId: String, diary: Diary)
 
 	public fun sync()
 

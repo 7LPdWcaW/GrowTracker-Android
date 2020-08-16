@@ -14,7 +14,6 @@ import me.anon.grow3.data.model.Diary
 import me.anon.grow3.data.model.Log
 import me.anon.grow3.data.repository.DiariesRepository
 import me.anon.grow3.data.source.DiariesDataSource
-import me.anon.grow3.util.notifyChange
 import me.anon.grow3.util.states.DataResult
 import me.anon.grow3.util.states.asSuccess
 import javax.inject.Inject
@@ -30,7 +29,7 @@ class DefaultDiariesRepository @Inject constructor(
 	private val _refresh = MutableLiveData(true)
 	private val _diaries = _refresh.switchMap { force ->
 		liveData<DataResult<List<Diary>>> {
-			emit(DataResult.Success(dataSource.sync(DiariesDataSource.SyncDirection.LOAD)))
+			emit(DataResult.Success(dataSource.getDiaries()))
 		}
 	}
 	override fun observeDiaries(): LiveData<DataResult<List<Diary>>> = _diaries
@@ -80,8 +79,9 @@ class DefaultDiariesRepository @Inject constructor(
 	{
 		_logEvents.emit(LogEvent.Added(log, diary))
 		diary.log(log)
-		sync()
-		(_diaries as MutableLiveData).notifyChange()
+
+		dataSource.sync(DiariesDataSource.SyncDirection.SAVE, diary)
+		invalidate()
 
 		return log
 	}
@@ -107,6 +107,18 @@ class DefaultDiariesRepository @Inject constructor(
 	}
 
 	override suspend fun getCrop(cropId: String, diary: Diary): Crop? = diary.crop(cropId)
+
+	override suspend fun removeCrop(cropId: String, diary: Diary)
+	{
+		val index = diary.crops.indexOfFirst { it.id == cropId }
+		if (index > -1)
+		{
+			(diary.crops as ArrayList).removeAt(index)
+		}
+
+		dataSource.sync(DiariesDataSource.SyncDirection.SAVE, diary)
+		invalidate()
+	}
 
 	override fun invalidate()
 	{

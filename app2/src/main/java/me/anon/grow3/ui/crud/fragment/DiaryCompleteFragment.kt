@@ -26,6 +26,8 @@ class DiaryCompleteFragment : BaseFragment(FragmentCrudDiaryCompleteBinding::cla
 			navigateTo<ViewDiaryFragment> {
 				bundleOf(EXTRA_DIARY_ID to viewModel.diary.value!!.id)
 			}
+
+			requireActivity().finish()
 		}
 	}
 

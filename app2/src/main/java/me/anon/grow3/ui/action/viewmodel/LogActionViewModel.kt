@@ -53,8 +53,8 @@ class LogActionViewModel constructor(
 	}
 
 	public val log: LiveData<Log> = diary.switchMap { diary ->
-		liveData {
-			if (logId == null)
+		liveData<Log> {
+			val log = if (logId == null)
 			{
 				val newLog: Log = when (logType)
 				{
@@ -64,13 +64,14 @@ class LogActionViewModel constructor(
 				}
 
 				logId = newLog.id
-				cacheData.cache(newLog)
-				emit(newLog)
+				diariesRepository.addLog(newLog, diary)
 			}
 			else
 			{
-				emit(diariesRepository.getLog(logId!!, diary) ?: throw LogLoadFailed(logId!!))
+				diariesRepository.getLog(logId!!, diary) ?: throw LogLoadFailed(logId!!)
 			}
+
+			emit(log)
 		}
 	}
 
