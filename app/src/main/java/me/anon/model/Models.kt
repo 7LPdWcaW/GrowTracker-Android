@@ -13,6 +13,8 @@ import me.anon.lib.TempUnit
 import me.anon.lib.Unit
 import me.anon.lib.ext.formatWhole
 import me.anon.lib.helper.TimeHelper
+import org.threeten.bp.LocalDateTime
+import org.threeten.bp.format.DateTimeFormatter
 import java.util.*
 
 /**
@@ -143,7 +145,7 @@ class StageChange(
 @Parcelize
 @JsonClass(generateAdapter = true)
 class Plant(
-	var id: String = UUID.randomUUID().toString(),
+	var id: String = LocalDateTime.now().format(DateTimeFormatter.ofPattern("yyyy-MM-dd-hh-mm-ss")),
 	var name: String = "",
 	var strain: String? = null,
 	var plantDate: Long = System.currentTimeMillis(),
