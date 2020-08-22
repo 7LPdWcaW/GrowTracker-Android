@@ -152,7 +152,7 @@
 	<string name="temperature_title">Temperature</string>
 	<string name="general_title">Général</string>
 	<string name="failed_to_load_plant">Echec lors du chargement des plantes</string>
-	<string name="action_fim">Putain j\'ai oublié (PJO)</string>
+	<string name="action_fim">PJO</string>
 	<string name="action_flush">Rinçage</string>
 	<string name="action_foliar_feed">Arrosage foliaire</string>
 	<string name="action_lst">Palissage</string>

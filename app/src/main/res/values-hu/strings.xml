@@ -159,7 +159,7 @@
 	<string name="temperature_title">Hőmérséklet</string>
 	<string name="general_title">Általános</string>
 	<string name="failed_to_load_plant">Nem sikerült a növény betöltése</string>
-	<string name="action_fim">Fuck I Missed (FIM)</string>
+	<string name="action_fim">FIM</string>
 	<string name="action_flush">Öblítés</string>
 	<string name="action_foliar_feed">Levéltrágyázás</string>
 	<string name="action_lst">Low Stress Training </string>

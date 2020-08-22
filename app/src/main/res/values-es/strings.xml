@@ -154,7 +154,7 @@
 	<string name="temperature_title">Temperatura</string>
 	<string name="general_title">General</string>
 	<string name="failed_to_load_plant">Falló al cargar la planta</string>
-	<string name="action_fim">Mierda, se me olvidó (FIM)</string>
+	<string name="action_fim">FIM</string>
 	<string name="action_flush">Desagotar</string>
 	<string name="action_foliar_feed">Alimentación foliar</string>
 	<string name="action_lst">Entrenamiento de bajo stress</string>

@@ -159,7 +159,7 @@
 	<string name="temperature_title">Температура</string>
 	<string name="general_title">Общие</string>
 	<string name="failed_to_load_plant">Не удалось загрузить растение</string>
-	<string name="action_fim">Fuck I Missed (FIM)</string>
+	<string name="action_fim">FIM</string>
 	<string name="action_flush">Промывание</string>
 	<string name="action_foliar_feed">Листовая подкормка</string>
 	<string name="action_lst">LST (низкострессовая тренировка)</string>

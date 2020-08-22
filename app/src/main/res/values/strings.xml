@@ -159,7 +159,7 @@
 	<string name="temperature_title">Temperature</string>
 	<string name="general_title">General</string>
 	<string name="failed_to_load_plant">Failed to load plant</string>
-	<string name="action_fim">Fuck I Missed (FIM)</string>
+	<string name="action_fim">FIM</string>
 	<string name="action_flush">Flush</string>
 	<string name="action_foliar_feed">Foliar Feed</string>
 	<string name="action_lst">Low Stress Training</string>

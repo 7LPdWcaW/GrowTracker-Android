@@ -152,7 +152,7 @@
 	<string name="temperature_title">Temperatura</string>
 	<string name="general_title">Splošno</string>
 	<string name="failed_to_load_plant">Neuspešno nalaganje rastline</string>
-	<string name="action_fim">Fuck I Missed (FIM)</string>
+	<string name="action_fim">FIM</string>
 	<string name="action_flush">Izpiranje</string>
 	<string name="action_foliar_feed">Foliarno hranjenje</string>
 	<string name="action_lst">Low Stress Training</string>

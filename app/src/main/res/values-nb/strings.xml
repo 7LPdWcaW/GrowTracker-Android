@@ -119,7 +119,7 @@
 	<string name="temperature_title">Temperatur</string>
 	<string name="general_title">Generelt</string>
 	<string name="failed_to_load_plant">Kunne ikke laste plante</string>
-	<string name="action_fim">Fuck I Missed (FIM)</string>
+	<string name="action_fim">FIM</string>
 	<string name="delete_event_dialog_title">Slette denne hendelser?</string>
 	<string name="confirm_delete_item_message">Er du sikker på at du vil slette</string>
 	<string name="confirm_delete_photos_message" formatted="true">Er du sikker på at du vil slette &lt;b&gt;%s&lt;/b&gt; bilder? Du vil ikke kunne gjenopprette de.</string>
