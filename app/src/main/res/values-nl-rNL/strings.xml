@@ -159,7 +159,7 @@
 	<string name="temperature_title">Temperatuur</string>
 	<string name="general_title">Algemeen</string>
 	<string name="failed_to_load_plant">Kan plant niet laden</string>
-	<string name="action_fim">OV</string>
+	<string name="action_fim">FIM</string>
 	<string name="action_flush">Bijstellen</string>
 	<string name="action_foliar_feed">Bladvoeding</string>
 	<string name="action_lst">Lagestresstraining</string>
