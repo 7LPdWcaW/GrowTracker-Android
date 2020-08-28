@@ -426,7 +426,9 @@
 	<string name="cache_cleared">Image disk and memory cache cleared</string>
 	<string name="import_progress_warning">Importing images, this may take a while…</string>
 	<string name="data_task">Data task</string>
-	<string name="task_complete">Task completed</string>
+	<string name="import_task_complete">Image import completed</string>
+	<string name="decrypt_task_complete">Image decryption completed</string>
+	<string name="encrypt_task_complete">Image encryption completed</string>
 	<string name="empty_actions_list">There are no actions to show</string>
 
 	<string name="exporting_start">Exporting grow log for %s</string>
