@@ -24,7 +24,7 @@
 	<string name="plant_details_title">Pflanzen Details</string>
 	<string name="statistics_title">Pflanzen Statistik</string>
 	<!-- select from camera -->
-	<string name="photo_option_camera">Von der Kamera</string>
+	<string name="photo_option_camera">Bild aufnehmen</string>
 	<!-- select from gallery -->
 	<string name="photo_option_gallery">Aus der Galerie</string>
 	<string name="dialog_option_title">Option auswählen</string>
@@ -41,7 +41,7 @@
 	<string name="schedule_name_hint">Geringfügiges Düngen</string>
 	<string name="schedule_description">Beschreibung</string>
 	<!-- an example of a feeding schedule -->
-	<string name="schedule_description_hint">Geringfügiges Düngen mit 2-wöchigem Ausspülen</string>
+	<string name="schedule_description_hint">leichtes Düngen mit 2-wöchigem Ausspülen</string>
 
 	<string name="schedules_new_feeding">+ Neues Düngen</string>
 	<string name="schedules_new_schedule">Neuer Zeitplan</string>
@@ -49,7 +49,9 @@
 	<string name="additives">Zusatzstoffe</string>
 	<string name="additive">Zusatzstoff</string>
 	<string name="from_date">Startzeitpunkt</string>
+	<string name="from_stage">Von Stadium</string>
 	<string name="to_date">Endzeitpunkt</string>
+	<string name="to_stage">Zu Stadium</string>
 	<string name="populate_from_schedule">Aus Zeitplan befüllen</string>
 	<string name="populate_from_previous">Aus Vorigem füllen</string>
 	<string name="confirm_title">Bist du sicher?</string>
@@ -70,7 +72,7 @@
 	<string name="feeding_multiple_title">Gieße mehrere Pflanzen</string>
 
 	<string name="action_dialog_notes">Notizen</string>
-	<string name="water_details_title">Wasser Details</string>
+	<string name="water_details_title">Bewässerungsdetails</string>
 	<string name="water_ph_label">Wasser pH</string>
 	<string name="ppm_label">PPM</string>
 	<string name="runoff_label">Abfluss</string>
@@ -80,8 +82,10 @@
 	<string name="date_now">Jetzt</string>
 	<string name="date_label">Darum</string>
 	<string name="today">Heute</string>
-	<string name="filter_waterings">Gießen</string>
-	<string name="filter_stage_changes">Statusänderung</string>
+	<string name="length_cured">%s Tage fermentiert</string>
+
+	<string name="filter_waterings">Bewässerungen</string>
+	<string name="filter_stage_changes">Stadiumsänderungen</string>
 
 	<string name="menu_duplicate">Duplizieren</string>
 	<string name="menu_copy_to">Kopieren nach</string>
@@ -112,8 +116,8 @@
 	<!-- Example of medium mix -->
 	<string name="medium_details_hint">Erde, Perlite Mischung 50/50</string>
 	<string name="from_clone_label">Aus Klon?</string>
-	<string name="stage_details_title">Statusinfo</string>
-	<string name="plant_stage_label">Pflanzenstatus</string>
+	<string name="stage_details_title">Stadiumsdetails</string>
+	<string name="plant_stage_label">Pflanzenstadium</string>
 	<string name="view_photos">Fotos ansehen</string>
 	<string name="view_history">Verlauf ansehen</string>
 	<string name="view_statistics">Statistik ansehen</string>
@@ -125,9 +129,11 @@
 	<string name="germination">Keimung</string>
 	<string name="cutting">Schneiden</string>
 	<string name="vegetation">Vegetation</string>
+	<string name="budding">Vorblüte</string>
 	<string name="flowering">Blütezeit</string>
+	<string name="ripening">Reifung</string>
 	<string name="drying">Trocknen</string>
-	<string name="curing">Heilung</string>
+	<string name="curing">Fermentation</string>
 	<string name="harvested">Geernetet</string>
 	<!-- example "harvested 2 days ago" -->
 	<string name="harvested_ago" formatted="true">Vor %s geerntet</string>
@@ -137,37 +143,47 @@
 	<string name="menu_export">Exportieren</string>
 
 	<string name="total_time_label">Gesamtzeit:</string>
+	<string name="total_waters_label">Insgesamt gegossen:</string>
 	<string name="total_flushes_label">Gesamt-Ausspülungen:</string>
+	<string name="total_water_amount_label">Gesamtwassermenge:</string>
+	<string name="ave_water_amount_label">Durchschnittliche Wassermenge</string>
 	<string name="ave_time_between_water_label">Mittlere Zeit zwischen dem Gießen:</string>
+	<string name="ave_time_stage_label" formatted="true">Durchschnittlich %s Wasser:</string>
 	<string name="filter_additives">Filter-Zusatzstoffe</string>
 	<string name="ph_title">PH</string>
+	<string name="tds_title">TDS</string>
+
 	<string name="min">Min:</string>
 	<string name="max">Max:</string>
 	<string name="ave">Ø:</string>
 	<string name="temperature_title">Temperatur</string>
 	<string name="general_title">Allgemein</string>
 	<string name="failed_to_load_plant">Pflanze konnte nicht geladen werden</string>
-	<string name="action_fim">Verpasst</string>
+	<string name="action_fim">vergessen</string>
 	<string name="action_flush">Ausspülen</string>
 	<string name="action_foliar_feed">Blattdüngung</string>
 	<string name="action_lst">Stressarmes Training</string>
 	<string name="action_lolipop">Lutscher</string>
 	<string name="action_pesticide_application">Pestizidanwendung</string>
-	<string name="action_topped">Oben</string>
-	<string name="action_transplanted">Verpflanzt</string>
+	<string name="action_topped">Maximum erreicht</string>
+	<string name="action_transplanted">umgepflanzt</string>
 	<string name="action_trim">Trimmen</string>
+	<string name="action_tuck">ScrOG Tuck</string>
+	<string name="action_supercrop">Super-Ernte</string>
+	<string name="action_monstercrop">Monster-Ernte</string>
+
 	<string name="watered">Gegossen</string>
 	<string name="note">Notiz</string>
-	<string name="delete_event_dialog_title">Dieses Event löschen?</string>
+	<string name="delete_event_dialog_title">Dieses Ereignis löschen?</string>
 	<string name="confirm_delete_item_message">Möchtest du das wirklich löschen?</string>
 	<string name="confirm_delete_photos_message" formatted="true">Möchtest du diese &lt;b&gt;%s&lt;/b&gt; Bilder wirklisch löschen? Sie können danach nicht wiederhergestellt werden.</string>
 	<string name="edit">Bearbeiten</string>
-	<string name="stage">Status</string>
+	<string name="stage">Stadium</string>
 	<string name="set">Setzen</string>
 	<string name="change">Ändern</string>
 	<string name="add">Hinzufügen</string>
 	<string name="cancel">Abbrechen</string>
-	<string name="action">Maßnahme</string>
+	<string name="action">Aktion</string>
 	<string name="ok">OK</string>
 	<string name="field_required">Feld muss ausgefüllt werden</string>
 	<string name="encrypt_passphrase_error">Fehler - falsches Passwort</string>
@@ -178,8 +194,8 @@
 	<string name="added_to">Maßnahme hinzugefügt zu</string>
 	<string name="note_updated">Notiz aktualisiert</string>
 	<string name="updated">aktualisiert</string>
-	<string name="stage_updated">Status aktualisiert</string>
-	<string name="event_deleted">Event gelöscht</string>
+	<string name="stage_updated">Stadium aktualisiert</string>
+	<string name="event_deleted">Ereignis gelöscht</string>
 	<string name="done">Erledigt</string>
 	<string name="garden">Garten</string>
 	<string name="select_all">Alles auswählen</string>
@@ -217,6 +233,7 @@
 	<string name="open">Öffnen</string>
 
 	<string name="export_progress">Exportiere Wachstumsprotokoll</string>
+	<string name="garden_export">Exportiere Wachstumsprotokoll des Gartens…</string>
 	<string name="action_added" formatted="true">%s hinzugefügt</string>
 	<string name="name_input_error">Name kann nicht leer sein</string>
 	<string name="exporting" formatted="true">Exportiere %s</string>
@@ -229,6 +246,11 @@
 	<string name="show_images">Bild anzeigen</string>
 
 	<string name="settings_default_garden">Standard-Garten beim Öffnen, aktuell: &lt;b&gt;%s&lt;/b&gt;</string>
+	<string name="settings_card_style">Kartenstil wählen, gegenwärtig: %s</string>
+	<string name="settings_delivery">Standardmäßig zu verwendende Maßeinheit, aktuell: &lt;b&gt;%s&lt;/b&gt;</string>
+	<string name="settings_measurement">Standardmäßig zu verwendende Maßeinheit für Dünger, aktuell: &lt;b&gt;%s&lt;/b&gt;</string>
+	<string name="settings_temperature">Standardmäßig zu verwendende Temperatureinheit, aktuell: &lt;b&gt;%s&lt;/b&gt;</string>
+	<string name="settings_backup_size" formatted="true">Aktuell: &lt;b&gt;%s MiB&lt;/b&gt; / Benutzt &lt;b&gt;%s&lt;/b&gt;</string>
 	<string name="failsafe_message">Gib das Passwort während der Entschlüsselungsphase an, um das Laden von Daten zu verhindern</string>
 	<string name="warning">Warnung</string>
 	<string name="encryption_message">Dies ist eine Standart AES-Verschlüsselung auf der Grundlage einer bereitgestellten Passphrase. Es ist kein garantierter Schutz vor Strafverfolgungsbehörden.</string>
@@ -248,18 +270,29 @@
 	<string name="no_backups">Es ist kein Backup vorhanden</string>
 	<string name="all_none">Alle/Keine</string>
 
+	<string name="stat_input_ph">hinzugefügter pH-Wert</string>
+	<string name="stat_runoff_ph">Abfluss pH</string>
 	<string name="stat_average_ph">Durchschnitts pH-Wert</string>
+	<string name="stat_average_temp">Durchschnittliche Temperatur</string>
+	<string name="stat_average_runoff_ph">Durchschnittlicher pH Abfluss</string>
+	<string name="stat_average_tds" formatted="true">Durchschnittlich %s</string>
+
 	<string name="photos_title">Pflanzenfotos</string>
 
+	<string name="plant_summary_ph">Start pH-Wert</string>
+	<string name="plant_summary_out_ph">End pH-Wert</string>
 	<string name="plant_summary_amount">Menge:</string>
 	<string name="plant_summary_temp">Temp:</string>
 	<string name="plant_summary_additives">Zusatzstoffe:</string>
+	<string name="plant_summary_ec">EC:</string>
+	<string name="plant_summary_ppm">PPM:</string>
+
 	<string name="select_schedule_title">Zeitplan auswählen</string>
 	<string name="actions">Maßnahmen</string>
 	<string name="settings_dark_title">Erzwinge Dark Theme</string>
 	<string name="settings_dark_summary">Erzwingt das Dark Theme unabhängig von der Systemeinstellung</string>
 	<string name="settings_harvest_title">Geerntete verstecken</string>
-	<string name="settings_harvest_summary">Verstecke alle Pflanzen, die geernted wurden</string>
+	<string name="settings_harvest_summary">Verstecke alle Pflanzen, die geerntet wurden</string>
 	<string name="settings_reverse_title">Reihenfolge der Anlage umkehren</string>
 	<string name="settings_reverse_summary">Zeigt Pflanzen in umgekehrter Reihenfolge. (Benötigt App-Neustart)</string>
 	<string name="settings_garden_title">Standard-Garten</string>
@@ -268,6 +301,8 @@
 	<string name="settings_delivery_title">Lieferumfang</string>
 	<string name="settings_measurement_title">Maßeinheit</string>
 	<string name="settings_temp_title">Temperatureinheiten</string>
+	<string name="settings_tds_title">TDS Einheit</string>
+	<string name="settings_tds_summary" formatted="true">Standardmäßig zu verwendende TDS Einheit, aktuell: &lt;b&gt;%s&lt;/b&gt;</string>
 	<string name="settings_data_management">Datenmanagement</string>
 	<string name="settings_autobackup_title">Automatisches Backup</string>
 	<string name="settings_autobackup_summary">Sichert Automatisch Ihre Daten alle 24 Stunden</string>
@@ -278,16 +313,20 @@
 	<string name="settings_restore_backup">Wiederherstellen aus Backup</string>
 	<string name="settings_encrypt_title">Daten verschlüsseln</string>
 	<string name="settings_encrypt_summary">Fügt eine PIN-Sperre hinzu und verschlüsselt alle Daten/Bilder</string>
+	<string name="settings_failsafe_title">Ausfallsicher</string>
 	<string name="settings_failsafe_summary">Setze ein sicheres Kennwort, um den Zugriff auf Daten zu verhindern</string>
 	<string name="settings_addons">Erweiterungen</string>
 	<string name="settings_about">Über</string>
 	<string name="settings_readme">Lies mich</string>
 	<string name="settings_export"> Daten exportieren</string>
+	<string name="settings_cardstyle_title">Kartenstil</string>
 	<string name="empty_plant_list">Keine Pflanzen zum Anzeigen vorhanden</string>
 	<string name="empty_schedules">Es gibt keine Zeitpläne</string>
 	<string name="empty_photos">Keine Fotos zum Anzeigen vorhanden</string>
 	<string name="events_title">Vergangene Maßnahmen</string>
 	<string name="show_hide_calendar">Kalender ein-/ausblenden</string>
+	<!-- "1 selected" -->
+	<string name="selected_len" formatted="true">%d ausgewählt</string>
 	<string name="translations_title">Vielen Dank an</string>
 	<string name="translations_by">Übersetzungen von</string>
 	<string name="help_translate">Hilf Übersetzen</string>
@@ -353,6 +392,7 @@
 	<string name="humidity">Feuchtigkeit</string>
 	<string name="current_temp">Aktuelle Temperatur:</string>
 	<string name="current_humidity">Aktuelle Feuchtigkeit:</string>
+	<string name="lighting_title">Beleuchtungsplan</string>
 	<string name="delete_item_dialog_title">Diesen Eintrag löschen?</string>
 	<string name="confirm_delete_item_message_holder">Willst du &lt;b&gt;%s&lt;/b&gt; wirklich löschen?</string>
 	<string name="show">Anzeigen</string>
@@ -367,16 +407,20 @@
 	<string name="settings_image_cache_title">Bild-Cache löschen</string>
 	<string name="cache_cleared">Image-Festplatte und Speicher-Cache gelöscht</string>
 	<string name="import_progress_warning">Das Importieren von Bildern kann eine Weile dauern...</string>
-	<string name="task_complete">Aufgabe erledigt</string>
+	<string name="data_task">Daten Aufgabe</string>
+	<string name="import_task_complete">Bildimport abgeschlossen</string>
+	<string name="decrypt_task_complete">Bildentschlüsselung abgeschlossen</string>
+	<string name="encrypt_task_complete">Bildverschlüsselung abgeschlossen</string>
 	<string name="empty_actions_list">Es sind keine Aktionen zu zeigen</string>
 
+	<string name="exporting_start">Exportiere Wachstumsprotokoll von %s</string>
 	<string name="exporting_complete">Export von %s abgeschlossen</string>
 	<string name="exporting_path">Exportiert %s nach %s</string>
 	<string name="export_complete">Export abgeschlossen</string>
 	<string name="export_dialog_label">Bilder einbeziehen?</string>
 	<string name="no_data">Es sind keine Daten verfügbar</string>
 
-	<string name="camera_permission_summary">Für das Fotografieren ist eine Genehmigung der Kamera erforderlich</string>
+	<string name="camera_permission_summary">Zum Fotografieren ist die Kameraberechtigung erforderlich</string>
 	<string name="settings_backup_management_title">Backup-Verwaltung</string>
 	<string name="settings_backup_location_title">Backup-Speicherort</string>
 	<string name="settings_backup_location_summary" formatted="true">Backup-Speicherort, derzeit &lt;b&gt;%s&lt;/b&gt;</string>
@@ -385,4 +429,12 @@
 	<string name="settings_import">Pflanzen aus Datei importieren</string>
 	<string name="settings_import_success">Pflanzen erfolgreich aus Datei importiert</string>
 
-	</resources>
+	<string name="additive_stat_header" formatted="true">%s Statistiken</string>
+	<string name="additive_average_usage_label">Durchschnitt pro Düngung:</string>
+	<string name="additive_usage_count_label">Wie oft verwendet:</string>
+	<string name="additive_total_usage_label">Gesamtzusatzstoffe:</string>
+
+	<string name="additives_concentration_title">Zusatzstoffkonzentration</string>
+	<string name="additives_overtime_title">Zusatzstoffe im Zeitablauf</string>
+	<string name="additives_distribution_title">Zusatzstoffverteilung</string>
+</resources>
