@@ -422,7 +422,9 @@
 	<string name="cache_cleared">Кеш зображень очищено</string>
 	<string name="import_progress_warning">Імпортую зображення, це може тривати довго...</string>
 	<string name="data_task">Обробка даних</string>
-	<string name="task_complete">Завдання виконано</string>
+	<string name="import_task_complete">Імпорт зображень завершено</string>
+	<string name="decrypt_task_complete">Розшифрування зображень завершено</string>
+	<string name="encrypt_task_complete">Шифрування зображень завершено</string>
 	<string name="empty_actions_list">Немає дій</string>
 
 	<string name="exporting_start">Експортую журнал для %s</string>
