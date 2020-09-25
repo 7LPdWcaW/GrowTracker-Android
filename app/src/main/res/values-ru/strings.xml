@@ -217,7 +217,7 @@
 	<string name="passphrase_error">Ошибка - пароли не совпадают</string>
 
 	<string name="fatal_error">Во время сохранения данных произошла ошибка. Пожалуйста, создайте резервную копию данных.</string>
-	<string name="taken">Готово</string>
+	<string name="taken">Сделано</string>
 	<string name="ago" formatted="true">%s назад</string>
 	<string name="watered_ago" formatted="true">Полито &lt;b&gt;%s&lt;/b&gt; назад</string>
 	<string name="last_watered_ago" formatted="true">Последний полив &lt;b&gt;%s&lt;/b&gt; назад</string>
@@ -335,12 +335,12 @@
 
 	<!-- now = 1 second -->
 	<string name="now_abbr">1с</string>
-	<string name="second_abbr">с</string>
+	<string name="second_abbr">сек</string>
 	<string name="minute_abbr">мин</string>
-	<string name="hour_abbr">ч</string>
-	<string name="day_abbr">д</string>
-	<string name="week_abbr">н</string>
-	<string name="month_abbr">м</string>
+	<string name="hour_abbr">час</string>
+	<string name="day_abbr">дн</string>
+	<string name="week_abbr">нед</string>
+	<string name="month_abbr">мес</string>
 	<string name="year_abbr">г</string>
 
 	<string name="view_details_short">Детали</string>
@@ -422,7 +422,9 @@
 	<string name="cache_cleared">Кеш изображений очищен</string>
 	<string name="import_progress_warning">Импорт изображений, может занять некоторое время...</string>
 	<string name="data_task">Обработка данных</string>
-	<string name="task_complete">Задание выполнено</string>
+	<string name="import_task_complete">Импорт изображений завершён</string>
+	<string name="decrypt_task_complete">Расшифровка изображений завершена</string>
+	<string name="encrypt_task_complete">Шифрование изображений завершено</string>
 	<string name="empty_actions_list">Нет действий</string>
 
 	<string name="exporting_start">Экспортирую журнал для %s</string>
