@@ -37,10 +37,11 @@ class WaterLogView(
 		bindings.waterRunoff.editText!!.text = log.outPH?.amount.asStringOrNull()?.asEditable()
 	}
 
-	override fun saveView()
+	override fun saveView(): Water
 	{
 		bindings.root.clearFocus()
-		log.cropIds = bindings.cropSelectView.selectedCrops.map { it.id }.toList()
+		log.cropIds = bindings.cropSelectView.selectedCrops.toList()
+		return log
 	}
 
 	override fun provideTitle(): String? = "Edit water log"

@@ -36,12 +36,13 @@ class StageChangeLogView(
 		}
 	}
 
-	override fun saveView()
+	override fun saveView(): StageChange
 	{
 		bindings.root.clearFocus()
-		log.cropIds = bindings.cropSelectView.selectedCrops.map { it.id }.toList()
+		log.cropIds = bindings.cropSelectView.selectedCrops.toList()
 		log.type = StageType.ofId(bindings.stages.getSelectedItems().first().itemId)
 		log.notes = bindings.notes.editText!!.text.toString()
+		return log
 	}
 
 	override fun provideTitle(): String? = "Plant stage change"

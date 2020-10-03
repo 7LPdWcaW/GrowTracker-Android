@@ -1,13 +1,13 @@
 package me.anon.grow3.data.repository.impl
 
 import android.content.res.Resources
-import androidx.lifecycle.*
+import androidx.lifecycle.LiveData
+import androidx.lifecycle.MutableLiveData
+import androidx.lifecycle.liveData
+import androidx.lifecycle.switchMap
 import com.zhuinden.eventemitter.EventEmitter
 import com.zhuinden.eventemitter.EventSource
-import kotlinx.coroutines.CoroutineDispatcher
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.launch
+import kotlinx.coroutines.*
 import me.anon.grow3.data.event.LogEvent
 import me.anon.grow3.data.model.Crop
 import me.anon.grow3.data.model.Diary
@@ -16,6 +16,7 @@ import me.anon.grow3.data.repository.DiariesRepository
 import me.anon.grow3.data.source.DiariesDataSource
 import me.anon.grow3.util.states.DataResult
 import me.anon.grow3.util.states.asSuccess
+import me.anon.grow3.util.tryNull
 import javax.inject.Inject
 import javax.inject.Named
 import javax.inject.Singleton
@@ -37,14 +38,16 @@ class DefaultDiariesRepository @Inject constructor(
 	private val _logEvents: EventEmitter<LogEvent> = EventEmitter()
 	override fun observeLogEvents(): EventSource<LogEvent> = _logEvents
 
-	override fun observeDiary(diaryId: String): LiveData<DataResult<Diary>> = _diaries.map {
-		if (it is DataResult.Success)
-		{
-			it.data.firstOrNull { it.id == diaryId }
-				?.let { DataResult.success(it) }
-				?: DataResult.Error(Resources.NotFoundException())
+	override fun observeDiary(diaryId: String): LiveData<DataResult<Diary>> = _diaries.switchMap {
+		liveData {
+			emit(if (it is DataResult.Success)
+			{
+				it.data.firstOrNull { it.id == diaryId }
+					?.let { DataResult.success(it) }
+					?: DataResult.Error(Resources.NotFoundException())
+			}
+			else DataResult.Error(Resources.NotFoundException()))
 		}
-		else DataResult.Error(Resources.NotFoundException())
 	}
 
 	override suspend fun getDiaries(): List<Diary> = dataSource.getDiaries()
@@ -77,16 +80,39 @@ class DefaultDiariesRepository @Inject constructor(
 
 	override suspend fun addLog(log: Log, diary: Diary): Log
 	{
-		_logEvents.emit(LogEvent.Added(log, diary))
-		diary.log(log)
+		withContext(dispatcher) {
+			diary.log(log)
 
-		dataSource.sync(DiariesDataSource.SyncDirection.SAVE, diary)
-		invalidate()
+			dataSource.sync(DiariesDataSource.SyncDirection.SAVE, diary)
+			invalidate()
+		}
+
+		_logEvents.emit(LogEvent.Added(log, diary))
 
 		return log
 	}
 
-	override suspend fun getLog(logId: String, diary: Diary): Log? = diary.logOf(logId)
+	override suspend fun getLog(logId: String, diary: Diary): Log?
+	{
+		var log: Log? = null
+		withContext(dispatcher) {
+			log = diary.logOf(logId)
+		}
+
+		return log
+	}
+
+	override suspend fun removeLog(logId: String, diary: Diary)
+	{
+		val index = diary.log.indexOfFirst { it.id == logId }
+		if (index > -1)
+		{
+			(diary.log as ArrayList).removeAt(index)
+		}
+
+		dataSource.sync(DiariesDataSource.SyncDirection.SAVE, diary)
+		invalidate()
+	}
 
 	override suspend fun addCrop(crop: Crop, diary: Diary): Crop
 	{
@@ -106,7 +132,7 @@ class DefaultDiariesRepository @Inject constructor(
 		return crop
 	}
 
-	override suspend fun getCrop(cropId: String, diary: Diary): Crop? = diary.crop(cropId)
+	override suspend fun getCrop(cropId: String, diary: Diary): Crop? = tryNull { diary.crop(cropId) }
 
 	override suspend fun removeCrop(cropId: String, diary: Diary)
 	{

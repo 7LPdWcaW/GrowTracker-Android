@@ -62,11 +62,15 @@ data class Diary(
 	}
 
 	/**
-	 * Adds a new log to the diary
+	 * Adds or updates a log in the diary
 	 */
 	public fun log(log: Log): Log
 	{
-		this.log as ArrayList += log
+		val index = this.log.indexOfFirst { it.id == log.id }
+
+		if (index > -1) (this.log as ArrayList)[index] = log
+		else this.log as ArrayList += log
+
 		this.log.sortBy { it.date }
 		return log
 	}

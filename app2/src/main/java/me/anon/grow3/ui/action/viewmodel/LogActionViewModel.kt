@@ -1,16 +1,14 @@
 package me.anon.grow3.ui.action.viewmodel
 
 import androidx.lifecycle.*
+import com.zhuinden.livedatacombinetuplekt.combineTuple
 import kotlinx.coroutines.launch
 import me.anon.grow3.data.exceptions.GrowTrackerException.*
-import me.anon.grow3.data.model.Diary
 import me.anon.grow3.data.model.Log
 import me.anon.grow3.data.model.StageChange
 import me.anon.grow3.data.model.Water
 import me.anon.grow3.data.repository.DiariesRepository
-import me.anon.grow3.data.source.CacheDataSource
 import me.anon.grow3.ui.common.Extras.EXTRA_DIARY_ID
-import me.anon.grow3.ui.common.Extras.EXTRA_LOG_ID
 import me.anon.grow3.ui.common.Extras.EXTRA_LOG_TYPE
 import me.anon.grow3.util.ViewModelFactory
 import me.anon.grow3.util.nameOf
@@ -20,76 +18,84 @@ import javax.inject.Inject
 
 class LogActionViewModel constructor(
 	private val diariesRepository: DiariesRepository,
-	private val cacheData: CacheDataSource,
 	private val savedState: SavedStateHandle
 ) : ViewModel()
 {
 	class Factory @Inject constructor(
-		private val diariesRepository: DiariesRepository,
-		private val cacheData: CacheDataSource
+		private val diariesRepository: DiariesRepository
 	) : ViewModelFactory<LogActionViewModel>
 	{
 		override fun create(handle: SavedStateHandle): LogActionViewModel =
-			LogActionViewModel(diariesRepository, cacheData, handle)
+			LogActionViewModel(diariesRepository, handle)
 	}
 
 	private val diaryId: String = savedState[EXTRA_DIARY_ID] ?: throw InvalidDiaryId()
-	private var logId: String? = savedState[EXTRA_LOG_ID]
-		set(value) {
-			field = value
-			savedState[EXTRA_LOG_ID] = value
-		}
-
 	private val logType: String = savedState[EXTRA_LOG_TYPE] ?: throw InvalidLogType()
 
-	public val diary = liveData<Diary> {
-		emitSource(diariesRepository.observeDiary(diaryId).map { result ->
-			when (result)
-			{
-				is DataResult.Success -> result.asSuccess()
-				else -> throw DiaryLoadFailed(diaryId)
-			}
-		})
+	public val diary = diariesRepository.observeDiary(diaryId).map { result ->
+		when (result)
+		{
+			is DataResult.Success -> result.asSuccess()
+			else -> throw DiaryLoadFailed(diaryId)
+		}
 	}
 
-	public val log: LiveData<Log> = diary.switchMap { diary ->
-		liveData<Log> {
-			val log = if (logId == null)
-			{
-				val newLog: Log = when (logType)
-				{
-					nameOf<Water>() -> Water { }
-					nameOf<StageChange>() -> StageChange(diary.stage().type)
-					else -> return@liveData
-				}
+	public val logId: LiveData<String?> = MutableLiveData(null)
+	public val log: LiveData<Log> = combineTuple(logId, diary).switchMap { (logId, diary) ->
+		liveData {
+			diary ?: return@liveData
+			logId ?: return@liveData
 
-				logId = newLog.id
-				diariesRepository.addLog(newLog, diary)
-			}
-			else
-			{
-				diariesRepository.getLog(logId!!, diary) ?: throw LogLoadFailed(logId!!)
-			}
-
+			val log = diariesRepository.getLog(logId, diary) ?: throw LogLoadFailed(logId)
 			emit(log)
 		}
 	}
 
-	public fun saveLog(draft: Boolean = false)
+	public fun editLog(logId: String)
 	{
-		log.value ?: return
+
+	}
+
+	public fun newLog()
+	{
+		requireNotNull(diary.value)
+
+		val newLog: Log = when (logType)
+		{
+			nameOf<Water>() -> Water { }
+			nameOf<StageChange>() -> StageChange(diary.value!!.stage().type)
+			else -> throw InvalidLogType()
+		}
 
 		viewModelScope.launch {
-			if (draft)
-			{
-				cacheData.cache(log.value!!)
-			}
-			else
-			{
-				diary.value?.let {
-					diariesRepository.addLog(log.value!!, it)
-				}
-			}
+			requireNotNull(diary.value)
+
+			(logId as MutableLiveData).postValue(diariesRepository.addLog(newLog, diary.value!!).id)
 		}
+	}
+
+	public fun deleteLog()
+	{
+		viewModelScope.launch {
+			requireNotNull(logId.value)
+			requireNotNull(diary.value)
+
+			diariesRepository.removeLog(logId.value!!, diary.value!!)
+		}
+	}
+
+	public fun saveLog()
+	{
+		viewModelScope.launch {
+			requireNotNull(log.value)
+			requireNotNull(diary.value)
+
+			diariesRepository.addLog(log.value!!, diary.value!!)
+		}
+	}
+
+	public fun clear()
+	{
+		(logId as MutableLiveData).postValue(null)
 	}
 }

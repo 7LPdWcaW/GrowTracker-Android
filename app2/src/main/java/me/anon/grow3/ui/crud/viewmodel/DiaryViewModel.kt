@@ -3,7 +3,7 @@ package me.anon.grow3.ui.crud.viewmodel
 import androidx.lifecycle.*
 import com.zhuinden.livedatacombinetuplekt.combineTuple
 import kotlinx.coroutines.launch
-import kotlinx.coroutines.runBlocking
+import me.anon.grow3.data.exceptions.GrowTrackerException.CropLoadFailed
 import me.anon.grow3.data.exceptions.GrowTrackerException.DiaryLoadFailed
 import me.anon.grow3.data.model.*
 import me.anon.grow3.data.repository.DiariesRepository
@@ -46,28 +46,42 @@ class DiaryViewModel(
 					platedDate = this@apply.date
 				)
 			}
+
 			diaryId = diariesRepository.addDiary(diary).id
 		}
 
-		emitSource(diariesRepository.observeDiary(diaryId!!).map { diaryResult ->
-			when (diaryResult)
-			{
-				is DataResult.Success -> diaryResult.data
-				else -> throw DiaryLoadFailed(diaryId!!)
+		emitSource(diariesRepository.observeDiary(diaryId!!).switchMap { diaryResult ->
+			liveData {
+				when (diaryResult)
+				{
+					is DataResult.Success -> emit(diaryResult.data)
+					else -> throw DiaryLoadFailed(diaryId!!)
+				}
 			}
 		})
 	}
 
-	public val crop: LiveData<Crop> = combineTuple(diary, cropId).switchMap { tuple ->
+	public var newCrop: Boolean = false
+		get() = savedStateHandle["new_crop"] ?: false
+		set(value) {
+			savedStateHandle["new_crop"] = value
+			field = value
+		}
+
+	private val originalCrop: MutableLiveData<Crop> = MutableLiveData<Crop>(null)
+	public val crop: LiveData<Crop> = combineTuple(cropId, diary).switchMap { (id, diary) ->
 		liveData {
-			if (tuple.first != null && tuple.second != null)
+			if (id.isNullOrBlank()) return@liveData
+			requireNotNull(diary)
+
+			val crop = diariesRepository.getCrop(id, diary) ?: throw CropLoadFailed(id, diary.id)
+
+			if (originalCrop.value == null)
 			{
-				val diary = tuple.first!!
-				val cropId = tuple.second!!
-				diariesRepository.getCrop(cropId, diary)?.let {
-					emit(it)
-				}
+				originalCrop.value = crop.copy()
 			}
+
+			emit(crop)
 		}
 	}
 
@@ -97,56 +111,63 @@ class DiaryViewModel(
 		schedule: ValueHolder<LightSchedule?>? = null
 	)
 	{
-		diary.value!!.apply {
-			// We're in a wizard so there should only be one instance
-			val id = _environmentId.value ?: let {
-				val log = Environment()
-				viewModelScope.launch { diariesRepository.addLog(log, it) }
-				log.id
-			}.also { _environmentId.value = it }
-
-			logOf<Environment>(id)?.apply {
-				type?.applyValue { this.type = it }
-				temperature?.applyValue { this.temperature = it }
-				humidity?.applyValue { this.humidity = it }
-				relativeHumidity?.applyValue { this.relativeHumidity = it }
-				size?.applyValue { this.size = it }
-				light?.applyValue { this.light = it }
-				schedule?.applyValue { this.schedule = it }
-			}
-		}
-		(diary as MutableLiveData).notifyChange()
+//		diary.value!!.apply {
+//			// We're in a wizard so there should only be one instance
+//			val id = _environmentId.value ?: let {
+//				val log = Environment()
+//				viewModelScope.launch { diariesRepository.addLog(log, it) }
+//				log.id
+//			}.also { _environmentId.value = it }
+//
+//			logOf<Environment>(id)?.apply {
+//				type?.applyValue { this.type = it }
+//				temperature?.applyValue { this.temperature = it }
+//				humidity?.applyValue { this.humidity = it }
+//				relativeHumidity?.applyValue { this.relativeHumidity = it }
+//				size?.applyValue { this.size = it }
+//				light?.applyValue { this.light = it }
+//				schedule?.applyValue { this.schedule = it }
+//			}
+//		}
+		//(diary as MutableLiveData).notifyChange()
 	}
 
 	public fun newCrop()
 	{
-		val crop = Crop(name = "Crop " + (diary.value!!.crops.size + 1))
-		runBlocking {
-			diariesRepository.addCrop(crop, diary.value!!)
+		newCrop = true
+		(cropId as MutableLiveData).value = null
+
+		viewModelScope.launch {
+			val crop = diariesRepository.addCrop(Crop(name = "Crop " + (diary.value!!.crops.size + 1)), diary.value!!)
 			(cropId as MutableLiveData).postValue(crop.id)
 		}
 	}
 
 	public fun editCrop(cropId: String)
 	{
+		newCrop = false
 		(this.cropId as MutableLiveData).postValue(cropId)
 	}
 
 	public fun saveCrop(newCrop: Crop)
 	{
-		viewModelScope.launch {
-			diariesRepository.addCrop(newCrop, diary.value!!)
-			(diary as MutableLiveData).notifyChange()
-			removeCrop()
-		}
+//		viewModelScope.launch {
+//			diariesRepository.addCrop(newCrop, diary.value!!)
+//			(cropId as MutableLiveData).postValue(null)
+//		}
 	}
 
 	public fun removeCrop()
 	{
-		crop.value?.let {
-			viewModelScope.launch {
-				diariesRepository.removeCrop(it.id, diary.value!!)
-				(crop as MutableLiveData).value = null
+		viewModelScope.launch {
+			requireNotNull(diary.value)
+			requireNotNull(cropId.value)
+
+			if (newCrop)
+			{
+				val id = cropId.value
+				(cropId as MutableLiveData).value = null
+				diariesRepository.removeCrop(id!!, diary.value!!)
 			}
 		}
 	}
@@ -159,7 +180,9 @@ class DiaryViewModel(
 		volume: ValueHolder<Double?>? = null
 	)
 	{
-		crop.value?.apply {
+		cropId.value ?: return
+
+		val newCrop = crop.value!!.apply {
 			name?.applyValue { this.name = it }
 			genetics?.applyValue { this.genetics = it.toStringOrNull() }
 			numberOfPlants?.applyValue { this.numberOfPlants = it }
@@ -183,7 +206,10 @@ class DiaryViewModel(
 			}
 		}
 
-		(crop as MutableLiveData).notifyChange()
+		viewModelScope.launch {
+			diariesRepository.addCrop(newCrop, diary.value!!)
+		}
+		//(crop as MutableLiveData).notifyChange()
 	}
 
 	public fun refresh()

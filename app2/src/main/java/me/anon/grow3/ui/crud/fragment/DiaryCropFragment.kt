@@ -6,9 +6,7 @@ import androidx.core.view.isVisible
 import androidx.core.widget.doAfterTextChanged
 import androidx.fragment.app.activityViewModels
 import androidx.lifecycle.observe
-import com.zhuinden.livedatacombinetuplekt.combineTuple
 import me.anon.grow3.data.model.Crop
-import me.anon.grow3.data.model.Diary
 import me.anon.grow3.data.model.MediumType
 import me.anon.grow3.data.model.StageChange
 import me.anon.grow3.databinding.FragmentCrudDiaryCropBinding
@@ -83,8 +81,9 @@ class DiaryCropFragment : BaseFragment(FragmentCrudDiaryCropBinding::class)
 
 	override fun bindVm()
 	{
-		combineTuple(viewModel.diary, viewModel.crop).observe(viewLifecycleOwner) { (diary: Diary?, crop: Crop?) ->
-			if (diary == null || crop == null) return@observe
+		viewModel.crop.observe(viewLifecycleOwner) { crop: Crop ->
+			val diary = viewModel.diary.value
+			diary ?: return@observe
 
 			viewBindings.cropName.editText!!.text = crop.name.asEditable()
 			viewBindings.cropGenetics.editText!!.text = crop.genetics?.asEditable()
@@ -100,11 +99,12 @@ class DiaryCropFragment : BaseFragment(FragmentCrudDiaryCropBinding::class)
 			viewBindings.includeCardStages.stagesView.setStages(diary, crop)
 			viewBindings.includeCardStages.stagesView.onNewStageClick = {
 				// save the diary so it includes the new crop?
-				viewModel.saveCrop(crop)
+				//viewModel.saveCrop(crop)
 				(activity as DiaryActivity).openModal(LogActionFragment().apply {
 					arguments = bundleOf(
 						Extras.EXTRA_DIARY_ID to diary.id,
-						Extras.EXTRA_LOG_TYPE to nameOf<StageChange>()
+						Extras.EXTRA_LOG_TYPE to nameOf<StageChange>(),
+						Extras.EXTRA_CROP_IDS to arrayOf(crop.id)
 					)
 				})
 			}
@@ -114,7 +114,7 @@ class DiaryCropFragment : BaseFragment(FragmentCrudDiaryCropBinding::class)
 	private var backPress = true
 	override fun onBackPressed(): Boolean
 	{
-		if (backPress)
+		if (backPress && viewModel.newCrop)
 		{
 			activity?.promptExit {
 				backPress = false
@@ -122,13 +122,17 @@ class DiaryCropFragment : BaseFragment(FragmentCrudDiaryCropBinding::class)
 				activity?.onBackPressed()
 			}
 		}
+		else
+		{
+			backPress = false
+		}
 
 		return backPress
 	}
 
 	override fun onDestroyView()
 	{
-		viewModel.crop.value?.let { viewModel.saveCrop(it) }
+		//viewModel.crop.value?.let { viewModel.saveCrop(it) }
 		super.onDestroyView()
 	}
 }

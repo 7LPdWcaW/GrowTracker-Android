@@ -40,11 +40,11 @@ class DiaryActivity : BaseActivity(ActivityCrudDiaryBinding::class)
 	{
 		super.onCreate(savedInstanceState)
 
-		navController.addOnDestinationChangedListener { _, destination, _ ->
+		navController.addOnDestinationChangedListener { _, destination, args ->
 			currentView = destination.id
 			viewBindings.back.isVisible = currentView != R.id.navigation_diary_details && currentView != R.id.navigation_diary_crop
 			viewBindings.next.isVisible = currentView != R.id.navigation_diary_crop
-			viewBindings.done.isVisible = currentView == R.id.navigation_diary_crop
+			viewBindings.done.isVisible = currentView == R.id.navigation_diary_crop && args?.isEmpty != false
 
 			if (currentView == R.id.navigation_diary_complete)
 			{

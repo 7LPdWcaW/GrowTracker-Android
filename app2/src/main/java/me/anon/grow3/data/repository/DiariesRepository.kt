@@ -25,6 +25,7 @@ interface DiariesRepository
 
 	public suspend fun addLog(log: Log, diary: Diary): Log
 	public suspend fun getLog(logId: String, diary: Diary): Log?
+	public suspend fun removeLog(logId: String, diary: Diary)
 
 	public suspend fun addCrop(crop: Crop, diary: Diary): Crop
 	public suspend fun getCrop(cropId: String, diary: Diary): Crop?

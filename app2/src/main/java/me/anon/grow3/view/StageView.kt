@@ -63,6 +63,7 @@ class StageView : HorizontalScrollView
 	private fun layoutStages()
 	{
 		container.removeAllViews()
+		container.removeAllViewsInLayout()
 		for (stageIndex in 0 until stages.size)
 		{
 			val stage = stages[stageIndex]

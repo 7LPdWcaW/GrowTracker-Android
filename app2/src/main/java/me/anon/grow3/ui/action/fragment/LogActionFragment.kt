@@ -1,8 +1,10 @@
 package me.anon.grow3.ui.action.fragment
 
+import android.os.Bundle
 import androidx.core.view.plusAssign
+import androidx.fragment.app.activityViewModels
+import androidx.fragment.app.commit
 import androidx.fragment.app.commitNow
-import androidx.fragment.app.viewModels
 import androidx.lifecycle.observe
 import com.google.android.material.textfield.TextInputLayout
 import me.anon.grow3.R
@@ -16,6 +18,7 @@ import me.anon.grow3.ui.action.view.StageChangeLogView
 import me.anon.grow3.ui.action.view.WaterLogView
 import me.anon.grow3.ui.action.viewmodel.LogActionViewModel
 import me.anon.grow3.ui.base.BaseFragment
+import me.anon.grow3.ui.common.Extras
 import me.anon.grow3.ui.common.fragment.DateSelectDialogFragment
 import me.anon.grow3.util.*
 import me.anon.grow3.view.CropSelectView
@@ -27,26 +30,36 @@ open class LogActionFragment : BaseFragment(FragmentActionLogBinding::class)
 	override val injector: Injector = { it.inject(this) }
 
 	@Inject internal lateinit var viewModelFactory: LogActionViewModel.Factory
-	protected val viewModel: LogActionViewModel by viewModels { ViewModelProvider(viewModelFactory, this) }
+	protected val viewModel: LogActionViewModel by activityViewModels { ViewModelProvider(viewModelFactory, this) }
 	protected val viewBindings by viewBinding<FragmentActionLogBinding>()
 	private var logView: LogView<*>? = null
 	private var isFinishing = false
+
+	override fun bindArguments(bundle: Bundle?)
+	{
+		super.bindArguments(bundle)
+
+		viewModel.diary.observeOnce(viewLifecycleOwner) { diary ->
+			bundle?.getString(Extras.EXTRA_LOG_ID).let {
+				if (it.isNullOrBlank()) viewModel.newLog()
+				else viewModel.editLog(it)
+			}
+		}
+	}
 
 	override fun bindUi()
 	{
 		setToolbar(viewBindings.toolbar)
 
 		viewBindings.toolbar.setNavigationOnClickListener {
-			requireActivity().promptExit {
-				requireActivity().supportFragmentManager.commitNow {
-					remove(this@LogActionFragment)
-				}
-			}
+			onBackPressed()
 		}
 
 		viewBindings.actionDone.onClick {
+			isFinishing = true
+
 			logView?.let {
-				it.saveView()
+				val log = it.saveView()
 				viewModel.saveLog()
 				finish()
 			}
@@ -67,21 +80,22 @@ open class LogActionFragment : BaseFragment(FragmentActionLogBinding::class)
 	{
 		requireView().hideKeyboard()
 		isFinishing = true
+		viewModel.clear()
 
-		activity?.supportFragmentManager?.commitNow {
+		activity?.supportFragmentManager?.commit {
 			remove(this@LogActionFragment)
 		}
 	}
 
 	override fun onDestroyView()
 	{
-		if (!isFinishing)
-		{
-			logView?.let {
-				it.saveView()
-				viewModel.saveLog(draft = true)
-			}
-		}
+//		if (!isFinishing)
+//		{
+//			logView?.let {
+//				it.saveView()
+//				viewModel.saveLog()
+//			}
+//		}
 
 		super.onDestroyView()
 	}
@@ -115,7 +129,9 @@ open class LogActionFragment : BaseFragment(FragmentActionLogBinding::class)
 			}
 
 			view.findViewById<CropSelectView>(R.id.crop_select_view)?.let {
+				it.selectedCrops = arguments?.getStringArray(Extras.EXTRA_CROP_IDS)?.asSequence()?.toHashSet() ?: hashSetOf()
 				it.setDiary(diary)
+
 			}
 		}
 	}
@@ -132,6 +148,9 @@ open class LogActionFragment : BaseFragment(FragmentActionLogBinding::class)
 		}
 		else
 		{
+			viewModel.deleteLog()
+			viewModel.clear()
+			isFinishing = true
 			requireActivity().supportFragmentManager.commitNow {
 				remove(this@LogActionFragment)
 			}

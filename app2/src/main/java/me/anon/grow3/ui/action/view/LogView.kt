@@ -13,6 +13,6 @@ abstract class LogView<T : Log>(
 {
 	abstract fun createView(inflater: LayoutInflater, parent: ViewGroup): View
 	abstract fun bindView(view: View)
-	open fun saveView() {}
+	abstract fun saveView(): T
 	open fun provideTitle(): String? = null
 }

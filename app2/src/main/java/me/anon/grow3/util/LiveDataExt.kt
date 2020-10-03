@@ -1,8 +1,7 @@
 package me.anon.grow3.util
 
-import androidx.lifecycle.LiveData
-import androidx.lifecycle.MediatorLiveData
-import androidx.lifecycle.MutableLiveData
+import androidx.annotation.MainThread
+import androidx.lifecycle.*
 
 public fun <T> MutableLiveData<T>.asLiveData()
 	= this as LiveData<T>
@@ -83,4 +82,22 @@ public fun <T, A, B> LiveData<A>.combine(other: LiveData<B>, onChange: (A, B) ->
 	}
 
 	return result
+}
+
+@MainThread
+inline fun <T> LiveData<T>.observeOnce(
+	owner: LifecycleOwner,
+	crossinline onChanged: (T) -> Unit
+): Observer<T>
+{
+	val wrappedObserver = object : Observer<T> {
+		override fun onChanged(t: T)
+		{
+			onChanged.invoke(t)
+			this@observeOnce.removeObserver(this)
+		}
+	}
+
+	observe(owner, wrappedObserver)
+	return wrappedObserver
 }

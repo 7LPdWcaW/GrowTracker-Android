@@ -23,7 +23,7 @@ class CropSelectView : ChipGroup
 	private var diary: Diary? = null
 	private var stateCheck = arrayListOf<String>()
 
-	public var selectedCrops = hashSetOf<Crop>()
+	public var selectedCrops = hashSetOf<String>()
 	public var onCropSelected: (Crop, Boolean) -> Unit = { _, _ -> }
 	public var selectAll: Boolean = false
 
@@ -54,12 +54,12 @@ class CropSelectView : ChipGroup
 			if ((chip.tag as? Crop)?.id in stateCheck)
 			{
 				(chip as? Chip)?.isChecked = true
-				selectedCrops.add(chip.tag as Crop)
+				selectedCrops.add((chip.tag as Crop).id)
 			}
 			else
 			{
 				(chip as? Chip)?.isChecked = false
-				selectedCrops.remove(chip.tag as Crop)
+				selectedCrops.remove((chip.tag as Crop).id)
 			}
 		}
 
@@ -80,15 +80,15 @@ class CropSelectView : ChipGroup
 			binding.chip.id = ViewCompat.generateViewId()
 			binding.chip.text = crop.name
 			binding.chip.tag = crop
-			binding.chip.isChecked = true
-			selectedCrops.add(crop)
+			binding.chip.isChecked = selectedCrops.contains(crop.id)
+			selectedCrops.add(crop.id)
 
 			val image = R.drawable.sample.drawable(context)
 			binding.chip.chipIcon = CircleBitmapDisplayer.CircleDrawable((image as BitmapDrawable).bitmap, 0, 0f)
 
 			binding.chip.onClick {
-				if (it.isChecked) selectedCrops.add(crop)
-				else selectedCrops.remove(crop)
+				if (it.isChecked) selectedCrops.add(crop.id)
+				else selectedCrops.remove(crop.id)
 
 				onCropSelected(crop, it.isCheckable)
 			}

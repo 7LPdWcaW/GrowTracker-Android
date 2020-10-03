@@ -9,7 +9,6 @@ import kotlinx.coroutines.test.resetMain
 import kotlinx.coroutines.test.setMain
 import me.anon.grow3.MainCoroutineRule
 import me.anon.grow3.data.model.Crop
-import me.anon.grow3.data.model.Diary
 import me.anon.grow3.data.model.Water
 import me.anon.grow3.util.initThreeTen
 import org.amshove.kluent.`should be equal to`
@@ -78,15 +77,6 @@ class NitriteCacheDataSourceTest
 
 		val retrieved = dataSource.retrieveCrop(id)
 		retrieved.`should be equal to`(crop)
-	}
-
-	@Test
-	public fun `test cache diary`() = runBlocking<Unit> {
-		val diary = Diary(name = "diary 1")
-		val id = dataSource.cache(diary)
-
-		val retrieved = dataSource.retrieveDiary(id)
-		retrieved.`should be equal to`(diary)
 	}
 
 	@Test

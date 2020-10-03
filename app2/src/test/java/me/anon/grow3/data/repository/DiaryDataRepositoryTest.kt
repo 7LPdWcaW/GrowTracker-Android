@@ -45,16 +45,15 @@ class DiaryDataRepositoryTest
 	public fun initialiseRepositories()
 	{
 		dataSource = FakeDiariesDataSource(TestConstants.diaries.toMutableList())
-		cacheSource = FakeCacheDataSource()
-		diariesRepository = DefaultDiariesRepository(dataSource, cacheSource)
+		diariesRepository = DefaultDiariesRepository(dataSource)
 	}
 
 	@Test
 	public fun `test draft diary update syncs`() = mainCoroutineRule.runBlockingTest {
 		val diary = Diary(name = "test 1").apply { isDraft = true }
-		val returned = diariesRepository.createDiary(diary)
+		val returned = diariesRepository.addDiary(diary)
 		diary.`should be equal to`(returned)
-		returned.crops += Crop(name = "crop 1", genetics = "none", numberOfPlants = 3)
+		(returned.crops as ArrayList) += Crop(name = "crop 1", genetics = "none", numberOfPlants = 3)
 		diary.crops.`should not be empty`()[0].`should be equal to`(returned.crops[0])
 		diariesRepository.sync()
 		val diary2 = diariesRepository.getDiaryById(diary.id)
@@ -64,7 +63,7 @@ class DiaryDataRepositoryTest
 
 	@Test
 	public fun `test observe draft diary update syncs`() = mainCoroutineRule.runBlockingTest {
-		val diary = diariesRepository.createDiary(Diary(name = "test 1").apply { isDraft = true })
+		val diary = diariesRepository.addDiary(Diary(name = "test 1").apply { isDraft = true })
 
 		var livedata = diariesRepository.observeDiary(diary.id)
  		val result = livedata.getOrAwaitValue()
@@ -73,7 +72,7 @@ class DiaryDataRepositoryTest
 
 		result.asSuccess().let { diary ->
 			val crop = Crop(name = "crop 1", genetics = "none", numberOfPlants = 3)
-			diary.crops += crop
+			(diary.crops as ArrayList) += crop
 			diary.crops.`should not be empty`()
 			diariesRepository.sync()
 
@@ -163,7 +162,7 @@ class DiaryDataRepositoryTest
 		val data = diary.awaitForSuccess()
 		val log = Water {}
 
-		diariesRepository.addLog(log)
+		diariesRepository.addLog(log, data)
 		val retrieved = diariesRepository.getLog(log.id, data)
 		retrieved.`should be equal to`(log)
 		data.logOf(log.id).`should be null`()
