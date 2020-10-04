@@ -4,6 +4,7 @@ import android.animation.Animator
 import android.animation.AnimatorListenerAdapter
 import android.os.Bundle
 import androidx.activity.viewModels
+import androidx.core.os.bundleOf
 import androidx.core.view.isVisible
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.commitNow
@@ -16,7 +17,8 @@ import me.anon.grow3.databinding.ActivityCrudDiaryBinding
 import me.anon.grow3.ui.action.fragment.LogActionFragment
 import me.anon.grow3.ui.base.BaseActivity
 import me.anon.grow3.ui.base.BaseFragment
-import me.anon.grow3.ui.crud.viewmodel.DiaryViewModel
+import me.anon.grow3.ui.common.Extras
+import me.anon.grow3.ui.crud.viewmodel.DiaryCrudViewModel
 import me.anon.grow3.util.Injector
 import me.anon.grow3.util.ViewModelProvider
 import me.anon.grow3.util.onClick
@@ -31,14 +33,19 @@ class DiaryActivity : BaseActivity(ActivityCrudDiaryBinding::class)
 	private var currentView = R.id.navigation_diary_details
 
 	override val injector: Injector = { it.inject(this) }
-	@Inject internal lateinit var viewModelFactory: DiaryViewModel.Factory
-	private val viewModel: DiaryViewModel by viewModels { ViewModelProvider(viewModelFactory, this) }
+	@Inject internal lateinit var crudViewModelFactory: DiaryCrudViewModel.Factory
+	private val crudViewModel: DiaryCrudViewModel by viewModels { ViewModelProvider(crudViewModelFactory, this) }
 	private val viewBindings by viewBinding<ActivityCrudDiaryBinding>()
 	private val navController by lazy { findNavController(R.id.nav_host_fragment) }
 
 	override fun onCreate(savedInstanceState: Bundle?)
 	{
 		super.onCreate(savedInstanceState)
+
+		(intent.extras ?: savedInstanceState ?: bundleOf()).getString(Extras.EXTRA_DIARY_ID).let {
+			if (it.isNullOrBlank()) crudViewModel.diaryVm.new()
+			else crudViewModel.diaryVm.load(it)
+		}
 
 		navController.addOnDestinationChangedListener { _, destination, args ->
 			currentView = destination.id

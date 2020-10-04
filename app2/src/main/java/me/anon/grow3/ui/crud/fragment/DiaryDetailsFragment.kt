@@ -1,9 +1,9 @@
 package me.anon.grow3.ui.crud.fragment
 
+import android.os.Bundle
 import android.view.View
 import androidx.core.os.bundleOf
 import androidx.core.view.isVisible
-import androidx.core.widget.doAfterTextChanged
 import androidx.fragment.app.activityViewModels
 import androidx.lifecycle.observe
 import androidx.navigation.fragment.findNavController
@@ -14,7 +14,7 @@ import me.anon.grow3.databinding.StubCrudCropBinding
 import me.anon.grow3.ui.base.BaseFragment
 import me.anon.grow3.ui.common.Extras
 import me.anon.grow3.ui.common.fragment.DateSelectDialogFragment
-import me.anon.grow3.ui.crud.viewmodel.DiaryViewModel
+import me.anon.grow3.ui.crud.viewmodel.DiaryCrudViewModel
 import me.anon.grow3.util.*
 import org.threeten.bp.ZonedDateTime
 import java.util.*
@@ -24,13 +24,18 @@ class DiaryDetailsFragment : BaseFragment(FragmentCrudDiaryDetailsBinding::class
 {
 	override val injector: Injector = { it.inject(this) }
 
-	@Inject internal lateinit var viewModelFactory: DiaryViewModel.Factory
-	private val viewModel: DiaryViewModel by activityViewModels { ViewModelProvider(viewModelFactory, this) }
+	@Inject internal lateinit var crudViewModelFactory: DiaryCrudViewModel.Factory
+	private val crudViewModel: DiaryCrudViewModel by activityViewModels { ViewModelProvider(crudViewModelFactory, this) }
 	private val viewBindings by viewBinding<FragmentCrudDiaryDetailsBinding>()
+
+	override fun bindArguments(bundle: Bundle?)
+	{
+		super.bindArguments(bundle)
+	}
 
 	override fun bindVm()
 	{
-		viewModel.diary.observe(viewLifecycleOwner) { diary ->
+		crudViewModel.diaryVm.diary.observe(viewLifecycleOwner) { diary ->
 			viewBindings.diaryName.editText!!.text = diary.name.asEditable()
 			viewBindings.date.editText!!.text = diary.date.asDateTime().asFormattedString().asEditable()
 
@@ -42,7 +47,7 @@ class DiaryDetailsFragment : BaseFragment(FragmentCrudDiaryDetailsBinding::class
 				cropBindings.cropGenetics.isVisible = !crop.genetics.isNullOrBlank()
 
 				cropBindings.duplicate.onClick {
-					viewModel.saveCrop(crop.copy(id = UUID.randomUUID().toString()))
+					crudViewModel.cropVm.save(crop.copy(id = UUID.randomUUID().toString()))
 				}
 
 				cropBindings.root.onClick {
@@ -63,33 +68,33 @@ class DiaryDetailsFragment : BaseFragment(FragmentCrudDiaryDetailsBinding::class
 
 	override fun bindUi()
 	{
-		viewBindings.diaryName.editText!!.doAfterTextChanged {
-			// don't re-trigger the text change by calling editText.text ...
-			val diary = viewModel.diary.value!!
-			diary.name = it.toString()
-		}
-
-		viewBindings.date.editText!!.onFocus {
-			val diary = viewModel.diary.value!!
-
-			it.hideKeyboard()
-
-			val current = diary.date
-			DateSelectDialogFragment.show(current, true, childFragmentManager).apply {
-				onDateTimeSelected = ::onDateSelected
-				onDismiss = ::onDateDismissed
-			}
-
-			viewModel.setDiaryDate(current.asDateTime())
-		}
-
-		viewBindings.addCrop.onClick {
-			// reveal crop edit fragment dialog
-			val navController = findNavController()
-			navController.navigate(R.id.page_1_to_2)
-		}
-
-		attachCallbacks()
+//		viewBindings.diaryName.editText!!.doAfterTextChanged {
+//			// don't re-trigger the text change by calling editText.text ...
+//			val diary = crudViewModel.diary.value!!
+//			diary.name = it.toString()
+//		}
+//
+//		viewBindings.date.editText!!.onFocus {
+//			val diary = crudViewModel.diary.value!!
+//
+//			it.hideKeyboard()
+//
+//			val current = diary.date
+//			DateSelectDialogFragment.show(current, true, childFragmentManager).apply {
+//				onDateTimeSelected = ::onDateSelected
+//				onDismiss = ::onDateDismissed
+//			}
+//
+//			crudViewModel.setDiaryDate(current.asDateTime())
+//		}
+//
+//		viewBindings.addCrop.onClick {
+//			// reveal crop edit fragment dialog
+//			val navController = findNavController()
+//			navController.navigate(R.id.page_1_to_2)
+//		}
+//
+//		attachCallbacks()
 	}
 
 	private fun attachCallbacks()
@@ -99,7 +104,7 @@ class DiaryDetailsFragment : BaseFragment(FragmentCrudDiaryDetailsBinding::class
 
 	public fun onDateSelected(selectedDate: ZonedDateTime)
 	{
-		viewModel.setDiaryDate(selectedDate)
+		//crudViewModel.setDiaryDate(selectedDate)
 	}
 
 	public fun onDateDismissed()

@@ -101,3 +101,10 @@ inline fun <T> LiveData<T>.observeOnce(
 	observe(owner, wrappedObserver)
 	return wrappedObserver
 }
+
+public fun <T> LiveData<T>.clear(): T?
+{
+	val value = (this as? MutableLiveData)?.value
+	(this as? MutableLiveData)?.postValue(null)
+	return value
+}

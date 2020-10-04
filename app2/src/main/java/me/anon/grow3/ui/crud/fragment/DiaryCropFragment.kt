@@ -14,7 +14,7 @@ import me.anon.grow3.ui.action.fragment.LogActionFragment
 import me.anon.grow3.ui.base.BaseFragment
 import me.anon.grow3.ui.common.Extras
 import me.anon.grow3.ui.crud.activity.DiaryActivity
-import me.anon.grow3.ui.crud.viewmodel.DiaryViewModel
+import me.anon.grow3.ui.crud.viewmodel.DiaryCrudViewModel
 import me.anon.grow3.util.*
 import javax.inject.Inject
 
@@ -22,16 +22,16 @@ class DiaryCropFragment : BaseFragment(FragmentCrudDiaryCropBinding::class)
 {
 	override val injector: Injector = { it.inject(this) }
 
-	@Inject internal lateinit var viewModelFactory: DiaryViewModel.Factory
-	private val viewModel: DiaryViewModel by activityViewModels { ViewModelProvider(viewModelFactory, this) }
+	@Inject internal lateinit var crudViewModelFactory: DiaryCrudViewModel.Factory
+	private val crudViewModel: DiaryCrudViewModel by activityViewModels { ViewModelProvider(crudViewModelFactory, this) }
 	private val viewBindings by viewBinding<FragmentCrudDiaryCropBinding>()
 
 	override fun bindArguments(bundle: Bundle?)
 	{
 		super.bindArguments(bundle)
 		bundle?.getString(Extras.EXTRA_CROP_ID).let {
-			if (it.isNullOrBlank()) viewModel.newCrop()
-			else viewModel.editCrop(it)
+			if (it.isNullOrBlank()) crudViewModel.cropVm.new()
+			else crudViewModel.cropVm.load(it)
 		}
 	}
 
@@ -39,7 +39,7 @@ class DiaryCropFragment : BaseFragment(FragmentCrudDiaryCropBinding::class)
 	{
 		viewBindings.cropName.editText!!.onFocusLoss {
 			it.text.toStringOrNull()?.let {
-				viewModel.setCrop(
+				crudViewModel.setCrop(
 					name = ValueHolder(it)
 				)
 			}
@@ -50,20 +50,20 @@ class DiaryCropFragment : BaseFragment(FragmentCrudDiaryCropBinding::class)
 		}
 
 		viewBindings.cropGenetics.editText!!.onFocusLoss {
-			viewModel.setCrop(
+			crudViewModel.setCrop(
 				genetics = ValueHolder(it.text.toStringOrNull())
 			)
 		}
 
 		viewBindings.cropNumPlants.editText!!.onFocusLoss {
-			viewModel.setCrop(
+			crudViewModel.setCrop(
 				numberOfPlants = ValueHolder(it.text.toIntOrNull() ?: 1)
 			)
 		}
 
 		viewBindings.mediumTypeOptions.setMenu(MediumType.toMenu())
 		viewBindings.mediumTypeOptions.itemSelectListener = { item ->
-			viewModel.setCrop(
+			crudViewModel.setCrop(
 				mediumType = ValueHolder(MediumType.ofId(item.itemId))
 			)
 		}
@@ -73,7 +73,7 @@ class DiaryCropFragment : BaseFragment(FragmentCrudDiaryCropBinding::class)
 			else viewBindings.mediumType.error = null
 		}
 		viewBindings.mediumSize.editText!!.onFocusLoss {
-			viewModel.setCrop(
+			crudViewModel.setCrop(
 				volume = ValueHolder(it.text.toDoubleOrNull())
 			)
 		}
@@ -81,8 +81,8 @@ class DiaryCropFragment : BaseFragment(FragmentCrudDiaryCropBinding::class)
 
 	override fun bindVm()
 	{
-		viewModel.crop.observe(viewLifecycleOwner) { crop: Crop ->
-			val diary = viewModel.diary.value
+		crudViewModel.cropVm.crop.observe(viewLifecycleOwner) { crop: Crop ->
+			val diary = crudViewModel.diaryVm.diary.value
 			diary ?: return@observe
 
 			viewBindings.cropName.editText!!.text = crop.name.asEditable()
@@ -114,11 +114,11 @@ class DiaryCropFragment : BaseFragment(FragmentCrudDiaryCropBinding::class)
 	private var backPress = true
 	override fun onBackPressed(): Boolean
 	{
-		if (backPress && viewModel.newCrop)
+		if (backPress && crudViewModel.cropVm.isNew)
 		{
 			activity?.promptExit {
 				backPress = false
-				viewModel.removeCrop()
+				crudViewModel.cropVm.remove()
 				activity?.onBackPressed()
 			}
 		}

@@ -9,7 +9,7 @@ import me.anon.grow3.data.model.LightType
 import me.anon.grow3.data.model.Size
 import me.anon.grow3.databinding.FragmentCrudDiaryEnvironmentBinding
 import me.anon.grow3.ui.base.BaseFragment
-import me.anon.grow3.ui.crud.viewmodel.DiaryViewModel
+import me.anon.grow3.ui.crud.viewmodel.DiaryCrudViewModel
 import me.anon.grow3.util.*
 import me.anon.grow3.view.DropDownEditText
 import javax.inject.Inject
@@ -18,8 +18,8 @@ class DiaryEnvironmentFragment : BaseFragment(FragmentCrudDiaryEnvironmentBindin
 {
 	override val injector: Injector = { it.inject(this) }
 
-	@Inject internal lateinit var viewModelFactory: DiaryViewModel.Factory
-	private val viewModel: DiaryViewModel by activityViewModels { ViewModelProvider(viewModelFactory, this) }
+	@Inject internal lateinit var crudViewModelFactory: DiaryCrudViewModel.Factory
+	private val crudViewModel: DiaryCrudViewModel by activityViewModels { ViewModelProvider(crudViewModelFactory, this) }
 	private val viewBindings by viewBinding<FragmentCrudDiaryEnvironmentBinding>()
 
 	override fun bindUi()
@@ -31,7 +31,7 @@ class DiaryEnvironmentFragment : BaseFragment(FragmentCrudDiaryEnvironmentBindin
 
 	override fun bindVm()
 	{
-		viewModel.diary.observe(viewLifecycleOwner) { diary ->
+		crudViewModel.diaryVm.diary.observe(viewLifecycleOwner) { diary ->
 			diary.environment()?.let { environment ->
 				viewBindings.environmentTypeOptions.checkItems(environment.strRes)
 			}
@@ -60,7 +60,7 @@ class DiaryEnvironmentFragment : BaseFragment(FragmentCrudDiaryEnvironmentBindin
 	{
 		viewBindings.environmentTypeOptions.setMenu(EnvironmentType.toMenu())
 		viewBindings.environmentTypeOptions.itemSelectListener = { item ->
-			viewModel.setEnvironment(
+			crudViewModel.setEnvironment(
 				type = ValueHolder(item.isChecked then EnvironmentType.ofId(item.itemId))
 			)
 		}
@@ -85,7 +85,7 @@ class DiaryEnvironmentFragment : BaseFragment(FragmentCrudDiaryEnvironmentBindin
 				)
 			else null
 
-			viewModel.setEnvironment(
+			crudViewModel.setEnvironment(
 				size = ValueHolder(size)
 			)
 		}
@@ -117,7 +117,7 @@ class DiaryEnvironmentFragment : BaseFragment(FragmentCrudDiaryEnvironmentBindin
 		{
 			viewBindings.lightTypeOptions.getSelectedItems().firstOrNull()?.let {
 				val type = LightType.ofId(it.itemId)
-				viewModel.setEnvironment(
+				crudViewModel.setEnvironment(
 					light = ValueHolder(Light(
 						type = type
 					).apply {
