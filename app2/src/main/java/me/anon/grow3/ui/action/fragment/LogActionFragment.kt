@@ -39,11 +39,9 @@ open class LogActionFragment : BaseFragment(FragmentActionLogBinding::class)
 	{
 		super.bindArguments(bundle)
 
-		viewModel.diary.observeOnce(viewLifecycleOwner) { diary ->
-			bundle?.getString(Extras.EXTRA_LOG_ID).let {
-				if (it.isNullOrBlank()) viewModel.newLog()
-				else viewModel.editLog(it)
-			}
+		bundle?.getString(Extras.EXTRA_LOG_ID).let {
+			if (it.isNullOrBlank()) viewModel.new()
+			else viewModel.load(it)
 		}
 	}
 
@@ -60,7 +58,7 @@ open class LogActionFragment : BaseFragment(FragmentActionLogBinding::class)
 
 			logView?.let {
 				val log = it.saveView()
-				viewModel.saveLog()
+				viewModel.save(log)
 				finish()
 			}
 		}
@@ -70,10 +68,14 @@ open class LogActionFragment : BaseFragment(FragmentActionLogBinding::class)
 
 	override fun bindVm()
 	{
-		viewModel.log.observe(viewLifecycleOwner) { log ->
-			val diary = viewModel.diary.value!!
-			renderLogView(diary, log)
-		}
+		viewModel.log
+			.nonNull()
+			.observe(viewLifecycleOwner) { data ->
+				val diary = data.diary ?: return@observe
+				val log = data.log ?: return@observe
+
+				renderLogView(diary, log)
+			}
 	}
 
 	open fun finish()
@@ -131,7 +133,6 @@ open class LogActionFragment : BaseFragment(FragmentActionLogBinding::class)
 			view.findViewById<CropSelectView>(R.id.crop_select_view)?.let {
 				it.selectedCrops = arguments?.getStringArray(Extras.EXTRA_CROP_IDS)?.asSequence()?.toHashSet() ?: hashSetOf()
 				it.setDiary(diary)
-
 			}
 		}
 	}
@@ -148,7 +149,7 @@ open class LogActionFragment : BaseFragment(FragmentActionLogBinding::class)
 		}
 		else
 		{
-			viewModel.deleteLog()
+			viewModel.remove()
 			viewModel.clear()
 			isFinishing = true
 			requireActivity().supportFragmentManager.commitNow {

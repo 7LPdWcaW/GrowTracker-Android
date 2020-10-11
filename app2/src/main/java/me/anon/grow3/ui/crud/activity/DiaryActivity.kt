@@ -67,7 +67,7 @@ class DiaryActivity : BaseActivity(ActivityCrudDiaryBinding::class)
 	override fun bindUi()
 	{
 		viewBindings.done.setOnClickListener {
-			navController.navigate(R.id.page_2_to_1)
+			navController.popBackStack()
 		}
 
 		viewBindings.back.onClick {

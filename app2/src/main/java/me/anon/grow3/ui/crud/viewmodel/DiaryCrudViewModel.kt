@@ -3,10 +3,12 @@ package me.anon.grow3.ui.crud.viewmodel
 import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import kotlinx.coroutines.launch
 import me.anon.grow3.data.model.*
 import me.anon.grow3.data.repository.DiariesRepository
 import me.anon.grow3.util.ValueHolder
 import me.anon.grow3.util.ViewModelFactory
+import me.anon.grow3.util.toStringOrNull
 import javax.inject.Inject
 
 class DiaryCrudViewModel(
@@ -64,34 +66,31 @@ class DiaryCrudViewModel(
 		volume: ValueHolder<Double?>? = null
 	)
 	{
-		//cropId.value ?: return
+		val crop = cropVm.crop.value?.crop ?: return
+		val diary = diaryVm.diary.value ?: return
 
-//		val newCrop = crop.value!!.apply {
-//			name?.applyValue { this.name = it }
-//			genetics?.applyValue { this.genetics = it.toStringOrNull() }
-//			numberOfPlants?.applyValue { this.numberOfPlants = it }
-//
-//			// medium - only 1 medium type to set
-//			diary.value?.let { diary ->
-//				val medium = diary.mediumOf(this) ?: let {
-//					mediumType?.let {
-//						Medium(it.value).also {
-//							viewModelScope.launch {
-//								diariesRepository.addLog(it, diary)
-//							}
-//						}
-//					}
-//				}
-//
-//				medium?.apply {
-//					mediumType?.applyValue { this.medium = it }
-//					volume?.applyValue { this.size = it }
-//				}
-//			}
-//		}
-//
-//		viewModelScope.launch {
-//			diariesRepository.addCrop(newCrop, diary.value!!)
-//		}
+		val newCrop = crop.apply {
+			name?.applyValue { this.name = it }
+			genetics?.applyValue { this.genetics = it.toStringOrNull() }
+			numberOfPlants?.applyValue { this.numberOfPlants = it }
+
+			// medium - only 1 medium type to set
+			val medium = diary.mediumOf(this) ?: let {
+				mediumType?.let {
+					Medium(it.value).also {
+						viewModelScope.launch {
+							diariesRepository.addLog(it, diary)
+						}
+					}
+				}
+			}
+
+			medium?.apply {
+				mediumType?.applyValue { this.medium = it }
+				volume?.applyValue { this.size = it }
+			}
+		}
+
+		cropVm.save(newCrop)
 	}
 }

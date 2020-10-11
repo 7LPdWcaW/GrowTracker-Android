@@ -73,7 +73,7 @@ class DiaryViewModel(
 	{
 		viewModelScope.launch {
 			diaryId.clear()?.let { id ->
-				//diariesRepository.removeDiary(id)
+				diariesRepository.deleteDiary(id)
 			}
 		}
 	}

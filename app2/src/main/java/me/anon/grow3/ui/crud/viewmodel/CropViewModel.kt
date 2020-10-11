@@ -10,6 +10,7 @@ import me.anon.grow3.data.model.Crop
 import me.anon.grow3.data.repository.DiariesRepository
 import me.anon.grow3.ui.common.Extras
 import me.anon.grow3.util.clear
+import me.anon.grow3.util.states.Data
 import me.anon.grow3.util.states.DataResult
 
 class CropViewModel(
@@ -28,7 +29,7 @@ class CropViewModel(
 	private val diaryId: MutableLiveData<String> = savedStateHandle.getLiveData(Extras.EXTRA_DIARY_ID)
 	private val cropId: MutableLiveData<String> = savedStateHandle.getLiveData(Extras.EXTRA_CROP_ID)
 	private var originalCrop: Crop? = null
-	public val crop: LiveData<Crop> = combineTuple(diaryId, cropId).switchMap { (diaryId, cropId) ->
+	public val crop: LiveData<Data> = combineTuple(diaryId, cropId).switchMap { (diaryId, cropId) ->
 		liveData {
 			if (cropId.isNullOrBlank() || diaryId.isNullOrBlank()) return@liveData
 
@@ -38,7 +39,7 @@ class CropViewModel(
 					is DataResult.Success -> liveData {
 						val crop = diaryResult.data.crop(cropId)
 						originalCrop = crop.copy()
-						emit(crop)
+						emit(Data(diary = diaryResult.data, crop = crop))
 					}
 					else -> throw CropLoadFailed(cropId)
 				}
@@ -46,7 +47,7 @@ class CropViewModel(
 		}
 	}
 
-	public fun new(): LiveData<Crop>
+	public fun new(): LiveData<Data>
 	{
 		isNew = true
 		cropId.clear()
@@ -68,7 +69,7 @@ class CropViewModel(
 		return crop
 	}
 
-	public fun load(id: String): LiveData<Crop>
+	public fun load(id: String): LiveData<Data>
 	{
 		isNew = false
 		cropId.postValue(id)
@@ -79,7 +80,8 @@ class CropViewModel(
 	{
 		viewModelScope.launch {
 			cropId.clear()?.let { id ->
-				val diary = diariesRepository.getDiaryById(id) ?: throw DiaryLoadFailed(id)
+				val diaryId = diaryId.value ?: return@let
+				val diary = diariesRepository.getDiaryById(diaryId) ?: throw DiaryLoadFailed(diaryId)
 				diariesRepository.removeCrop(id, diary)
 			}
 		}
@@ -88,10 +90,9 @@ class CropViewModel(
 	public fun save(new: Crop)
 	{
 		viewModelScope.launch {
-			cropId.clear()?.let { id ->
-				val diary = diariesRepository.getDiaryById(id) ?: throw DiaryLoadFailed(id)
-				diariesRepository.addCrop(new, diary)
-			}
+			val diaryId = diaryId.value ?: return@launch
+			val diary = diariesRepository.getDiaryById(diaryId) ?: throw DiaryLoadFailed(diaryId)
+			diariesRepository.addCrop(new, diary)
 		}
 	}
 

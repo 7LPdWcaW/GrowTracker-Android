@@ -6,7 +6,6 @@ import androidx.core.view.isVisible
 import androidx.core.widget.doAfterTextChanged
 import androidx.fragment.app.activityViewModels
 import androidx.lifecycle.observe
-import me.anon.grow3.data.model.Crop
 import me.anon.grow3.data.model.MediumType
 import me.anon.grow3.data.model.StageChange
 import me.anon.grow3.databinding.FragmentCrudDiaryCropBinding
@@ -16,6 +15,7 @@ import me.anon.grow3.ui.common.Extras
 import me.anon.grow3.ui.crud.activity.DiaryActivity
 import me.anon.grow3.ui.crud.viewmodel.DiaryCrudViewModel
 import me.anon.grow3.util.*
+import me.anon.grow3.util.states.Data
 import javax.inject.Inject
 
 class DiaryCropFragment : BaseFragment(FragmentCrudDiaryCropBinding::class)
@@ -81,34 +81,36 @@ class DiaryCropFragment : BaseFragment(FragmentCrudDiaryCropBinding::class)
 
 	override fun bindVm()
 	{
-		crudViewModel.cropVm.crop.observe(viewLifecycleOwner) { crop: Crop ->
-			val diary = crudViewModel.diaryVm.diary.value
-			diary ?: return@observe
+		crudViewModel.cropVm.crop
+			.nonNull()
+			.observe(viewLifecycleOwner) { data: Data ->
+				val diary = data.diary ?: return@observe
+				val crop = data.crop ?: return@observe
 
-			viewBindings.cropName.editText!!.text = crop.name.asEditable()
-			viewBindings.cropGenetics.editText!!.text = crop.genetics?.asEditable()
-			viewBindings.cropNumPlants.editText!!.text = crop.numberOfPlants.toString().asEditable()
+				viewBindings.cropName.editText!!.text = crop.name.asEditable()
+				viewBindings.cropGenetics.editText!!.text = crop.genetics?.asEditable()
+				viewBindings.cropNumPlants.editText!!.text = crop.numberOfPlants.toString().asEditable()
 
-			val medium = diary.mediumOf(crop)
-			medium?.let {
-				viewBindings.mediumTypeOptions.checkItems(it.medium.strRes)
-				viewBindings.mediumSize.editText!!.text = it.size.asStringOrNull()?.asEditable()
+				val medium = diary.mediumOf(crop)
+				medium?.let {
+					viewBindings.mediumTypeOptions.checkItems(it.medium.strRes)
+					viewBindings.mediumSize.editText!!.text = it.size.asStringOrNull()?.asEditable()
+				}
+
+				viewBindings.includeCardStages.stagesHeader.isVisible = true
+				viewBindings.includeCardStages.stagesView.setStages(diary, crop)
+				viewBindings.includeCardStages.stagesView.onNewStageClick = {
+					// save the diary so it includes the new crop?
+					//viewModel.saveCrop(crop)
+					(activity as DiaryActivity).openModal(LogActionFragment().apply {
+						arguments = bundleOf(
+							Extras.EXTRA_DIARY_ID to diary.id,
+							Extras.EXTRA_LOG_TYPE to nameOf<StageChange>(),
+							Extras.EXTRA_CROP_IDS to arrayOf(crop.id)
+						)
+					})
+				}
 			}
-
-			viewBindings.includeCardStages.stagesHeader.isVisible = true
-			viewBindings.includeCardStages.stagesView.setStages(diary, crop)
-			viewBindings.includeCardStages.stagesView.onNewStageClick = {
-				// save the diary so it includes the new crop?
-				//viewModel.saveCrop(crop)
-				(activity as DiaryActivity).openModal(LogActionFragment().apply {
-					arguments = bundleOf(
-						Extras.EXTRA_DIARY_ID to diary.id,
-						Extras.EXTRA_LOG_TYPE to nameOf<StageChange>(),
-						Extras.EXTRA_CROP_IDS to arrayOf(crop.id)
-					)
-				})
-			}
-		}
 	}
 
 	private var backPress = true

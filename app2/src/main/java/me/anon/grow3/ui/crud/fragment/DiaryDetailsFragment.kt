@@ -1,6 +1,5 @@
 package me.anon.grow3.ui.crud.fragment
 
-import android.os.Bundle
 import android.view.View
 import androidx.core.os.bundleOf
 import androidx.core.view.isVisible
@@ -28,41 +27,38 @@ class DiaryDetailsFragment : BaseFragment(FragmentCrudDiaryDetailsBinding::class
 	private val crudViewModel: DiaryCrudViewModel by activityViewModels { ViewModelProvider(crudViewModelFactory, this) }
 	private val viewBindings by viewBinding<FragmentCrudDiaryDetailsBinding>()
 
-	override fun bindArguments(bundle: Bundle?)
-	{
-		super.bindArguments(bundle)
-	}
-
 	override fun bindVm()
 	{
-		crudViewModel.diaryVm.diary.observe(viewLifecycleOwner) { diary ->
-			viewBindings.diaryName.editText!!.text = diary.name.asEditable()
-			viewBindings.date.editText!!.text = diary.date.asDateTime().asFormattedString().asEditable()
+		crudViewModel.diaryVm.diary
+			.nonNull()
+			.observe(viewLifecycleOwner) { diary ->
+				viewBindings.diaryName.editText!!.text = diary.name.asEditable()
+				viewBindings.date.editText!!.text = diary.date.asDateTime().asFormattedString().asEditable()
 
-			viewBindings.cropsContainer.removeAllViews()
-			diary.crops.mapToView<Crop, StubCrudCropBinding>(viewBindings.cropsContainer) { crop, cropBindings ->
-				cropBindings.cropName.text = crop.name
+				viewBindings.cropsContainer.removeAllViews()
+				diary.crops.mapToView<Crop, StubCrudCropBinding>(viewBindings.cropsContainer) { crop, cropBindings ->
+					cropBindings.cropName.text = crop.name
 
-				cropBindings.cropGenetics.text = crop.genetics
-				cropBindings.cropGenetics.isVisible = !crop.genetics.isNullOrBlank()
+					cropBindings.cropGenetics.text = crop.genetics
+					cropBindings.cropGenetics.isVisible = !crop.genetics.isNullOrBlank()
 
-				cropBindings.duplicate.onClick {
-					crudViewModel.cropVm.save(crop.copy(id = UUID.randomUUID().toString()))
+					cropBindings.duplicate.onClick {
+						crudViewModel.cropVm.save(crop.copy(id = UUID.randomUUID().toString()))
+					}
+
+					cropBindings.root.onClick {
+						// reveal crop edit fragment dialog
+						val navController = findNavController()
+						navController.navigate(R.id.page_1_to_2, bundleOf(Extras.EXTRA_CROP_ID to crop.id))
+					}
+
+	//				 Broken for now
+	//				BadgeUtils.attachBadgeDrawable(BadgeDrawable.create(view.context).apply {
+	//					this.number = crop.numberOfPlants
+	//					this.backgroundColor = R.attr.colorSecondary.resColor(view.context)
+	//					this.badgeGravity = BadgeDrawable.TOP_END
+	//				}, view.crop_image, null))
 				}
-
-				cropBindings.root.onClick {
-					// reveal crop edit fragment dialog
-					val navController = findNavController()
-					navController.navigate(R.id.page_1_to_2, bundleOf(Extras.EXTRA_CROP_ID to crop.id))
-				}
-
-//				 Broken for now
-//				BadgeUtils.attachBadgeDrawable(BadgeDrawable.create(view.context).apply {
-//					this.number = crop.numberOfPlants
-//					this.backgroundColor = R.attr.colorSecondary.resColor(view.context)
-//					this.badgeGravity = BadgeDrawable.TOP_END
-//				}, view.crop_image, null))
-			}
 		}
 	}
 
@@ -88,11 +84,11 @@ class DiaryDetailsFragment : BaseFragment(FragmentCrudDiaryDetailsBinding::class
 //			crudViewModel.setDiaryDate(current.asDateTime())
 //		}
 //
-//		viewBindings.addCrop.onClick {
-//			// reveal crop edit fragment dialog
-//			val navController = findNavController()
-//			navController.navigate(R.id.page_1_to_2)
-//		}
+		viewBindings.addCrop.onClick {
+			// reveal crop edit fragment dialog
+			val navController = findNavController()
+			navController.navigate(R.id.page_1_to_2)
+		}
 //
 //		attachCallbacks()
 	}
