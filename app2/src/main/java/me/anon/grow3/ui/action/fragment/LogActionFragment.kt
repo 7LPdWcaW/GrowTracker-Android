@@ -1,6 +1,7 @@
 package me.anon.grow3.ui.action.fragment
 
 import android.os.Bundle
+import androidx.core.view.isVisible
 import androidx.core.view.plusAssign
 import androidx.fragment.app.activityViewModels
 import androidx.fragment.app.commit
@@ -27,6 +28,11 @@ import javax.inject.Inject
 
 open class LogActionFragment : BaseFragment(FragmentActionLogBinding::class)
 {
+	companion object
+	{
+		public const val EXTRA_SINGLE_CROP = "logaction.single"
+	}
+
 	override val injector: Injector = { it.inject(this) }
 
 	@Inject internal lateinit var viewModelFactory: LogActionViewModel.Factory
@@ -133,6 +139,11 @@ open class LogActionFragment : BaseFragment(FragmentActionLogBinding::class)
 			view.findViewById<CropSelectView>(R.id.crop_select_view)?.let {
 				it.selectedCrops = arguments?.getStringArray(Extras.EXTRA_CROP_IDS)?.asSequence()?.toHashSet() ?: hashSetOf()
 				it.setDiary(diary)
+			}
+
+			if (arguments?.getBoolean(EXTRA_SINGLE_CROP, false) == true)
+			{
+				view.findViewById<CropSelectView>(R.id.crop_select_view)?.isVisible = false
 			}
 		}
 	}

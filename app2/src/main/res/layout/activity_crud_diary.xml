@@ -58,19 +58,6 @@
 				app:layout_constraintEnd_toEndOf="parent"
 				app:srcCompat="@drawable/ic_appintro_fab_next"
 			/>
-
-			<com.google.android.material.floatingactionbutton.FloatingActionButton
-				android:layout_width="wrap_content"
-				android:layout_height="wrap_content"
-				android:id="@+id/done"
-				android:layout_margin="16dp"
-				android:contentDescription="@string/app_intro_done_button"
-				app:layout_constraintBottom_toBottomOf="@+id/bottom"
-				app:layout_constraintEnd_toEndOf="parent"
-				app:backgroundTint="?colorPrimary"
-				app:tint="?textOnPrimary"
-				app:srcCompat="@drawable/ic_check"
-			/>
 		</androidx.constraintlayout.widget.ConstraintLayout>
 	</androidx.constraintlayout.widget.ConstraintLayout>
 

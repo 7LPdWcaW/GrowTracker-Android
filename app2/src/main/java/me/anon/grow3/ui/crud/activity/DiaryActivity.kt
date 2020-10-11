@@ -51,7 +51,6 @@ class DiaryActivity : BaseActivity(ActivityCrudDiaryBinding::class)
 			currentView = destination.id
 			viewBindings.back.isVisible = currentView != R.id.navigation_diary_details && currentView != R.id.navigation_diary_crop
 			viewBindings.next.isVisible = currentView != R.id.navigation_diary_crop
-			viewBindings.done.isVisible = currentView == R.id.navigation_diary_crop && args?.isEmpty != false
 
 			if (currentView == R.id.navigation_diary_complete)
 			{
@@ -64,11 +63,16 @@ class DiaryActivity : BaseActivity(ActivityCrudDiaryBinding::class)
 		NavigationUI.setupWithNavController(viewBindings.includeToolbar.toolbar, navController)
 	}
 
+	public fun popBackStack()
+	{
+		navController.popBackStack()
+	}
+
 	override fun bindUi()
 	{
-		viewBindings.done.setOnClickListener {
-			navController.popBackStack()
-		}
+//		viewBindings.done.setOnClickListener {
+//			navController.popBackStack()
+//		}
 
 		viewBindings.back.onClick {
 			onBackPressed()

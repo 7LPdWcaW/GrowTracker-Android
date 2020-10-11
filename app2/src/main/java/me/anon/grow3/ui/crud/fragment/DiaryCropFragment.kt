@@ -3,6 +3,7 @@ package me.anon.grow3.ui.crud.fragment
 import android.os.Bundle
 import androidx.core.os.bundleOf
 import androidx.core.view.isVisible
+import androidx.core.view.updatePadding
 import androidx.core.widget.doAfterTextChanged
 import androidx.fragment.app.activityViewModels
 import androidx.lifecycle.observe
@@ -37,6 +38,20 @@ class DiaryCropFragment : BaseFragment(FragmentCrudDiaryCropBinding::class)
 
 	override fun bindUi()
 	{
+		viewBindings.done.isVisible = crudViewModel.cropVm.isNew
+		viewBindings.done.onClick {
+			(activity as? DiaryActivity)?.popBackStack()
+		}
+		viewBindings.content.updatePadding(bottom = if (viewBindings.done.isVisible) 92.dp else 0.dp)
+
+		viewBindings.removeCrop.isVisible = !crudViewModel.cropVm.isNew
+		viewBindings.removeCrop.onClick {
+			requireContext().promptRemove {
+				crudViewModel.cropVm.remove()
+				(activity as? DiaryActivity)?.popBackStack()
+			}
+		}
+
 		viewBindings.cropName.editText!!.onFocusLoss {
 			it.text.toStringOrNull()?.let {
 				crudViewModel.setCrop(
@@ -99,14 +114,24 @@ class DiaryCropFragment : BaseFragment(FragmentCrudDiaryCropBinding::class)
 
 				viewBindings.includeCardStages.stagesHeader.isVisible = true
 				viewBindings.includeCardStages.stagesView.setStages(diary, crop)
+				viewBindings.includeCardStages.stagesView.onStageClick = { stage ->
+					(activity as DiaryActivity).openModal(LogActionFragment().apply {
+						arguments = bundleOf(
+							Extras.EXTRA_DIARY_ID to diary.id,
+							Extras.EXTRA_LOG_ID to stage.id,
+							Extras.EXTRA_LOG_TYPE to nameOf<StageChange>(),
+							Extras.EXTRA_CROP_IDS to arrayOf(crop.id),
+							LogActionFragment.EXTRA_SINGLE_CROP to true
+						)
+					})
+				}
 				viewBindings.includeCardStages.stagesView.onNewStageClick = {
-					// save the diary so it includes the new crop?
-					//viewModel.saveCrop(crop)
 					(activity as DiaryActivity).openModal(LogActionFragment().apply {
 						arguments = bundleOf(
 							Extras.EXTRA_DIARY_ID to diary.id,
 							Extras.EXTRA_LOG_TYPE to nameOf<StageChange>(),
-							Extras.EXTRA_CROP_IDS to arrayOf(crop.id)
+							Extras.EXTRA_CROP_IDS to arrayOf(crop.id),
+							LogActionFragment.EXTRA_SINGLE_CROP to true
 						)
 					})
 				}

@@ -94,7 +94,8 @@ class LogActionViewModel constructor(
 	{
 		viewModelScope.launch {
 			logId.clear()?.let { id ->
-				val diary = diariesRepository.getDiaryById(id) ?: throw DiaryLoadFailed(id)
+				val diaryId = diaryId.value ?: return@launch
+				val diary = diariesRepository.getDiaryById(diaryId) ?: throw DiaryLoadFailed(id)
 				diariesRepository.removeLog(id, diary)
 			}
 		}
