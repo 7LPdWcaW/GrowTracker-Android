@@ -45,6 +45,7 @@ class LogActionViewModel constructor(
 		liveData {
 			if (logId.isNullOrBlank() || diaryId.isNullOrBlank()) return@liveData
 
+			// should this react to changes on the diary?
 			emitSource(diariesRepository.observeDiary(diaryId).switchMap { diaryResult ->
 				when (diaryResult)
 				{

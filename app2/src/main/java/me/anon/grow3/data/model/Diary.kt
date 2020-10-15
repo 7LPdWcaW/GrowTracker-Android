@@ -97,10 +97,8 @@ data class Diary(
 			}
 			else
 			{
-				this.filterIsInstance<StageChange>()
-					.findLast {
-						cropFilter(crop, it)
-					}
+				findAllStages(crop)
+					.lastOrNull()
 			}
 		}
 

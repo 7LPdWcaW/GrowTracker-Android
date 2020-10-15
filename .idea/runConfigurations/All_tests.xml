@@ -1,6 +1,8 @@
 <component name="ProjectRunConfigurationManager">
   <configuration default="false" name="All tests" type="AndroidJUnit" factoryName="Android JUnit">
     <module name="app2" />
+    <shortenClasspath name="CLASSPATH_FILE" />
+    <useClassPathOnly />
     <option name="PACKAGE_NAME" value="me.anon.grow3" />
     <option name="MAIN_CLASS_NAME" value="" />
     <option name="METHOD_NAME" value="" />

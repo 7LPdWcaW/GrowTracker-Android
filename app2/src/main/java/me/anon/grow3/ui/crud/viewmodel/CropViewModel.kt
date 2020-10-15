@@ -7,6 +7,8 @@ import kotlinx.coroutines.launch
 import me.anon.grow3.data.exceptions.GrowTrackerException.CropLoadFailed
 import me.anon.grow3.data.exceptions.GrowTrackerException.DiaryLoadFailed
 import me.anon.grow3.data.model.Crop
+import me.anon.grow3.data.model.StageChange
+import me.anon.grow3.data.model.StageType
 import me.anon.grow3.data.repository.DiariesRepository
 import me.anon.grow3.ui.common.Extras
 import me.anon.grow3.util.clear
@@ -62,6 +64,16 @@ class CropViewModel(
 				)
 
 				diariesRepository.addCrop(crop, diary)
+
+				if (diary.stageOf(crop) == null)
+				{
+					// add default stage
+					diariesRepository.addLog(StageChange(StageType.Planted).apply {
+						date = crop.platedDate
+						cropIds += crop.id
+					}, diary)
+				}
+
 				cropId.postValue(crop.id)
 			}
 		}
