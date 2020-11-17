@@ -408,7 +408,9 @@
 	<string name="cache_cleared">Képfájl és memória gyorsítótár törölve</string>
 	<string name="import_progress_warning">Képek importálása, ez eltarthat egy darabig...</string>
 	<string name="data_task">Feladat időzítése</string>
-	<string name="task_complete">Feladat teljesítve</string>
+	<string name="import_task_complete">Kép importálás kész</string>
+	<string name="decrypt_task_complete">Kép visszafejtés kész</string>
+	<string name="encrypt_task_complete">Kép titkosítás kész</string>
 	<string name="empty_actions_list">Nincs mutatható tevékenység</string>
 
 	<string name="exporting_start">Termesztési napló exportálása a következőnek: %s</string>
