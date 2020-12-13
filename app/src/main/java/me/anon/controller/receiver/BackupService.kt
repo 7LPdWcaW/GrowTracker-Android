@@ -13,17 +13,23 @@ class BackupService : BroadcastReceiver()
 {
 	override fun onReceive(context: Context, intent: Intent)
 	{
-		var backup = true
-		File(BackupHelper.FILES_PATH).listFiles()?.let {
-			if (it.isEmpty()) return@let
-			val sorted = ArrayList(it.sortedBy { it.lastModified() })
-			val today = LocalDate.now()
-			backup = DateTimeUtils.toLocalDate(Date(sorted.last().lastModified())) != today
-		}
-
-		if (backup)
+		try
 		{
-			BackupHelper.backupJson()
+			var backup = true
+			File(BackupHelper.FILES_PATH).listFiles()?.let {
+				if (it.isEmpty()) return@let
+				val sorted = ArrayList(it.sortedBy { it.lastModified() })
+				val today = LocalDate.now()
+				backup = DateTimeUtils.toLocalDate(Date(sorted.last().lastModified())) != today
+			}
+
+			if (backup)
+			{
+				BackupHelper.backupJson()
+			}
+		}
+		catch (e: Exception)
+		{
 		}
 	}
 }

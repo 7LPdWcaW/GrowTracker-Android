@@ -128,7 +128,10 @@ public class ViewPhotosFragment extends Fragment
 		{
 			@Override public void onItemSelected(int totalSelected)
 			{
-				if (action == null) return;
+				if (action == null)
+				{
+					return;
+				}
 
 				if (totalSelected == 0)
 				{
@@ -397,7 +400,9 @@ public class ViewPhotosFragment extends Fragment
 						{
 							new File(path, ".nomedia").createNewFile();
 						}
-						catch (IOException e){}
+						catch (IOException e)
+						{
+						}
 
 						File out = new File(path, System.currentTimeMillis() + ".jpg");
 						Uri photoURI = FileProvider.getUriForFile(getActivity(), BuildConfig.APPLICATION_ID + ".provider", out);
@@ -505,7 +510,10 @@ public class ViewPhotosFragment extends Fragment
 		{
 			if (resultCode != Activity.RESULT_CANCELED)
 			{
-				if (data == null) return;
+				if (data == null)
+				{
+					return;
+				}
 
 				HashMap<Uri, Long> images = new HashMap();
 				if (data.getData() != null)
@@ -544,7 +552,8 @@ public class ViewPhotosFragment extends Fragment
 							DocumentsContract.Document.COLUMN_DOCUMENT_ID + " = " + key.getPath(), null, null);
 						long modifiedDate = images.get(key);
 						int modifiedIndex = query.getColumnIndex(DocumentsContract.Document.COLUMN_LAST_MODIFIED);
-						while (query.moveToNext()) {
+						while (query.moveToNext())
+						{
 							modifiedDate = query.getLong(modifiedIndex);
 							break;
 						}
@@ -552,7 +561,9 @@ public class ViewPhotosFragment extends Fragment
 						images.put(key, modifiedDate == -1 ? images.get(key) : modifiedDate);
 						query.close();
 					}
-					catch (Exception e){}
+					catch (Exception e)
+					{
+					}
 				}
 
 				NotificationHelper.sendDataTaskNotification(getActivity(), getString(R.string.app_name), getString(R.string.import_progress_warning));
@@ -592,15 +603,27 @@ public class ViewPhotosFragment extends Fragment
 		{
 			if (MainApplication.isEncrypted())
 			{
-				ArrayList<String> image = new ArrayList<>();
-				image.add(plant.getImages().get(plant.getImages().size() - 1));
-				new EncryptTask(getActivity()).executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR, image);
+				try
+				{
+					ArrayList<String> image = new ArrayList<>();
+					image.add(plant.getImages().get(plant.getImages().size() - 1));
+					new EncryptTask(getActivity()).executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR, image);
+				}
+				catch (Exception e)
+				{
+					e.printStackTrace();
+				}
 			}
 
 			SnackBar.show(getActivity(), R.string.snackbar_image_added, R.string.snackbar_action_take_another, new SnackBarListener()
 			{
-				@Override public void onSnackBarStarted(Object o){}
-				@Override public void onSnackBarFinished(Object o){}
+				@Override public void onSnackBarStarted(Object o)
+				{
+				}
+
+				@Override public void onSnackBarFinished(Object o)
+				{
+				}
 
 				@Override public void onSnackBarAction(View v)
 				{
