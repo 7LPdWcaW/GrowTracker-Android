@@ -416,12 +416,13 @@ public class WateringFragment extends Fragment
 						phCount++;
 					}
 
-					if (hint.getTds() != null)
+					if (hint.getTds() != null && hint.getTds().getAmount() != null)
 					{
-						Tds tds = new Tds(hint.getTds().getAmount(), hint.getTds().getType());
+						double amt = hint.getTds().getAmount();
+						Tds tds = new Tds(amt, hint.getTds().getType());
 						if (hint.getTds().getType() == selectedTdsUnit)
 						{
-							selectedTdsAverage += hint.getTds().getAmount();
+							selectedTdsAverage += amt;
 							averagePpm.add(tds);
 						}
 					}
@@ -527,9 +528,10 @@ public class WateringFragment extends Fragment
 				waterPh.setText(String.valueOf(water.getPh()));
 			}
 
-			if (water.getTds() != null)
+			if (water.getTds() != null && water.getTds().getAmount() != null)
 			{
-				String ppm = NumberUtilsKt.formatWhole(water.getTds().getAmount());
+				Double amt = water.getTds().getAmount();
+				String ppm = NumberUtilsKt.formatWhole(amt);
 				waterPpm.setText(ppm);
 			}
 
