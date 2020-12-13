@@ -205,6 +205,45 @@
 				<TextView
 					android:layout_width="wrap_content"
 					android:layout_height="wrap_content"
+					android:text="@string/additives_title"
+					style="@style/SectionTitle"
+				/>
+
+				<LinearLayout
+					android:layout_width="match_parent"
+					android:layout_height="wrap_content"
+					android:id="@+id/additive_container"
+					android:orientation="vertical"
+					android:divider="?android:listDivider"
+					android:showDividers="middle"
+					android:layout_marginTop="16dp"
+				>
+					<TextView
+						android:layout_width="match_parent"
+						android:layout_height="wrap_content"
+						android:id="@+id/new_additive"
+						android:text="@string/new_additive"
+						android:textStyle="bold"
+						android:paddingLeft="16dp"
+						android:paddingRight="16dp"
+						android:paddingTop="18dp"
+						android:paddingBottom="18dp"
+						android:background="?selectableItemBackground"
+					/>
+				</LinearLayout>
+			</LinearLayout>
+
+			<LinearLayout
+				android:layout_width="match_parent"
+				android:layout_height="wrap_content"
+				android:orientation="vertical"
+				android:layout_marginTop="8dp"
+				android:elevation="4dp"
+				style="@style/PaperCard"
+			>
+				<TextView
+					android:layout_width="wrap_content"
+					android:layout_height="wrap_content"
 					android:text="@string/date_and_time_header"
 					style="@style/SectionTitle"
 				/>
@@ -255,45 +294,6 @@
 							style="@style/SubsectionSubTitle"
 						/>
 					</RelativeLayout>
-				</LinearLayout>
-			</LinearLayout>
-
-			<LinearLayout
-				android:layout_width="match_parent"
-				android:layout_height="wrap_content"
-				android:orientation="vertical"
-				android:layout_marginTop="8dp"
-				android:elevation="4dp"
-				style="@style/PaperCard"
-			>
-				<TextView
-					android:layout_width="wrap_content"
-					android:layout_height="wrap_content"
-					android:text="@string/additives_title"
-					style="@style/SectionTitle"
-				/>
-
-				<LinearLayout
-					android:layout_width="match_parent"
-					android:layout_height="wrap_content"
-					android:id="@+id/additive_container"
-					android:orientation="vertical"
-					android:divider="?android:listDivider"
-					android:showDividers="middle"
-					android:layout_marginTop="16dp"
-				>
-					<TextView
-						android:layout_width="match_parent"
-						android:layout_height="wrap_content"
-						android:id="@+id/new_additive"
-						android:text="@string/new_additive"
-						android:textStyle="bold"
-						android:paddingLeft="16dp"
-						android:paddingRight="16dp"
-						android:paddingTop="18dp"
-						android:paddingBottom="18dp"
-						android:background="?selectableItemBackground"
-					/>
 				</LinearLayout>
 			</LinearLayout>
 
