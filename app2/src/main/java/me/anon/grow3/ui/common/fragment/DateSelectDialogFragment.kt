@@ -7,8 +7,8 @@ import android.os.Bundle
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentManager
 import androidx.fragment.app.commit
+import me.anon.grow3.util.asApiString
 import me.anon.grow3.util.asDateTime
-import me.anon.grow3.util.asString
 import org.threeten.bp.ZonedDateTime
 
 /**
@@ -24,7 +24,7 @@ class DateSelectDialogFragment : Fragment()
 		private const val SAVED_DIALOG_CURRENT_DIALOG: String = "current_dialog"
 		private const val SAVED_DIALOG_INCLUDE_TIME: String = "include_time"
 
-		public fun show(selectedDate: String = ZonedDateTime.now().asString(), includeTime: Boolean = true, fm: FragmentManager): DateSelectDialogFragment
+		public fun show(selectedDate: String = ZonedDateTime.now().asApiString(), includeTime: Boolean = true, fm: FragmentManager): DateSelectDialogFragment
 			= show(selectedDate.asDateTime(), includeTime, fm)
 
 		public fun show(selectedDate: ZonedDateTime = ZonedDateTime.now(), includeTime: Boolean = true, fm: FragmentManager): DateSelectDialogFragment
@@ -108,7 +108,7 @@ class DateSelectDialogFragment : Fragment()
 			val dialogState = it.onSaveInstanceState()
 			outState.putBundle(SAVED_DIALOG_STATE_TAG, dialogState);
 		}
-		outState.putString(SAVED_DIALOG_SELECTED_DATE, selectedDate.asString())
+		outState.putString(SAVED_DIALOG_SELECTED_DATE, selectedDate.asApiString())
 		outState.putString(SAVED_DIALOG_CURRENT_DIALOG, currentDialog?.javaClass?.simpleName ?: "")
 		outState.putBoolean(SAVED_DIALOG_INCLUDE_TIME, includeTime)
 	}

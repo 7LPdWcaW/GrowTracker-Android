@@ -10,7 +10,7 @@ import java.util.*
 data class Diary(
 	@Id public val id: String = UUID.randomUUID().toString(),
 	public var name: String,
-	public var date: String = ZonedDateTime.now().asString(),
+	public var date: String = ZonedDateTime.now().asApiString(),
 	public val log: List<Log> = arrayListOf(),
 	public val crops: List<Crop> = arrayListOf()
 )
@@ -142,7 +142,7 @@ data class Diary(
 				}
 
 				// ongoing
-				if (lastStage == stage) daysInStage += (lastStage!!.date and ZonedDateTime.now().asString()).dateDifferenceDays()
+				if (lastStage == stage) daysInStage += (lastStage!!.date and ZonedDateTime.now().asApiString()).dateDifferenceDays()
 				ret[stage] = ret.getOrElse(stage, { 0.0 }) + daysInStage
 			}
 

@@ -33,7 +33,7 @@ class DiaryDetailsFragment : BaseFragment(FragmentCrudDiaryDetailsBinding::class
 			.nonNull()
 			.observe(viewLifecycleOwner) { diary ->
 				viewBindings.diaryName.editText!!.text = diary.name.asEditable()
-				viewBindings.date.editText!!.text = diary.date.asDateTime().asFormattedString().asEditable()
+				viewBindings.date.editText!!.text = diary.date.asDateTime().asDisplayString().asEditable()
 
 				viewBindings.cropsContainer.removeAllViews()
 				diary.crops.mapToView<Crop, StubCrudCropBinding>(viewBindings.cropsContainer) { crop, cropBindings ->

@@ -2,14 +2,13 @@ package me.anon.grow3.ui.logs.fragment
 
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.observe
-import me.anon.grow3.data.exceptions.GrowTrackerException.*
+import me.anon.grow3.data.exceptions.GrowTrackerException.InvalidLog
 import me.anon.grow3.data.model.*
 import me.anon.grow3.ui.base.CardListFragment
 import me.anon.grow3.ui.logs.view.*
 import me.anon.grow3.ui.logs.viewmodel.LogListViewModel
 import me.anon.grow3.util.Injector
 import me.anon.grow3.util.ViewModelProvider
-import me.anon.grow3.util.asFormattedString
 import me.anon.grow3.util.asLocalDate
 import me.anon.grow3.util.states.asSuccess
 import javax.inject.Inject
@@ -40,7 +39,7 @@ class LogListFragment : CardListFragment()
 					})
 
 				group.forEach { (date, logs) ->
-					add(LogDateSeparator(date.asFormattedString()))
+//					add(LogDateSeparator(date.asFormattedString()))
 
 					logs.forEach { log ->
 						add(when (log)
