@@ -37,7 +37,7 @@ class NitriteDiariesDataSource @Inject constructor(
 	{
 		withContext(dispatcher) {
 			db.getRepository<Diary> {
-				insert(diary)
+				update(diary, true)
 			}
 			db.commit()
 		}
@@ -67,7 +67,7 @@ class NitriteDiariesDataSource @Inject constructor(
 			DiariesDataSource.SyncDirection.SAVE -> {
 				withContext(dispatcher) {
 					db.getRepository<Diary> {
-						diary.forEach { update(it) }
+						diary.forEach { update(it, true) }
 					}
 
 					db.commit()
