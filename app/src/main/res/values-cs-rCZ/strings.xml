@@ -1,0 +1,454 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<resources>
+	<string name="version">Verze %s</string>
+	<string name="menu_settings">Nastavení</string>
+
+	<!-- Garden Plant list title "garden name plants" -->
+	<string name="list_title">%srostlin</string>
+	<!-- All plants list -->
+	<string name="all_list_title">Všechny rostliny</string>
+	<!-- All/everything -->
+	<string name="all">Vše</string>
+	<string name="snackbar_action_add">Akce přidána</string>
+	<string name="snackbar_note_add">Poznámka přidána</string>
+	<string name="snackbar_watering_add">Zálivka přidána</string>
+	<string name="snackbar_garden_deleted">Zahrada vymazána</string>
+
+	<string name="dialog_garden_delete_body">Jste si jistí, že chcete vymazat zahradu &lt;b&gt;\"%s\"&lt;/b&gt;? Tímto nesmažete rostliny.</string>
+	<string name="action_feed">Zálivka</string>
+	<string name="action_action">Akce</string>
+
+	<string name="widget_encrypt_error">Widget není dostupný když je zapnuto nastavení šifrování.</string>
+	<string name="new_plant_title">Přidat novou rostlinu</string>
+	<string name="plant_details_title">Podrobnosti o rostlině</string>
+	<string name="statistics_title">Statistiky rostliny</string>
+	<!-- select from camera -->
+	<string name="photo_option_camera">Z fotoaparátu</string>
+	<!-- select from gallery -->
+	<string name="photo_option_gallery">Z galerie</string>
+	<string name="dialog_option_title">Vyberte možnost</string>
+	<string name="dialog_select_picture_title">Vyberte obrázek</string>
+	<string name="snackbar_action_apply">Přidat k další rostlině</string>
+	<string name="dialog_select_plant_title">Vybrat rostlinu</string>
+	<string name="snackbar_image_added">Obrázek přidán</string>
+	<string name="snackbar_action_take_another">Vyfotit další</string>
+
+	<string name="nav_feeding_schedule">Rozvrhy</string>
+	<string name="schedule_details_title">Podrobnosti rozvrhu</string>
+	<string name="schedule_date_title">Datum rozvrhu</string>
+	<string name="schedule_name">Název</string>
+	<string name="schedule_name_hint">Lehká výživa</string>
+	<string name="schedule_description">Popis</string>
+	<!-- an example of a feeding schedule -->
+	<string name="schedule_description_hint">Lehká výživa s proplachem každé 2 týdny</string>
+
+	<string name="schedules_new_feeding">+ Nový plán výživy</string>
+	<string name="schedules_new_schedule">+ Nový rozvrh</string>
+	<string name="new_additive">+ Nové aditivum</string>
+	<string name="additives">Aditiva</string>
+	<string name="additive">Aditivum</string>
+	<string name="from_date">Od data</string>
+	<string name="from_stage">Od fáze</string>
+	<string name="to_date">Do data</string>
+	<string name="to_stage">Do fáze</string>
+	<string name="populate_from_schedule">Vybrat z plánu</string>
+	<string name="populate_from_previous">Vybrat z minulých</string>
+	<string name="confirm_title">Jste si jisti?</string>
+	<string name="confirm_copy_schedule">Kopírovat vybraný plán?</string>
+	<string name="confirm_delete_schedule">Smazat vybraný plán?</string>
+	<string name="schedule_copied">Plán zkopírován</string>
+	<string name="schedule_deleted">Plán vymazán</string>
+	<string name="undo">Vrátit</string>
+	<string name="feeding_schedules_title">Plány výživy</string>
+	<string name="feeding_schedule_title">Plán výživy</string>
+	<string name="update_dialog_title">Aplikace byla updatována</string>
+	<string name="update_dialog_message" formatted="true">Aplikace byla povýšena na verzi %s</string>
+	<string name="update_dialog_view_changes_button">Prohlédnout změny</string>
+	<string name="update_dialog_dismiss_button">Zahodit</string>
+
+	<!-- Feeding {plant name} -->
+	<string name="feeding_single_title" formatted="true">Zálivka %s</string>
+	<string name="feeding_multiple_title">Zalít více rostlin</string>
+
+	<string name="action_dialog_notes">Poznámky</string>
+	<string name="water_details_title">Podrobnosti o zálivce</string>
+	<string name="water_ph_label">pH zálivky</string>
+	<string name="ppm_label">PPM</string>
+	<string name="runoff_label">Odtok</string>
+	<string name="amount_label" formatted="true">Množství (%s)</string>
+	<string name="temp_label" formatted="true">Teplota (º%s)</string>
+	<string name="date_and_time_header">Datum a čas</string>
+	<string name="date_now">Nyní</string>
+	<string name="date_label">Datum</string>
+	<string name="today">Dnes</string>
+	<string name="length_cured">Pomalé sušení %sdní</string>
+
+	<string name="filter_waterings">Zálivky</string>
+	<string name="filter_stage_changes">Změny fáze</string>
+
+	<string name="menu_duplicate">Duplikovat</string>
+	<string name="menu_copy_to">Kopírovat do</string>
+	<string name="menu_edit_action">Upravit akci</string>
+	<string name="menu_delete_action">Vymazat akci</string>
+
+	<string name="garden_dialog_select">Vybrat rostliny</string>
+	<string name="nav_gardens">Zahrady</string>
+	<string name="nav_all_plants">Všechny rostliny</string>
+	<string name="nav_new_garden">+ Nová zahrada</string>
+	<string name="nav_additional">Ostatní</string>
+	<string name="nav_settings">Nastavení</string>
+	<string name="delete">Vymazat</string>
+	<string name="share">Sdílet</string>
+	<string name="menu_photo">Foto</string>
+	<string name="last_watering_title">Poslední zálivka</string>
+	<string name="feed_again">Zalít znovu</string>
+
+	<string name="plant_name_label">Jméno rostliny</string>
+	<string name="new_plant_hint">Nová rostlina</string>
+	<string name="plant_strain_label">Odrůda rostliny</string>
+	<string name="plant_strain_hint">Lemon haze</string>
+	<string name="grow_details_title">Podrobnosti</string>
+	<string name="plant_date_label">Datum zasazení</string>
+	<string name="plant_medium_label">Substrát</string>
+
+	<string name="medium_details_label">Podrobnosti substrátu</string>
+	<!-- Example of medium mix -->
+	<string name="medium_details_hint">Zemina, perlit 50/50 mix</string>
+	<string name="from_clone_label">Z klonu?</string>
+	<string name="stage_details_title">Fáze růstu - podrobnosti</string>
+	<string name="plant_stage_label">Fáze rostliny</string>
+	<string name="view_photos">Zobrazit fotky</string>
+	<string name="view_history">Zobrazit historii</string>
+	<string name="view_statistics">Zobrazit statistiky</string>
+	<string name="view_photos_short">Fotky</string>
+	<string name="view_history_short">Historie</string>
+	<string name="view_statistics_short">Statistiky</string>
+	<string name="filter">Filtr</string>
+	<string name="planted">Zasazeno</string>
+	<string name="germination">Klíčení</string>
+	<string name="cutting">Řízkování</string>
+	<string name="vegetation">Růstová fáze</string>
+	<string name="budding">Tvorba květu</string>
+	<string name="flowering">Květová fáze</string>
+	<string name="ripening">Zrání</string>
+	<string name="drying">Sušení</string>
+	<string name="curing">Konzervace</string>
+	<string name="harvested">Sklizeno</string>
+	<!-- example "harvested 2 days ago" -->
+	<string name="harvested_ago" formatted="true">Sklizeno před %s</string>
+	<string name="menu_export_garden">Exportovat zahradu</string>
+	<string name="menu_edit_garden">Upravit zahradu</string>
+	<string name="menu_delete_garden">Vymazat zahradu</string>
+	<string name="menu_export">Exportovat</string>
+
+	<string name="total_time_label">Celkový čas:</string>
+	<string name="total_waters_label">Počet zálivek:</string>
+	<string name="total_flushes_label">Počet proplachů:</string>
+	<string name="total_water_amount_label">Celkem vody:</string>
+	<string name="ave_water_amount_label">Prům. spotřeba vody:</string>
+	<string name="ave_time_between_water_label">Průměrný čas mezi zálivkami:</string>
+	<string name="ave_time_stage_label" formatted="true">Prům. %s vody:</string>
+	<string name="filter_additives">Filtrovat přísady</string>
+	<string name="ph_title">pH</string>
+	<string name="tds_title">TDS</string>
+
+	<string name="min">Min.:</string>
+	<string name="max">Max:</string>
+	<string name="ave">Průměr:</string>
+	<string name="temperature_title">Teplota</string>
+	<string name="general_title">Obecné</string>
+	<string name="failed_to_load_plant">Nepodařilo se načíst rostlinu</string>
+	<string name="action_fim">FIM</string>
+	<string name="action_flush">Proplach</string>
+	<string name="action_foliar_feed">Postřik</string>
+	<string name="action_lst">LST</string>
+	<string name="action_lolipop">Lollipop</string>
+	<string name="action_pesticide_application">Aplikace pesticidů</string>
+	<string name="action_topped">Topováno</string>
+	<string name="action_transplanted">Přesazeno</string>
+	<string name="action_trim">Trim</string>
+	<string name="action_tuck">Scrog Tuck</string>
+	<string name="action_supercrop">Supercrop</string>
+	<string name="action_monstercrop">Monstercrop</string>
+
+	<string name="watered">Zalito</string>
+	<string name="note">Poznámka</string>
+	<string name="delete_event_dialog_title">Vymazat tuto událost?</string>
+	<string name="confirm_delete_item_message">Jste si jisti, že chcete vymazat</string>
+	<string name="confirm_delete_photos_message" formatted="true">Jste si jisti, že chcete vymazat &lt;b&gt;%s&lt;/b&gt; obrázky? Toto nelze vrátit.</string>
+	<string name="edit">Upravit</string>
+	<string name="stage">fáze</string>
+	<string name="set">Nastavit</string>
+	<string name="change">Změnit</string>
+	<string name="add">Přidat</string>
+	<string name="cancel">Zrušit</string>
+	<string name="action">akce</string>
+	<string name="ok">OK</string>
+	<string name="field_required">Nutno vyplnit pole</string>
+	<string name="encrypt_passphrase_error">Chyba - nesprávné heslo</string>
+	<string name="edit_feeding">Upravit zálivku</string>
+	<string name="added">přidáno</string>
+	<string name="action_duplicated">Akce duplikována</string>
+	<string name="multiple_plants">více rostlin</string>
+	<string name="added_to">Akce přidána k</string>
+	<string name="note_updated">Poznámka upravena</string>
+	<string name="updated">upraveno</string>
+	<string name="stage_updated">Fáze změněna</string>
+	<string name="event_deleted">Událost vymazána</string>
+	<string name="done">Hotovo</string>
+	<string name="garden">Zahrada</string>
+	<string name="select_all">Vybrat vše</string>
+	<string name="select_none">Nevybrat nic</string>
+	<string name="accept">Potvrdit</string>
+	<string name="enable">Zapnout</string>
+	<string name="decline">Odmítnout</string>
+	<string name="seedling_label">Klíček:</string>
+	<string name="seedling">Klíček</string>
+
+	<string name="crash_title">Jejda</string>
+	<string name="crash_message" formatted="true">Zdá se, že při posledním použití aplikace nastala chyba. Chcete poslat anonymní hlášení? Tato hlášení budou poslána na lt;a href=\"https://github.com/7LPdWcaW/GrowTracker-Android/issues\"&gt;github.com/7LPdWcaW/GrowTracker-Android/issues&lt;/a&gt;, žádné osobní informace nebudou přiloženy. Nebo můžete zaslat tato hlášení ručně na &lt;a href=\"https://reddit.com/r/growutils\"&gt;reddit.com/r/growutils&lt;/a&gt; , pokud chcete. Reporty jsou uloženy v &lt;i&gt;%s&lt;i&gt;</string>
+	<string name="yes">Ano</string>
+	<string name="no">Ne</string>
+
+	<string name="passphrase_title">Zadejte vaše heslo</string>
+	<string name="add_passphrase_title">Zadejte heslo</string>
+	<string name="readd_passphrase_title">Znovu zadejte vaše heslo</string>
+	<string name="passphrase_error">Chyba - hesla se neshodují</string>
+
+	<string name="fatal_error">Neočekávaná chyba při ukládání dat zahrady, prosím zazálohujte tato data</string>
+	<string name="taken">Vzato</string>
+	<string name="ago" formatted="true">Před %s</string>
+	<string name="watered_ago" formatted="true">Zalito před &lt;b&gt;%s&lt;/b&gt;</string>
+	<string name="last_watered_ago" formatted="true">Naposledy zalito před &lt;b&gt;%s&lt;/b&gt; </string>
+	<string name="planted_ago" formatted="true">Zasazeno před &lt;b&gt;%s&lt;/b&gt;</string>
+
+	<string name="permission_summary">Přístup k externí paměti je vyžadován k ukládání obrázku. Žádný další prostor není využíván.</string>
+
+	<string name="waterings_added">Zálivka přidána</string>
+	<string name="delete_plant_message">Chystáte se vymazat &lt;b&gt;%s&lt;/b&gt; a všechny přidružené obrázky. Jste si jisti? Tuto akci nelze vrátit.</string>
+	<string name="delete_plant_progress">Vymazávám rostlinu...</string>
+
+	<string name="plant_duplicated">Rostlina duplikována</string>
+	<string name="open">Otevřít</string>
+
+	<string name="export_progress">Exportuji pěstební data...</string>
+	<string name="garden_export">Exportuji pěstební data celé zahrady...</string>
+	<string name="action_added" formatted="true">%spřídáno</string>
+	<string name="name_input_error">Jméno nemůže být prázdné</string>
+	<string name="exporting" formatted="true">Exportuji %s</string>
+
+	<string name="soil">Zemina</string>
+	<string name="hydroponics">Hydroponie</string>
+	<string name="coco_coir">Kokos</string>
+	<string name="aeroponics">Aeroponie</string>
+	<string name="hide_images">Skrýt obrázky</string>
+	<string name="show_images">Ukázat obrázky</string>
+
+	<string name="settings_default_garden">Výchozí zahrada k zobrazení při otevření, aktuálně: &lt;b&gt;%s&lt;/b&gt;</string>
+	<string name="settings_card_style">Vyberte styl karty, aktuálně: %s</string>
+	<string name="settings_delivery">Výchozí jednotky pro vodu, aktuálně: &lt;b&gt;%slt;/b&gt;</string>
+	<string name="settings_measurement">Výchozí jednotky pro přísady, aktuálně: &lt;b&gt;%slt;/b&gt;</string>
+	<string name="settings_temperature">Výchozí jednotky pro teplotu, aktuálně:  &lt;b&gt;%s&lt;/b&gt;</string>
+	<string name="settings_backup_size" formatted="true">Aktuálně: &lt;b&gt;%sMb&lt;/b&gt; / Využívám &lt;b&gt;%s&lt;/b&gt;</string>
+	<string name="failsafe_message">Zadejte toto heslo během dešifrovací fáze abyste zabránili zobrazení dat.</string>
+	<string name="warning">Výstraha</string>
+	<string name="encryption_message">Toto je základní AES šifrování založené na zadaném hesle. Nejedná se o zaručenou formu zabezpečení před úřady.</string>
+	<string name="backup_enable_toast" formatted="true">Zálohování zapnuto, zálohy budou uloženy v %s</string>
+	<string name="restore_complete" formatted="true">Obnovení do %s hotovo.</string>
+	<string name="restore_error" formatted="true">Nebylo možné obnovit ze zálohy %s. Soubor může být %s</string>
+	<string name="encrypted">šifrováno</string>
+	<string name="unencrypted">nešifrováno</string>
+
+	<string name="select_measurement_title">Vybrat míru</string>
+	<string name="select_temperature_title">Vybrat teplotu</string>
+	<string name="select_garden_title">Vybrat zahradu</string>
+	<string name="select_backup_title">Vybrat zálohu</string>
+	<string name="backup_restore_error">Musíte mít zapnuté šifrování se stejným heslem k obnově této zálohy.</string>
+
+	<string name="backed_up_to">Zálohováno do</string>
+	<string name="no_backups">Nejsou tu žádné zálohy k obnovení</string>
+	<string name="all_none">Vše/nic</string>
+
+	<string name="stat_input_ph">Vstupní pH</string>
+	<string name="stat_runoff_ph">pH odtoku</string>
+	<string name="stat_average_ph">Průměrné pH</string>
+	<string name="stat_average_temp">Průměrná teplota</string>
+	<string name="stat_average_runoff_ph">Průměrné pH odtoku</string>
+	<string name="stat_average_tds" formatted="true">Průměr %s</string>
+
+	<string name="photos_title">Obrázky rostliny</string>
+
+	<string name="plant_summary_ph">pH do:</string>
+	<string name="plant_summary_out_ph">pH ven:</string>
+	<string name="plant_summary_amount">Množství</string>
+	<string name="plant_summary_temp">Teplota:</string>
+	<string name="plant_summary_additives">Přísady:</string>
+	<string name="plant_summary_ec">EC:</string>
+	<string name="plant_summary_ppm">PPM:</string>
+
+	<string name="select_schedule_title">Vybrat plán:</string>
+	<string name="actions">Akce</string>
+	<string name="settings_dark_title">Vynutit tmavý režim</string>
+	<string name="settings_dark_summary">Vynutí tmavý režim aplikace nezávisle na nastavení systému.</string>
+	<string name="settings_harvest_title">Schovat sklizené</string>
+	<string name="settings_harvest_summary">Nezobrazí všechny rostliny, které byly sklizené</string>
+	<string name="settings_reverse_title">Změnit pořadí rostlin</string>
+	<string name="settings_reverse_summary">Zobrazí rostliny v obráceném pořadí. (Nutný restart aplikace)</string>
+	<string name="settings_garden_title">Výchozí zahrada</string>
+
+	<string name="settings_units">Jednotky</string>
+	<string name="settings_delivery_title">Jednotky pro vodu</string>
+	<string name="settings_measurement_title">Jednotky pro aditiva</string>
+	<string name="settings_temp_title">Jednotky teploty</string>
+	<string name="settings_tds_title">TDS jednotky</string>
+	<string name="settings_tds_summary" formatted="true">Výchozí jednotky TDS, aktuálně &lt;b&gt;%slt;/b&gt;</string>
+	<string name="settings_data_management">Správa dat </string>
+	<string name="settings_autobackup_title">Automatická záloha</string>
+	<string name="settings_autobackup_summary">Automaticky zálohuje data rostlin každých 24 hodin</string>
+	<string name="settings_backupnow">Zálohovat hned</string>
+	<string name="settings_backupsize_title">Maximální velikost zálohy</string>
+	<string name="settings_backupsize_hint">Velikost v Mb</string>
+	<string name="settings_backupsize_dialogtitle">Limit zálohy (Mb)</string>
+	<string name="settings_restore_backup">Obnovit ze zálohy</string>
+	<string name="settings_encrypt_title">Šifrovat data</string>
+	<string name="settings_encrypt_summary">Přidat zámek k aplikaci a šifrovat veškerá data a obrázky</string>
+	<string name="settings_failsafe_title">Bezpečnostní pojistka</string>
+	<string name="settings_failsafe_summary">Nastavte bezpečnostní pojistku abyste zabránili přístupu k datům</string>
+	<string name="settings_addons">Doplňky</string>
+	<string name="settings_about">O aplikaci</string>
+	<string name="settings_readme">Čti mne</string>
+	<string name="settings_export">Exportovat data</string>
+	<string name="settings_cardstyle_title">Styl karty</string>
+	<string name="empty_plant_list">Nejsou tu žádné rostliny k zobrazení</string>
+	<string name="empty_schedules">Nejsou tu žádné plány</string>
+	<string name="empty_photos">Nejsou tu žádné obrázky k zobrazení</string>
+	<string name="events_title">Minulé akce</string>
+	<string name="show_hide_calendar">Zobrazit/skrýt kalendář</string>
+	<!-- "1 selected" -->
+	<string name="selected_len" formatted="true">%dvybráno</string>
+	<string name="translations_title">Děkuji následujícím</string>
+	<string name="translations_by">Překlady</string>
+	<string name="help_translate">Pomozte překládat</string>
+	<string name="encrypt_progress_warning">Šifruji data a obrázky, může to chvilku trvat...</string>
+	<string name="decrypt_progress_warning">Dešifruji data a obrázky, může to chvilku trvat...</string>
+
+	<!-- now = 1 second -->
+	<string name="now_abbr">1s</string>
+	<string name="second_abbr">s</string>
+	<string name="minute_abbr">m</string>
+	<string name="hour_abbr">h</string>
+	<string name="day_abbr">d</string>
+	<string name="week_abbr">t</string>
+	<string name="month_abbr">měs.</string>
+	<string name="year_abbr">rok</string>
+
+	<string name="view_details_short">Podrobnosti</string>
+
+	<plurals name="time_second">
+		<item quantity="one">vteřina</item>
+		<item quantity="few">vteřiny</item>
+		<item quantity="many">minuty</item>
+		<item quantity="other">vteřiny</item>
+	</plurals>
+
+	<plurals name="time_minute">
+		<item quantity="one">minuta</item>
+		<item quantity="few">minuty</item>
+		<item quantity="many">minuty</item>
+		<item quantity="other">minuty</item>
+	</plurals>
+
+	<plurals name="time_hour">
+		<item quantity="one">hodina</item>
+		<item quantity="few">hodiny</item>
+		<item quantity="many">hodin</item>
+		<item quantity="other">hodin</item>
+	</plurals>
+
+	<plurals name="time_day">
+		<item quantity="one">den</item>
+		<item quantity="few">dny</item>
+		<item quantity="many">dnů</item>
+		<item quantity="other">dny</item>
+	</plurals>
+
+	<plurals name="time_week">
+		<item quantity="one">týden</item>
+		<item quantity="few">týdny</item>
+		<item quantity="many">týdnů</item>
+		<item quantity="other">týdny</item>
+	</plurals>
+
+	<plurals name="time_month">
+		<item quantity="one">měsíc</item>
+		<item quantity="few">měsíce</item>
+		<item quantity="many">měsíců</item>
+		<item quantity="other">měsíce</item>
+	</plurals>
+
+	<plurals name="time_year">
+		<item quantity="one">rok</item>
+		<item quantity="few">roky</item>
+		<item quantity="many">roků</item>
+		<item quantity="other">roky</item>
+	</plurals>
+
+	<string-array name="settings_card_entries">
+		<item>Původní</item>
+		<item>Kompaktní</item>
+		<item>Extrémní</item>
+	</string-array>
+
+	<string name="confirm_quit">Ztratíte všechny neuložené změny</string>
+	<string name="accept_quit">Zavřít</string>
+	<string name="plants">Rostliny</string>
+	<string name="humidity">Vlhkost</string>
+	<string name="current_temp">Aktuální teplota:</string>
+	<string name="current_humidity">Aktuální vlhkost:</string>
+	<string name="lighting_title">Nastavení osvětlení</string>
+	<string name="delete_item_dialog_title">Vymazat tuto položku?</string>
+	<string name="confirm_delete_item_message_holder">Jste si jistí, že chcete vymazat &lt;b&gt;%s&lt;/b&gt;?</string>
+	<string name="show">Zobrazit</string>
+	<string name="hide">Skrýt</string>
+	<string name="lights_on">Světla zapnuta</string>
+	<string name="lights_off">Světla vypnuta</string>
+
+	<string name="settings_lastbackup_summary" formatted="true">Naposledy zálohováno: &lt;b&gt;%s&lt;/b&gt;</string>
+	<string name="settings_image_location_summary" formatted="true">Umístění obrázků, aktuálně &lt;b&gt;%s&lt;/b&gt;</string>
+	<string name="settings_image_location_error">Nepodařilo se nastavit umístění obrázků</string>
+	<string name="settings_image_location_title">Umístění obrázků</string>
+	<string name="settings_image_cache_title">Vymazat cache obrázků</string>
+	<string name="cache_cleared">Obrázky a cache byly vymazány</string>
+	<string name="import_progress_warning">Importuji obrázky, může to chvilku trvat...</string>
+	<string name="data_task">Zadání</string>
+	<string name="import_task_complete">Import obrázků hotov</string>
+	<string name="decrypt_task_complete">Dešifrování obrázků dokončeno</string>
+	<string name="encrypt_task_complete">Šifrování obrázků hotovo</string>
+	<string name="empty_actions_list">Nejsou tu žádné akce k zobrazení</string>
+
+	<string name="exporting_start">Exportuji pěstební data %s</string>
+	<string name="exporting_complete">Export %s hotov</string>
+	<string name="exporting_path">Exportováno %sdo%s</string>
+	<string name="export_complete">Export hotov</string>
+	<string name="export_dialog_label">Včetně obrázků?</string>
+	<string name="no_data">Žádná data k dispozici</string>
+
+	<string name="camera_permission_summary">Je potřeba oprávnění k fotoaparátu pro focení</string>
+	<string name="settings_backup_management_title">Nastavení zálohování</string>
+	<string name="settings_backup_location_title">Umístění záloh</string>
+	<string name="settings_backup_location_summary" formatted="true">Umístění záloh, aktuálně &lt;b&gt;%s&lt;/b&gt;</string>
+	<string name="settings_backup_location_error">Nepodařilo se nastavit umístění záloh</string>
+	<string name="settings_import_error">Nepodařilo se importovat rostliny ze souboru</string>
+	<string name="settings_import">Importovat rostliny ze souboru</string>
+	<string name="settings_import_success">Rostliny úspěšně importování ze souboru</string>
+
+	<string name="additive_stat_header" formatted="true">%sstatistiky</string>
+	<string name="additive_average_usage_label">Prům. na hnojení:</string>
+	<string name="additive_usage_count_label">Počet použití:</string>
+	<string name="additive_total_usage_label">Celkem přísad:</string>
+
+	<string name="additives_concentration_title">Koncentrace přísad</string>
+	<string name="additives_overtime_title">Přísady v průběhu</string>
+	<string name="additives_distribution_title">Rozdělení přísad</string>
+</resources>
