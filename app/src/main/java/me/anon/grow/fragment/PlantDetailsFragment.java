@@ -995,6 +995,7 @@ public class PlantDetailsFragment extends Fragment
 			}
 		}
 
+		plant = PlantManager.getInstance().getPlant(plant.getId());
 		Intent intent = new Intent();
 		intent.putExtra("plant", plant);
 		getActivity().setIntent(intent);

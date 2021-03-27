@@ -9,7 +9,11 @@ import com.google.android.material.appbar.AppBarLayout
 import kotlinx.android.synthetic.main.fragment_holder.toolbar
 import kotlinx.android.synthetic.main.fragment_holder.toolbar_layout
 import kotlinx.android.synthetic.main.tabbed_fragment_holder.*
-import me.anon.grow.fragment.*
+import me.anon.grow.fragment.ActionsListFragment
+import me.anon.grow.fragment.PlantDetailsFragment
+import me.anon.grow.fragment.StatisticsFragment2
+import me.anon.grow.fragment.ViewPhotosFragment
+import me.anon.lib.manager.PlantManager
 import me.anon.model.Plant
 
 class PlantDetailsActivity : BaseActivity()
@@ -60,6 +64,7 @@ class PlantDetailsActivity : BaseActivity()
 					if (fragment is PlantDetailsFragment)
 					{
 						fragment.save()
+						plant = PlantManager.instance.getPlant(plant.id)!!
 					}
 
 					toolbarLayout.removeViews(1, toolbarLayout.childCount - 1)
