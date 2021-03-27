@@ -134,9 +134,9 @@
 	<string name="ripening">Ripening</string>
 	<string name="drying">Drying</string>
 	<string name="curing">Curing</string>
-	<string name="harvested">Harvested</string>
+	<string name="harvested">Harvested/Culled</string>
 	<!-- example "harvested 2 days ago" -->
-	<string name="harvested_ago" formatted="true">Harvested %s ago</string>
+	<string name="harvested_ago" formatted="true">Harvested/Culled %s ago</string>
 	<string name="menu_export_garden">Export garden</string>
 	<string name="menu_edit_garden">Edit garden</string>
 	<string name="menu_delete_garden">Delete garden</string>

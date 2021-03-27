@@ -453,7 +453,7 @@ enum class PlantStage private constructor(val printString: Int, val enString: St
 	RIPENING(R.string.ripening, "Ripening"),
 	DRYING(R.string.drying, "Drying"),
 	CURING(R.string.curing, "Curing"),
-	HARVESTED(R.string.harvested, "Harvested");
+	HARVESTED(R.string.harvested, "Harvested/Culled");
 
 	companion object
 	{
