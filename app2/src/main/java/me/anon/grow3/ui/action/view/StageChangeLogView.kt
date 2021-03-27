@@ -7,7 +7,6 @@ import me.anon.grow3.data.model.Diary
 import me.anon.grow3.data.model.StageChange
 import me.anon.grow3.data.model.StageType
 import me.anon.grow3.databinding.FragmentActionLogStageChangeBinding
-import me.anon.grow3.util.*
 
 class StageChangeLogView(
 	diary: Diary,
@@ -22,9 +21,7 @@ class StageChangeLogView(
 	override fun bindView(view: View)
 	{
 		bindings = FragmentActionLogStageChangeBinding.bind(view)
-		bindings.cropSelectView.setDiary(diary)
-
-		bindings.date.editText!!.text = log.date.asDateTime().asDisplayString().asEditable()
+		bindings.common.setLog(diary, log)
 
 		bindings.stages.setMenu(StageType.toMenu())
 		bindings.stages.singleSelection = true
@@ -37,10 +34,8 @@ class StageChangeLogView(
 	override fun saveView(): StageChange
 	{
 		bindings.root.clearFocus()
-		log.cropIds = bindings.cropSelectView.selectedCrops.toList()
+		bindings.common.saveTo(log)
 		log.type = StageType.ofId(bindings.stages.getSelectedItems().first().itemId)
-		log.notes = bindings.notes.editText!!.text.toString()
-		log.date = bindings.date.editText!!.text.toString().fromDisplayString().asApiString()
 		return log
 	}
 

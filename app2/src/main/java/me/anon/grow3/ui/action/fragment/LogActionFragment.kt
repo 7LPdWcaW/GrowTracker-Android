@@ -179,7 +179,7 @@ open class LogActionFragment : BaseFragment(FragmentActionLogBinding::class)
 	public fun onDateSelected(selectedDate: ZonedDateTime)
 	{
 		requireView().findViewById<TextInputLayout>(R.id.date)?.let {
-//			it.editText!!.text = selectedDate.asNumericalString().asEditable()
+			it.editText!!.text = selectedDate.asDisplayString().asEditable()
 		}
 	}
 

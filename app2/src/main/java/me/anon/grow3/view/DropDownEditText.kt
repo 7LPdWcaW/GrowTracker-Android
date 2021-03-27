@@ -107,8 +107,7 @@ class DropDownEditText : MaterialAutoCompleteTextView
 		popup.isModal = true
 		popup.setAdapter(adapter)
 		popup.setOnDismissListener {
-			val current: View = rootView.findFocus()
-			current.clearFocus()
+			rootView.findFocus()?.clearFocus()
 		}
 		doOnLayout {
 			populateText()

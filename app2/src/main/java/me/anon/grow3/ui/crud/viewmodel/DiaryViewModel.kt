@@ -45,7 +45,7 @@ class DiaryViewModel(
 		diaryId.clear()
 
 		viewModelScope.launch {
-			val count = diariesRepository.getDiaries().size
+			val count = diariesRepository.getDiaries().filter { !it.isDraft }.size
 			val diary = Diary(name = "Gen ${count + 1}").apply {
 				isDraft = true
 				crops as ArrayList += Crop(
