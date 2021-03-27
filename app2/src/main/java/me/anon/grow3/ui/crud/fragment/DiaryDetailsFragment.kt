@@ -64,33 +64,32 @@ class DiaryDetailsFragment : BaseFragment(FragmentCrudDiaryDetailsBinding::class
 
 	override fun bindUi()
 	{
-//		viewBindings.diaryName.editText!!.doAfterTextChanged {
-//			// don't re-trigger the text change by calling editText.text ...
-//			val diary = crudViewModel.diary.value!!
-//			diary.name = it.toString()
-//		}
-//
-//		viewBindings.date.editText!!.onFocus {
-//			val diary = crudViewModel.diary.value!!
-//
-//			it.hideKeyboard()
-//
-//			val current = diary.date
-//			DateSelectDialogFragment.show(current, true, childFragmentManager).apply {
-//				onDateTimeSelected = ::onDateSelected
-//				onDismiss = ::onDateDismissed
-//			}
-//
-//			crudViewModel.setDiaryDate(current.asDateTime())
-//		}
-//
+		viewBindings.diaryName.editText!!.onFocusLoss { text ->
+			crudViewModel.diaryVm
+				.mutate {
+					it.apply {
+						name = text.text.toString()
+					}
+				}
+		}
+
+		viewBindings.date.editText!!.onFocus {
+			it.hideKeyboard()
+
+			val current = it.text.toString().fromDisplayString()
+			DateSelectDialogFragment.show(current, true, childFragmentManager).apply {
+				onDateTimeSelected = ::onDateSelected
+				onDismiss = ::onDateDismissed
+			}
+		}
+
 		viewBindings.addCrop.onClick {
 			// reveal crop edit fragment dialog
 			val navController = findNavController()
 			navController.navigate(R.id.page_1_to_2)
 		}
-//
-//		attachCallbacks()
+
+		attachCallbacks()
 	}
 
 	private fun attachCallbacks()
@@ -100,7 +99,12 @@ class DiaryDetailsFragment : BaseFragment(FragmentCrudDiaryDetailsBinding::class
 
 	public fun onDateSelected(selectedDate: ZonedDateTime)
 	{
-		//crudViewModel.setDiaryDate(selectedDate)
+		crudViewModel.diaryVm
+			.mutate {
+				it.apply {
+					date = selectedDate.asApiString()
+				}
+			}
 	}
 
 	public fun onDateDismissed()

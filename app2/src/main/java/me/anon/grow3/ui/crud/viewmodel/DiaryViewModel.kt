@@ -85,6 +85,13 @@ class DiaryViewModel(
 		}
 	}
 
+	public fun mutate(block: (Diary) -> Diary)
+	{
+		diary.value?.let {
+			save(block(it))
+		}
+	}
+
 	public fun clear()
 	{
 		isNew = false

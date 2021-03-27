@@ -27,13 +27,6 @@ class DiaryCrudViewModel(
 	public val diaryVm = DiaryViewModel(diariesRepository, savedStateHandle, viewModelScope)
 	public val cropVm = CropViewModel(diariesRepository, savedStateHandle, viewModelScope)
 
-	// intent methods
-
-	public fun openDiary(id: String? = null)
-	{
-
-	}
-
 	public fun setEnvironment(
 		type: ValueHolder<EnvironmentType?>? = null,
 		temperature: ValueHolder<Double?>? = null,
