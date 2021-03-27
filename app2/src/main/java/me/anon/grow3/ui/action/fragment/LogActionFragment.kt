@@ -59,6 +59,14 @@ open class LogActionFragment : BaseFragment(FragmentActionLogBinding::class)
 			onBackPressed()
 		}
 
+		viewBindings.actionDelete.isVisible = !viewModel.isNew
+		viewBindings.actionDelete.onClick {
+			requireActivity().promptRemove {
+				viewModel.remove()
+				finish()
+			}
+		}
+
 		viewBindings.actionDone.onClick {
 			isFinishing = true
 
@@ -110,6 +118,8 @@ open class LogActionFragment : BaseFragment(FragmentActionLogBinding::class)
 
 	private fun renderLogView(diary: Diary, log: Log)
 	{
+		viewBindings.actionDelete.isVisible = !viewModel.isNew
+
 		logView = when (log)
 		{
 			is Water -> WaterLogView(diary, log)
@@ -127,7 +137,6 @@ open class LogActionFragment : BaseFragment(FragmentActionLogBinding::class)
 
 			view.findViewById<TextInputLayout>(R.id.date)?.let {
 				it.editText!!.onFocus {
-					it.hideKeyboard()
 					val current = diary.date
 					DateSelectDialogFragment.show(current, true, childFragmentManager).apply {
 						onDateTimeSelected = ::onDateSelected
@@ -160,7 +169,6 @@ open class LogActionFragment : BaseFragment(FragmentActionLogBinding::class)
 		}
 		else
 		{
-			viewModel.remove()
 			viewModel.clear()
 			isFinishing = true
 			requireActivity().supportFragmentManager.commitNow {

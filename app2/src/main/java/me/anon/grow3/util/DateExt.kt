@@ -18,10 +18,10 @@ import org.threeten.bp.format.FormatStyle
 object DateUtils
 {
 	const val TIME_FORMAT = "HH:mm"
-	const val CLOCK_FORMAT = "HH:mm:ss"
+	const val CLOCK_FORMAT = "HH:mm"
 	const val DATE_FORMAT = "dd/MM/yyyy"
 
-	const val API_FORMAT = "yyyy-MM-dd'T'HH:mm:ss"
+	const val API_FORMAT = "yyyy-MM-dd'T'HH:mm"
 	const val MID_DISPLAY_FORMAT = "dd MMM yyyy HH:mm"
 	const val SHORT_DISPLAY_FORMAT_UK = "dd/MM/yy HH:mm"
 	const val SHORT_DISPLAY_FORMAT_INT = "MM-dd-yy HH:mm"

@@ -104,6 +104,7 @@ class LogActionViewModel constructor(
 
 	public fun save(new: Log)
 	{
+		isNew = false
 		viewModelScope.launch {
 			val diaryId = diaryId.value ?: return@launch
 			val diary = diariesRepository.getDiaryById(diaryId) ?: throw DiaryLoadFailed(diaryId)
@@ -113,8 +114,16 @@ class LogActionViewModel constructor(
 
 	public fun clear()
 	{
+		if (isNew)
+		{
+			remove()
+		}
+		else
+		{
+			logId.clear()
+			log.clear()
+		}
+
 		isNew = false
-		logId.clear()
-		log.clear()
 	}
 }

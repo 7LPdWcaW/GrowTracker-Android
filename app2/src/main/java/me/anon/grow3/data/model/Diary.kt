@@ -195,7 +195,8 @@ data class Diary(
 			log as ArrayList += StageChange(StageType.Planted)
 		}
 
-		log.sortedBy { it.date }
+		var i = 0
+		//log.sortedBy { it.date }
 	}
 
 	override fun equals(other: Any?): Boolean = (other as? Diary)?.id == id || super.equals(other)
