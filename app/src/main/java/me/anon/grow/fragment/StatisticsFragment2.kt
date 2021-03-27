@@ -348,6 +348,8 @@ class StatisticsFragment2 : Fragment()
 		populatePhStats()
 		populateTdsStats()
 		populateTempStats()
+
+		activity?.title = getString(R.string.statistics_title)
 	}
 
 	private fun populateGeneralStats()
