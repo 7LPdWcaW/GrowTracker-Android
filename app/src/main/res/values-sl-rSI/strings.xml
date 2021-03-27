@@ -129,7 +129,9 @@
 	<string name="germination">Kalitev</string>
 	<string name="cutting">Potaknjenec</string>
 	<string name="vegetation">Vegetacija</string>
+	<string name="budding">Brstenje</string>
 	<string name="flowering">Cvetenje</string>
+	<string name="ripening">Zorenje</string>
 	<string name="drying">Sušenje</string>
 	<string name="curing">Zorenje</string>
 	<string name="harvested">Požeto</string>
@@ -143,9 +145,14 @@
 	<string name="total_time_label">Celoten čas:</string>
 	<string name="total_waters_label">Skupno zalivanja:</string>
 	<string name="total_flushes_label">Skupno izpiranja:</string>
+	<string name="total_water_amount_label">Skupno vode:</string>
+	<string name="ave_water_amount_label">Uporabljeno povp. vode:</string>
 	<string name="ave_time_between_water_label">Povp. čas med zalivanji:</string>
+	<string name="ave_time_stage_label" formatted="true">povp. %s vode:</string>
 	<string name="filter_additives">Dodatki filtra</string>
 	<string name="ph_title">pH</string>
+	<string name="tds_title">TDS</string>
+
 	<string name="min">Min:</string>
 	<string name="max">Max:</string>
 	<string name="ave">Povp.:</string>
@@ -162,6 +169,9 @@
 	<string name="action_transplanted">Presajeno</string>
 	<string name="action_trim">Obrezano</string>
 	<string name="action_tuck">ScrOG tlačenje</string>
+	<string name="action_supercrop">Supercrop</string>
+	<string name="action_monstercrop">Monstercrop</string>
+
 	<string name="watered">Zalito</string>
 	<string name="note">Zapisek</string>
 	<string name="delete_event_dialog_title">Izbriši ta dogodek?</string>
@@ -264,6 +274,10 @@ Ali bi želeli poslati ta anonimna poročila? Ta poročila bodo poslana na &lt;a
 	<string name="stat_input_ph">Vnesi pH</string>
 	<string name="stat_runoff_ph">pH odtočne vode</string>
 	<string name="stat_average_ph">Povprečen pH</string>
+	<string name="stat_average_temp">Povprečna temp</string>
+	<string name="stat_average_runoff_ph">Povprečen odtok pH</string>
+	<string name="stat_average_tds" formatted="true">Povprečno %s</string>
+
 	<string name="photos_title">Slike rastline</string>
 
 	<string name="plant_summary_ph">Vhodni pH:</string>
@@ -409,7 +423,9 @@ Ali bi želeli poslati ta anonimna poročila? Ta poročila bodo poslana na &lt;a
 	<string name="cache_cleared">Shramba slik in spomin prepomnilnika počiščena</string>
 	<string name="import_progress_warning">Uvažanje slik, to lahko traja nekaj časa...</string>
 	<string name="data_task">Opravilo podatkov</string>
-	<string name="task_complete">Opravilo končano</string>
+	<string name="import_task_complete">Uvoz slike končan</string>
+	<string name="decrypt_task_complete">Dešifriranje slike končano</string>
+	<string name="encrypt_task_complete">Šifriranje slike končano</string>
 	<string name="empty_actions_list">Ni dejanj za prikaz</string>
 
 	<string name="exporting_start">Izvažanje dnevnika gojenja za %s</string>
@@ -428,4 +444,12 @@ Ali bi želeli poslati ta anonimna poročila? Ta poročila bodo poslana na &lt;a
 	<string name="settings_import">Uvozi rastline iz datoteke</string>
 	<string name="settings_import_success">Uspešen uvoz rastlin iz datoteke</string>
 
-	</resources>
+	<string name="additive_stat_header" formatted="true">%s statistika</string>
+	<string name="additive_average_usage_label">povp. na dovajanje:</string>
+	<string name="additive_usage_count_label">Kolikokrat uporabljeno:</string>
+	<string name="additive_total_usage_label">Skupno aditivov:</string>
+
+	<string name="additives_concentration_title">Koncentracija aditivov</string>
+	<string name="additives_overtime_title">Aditivi čez čas</string>
+	<string name="additives_distribution_title">Distribucija aditivov</string>
+</resources>
