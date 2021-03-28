@@ -134,9 +134,9 @@
 	<string name="ripening">Rijping</string>
 	<string name="drying">Drogende</string>
 	<string name="curing">Genezende</string>
-	<string name="harvested">Geplukt</string>
+	<string name="harvested">Geplukt/Geruimd</string>
 	<!-- example "harvested 2 days ago" -->
-	<string name="harvested_ago" formatted="true">%s geleden geplukt</string>
+	<string name="harvested_ago" formatted="true">%s geleden geplukt/geruimd</string>
 	<string name="menu_export_garden">Tuin exporteren</string>
 	<string name="menu_edit_garden">Tuin aanpassen</string>
 	<string name="menu_delete_garden">Tuin verwijderen</string>
