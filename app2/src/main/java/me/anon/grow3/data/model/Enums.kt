@@ -195,3 +195,29 @@ enum class PesticideType
 	Liquid,
 	Solid
 }
+
+enum class VolumeUnit : Type
+{
+	Ml {
+		override val strRes: Int = R.string.volume_unit_ml
+	},
+	L {
+		override val strRes: Int = R.string.volume_unit_l
+	};
+
+	companion object
+	{
+		fun ofId(id: Int): VolumeUnit = VolumeUnit.values().first { it.strRes == id }
+
+		fun toMenu(): List<DropDownEditText.DropDownMenuItem>
+			= VolumeUnit.values().map {
+				DropDownEditText.DropDownMenuItem(
+					it.strRes,
+					false,
+					false,
+					titleRes = it.strRes,
+					iconRes = -1
+				)
+		}
+	}
+}

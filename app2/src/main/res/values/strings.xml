@@ -87,4 +87,7 @@
 
 	<string name="log_type_water">Water</string>
 	<string name="log_type_stage_change">Plant stage</string>
+
+	<string name="volume_unit_ml">Ml</string>
+	<string name="volume_unit_l">L</string>
 </resources>

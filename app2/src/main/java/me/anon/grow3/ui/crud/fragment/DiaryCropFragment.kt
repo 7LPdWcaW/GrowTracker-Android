@@ -9,6 +9,8 @@ import androidx.fragment.app.activityViewModels
 import androidx.lifecycle.observe
 import me.anon.grow3.data.model.MediumType
 import me.anon.grow3.data.model.StageChange
+import me.anon.grow3.data.model.Volume
+import me.anon.grow3.data.model.VolumeUnit
 import me.anon.grow3.databinding.FragmentCrudDiaryCropBinding
 import me.anon.grow3.ui.action.fragment.LogActionFragment
 import me.anon.grow3.ui.base.BaseFragment
@@ -54,7 +56,7 @@ class DiaryCropFragment : BaseFragment(FragmentCrudDiaryCropBinding::class)
 
 		viewBindings.cropName.editText!!.onFocusLoss {
 			it.text.toStringOrNull()?.let {
-				crudViewModel.setCrop(
+				crudViewModel.cropVm.setCrop(
 					name = ValueHolder(it)
 				)
 			}
@@ -65,22 +67,34 @@ class DiaryCropFragment : BaseFragment(FragmentCrudDiaryCropBinding::class)
 		}
 
 		viewBindings.cropGenetics.editText!!.onFocusLoss {
-			crudViewModel.setCrop(
+			crudViewModel.cropVm.setCrop(
 				genetics = ValueHolder(it.text.toStringOrNull())
 			)
 		}
 
 		viewBindings.cropNumPlants.editText!!.onFocusLoss {
-			crudViewModel.setCrop(
+			crudViewModel.cropVm.setCrop(
 				numberOfPlants = ValueHolder(it.text.toIntOrNull() ?: 1)
 			)
 		}
 
+		viewBindings.mediumTypeOptions.singleSelection = true
 		viewBindings.mediumTypeOptions.setMenu(MediumType.toMenu())
 		viewBindings.mediumTypeOptions.itemSelectListener = { item ->
-			crudViewModel.setCrop(
+			crudViewModel.cropVm.setCrop(
 				mediumType = ValueHolder(MediumType.ofId(item.itemId))
 			)
+		}
+
+		viewBindings.mediumSizeUnitOptions.singleSelection = true
+		viewBindings.mediumSizeUnitOptions.setMenu(VolumeUnit.toMenu())
+		viewBindings.mediumSizeUnitOptions.itemSelectListener = { item ->
+			viewBindings.mediumSize.editText!!.text.toDoubleOrNull()?.let { amount ->
+				crudViewModel.cropVm.setCrop(
+					// only re-save if volume is entered
+					volume = ValueHolder(Volume(amount, VolumeUnit.ofId(item.itemId)))
+				)
+			}
 		}
 
 		viewBindings.mediumSize.editText!!.doAfterTextChanged {
@@ -88,8 +102,8 @@ class DiaryCropFragment : BaseFragment(FragmentCrudDiaryCropBinding::class)
 			else viewBindings.mediumType.error = null
 		}
 		viewBindings.mediumSize.editText!!.onFocusLoss {
-			crudViewModel.setCrop(
-				volume = ValueHolder(it.text.toDoubleOrNull())
+			crudViewModel.cropVm.setCrop(
+				volume = ValueHolder(it.text.toDoubleOrNull()?.let { Volume(it) })
 			)
 		}
 	}
@@ -109,12 +123,16 @@ class DiaryCropFragment : BaseFragment(FragmentCrudDiaryCropBinding::class)
 				val medium = diary.mediumOf(crop)
 				medium?.let {
 					viewBindings.mediumTypeOptions.checkItems(it.medium.strRes)
-					viewBindings.mediumSize.editText!!.text = it.size.asStringOrNull()?.asEditable()
+					it.size?.let { size ->
+						viewBindings.mediumSizeUnitOptions.checkItems(size.unit.strRes)
+						viewBindings.mediumSize.editText!!.text = size.amount.asStringOrNull()?.asEditable()
+					}
 				}
 
 				viewBindings.includeCardStages.stagesHeader.isVisible = true
 				viewBindings.includeCardStages.stagesView.setStages(diary, crop)
 				viewBindings.includeCardStages.stagesView.onStageClick = { stage ->
+					// diary needs to be saved at this point before modal is opened otherwise changes get overwritten
 					(activity as DiaryActivity).openModal(LogActionFragment().apply {
 						arguments = bundleOf(
 							Extras.EXTRA_DIARY_ID to diary.id,

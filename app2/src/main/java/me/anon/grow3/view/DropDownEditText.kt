@@ -88,8 +88,9 @@ class DropDownEditText : MaterialAutoCompleteTextView
 		val menu = PopupMenu(context, View(context))
 		this.items.addAll(items.map {
 			menu.menu
-				.add(0, it.itemId, 0, it.titleRes)
-				.setIcon(it.iconRes)
+				.add(0, it.itemId, 0, it.titleRes).apply {
+					if (it.iconRes != -1) icon = it.iconRes.drawable(context)
+				}
 				.setCheckable(it.isCheckable)
 				.setChecked(it.isChecked)
 		})

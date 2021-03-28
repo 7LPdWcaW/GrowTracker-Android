@@ -6,14 +6,14 @@ import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.launch
 import me.anon.grow3.data.exceptions.GrowTrackerException.CropLoadFailed
 import me.anon.grow3.data.exceptions.GrowTrackerException.DiaryLoadFailed
-import me.anon.grow3.data.model.Crop
-import me.anon.grow3.data.model.StageChange
-import me.anon.grow3.data.model.StageType
+import me.anon.grow3.data.model.*
 import me.anon.grow3.data.repository.DiariesRepository
 import me.anon.grow3.ui.common.Extras
+import me.anon.grow3.util.ValueHolder
 import me.anon.grow3.util.clear
 import me.anon.grow3.util.states.Data
 import me.anon.grow3.util.states.DataResult
+import me.anon.grow3.util.toStringOrNull
 
 class CropViewModel(
 	private val diariesRepository: DiariesRepository,
@@ -28,9 +28,9 @@ class CropViewModel(
 			field = value
 		}
 
+	private var originalCrop: Crop? = null
 	private val diaryId: MutableLiveData<String> = savedStateHandle.getLiveData(Extras.EXTRA_DIARY_ID)
 	private val cropId: MutableLiveData<String> = savedStateHandle.getLiveData(Extras.EXTRA_CROP_ID)
-	private var originalCrop: Crop? = null
 	public val crop: LiveData<Data> = combineTuple(diaryId, cropId).switchMap { (diaryId, cropId) ->
 		liveData {
 			if (cropId.isNullOrBlank() || diaryId.isNullOrBlank()) return@liveData
@@ -106,6 +106,42 @@ class CropViewModel(
 			val diary = diariesRepository.getDiaryById(diaryId) ?: throw DiaryLoadFailed(diaryId)
 			diariesRepository.addCrop(new, diary)
 		}
+	}
+
+	public fun setCrop(
+		name: ValueHolder<String>? = null,
+		genetics: ValueHolder<String?>? = null,
+		numberOfPlants: ValueHolder<Int>? = null,
+		mediumType: ValueHolder<MediumType>? = null,
+		volume: ValueHolder<Volume?>? = null
+	)
+	{
+		val diary = crop.value?.diary ?: return
+		val crop = crop.value?.crop ?: return
+
+		val newCrop = crop.apply {
+			name?.applyValue { this.name = it }
+			genetics?.applyValue { this.genetics = it.toStringOrNull() }
+			numberOfPlants?.applyValue { this.numberOfPlants = it }
+
+			// medium - only 1 medium type to set
+			val medium = diary.mediumOf(this) ?: let {
+				mediumType?.let {
+					Medium(it.value).also {
+						viewModelScope.launch {
+							diariesRepository.addLog(it, diary)
+						}
+					}
+				}
+			}
+
+			medium?.apply {
+				mediumType?.applyValue { this.medium = it }
+				volume?.applyValue { this.size = it }
+			}
+		}
+
+		save(newCrop)
 	}
 
 	public fun clear()
