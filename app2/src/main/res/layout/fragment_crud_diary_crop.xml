@@ -186,6 +186,7 @@
 						<me.anon.grow3.view.DropDownEditText
 							android:layout_width="match_parent"
 							android:layout_height="wrap_content"
+							android:id="@+id/medium_size_unit_options"
 							app:singleSelection="true"
 							app:required="true"
 							app:menu="@menu/quantity_units"

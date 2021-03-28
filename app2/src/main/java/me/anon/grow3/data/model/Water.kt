@@ -10,7 +10,7 @@ data class Water(
 	public var inPH: PHUnit?,
 	public var outPH: PHUnit?,
 	public var tds: TdsUnit?,
-	public var amount: Double?,
+	public var amount: Volume?,
 	public var temperature: Double?,
 	public val additives: ArrayList<Additive> = arrayListOf()
 ) : Log(action = "Water")
