@@ -4,10 +4,10 @@ import androidx.lifecycle.*
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.launch
 import me.anon.grow3.data.exceptions.GrowTrackerException
-import me.anon.grow3.data.model.Crop
-import me.anon.grow3.data.model.Diary
+import me.anon.grow3.data.model.*
 import me.anon.grow3.data.repository.DiariesRepository
 import me.anon.grow3.ui.common.Extras
+import me.anon.grow3.util.ValueHolder
 import me.anon.grow3.util.clear
 import me.anon.grow3.util.states.DataResult
 
@@ -89,6 +89,40 @@ class DiaryViewModel(
 	{
 		diary.value?.let {
 			save(block(it))
+		}
+	}
+
+	public fun setEnvironment(
+		type: ValueHolder<EnvironmentType?>? = null,
+		temperature: ValueHolder<Double?>? = null,
+		humidity: ValueHolder<Double?>? = null,
+		relativeHumidity: ValueHolder<Double?>? = null,
+		size: ValueHolder<Size?>? = null,
+		light: ValueHolder<Light?>? = null,
+		schedule: ValueHolder<LightSchedule?>? = null
+	)
+	{
+		val diary = diary.value ?: return
+
+		viewModelScope.launch {
+			// We're in a wizard so there should only be one instance
+			val environment: Environment = diary.environment()
+				?: Environment().apply {
+					diariesRepository.addLog(this, diary)
+				}
+
+			environment.apply {
+				type?.applyValue { this.type = it }
+				temperature?.applyValue { this.temperature = it }
+				humidity?.applyValue { this.humidity = it }
+				relativeHumidity?.applyValue { this.relativeHumidity = it }
+				size?.applyValue { this.size = it }
+				light?.applyValue { this.light = it }
+				schedule?.applyValue { this.schedule = it }
+			}
+
+			diary.log(environment)
+			save(diary)
 		}
 	}
 

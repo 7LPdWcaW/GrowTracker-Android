@@ -90,4 +90,7 @@
 
 	<string name="volume_unit_ml">Ml</string>
 	<string name="volume_unit_l">L</string>
+
+	<string name="dimension_unit_mm">mm</string>
+	<string name="dimension_unit_cm">cm</string>
 </resources>

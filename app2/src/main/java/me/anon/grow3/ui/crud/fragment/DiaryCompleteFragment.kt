@@ -31,11 +31,17 @@ class DiaryCompleteFragment : BaseFragment(FragmentCrudDiaryCompleteBinding::cla
 		}
 	}
 
+	override fun onBackPressed(): Boolean
+	{
+		requireActivity().finish()
+		return true
+	}
+
 	override fun bindVm()
 	{
-		crudViewModel.diaryVm.diary.value ?: throw IllegalArgumentException("No diary to save")
+		/*crudViewModel.diaryVm.diary.value ?: throw IllegalArgumentException("No diary to save")
 		crudViewModel.diaryVm.diary.value?.let {
 			crudViewModel.diaryVm.save(it)
-		}
+		}*/
 	}
 }

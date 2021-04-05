@@ -77,7 +77,13 @@ class DropDownEditText : MaterialAutoCompleteTextView
 
 	public fun checkItems(vararg ids: Int)
 	{
-		items.filter { it.itemId in ids }.forEach { it.isChecked = true }
+		items
+			.filter { it.itemId in ids }
+			.onEach {
+				if (!singleSelection) it.isChecked = true
+			}
+			.last().isChecked = true
+
 		populateText()
 	}
 

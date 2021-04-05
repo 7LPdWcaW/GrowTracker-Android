@@ -23,9 +23,12 @@ data class Diary(
 	public fun stage(): Stage = findStage()
 	public fun water(): Water? = findWater()
 	public fun medium(): Medium? = findMedium()
-	public fun environment(): EnvironmentType? = findEnvironmentType()
+	public fun environment(): Environment? = findEnvironment()
+
+	public fun environmentType(): EnvironmentType? = findEnvironmentType()
 	public fun size(): Size? = findSize()
 	public fun light(): Light? = findLight()
+
 	public fun crop(id: String): Crop = crops.first { it.id == id }
 	public fun stages(): List<Stage> = findAllStages().filter { it.cropIds.isEmpty() }
 
@@ -186,8 +189,13 @@ data class Diary(
 
 	private fun findWater(): Water?
 		= log.sortedBy { it.date }
-			.filterIsInstance<Water>()
-			.lastOrNull()
+		.filterIsInstance<Water>()
+		.lastOrNull()
+
+	private fun findEnvironment(): Environment?
+		= log.sortedBy { it.date }
+		.filterIsInstance<Environment>()
+		.lastOrNull()
 
 	init {
 		if (log.isEmpty() || !log.any { it is StageChange })
