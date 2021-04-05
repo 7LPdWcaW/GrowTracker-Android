@@ -213,7 +213,7 @@ enum class VolumeUnit : Type
 			= VolumeUnit.values().map {
 				DropDownEditText.DropDownMenuItem(
 					it.strRes,
-					false,
+					it == L, // todo: this should be the user default
 					false,
 					titleRes = it.strRes,
 					iconRes = -1

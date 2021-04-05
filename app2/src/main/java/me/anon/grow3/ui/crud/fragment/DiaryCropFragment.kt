@@ -103,7 +103,9 @@ class DiaryCropFragment : BaseFragment(FragmentCrudDiaryCropBinding::class)
 		}
 		viewBindings.mediumSize.editText!!.onFocusLoss {
 			crudViewModel.cropVm.setCrop(
-				volume = ValueHolder(it.text.toDoubleOrNull()?.let { Volume(it) })
+				volume = ValueHolder(it.text.toDoubleOrNull()?.let {
+					Volume(it, VolumeUnit.ofId(viewBindings.mediumSizeUnitOptions.getSelectedItems().first().itemId))
+				})
 			)
 		}
 	}

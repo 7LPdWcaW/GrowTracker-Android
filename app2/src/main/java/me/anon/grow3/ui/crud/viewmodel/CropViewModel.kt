@@ -119,29 +119,31 @@ class CropViewModel(
 		val diary = crop.value?.diary ?: return
 		val crop = crop.value?.crop ?: return
 
-		val newCrop = crop.apply {
-			name?.applyValue { this.name = it }
-			genetics?.applyValue { this.genetics = it.toStringOrNull() }
-			numberOfPlants?.applyValue { this.numberOfPlants = it }
+		viewModelScope.launch {
+			val newCrop = crop.apply {
+				name?.applyValue { this.name = it }
+				genetics?.applyValue { this.genetics = it.toStringOrNull() }
+				numberOfPlants?.applyValue { this.numberOfPlants = it }
 
-			// medium - only 1 medium type to set
-			val medium = diary.mediumOf(this) ?: let {
-				mediumType?.let {
-					Medium(it.value).also {
-						viewModelScope.launch {
-							diariesRepository.addLog(it, diary)
+				// medium - only 1 medium type to set
+				val medium = diary.mediumOf(this)
+					?: let {
+						mediumType?.let { type ->
+							Medium(type.value).also {
+								diariesRepository.addLog(it, diary)
+							}
 						}
 					}
+
+				medium?.apply {
+					mediumType?.applyValue { this.medium = it }
+					volume?.applyValue { this.size = it }
+					diariesRepository.addLog(this, diary)
 				}
 			}
 
-			medium?.apply {
-				mediumType?.applyValue { this.medium = it }
-				volume?.applyValue { this.size = it }
-			}
+			save(newCrop)
 		}
-
-		save(newCrop)
 	}
 
 	public fun clear()
