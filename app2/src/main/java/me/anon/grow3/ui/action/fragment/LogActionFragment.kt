@@ -36,7 +36,7 @@ open class LogActionFragment : BaseFragment(FragmentActionLogBinding::class)
 	override val injector: Injector = { it.inject(this) }
 
 	@Inject internal lateinit var viewModelFactory: LogActionViewModel.Factory
-	protected val viewModel: LogActionViewModel by activityViewModels { ViewModelProvider(viewModelFactory, this) }
+	private val viewModel: LogActionViewModel by activityViewModels { ViewModelProvider(viewModelFactory, this) }
 	protected val viewBindings by viewBinding<FragmentActionLogBinding>()
 	private var logView: LogView<*>? = null
 	private var isFinishing = false

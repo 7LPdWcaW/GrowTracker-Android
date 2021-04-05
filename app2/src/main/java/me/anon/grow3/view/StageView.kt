@@ -71,6 +71,7 @@ class StageView : HorizontalScrollView
 			stageView.setStage(stage)
 			stageView.onClick {
 				onStageClick(stage)
+				smoothScrollTo(it.x.toInt(), 0)
 			}
 			container += stageView
 
@@ -95,6 +96,7 @@ class StageView : HorizontalScrollView
 
 		val end = StageViewStub(context)
 		end.onClick {
+			smoothScrollTo(it.x.toInt(), 0)
 			onNewStageClick()
 		}
 		container += end
@@ -177,6 +179,7 @@ class StageView : HorizontalScrollView
 		override fun setOnClickListener(l: OnClickListener?)
 		{
 			bindings.stageIcon.onClick {
+				smoothScrollTo(it.x.toInt(), 0)
 				l?.onClick(this@StageViewStub)
 			}
 		}

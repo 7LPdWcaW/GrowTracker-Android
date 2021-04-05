@@ -9,6 +9,7 @@ import me.anon.grow3.ui.crud.viewmodel.DiaryCrudViewModel
 import me.anon.grow3.ui.diaries.fragment.ViewDiaryFragment
 import me.anon.grow3.util.Injector
 import me.anon.grow3.util.ViewModelProvider
+import me.anon.grow3.util.component
 import me.anon.grow3.util.navigateTo
 import javax.inject.Inject
 
@@ -22,6 +23,8 @@ class DiaryCompleteFragment : BaseFragment(FragmentCrudDiaryCompleteBinding::cla
 
 	override fun bindUi()
 	{
+		requireContext().component.corePreferences().completeFirstLaunch()
+
 		viewBindings.close.setOnClickListener {
 			navigateTo<ViewDiaryFragment> {
 				bundleOf(EXTRA_DIARY_ID to crudViewModel.diaryVm.diary.value!!.id)

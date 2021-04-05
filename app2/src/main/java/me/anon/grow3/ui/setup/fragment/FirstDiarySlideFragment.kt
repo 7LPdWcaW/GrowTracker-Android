@@ -26,6 +26,7 @@ class FirstDiarySlideFragment : Fragment(), SlideBackgroundColorHolder
 
 		new_diary.setOnClickListener {
 			newTask<DiaryActivity>()
+			requireActivity().finish()
 		}
 	}
 

@@ -83,7 +83,7 @@ class MainActivity : BaseActivity(ActivityMainBinding::class)
 			})
 			add(INDEX_MAIN, object : FragmentInstance(
 				MainNavigatorFragment::class.java,
-				bundleOf(EXTRA_NAVIGATE to nameOf<EmptyFragment>())
+				activity.intent?.extras ?: bundleOf(EXTRA_NAVIGATE to nameOf<EmptyFragment>())
 			)
 			{
 				override val id: Long
@@ -100,7 +100,7 @@ class MainActivity : BaseActivity(ActivityMainBinding::class)
 		public fun getFragment(position: Int): Fragment? = activity.supportFragmentManager.findFragmentByTag("f" + getItemId(position))
 	}
 
-	private var adapter = PageAdapter(this)
+	private val adapter by lazy { PageAdapter(this) }
 	override val injector: Injector = { it.inject(this) }
 
 	@Inject internal lateinit var viewModelFactory: MainViewModel.Factory
@@ -129,7 +129,11 @@ class MainActivity : BaseActivity(ActivityMainBinding::class)
 			adapter.notifyDataSetChanged()
 		}
 
-		if (intent.extras != null) onNewIntent(intent)
+		if (intent.extras != null)
+		{
+			// new intent
+			onNewIntent(intent)
+		}
 	}
 
 	override fun onPostCreate(savedInstanceState: Bundle?)
@@ -156,7 +160,7 @@ class MainActivity : BaseActivity(ActivityMainBinding::class)
 		super.onNewIntent(intent)
 
 		supportFragmentManager.findFragmentByTag("f" + adapter.getItemId(INDEX_MAIN).toInt())?.let {
-			 it.apply { arguments = intent?.extras }
+			it.arguments = intent?.extras
 		}
 	}
 
