@@ -135,6 +135,8 @@ class DiaryCropFragment : BaseFragment(FragmentCrudDiaryCropBinding::class)
 				viewBindings.includeCardStages.stagesView.setStages(diary, crop)
 				viewBindings.includeCardStages.stagesView.onStageClick = { stage ->
 					// diary needs to be saved at this point before modal is opened otherwise changes get overwritten
+					requireView().clearFocus()
+
 					(activity as DiaryActivity).openModal(LogActionFragment().apply {
 						arguments = bundleOf(
 							Extras.EXTRA_DIARY_ID to diary.id,
@@ -146,6 +148,9 @@ class DiaryCropFragment : BaseFragment(FragmentCrudDiaryCropBinding::class)
 					})
 				}
 				viewBindings.includeCardStages.stagesView.onNewStageClick = {
+					// diary needs to be saved at this point before modal is opened otherwise changes get overwritten
+					requireView().clearFocus()
+
 					(activity as DiaryActivity).openModal(LogActionFragment().apply {
 						arguments = bundleOf(
 							Extras.EXTRA_DIARY_ID to diary.id,
