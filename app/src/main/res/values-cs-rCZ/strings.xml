@@ -21,7 +21,7 @@
 
 	<string name="widget_encrypt_error">Widget není dostupný když je zapnuto nastavení šifrování.</string>
 	<string name="new_plant_title">Přidat novou rostlinu</string>
-	<string name="plant_details_title">Podrobnosti o rostlině</string>
+	<string name="plant_details_title">Info o rostlině</string>
 	<string name="statistics_title">Statistiky rostliny</string>
 	<!-- select from camera -->
 	<string name="photo_option_camera">Z fotoaparátu</string>
@@ -34,9 +34,9 @@
 	<string name="snackbar_image_added">Obrázek přidán</string>
 	<string name="snackbar_action_take_another">Vyfotit další</string>
 
-	<string name="nav_feeding_schedule">Rozvrhy</string>
-	<string name="schedule_details_title">Podrobnosti rozvrhu</string>
-	<string name="schedule_date_title">Datum rozvrhu</string>
+	<string name="nav_feeding_schedule">Plány</string>
+	<string name="schedule_details_title">Detaily plánu</string>
+	<string name="schedule_date_title">Rozvrh plánu</string>
 	<string name="schedule_name">Název</string>
 	<string name="schedule_name_hint">Lehká výživa</string>
 	<string name="schedule_description">Popis</string>
@@ -44,7 +44,7 @@
 	<string name="schedule_description_hint">Lehká výživa s proplachem každé 2 týdny</string>
 
 	<string name="schedules_new_feeding">+ Nový plán výživy</string>
-	<string name="schedules_new_schedule">+ Nový rozvrh</string>
+	<string name="schedules_new_schedule">+ Nový plán</string>
 	<string name="new_additive">+ Nové aditivum</string>
 	<string name="additives">Aditiva</string>
 	<string name="additive">Aditivum</string>
@@ -62,8 +62,8 @@
 	<string name="undo">Vrátit</string>
 	<string name="feeding_schedules_title">Plány výživy</string>
 	<string name="feeding_schedule_title">Plán výživy</string>
-	<string name="update_dialog_title">Aplikace byla updatována</string>
-	<string name="update_dialog_message" formatted="true">Aplikace byla povýšena na verzi %s</string>
+	<string name="update_dialog_title">Aplikace aktualizována</string>
+	<string name="update_dialog_message" formatted="true">Aplikace aktualizována na verzi %s</string>
 	<string name="update_dialog_view_changes_button">Prohlédnout změny</string>
 	<string name="update_dialog_dismiss_button">Zahodit</string>
 
@@ -82,7 +82,7 @@
 	<string name="date_now">Nyní</string>
 	<string name="date_label">Datum</string>
 	<string name="today">Dnes</string>
-	<string name="length_cured">Pomalé sušení %sdní</string>
+	<string name="length_cured">Konzervace %sdní</string>
 
 	<string name="filter_waterings">Zálivky</string>
 	<string name="filter_stage_changes">Změny fáze</string>
@@ -108,15 +108,15 @@
 	<string name="new_plant_hint">Nová rostlina</string>
 	<string name="plant_strain_label">Odrůda rostliny</string>
 	<string name="plant_strain_hint">Lemon haze</string>
-	<string name="grow_details_title">Podrobnosti</string>
+	<string name="grow_details_title">Pěstební info</string>
 	<string name="plant_date_label">Datum zasazení</string>
-	<string name="plant_medium_label">Substrát</string>
+	<string name="plant_medium_label">Pěstební medium</string>
 
-	<string name="medium_details_label">Podrobnosti substrátu</string>
+	<string name="medium_details_label">Detaily média</string>
 	<!-- Example of medium mix -->
-	<string name="medium_details_hint">Zemina, perlit 50/50 mix</string>
+	<string name="medium_details_hint">např. zemina, perlit 50/50 mix</string>
 	<string name="from_clone_label">Z klonu?</string>
-	<string name="stage_details_title">Fáze růstu - podrobnosti</string>
+	<string name="stage_details_title">Fáze - podrobnosti</string>
 	<string name="plant_stage_label">Fáze rostliny</string>
 	<string name="view_photos">Zobrazit fotky</string>
 	<string name="view_history">Zobrazit historii</string>
@@ -127,7 +127,7 @@
 	<string name="filter">Filtr</string>
 	<string name="planted">Zasazeno</string>
 	<string name="germination">Klíčení</string>
-	<string name="cutting">Řízkování</string>
+	<string name="cutting">Řízek</string>
 	<string name="vegetation">Růstová fáze</string>
 	<string name="budding">Tvorba květu</string>
 	<string name="flowering">Květová fáze</string>
@@ -193,15 +193,15 @@
 	<string name="multiple_plants">více rostlin</string>
 	<string name="added_to">Akce přidána k</string>
 	<string name="note_updated">Poznámka upravena</string>
-	<string name="updated">upraveno</string>
-	<string name="stage_updated">Fáze změněna</string>
+	<string name="updated">aktualizováno</string>
+	<string name="stage_updated">Fáze aktualizována</string>
 	<string name="event_deleted">Událost vymazána</string>
 	<string name="done">Hotovo</string>
 	<string name="garden">Zahrada</string>
 	<string name="select_all">Vybrat vše</string>
 	<string name="select_none">Nevybrat nic</string>
 	<string name="accept">Potvrdit</string>
-	<string name="enable">Zapnout</string>
+	<string name="enable">Povolit</string>
 	<string name="decline">Odmítnout</string>
 	<string name="seedling_label">Klíček:</string>
 	<string name="seedling">Klíček</string>
@@ -223,7 +223,7 @@
 	<string name="last_watered_ago" formatted="true">Naposledy zalito před &lt;b&gt;%s&lt;/b&gt; </string>
 	<string name="planted_ago" formatted="true">Zasazeno před &lt;b&gt;%s&lt;/b&gt;</string>
 
-	<string name="permission_summary">Přístup k externí paměti je vyžadován k ukládání obrázku. Žádný další prostor není využíván.</string>
+	<string name="permission_summary">Přístup k externí paměti je vyžadován k ukládání obrázků. Žádný další prostor není využíván.</string>
 
 	<string name="waterings_added">Zálivka přidána</string>
 	<string name="delete_plant_message">Chystáte se vymazat &lt;b&gt;%s&lt;/b&gt; a všechny přidružené obrázky. Jste si jisti? Tuto akci nelze vrátit.</string>
@@ -247,7 +247,7 @@
 
 	<string name="settings_default_garden">Výchozí zahrada k zobrazení při otevření, aktuálně: &lt;b&gt;%s&lt;/b&gt;</string>
 	<string name="settings_card_style">Vyberte styl karty, aktuálně: %s</string>
-	<string name="settings_delivery">Výchozí jednotky pro vodu, aktuálně: &lt;b&gt;%slt;/b&gt;</string>
+	<string name="settings_delivery">Výchozí jednotky pro zálivku, aktuálně: &lt;b&gt;%slt;/b&gt;</string>
 	<string name="settings_measurement">Výchozí jednotky pro přísady, aktuálně: &lt;b&gt;%slt;/b&gt;</string>
 	<string name="settings_temperature">Výchozí jednotky pro teplotu, aktuálně:  &lt;b&gt;%s&lt;/b&gt;</string>
 	<string name="settings_backup_size" formatted="true">Aktuálně: &lt;b&gt;%sMb&lt;/b&gt; / Využívám &lt;b&gt;%s&lt;/b&gt;</string>
@@ -260,8 +260,8 @@
 	<string name="encrypted">šifrováno</string>
 	<string name="unencrypted">nešifrováno</string>
 
-	<string name="select_measurement_title">Vybrat míru</string>
-	<string name="select_temperature_title">Vybrat teplotu</string>
+	<string name="select_measurement_title">Vybrat jednotky</string>
+	<string name="select_temperature_title">Vybrat jednotky</string>
 	<string name="select_garden_title">Vybrat zahradu</string>
 	<string name="select_backup_title">Vybrat zálohu</string>
 	<string name="backup_restore_error">Musíte mít zapnuté šifrování se stejným heslem k obnově této zálohy.</string>
@@ -292,14 +292,14 @@
 	<string name="settings_dark_title">Vynutit tmavý režim</string>
 	<string name="settings_dark_summary">Vynutí tmavý režim aplikace nezávisle na nastavení systému.</string>
 	<string name="settings_harvest_title">Schovat sklizené</string>
-	<string name="settings_harvest_summary">Nezobrazí všechny rostliny, které byly sklizené</string>
-	<string name="settings_reverse_title">Změnit pořadí rostlin</string>
+	<string name="settings_harvest_summary">Schová všechny rostliny, které byly sklizené</string>
+	<string name="settings_reverse_title">Obrátit pořadí rostlin</string>
 	<string name="settings_reverse_summary">Zobrazí rostliny v obráceném pořadí. (Nutný restart aplikace)</string>
 	<string name="settings_garden_title">Výchozí zahrada</string>
 
 	<string name="settings_units">Jednotky</string>
-	<string name="settings_delivery_title">Jednotky pro vodu</string>
-	<string name="settings_measurement_title">Jednotky pro aditiva</string>
+	<string name="settings_delivery_title">Jednotky pro zálivku</string>
+	<string name="settings_measurement_title">Jednotky pro přísady</string>
 	<string name="settings_temp_title">Jednotky teploty</string>
 	<string name="settings_tds_title">TDS jednotky</string>
 	<string name="settings_tds_summary" formatted="true">Výchozí jednotky TDS, aktuálně &lt;b&gt;%slt;/b&gt;</string>
@@ -406,7 +406,7 @@
 	<string name="humidity">Vlhkost</string>
 	<string name="current_temp">Aktuální teplota:</string>
 	<string name="current_humidity">Aktuální vlhkost:</string>
-	<string name="lighting_title">Nastavení osvětlení</string>
+	<string name="lighting_title">Doba osvětlení</string>
 	<string name="delete_item_dialog_title">Vymazat tuto položku?</string>
 	<string name="confirm_delete_item_message_holder">Jste si jistí, že chcete vymazat &lt;b&gt;%s&lt;/b&gt;?</string>
 	<string name="show">Zobrazit</string>
