@@ -27,8 +27,8 @@
 			android:paddingBottom="8dp"
 			app:flexWrap="wrap"
 			app:flexDirection="row"
-			app:dividerDrawable="@drawable/section_spacer"
-			app:showDivider="middle"
+			app:dividerDrawableVertical="@drawable/spacer_8dp"
+			app:showDividerVertical="middle"
 		/>
 
 		<com.google.android.flexbox.FlexboxLayout
