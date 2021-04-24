@@ -2,6 +2,7 @@ package me.anon.grow3.data.model
 
 import com.squareup.moshi.JsonClass
 import me.anon.grow3.ui.action.view.WaterLogView
+import me.anon.grow3.ui.logs.view.WaterLogCard
 
 /**
  * See [me.anon.grow3.ui.logs.view.WaterLogCard]
@@ -37,3 +38,4 @@ data class Water(
 
 public fun Water(block: Water.() -> Unit): Water = Water(null, null, null, null, null).apply(block)
 public fun Water.logView(diary: Diary, log: Log) = WaterLogView(diary, log as Water)
+public fun Water.logCard(diary: Diary, log: Log) = WaterLogCard(diary, log as Water)

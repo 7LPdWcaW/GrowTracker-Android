@@ -1,9 +1,11 @@
 package me.anon.grow3.util
 
 import me.anon.grow3.util.DateUtils.API_FORMAT
+import me.anon.grow3.util.DateUtils.DATETIME_MID_DISPLAY_FORMAT
 import me.anon.grow3.util.DateUtils.DATE_FORMAT
-import me.anon.grow3.util.DateUtils.MID_DISPLAY_FORMAT
+import me.anon.grow3.util.DateUtils.DATE_MID_DISPLAY_FORMAT
 import me.anon.grow3.util.DateUtils.TIME_FORMAT
+import org.threeten.bp.LocalDate
 import org.threeten.bp.LocalTime
 import org.threeten.bp.ZoneId
 import org.threeten.bp.ZonedDateTime
@@ -20,10 +22,16 @@ object DateUtils
 	const val DATE_FORMAT = "dd/MM/yyyy"
 
 	const val API_FORMAT = "yyyy-MM-dd'T'HH:mm"
-	const val MID_DISPLAY_FORMAT = "dd MMM yyyy HH:mm"
-	const val SHORT_DISPLAY_FORMAT_UK = "dd/MM/yy HH:mm"
-	const val SHORT_DISPLAY_FORMAT_INT = "MM-dd-yy HH:mm"
-	const val SHORT_DISPLAY_FORMAT_ISO = "yy-MM-dd HH:mm"
+
+	const val DATETIME_MID_DISPLAY_FORMAT = "dd MMM yyyy HH:mm"
+	const val DATETIME_SHORT_DISPLAY_FORMAT_UK = "dd/MM/yy HH:mm"
+	const val DATETIME_SHORT_DISPLAY_FORMAT_INT = "MM-dd-yy HH:mm"
+	const val DATETIME_SHORT_DISPLAY_FORMAT_ISO = "yy-MM-dd HH:mm"
+
+	const val DATE_MID_DISPLAY_FORMAT = "EEE dd MMM yyyy"
+	const val DATE_SHORT_DISPLAY_FORMAT_UK = "dd/MM/yy"
+	const val DATE_SHORT_DISPLAY_FORMAT_INT = "MM-dd-yy"
+	const val DATE_SHORT_DISPLAY_FORMAT_ISO = "yy-MM-dd"
 }
 
 /**
@@ -31,6 +39,15 @@ object DateUtils
  */
 public fun String.asDateTime(): ZonedDateTime
 	= ZonedDateTime.parse(this, DateTimeFormatterBuilder()
+		.appendPattern(API_FORMAT)
+		.appendOffset("+HH:mm", "+00:00")
+		.toFormatter())
+
+/**
+ * Parses the given string as ISO-8601
+ */
+public fun String.asDate(): LocalDate
+	= LocalDate.parse(this, DateTimeFormatterBuilder()
 		.appendPattern(API_FORMAT)
 		.appendOffset("+HH:mm", "+00:00")
 		.toFormatter())
@@ -49,14 +66,20 @@ public fun ZonedDateTime.asApiString(): String
  * Formats a zoned date time into a mid string
  * TODO: Add user display format setting
  */
-public fun ZonedDateTime.asDisplayString(): String = format(DateTimeFormatter.ofPattern(MID_DISPLAY_FORMAT))
+public fun ZonedDateTime.asDisplayString(): String = format(DateTimeFormatter.ofPattern(DATETIME_MID_DISPLAY_FORMAT))
+
+/**
+ * Formats a zoned date time into a mid string
+ * TODO: Add user display format setting
+ */
+public fun LocalDate.asDisplayString(): String = format(DateTimeFormatter.ofPattern(DATE_MID_DISPLAY_FORMAT))
 
 /**
  * Parses a display string into zoned date time. This will override the timezone to use current system default.
  * TODO: Allow for passing of stored zone to retain
  */
 public fun String.fromDisplayString(): ZonedDateTime
-	= ZonedDateTime.from(DateTimeFormatter.ofPattern(MID_DISPLAY_FORMAT).withZone(ZoneId.systemDefault()).parse(this))
+	= ZonedDateTime.from(DateTimeFormatter.ofPattern(DATETIME_MID_DISPLAY_FORMAT).withZone(ZoneId.systemDefault()).parse(this))
 
 public fun ZonedDateTime.formatDate(): String = format(DateTimeFormatter.ofPattern(DATE_FORMAT))
 public fun ZonedDateTime.formatTime(): String = format(DateTimeFormatter.ofPattern(TIME_FORMAT))
