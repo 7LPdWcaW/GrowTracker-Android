@@ -72,6 +72,11 @@ open class LogActionFragment : BaseFragment(FragmentActionLogBinding::class)
 
 			logView?.let {
 				val log = it.saveView()
+
+				requireView().findViewById<CropSelectView>(R.id.crop_select_view)?.let {
+					log.cropIds = it.selectedCrops.toList()
+				}
+
 				viewModel.save(log)
 				finish()
 			}

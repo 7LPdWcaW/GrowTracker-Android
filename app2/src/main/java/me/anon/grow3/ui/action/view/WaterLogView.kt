@@ -40,7 +40,6 @@ class WaterLogView(
 	override fun saveView(): Water
 	{
 		bindings.root.clearFocus()
-		log.cropIds = bindings.cropSelectView.selectedCrops.toList()
 		return log
 	}
 
