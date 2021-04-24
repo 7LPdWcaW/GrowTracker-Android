@@ -3,6 +3,7 @@ package me.anon.grow3.data.model
 import android.text.Spannable
 import android.text.SpannableString
 import com.squareup.moshi.JsonClass
+import me.anon.grow3.ui.action.view.StageChangeLogView
 import me.anon.grow3.util.asDateTime
 import me.anon.grow3.util.plusAssign
 import me.anon.grow3.util.string
@@ -62,3 +63,5 @@ data class StageAt(
 		return "$days${stage.type.strRes.string()[0]}"
 	}
 }
+
+public fun StageChange.logView(diary: Diary, log: Log) = StageChangeLogView(diary, log as StageChange)
