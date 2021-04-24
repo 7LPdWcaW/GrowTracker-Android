@@ -146,7 +146,13 @@ open class LogActionFragment : BaseFragment(FragmentActionLogBinding::class)
 			}
 
 			view.findViewById<CropSelectView>(R.id.crop_select_view)?.let {
-				it.selectedCrops = arguments?.getStringArray(Extras.EXTRA_CROP_IDS)?.asSequence()?.toHashSet() ?: hashSetOf()
+				it.selectedCrops = arguments?.getStringArray(Extras.EXTRA_CROP_IDS)
+					?.asSequence()
+					?.toHashSet()
+					?: diary.crops
+						.map { it.id }
+						.toHashSet()
+
 				it.setDiary(diary)
 			}
 
