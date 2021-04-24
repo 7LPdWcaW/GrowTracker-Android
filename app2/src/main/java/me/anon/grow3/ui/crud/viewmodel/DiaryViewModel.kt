@@ -78,7 +78,7 @@ class DiaryViewModel(
 		}
 	}
 
-	public fun save(new: Diary)
+	public fun save(new: Diary = diary.value!!)
 	{
 		viewModelScope.launch {
 			diariesRepository.addDiary(new)
