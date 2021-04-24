@@ -3,8 +3,7 @@ package me.anon.grow3.ui.action.view
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import me.anon.grow3.data.model.Diary
-import me.anon.grow3.data.model.Water
+import me.anon.grow3.data.model.*
 import me.anon.grow3.databinding.FragmentActionLogWaterBinding
 import me.anon.grow3.util.asEditable
 import me.anon.grow3.util.asStringOrNull
@@ -33,8 +32,21 @@ class WaterLogView(
 			it.text.toDoubleOrNull()?.let { log.outPH = Water.PHUnit(it) }
 		}
 
+		bindings.waterAmount.editText!!.onFocusLoss {
+			it.text.toDoubleOrNull()?.let { log.amount = Volume(it, VolumeUnit.L) }
+		}
+		bindings.waterTds.editText!!.onFocusLoss {
+			it.text.toDoubleOrNull()?.let { log.tds = Water.TdsUnit(it, TdsType.EC) }
+		}
+		bindings.waterTemp.editText!!.onFocusLoss {
+			it.text.toDoubleOrNull()?.let { log.temperature = it }
+		}
+
 		bindings.waterPh.editText!!.text = log.inPH?.amount.asStringOrNull()?.asEditable()
 		bindings.waterRunoff.editText!!.text = log.outPH?.amount.asStringOrNull()?.asEditable()
+		bindings.waterAmount.editText!!.text = log.amount?.amount.asStringOrNull()?.asEditable()
+		bindings.waterTds.editText!!.text = log.tds?.amount.asStringOrNull()?.asEditable()
+		bindings.waterTemp.editText!!.text = log.temperature?.asStringOrNull()?.asEditable()
 	}
 
 	override fun saveView(): Water

@@ -156,12 +156,13 @@ open class LogActionFragment : BaseFragment(FragmentActionLogBinding::class)
 
 				it.setDiary(diary)
 			}
-			viewBindings.logContent += common.root
 
 			if (arguments?.getBoolean(EXTRA_SINGLE_CROP, false) == true)
 			{
-				view.findViewById<CropSelectView>(R.id.crop_select_view)?.isVisible = false
+				common.cropSelectView.isVisible = false
 			}
+
+			viewBindings.logContent += common.root
 		}
 	}
 

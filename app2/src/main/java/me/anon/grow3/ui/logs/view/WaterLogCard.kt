@@ -59,6 +59,30 @@ class WaterLogCard : Card<CardWaterLogBinding>
 			}
 		}
 
+		log.tds?.let { tds ->
+			view.content += view.content.inflate<View>(R.layout.stub_data_label).apply {
+				val binding = StubDataLabelBinding.bind(this)
+				binding.data.text = "${tds.amount.asString()}mS/cm"
+				binding.label.text = R.string.log_water_field_tds.string()
+			}
+		}
+
+		log.amount?.let { amount ->
+			view.content += view.content.inflate<View>(R.layout.stub_data_label).apply {
+				val binding = StubDataLabelBinding.bind(this)
+				binding.data.text = "${amount.amount.asString()}L"
+				binding.label.text = R.string.log_water_field_amount.string()
+			}
+		}
+
+		log.temperature?.let { temp ->
+			view.content += view.content.inflate<View>(R.layout.stub_data_label).apply {
+				val binding = StubDataLabelBinding.bind(this)
+				binding.data.text = "${temp.asString()}℃"
+				binding.label.text = R.string.log_water_field_temperature.string()
+			}
+		}
+
 		view.content.hideIfEmpty()
 
 		view.cropsContainer.removeAllViews()

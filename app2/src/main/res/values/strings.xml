@@ -84,6 +84,9 @@
 
 	<string name="log_water_field_inputph">Input pH</string>
 	<string name="log_water_field_outputph">Runoff pH</string>
+	<string name="log_water_field_tds">TDS</string>
+	<string name="log_water_field_amount">Amount</string>
+	<string name="log_water_field_temperature">Temperature</string>
 
 	<string name="log_type_water">Water</string>
 	<string name="log_type_stage_change">Plant stage</string>

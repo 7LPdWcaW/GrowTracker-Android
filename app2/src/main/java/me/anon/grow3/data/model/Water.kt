@@ -21,8 +21,8 @@ data class Water(
 	)
 
 	class TdsUnit(
-		public var type: TdsType,
-		public var amount: Double
+		public var amount: Double,
+		public var type: TdsType
 	)
 
 	class Additive(
