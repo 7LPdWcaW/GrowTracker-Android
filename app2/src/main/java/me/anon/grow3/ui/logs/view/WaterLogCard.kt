@@ -59,6 +59,8 @@ class WaterLogCard : Card<CardWaterLogBinding>
 			}
 		}
 
+		view.content.hideIfEmpty()
+
 		view.cropsContainer.removeAllViews()
 		log.cropIds
 			.mapToView<String, StubCropSmallBinding>(view.cropsContainer) { cropId, cropView ->
