@@ -51,8 +51,7 @@ class LogActionBottomSheetFragment : LogActionFragment()
 		super.bindUi()
 		viewBindings.toolbar.setNavigationOnClickListener {
 			requireActivity().promptExit {
-				layoutSheetBehavior.isHideable = true
-				layoutSheetBehavior.state = BottomSheetBehavior.STATE_HIDDEN
+				finish()
 			}
 		}
 
@@ -79,9 +78,9 @@ class LogActionBottomSheetFragment : LogActionFragment()
 
 	override fun finish()
 	{
-		super.finish()
 		layoutSheetBehavior.isHideable = true
 		layoutSheetBehavior.state = BottomSheetBehavior.STATE_HIDDEN
+		super.finish()
 	}
 
 	override fun onBackPressed(): Boolean
@@ -90,8 +89,7 @@ class LogActionBottomSheetFragment : LogActionFragment()
 		{
 			BottomSheetBehavior.STATE_COLLAPSED -> {
 				requireActivity().promptExit {
-					layoutSheetBehavior.isHideable = true
-					layoutSheetBehavior.state = BottomSheetBehavior.STATE_HIDDEN
+					finish()
 				}
 				return true
 			}

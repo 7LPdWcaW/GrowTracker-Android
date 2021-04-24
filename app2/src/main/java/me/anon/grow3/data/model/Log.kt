@@ -25,6 +25,8 @@ abstract class Log(
 	open var action: String = "Log"
 )
 {
+	public var isDraft = false
+
 	open fun summary(): CharSequence = ""
 	open val typeRes: Int = -1
 }
