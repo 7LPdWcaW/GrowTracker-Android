@@ -1,0 +1,182 @@
+<resources>
+	<style name="AppTheme" parent="Theme.MaterialComponents.Light.NoActionBar">
+		<item name="colorPrimary">@color/colorPrimary</item>
+		<item name="textOnPrimary">@color/textOnPrimary</item>
+
+		<item name="colorPrimaryDark">@color/colorPrimary</item>
+		<item name="android:statusBarColor">@color/colorPrimary</item>
+
+		<item name="colorAccent">@color/colorAccent</item>
+		<item name="textOnAccent">#ffffff</item>
+
+		<item name="colorSurface">@color/colorSurface</item>
+		<item name="textOnSurface">@color/textOnSurface</item>
+
+		<item name="colorSecondary">@color/colorSecondary</item>
+		<item name="textOnSecondary">@color/textOnSecondary</item>
+
+<!--		<item name="colorControlNormal">@color/colorPrimary</item>-->
+		<item name="colorControlActivated">@color/colorPrimary</item>
+		<item name="colorControlHighlight">@color/colorPrimary</item>
+
+		<item name="buttonStyle">@style/Button</item>
+
+		<item name="shapeAppearanceLargeComponent">@style/ShapeAppearance.Large</item>
+		<item name="shapeAppearanceSmallComponent">@style/ShapeAppearance.Small</item>
+		<item name="textInputStyle">@style/Input</item>
+		<item name="materialCardViewStyle">@style/Card</item>
+		<item name="bottomSheetStyle">@style/BottomSheet</item>
+
+		<item name="android:textColor">?textOnSurface</item>
+		<item name="android:windowContentTransitions">true</item>
+
+		<item name="android:windowBackground">@drawable/window_background</item>
+		<item name="textOnWindow">#ffffff</item>
+
+		<item name="android:windowTranslucentNavigation">true</item>
+	</style>
+
+	<style name="AppTheme.FullScrim">
+		<item name="android:windowTranslucentStatus">true</item>
+		<item name="android:windowTranslucentNavigation">true</item>
+	</style>
+
+	<style name="AppTheme.Lightstatus">
+		<item name="android:windowLightStatusBar">true</item>
+	</style>
+
+	<!-- -->
+	<style name="BottomSheet" parent="Widget.Design.BottomSheet.Modal">
+		<item name="android:background">@drawable/bottom_sheet_bg_drawable</item>
+		<item name="elevation">16dp</item>
+	</style>
+
+	<style name="Input" parent="Widget.MaterialComponents.TextInputLayout.OutlinedBox" />
+
+	<style name="DropdownTheme">
+		<item name="android:editable">false</item>
+		<item name="android:inputType">none</item>
+	</style>
+	<style name="Dropdown" parent="Widget.MaterialComponents.TextInputLayout.OutlinedBox.ExposedDropdownMenu">
+		<item name="android:theme">@style/DropdownTheme</item>
+	</style>
+
+	<style name="Card" parent="Widget.MaterialComponents.CardView">
+		<item name="cardBackgroundColor">?colorSurface</item>
+		<item name="cardUseCompatPadding">true</item>
+		<item name="cardElevation">4dp</item>
+		<item name="cardCornerRadius">8dp</item>
+	</style>
+
+	<style name="CardLogTheme">
+<!--		<item name="textOnSurface">#ffffff</item>-->
+	</style>
+
+	<style name="Card.Log">
+		<item name="android:theme">@style/CardLogTheme</item>
+		<item name="cardBackgroundColor">#D4EAE5</item>
+<!--		<item name="cardBackgroundColor">#F3E1E3</item>-->
+	</style>
+
+	<style name="ShapeAppearance.Large" parent="ShapeAppearance.MaterialComponents.LargeComponent">
+		<item name="cornerFamily">rounded</item>
+		<item name="cornerSize">8dp</item>
+	</style>
+
+	<style name="ShapeAppearance.Small" parent="ShapeAppearance.MaterialComponents.LargeComponent">
+		<item name="cornerFamily">rounded</item>
+		<item name="cornerSize">8dp</item>
+	</style>
+
+	<style name="Button" parent="Widget.MaterialComponents.Button">
+		<item name="android:padding">16dp</item>
+		<item name="backgroundTint">?colorAccent</item>
+		<item name="android:textColor">?textOnAccent</item>
+	</style>
+
+	<style name="Button.Bordered" parent="Widget.MaterialComponents.Button.OutlinedButton">
+		<item name="android:textColor">?colorAccent</item>
+		<item name="strokeColor">?colorAccent</item>
+		<item name="android:padding">16dp</item>
+	</style>
+
+	<style name="Button.Text" parent="Widget.MaterialComponents.Button.TextButton">
+		<item name="android:textColor">?colorAccent</item>
+		<item name="android:padding">16dp</item>
+	</style>
+
+	<style name="Text">
+		<item name="android:textColor">?textOnSurface</item>
+		<item name="android:lineSpacingMultiplier">1.2</item>
+		<item name="android:fontFamily">sans-serif</item>
+	</style>
+
+	<style name="Text.Header">
+		<item name="android:fontFamily">sans-serif-light</item>
+		<item name="android:textSize">@dimen/text_title1</item>
+		<item name="android:paddingBottom">8dp</item>
+	</style>
+
+	<style name="Text.Header.Sub">
+		<item name="android:textSize">@dimen/text_title2</item>
+		<item name="android:paddingBottom">0dp</item>
+	</style>
+
+	<style name="Text.Link">
+		<item name="android:clickable">true</item>
+		<item name="android:focusable">true</item>
+		<item name="android:textSize">@dimen/text_title2</item>
+<!--		<item name="android:paddingStart">12dp</item>-->
+		<item name="android:gravity">center_vertical</item>
+		<item name="android:background">@drawable/link_drawable</item>
+		<item name="android:drawableEnd">@drawable/ic_arrow_forward</item>
+		<item name="android:drawableStart">@drawable/ic_empty</item>
+		<item name="android:drawablePadding">16dp</item>
+		<item name="android:foreground">@drawable/rounded_selectable_item_background</item>
+		<item name="drawableTint">@color/text_surface_color</item>
+		<item name="android:textColor">@color/text_surface_color</item>
+		<item name="android:minHeight">72dp</item>
+	</style>
+
+	<style name="Text.Link.End">
+		<item name="android:background">@null</item>
+		<item name="android:paddingEnd">8dp</item>
+	</style>
+
+	<style name="Text.Caption">
+		<item name="android:textSize">@dimen/text_caption</item>
+		<item name="android:fontFamily">sans-serif-smallcaps</item>
+		<item name="android:textAllCaps">true</item>
+	</style>
+
+	<style name="Text.Window">
+		<item name="android:textSize">@dimen/text_title2</item>
+		<item name="android:fontFamily">sans-serif-smallcaps</item>
+		<item name="android:textAllCaps">true</item>
+		<item name="android:textColor">?textOnPrimary</item>
+	</style>
+
+	<style name="Checkbox" parent="Widget.MaterialComponents.CompoundButton.CheckBox">
+		<item name="android:textSize">@dimen/text_body</item>
+		<item name="android:paddingStart">12dp</item>
+		<item name="android:paddingTop">2dp</item>
+		<item name="android:paddingBottom">2dp</item>
+		<item name="android:paddingEnd">16dp</item>
+		<item name="android:button">@drawable/checkbox_drawable</item>
+	</style>
+
+	<style name="CircleImage">
+		<item name="cornerFamily">rounded</item>
+		<item name="cornerSize">50%</item>
+	</style>
+
+	<style name="RoundedImage">
+		<item name="cornerFamily">rounded</item>
+		<item name="cornerSize">8dp</item>
+	</style>
+
+	<style name="PopupMenu" parent="@style/Widget.AppCompat.PopupMenu">
+		<item name="android:dropDownHorizontalOffset">-4dp</item>
+		<item name="android:dropDownVerticalOffset">4dp</item>
+	</style>
+</resources>

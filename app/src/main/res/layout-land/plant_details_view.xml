@@ -407,4 +407,17 @@
 			<Space android:layout_width="1dp" android:layout_height="1dp" />
 		</LinearLayout>
 	</ScrollView>
+
+	<com.google.android.material.floatingactionbutton.FloatingActionButton
+		android:layout_width="wrap_content"
+		android:layout_height="wrap_content"
+		android:id="@+id/fab_complete"
+		android:layout_gravity="bottom|end"
+		app:backgroundTint="#4CAF50"
+		app:srcCompat="@drawable/ic_floting_done"
+		android:layout_margin="16dp"
+		app:layout_anchorGravity="bottom|end"
+		app:layout_dodgeInsetEdges="bottom"
+		app:layout_behavior="com.google.android.material.floatingactionbutton.FloatingActionButton$Behavior"
+	/>
 </androidx.coordinatorlayout.widget.CoordinatorLayout>

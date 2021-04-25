@@ -1,15 +1,24 @@
 <?xml version="1.0" encoding="utf-8"?>
 
-<androidx.coordinatorlayout.widget.CoordinatorLayout
-	xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.coordinatorlayout.widget.CoordinatorLayout xmlns:android="http://schemas.android.com/apk/res/android"
 	xmlns:app="http://schemas.android.com/apk/res-auto"
 	android:layout_width="match_parent"
 	android:layout_height="match_parent"
+	xmlns:tools="http://schemas.android.com/tools"
 	android:id="@+id/coordinator"
->
+	tools:context="me.anon.view.fragment.PlantListFragment">
+	<ProgressBar
+		android:layout_width="wrap_content"
+		android:layout_height="wrap_content"
+		android:id="@+id/progress_bar"
+		android:layout_gravity="center"
+	/>
+
 	<FrameLayout
 		android:layout_width="match_parent"
 		android:layout_height="match_parent"
+		android:id="@+id/content_container"
+		android:visibility="gone"
 	>
 		<androidx.constraintlayout.widget.ConstraintLayout
 			android:layout_width="match_parent"

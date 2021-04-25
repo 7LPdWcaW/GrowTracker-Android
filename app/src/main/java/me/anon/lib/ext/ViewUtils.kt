@@ -5,10 +5,12 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.view.inputmethod.InputMethodManager
+import android.widget.TextView
 import androidx.annotation.ColorRes
 import androidx.annotation.DimenRes
 import androidx.annotation.LayoutRes
 import androidx.annotation.StringRes
+import androidx.recyclerview.widget.RecyclerView
 
 /**
  * Convenience method for inflating a view into another. Will return the inflated view, or the parent view if attach = true
@@ -134,8 +136,22 @@ inline fun <T : View> T.afterMeasured(crossinline callback: T.() -> Unit)
 	})
 }
 
+public fun RecyclerView.removeAllItemDecorators()
+{
+	for (index in 0 until this.itemDecorationCount)
+	{
+		removeItemDecorationAt(index)
+	}
+}
+
 // Resource convenience methods
 public fun View.dimension(@DimenRes resId: Int): Float = resources.getDimension(resId)
 public fun View.dimensionPixels(@DimenRes resId: Int): Int = resources.getDimensionPixelSize(resId)
 public fun View.string(@StringRes resId: Int): String = resources.getString(resId)
 public fun View.color(@ColorRes resId: Int): Int = resources.getColor(resId)
+
+public var TextView.text: String
+	public set(value) {
+		setText(value)
+	}
+	public get() = text.toString()

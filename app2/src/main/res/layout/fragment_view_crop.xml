@@ -1,0 +1,80 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<androidx.coordinatorlayout.widget.CoordinatorLayout
+	xmlns:android="http://schemas.android.com/apk/res/android"
+	xmlns:app="http://schemas.android.com/apk/res-auto"
+	xmlns:tools="http://schemas.android.com/tools"
+	android:layout_width="match_parent"
+	android:layout_height="match_parent"
+>
+	<include android:id="@+id/include_toolbar" layout="@layout/include_toolbar" />
+
+	<androidx.recyclerview.widget.RecyclerView
+		android:layout_width="match_parent"
+		android:layout_height="match_parent"
+		android:id="@+id/recycler_view"
+		android:clipToPadding="false"
+		app:layout_behavior="@string/appbar_scrolling_view_behavior"
+	/>
+<!--			&lt;!&ndash; recent photos &ndash;&gt;-->
+<!--			<com.google.android.material.card.MaterialCardView-->
+<!--				android:layout_width="match_parent"-->
+<!--				android:layout_height="wrap_content"-->
+<!--				style="@style/Card"-->
+<!--			>-->
+<!--				<androidx.constraintlayout.widget.ConstraintLayout-->
+<!--					android:layout_width="match_parent"-->
+<!--					android:layout_height="wrap_content"-->
+<!--					android:paddingTop="@dimen/content_margin"-->
+<!--					android:paddingStart="@dimen/content_margin"-->
+<!--					android:paddingBottom="@dimen/content_margin"-->
+<!--					android:paddingEnd="8dp"-->
+<!--				>-->
+<!--					<TextView-->
+<!--						android:layout_width="wrap_content"-->
+<!--						android:layout_height="wrap_content"-->
+<!--						android:id="@+id/photos_header"-->
+<!--						android:text="Recent Photos"-->
+<!--						app:layout_constraintTop_toTopOf="parent"-->
+<!--						app:layout_constraintStart_toStartOf="parent"-->
+<!--						style="@style/Text.Header"-->
+<!--					/>-->
+
+<!--					<com.google.android.flexbox.FlexboxLayout-->
+<!--						android:layout_width="0dp"-->
+<!--						android:layout_height="wrap_content"-->
+<!--						android:id="@+id/photo_container"-->
+<!--						android:orientation="horizontal"-->
+<!--						android:showDividers="middle"-->
+<!--						android:layout_marginTop="@dimen/section_spacing"-->
+<!--						app:layout_constraintStart_toStartOf="parent"-->
+<!--						app:layout_constraintTop_toBottomOf="@id/photos_header"-->
+<!--						app:layout_constraintEnd_toStartOf="@id/more_photos"-->
+<!--						app:layout_constraintBottom_toBottomOf="parent"-->
+<!--						app:flexDirection="row"-->
+<!--						app:flexWrap="wrap"-->
+<!--						app:maxLine="2"-->
+<!--						app:dividerDrawable="@drawable/spacer_16dp"-->
+<!--						app:dividerDrawableVertical="@drawable/spacer_16dp"-->
+<!--						app:showDivider="middle"-->
+<!--						app:showDividerVertical="middle"-->
+<!--					/>-->
+
+<!--					<ImageView-->
+<!--						android:layout_width="56dp"-->
+<!--						android:layout_height="56dp"-->
+<!--						android:id="@+id/more_photos"-->
+<!--						android:background="?actionBarItemBackground"-->
+<!--						android:clickable="true"-->
+<!--						android:focusable="true"-->
+<!--						android:padding="16dp"-->
+<!--						app:srcCompat="@drawable/ic_arrow_forward"-->
+<!--						app:tint="@color/text_surface_color"-->
+<!--						app:layout_constraintEnd_toEndOf="parent"-->
+<!--						app:layout_constraintTop_toBottomOf="@id/photos_header"-->
+<!--						app:layout_constraintBottom_toBottomOf="parent"-->
+<!--					/>-->
+<!--				</androidx.constraintlayout.widget.ConstraintLayout>-->
+<!--			</com.google.android.material.card.MaterialCardView>-->
+
+</androidx.coordinatorlayout.widget.CoordinatorLayout>
