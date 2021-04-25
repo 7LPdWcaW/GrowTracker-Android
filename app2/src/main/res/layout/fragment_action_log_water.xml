@@ -7,7 +7,7 @@
 	android:layout_width="match_parent"
 	android:layout_height="wrap_content"
 	app:flexWrap="wrap"
-	app:dividerDrawable="@drawable/spacer_8dp"
+	app:dividerDrawable="@drawable/spacer_4dp"
 	app:showDivider="middle"
 	app:alignItems="stretch"
 >
@@ -105,4 +105,21 @@
 			android:inputType="numberDecimal"
 		/>
 	</com.google.android.material.textfield.TextInputLayout>
+
+	<TextView
+		android:layout_width="match_parent"
+		android:layout_height="wrap_content"
+		android:text="Additives"
+		android:layout_marginTop="@dimen/section_header_spacing"
+		style="@style/Text.Header"
+	/>
+
+	<LinearLayout
+		android:layout_width="match_parent"
+		android:layout_height="wrap_content"
+		android:id="@+id/additives_container"
+		android:orientation="vertical"
+		android:divider="@drawable/spacer_4dp"
+		android:showDividers="middle"
+	/>
 </com.google.android.flexbox.FlexboxLayout>
