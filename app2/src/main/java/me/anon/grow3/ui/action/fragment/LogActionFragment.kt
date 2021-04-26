@@ -69,6 +69,7 @@ open class LogActionFragment : BaseFragment(FragmentActionLogBinding::class)
 			logView?.let {
 				val log = it.saveView()
 
+				requireView().clearFocus()
 				requireView().findViewById<CropSelectView>(R.id.crop_select_view)?.let {
 					log.cropIds = it.selectedCrops.toList()
 				}
@@ -144,6 +145,11 @@ open class LogActionFragment : BaseFragment(FragmentActionLogBinding::class)
 					onDateTimeSelected = ::onDateSelected
 					onDismiss = ::onDateDismissed
 				}
+			}
+
+			common.notes.editText!!.text = log.notes.asEditable()
+			common.notes.editText!!.onFocusLoss {
+				log.notes = it.text.toString()
 			}
 
 			common.cropSelectView.let {
