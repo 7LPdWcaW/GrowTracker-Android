@@ -2,7 +2,6 @@ package me.anon.grow3.ui.base
 
 import android.graphics.Bitmap
 import android.graphics.Rect
-import android.os.Build
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
@@ -12,6 +11,7 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.widget.Toolbar
 import androidx.core.graphics.drawable.toBitmap
 import androidx.core.graphics.get
+import androidx.fragment.app.Fragment
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.viewbinding.ViewBinding
@@ -34,7 +34,7 @@ open class BaseActivity : AppCompatActivity
 
 	private var layoutRes = -1
 	private var _viewBinder: Class<out ViewBinding>? = null
-	public lateinit var viewBinder: ViewBinding private set
+	private lateinit var viewBinder: ViewBinding private set
 
 	public fun <T : ViewBinding> viewBinding()
 		= lazy(LazyThreadSafetyMode.NONE) {
@@ -49,17 +49,14 @@ open class BaseActivity : AppCompatActivity
 		}
 
 	private val _insets: MutableLiveData<Rect> = MutableLiveData(Rect())
-	open val insets: LiveData<Rect> = _insets
+	public val insets: LiveData<Rect> = _insets
 
 	@ColorInt
 	protected var statusBarColor: Int = -1
 		set(value) {
-			if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP)
-			{
-				window.clearFlags(WindowManager.LayoutParams.FLAG_TRANSLUCENT_STATUS)
-				window.addFlags(WindowManager.LayoutParams.FLAG_DRAWS_SYSTEM_BAR_BACKGROUNDS)
-				window.statusBarColor = value
-			}
+			window.clearFlags(WindowManager.LayoutParams.FLAG_TRANSLUCENT_STATUS)
+			window.addFlags(WindowManager.LayoutParams.FLAG_DRAWS_SYSTEM_BAR_BACKGROUNDS)
+			window.statusBarColor = value
 			field = value
 		}
 
@@ -103,4 +100,7 @@ open class BaseActivity : AppCompatActivity
 
 	open fun bindUi(){}
 	open fun bindVm(){}
+
+	open fun onFragmentAdded(fragment: Fragment){}
+	open fun onFragmentRemoved(fragment: Fragment){}
 }

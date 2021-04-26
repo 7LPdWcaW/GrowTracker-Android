@@ -15,4 +15,5 @@ sealed class GrowTrackerException(msg: String) : java.lang.Exception(msg)
 	class InvalidHostActivity : GrowTrackerException("Main host not attached to Main activity")
 	class NoRoute : GrowTrackerException("No route set")
 	class InvalidRoute(route: String = "") : GrowTrackerException("Could not route to $route")
+	class IllegalState(state: String = "") : GrowTrackerException("Application was in an illegal state: $state")
 }

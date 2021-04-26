@@ -3,10 +3,11 @@ package me.anon.grow3.data.model
 import android.text.Spannable
 import android.text.SpannableString
 import com.squareup.moshi.JsonClass
-import me.anon.grow3.util.asLocalDate
+import me.anon.grow3.ui.action.view.StageChangeLogView
+import me.anon.grow3.util.asDateTime
 import me.anon.grow3.util.plusAssign
 import me.anon.grow3.util.string
-import org.threeten.bp.LocalDate
+import org.threeten.bp.ZonedDateTime
 import org.threeten.bp.temporal.ChronoUnit
 
 typealias Stage = StageChange
@@ -18,6 +19,9 @@ typealias Stage = StageChange
 data class StageChange(
 	public var type: StageType
 ) : Log(action = "StageChange")
+{
+	override val typeRes: Int = me.anon.grow3.R.string.log_type_stage_change
+}
 
 public fun List<StageChange>.shortSummary(): Spannable
 {
@@ -25,13 +29,13 @@ public fun List<StageChange>.shortSummary(): Spannable
 	for (stageIndex in 0 until size)
 	{
 		val stage = get(stageIndex)
-		var stage2Date = LocalDate.now()
+		var stage2Date = ZonedDateTime.now()
 		val next = getOrNull(stageIndex + 1)
 		next?.let { next ->
-			stage2Date = next.date.asLocalDate()
+			stage2Date = next.date.asDateTime()
 		}
 
-		val stage1Date = stage.date.asLocalDate()
+		val stage1Date = stage.date.asDateTime()
 		val days = ChronoUnit.DAYS.between(stage1Date, stage2Date)
 		stringBuilder += "$days"
 		stringBuilder += stage.type.strRes.string()[0].toLowerCase()
@@ -59,3 +63,5 @@ data class StageAt(
 		return "$days${stage.type.strRes.string()[0]}"
 	}
 }
+
+public fun StageChange.logView(diary: Diary, log: Log) = StageChangeLogView(diary, log as StageChange)

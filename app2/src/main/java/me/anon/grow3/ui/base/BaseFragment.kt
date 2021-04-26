@@ -13,6 +13,7 @@ import androidx.viewbinding.ViewBinding
 import me.anon.grow3.util.Injector
 import me.anon.grow3.util.component
 import kotlin.reflect.KClass
+import kotlin.reflect.KProperty
 
 abstract class BaseFragment : Fragment
 {
@@ -27,10 +28,11 @@ abstract class BaseFragment : Fragment
 	private var _viewBinder: Class<out ViewBinding>? = null
 	public lateinit var viewBinder: ViewBinding private set
 
-	public fun <T : ViewBinding> viewBinding()
-		= lazy(LazyThreadSafetyMode.NONE) {
-			viewBinder as T
-		}
+	public fun <T : ViewBinding> viewBinding() = Retriever<T>()
+	inner class Retriever<T : ViewBinding>
+	{
+		operator fun getValue(thisRef: BaseFragment, property: KProperty<*>): T = thisRef.viewBinder as T
+	}
 
 	open val insets: LiveData<Rect>
 		get() = (activity as BaseActivity).insets
@@ -55,6 +57,7 @@ abstract class BaseFragment : Fragment
 	{
 		super.onAttach(context)
 		injector(component)
+		(activity as? BaseActivity)?.onFragmentAdded(this)
 	}
 
 	override fun onActivityCreated(savedInstanceState: Bundle?)
@@ -74,5 +77,11 @@ abstract class BaseFragment : Fragment
 	public fun setToolbar(toolbar: Toolbar)
 	{
 		(activity as BaseActivity).setSupportActionBar(toolbar)
+	}
+
+	override fun onDestroy()
+	{
+		(activity as? BaseActivity)?.onFragmentRemoved(this)
+		super.onDestroy()
 	}
 }

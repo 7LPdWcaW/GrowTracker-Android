@@ -109,7 +109,7 @@ class DiaryTest
 			get(key)
 				.`should not be null`()
 				.`should be greater or equal to`(1.0)
-				.`should be less than`(2.0)
+				.`should be less or equal to`(2.0)
 
 			key = keys.elementAt(1)
 			key.type.`should be equal to`(StageType.Vegetation)
@@ -151,6 +151,23 @@ class DiaryTest
 	}
 
 	@Test
+	public fun `test add and update log`()
+	{
+		val diary = diaries.first()
+		val log = StageChange(StageType.Budding)
+		val entry = diary.log(log)
+
+		entry.`should be equal to`(log)
+
+		log.type = StageType.Flower
+
+		diary.log(log)
+		diary.log.`should contain`(log)
+			.filter { it.id == log.id }
+			.size.`should be equal to`(1)
+	}
+
+	@Test
 	public fun `benchmark test`()
 	{
 		var timelineStart = ZonedDateTime.now()
@@ -162,7 +179,7 @@ class DiaryTest
 
 		do
 		{
-			diary.crops += Crop(
+			(diary.crops as ArrayList) += Crop(
 				name = "Test Crop $cropCounter",
 				genetics = "Unknown",
 				numberOfPlants = (Math.random() * 10).toInt()

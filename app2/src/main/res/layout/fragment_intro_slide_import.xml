@@ -1,0 +1,59 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+	xmlns:app="http://schemas.android.com/apk/res-auto"
+	xmlns:tools="http://schemas.android.com/tools"
+	android:layout_width="match_parent"
+	android:layout_height="match_parent"
+	android:id="@+id/main"
+	android:paddingBottom="@dimen/appintro2_bottombar_height"
+	android:paddingTop="@dimen/appintro_statusbar_height"
+	android:background="@color/colorSecondaryAlt"
+>
+	<TextView
+		android:layout_width="0dp"
+		android:layout_height="0dp"
+		android:id="@+id/title"
+		android:text="Import existing data"
+		android:gravity="center"
+		style="@style/AppIntroDefaultHeading"
+		app:layout_constraintBottom_toTopOf="@+id/middle"
+		app:layout_constraintEnd_toEndOf="parent"
+		app:layout_constraintStart_toStartOf="parent"
+		app:layout_constraintTop_toTopOf="parent"
+		app:layout_constraintVertical_chainStyle="spread"
+		app:layout_constraintVertical_weight="2"
+	/>
+
+	<FrameLayout
+		android:layout_width="0dp"
+		android:layout_height="0dp"
+		android:id="@+id/middle"
+		app:layout_constraintBottom_toTopOf="@+id/description"
+		app:layout_constraintEnd_toEndOf="parent"
+		app:layout_constraintStart_toStartOf="parent"
+		app:layout_constraintTop_toBottomOf="@+id/title"
+		app:layout_constraintVertical_weight="5"
+	>
+		<Button
+			android:layout_width="wrap_content"
+			android:layout_height="wrap_content"
+			android:id="@+id/import_data"
+			android:text="Import from file..."
+			android:layout_gravity="center"
+		/>
+	</FrameLayout>
+
+	<TextView
+		android:layout_width="0dp"
+		android:layout_height="0dp"
+		android:id="@+id/description"
+		android:text="Import data from a previous version or install, or skip to start fresh"
+		style="@style/AppIntroDefaultText"
+		app:layout_constraintBottom_toBottomOf="parent"
+		app:layout_constraintEnd_toEndOf="parent"
+		app:layout_constraintStart_toStartOf="parent"
+		app:layout_constraintTop_toBottomOf="@+id/middle"
+		app:layout_constraintVertical_weight="3"
+	/>
+</androidx.constraintlayout.widget.ConstraintLayout>

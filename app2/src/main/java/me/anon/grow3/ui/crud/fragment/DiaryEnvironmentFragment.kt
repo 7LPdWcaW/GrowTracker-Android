@@ -3,16 +3,11 @@ package me.anon.grow3.ui.crud.fragment
 import androidx.core.view.isVisible
 import androidx.fragment.app.activityViewModels
 import androidx.lifecycle.observe
-import me.anon.grow3.data.model.EnvironmentType
-import me.anon.grow3.data.model.Light
-import me.anon.grow3.data.model.LightType
-import me.anon.grow3.data.model.Size
+import me.anon.grow3.data.model.*
 import me.anon.grow3.databinding.FragmentCrudDiaryEnvironmentBinding
 import me.anon.grow3.ui.base.BaseFragment
-import me.anon.grow3.ui.crud.viewmodel.DiaryViewModel
+import me.anon.grow3.ui.crud.viewmodel.DiaryCrudViewModel
 import me.anon.grow3.util.*
-import me.anon.grow3.util.states.asSuccess
-import me.anon.grow3.util.states.isSuccess
 import me.anon.grow3.view.DropDownEditText
 import javax.inject.Inject
 
@@ -20,9 +15,15 @@ class DiaryEnvironmentFragment : BaseFragment(FragmentCrudDiaryEnvironmentBindin
 {
 	override val injector: Injector = { it.inject(this) }
 
-	@Inject internal lateinit var viewModelFactory: DiaryViewModel.Factory
-	private val viewModel: DiaryViewModel by activityViewModels { ViewModelProvider(viewModelFactory, this) }
+	@Inject internal lateinit var crudViewModelFactory: DiaryCrudViewModel.Factory
+	private val crudViewModel: DiaryCrudViewModel by activityViewModels { ViewModelProvider(crudViewModelFactory, this) }
 	private val viewBindings by viewBinding<FragmentCrudDiaryEnvironmentBinding>()
+
+	override fun onStop()
+	{
+		requireView().clearFocus()
+		super.onStop()
+	}
 
 	override fun bindUi()
 	{
@@ -33,29 +34,41 @@ class DiaryEnvironmentFragment : BaseFragment(FragmentCrudDiaryEnvironmentBindin
 
 	override fun bindVm()
 	{
-		viewModel.diary.observe(viewLifecycleOwner) { diary ->
-			if (!diary.isSuccess) return@observe
-
-			val diary = diary.asSuccess()
+		crudViewModel.diaryVm.diary.observe(viewLifecycleOwner) { diary ->
 			diary.environment()?.let { environment ->
-				viewBindings.environmentTypeOptions.checkItems(environment.strRes)
-			}
-			diary.size()?.let { size ->
-				viewBindings.environmentSizeWidth.editText!!.text = size.width?.asString()?.asEditable()
-				viewBindings.environmentSizeHeight.editText!!.text = size.height?.asString()?.asEditable()
-				viewBindings.environmentSizeDepth.editText!!.text = size.depth?.asString()?.asEditable()
-			}
-			diary.light()?.let { light ->
-				viewBindings.lightTypeOptions.checkItems(light.type.strRes)
+				environment.type?.let { type ->
+					viewBindings.environmentTypeOptions.checkItems(type.strRes)
+				}
 
-				val isSunlight = light.type == LightType.Sunlight
-				viewBindings.lightBrand.isVisible = !isSunlight
-				viewBindings.lightWattage.isVisible = !isSunlight
+				environment.size?.let { size ->
+					size.width?.let { width ->
+						viewBindings.environmentSizeWidth.editText!!.text = width.amount.asString().asEditable()
+						(viewBindings.environmentSizeWidthUnit.editText as DropDownEditText).checkItems(DimensionUnit.idOf(width.unit))
+					}
 
-				if (!isSunlight)
-				{
-					viewBindings.lightWattage.editText!!.text = light.wattage?.asString()?.asEditable()
-					viewBindings.lightBrand.editText!!.text = light.brand?.asEditable()
+					size.height?.let { height ->
+						viewBindings.environmentSizeHeight.editText!!.text = height.amount.asString().asEditable()
+						(viewBindings.environmentSizeHeightUnit.editText as DropDownEditText).checkItems(DimensionUnit.idOf(height.unit))
+					}
+
+					size.depth?.let { depth ->
+						viewBindings.environmentSizeDepth.editText!!.text = depth.amount.asString().asEditable()
+						(viewBindings.environmentSizeDepthUnit.editText as DropDownEditText).checkItems(DimensionUnit.idOf(depth.unit))
+					}
+				}
+
+				environment.light?.let { light ->
+					viewBindings.lightTypeOptions.checkItems(light.type.strRes)
+
+					val isSunlight = light.type == LightType.Sunlight
+					viewBindings.lightBrand.isVisible = !isSunlight
+					viewBindings.lightWattage.isVisible = !isSunlight
+
+					if (!isSunlight)
+					{
+						viewBindings.lightWattage.editText!!.text = light.wattage?.asString()?.asEditable()
+						viewBindings.lightBrand.editText!!.text = light.brand?.asEditable()
+					}
 				}
 			}
 		}
@@ -65,7 +78,7 @@ class DiaryEnvironmentFragment : BaseFragment(FragmentCrudDiaryEnvironmentBindin
 	{
 		viewBindings.environmentTypeOptions.setMenu(EnvironmentType.toMenu())
 		viewBindings.environmentTypeOptions.itemSelectListener = { item ->
-			viewModel.setEnvironment(
+			crudViewModel.diaryVm.setEnvironment(
 				type = ValueHolder(item.isChecked then EnvironmentType.ofId(item.itemId))
 			)
 		}
@@ -76,21 +89,21 @@ class DiaryEnvironmentFragment : BaseFragment(FragmentCrudDiaryEnvironmentBindin
 		fun updateSize()
 		{
 			val width = viewBindings.environmentSizeWidth.editText?.text?.toDoubleOrNull()
-			val widthUnit = (viewBindings.environmentSizeWidthUnit.editText as DropDownEditText).getSelectedItems().firstOrNull()
+			val widthUnit = (viewBindings.environmentSizeWidthUnit.editText as DropDownEditText).getSelectedItems().first()
 			val height = viewBindings.environmentSizeHeight.editText?.text?.toDoubleOrNull()
-			val heightUnit = (viewBindings.environmentSizeHeightUnit.editText as DropDownEditText).getSelectedItems().firstOrNull()
+			val heightUnit = (viewBindings.environmentSizeHeightUnit.editText as DropDownEditText).getSelectedItems().first()
 			val depth = viewBindings.environmentSizeDepth.editText?.text?.toDoubleOrNull()
-			val depthUnit = (viewBindings.environmentSizeDepthUnit.editText as DropDownEditText).getSelectedItems().firstOrNull()
+			val depthUnit = (viewBindings.environmentSizeDepthUnit.editText as DropDownEditText).getSelectedItems().first()
 
 			val size = if (width != null || height != null || depth != null)
 				Size(
-					width = width?.let { it /* conversion logic for units */ },
-					height = height?.let { it /* conversion logic for units */ },
-					depth = depth?.let { it /* conversion logic for units */ }
+					width = width?.let { Dimension(it, DimensionUnit.ofId(widthUnit.itemId)) },
+					height = height?.let { Dimension(it, DimensionUnit.ofId(heightUnit.itemId)) },
+					depth = depth?.let { Dimension(it, DimensionUnit.ofId(depthUnit.itemId)) }
 				)
 			else null
 
-			viewModel.setEnvironment(
+			crudViewModel.diaryVm.setEnvironment(
 				size = ValueHolder(size)
 			)
 		}
@@ -110,8 +123,12 @@ class DiaryEnvironmentFragment : BaseFragment(FragmentCrudDiaryEnvironmentBindin
 			viewBindings.environmentSizeHeightUnit.editText!!,
 			viewBindings.environmentSizeDepthUnit.editText!!
 		).forEach {
-			(it as? DropDownEditText)?.itemSelectListener = {
-				updateSize()
+			with (it as DropDownEditText) {
+				setMenu(DimensionUnit.toMenu())
+
+				itemSelectListener = {
+					updateSize()
+				}
 			}
 		}
 	}
@@ -122,7 +139,7 @@ class DiaryEnvironmentFragment : BaseFragment(FragmentCrudDiaryEnvironmentBindin
 		{
 			viewBindings.lightTypeOptions.getSelectedItems().firstOrNull()?.let {
 				val type = LightType.ofId(it.itemId)
-				viewModel.setEnvironment(
+				crudViewModel.diaryVm.setEnvironment(
 					light = ValueHolder(Light(
 						type = type
 					).apply {

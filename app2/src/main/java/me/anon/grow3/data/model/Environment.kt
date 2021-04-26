@@ -23,9 +23,9 @@ data class Environment(
 
 @JsonClass(generateAdapter = true)
 data class Size(
-	public var width: Double? = null,
-	public var height: Double? = null,
-	public var depth: Double? = null
+	public var width: Dimension? = null,
+	public var height: Dimension? = null,
+	public var depth: Dimension? = null
 )
 
 @JsonClass(generateAdapter = true)

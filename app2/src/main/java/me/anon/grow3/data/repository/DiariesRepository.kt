@@ -20,14 +20,16 @@ interface DiariesRepository
 
 	public suspend fun getDiaryById(diaryId: String): Diary?
 
-	public suspend fun createDiary(diary: Diary): Diary
+	public suspend fun addDiary(diary: Diary): Diary
 	public suspend fun deleteDiary(diaryId: String): Boolean
 
-	public suspend fun addLog(log: Log, diary: Diary? = null): Log
+	public suspend fun addLog(log: Log, diary: Diary): Log
 	public suspend fun getLog(logId: String, diary: Diary): Log?
+	public suspend fun removeLog(logId: String, diary: Diary)
 
-	public suspend fun addCrop(crop: Crop, diary: Diary? = null): Crop
+	public suspend fun addCrop(crop: Crop, diary: Diary): Crop
 	public suspend fun getCrop(cropId: String, diary: Diary): Crop?
+	public suspend fun removeCrop(cropId: String, diary: Diary)
 
 	public fun sync()
 

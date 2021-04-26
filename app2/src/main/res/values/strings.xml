@@ -6,7 +6,7 @@
 	<string name="menu_settings">Settings</string>
 
 	<string name="navigation_diary_details">Diary details</string>
-	<string name="navigation_diary_crops">Crops</string>
+	<string name="navigation_diary_crop">Crop details</string>
 	<string name="navigation_diary_environment">Grow environment</string>
 
 	<string name="add_diary_first">Add your first diary</string>
@@ -84,4 +84,16 @@
 
 	<string name="log_water_field_inputph">Input pH</string>
 	<string name="log_water_field_outputph">Runoff pH</string>
+	<string name="log_water_field_tds">TDS</string>
+	<string name="log_water_field_amount">Amount</string>
+	<string name="log_water_field_temperature">Temperature</string>
+
+	<string name="log_type_water">Water</string>
+	<string name="log_type_stage_change">Plant stage</string>
+
+	<string name="volume_unit_ml">Ml</string>
+	<string name="volume_unit_l">L</string>
+
+	<string name="dimension_unit_mm">mm</string>
+	<string name="dimension_unit_cm">cm</string>
 </resources>

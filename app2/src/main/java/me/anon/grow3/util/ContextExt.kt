@@ -22,3 +22,17 @@ public inline fun Context.promptExit(crossinline callback: () -> Unit)
 		.setNegativeButton("Cancel", null)
 		.show()
 }
+
+public inline fun Context.promptRemove(crossinline callback: () -> Unit)
+{
+	if (this !is Activity && this !is Fragment) return
+
+	MaterialAlertDialogBuilder(this)
+		.setTitle("Are you sure?")
+		.setMessage("Delete the selected item?")
+		.setPositiveButton("Delete") { dialog, which ->
+			callback()
+		}
+		.setNegativeButton("Cancel", null)
+		.show()
+}

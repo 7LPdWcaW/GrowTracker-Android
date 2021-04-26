@@ -1,117 +1,155 @@
 package me.anon.grow3.ui.crud.viewmodel
 
 import androidx.lifecycle.*
+import com.zhuinden.livedatacombinetuplekt.combineTuple
+import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.launch
-import me.anon.grow3.data.exceptions.GrowTrackerException.*
-import me.anon.grow3.data.model.Crop
-import me.anon.grow3.data.model.Medium
-import me.anon.grow3.data.model.MediumType
+import me.anon.grow3.data.exceptions.GrowTrackerException.CropLoadFailed
+import me.anon.grow3.data.exceptions.GrowTrackerException.DiaryLoadFailed
+import me.anon.grow3.data.model.*
 import me.anon.grow3.data.repository.DiariesRepository
-import me.anon.grow3.ui.common.Extras.EXTRA_CROP_ID
-import me.anon.grow3.ui.common.Extras.EXTRA_DIARY_ID
-import me.anon.grow3.util.*
-import me.anon.grow3.util.states.asSuccess
-import me.anon.grow3.util.states.isSuccess
-import javax.inject.Inject
+import me.anon.grow3.ui.common.Extras
+import me.anon.grow3.util.ValueHolder
+import me.anon.grow3.util.clear
+import me.anon.grow3.util.states.Data
+import me.anon.grow3.util.states.DataResult
+import me.anon.grow3.util.toStringOrNull
 
 class CropViewModel(
 	private val diariesRepository: DiariesRepository,
-	private val savedStateHandle: SavedStateHandle
-) : ViewModel()
+	private val savedStateHandle: SavedStateHandle,
+	private val viewModelScope: CoroutineScope
+)
 {
-	class Factory @Inject constructor(
-		private val diariesRepository: DiariesRepository
-	) : ViewModelFactory<CropViewModel>
-	{
-		override fun create(handle: SavedStateHandle): CropViewModel =
-			CropViewModel(diariesRepository, handle)
+	public var isNew: Boolean = false
+		get() = savedStateHandle["new_crop"] ?: false
+		private set(value) {
+			savedStateHandle["new_crop"] = value
+			field = value
+		}
+
+	private var originalCrop: Crop? = null
+	private val diaryId: MutableLiveData<String> = savedStateHandle.getLiveData(Extras.EXTRA_DIARY_ID)
+	private val cropId: MutableLiveData<String> = savedStateHandle.getLiveData(Extras.EXTRA_CROP_ID)
+	public val crop: LiveData<Data> = combineTuple(diaryId, cropId).switchMap { (diaryId, cropId) ->
+		liveData {
+			if (cropId.isNullOrBlank() || diaryId.isNullOrBlank()) return@liveData
+
+			emitSource(diariesRepository.observeDiary(diaryId).switchMap { diaryResult ->
+				when (diaryResult)
+				{
+					is DataResult.Success -> liveData {
+						val crop = diaryResult.data.crop(cropId)
+						originalCrop = crop.copy()
+						emit(Data(diary = diaryResult.data, crop = crop))
+					}
+					else -> throw CropLoadFailed(cropId)
+				}
+			})
+		}
 	}
 
-	public var newCrop = savedStateHandle.get("new_crop") ?: false
-		set(value) { field = value.apply { savedStateHandle["new_crop"] = this } }
-	private var cropComparator = savedStateHandle.get("crop_str") ?: ""
-		set(value) { field = value.apply { savedStateHandle["crop_str"] = this } }
+	public fun new(): LiveData<Data>
+	{
+		isNew = true
+		cropId.clear()
 
-	private val _diaryId: String = savedStateHandle.get(EXTRA_DIARY_ID)!!
-	private var _cropId: String? = savedStateHandle.get(EXTRA_CROP_ID)
+		viewModelScope.launch {
+			diaryId.value?.let { diaryId ->
+				val diary = diariesRepository.getDiaryById(diaryId) ?: throw DiaryLoadFailed(diaryId)
+				val count = diary.crops.size + 1
+				val crop = Crop(
+					name = "Crop $count",
+					genetics = "Unknown genetics"
+				)
 
-	public val diary = diariesRepository.observeDiary(_diaryId)
+				diariesRepository.addCrop(crop, diary)
 
-	private val _crop = diary.switchMap { diary ->
-		if (!diary.isSuccess) throw DiaryLoadFailed(_diaryId)
-		val diary = diary.asSuccess()
+				if (diary.stageOf(crop) == null)
+				{
+					// add default stage
+					diariesRepository.addLog(StageChange(StageType.Planted).apply {
+						date = crop.platedDate
+						cropIds += crop.id
+					}, diary)
+				}
 
-		liveData {
-			if (_cropId.isNullOrBlank())
-			{
-				val crop = Crop(name = "", genetics = "")
-				cropComparator = crop.toJsonString()
-				_cropId = diariesRepository.addCrop(crop).id
-
-				emit(crop)
-			}
-			else
-			{
-				emit(diariesRepository.getCrop(_cropId!!, diary)!!.also {
-					cropComparator = it.toJsonString()
-				})
+				cropId.postValue(crop.id)
 			}
 		}
-	}.asMutableLiveData()
 
-	public val crop = _crop.asLiveData()
+		return crop
+	}
+
+	public fun load(id: String): LiveData<Data>
+	{
+		isNew = false
+		cropId.postValue(id)
+		return crop
+	}
+
+	public fun remove()
+	{
+		viewModelScope.launch {
+			cropId.clear()?.let { id ->
+				val diaryId = diaryId.value ?: return@let
+				val diary = diariesRepository.getDiaryById(diaryId) ?: throw DiaryLoadFailed(diaryId)
+				diariesRepository.removeCrop(id, diary)
+			}
+		}
+	}
+
+	public fun save(new: Crop)
+	{
+		viewModelScope.launch {
+			val diaryId = diaryId.value ?: return@launch
+			val diary = diariesRepository.getDiaryById(diaryId) ?: throw DiaryLoadFailed(diaryId)
+			diariesRepository.addCrop(new, diary)
+		}
+	}
 
 	public fun setCrop(
 		name: ValueHolder<String>? = null,
 		genetics: ValueHolder<String?>? = null,
 		numberOfPlants: ValueHolder<Int>? = null,
 		mediumType: ValueHolder<MediumType>? = null,
-		volume: ValueHolder<Double?>? = null
+		volume: ValueHolder<Volume?>? = null
 	)
 	{
-		crop.value?.apply {
-			name?.applyValue { this.name = it }
-			genetics?.applyValue { this.genetics = it.toStringOrNull() }
-			numberOfPlants?.applyValue { this.numberOfPlants = it }
+		val diary = crop.value?.diary ?: return
+		val crop = crop.value?.crop ?: return
 
-			diary.value?.asSuccess()?.let { diary ->
-				val medium = diary.mediumOf(this) ?: let {
-					mediumType?.let {
-						Medium(it.value).also {
-							viewModelScope.launch {
+		viewModelScope.launch {
+			val newCrop = crop.apply {
+				name?.applyValue { this.name = it }
+				genetics?.applyValue { this.genetics = it.toStringOrNull() }
+				numberOfPlants?.applyValue { this.numberOfPlants = it }
+
+				// medium - only 1 medium type to set
+				val medium = diary.mediumOf(this)
+					?: let {
+						mediumType?.let { type ->
+							Medium(type.value).also {
 								diariesRepository.addLog(it, diary)
 							}
 						}
 					}
-				}
 
 				medium?.apply {
 					mediumType?.applyValue { this.medium = it }
 					volume?.applyValue { this.size = it }
+					diariesRepository.addLog(this, diary)
 				}
 			}
-		}
-		_crop.notifyChange()
-	}
 
-	/**
-	 * Removes the temp crop from the diary and re-syncs
-	 */
-	public fun reset()
-	{
-		if (!newCrop) return
-
-		// remove if nothing has been added
-		if (cropComparator == crop.value?.toJsonString())
-		{
-			diary.value?.asSuccess()?.let { diary ->
-				(diary.crops as ArrayList).removeAll { it.id == _cropId }
-			}
+			save(newCrop)
 		}
 	}
 
-	public fun save()
+	public fun clear()
 	{
-		diariesRepository.sync()
+		isNew = false
+		cropId.clear()
+		crop.clear()
 	}
 }

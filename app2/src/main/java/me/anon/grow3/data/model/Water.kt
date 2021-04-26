@@ -1,6 +1,8 @@
 package me.anon.grow3.data.model
 
 import com.squareup.moshi.JsonClass
+import me.anon.grow3.ui.action.view.WaterLogView
+import me.anon.grow3.ui.logs.view.WaterLogCard
 
 /**
  * See [me.anon.grow3.ui.logs.view.WaterLogCard]
@@ -10,7 +12,7 @@ data class Water(
 	public var inPH: PHUnit?,
 	public var outPH: PHUnit?,
 	public var tds: TdsUnit?,
-	public var amount: Double?,
+	public var amount: Volume?,
 	public var temperature: Double?,
 	public val additives: ArrayList<Additive> = arrayListOf()
 ) : Log(action = "Water")
@@ -20,8 +22,8 @@ data class Water(
 	)
 
 	class TdsUnit(
-		public var type: TdsType,
-		public var amount: Double
+		public var amount: Double,
+		public var type: TdsType
 	)
 
 	class Additive(
@@ -30,6 +32,10 @@ data class Water(
 	)
 
 	override fun equals(other: Any?): Boolean = id == (other as? Log)?.id || super.equals(other)
+
+	override val typeRes: Int = me.anon.grow3.R.string.log_type_water
 }
 
 public fun Water(block: Water.() -> Unit): Water = Water(null, null, null, null, null).apply(block)
+public fun Water.logView(diary: Diary, log: Log) = WaterLogView(diary, log as Water)
+public fun Water.logCard(diary: Diary, log: Log) = WaterLogCard(diary, log as Water)

@@ -77,7 +77,13 @@ class DropDownEditText : MaterialAutoCompleteTextView
 
 	public fun checkItems(vararg ids: Int)
 	{
-		items.filter { it.itemId in ids }.forEach { it.isChecked = true }
+		items
+			.filter { it.itemId in ids }
+			.onEach {
+				if (!singleSelection) it.isChecked = true
+			}
+			.last().isChecked = true
+
 		populateText()
 	}
 
@@ -88,8 +94,9 @@ class DropDownEditText : MaterialAutoCompleteTextView
 		val menu = PopupMenu(context, View(context))
 		this.items.addAll(items.map {
 			menu.menu
-				.add(0, it.itemId, 0, it.titleRes)
-				.setIcon(it.iconRes)
+				.add(0, it.itemId, 0, it.titleRes).apply {
+					if (it.iconRes != -1) icon = it.iconRes.drawable(context)
+				}
 				.setCheckable(it.isCheckable)
 				.setChecked(it.isChecked)
 		})
@@ -107,8 +114,7 @@ class DropDownEditText : MaterialAutoCompleteTextView
 		popup.isModal = true
 		popup.setAdapter(adapter)
 		popup.setOnDismissListener {
-			val current: View = rootView.findFocus()
-			current.clearFocus()
+			rootView.findFocus()?.clearFocus()
 		}
 		doOnLayout {
 			populateText()

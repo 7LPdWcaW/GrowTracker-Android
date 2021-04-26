@@ -26,11 +26,12 @@ class FirstDiarySlideFragment : Fragment(), SlideBackgroundColorHolder
 
 		new_diary.setOnClickListener {
 			newTask<DiaryActivity>()
+			requireActivity().finish()
 		}
 	}
 
 	override val defaultBackgroundColor: Int
-		get() = R.color.colorAccent.color(requireContext())
+		get() = R.color.colorTertiary.color(requireContext())
 
 	override fun setBackgroundColor(backgroundColor: Int)
 	{

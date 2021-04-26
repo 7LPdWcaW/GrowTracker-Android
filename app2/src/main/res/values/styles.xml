@@ -12,6 +12,9 @@
 		<item name="colorSurface">@color/colorSurface</item>
 		<item name="textOnSurface">@color/textOnSurface</item>
 
+		<item name="colorError">@color/colorError</item>
+		<item name="colorOnError">#ffffff</item>
+
 		<item name="colorSecondary">@color/colorSecondary</item>
 		<item name="textOnSecondary">@color/textOnSecondary</item>
 
@@ -34,6 +37,10 @@
 		<item name="textOnWindow">#ffffff</item>
 
 		<item name="android:windowTranslucentNavigation">true</item>
+	</style>
+
+	<style name="AppTheme.Launch" parent="AppTheme.FullScrim">
+		<item name="android:windowBackground">@drawable/launch_background_drawable</item>
 	</style>
 
 	<style name="AppTheme.FullScrim">
@@ -92,6 +99,11 @@
 		<item name="android:padding">16dp</item>
 		<item name="backgroundTint">?colorAccent</item>
 		<item name="android:textColor">?textOnAccent</item>
+	</style>
+
+	<style name="Button.Danger">
+		<item name="backgroundTint">?colorError</item>
+		<item name="android:textColor">?colorOnError</item>
 	</style>
 
 	<style name="Button.Bordered" parent="Widget.MaterialComponents.Button.OutlinedButton">

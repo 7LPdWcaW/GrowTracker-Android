@@ -4,7 +4,6 @@ import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 import me.anon.grow3.data.model.Crop
-import me.anon.grow3.data.model.Diary
 import me.anon.grow3.data.model.Log
 import me.anon.grow3.data.source.CacheDataSource
 import me.anon.grow3.util.NitriteFacade
@@ -15,6 +14,7 @@ import org.dizitart.kno2.getRepository
 import org.dizitart.kno2.nitrite
 import org.dizitart.no2.Document
 import org.dizitart.no2.NitriteId
+import org.dizitart.no2.objects.ObjectFilter
 import java.io.File
 import javax.inject.Inject
 import javax.inject.Named
@@ -47,7 +47,6 @@ class NitriteCacheDataSource @Inject constructor(
 			val repo = db.getRepository<Log>()
 			val log = repo.find(Log::id eq id)
 				.first()
-			repo.remove(Log::id eq id)
 			log
 		}
 
@@ -65,26 +64,7 @@ class NitriteCacheDataSource @Inject constructor(
 			val repo = db.getRepository<Crop>()
 			val crop = repo.find(Crop::id eq id)
 				.first()
-			repo.remove(Crop::id eq id)
 			crop
-		}
-
-	override suspend fun cache(diary: Diary): String
-		= withContext(dispatcher) {
-			db.getRepository<Diary> {
-				insert(diary)
-			}
-			db.commit()
-			diary.id
-		}
-
-	override suspend fun retrieveDiary(id: String): Diary
-		= withContext(dispatcher) {
-			val repo = db.getRepository<Diary>()
-			val diary = repo.find(Diary::id eq id)
-				.first()
-			repo.remove(Diary::id eq id)
-			diary
 		}
 
 	override suspend fun cache(map: Map<String, Any?>): String
@@ -106,8 +86,24 @@ class NitriteCacheDataSource @Inject constructor(
 		= withContext(dispatcher) {
 			val document = db.getCollection("map")
 				.getById(NitriteId.createId(id.toLong()))
-			db.getCollection("map")
-				.remove(document)
 			document
 		}
+
+	override fun clearLog()
+	{
+		val repo = db.getRepository<Log>()
+		repo.remove(null as ObjectFilter?)
+	}
+
+	override fun clearCrop()
+	{
+		val repo = db.getRepository<Crop>()
+		repo.remove(null as ObjectFilter?)
+	}
+
+	override fun clearMap()
+	{
+		val repo = db.getCollection("map")
+		repo.remove(null as ObjectFilter?)
+	}
 }

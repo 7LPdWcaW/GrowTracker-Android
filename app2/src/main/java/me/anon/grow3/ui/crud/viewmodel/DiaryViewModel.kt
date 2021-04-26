@@ -1,68 +1,94 @@
 package me.anon.grow3.ui.crud.viewmodel
 
 import androidx.lifecycle.*
+import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.launch
+import me.anon.grow3.data.exceptions.GrowTrackerException
 import me.anon.grow3.data.model.*
 import me.anon.grow3.data.repository.DiariesRepository
-import me.anon.grow3.util.*
-import me.anon.grow3.util.states.asSuccess
-import org.threeten.bp.ZonedDateTime
-import javax.inject.Inject
+import me.anon.grow3.ui.common.Extras
+import me.anon.grow3.util.ValueHolder
+import me.anon.grow3.util.clear
+import me.anon.grow3.util.states.DataResult
 
 class DiaryViewModel(
 	private val diariesRepository: DiariesRepository,
-	private val savedStateHandle: SavedStateHandle
-) : ViewModel()
+	private val savedStateHandle: SavedStateHandle,
+	private val viewModelScope: CoroutineScope
+)
 {
-	class Factory @Inject constructor(
-		private val diariesRepository: DiariesRepository
-	) : ViewModelFactory<DiaryViewModel>
-	{
-		override fun create(handle: SavedStateHandle): DiaryViewModel =
-			DiaryViewModel(diariesRepository, handle)
-	}
+	public var isNew: Boolean = false
+		get() = savedStateHandle["new_diary"] ?: false
+		private set(value) {
+			savedStateHandle["new_diary"] = value
+			field = value
+		}
 
-	private var _diaryId: MutableLiveData<String?> = savedStateHandle.getLiveData("diary_id", null)
-	private var _environmentId: MutableLiveData<String?> = savedStateHandle.getLiveData("environment_id", null)
-
-	private val _diary = _diaryId.switchMap { id ->
+	private val diaryId: MutableLiveData<String> = savedStateHandle.getLiveData(Extras.EXTRA_DIARY_ID)
+	public val diary: LiveData<Diary> = diaryId.switchMap { id ->
 		liveData {
-			id ?: let {
-				val count = diariesRepository.getDiaries().size
-				val diary = diariesRepository.createDiary(Diary(name = "Gen ${count + 1}").apply {
-					isDraft = true
-					crops as ArrayList += Crop(
-						name = "Crop 1",
-						genetics = "Unknown genetics",
-						platedDate = this@apply.date
-					)
-				})
+			if (id.isNullOrBlank()) return@liveData
 
-				_diaryId.value = diary.id
-				return@liveData
-			}
-
-			id?.let {
-				emitSource(diariesRepository.observeDiary(it))
-			}
-		}
-	} as MutableLiveData
-
-	public val diary = _diary.asLiveData()
-
-	public fun setDiaryDate(dateTime: ZonedDateTime)
-	{
-		_diary.value?.asSuccess()!!.apply {
-			date = dateTime.asString()
-			_diary.notifyChange()
+			emitSource(diariesRepository.observeDiary(id).switchMap { diaryResult ->
+				when (diaryResult)
+				{
+					is DataResult.Success -> liveData { emit(diaryResult.data) }
+					else -> throw GrowTrackerException.DiaryLoadFailed(id)
+				}
+			})
 		}
 	}
 
-	public fun setDiaryName(newName: String)
+	public fun new(): LiveData<Diary>
 	{
-		_diary.value?.apply {
-			//name = newName
-			_diary.postValue(this)
+		isNew = true
+		diaryId.clear()
+
+		viewModelScope.launch {
+			val count = diariesRepository.getDiaries().filter { !it.isDraft }.size
+			val diary = Diary(name = "Gen ${count + 1}").apply {
+				isDraft = true
+				crops as ArrayList += Crop(
+					name = "Crop 1",
+					genetics = "Unknown genetics",
+					platedDate = this@apply.date
+				)
+			}
+
+			diariesRepository.addDiary(diary)
+			diaryId.postValue(diary.id)
+		}
+
+		return diary
+	}
+
+	public fun load(id: String): LiveData<Diary>
+	{
+		isNew = false
+		diaryId.postValue(id)
+		return diary
+	}
+
+	public fun remove()
+	{
+		viewModelScope.launch {
+			diaryId.clear()?.let { id ->
+				diariesRepository.deleteDiary(id)
+			}
+		}
+	}
+
+	public fun save(new: Diary = diary.value!!)
+	{
+		viewModelScope.launch {
+			diariesRepository.addDiary(new)
+		}
+	}
+
+	public fun mutate(block: (Diary) -> Diary)
+	{
+		diary.value?.let {
+			save(block(it))
 		}
 	}
 
@@ -76,15 +102,16 @@ class DiaryViewModel(
 		schedule: ValueHolder<LightSchedule?>? = null
 	)
 	{
-		_diary.value?.asSuccess()!!.apply {
-			// We're in a wizard so there should only be one instance
-			val id = _environmentId.value ?: let {
-				val log = Environment()
-				viewModelScope.launch { diariesRepository.addLog(log, it) }
-				log.id
-			}.also { _environmentId.value = it }
+		val diary = diary.value ?: return
 
-			logOf<Environment>(id)?.apply {
+		viewModelScope.launch {
+			// We're in a wizard so there should only be one instance
+			val environment: Environment = diary.environment()
+				?: Environment().apply {
+					diariesRepository.addLog(this, diary)
+				}
+
+			environment.apply {
 				type?.applyValue { this.type = it }
 				temperature?.applyValue { this.temperature = it }
 				humidity?.applyValue { this.humidity = it }
@@ -93,33 +120,16 @@ class DiaryViewModel(
 				light?.applyValue { this.light = it }
 				schedule?.applyValue { this.schedule = it }
 			}
-		}
-		_diary.notifyChange()
-	}
 
-	public fun addCrop(crop: Crop)
-	{
-		_diary.value?.asSuccess()!!.apply {
-			crops as ArrayList += crop
-			_diary.notifyChange()
+			diary.log(environment)
+			save(diary)
 		}
 	}
 
-	public fun refresh()
+	public fun clear()
 	{
-		_diaryId.postValue(_diaryId.value)
-	}
-
-	public fun save(diary: Diary)
-	{
-		diary.isDraft = false
-		diariesRepository.sync()
-	}
-
-	public suspend fun cancel()
-	{
-		_diaryId.value?.let {
-			diariesRepository.deleteDiary(it)
-		}
+		isNew = false
+		diaryId.clear()
+		diary.clear()
 	}
 }

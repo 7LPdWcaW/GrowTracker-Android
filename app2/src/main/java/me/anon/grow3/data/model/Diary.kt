@@ -10,7 +10,7 @@ import java.util.*
 data class Diary(
 	@Id public val id: String = UUID.randomUUID().toString(),
 	public var name: String,
-	public var date: String = ZonedDateTime.now().asString(),
+	public var date: String = ZonedDateTime.now().asApiString(),
 	public val log: List<Log> = arrayListOf(),
 	public val crops: List<Crop> = arrayListOf()
 )
@@ -23,9 +23,12 @@ data class Diary(
 	public fun stage(): Stage = findStage()
 	public fun water(): Water? = findWater()
 	public fun medium(): Medium? = findMedium()
-	public fun environment(): EnvironmentType? = findEnvironmentType()
+	public fun environment(): Environment? = findEnvironment()
+
+	public fun environmentType(): EnvironmentType? = findEnvironmentType()
 	public fun size(): Size? = findSize()
 	public fun light(): Light? = findLight()
+
 	public fun crop(id: String): Crop = crops.first { it.id == id }
 	public fun stages(): List<Stage> = findAllStages().filter { it.cropIds.isEmpty() }
 
@@ -62,11 +65,15 @@ data class Diary(
 	}
 
 	/**
-	 * Adds a new log to the diary
+	 * Adds or updates a log in the diary
 	 */
 	public fun log(log: Log): Log
 	{
-		this.log as ArrayList += log
+		val index = this.log.indexOfFirst { it.id == log.id }
+
+		if (index > -1) (this.log as ArrayList)[index] = log
+		else this.log as ArrayList += log
+
 		this.log.sortBy { it.date }
 		return log
 	}
@@ -93,10 +100,8 @@ data class Diary(
 			}
 			else
 			{
-				this.filterIsInstance<StageChange>()
-					.findLast {
-						cropFilter(crop, it)
-					}
+				findAllStages(crop)
+					.lastOrNull()
 			}
 		}
 
@@ -140,7 +145,7 @@ data class Diary(
 				}
 
 				// ongoing
-				if (lastStage == stage) daysInStage += (lastStage!!.date and ZonedDateTime.now().asString()).dateDifferenceDays()
+				if (lastStage == stage) daysInStage += (lastStage!!.date and ZonedDateTime.now().asApiString()).dateDifferenceDays()
 				ret[stage] = ret.getOrElse(stage, { 0.0 }) + daysInStage
 			}
 
@@ -184,8 +189,13 @@ data class Diary(
 
 	private fun findWater(): Water?
 		= log.sortedBy { it.date }
-			.filterIsInstance<Water>()
-			.lastOrNull()
+		.filterIsInstance<Water>()
+		.lastOrNull()
+
+	private fun findEnvironment(): Environment?
+		= log.sortedBy { it.date }
+		.filterIsInstance<Environment>()
+		.lastOrNull()
 
 	init {
 		if (log.isEmpty() || !log.any { it is StageChange })
@@ -193,7 +203,8 @@ data class Diary(
 			log as ArrayList += StageChange(StageType.Planted)
 		}
 
-		log.sortedBy { it.date }
+		var i = 0
+		//log.sortedBy { it.date }
 	}
 
 	override fun equals(other: Any?): Boolean = (other as? Diary)?.id == id || super.equals(other)

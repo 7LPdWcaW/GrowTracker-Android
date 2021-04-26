@@ -11,19 +11,19 @@ typealias Medium = Transplant
 @JsonClass(generateAdapter = true)
 data class Transplant(
 	public var medium: MediumType,
-	public var size: Double? = null
+	public var size: Volume? = null
 ) : Log(action = "Transplant")
 {
 	override fun summary(): CharSequence
 	{
-		return medium.strRes.string() + "\n" + size.asString() + "ml"
+		return medium.strRes.string() + "\n" + size?.asString() + "ml"
 	}
 }
 
 data class TransplantChange(
 	var days: Int,
 	var mediumType: Duo<MediumType>,
-	var size: Duo<Double?>
+	var size: Duo<Volume?>
 ) : Delta()
 
 public fun Duo<Transplant>.difference(): TransplantChange

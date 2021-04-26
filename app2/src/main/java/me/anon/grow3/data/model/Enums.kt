@@ -112,7 +112,7 @@ enum class LightType : Type
 	}
 }
 
-enum class StageType() : Type
+enum class StageType : Type
 {
 	Planted {
 		override val strRes = R.string.stage_type_planted
@@ -163,10 +163,10 @@ enum class StageType() : Type
 
 	companion object
 	{
-		fun ofId(id: Int): StageType = StageType.values().first { it.strRes == id }
+		fun ofId(id: Int): StageType = values().first { it.strRes == id }
 
 		fun toMenu(): List<DropDownEditText.DropDownMenuItem>
-			= StageType.values().map {
+			= values().map {
 				DropDownEditText.DropDownMenuItem(
 					it.strRes,
 					false,
@@ -194,4 +194,57 @@ enum class PesticideType
 	Spray,
 	Liquid,
 	Solid
+}
+
+enum class VolumeUnit : Type
+{
+	Ml {
+		override val strRes: Int = R.string.volume_unit_ml
+	},
+	L {
+		override val strRes: Int = R.string.volume_unit_l
+	};
+
+	companion object
+	{
+		fun ofId(id: Int): VolumeUnit = VolumeUnit.values().first { it.strRes == id }
+
+		fun toMenu(): List<DropDownEditText.DropDownMenuItem>
+			= VolumeUnit.values().map {
+			DropDownEditText.DropDownMenuItem(
+				it.strRes,
+				it == L, // todo: this should be the user default
+				false,
+				titleRes = it.strRes,
+				iconRes = -1
+			)
+		}
+	}
+}
+
+enum class DimensionUnit : Type
+{
+	mm {
+		override val strRes: Int = R.string.dimension_unit_mm
+	},
+	cm {
+		override val strRes: Int = R.string.dimension_unit_cm
+	};
+
+	companion object
+	{
+		fun ofId(id: Int): DimensionUnit = DimensionUnit.values().first { it.strRes == id }
+		fun idOf(unit: DimensionUnit): Int = unit.strRes
+
+		fun toMenu(): List<DropDownEditText.DropDownMenuItem>
+			= DimensionUnit.values().map {
+			DropDownEditText.DropDownMenuItem(
+				it.strRes,
+				it == mm, // todo: this should be the user default
+				false,
+				titleRes = it.strRes,
+				iconRes = -1
+			)
+		}
+	}
 }

@@ -9,5 +9,5 @@ import com.squareup.moshi.JsonClass
 data class Pesticide(
 	public val type: PesticideType,
 	public var name: String = "",
-	public var amount: Double?
+	public var amount: Volume? = null
 ) : Log(action = "Pesticide")

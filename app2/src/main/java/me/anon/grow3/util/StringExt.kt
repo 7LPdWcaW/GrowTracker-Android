@@ -6,8 +6,7 @@ import org.threeten.bp.ZonedDateTime
 import org.threeten.bp.temporal.ChronoUnit
 
 public fun String.asEditable(): Editable = SpannableStringBuilder(this)
-
-public fun String.nowDifferenceDays(): Int = (this and ZonedDateTime.now().asString()).dateDifferenceDays()
+public fun String.nowDifferenceDays(): Int = (this and ZonedDateTime.now().asApiString()).dateDifferenceDays()
 
 /**
  * Returns the difference of 2 date strings in whole days. This is inclusive of the current

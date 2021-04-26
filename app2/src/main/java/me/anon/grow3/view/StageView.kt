@@ -10,16 +10,18 @@ import android.widget.FrameLayout
 import android.widget.HorizontalScrollView
 import android.widget.LinearLayout
 import androidx.core.view.get
+import androidx.core.view.isVisible
 import androidx.core.view.plusAssign
 import androidx.core.view.updateLayoutParams
 import me.anon.grow3.R
 import me.anon.grow3.data.model.Crop
 import me.anon.grow3.data.model.Diary
 import me.anon.grow3.data.model.Stage
+import me.anon.grow3.data.model.StageChange
 import me.anon.grow3.databinding.StubViewArrowBinding
 import me.anon.grow3.databinding.StubViewStageBinding
 import me.anon.grow3.util.*
-import org.threeten.bp.LocalDate
+import org.threeten.bp.ZonedDateTime
 import org.threeten.bp.temporal.ChronoUnit
 
 class StageView : HorizontalScrollView
@@ -29,6 +31,7 @@ class StageView : HorizontalScrollView
 	private var diary: Diary? = null
 	private var crop: Crop? = null
 	public var onNewStageClick: () -> Unit = {}
+	public var onStageClick: (StageChange) -> Unit = {}
 
 	constructor(context: Context) : this(context, null)
 	constructor(context: Context, attrs: AttributeSet?) : this(context, attrs, 0)
@@ -60,11 +63,16 @@ class StageView : HorizontalScrollView
 	private fun layoutStages()
 	{
 		container.removeAllViews()
+		container.removeAllViewsInLayout()
 		for (stageIndex in 0 until stages.size)
 		{
 			val stage = stages[stageIndex]
 			val stageView = StageViewStub(context)
 			stageView.setStage(stage)
+			stageView.onClick {
+				onStageClick(stage)
+				smoothScrollTo(it.x.toInt(), 0)
+			}
 			container += stageView
 
 			val arrow = ArrowViewStub(context)
@@ -76,18 +84,20 @@ class StageView : HorizontalScrollView
 
 			container += arrow
 
-			var stage2Date = LocalDate.now()
+			var stage2Date = ZonedDateTime.now()
 			stages.getOrNull(stageIndex + 1)?.let { next ->
-				stage2Date = next.date.asLocalDate()
+				stage2Date = next.date.asDateTime()
 			}
 
-			val stage1Date = stage.date.asLocalDate()
+			val stage1Date = stage.date.asDateTime()
 			val days = ChronoUnit.DAYS.between(stage1Date, stage2Date)
 			arrow.setLength(days)
 		}
 
 		val end = StageViewStub(context)
-		end.setOnClickListener {
+		end.onClick {
+			// todo: center clicked view in the scroll container
+			smoothScrollTo(it.x.toInt(), 0)
 			onNewStageClick()
 		}
 		container += end
@@ -163,6 +173,16 @@ class StageView : HorizontalScrollView
 		{
 			bindings = StubViewStageBinding.inflate(LayoutInflater.from(context), this, true)
 			setStage(null)
+			isClickable = true
+			isFocusable = true
+		}
+
+		override fun setOnClickListener(l: OnClickListener?)
+		{
+			bindings.stageIcon.onClick {
+				smoothScrollTo(it.x.toInt(), 0)
+				l?.onClick(this@StageViewStub)
+			}
 		}
 
 		public fun setStage(stage: Stage?)
@@ -172,12 +192,13 @@ class StageView : HorizontalScrollView
 			if (stage == null)
 			{
 				bindings.stageLabel.setText(R.string.today)
-				bindings.stageDate.text = LocalDate.now().asFormattedString()
+				bindings.stageDate.text = ZonedDateTime.now().formatDate()
+				bindings.stageIcon.setImageDrawable(R.drawable.ic_add.drawable(context, tint = R.attr.textOnSurface.resColor(context)))
 			}
 			else
 			{
 				bindings.stageLabel.text = stage.type.strRes.string(context)
-				bindings.stageDate.text = stage.date.asLocalDate().asFormattedString()
+				bindings.stageDate.text = stage.date.asDateTime().formatDate()
 				bindings.stageIcon.setImageResource(stage.type.iconRes)
 			}
 		}
@@ -197,6 +218,7 @@ class StageView : HorizontalScrollView
 
 		public fun setLength(days: Long)
 		{
+			bindings.stageLabel.isVisible = days > 0
 			bindings.stageLabel.text = R.string.days.string(context, days)
 		}
 

@@ -33,12 +33,28 @@
 		android:clipToPadding="false"
 		app:layout_behavior="@string/appbar_scrolling_view_behavior"
 	>
-		<FrameLayout
+		<LinearLayout
 			android:layout_width="match_parent"
 			android:layout_height="wrap_content"
 			android:id="@+id/log_content"
+			android:orientation="vertical"
+			android:padding="16dp"
+			android:divider="@drawable/spacer_16dp"
+			android:showDividers="middle"
 		/>
 	</androidx.core.widget.NestedScrollView>
+
+	<com.google.android.material.floatingactionbutton.FloatingActionButton
+		android:layout_width="wrap_content"
+		android:layout_height="wrap_content"
+		android:id="@+id/action_delete"
+		android:layout_gravity="bottom|start"
+		android:visibility="gone"
+		android:layout_margin="16dp"
+		app:srcCompat="@drawable/ic_delete"
+		app:tint="?colorOnError"
+		app:backgroundTint="?colorError"
+	/>
 
 	<com.google.android.material.floatingactionbutton.FloatingActionButton
 		android:layout_width="wrap_content"
