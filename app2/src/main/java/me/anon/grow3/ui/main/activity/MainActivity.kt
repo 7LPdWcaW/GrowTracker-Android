@@ -289,10 +289,7 @@ class MainActivity : BaseActivity(ActivityMainBinding::class)
 					}
 				}
 			}
-			override val id: Long
-				get() {
-					return codeOf<AdditionalPageHostFragment>().toLong() + codeOf(args!!)
-				}
+			override val id: Long get() = codeOf<AdditionalPageHostFragment>().toLong() + codeOf(args!!)
 		})
 
 		adapter.notifyItemInserted(index)
@@ -309,9 +306,9 @@ class MainActivity : BaseActivity(ActivityMainBinding::class)
 				val count = adapter.pages.size
 				if (count > INDEX_MAIN + 1)
 				{
-					while (adapter.pages.size > INDEX_MAIN + 1)
-					{
-						supportFragmentManager.commitNow {
+					supportFragmentManager.commitNow {
+						while (adapter.pages.size > INDEX_MAIN + 1)
+						{
 							adapter.getFragment(INDEX_MAIN + 1)?.let {
 								remove(it)
 							}
