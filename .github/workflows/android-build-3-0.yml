@@ -3,7 +3,7 @@ name: 3.0 Development build
 on:
   push:
     branches:
-      - '3.0'
+      - 'develop3'
 
 jobs:
   test:
