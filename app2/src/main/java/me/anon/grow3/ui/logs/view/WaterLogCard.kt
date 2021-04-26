@@ -6,7 +6,9 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.appcompat.widget.PopupMenu
 import androidx.core.os.bundleOf
+import androidx.core.view.isVisible
 import androidx.core.view.plusAssign
+import androidx.core.view.updatePadding
 import me.anon.grow3.R
 import me.anon.grow3.data.model.Diary
 import me.anon.grow3.data.model.Water
@@ -85,9 +87,22 @@ class WaterLogCard : Card<CardWaterLogBinding>
 
 		view.content.hideIfEmpty()
 
-		view.cropsContainer.removeAllViews()
+		view.additivesContainer.removeAllViews()
+		log.additives
+			.filter { it.description.isNotEmpty() }
+			.mapToView<Water.Additive, StubDataLabelBinding>(view.additivesContainer) { additive, dataView ->
+				dataView.data.text = "${additive.amount}ml/l"
+				dataView.label.text = "• ${additive.description}: "
+				dataView.root.updatePadding(left = 16.dp)
+			}
+			.hideIfEmpty()
+
+		view.includeStubCardFooter.notes.text = log.notes
+		view.includeStubCardFooter.notes.isVisible = log.notes.isNotBlank()
+
+		view.includeStubCardFooter.cropsContainer.removeAllViews()
 		log.cropIds
-			.mapToView<String, StubCropSmallBinding>(view.cropsContainer) { cropId, cropView ->
+			.mapToView<String, StubCropSmallBinding>(view.includeStubCardFooter.cropsContainer) { cropId, cropView ->
 				val crop = diary.crop(cropId)
 				cropView.cropImage.onClick {
 					it.navigateTo<ViewCropFragment> {
