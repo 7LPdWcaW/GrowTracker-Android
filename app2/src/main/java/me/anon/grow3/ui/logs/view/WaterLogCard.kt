@@ -7,6 +7,7 @@ import android.view.ViewGroup
 import androidx.appcompat.widget.PopupMenu
 import androidx.core.os.bundleOf
 import androidx.core.view.plusAssign
+import androidx.core.view.updatePadding
 import me.anon.grow3.R
 import me.anon.grow3.data.model.Diary
 import me.anon.grow3.data.model.Water
@@ -84,6 +85,16 @@ class WaterLogCard : Card<CardWaterLogBinding>
 		}
 
 		view.content.hideIfEmpty()
+
+		view.additivesContainer.removeAllViews()
+		log.additives
+			.filter { it.description.isNotEmpty() }
+			.mapToView<Water.Additive, StubDataLabelBinding>(view.additivesContainer) { additive, dataView ->
+				dataView.data.text = "${additive.amount}ml/l"
+				dataView.label.text = "• ${additive.description}: "
+				dataView.root.updatePadding(left = 16.dp)
+			}
+			.hideIfEmpty()
 
 		view.cropsContainer.removeAllViews()
 		log.cropIds

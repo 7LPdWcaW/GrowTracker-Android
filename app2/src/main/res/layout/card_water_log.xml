@@ -30,13 +30,27 @@
 			app:dividerDrawableVertical="@drawable/spacer_8dp"
 			app:showDividerVertical="middle"
 		/>
+		
+		<LinearLayout
+			android:layout_width="match_parent"
+			android:layout_height="wrap_content"
+			android:id="@+id/additives_container"
+			android:layout_marginTop="@dimen/section_spacing"
+			app:layout_constraintTop_toBottomOf="@id/content"
+			app:layout_constraintStart_toStartOf="parent"
+			app:layout_constraintEnd_toStartOf="parent"
+			android:visibility="gone"
+			android:paddingBottom="8dp"
+			android:orientation="vertical"
+			android:showDividers="middle"
+		/>
 
 		<com.google.android.flexbox.FlexboxLayout
 			android:layout_width="match_parent"
 			android:layout_height="wrap_content"
 			android:id="@+id/crops_container"
 			android:layout_marginTop="@dimen/section_header_spacing"
-			app:layout_constraintTop_toBottomOf="@id/content"
+			app:layout_constraintTop_toBottomOf="@id/additives_container"
 			app:layout_constraintStart_toStartOf="parent"
 			app:layout_constraintEnd_toStartOf="parent"
 			android:paddingBottom="8dp"

@@ -92,7 +92,7 @@ class WaterLogView(
 				if (emptyCount < 1)
 				{
 					addAdditiveView(container)
-					updateAdditiveTotals(bindings.waterAmount.editText?.text?.toDoubleOrNull() ?: 0.0)
+					bindings.waterAmount.editText?.text?.toDoubleOrNull()?.let { updateAdditiveTotals(it) }
 				}
 			}
 			else if (emptyCount > 1 && emptyIndex < container.childViews.count())
@@ -124,7 +124,7 @@ class WaterLogView(
 			additive.amount = it.text.toDoubleOrNull() ?: 0.0
 		}
 		additiveView.amount.editText!!.doAfterTextChanged {
-			updateAdditiveTotals(bindings.waterAmount.editText?.text?.toDoubleOrNull() ?: 0.0)
+			bindings.waterAmount.editText?.text?.toDoubleOrNull()?.let { updateAdditiveTotals(it) }
 		}
 		additiveView.description.editText!!.doOnTextChanged(textChangeListener)
 		additiveView.description.editText!!.onFocusLoss {
@@ -137,6 +137,10 @@ class WaterLogView(
 	override fun saveView(): Water
 	{
 		bindings.root.clearFocus()
+
+		// remove empty additives
+		log.additives.removeAll { it.amount == 0.0 && it.description.isEmpty() }
+
 		return log
 	}
 
