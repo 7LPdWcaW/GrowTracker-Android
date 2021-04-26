@@ -16,7 +16,6 @@ import me.anon.grow3.util.Injector
 import me.anon.grow3.util.ViewModelProvider
 import me.anon.grow3.util.asDate
 import me.anon.grow3.util.asDisplayString
-import me.anon.grow3.util.states.asSuccess
 import javax.inject.Inject
 
 class LogListFragment : CardListFragment()
@@ -35,8 +34,15 @@ class LogListFragment : CardListFragment()
 
 	override fun bindVm()
 	{
-		viewModel.logs.observe(viewLifecycleOwner) { logs ->
-			val diary = viewModel.diary.value!!.asSuccess()
+		viewModel.data.observe(viewLifecycleOwner) { data ->
+			if (data !is LogListViewModel.ViewData.Complete) return@observe
+			val diary = data.diary
+			val logs = data.logs
+			val crop = data.crops?.firstOrNull()
+
+			val title = crop?.name ?: diary.name
+			requireActivity().title = "$title logs"
+
 			viewAdapter.newStack {
 				val group =
 					logs.groupBy { log ->
