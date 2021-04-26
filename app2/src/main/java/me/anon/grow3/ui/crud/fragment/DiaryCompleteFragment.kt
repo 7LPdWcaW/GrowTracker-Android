@@ -2,6 +2,7 @@ package me.anon.grow3.ui.crud.fragment
 
 import androidx.core.os.bundleOf
 import androidx.fragment.app.activityViewModels
+import androidx.lifecycle.lifecycleScope
 import me.anon.grow3.databinding.FragmentCrudDiaryCompleteBinding
 import me.anon.grow3.ui.base.BaseFragment
 import me.anon.grow3.ui.common.Extras.EXTRA_DIARY_ID
@@ -21,9 +22,15 @@ class DiaryCompleteFragment : BaseFragment(FragmentCrudDiaryCompleteBinding::cla
 	private val crudViewModel: DiaryCrudViewModel by activityViewModels { ViewModelProvider(crudViewModelFactory, this) }
 	private val viewBindings by viewBinding<FragmentCrudDiaryCompleteBinding>()
 
+	init {
+		lifecycleScope.launchWhenCreated {
+			crudViewModel.completeCrud()
+		}
+	}
+
 	override fun bindUi()
 	{
-		requireContext().component.corePreferences().completeFirstLaunch()
+		component.corePreferences().completeFirstLaunch()
 
 		viewBindings.close.setOnClickListener {
 			navigateTo<ViewDiaryFragment> {
@@ -38,13 +45,5 @@ class DiaryCompleteFragment : BaseFragment(FragmentCrudDiaryCompleteBinding::cla
 	{
 		requireActivity().finish()
 		return true
-	}
-
-	override fun bindVm()
-	{
-		/*crudViewModel.diaryVm.diary.value ?: throw IllegalArgumentException("No diary to save")
-		crudViewModel.diaryVm.diary.value?.let {
-			crudViewModel.diaryVm.save(it)
-		}*/
 	}
 }

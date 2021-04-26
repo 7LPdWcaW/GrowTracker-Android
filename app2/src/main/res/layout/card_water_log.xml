@@ -23,27 +23,37 @@
 			app:layout_constraintTop_toBottomOf="@id/include_stub_card_header"
 			app:layout_constraintStart_toStartOf="parent"
 			app:layout_constraintEnd_toStartOf="parent"
+			android:visibility="gone"
 			android:paddingBottom="8dp"
 			app:flexWrap="wrap"
 			app:flexDirection="row"
-			app:dividerDrawable="@drawable/section_spacer"
-			app:showDivider="middle"
+			app:dividerDrawableVertical="@drawable/spacer_8dp"
+			app:showDividerVertical="middle"
 		/>
-
-		<com.google.android.flexbox.FlexboxLayout
+		
+		<LinearLayout
 			android:layout_width="match_parent"
 			android:layout_height="wrap_content"
-			android:id="@+id/crops_container"
-			android:layout_marginTop="@dimen/section_header_spacing"
+			android:id="@+id/additives_container"
+			android:layout_marginTop="@dimen/section_spacing"
+			app:layout_goneMarginTop="0dp"
 			app:layout_constraintTop_toBottomOf="@id/content"
 			app:layout_constraintStart_toStartOf="parent"
 			app:layout_constraintEnd_toStartOf="parent"
-			android:paddingBottom="8dp"
-			app:flexWrap="wrap"
-			app:flexDirection="row"
-			app:dividerDrawable="@drawable/section_spacer"
-			app:showDivider="middle"
 			android:visibility="gone"
+			android:paddingBottom="8dp"
+			android:orientation="vertical"
+			android:showDividers="middle"
+		/>
+		
+		<include
+			android:layout_width="match_parent"
+			android:layout_height="wrap_content"
+			layout="@layout/stub_card_footer"
+			android:id="@+id/include_stub_card_footer"
+			android:layout_marginTop="@dimen/section_header_spacing"
+			app:layout_goneMarginTop="0dp"
+			app:layout_constraintTop_toBottomOf="@id/additives_container"
 		/>
 	</androidx.constraintlayout.widget.ConstraintLayout>
 </com.google.android.material.card.MaterialCardView>

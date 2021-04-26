@@ -96,6 +96,7 @@ class StageView : HorizontalScrollView
 
 		val end = StageViewStub(context)
 		end.onClick {
+			// todo: center clicked view in the scroll container
 			smoothScrollTo(it.x.toInt(), 0)
 			onNewStageClick()
 		}

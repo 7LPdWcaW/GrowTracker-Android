@@ -83,6 +83,8 @@ class LogActionViewModel constructor(
 					else -> throw InvalidLogType()
 				}
 
+				newLog.isDraft = true
+
 				diariesRepository.addLog(newLog, diary)
 				logId.postValue(newLog.id)
 			}
@@ -94,11 +96,9 @@ class LogActionViewModel constructor(
 	public fun remove()
 	{
 		viewModelScope.launch {
-			logId.clear()?.let { id ->
-				val diaryId = diaryId.value ?: return@launch
-				val diary = diariesRepository.getDiaryById(diaryId) ?: throw DiaryLoadFailed(id)
-				diariesRepository.removeLog(id, diary)
-			}
+			val diary = log.value?.diary ?: return@launch
+			val log = log.value?.log ?: return@launch
+			diariesRepository.removeLog(log.id, diary)
 		}
 	}
 
@@ -108,22 +108,20 @@ class LogActionViewModel constructor(
 		viewModelScope.launch {
 			val diaryId = diaryId.value ?: return@launch
 			val diary = diariesRepository.getDiaryById(diaryId) ?: throw DiaryLoadFailed(diaryId)
+			new.isDraft = false
 			diariesRepository.addLog(new, diary)
 		}
 	}
 
 	public fun clear()
 	{
-		if (isNew)
+		if (isNew || log.value?.log?.isDraft == true)
 		{
 			remove()
 		}
-		else
-		{
-			logId.clear()
-			log.clear()
-		}
 
+		logId.clear()
+		log.clear()
 		isNew = false
 	}
 }

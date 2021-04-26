@@ -87,7 +87,7 @@ class DefaultDiariesRepository @Inject constructor(
 			invalidate()
 		}
 
-		_logEvents.emit(LogEvent.Added(log, diary))
+		if (!log.isDraft) _logEvents.emit(LogEvent.Added(log, diary))
 
 		return log
 	}
