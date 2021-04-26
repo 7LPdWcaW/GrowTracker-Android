@@ -19,12 +19,14 @@ import java.util.*
 )
 abstract class Log(
 	open val id: String = UUID.randomUUID().toString(),
-	open var date: String = ZonedDateTime.now().asString(),
+	open var date: String = ZonedDateTime.now().asApiString(),
 	open var notes: String = "",
 	open var cropIds: List<String> = arrayListOf(),
 	open var action: String = "Log"
 )
 {
+	public var isDraft = false
+
 	open fun summary(): CharSequence = ""
 	open val typeRes: Int = -1
 }

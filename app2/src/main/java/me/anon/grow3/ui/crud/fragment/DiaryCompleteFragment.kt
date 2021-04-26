@@ -2,13 +2,15 @@ package me.anon.grow3.ui.crud.fragment
 
 import androidx.core.os.bundleOf
 import androidx.fragment.app.activityViewModels
+import androidx.lifecycle.lifecycleScope
 import me.anon.grow3.databinding.FragmentCrudDiaryCompleteBinding
 import me.anon.grow3.ui.base.BaseFragment
 import me.anon.grow3.ui.common.Extras.EXTRA_DIARY_ID
-import me.anon.grow3.ui.crud.viewmodel.DiaryViewModel
+import me.anon.grow3.ui.crud.viewmodel.DiaryCrudViewModel
 import me.anon.grow3.ui.diaries.fragment.ViewDiaryFragment
 import me.anon.grow3.util.Injector
 import me.anon.grow3.util.ViewModelProvider
+import me.anon.grow3.util.component
 import me.anon.grow3.util.navigateTo
 import javax.inject.Inject
 
@@ -16,26 +18,32 @@ class DiaryCompleteFragment : BaseFragment(FragmentCrudDiaryCompleteBinding::cla
 {
 	override val injector: Injector = { it.inject(this) }
 
-	@Inject internal lateinit var viewModelFactory: DiaryViewModel.Factory
-	private val viewModel: DiaryViewModel by activityViewModels { ViewModelProvider(viewModelFactory, this) }
+	@Inject internal lateinit var crudViewModelFactory: DiaryCrudViewModel.Factory
+	private val crudViewModel: DiaryCrudViewModel by activityViewModels { ViewModelProvider(crudViewModelFactory, this) }
 	private val viewBindings by viewBinding<FragmentCrudDiaryCompleteBinding>()
+
+	init {
+		lifecycleScope.launchWhenCreated {
+			crudViewModel.completeCrud()
+		}
+	}
 
 	override fun bindUi()
 	{
+		component.corePreferences().completeFirstLaunch()
+
 		viewBindings.close.setOnClickListener {
 			navigateTo<ViewDiaryFragment> {
-				bundleOf(EXTRA_DIARY_ID to viewModel.diary.value!!.id)
+				bundleOf(EXTRA_DIARY_ID to crudViewModel.diaryVm.diary.value!!.id)
 			}
 
 			requireActivity().finish()
 		}
 	}
 
-	override fun bindVm()
+	override fun onBackPressed(): Boolean
 	{
-		viewModel.diary.value ?: throw IllegalArgumentException("No diary to save")
-		viewModel.diary.value?.let {
-			viewModel.save()
-		}
+		requireActivity().finish()
+		return true
 	}
 }

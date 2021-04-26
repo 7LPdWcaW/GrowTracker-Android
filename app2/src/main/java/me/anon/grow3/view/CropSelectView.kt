@@ -81,7 +81,10 @@ class CropSelectView : ChipGroup
 			binding.chip.text = crop.name
 			binding.chip.tag = crop
 			binding.chip.isChecked = selectedCrops.contains(crop.id)
-			selectedCrops.add(crop.id)
+			if (binding.chip.isChecked)
+			{
+				selectedCrops.add(crop.id)
+			}
 
 			val image = R.drawable.sample.drawable(context)
 			binding.chip.chipIcon = CircleBitmapDisplayer.CircleDrawable((image as BitmapDrawable).bitmap, 0, 0f)

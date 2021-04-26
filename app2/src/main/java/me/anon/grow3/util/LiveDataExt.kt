@@ -101,3 +101,25 @@ inline fun <T> LiveData<T>.observeOnce(
 	observe(owner, wrappedObserver)
 	return wrappedObserver
 }
+
+public fun <T> LiveData<T>.clear(): T?
+{
+	val value = (this as? MutableLiveData)?.value
+	(this as? MutableLiveData)?.postValue(null)
+	return value
+}
+
+class NonNullMediatorLiveData<T> : MediatorLiveData<T>()
+public fun <T> LiveData<T>.nonNull(): NonNullMediatorLiveData<T>
+{
+	val mediator: NonNullMediatorLiveData<T> = NonNullMediatorLiveData()
+	mediator.addSource(this) { it?.let { mediator.value = it } }
+	return mediator
+}
+
+public fun <T> NonNullMediatorLiveData<T>.observe(owner: LifecycleOwner, observer: (t: T) -> Unit)
+{
+	this.observe(owner) {
+		it?.let(observer)
+	}
+}

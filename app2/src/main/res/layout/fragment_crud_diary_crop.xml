@@ -15,9 +15,9 @@
 		<LinearLayout
 			android:layout_width="match_parent"
 			android:layout_height="wrap_content"
+			android:id="@+id/content"
 			android:clipToPadding="false"
 			android:orientation="vertical"
-			android:paddingBottom="92dp"
 		>
 			<com.google.android.material.card.MaterialCardView
 				android:layout_width="match_parent"
@@ -186,6 +186,7 @@
 						<me.anon.grow3.view.DropDownEditText
 							android:layout_width="match_parent"
 							android:layout_height="wrap_content"
+							android:id="@+id/medium_size_unit_options"
 							app:singleSelection="true"
 							app:required="true"
 							app:menu="@menu/quantity_units"
@@ -193,6 +194,30 @@
 					</com.google.android.material.textfield.TextInputLayout>
 				</androidx.constraintlayout.widget.ConstraintLayout>
 			</com.google.android.material.card.MaterialCardView>
+
+			<com.google.android.material.button.MaterialButton
+				android:layout_width="match_parent"
+				android:layout_height="wrap_content"
+				android:id="@+id/remove_crop"
+				android:text="Delete crop"
+				android:layout_marginTop="4dp"
+				android:layout_marginStart="8dp"
+				android:layout_marginEnd="8dp"
+				android:layout_marginBottom="12dp"
+				style="@style/Button.Danger"
+			/>
 		</LinearLayout>
 	</ScrollView>
+
+	<com.google.android.material.floatingactionbutton.FloatingActionButton
+		android:layout_width="wrap_content"
+		android:layout_height="wrap_content"
+		android:id="@+id/done"
+		android:layout_margin="16dp"
+		android:contentDescription="@string/app_intro_done_button"
+		android:layout_gravity="bottom|end"
+		app:backgroundTint="?colorPrimary"
+		app:tint="?textOnPrimary"
+		app:srcCompat="@drawable/ic_check"
+	/>
 </FrameLayout>

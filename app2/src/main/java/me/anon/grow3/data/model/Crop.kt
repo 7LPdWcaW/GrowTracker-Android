@@ -1,7 +1,7 @@
 package me.anon.grow3.data.model
 
 import com.squareup.moshi.JsonClass
-import me.anon.grow3.util.asString
+import me.anon.grow3.util.asApiString
 import org.threeten.bp.ZonedDateTime
 import java.util.*
 
@@ -12,5 +12,5 @@ data class Crop(
 	public var genetics: String? = null,
 	public var numberOfPlants: Int = 1,
 	//public var cloneOf: String? = null,
-	public var platedDate: String = ZonedDateTime.now().asString()
+	public var platedDate: String = ZonedDateTime.now().asApiString()
 )

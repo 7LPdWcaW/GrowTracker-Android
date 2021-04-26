@@ -21,7 +21,7 @@ import me.anon.grow3.data.model.StageChange
 import me.anon.grow3.databinding.StubViewArrowBinding
 import me.anon.grow3.databinding.StubViewStageBinding
 import me.anon.grow3.util.*
-import org.threeten.bp.LocalDate
+import org.threeten.bp.ZonedDateTime
 import org.threeten.bp.temporal.ChronoUnit
 
 class StageView : HorizontalScrollView
@@ -71,6 +71,7 @@ class StageView : HorizontalScrollView
 			stageView.setStage(stage)
 			stageView.onClick {
 				onStageClick(stage)
+				smoothScrollTo(it.x.toInt(), 0)
 			}
 			container += stageView
 
@@ -83,18 +84,20 @@ class StageView : HorizontalScrollView
 
 			container += arrow
 
-			var stage2Date = LocalDate.now()
+			var stage2Date = ZonedDateTime.now()
 			stages.getOrNull(stageIndex + 1)?.let { next ->
-				stage2Date = next.date.asLocalDate()
+				stage2Date = next.date.asDateTime()
 			}
 
-			val stage1Date = stage.date.asLocalDate()
+			val stage1Date = stage.date.asDateTime()
 			val days = ChronoUnit.DAYS.between(stage1Date, stage2Date)
 			arrow.setLength(days)
 		}
 
 		val end = StageViewStub(context)
 		end.onClick {
+			// todo: center clicked view in the scroll container
+			smoothScrollTo(it.x.toInt(), 0)
 			onNewStageClick()
 		}
 		container += end
@@ -177,6 +180,7 @@ class StageView : HorizontalScrollView
 		override fun setOnClickListener(l: OnClickListener?)
 		{
 			bindings.stageIcon.onClick {
+				smoothScrollTo(it.x.toInt(), 0)
 				l?.onClick(this@StageViewStub)
 			}
 		}
@@ -188,13 +192,13 @@ class StageView : HorizontalScrollView
 			if (stage == null)
 			{
 				bindings.stageLabel.setText(R.string.today)
-				bindings.stageDate.text = LocalDate.now().asFormattedString()
+				bindings.stageDate.text = ZonedDateTime.now().formatDate()
 				bindings.stageIcon.setImageDrawable(R.drawable.ic_add.drawable(context, tint = R.attr.textOnSurface.resColor(context)))
 			}
 			else
 			{
 				bindings.stageLabel.text = stage.type.strRes.string(context)
-				bindings.stageDate.text = stage.date.asLocalDate().asFormattedString()
+				bindings.stageDate.text = stage.date.asDateTime().formatDate()
 				bindings.stageIcon.setImageResource(stage.type.iconRes)
 			}
 		}

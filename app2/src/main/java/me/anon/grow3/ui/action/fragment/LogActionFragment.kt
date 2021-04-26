@@ -1,6 +1,7 @@
 package me.anon.grow3.ui.action.fragment
 
 import android.os.Bundle
+import androidx.core.view.isVisible
 import androidx.core.view.plusAssign
 import androidx.fragment.app.activityViewModels
 import androidx.fragment.app.commit
@@ -8,14 +9,10 @@ import androidx.fragment.app.commitNow
 import androidx.lifecycle.observe
 import com.google.android.material.textfield.TextInputLayout
 import me.anon.grow3.R
-import me.anon.grow3.data.model.Diary
-import me.anon.grow3.data.model.Log
-import me.anon.grow3.data.model.StageChange
-import me.anon.grow3.data.model.Water
+import me.anon.grow3.data.model.*
 import me.anon.grow3.databinding.FragmentActionLogBinding
+import me.anon.grow3.databinding.ViewLogCommonBinding
 import me.anon.grow3.ui.action.view.LogView
-import me.anon.grow3.ui.action.view.StageChangeLogView
-import me.anon.grow3.ui.action.view.WaterLogView
 import me.anon.grow3.ui.action.viewmodel.LogActionViewModel
 import me.anon.grow3.ui.base.BaseFragment
 import me.anon.grow3.ui.common.Extras
@@ -27,6 +24,11 @@ import javax.inject.Inject
 
 open class LogActionFragment : BaseFragment(FragmentActionLogBinding::class)
 {
+	companion object
+	{
+		public const val EXTRA_SINGLE_CROP = "logaction.single"
+	}
+
 	override val injector: Injector = { it.inject(this) }
 
 	@Inject internal lateinit var viewModelFactory: LogActionViewModel.Factory
@@ -39,11 +41,9 @@ open class LogActionFragment : BaseFragment(FragmentActionLogBinding::class)
 	{
 		super.bindArguments(bundle)
 
-		viewModel.diary.observeOnce(viewLifecycleOwner) { diary ->
-			bundle?.getString(Extras.EXTRA_LOG_ID).let {
-				if (it.isNullOrBlank()) viewModel.newLog()
-				else viewModel.editLog(it)
-			}
+		bundle?.getString(Extras.EXTRA_LOG_ID).let {
+			if (it.isNullOrBlank()) viewModel.new()
+			else viewModel.load(it)
 		}
 	}
 
@@ -55,12 +55,26 @@ open class LogActionFragment : BaseFragment(FragmentActionLogBinding::class)
 			onBackPressed()
 		}
 
+		viewBindings.actionDelete.isVisible = !viewModel.isNew
+		viewBindings.actionDelete.onClick {
+			requireActivity().promptRemove {
+				viewModel.remove()
+				finish()
+			}
+		}
+
 		viewBindings.actionDone.onClick {
 			isFinishing = true
 
 			logView?.let {
 				val log = it.saveView()
-				viewModel.saveLog()
+
+				requireView().clearFocus()
+				requireView().findViewById<CropSelectView>(R.id.crop_select_view)?.let {
+					log.cropIds = it.selectedCrops.toList()
+				}
+
+				viewModel.save(log)
 				finish()
 			}
 		}
@@ -70,10 +84,14 @@ open class LogActionFragment : BaseFragment(FragmentActionLogBinding::class)
 
 	override fun bindVm()
 	{
-		viewModel.log.observe(viewLifecycleOwner) { log ->
-			val diary = viewModel.diary.value!!
-			renderLogView(diary, log)
-		}
+		viewModel.log
+			.nonNull()
+			.observe(viewLifecycleOwner) { data ->
+				val diary = data.diary ?: return@observe
+				val log = data.log ?: return@observe
+
+				renderLogView(diary, log)
+			}
 	}
 
 	open fun finish()
@@ -102,10 +120,12 @@ open class LogActionFragment : BaseFragment(FragmentActionLogBinding::class)
 
 	private fun renderLogView(diary: Diary, log: Log)
 	{
+		viewBindings.actionDelete.isVisible = !viewModel.isNew
+
 		logView = when (log)
 		{
-			is Water -> WaterLogView(diary, log)
-			is StageChange -> StageChangeLogView(diary, log)
+			is Water -> log.logView(diary, log)
+			is StageChange -> log.logView(diary, log)
 			else -> null
 		}
 
@@ -117,22 +137,38 @@ open class LogActionFragment : BaseFragment(FragmentActionLogBinding::class)
 			logView.bindView(view)
 			viewBindings.logContent += view
 
-			view.findViewById<TextInputLayout>(R.id.date)?.let {
-				it.editText!!.onFocus {
-					it.hideKeyboard()
-					val current = diary.date
-					DateSelectDialogFragment.show(current, true, childFragmentManager).apply {
-						onDateTimeSelected = ::onDateSelected
-						onDismiss = ::onDateDismissed
-					}
+			val common = ViewLogCommonBinding.inflate(layoutInflater, viewBindings.logContent, false)
+			common.date.editText!!.text = diary.date.asDateTime().asDisplayString().asEditable()
+			common.date.editText!!.onFocus {
+				val current = diary.date
+				DateSelectDialogFragment.show(current, true, childFragmentManager).apply {
+					onDateTimeSelected = ::onDateSelected
+					onDismiss = ::onDateDismissed
 				}
 			}
 
-			view.findViewById<CropSelectView>(R.id.crop_select_view)?.let {
-				it.selectedCrops = arguments?.getStringArray(Extras.EXTRA_CROP_IDS)?.asSequence()?.toHashSet() ?: hashSetOf()
-				it.setDiary(diary)
-
+			common.notes.editText!!.text = log.notes.asEditable()
+			common.notes.editText!!.onFocusLoss {
+				log.notes = it.text.toString()
 			}
+
+			common.cropSelectView.let {
+				it.selectedCrops = arguments?.getStringArray(Extras.EXTRA_CROP_IDS)
+					?.asSequence()
+					?.toHashSet()
+					?: diary.crops
+						.map { it.id }
+						.toHashSet()
+
+				it.setDiary(diary)
+			}
+
+			if (arguments?.getBoolean(EXTRA_SINGLE_CROP, false) == true)
+			{
+				common.cropSelectView.isVisible = false
+			}
+
+			viewBindings.logContent += common.root
 		}
 	}
 
@@ -148,7 +184,6 @@ open class LogActionFragment : BaseFragment(FragmentActionLogBinding::class)
 		}
 		else
 		{
-			viewModel.deleteLog()
 			viewModel.clear()
 			isFinishing = true
 			requireActivity().supportFragmentManager.commitNow {
@@ -167,7 +202,7 @@ open class LogActionFragment : BaseFragment(FragmentActionLogBinding::class)
 	public fun onDateSelected(selectedDate: ZonedDateTime)
 	{
 		requireView().findViewById<TextInputLayout>(R.id.date)?.let {
-			it.editText!!.text = selectedDate.asNumericalString().asEditable()
+			it.editText!!.text = selectedDate.asDisplayString().asEditable()
 		}
 	}
 

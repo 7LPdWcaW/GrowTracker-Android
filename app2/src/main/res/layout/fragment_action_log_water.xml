@@ -1,24 +1,24 @@
 <?xml version="1.0" encoding="utf-8"?>
 
-<androidx.constraintlayout.widget.ConstraintLayout
+<com.google.android.flexbox.FlexboxLayout
 	xmlns:android="http://schemas.android.com/apk/res/android"
 	xmlns:app="http://schemas.android.com/apk/res-auto"
 	xmlns:tools="http://schemas.android.com/tools"
 	android:layout_width="match_parent"
-	android:layout_height="match_parent"
-	android:orientation="vertical"
-	android:padding="16dp"
+	android:layout_height="wrap_content"
+	app:flexWrap="wrap"
+	app:dividerDrawable="@drawable/spacer_4dp"
+	app:showDivider="middle"
+	app:alignItems="stretch"
 >
 	<com.google.android.material.textfield.TextInputLayout
-		android:layout_width="0dp"
+		android:layout_width="wrap_content"
 		android:layout_height="wrap_content"
 		android:id="@+id/water_ph"
 		android:hint="pH"
+		app:layout_flexGrow="1"
+		app:layout_flexBasisPercent="45%"
 		style="@style/Input"
-		android:layout_marginEnd="6dp"
-		app:layout_constraintTop_toTopOf="parent"
-		app:layout_constraintStart_toStartOf="parent"
-		app:layout_constraintEnd_toStartOf="@id/water_runoff"
 	>
 		<com.google.android.material.textfield.TextInputEditText
 			android:layout_width="match_parent"
@@ -31,15 +31,13 @@
 	</com.google.android.material.textfield.TextInputLayout>
 
 	<com.google.android.material.textfield.TextInputLayout
-		android:layout_width="0dp"
+		android:layout_width="wrap_content"
 		android:layout_height="wrap_content"
 		android:id="@+id/water_runoff"
 		android:hint="Runoff"
+		app:layout_flexGrow="1"
+		app:layout_flexBasisPercent="45%"
 		style="@style/Input"
-		android:layout_marginStart="6dp"
-		app:layout_constraintTop_toTopOf="parent"
-		app:layout_constraintStart_toEndOf="@id/water_ph"
-		app:layout_constraintEnd_toEndOf="parent"
 	>
 		<com.google.android.material.textfield.TextInputEditText
 			android:layout_width="match_parent"
@@ -51,13 +49,77 @@
 		/>
 	</com.google.android.material.textfield.TextInputLayout>
 
-	<me.anon.grow3.view.CropSelectView
-		android:layout_width="0dp"
+	<com.google.android.material.textfield.TextInputLayout
+		android:layout_width="wrap_content"
 		android:layout_height="wrap_content"
-		android:id="@+id/crop_select_view"
+		android:id="@+id/water_tds"
+		android:hint="TDS (EC)"
+		app:layout_flexGrow="1"
+		app:layout_flexBasisPercent="45%"
+		style="@style/Input"
+	>
+		<com.google.android.material.textfield.TextInputEditText
+			android:layout_width="match_parent"
+			android:layout_height="wrap_content"
+			android:imeOptions="actionNext"
+			android:maxLines="1"
+			android:singleLine="true"
+			android:inputType="numberDecimal"
+		/>
+	</com.google.android.material.textfield.TextInputLayout>
+
+	<com.google.android.material.textfield.TextInputLayout
+		android:layout_width="wrap_content"
+		android:layout_height="wrap_content"
+		android:id="@+id/water_amount"
+		android:hint="Amount (L)"
+		app:layout_flexGrow="1"
+		app:layout_flexBasisPercent="45%"
+		style="@style/Input"
+	>
+		<com.google.android.material.textfield.TextInputEditText
+			android:layout_width="match_parent"
+			android:layout_height="wrap_content"
+			android:imeOptions="actionNext"
+			android:maxLines="1"
+			android:singleLine="true"
+			android:inputType="numberDecimal"
+		/>
+	</com.google.android.material.textfield.TextInputLayout>
+
+	<com.google.android.material.textfield.TextInputLayout
+		android:layout_width="wrap_content"
+		android:layout_height="wrap_content"
+		android:id="@+id/water_temp"
+		android:hint="Temp (oC)"
+		app:layout_flexGrow="1"
+		app:layout_flexBasisPercent="45%"
+		style="@style/Input"
+	>
+		<com.google.android.material.textfield.TextInputEditText
+			android:layout_width="match_parent"
+			android:layout_height="wrap_content"
+			android:imeOptions="actionNext"
+			android:maxLines="1"
+			android:singleLine="true"
+			android:inputType="numberDecimal"
+		/>
+	</com.google.android.material.textfield.TextInputLayout>
+
+	<TextView
+		android:layout_width="match_parent"
+		android:layout_height="wrap_content"
+		android:text="Additives"
 		android:layout_marginTop="@dimen/section_header_spacing"
-		app:layout_constraintTop_toBottomOf="@id/water_ph"
-		app:layout_constraintStart_toStartOf="parent"
-		app:layout_constraintEnd_toEndOf="parent"
+		style="@style/Text.Header"
 	/>
-</androidx.constraintlayout.widget.ConstraintLayout>
+
+	<LinearLayout
+		android:layout_width="match_parent"
+		android:layout_height="wrap_content"
+		android:id="@+id/additives_container"
+		android:orientation="vertical"
+		android:divider="@drawable/spacer_4dp"
+		android:showDividers="middle"
+	/>
+</com.google.android.flexbox.FlexboxLayout>

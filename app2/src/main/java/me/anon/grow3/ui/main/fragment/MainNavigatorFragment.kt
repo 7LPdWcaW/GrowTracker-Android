@@ -57,8 +57,7 @@ class MainNavigatorFragment : BaseHostFragment(FragmentMainHostBinding::class)
 	 */
 	private fun executePendingActions()
 	{
-		with (pendingActions.asReversed())
-		{
+		with (pendingActions.asReversed()) {
 			while (size > 0)
 			{
 				val item = this.removeAt(0)

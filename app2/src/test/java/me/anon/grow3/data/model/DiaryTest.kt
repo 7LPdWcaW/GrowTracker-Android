@@ -109,7 +109,7 @@ class DiaryTest
 			get(key)
 				.`should not be null`()
 				.`should be greater or equal to`(1.0)
-				.`should be less than`(2.0)
+				.`should be less or equal to`(2.0)
 
 			key = keys.elementAt(1)
 			key.type.`should be equal to`(StageType.Vegetation)
@@ -163,7 +163,8 @@ class DiaryTest
 
 		diary.log(log)
 		diary.log.`should contain`(log)
-			.filter { it.id == log.id }.`should be equal to`(1)
+			.filter { it.id == log.id }
+			.size.`should be equal to`(1)
 	}
 
 	@Test

@@ -5,6 +5,7 @@ import android.util.TypedValue
 import android.view.View
 import androidx.fragment.app.Fragment
 import me.anon.grow3.BaseApplication
+import me.anon.grow3.data.model.Volume
 
 public fun Double.round(decimals: Int): Double
 {
@@ -13,6 +14,8 @@ public fun Double.round(decimals: Int): Double
 	return kotlin.math.round(this * multiplier) / multiplier
 }
 
+public fun Volume?.asString(): String = this?.amount.asStringOrNull() ?: "0"
+public fun Volume?.asStringOrNull(): String? = this?.amount.asStringOrNull()
 public fun Number?.asString(): String = this.asStringOrNull() ?: "0"
 
 public fun Number?.asStringOrNull(): String?

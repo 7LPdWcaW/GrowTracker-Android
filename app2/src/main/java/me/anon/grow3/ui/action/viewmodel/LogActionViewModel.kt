@@ -8,12 +8,13 @@ import me.anon.grow3.data.model.Log
 import me.anon.grow3.data.model.StageChange
 import me.anon.grow3.data.model.Water
 import me.anon.grow3.data.repository.DiariesRepository
-import me.anon.grow3.ui.common.Extras.EXTRA_DIARY_ID
+import me.anon.grow3.ui.common.Extras
 import me.anon.grow3.ui.common.Extras.EXTRA_LOG_TYPE
 import me.anon.grow3.util.ViewModelFactory
+import me.anon.grow3.util.clear
 import me.anon.grow3.util.nameOf
+import me.anon.grow3.util.states.Data
 import me.anon.grow3.util.states.DataResult
-import me.anon.grow3.util.states.asSuccess
 import javax.inject.Inject
 
 class LogActionViewModel constructor(
@@ -29,73 +30,98 @@ class LogActionViewModel constructor(
 			LogActionViewModel(diariesRepository, handle)
 	}
 
-	private val diaryId: String = savedState[EXTRA_DIARY_ID] ?: throw InvalidDiaryId()
+	public var isNew: Boolean = false
+		get() = savedState["new_log"] ?: false
+		private set(value) {
+			savedState["new_log"] = value
+			field = value
+		}
+
+	private val diaryId: MutableLiveData<String> = savedState.getLiveData(Extras.EXTRA_DIARY_ID)
+	private val logId: MutableLiveData<String> = savedState.getLiveData(Extras.EXTRA_LOG_ID)
 	private val logType: String = savedState[EXTRA_LOG_TYPE] ?: throw InvalidLogType()
 
-	public val diary = diariesRepository.observeDiary(diaryId).map { result ->
-		when (result)
-		{
-			is DataResult.Success -> result.asSuccess()
-			else -> throw DiaryLoadFailed(diaryId)
-		}
-	}
-
-	public val logId: LiveData<String?> = MutableLiveData(null)
-	public val log: LiveData<Log> = combineTuple(logId, diary).switchMap { (logId, diary) ->
+	public val log: LiveData<Data> = combineTuple(diaryId, logId).switchMap { (diaryId, logId) ->
 		liveData {
-			diary ?: return@liveData
-			logId ?: return@liveData
+			if (logId.isNullOrBlank() || diaryId.isNullOrBlank()) return@liveData
 
-			val log = diariesRepository.getLog(logId, diary) ?: throw LogLoadFailed(logId)
-			emit(log)
+			// should this react to changes on the diary?
+			emitSource(diariesRepository.observeDiary(diaryId).switchMap { diaryResult ->
+				when (diaryResult)
+				{
+					is DataResult.Success -> liveData {
+						val diary = diaryResult.data
+						val log = diariesRepository.getLog(logId, diary) ?: throw LogLoadFailed(logId)
+						emit(Data(diary = diary, log = log))
+					}
+					else -> throw LogLoadFailed(logId)
+				}
+			})
 		}
 	}
 
-	public fun editLog(logId: String)
+	public fun load(id: String): LiveData<Data>
 	{
-
+		isNew = false
+		logId.postValue(id)
+		return log
 	}
 
-	public fun newLog()
+	public fun new(): LiveData<Data>
 	{
-		requireNotNull(diary.value)
-
-		val newLog: Log = when (logType)
-		{
-			nameOf<Water>() -> Water { }
-			nameOf<StageChange>() -> StageChange(diary.value!!.stage().type)
-			else -> throw InvalidLogType()
-		}
+		isNew = true
+		logId.clear()
 
 		viewModelScope.launch {
-			requireNotNull(diary.value)
+			diaryId.value?.let { diaryId ->
+				val diary = diariesRepository.getDiaryById(diaryId) ?: throw DiaryLoadFailed(diaryId)
 
-			(logId as MutableLiveData).postValue(diariesRepository.addLog(newLog, diary.value!!).id)
+				val newLog: Log = when (logType)
+				{
+					nameOf<Water>() -> Water { }
+					nameOf<StageChange>() -> StageChange(diary.stage().type)
+					else -> throw InvalidLogType()
+				}
+
+				newLog.isDraft = true
+
+				diariesRepository.addLog(newLog, diary)
+				logId.postValue(newLog.id)
+			}
+		}
+
+		return log
+	}
+
+	public fun remove()
+	{
+		viewModelScope.launch {
+			val diary = log.value?.diary ?: return@launch
+			val log = log.value?.log ?: return@launch
+			diariesRepository.removeLog(log.id, diary)
 		}
 	}
 
-	public fun deleteLog()
+	public fun save(new: Log)
 	{
+		isNew = false
 		viewModelScope.launch {
-			requireNotNull(logId.value)
-			requireNotNull(diary.value)
-
-			diariesRepository.removeLog(logId.value!!, diary.value!!)
-		}
-	}
-
-	public fun saveLog()
-	{
-		viewModelScope.launch {
-			requireNotNull(log.value)
-			requireNotNull(diary.value)
-
-			diariesRepository.addLog(log.value!!, diary.value!!)
+			val diaryId = diaryId.value ?: return@launch
+			val diary = diariesRepository.getDiaryById(diaryId) ?: throw DiaryLoadFailed(diaryId)
+			new.isDraft = false
+			diariesRepository.addLog(new, diary)
 		}
 	}
 
 	public fun clear()
 	{
-		(logId as MutableLiveData).postValue(null)
+		if (isNew || log.value?.log?.isDraft == true)
+		{
+			remove()
+		}
+
+		logId.clear()
+		log.clear()
+		isNew = false
 	}
 }
