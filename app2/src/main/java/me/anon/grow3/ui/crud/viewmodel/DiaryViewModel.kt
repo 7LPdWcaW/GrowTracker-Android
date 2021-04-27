@@ -26,7 +26,7 @@ class DiaryViewModel(
 
 	private val diaryId: MutableLiveData<String> = savedStateHandle.getLiveData(Extras.EXTRA_DIARY_ID)
 	public val diary: LiveData<Diary> = diaryId.switchMap { id ->
-		liveData {
+		liveData<Diary> {
 			if (id.isNullOrBlank()) return@liveData
 
 			emitSource(diariesRepository.observeDiary(id).switchMap { diaryResult ->

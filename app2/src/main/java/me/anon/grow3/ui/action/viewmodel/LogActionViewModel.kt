@@ -42,7 +42,7 @@ class LogActionViewModel constructor(
 	private val logType: String = savedState[EXTRA_LOG_TYPE] ?: throw InvalidLogType()
 
 	public val log: LiveData<Data> = combineTuple(diaryId, logId).switchMap { (diaryId, logId) ->
-		liveData {
+		liveData<Data> {
 			if (logId.isNullOrBlank() || diaryId.isNullOrBlank()) return@liveData
 
 			// should this react to changes on the diary?

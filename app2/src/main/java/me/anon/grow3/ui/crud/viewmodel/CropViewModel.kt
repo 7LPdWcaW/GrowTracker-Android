@@ -32,7 +32,7 @@ class CropViewModel(
 	private val diaryId: MutableLiveData<String> = savedStateHandle.getLiveData(Extras.EXTRA_DIARY_ID)
 	private val cropId: MutableLiveData<String> = savedStateHandle.getLiveData(Extras.EXTRA_CROP_ID)
 	public val crop: LiveData<Data> = combineTuple(diaryId, cropId).switchMap { (diaryId, cropId) ->
-		liveData {
+		liveData<Data> {
 			if (cropId.isNullOrBlank() || diaryId.isNullOrBlank()) return@liveData
 
 			emitSource(diariesRepository.observeDiary(diaryId).switchMap { diaryResult ->
