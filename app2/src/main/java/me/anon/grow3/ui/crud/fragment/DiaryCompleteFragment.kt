@@ -30,7 +30,7 @@ class DiaryCompleteFragment : BaseFragment(FragmentCrudDiaryCompleteBinding::cla
 
 	override fun bindUi()
 	{
-		component.corePreferences().completeFirstLaunch()
+		component.corePreferences().isFirstLaunch = false
 
 		viewBindings.close.setOnClickListener {
 			navigateTo<ViewDiaryFragment> {
