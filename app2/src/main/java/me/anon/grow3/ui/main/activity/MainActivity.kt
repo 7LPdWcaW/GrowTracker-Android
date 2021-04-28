@@ -306,9 +306,9 @@ class MainActivity : BaseActivity(ActivityMainBinding::class)
 				val count = adapter.pages.size
 				if (count > INDEX_MAIN + 1)
 				{
-					supportFragmentManager.commitNow {
-						while (adapter.pages.size > INDEX_MAIN + 1)
-						{
+					while (adapter.pages.size > INDEX_MAIN + 1)
+					{
+						supportFragmentManager.commitNow {
 							adapter.getFragment(INDEX_MAIN + 1)?.let {
 								remove(it)
 							}

@@ -34,7 +34,7 @@ class DiaryCompleteFragment : BaseFragment(FragmentCrudDiaryCompleteBinding::cla
 
 		viewBindings.close.setOnClickListener {
 			navigateTo<ViewDiaryFragment> {
-				bundleOf(EXTRA_DIARY_ID to crudViewModel.diaryVm.diary.value!!.id)
+				bundleOf(EXTRA_DIARY_ID to crudViewModel.diaryVm.diaryId)
 			}
 
 			requireActivity().finish()

@@ -1,54 +1,48 @@
 package me.anon.grow3.data.repository.impl
 
 import android.content.res.Resources
-import androidx.lifecycle.LiveData
-import androidx.lifecycle.MutableLiveData
-import androidx.lifecycle.liveData
-import androidx.lifecycle.switchMap
-import com.zhuinden.eventemitter.EventEmitter
-import com.zhuinden.eventemitter.EventSource
-import kotlinx.coroutines.*
+import kotlinx.coroutines.CoroutineDispatcher
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.flow.*
+import kotlinx.coroutines.withContext
 import me.anon.grow3.data.event.LogEvent
 import me.anon.grow3.data.model.Crop
 import me.anon.grow3.data.model.Diary
 import me.anon.grow3.data.model.Log
 import me.anon.grow3.data.repository.DiariesRepository
 import me.anon.grow3.data.source.DiariesDataSource
+import me.anon.grow3.util.ParamSingletonHolder
 import me.anon.grow3.util.states.DataResult
-import me.anon.grow3.util.states.asSuccess
 import me.anon.grow3.util.tryNull
-import javax.inject.Inject
-import javax.inject.Named
-import javax.inject.Singleton
 
-@Singleton
-class DefaultDiariesRepository @Inject constructor(
+class DefaultDiariesRepository(
 	private val dataSource: DiariesDataSource,
-	@Named("io_dispatcher") private val dispatcher: CoroutineDispatcher = Dispatchers.IO
 ) : DiariesRepository
 {
-	private val _refresh = MutableLiveData(true)
-	private val _diaries = _refresh.switchMap { force ->
-		liveData<DataResult<List<Diary>>> {
+	private val dispatcher: CoroutineDispatcher = Dispatchers.IO
+	private val _refresh = MutableStateFlow(true)
+	private val _diaries = _refresh.flatMapLatest { force ->
+		flow {
+			//if (force) dataSource.sync(DiariesDataSource.SyncDirection.LOAD)
 			emit(DataResult.Success(dataSource.getDiaries()))
 		}
 	}
-	override fun observeDiaries(): LiveData<DataResult<List<Diary>>> = _diaries
+	private val _logEvents: MutableSharedFlow<LogEvent> = MutableSharedFlow(replay = 0)
 
-	private val _logEvents: EventEmitter<LogEvent> = EventEmitter()
-	override fun observeLogEvents(): EventSource<LogEvent> = _logEvents
-
-	override fun observeDiary(diaryId: String): LiveData<DataResult<Diary>> = _diaries.switchMap {
-		liveData {
-			emit(if (it is DataResult.Success)
-			{
-				it.data.firstOrNull { it.id == diaryId }
-					?.let { DataResult.success(it) }
-					?: DataResult.Error(Resources.NotFoundException())
-			}
-			else DataResult.Error(Resources.NotFoundException()))
+	override fun flowDiaries(): Flow<DataResult<List<Diary>>> = _diaries
+	override fun flowDiary(diaryId: String): Flow<DataResult<Diary>>
+		= flowDiaries().flatMapLatest {
+			flowOf(when (it) {
+				is DataResult.Success -> {
+					it.data.firstOrNull { it.id == diaryId }
+						?.let { DataResult.success(it) }
+						?: DataResult.Error(Resources.NotFoundException())
+				}
+				else -> DataResult.Error(Resources.NotFoundException())
+			})
 		}
-	}
+
+	override fun flowLogEvents(): SharedFlow<LogEvent> = _logEvents
 
 	override suspend fun getDiaries(): List<Diary> = dataSource.getDiaries()
 
@@ -70,12 +64,12 @@ class DefaultDiariesRepository @Inject constructor(
 
 	override fun sync()
 	{
-		_diaries.value?.asSuccess()?.let { diaries ->
+		/*_diaries.value?.asSuccess()?.let { diaries ->
 			CoroutineScope(dispatcher).launch {
 				dataSource.sync(DiariesDataSource.SyncDirection.SAVE, *diaries.toTypedArray())
 				invalidate()
 			}
-		}
+		}*/
 	}
 
 	override suspend fun addLog(log: Log, diary: Diary): Log
@@ -94,7 +88,7 @@ class DefaultDiariesRepository @Inject constructor(
 
 	override suspend fun getLog(logId: String, diary: Diary): Log?
 	{
-		var log: Log? = null
+		var log: Log?
 		withContext(dispatcher) {
 			log = diary.logOf(logId)
 		}
@@ -148,6 +142,12 @@ class DefaultDiariesRepository @Inject constructor(
 
 	override fun invalidate()
 	{
-		_refresh.postValue(true)
+		_refresh.value = true
+	}
+
+	companion object : ParamSingletonHolder<DefaultDiariesRepository, DiariesDataSource>(::DefaultDiariesRepository)
+	{
+		@JvmStatic
+		override fun getInstance(): DefaultDiariesRepository = super.getInstance()
 	}
 }

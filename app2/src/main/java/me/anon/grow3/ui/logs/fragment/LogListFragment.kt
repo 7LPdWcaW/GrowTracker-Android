@@ -2,7 +2,6 @@ package me.anon.grow3.ui.logs.fragment
 
 import android.os.Bundle
 import androidx.fragment.app.viewModels
-import androidx.lifecycle.observe
 import me.anon.grow3.data.exceptions.GrowTrackerException.InvalidLog
 import me.anon.grow3.data.model.StageChange
 import me.anon.grow3.data.model.Water
@@ -34,23 +33,23 @@ class LogListFragment : CardListFragment()
 
 	override fun bindVm()
 	{
-		viewModel.data.observe(viewLifecycleOwner) { data ->
-			if (data !is LogListViewModel.ViewData.Complete) return@observe
-			val diary = data.diary
-			val logs = data.logs
-			val crop = data.crops?.firstOrNull()
+		viewModel.state.observe(viewLifecycleOwner) { state ->
+			if (state !is LogListViewModel.UiResult.Loaded) return@observe
+
+			val diary = state.diary
+			val logs = state.logs
+			val crop = state.crops?.firstOrNull()
 
 			val title = crop?.name ?: diary.name
 			requireActivity().title = "$title logs"
 
 			viewAdapter.newStack {
-				val group =
-					logs.groupBy { log ->
+				val group = logs.groupBy { log ->
 						log.date.asDate()
 					}
-					.toSortedMap(Comparator { o1, o2 ->
+					.toSortedMap { o1, o2 ->
 						-o1.compareTo(o2)
-					})
+					}
 
 				group.forEach { (date, logs) ->
 					add(LogDateSeparator(date.asDisplayString()))

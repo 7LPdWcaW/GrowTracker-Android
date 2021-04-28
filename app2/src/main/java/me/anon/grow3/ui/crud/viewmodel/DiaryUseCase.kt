@@ -2,47 +2,43 @@ package me.anon.grow3.ui.crud.viewmodel
 
 import androidx.lifecycle.*
 import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.collect
+import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.launch
 import me.anon.grow3.data.exceptions.GrowTrackerException
 import me.anon.grow3.data.model.*
 import me.anon.grow3.data.repository.DiariesRepository
 import me.anon.grow3.ui.common.Extras
 import me.anon.grow3.util.ValueHolder
-import me.anon.grow3.util.clear
 import me.anon.grow3.util.states.DataResult
 
-class DiaryViewModel(
+class DiaryUseCase(
 	private val diariesRepository: DiariesRepository,
 	private val savedStateHandle: SavedStateHandle,
 	private val viewModelScope: CoroutineScope
 )
 {
-	public var isNew: Boolean = false
+	sealed class UiResult
+	{
+		data class Loaded(val diary: Diary, val isNew: Boolean = false) : UiResult()
+		object Loading : UiResult()
+	}
+
+	private var isNew: Boolean = false
 		get() = savedStateHandle["new_diary"] ?: false
 		private set(value) {
 			savedStateHandle["new_diary"] = value
 			field = value
 		}
 
-	private val diaryId: MutableLiveData<String> = savedStateHandle.getLiveData(Extras.EXTRA_DIARY_ID)
-	public val diary: LiveData<Diary> = diaryId.switchMap { id ->
-		liveData<Diary> {
-			if (id.isNullOrBlank()) return@liveData
+	public var diaryId: String = savedStateHandle.get<String>(Extras.EXTRA_DIARY_ID) ?: ""
+	public val state: MutableStateFlow<UiResult> = MutableStateFlow(UiResult.Loading)
 
-			emitSource(diariesRepository.observeDiary(id).switchMap { diaryResult ->
-				when (diaryResult)
-				{
-					is DataResult.Success -> liveData { emit(diaryResult.data) }
-					else -> throw GrowTrackerException.DiaryLoadFailed(id)
-				}
-			})
-		}
-	}
-
-	public fun new(): LiveData<Diary>
+	public fun new()
 	{
 		isNew = true
-		diaryId.clear()
+		//diaryId.clear()
 
 		viewModelScope.launch {
 			val count = diariesRepository.getDiaries().filter { !it.isDraft }.size
@@ -56,29 +52,50 @@ class DiaryViewModel(
 			}
 
 			diariesRepository.addDiary(diary)
-			diaryId.postValue(diary.id)
+			diariesRepository.flowDiary(diary.id)
+				.map { result ->
+					when (result)
+					{
+						is DataResult.Success -> UiResult.Loaded(result.data, isNew)
+						else -> throw GrowTrackerException.DiaryLoadFailed(diary.id)
+					}
+				}
+				.collect {
+					diaryId = it.diary.id
+					state.emit(it)
+				}
 		}
-
-		return diary
 	}
 
-	public fun load(id: String): LiveData<Diary>
+	public fun load(id: String)
 	{
 		isNew = false
-		diaryId.postValue(id)
-		return diary
+		viewModelScope.launch {
+			diariesRepository.flowDiary(id)
+				.map { result ->
+					when (result)
+					{
+						is DataResult.Success -> UiResult.Loaded(result.data, isNew)
+						else -> throw GrowTrackerException.DiaryLoadFailed(id)
+					}
+				}
+				.collect {
+					diaryId = it.diary.id
+					state.emit(it)
+				}
+		}
 	}
 
 	public fun remove()
 	{
 		viewModelScope.launch {
-			diaryId.clear()?.let { id ->
+			diaryId.let { id ->
 				diariesRepository.deleteDiary(id)
 			}
 		}
 	}
 
-	public fun save(new: Diary = diary.value!!)
+	public fun save(new: Diary)
 	{
 		viewModelScope.launch {
 			diariesRepository.addDiary(new)
@@ -87,9 +104,8 @@ class DiaryViewModel(
 
 	public fun mutate(block: (Diary) -> Diary)
 	{
-		diary.value?.let {
-			save(block(it))
-		}
+		val diary = (state.value as? UiResult.Loaded)?.diary ?: return
+		save(block(diary))
 	}
 
 	public fun setEnvironment(
@@ -102,7 +118,7 @@ class DiaryViewModel(
 		schedule: ValueHolder<LightSchedule?>? = null
 	)
 	{
-		val diary = diary.value ?: return
+		val diary = (state.value as? UiResult.Loaded)?.diary ?: return
 
 		viewModelScope.launch {
 			// We're in a wizard so there should only be one instance
@@ -129,7 +145,7 @@ class DiaryViewModel(
 	public fun clear()
 	{
 		isNew = false
-		diaryId.clear()
-		diary.clear()
+		diaryId = ""
+		//state.clear()
 	}
 }

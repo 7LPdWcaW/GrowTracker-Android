@@ -4,7 +4,6 @@ import android.os.Bundle
 import androidx.core.os.bundleOf
 import androidx.core.view.updatePadding
 import androidx.fragment.app.viewModels
-import androidx.lifecycle.observe
 import androidx.recyclerview.widget.LinearLayoutManager
 import me.anon.grow3.data.model.Diary
 import me.anon.grow3.data.model.Water
@@ -18,7 +17,6 @@ import me.anon.grow3.ui.diaries.view.DiaryCropsCard
 import me.anon.grow3.ui.diaries.view.DiaryLinksCard
 import me.anon.grow3.ui.diaries.viewmodel.ViewDiaryViewModel
 import me.anon.grow3.util.*
-import me.anon.grow3.util.states.DataResult
 import me.anon.grow3.view.adapter.CardListAdapter
 import javax.inject.Inject
 
@@ -78,13 +76,13 @@ class ViewDiaryFragment : BaseFragment(FragmentViewDiaryBinding::class)
 
 	override fun bindVm()
 	{
-		viewModel.diary.observe(viewLifecycleOwner) { diary ->
-			when (diary)
+		viewModel.diary.observe(viewLifecycleOwner) { state ->
+			when (state)
 			{
-				is DataResult.Error -> {}
-				is DataResult.Success -> {
-					updateDiaryUi(diary.data)
+				is ViewDiaryViewModel.UiResult.Loaded -> {
+					updateDiaryUi(state.diary)
 				}
+				else -> {}
 			}
 		}
 	}

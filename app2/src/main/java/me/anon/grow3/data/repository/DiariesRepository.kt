@@ -1,7 +1,7 @@
 package me.anon.grow3.data.repository
 
-import androidx.lifecycle.LiveData
-import com.zhuinden.eventemitter.EventSource
+import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.SharedFlow
 import me.anon.grow3.data.event.LogEvent
 import me.anon.grow3.data.model.Crop
 import me.anon.grow3.data.model.Diary
@@ -10,11 +10,10 @@ import me.anon.grow3.util.states.DataResult
 
 interface DiariesRepository
 {
-	public fun observeDiaries(): LiveData<DataResult<List<Diary>>>
+	public fun flowDiaries(): Flow<DataResult<List<Diary>>>
+	public fun flowDiary(id: String): Flow<DataResult<Diary>>
 
-	public fun observeDiary(diaryId: String): LiveData<DataResult<Diary>>
-
-	public fun observeLogEvents(): EventSource<LogEvent>
+	public fun flowLogEvents(): SharedFlow<LogEvent>
 
 	public suspend fun getDiaries(): List<Diary>
 

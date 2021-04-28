@@ -6,7 +6,6 @@ import androidx.core.view.plusAssign
 import androidx.fragment.app.activityViewModels
 import androidx.fragment.app.commit
 import androidx.fragment.app.commitNow
-import androidx.lifecycle.observe
 import com.google.android.material.textfield.TextInputLayout
 import me.anon.grow3.R
 import me.anon.grow3.data.model.*
@@ -85,12 +84,15 @@ open class LogActionFragment : BaseFragment(FragmentActionLogBinding::class)
 	override fun bindVm()
 	{
 		viewModel.log
-			.nonNull()
-			.observe(viewLifecycleOwner) { data ->
-				val diary = data.diary ?: return@observe
-				val log = data.log ?: return@observe
-
-				renderLogView(diary, log)
+			.observe(viewLifecycleOwner) { state ->
+				when (state)
+				{
+					is LogActionViewModel.UiResult.Loaded -> {
+						val diary = state.diary
+						val log = state.log
+						renderLogView(diary, log)
+					}
+				}
 			}
 	}
 

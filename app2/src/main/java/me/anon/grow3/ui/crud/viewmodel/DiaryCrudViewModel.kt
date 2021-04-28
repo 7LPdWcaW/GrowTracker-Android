@@ -22,11 +22,11 @@ class DiaryCrudViewModel(
 	}
 
 	public val diaryVm = DiaryViewModel(diariesRepository, savedStateHandle, viewModelScope)
-	public val cropVm = CropViewModel(diariesRepository, savedStateHandle, viewModelScope)
+	public val cropVm = CropUseCase(diariesRepository, savedStateHandle, viewModelScope)
 
 	public fun completeCrud()
 	{
-		val diary = diaryVm.diary.value ?: return
+		val diary = (diaryVm.state.value as? DiaryViewModel.UiResult.Loaded)?.diary ?: return
 		viewModelScope.launch {
 			diary.isDraft = false
 			diaryVm.save(diary)

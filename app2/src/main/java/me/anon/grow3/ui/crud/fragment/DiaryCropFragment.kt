@@ -6,7 +6,7 @@ import androidx.core.view.isVisible
 import androidx.core.view.updatePadding
 import androidx.core.widget.doAfterTextChanged
 import androidx.fragment.app.activityViewModels
-import androidx.lifecycle.observe
+import androidx.lifecycle.asLiveData
 import me.anon.grow3.data.model.MediumType
 import me.anon.grow3.data.model.StageChange
 import me.anon.grow3.data.model.Volume
@@ -16,9 +16,9 @@ import me.anon.grow3.ui.action.fragment.LogActionFragment
 import me.anon.grow3.ui.base.BaseFragment
 import me.anon.grow3.ui.common.Extras
 import me.anon.grow3.ui.crud.activity.DiaryActivity
+import me.anon.grow3.ui.crud.viewmodel.CropUseCase
 import me.anon.grow3.ui.crud.viewmodel.DiaryCrudViewModel
 import me.anon.grow3.util.*
-import me.anon.grow3.util.states.Data
 import javax.inject.Inject
 
 class DiaryCropFragment : BaseFragment(FragmentCrudDiaryCropBinding::class)
@@ -112,11 +112,11 @@ class DiaryCropFragment : BaseFragment(FragmentCrudDiaryCropBinding::class)
 
 	override fun bindVm()
 	{
-		crudViewModel.cropVm.crop
-			.nonNull()
-			.observe(viewLifecycleOwner) { data: Data ->
-				val diary = data.diary ?: return@observe
-				val crop = data.crop ?: return@observe
+		crudViewModel.cropVm.state.asLiveData()
+			.observe(viewLifecycleOwner) { state ->
+				val state = state as? CropUseCase.UiResult.Loaded ?: return@observe
+				val diary = state.diary
+				val crop = state.crop
 
 				viewBindings.cropName.editText!!.text = crop.name.asEditable()
 				viewBindings.cropGenetics.editText!!.text = crop.genetics?.asEditable()

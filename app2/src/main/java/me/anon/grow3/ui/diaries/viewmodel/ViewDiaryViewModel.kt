@@ -3,10 +3,12 @@ package me.anon.grow3.ui.diaries.viewmodel
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
+import androidx.lifecycle.liveData
+import kotlinx.coroutines.flow.collect
+import me.anon.grow3.data.exceptions.GrowTrackerException.InvalidDiaryId
 import me.anon.grow3.data.model.Diary
 import me.anon.grow3.data.repository.DiariesRepository
 import me.anon.grow3.ui.common.Extras
-import me.anon.grow3.data.exceptions.GrowTrackerException.*
 import me.anon.grow3.util.ViewModelFactory
 import me.anon.grow3.util.states.DataResult
 import javax.inject.Inject
@@ -24,8 +26,22 @@ class ViewDiaryViewModel constructor(
 			ViewDiaryViewModel(diariesRepository, handle)
 	}
 
-	public val diaryId: String = savedState[Extras.EXTRA_DIARY_ID] ?: throw InvalidDiaryId()
+	sealed class UiResult
+	{
+		data class Loaded(val diary: Diary): UiResult()
+		object Error : UiResult()
+	}
 
-	private val _diary = diariesRepository.observeDiary(diaryId)
-	public val diary: LiveData<DataResult<Diary>> = _diary
+	public val diaryId: String = savedState[Extras.EXTRA_DIARY_ID] ?: throw InvalidDiaryId()
+	public val diary: LiveData<UiResult> get()
+		= liveData {
+			diariesRepository.flowDiary(diaryId)
+				.collect {
+					when (it)
+					{
+						is DataResult.Success -> emit(UiResult.Loaded(it.data))
+						else -> emit(UiResult.Error)
+					}
+				}
+		}
 }

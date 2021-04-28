@@ -4,7 +4,7 @@ import android.view.View
 import androidx.core.os.bundleOf
 import androidx.core.view.isVisible
 import androidx.fragment.app.activityViewModels
-import androidx.lifecycle.observe
+import androidx.lifecycle.asLiveData
 import androidx.navigation.fragment.findNavController
 import me.anon.grow3.R
 import me.anon.grow3.data.model.Crop
@@ -14,6 +14,7 @@ import me.anon.grow3.ui.base.BaseFragment
 import me.anon.grow3.ui.common.Extras
 import me.anon.grow3.ui.common.fragment.DateSelectDialogFragment
 import me.anon.grow3.ui.crud.viewmodel.DiaryCrudViewModel
+import me.anon.grow3.ui.crud.viewmodel.DiaryViewModel
 import me.anon.grow3.util.*
 import org.threeten.bp.ZonedDateTime
 import java.util.*
@@ -29,9 +30,10 @@ class DiaryDetailsFragment : BaseFragment(FragmentCrudDiaryDetailsBinding::class
 
 	override fun bindVm()
 	{
-		crudViewModel.diaryVm.diary
-			.nonNull()
-			.observe(viewLifecycleOwner) { diary ->
+		crudViewModel.diaryVm.state.asLiveData()
+			.observe(viewLifecycleOwner) { state ->
+				val diary = (state as? DiaryViewModel.UiResult.Loaded)?.diary ?: return@observe
+
 				viewBindings.diaryName.editText!!.text = diary.name.asEditable()
 				viewBindings.date.editText!!.text = diary.date.asDateTime().asDisplayString().asEditable()
 

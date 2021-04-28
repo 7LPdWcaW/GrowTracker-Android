@@ -4,6 +4,7 @@ import androidx.lifecycle.*
 import com.zhuinden.livedatacombinetuplekt.combineTuple
 import kotlinx.coroutines.launch
 import me.anon.grow3.data.exceptions.GrowTrackerException.*
+import me.anon.grow3.data.model.Diary
 import me.anon.grow3.data.model.Log
 import me.anon.grow3.data.model.StageChange
 import me.anon.grow3.data.model.Water
@@ -13,8 +14,6 @@ import me.anon.grow3.ui.common.Extras.EXTRA_LOG_TYPE
 import me.anon.grow3.util.ViewModelFactory
 import me.anon.grow3.util.clear
 import me.anon.grow3.util.nameOf
-import me.anon.grow3.util.states.Data
-import me.anon.grow3.util.states.DataResult
 import javax.inject.Inject
 
 class LogActionViewModel constructor(
@@ -30,6 +29,11 @@ class LogActionViewModel constructor(
 			LogActionViewModel(diariesRepository, handle)
 	}
 
+	sealed class UiResult
+	{
+		data class Loaded(val diary: Diary, val log: Log): UiResult()
+	}
+
 	public var isNew: Boolean = false
 		get() = savedState["new_log"] ?: false
 		private set(value) {
@@ -41,33 +45,25 @@ class LogActionViewModel constructor(
 	private val logId: MutableLiveData<String> = savedState.getLiveData(Extras.EXTRA_LOG_ID)
 	private val logType: String = savedState[EXTRA_LOG_TYPE] ?: throw InvalidLogType()
 
-	public val log: LiveData<Data> = combineTuple(diaryId, logId).switchMap { (diaryId, logId) ->
-		liveData<Data> {
+	public val log: LiveData<UiResult> = combineTuple(diaryId, logId).switchMap { (diaryId, logId) ->
+		liveData<UiResult> {
 			if (logId.isNullOrBlank() || diaryId.isNullOrBlank()) return@liveData
 
 			// should this react to changes on the diary?
-			emitSource(diariesRepository.observeDiary(diaryId).switchMap { diaryResult ->
-				when (diaryResult)
-				{
-					is DataResult.Success -> liveData {
-						val diary = diaryResult.data
-						val log = diariesRepository.getLog(logId, diary) ?: throw LogLoadFailed(logId)
-						emit(Data(diary = diary, log = log))
-					}
-					else -> throw LogLoadFailed(logId)
-				}
-			})
+			val result = diariesRepository.getDiaryById(diaryId) ?: throw IllegalState("$diaryId : $logId")
+			val log = diariesRepository.getLog(logId, result) ?: throw LogLoadFailed(logId)
+			emit(UiResult.Loaded(result, log))
 		}
 	}
 
-	public fun load(id: String): LiveData<Data>
+	public fun load(id: String): LiveData<UiResult>
 	{
 		isNew = false
 		logId.postValue(id)
 		return log
 	}
 
-	public fun new(): LiveData<Data>
+	public fun new(): LiveData<UiResult>
 	{
 		isNew = true
 		logId.clear()
@@ -96,8 +92,9 @@ class LogActionViewModel constructor(
 	public fun remove()
 	{
 		viewModelScope.launch {
-			val diary = log.value?.diary ?: return@launch
-			val log = log.value?.log ?: return@launch
+			val state = log.value as? UiResult.Loaded ?: return@launch
+			val diary = state.diary
+			val log = state.log
 			diariesRepository.removeLog(log.id, diary)
 		}
 	}
@@ -115,7 +112,7 @@ class LogActionViewModel constructor(
 
 	public fun clear()
 	{
-		if (isNew || log.value?.log?.isDraft == true)
+		if (isNew || (log.value as? UiResult.Loaded)?.log?.isDraft == true)
 		{
 			remove()
 		}

@@ -7,5 +7,6 @@ import me.anon.grow3.data.model.Log
 class Data(
 	val diary: Diary? = null,
 	val crop: Crop? = null,
-	val log: Log? = null
+	val log: Log? = null,
+	val logs: List<Log>? = null
 )

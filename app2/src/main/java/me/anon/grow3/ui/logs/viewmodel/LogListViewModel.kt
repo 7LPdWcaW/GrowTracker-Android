@@ -2,6 +2,7 @@ package me.anon.grow3.ui.logs.viewmodel
 
 import androidx.lifecycle.*
 import com.zhuinden.livedatacombinetuplekt.combineTuple
+import kotlinx.coroutines.flow.collect
 import me.anon.grow3.data.exceptions.GrowTrackerException.DiaryLoadFailed
 import me.anon.grow3.data.model.Crop
 import me.anon.grow3.data.model.Diary
@@ -25,33 +26,31 @@ class LogListViewModel constructor(
 			LogListViewModel(diariesRepository, handle)
 	}
 
-	sealed class ViewData
+	sealed class UiResult
 	{
-		data class Complete(val diary: Diary, val logs: List<Log>, val crops: List<Crop>? = null) : ViewData()
+		data class Loaded(val diary: Diary, val logs: List<Log>, val crops: List<Crop>? = null) : UiResult()
 	}
 
 	private val diaryId = savedState.getLiveData<String>(EXTRA_DIARY_ID)
 	private val cropIds = MutableLiveData<List<String>>()
 
-	public val data: LiveData<ViewData> = combineTuple(diaryId, cropIds).switchMap { (diaryId, cropIds) ->
-		liveData {
+	public val state: LiveData<UiResult> = combineTuple(diaryId, cropIds).switchMap { (diaryId, cropIds) ->
+		liveData<UiResult> {
 			if (diaryId.isNullOrBlank()) return@liveData
 
-			// should this react to changes on the diary?
-			emitSource(diariesRepository.observeDiary(diaryId).switchMap { diaryResult ->
-				if (diaryResult !is DataResult.Success) throw DiaryLoadFailed(diaryId)
+			diariesRepository.flowDiary(diaryId)
+				.collect { result ->
+					if (result !is DataResult.Success) throw DiaryLoadFailed(diaryId)
 
-				liveData<ViewData> {
-					val diary = diaryResult.data
-					val logs = diaryResult.data.log.filter {
+					val diary = result.data
+					val logs = result.data.log.filter {
 						if (cropIds.isNullOrEmpty()) true
 						else it.cropIds.containsAll(cropIds)
 					}
 					val crops = cropIds?.map { diary.crop(it) }
 
-					emit(ViewData.Complete(diary = diary, logs = logs, crops = crops))
+					emit(UiResult.Loaded(diary = diary, logs = logs, crops = crops))
 				}
-			})
 		}
 	}
 

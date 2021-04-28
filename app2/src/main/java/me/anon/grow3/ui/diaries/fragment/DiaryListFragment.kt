@@ -2,7 +2,6 @@ package me.anon.grow3.ui.diaries.fragment
 
 import androidx.core.os.bundleOf
 import androidx.fragment.app.viewModels
-import androidx.lifecycle.observe
 import androidx.recyclerview.widget.LinearLayoutManager
 import me.anon.grow3.databinding.FragmentDiariesBinding
 import me.anon.grow3.ui.base.BaseFragment
