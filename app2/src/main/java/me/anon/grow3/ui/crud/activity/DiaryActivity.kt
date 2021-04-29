@@ -43,8 +43,8 @@ class DiaryActivity : BaseActivity(ActivityCrudDiaryBinding::class)
 		super.onCreate(savedInstanceState)
 
 		(intent.extras ?: savedInstanceState ?: bundleOf()).getString(Extras.EXTRA_DIARY_ID).let {
-			if (it.isNullOrBlank()) crudViewModel.diaryVm.new()
-			else crudViewModel.diaryVm.load(it)
+			if (it.isNullOrBlank()) crudViewModel.newDiary()
+//			else crudViewModel.diaryVm.load(it)
 		}
 
 		navController.addOnDestinationChangedListener { _, destination, args ->

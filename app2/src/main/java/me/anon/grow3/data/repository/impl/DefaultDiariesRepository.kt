@@ -1,11 +1,13 @@
 package me.anon.grow3.data.repository.impl
 
-import android.content.res.Resources
+import androidx.lifecycle.ProcessLifecycleOwner
+import androidx.lifecycle.lifecycleScope
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.*
 import kotlinx.coroutines.withContext
 import me.anon.grow3.data.event.LogEvent
+import me.anon.grow3.data.exceptions.GrowTrackerException
 import me.anon.grow3.data.model.Crop
 import me.anon.grow3.data.model.Diary
 import me.anon.grow3.data.model.Log
@@ -20,27 +22,38 @@ class DefaultDiariesRepository(
 ) : DiariesRepository
 {
 	private val dispatcher: CoroutineDispatcher = Dispatchers.IO
+	private val _logEvents: MutableSharedFlow<LogEvent> = MutableSharedFlow(replay = 0)
 	private val _refresh = MutableStateFlow(true)
 	private val _diaries = _refresh.flatMapLatest { force ->
 		flow {
 			//if (force) dataSource.sync(DiariesDataSource.SyncDirection.LOAD)
 			emit(DataResult.Success(dataSource.getDiaries()))
-		}
+		}.shareIn(
+			ProcessLifecycleOwner.get().lifecycleScope,
+			SharingStarted.WhileSubscribed(),
+			1
+		)
 	}
-	private val _logEvents: MutableSharedFlow<LogEvent> = MutableSharedFlow(replay = 0)
 
-	override fun flowDiaries(): Flow<DataResult<List<Diary>>> = _diaries
-	override fun flowDiary(diaryId: String): Flow<DataResult<Diary>>
-		= flowDiaries().flatMapLatest {
-			flowOf(when (it) {
-				is DataResult.Success -> {
-					it.data.firstOrNull { it.id == diaryId }
-						?.let { DataResult.success(it) }
-						?: DataResult.Error(Resources.NotFoundException())
-				}
-				else -> DataResult.Error(Resources.NotFoundException())
-			})
+	override fun flowDiaries(includeDrafts: Boolean): Flow<DataResult<List<Diary>>> = _diaries.map {
+		DataResult.success(it.data.filter { diary -> diary.isDraft == includeDrafts || !diary.isDraft })
+	}
+
+	override fun flowDiary(diaryId: String): Flow<DataResult<Diary>> = flow {
+		emitAll(flowDiaries(true).map { result ->
+			when (result)
+			{
+				is DataResult.Success -> result.data
+				else -> throw GrowTrackerException.DiaryLoadFailed()
+			}
 		}
+		.map { it.filter { it.id == diaryId } }
+		.map { DataResult.Success(it.first()) })
+	}.shareIn(
+		ProcessLifecycleOwner.get().lifecycleScope,
+		SharingStarted.WhileSubscribed(),
+		1
+	)
 
 	override fun flowLogEvents(): SharedFlow<LogEvent> = _logEvents
 

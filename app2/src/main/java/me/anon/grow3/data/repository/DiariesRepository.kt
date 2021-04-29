@@ -10,7 +10,7 @@ import me.anon.grow3.util.states.DataResult
 
 interface DiariesRepository
 {
-	public fun flowDiaries(): Flow<DataResult<List<Diary>>>
+	public fun flowDiaries(includeDrafts: Boolean = false): Flow<DataResult<List<Diary>>>
 	public fun flowDiary(id: String): Flow<DataResult<Diary>>
 
 	public fun flowLogEvents(): SharedFlow<LogEvent>

@@ -4,8 +4,8 @@ import android.view.View
 import androidx.core.os.bundleOf
 import androidx.core.view.isVisible
 import androidx.fragment.app.activityViewModels
-import androidx.lifecycle.asLiveData
 import androidx.navigation.fragment.findNavController
+import com.freelapp.flowlifecycleobserver.collectWhileStarted
 import me.anon.grow3.R
 import me.anon.grow3.data.model.Crop
 import me.anon.grow3.databinding.FragmentCrudDiaryDetailsBinding
@@ -14,7 +14,6 @@ import me.anon.grow3.ui.base.BaseFragment
 import me.anon.grow3.ui.common.Extras
 import me.anon.grow3.ui.common.fragment.DateSelectDialogFragment
 import me.anon.grow3.ui.crud.viewmodel.DiaryCrudViewModel
-import me.anon.grow3.ui.crud.viewmodel.DiaryViewModel
 import me.anon.grow3.util.*
 import org.threeten.bp.ZonedDateTime
 import java.util.*
@@ -30,9 +29,9 @@ class DiaryDetailsFragment : BaseFragment(FragmentCrudDiaryDetailsBinding::class
 
 	override fun bindVm()
 	{
-		crudViewModel.diaryVm.state.asLiveData()
-			.observe(viewLifecycleOwner) { state ->
-				val diary = (state as? DiaryViewModel.UiResult.Loaded)?.diary ?: return@observe
+		crudViewModel.state
+			.collectWhileStarted(this) { state ->
+				val diary = (state as? DiaryCrudViewModel.UiResult.Loaded)?.diary ?: return@collectWhileStarted
 
 				viewBindings.diaryName.editText!!.text = diary.name.asEditable()
 				viewBindings.date.editText!!.text = diary.date.asDateTime().asDisplayString().asEditable()
@@ -45,7 +44,7 @@ class DiaryDetailsFragment : BaseFragment(FragmentCrudDiaryDetailsBinding::class
 					cropBindings.cropGenetics.isVisible = !crop.genetics.isNullOrBlank()
 
 					cropBindings.duplicate.onClick {
-						crudViewModel.cropVm.save(crop.copy(id = UUID.randomUUID().toString()))
+						//crudViewModel.save(crop.copy(id = UUID.randomUUID().toString()))
 					}
 
 					cropBindings.root.onClick {
@@ -67,12 +66,10 @@ class DiaryDetailsFragment : BaseFragment(FragmentCrudDiaryDetailsBinding::class
 	override fun bindUi()
 	{
 		viewBindings.diaryName.editText!!.onFocusLoss { text ->
-			crudViewModel.diaryVm
-				.mutate {
-					it.apply {
-						name = text.text.toString()
-					}
-				}
+			crudViewModel.mutateDiary {
+				name = text.text.toString()
+				this
+			}
 		}
 
 		viewBindings.date.editText!!.onFocus {
@@ -101,12 +98,10 @@ class DiaryDetailsFragment : BaseFragment(FragmentCrudDiaryDetailsBinding::class
 
 	public fun onDateSelected(selectedDate: ZonedDateTime)
 	{
-		crudViewModel.diaryVm
-			.mutate {
-				it.apply {
-					date = selectedDate.asApiString()
-				}
-			}
+		crudViewModel.mutateDiary {
+			this.date = selectedDate.asApiString()
+			this
+		}
 	}
 
 	public fun onDateDismissed()

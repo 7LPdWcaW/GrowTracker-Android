@@ -1,6 +1,10 @@
 package me.anon.grow3.ui.diaries.viewmodel
 
-import androidx.lifecycle.*
+import androidx.lifecycle.SavedStateHandle
+import androidx.lifecycle.ViewModel
+import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.mapLatest
 import me.anon.grow3.data.model.Diary
 import me.anon.grow3.data.repository.DiariesRepository
 import me.anon.grow3.util.ViewModelFactory
@@ -19,6 +23,16 @@ class DiaryListViewModel constructor(
 			DiaryListViewModel(diariesRepository)
 	}
 
-	private val _diaries = diariesRepository.flowDiaries()
-	public val diaries: LiveData<DataResult<List<Diary>>> = _diaries.asLiveData(viewModelScope.coroutineContext)
+	sealed class UiResult
+	{
+		data class Loaded(val diaries: List<Diary>) : UiResult()
+		object Loading : UiResult()
+	}
+
+	private val _state = MutableStateFlow<UiResult>(UiResult.Loading)
+	public val state: Flow<UiResult> get() = diariesRepository.flowDiaries()
+		.mapLatest {
+			val data = (it as? DataResult.Success)?.data
+			UiResult.Loaded(data!!)
+		}
 }
