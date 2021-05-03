@@ -5,6 +5,8 @@ import androidx.core.os.bundleOf
 import androidx.core.view.updatePadding
 import androidx.fragment.app.viewModels
 import androidx.recyclerview.widget.LinearLayoutManager
+import com.freelapp.flowlifecycleobserver.collectWhileStarted
+import me.anon.grow3.R
 import me.anon.grow3.data.model.Diary
 import me.anon.grow3.data.model.Water
 import me.anon.grow3.data.model.shortSummary
@@ -13,6 +15,7 @@ import me.anon.grow3.ui.action.fragment.LogActionBottomSheetFragment
 import me.anon.grow3.ui.base.BaseFragment
 import me.anon.grow3.ui.common.Extras
 import me.anon.grow3.ui.common.view.StagesCard
+import me.anon.grow3.ui.crud.activity.DiaryActivity
 import me.anon.grow3.ui.diaries.view.DiaryCropsCard
 import me.anon.grow3.ui.diaries.view.DiaryLinksCard
 import me.anon.grow3.ui.diaries.viewmodel.ViewDiaryViewModel
@@ -29,14 +32,15 @@ class ViewDiaryFragment : BaseFragment(FragmentViewDiaryBinding::class)
 	private val viewBindings by viewBinding<FragmentViewDiaryBinding>()
 	private val viewAdapter = CardListAdapter()
 
-	override fun onActivityCreated(savedInstanceState: Bundle?)
-	{
-		super.onActivityCreated(savedInstanceState)
-		setToolbar(viewBindings.toolbar)
-	}
-
 	override fun onBackPressed(): Boolean
 		= viewBindings.menuFab.isExpanded.also { viewBindings.menuFab.isExpanded = false }
+
+	override fun bindArguments(bundle: Bundle?)
+	{
+		bundle?.getString(Extras.EXTRA_DIARY_ID)?.let { id ->
+			viewModel.loadDiary(id)
+		}
+	}
 
 	override fun bindUi()
 	{
@@ -76,21 +80,34 @@ class ViewDiaryFragment : BaseFragment(FragmentViewDiaryBinding::class)
 
 	override fun bindVm()
 	{
-		viewModel.diary.observe(viewLifecycleOwner) { state ->
-			when (state)
-			{
-				is ViewDiaryViewModel.UiResult.Loaded -> {
-					updateDiaryUi(state.diary)
+		viewModel.state
+			.collectWhileStarted(this) { state ->
+				when (state)
+				{
+					is ViewDiaryViewModel.UiResult.Loaded ->
+					{
+						updateDiaryUi(state.diary)
+					}
 				}
-				else -> {}
 			}
-		}
 	}
 
 	private fun updateDiaryUi(diary: Diary)
 	{
 		viewBindings.collapsingToolbarLayout.title = diary.name
 		viewBindings.collapsingToolbarLayout.subtitle = diary.stages().shortSummary()
+
+		viewBindings.toolbar.inflateMenu(R.menu.menu_diary)
+		viewBindings.toolbar.setOnMenuItemClickListener { item ->
+			when (item.itemId)
+			{
+				R.id.menu_edit -> newTask<DiaryActivity> {
+					putExtra(Extras.EXTRA_DIARY_ID, diary.id)
+				}
+			}
+
+			true
+		}
 
 		viewAdapter.newStack {
 			add(StagesCard(diary = diary, title = "Stages summary"))

@@ -11,6 +11,7 @@ import androidx.fragment.app.commitNow
 import androidx.lifecycle.lifecycleScope
 import androidx.navigation.findNavController
 import androidx.navigation.ui.NavigationUI
+import com.freelapp.flowlifecycleobserver.collectWhileStarted
 import kotlinx.coroutines.launch
 import me.anon.grow3.R
 import me.anon.grow3.databinding.ActivityCrudDiaryBinding
@@ -19,10 +20,7 @@ import me.anon.grow3.ui.base.BaseActivity
 import me.anon.grow3.ui.base.BaseFragment
 import me.anon.grow3.ui.common.Extras
 import me.anon.grow3.ui.crud.viewmodel.DiaryCrudViewModel
-import me.anon.grow3.util.Injector
-import me.anon.grow3.util.ViewModelProvider
-import me.anon.grow3.util.onClick
-import me.anon.grow3.util.promptExit
+import me.anon.grow3.util.*
 import javax.inject.Inject
 
 /**
@@ -44,17 +42,17 @@ class DiaryActivity : BaseActivity(ActivityCrudDiaryBinding::class)
 
 		(intent.extras ?: savedInstanceState ?: bundleOf()).getString(Extras.EXTRA_DIARY_ID).let {
 			if (it.isNullOrBlank()) crudViewModel.newDiary()
-//			else crudViewModel.diaryVm.load(it)
+			else crudViewModel.loadDiary(it)
 		}
 
 		navController.addOnDestinationChangedListener { _, destination, args ->
 			currentView = destination.id
 			viewBindings.back.isVisible = currentView != R.id.navigation_diary_details && currentView != R.id.navigation_diary_crop
-			viewBindings.next.isVisible = currentView != R.id.navigation_diary_crop
+			viewBindings.next.isVisible = currentView != R.id.navigation_diary_crop && crudViewModel.diaryDraft
 
 			if (currentView == R.id.navigation_diary_complete)
 			{
-				viewBindings.next.isVisible = currentView != R.id.navigation_diary_complete
+				viewBindings.next.isVisible = currentView != R.id.navigation_diary_complete && crudViewModel.diaryDraft
 				viewBindings.back.isVisible = currentView != R.id.navigation_diary_complete
 				viewBindings.includeToolbar.toolbar.isVisible = false
 			}
@@ -66,6 +64,14 @@ class DiaryActivity : BaseActivity(ActivityCrudDiaryBinding::class)
 	public fun popBackStack()
 	{
 		navController.popBackStack()
+	}
+
+	override fun bindVm()
+	{
+		crudViewModel.state
+			.collectWhileStarted(this) { state ->
+				viewBindings.next.isVisible = crudViewModel.diaryDraft
+			}
 	}
 
 	override fun bindUi()
@@ -101,11 +107,20 @@ class DiaryActivity : BaseActivity(ActivityCrudDiaryBinding::class)
 		{
 			if (!navController.popBackStack())
 			{
-				promptExit {
-					lifecycleScope.launch {
-						//viewModel.cancel()
-						finish()
+				if (crudViewModel.diaryDraft)
+				{
+					promptExit {
+						lifecycleScope.launch {
+							//viewModel.cancel()
+							finish()
+						}
 					}
+				}
+				else
+				{
+					clearFocus()
+					crudViewModel.complete()
+					finish()
 				}
 			}
 		}
@@ -135,11 +150,11 @@ class DiaryActivity : BaseActivity(ActivityCrudDiaryBinding::class)
 				.setDuration(300L)
 				.setListener(object : AnimatorListenerAdapter()
 				{
-                    override fun onAnimationEnd(animation: Animator)
+					override fun onAnimationEnd(animation: Animator)
 					{
-                        viewBindings.dialogHolder.isVisible = false
-                    }
-                })
+						viewBindings.dialogHolder.isVisible = false
+					}
+				})
 				.start()
 		}
 	}

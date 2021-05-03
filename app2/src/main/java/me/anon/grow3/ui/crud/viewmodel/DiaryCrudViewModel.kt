@@ -3,10 +3,7 @@ package me.anon.grow3.ui.crud.viewmodel
 import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import kotlinx.coroutines.flow.Flow
-import kotlinx.coroutines.flow.MutableStateFlow
-import kotlinx.coroutines.flow.collect
-import kotlinx.coroutines.flow.flowOf
+import kotlinx.coroutines.flow.*
 import kotlinx.coroutines.launch
 import me.anon.grow3.data.model.*
 import me.anon.grow3.data.repository.DiariesRepository
@@ -35,10 +32,12 @@ class DiaryCrudViewModel(
 
 	private var diary: Flow<Diary> = flowOf()
 	private var crop: Flow<Crop> = flowOf()
-	public val state = MutableStateFlow<UiResult>(UiResult.Loading)
+	public val state: StateFlow<UiResult> = MutableStateFlow(UiResult.Loading)
 
 	private val diaryVm = DiaryUseCase(diariesRepository)
 	private val cropVm = CropUseCase(diariesRepository)
+
+	public val diaryDraft: Boolean get() = (state.value as? UiResult.Loaded)?.diary?.isDraft ?: false
 
 	public fun mutateDiary(block: Diary.() -> Diary)
 	{
@@ -57,11 +56,25 @@ class DiaryCrudViewModel(
 		}
 	}
 
+	public fun mutateEnvironment(block: Environment.() -> Environment)
+	{
+		viewModelScope.launch {
+			val diary = (state.value as? UiResult.Loaded)?.diary ?: return@launch
+			val environment: Environment = diary.environment()
+				?: Environment().apply {
+					diariesRepository.addLog(this, diary)
+				}
+
+			block(environment)
+			diary.log(environment)
+		}
+	}
+
 	public fun endCrop()
 	{
 		viewModelScope.launch {
 			val diary = (state.value as? UiResult.Loaded)?.diary ?: return@launch
-			state.emit(UiResult.Loaded(diary))
+			(state as MutableStateFlow).emit(UiResult.Loaded(diary))
 		}
 	}
 
@@ -94,7 +107,17 @@ class DiaryCrudViewModel(
 		viewModelScope.launch {
 			diary = diaryVm.new()
 			diary.collect {
-				state.emit(UiResult.Loaded(it))
+				(state as MutableStateFlow).emit(UiResult.Loaded(it))
+			}
+		}
+	}
+
+	public fun loadDiary(id: String)
+	{
+		viewModelScope.launch {
+			diary = diaryVm.load(id)
+			diary.collect {
+				(state as MutableStateFlow).emit(UiResult.Loaded(it))
 			}
 		}
 	}
@@ -105,7 +128,7 @@ class DiaryCrudViewModel(
 			val diary = (state.value as? UiResult.Loaded)?.diary ?: return@launch
 			crop = cropVm.new(diary)
 			crop.collect {
-				state.emit(UiResult.Loaded(diary, it))
+				(state as MutableStateFlow).emit(UiResult.Loaded(diary, it))
 			}
 		}
 	}
@@ -116,7 +139,7 @@ class DiaryCrudViewModel(
 			val diary = (state.value as? UiResult.Loaded)?.diary ?: return@launch
 			crop = cropVm.load(diary, id)
 			crop.collect {
-				state.emit(UiResult.Loaded(diary, it))
+				(state as MutableStateFlow).emit(UiResult.Loaded(diary, it))
 			}
 		}
 	}
@@ -127,7 +150,7 @@ class DiaryCrudViewModel(
 			val diary = (state.value as? UiResult.Loaded)?.diary ?: return@launch
 			cropVm.remove(diary)
 			crop.collect {
-				state.emit(UiResult.Loaded(diary))
+				(state as MutableStateFlow).emit(UiResult.Loaded(diary))
 			}
 		}
 	}
@@ -138,7 +161,7 @@ class DiaryCrudViewModel(
 			val diary = (state.value as? UiResult.Loaded)?.diary ?: return@launch
 			diary.isDraft = false
 			diaryVm.save(diary)
-			state.emit(UiResult.Loaded(diary))
+			(state as MutableStateFlow).emit(UiResult.Loaded(diary))
 		}
 	}
 }

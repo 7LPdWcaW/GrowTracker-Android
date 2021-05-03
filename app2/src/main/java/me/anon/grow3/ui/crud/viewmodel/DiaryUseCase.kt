@@ -6,7 +6,6 @@ import kotlinx.coroutines.flow.map
 import me.anon.grow3.data.exceptions.GrowTrackerException
 import me.anon.grow3.data.model.*
 import me.anon.grow3.data.repository.DiariesRepository
-import me.anon.grow3.util.ValueHolder
 import me.anon.grow3.util.states.DataResult
 
 class DiaryUseCase(
@@ -42,67 +41,30 @@ class DiaryUseCase(
 			}
 	}
 
-	public fun load(id: String)
+	public fun load(id: String): Flow<Diary>
 	{
-//		isNew = false
-//		viewModelScope.launch {
-//			diariesRepository.flowDiary(id)
-//				.map { result ->
-//					when (result)
-//					{
-//						is DataResult.Success -> UiResult.Loaded(result.data, isNew)
-//						else -> throw GrowTrackerException.DiaryLoadFailed(id)
-//					}
-//				}
-//				.collect {
-//					diaryId = it.diary.id
-//					state.emit(it)
-//				}
-//		}
+		return diariesRepository.flowDiary(id)
+			.map { result ->
+				when (result)
+				{
+					is DataResult.Success -> {
+						diary = result.data
+						result.data
+					}
+					else -> throw GrowTrackerException.DiaryLoadFailed(id)
+				}
+			}
 	}
 
-	public fun remove()
+	public suspend fun remove()
 	{
-		//diariesRepository.deleteDiary(id)
+		val id = this.diary?.id ?: return
+		diariesRepository.deleteDiary(id)
 	}
 
 	public suspend fun save(new: Diary)
 	{
 		this.diary = diariesRepository.addDiary(new)
-	}
-
-	public fun setEnvironment(
-		type: ValueHolder<EnvironmentType?>? = null,
-		temperature: ValueHolder<Double?>? = null,
-		humidity: ValueHolder<Double?>? = null,
-		relativeHumidity: ValueHolder<Double?>? = null,
-		size: ValueHolder<Size?>? = null,
-		light: ValueHolder<Light?>? = null,
-		schedule: ValueHolder<LightSchedule?>? = null
-	)
-	{
-//		val diary = (state.value as? UiResult.Loaded)?.diary ?: return
-//
-//		viewModelScope.launch {
-//			// We're in a wizard so there should only be one instance
-//			val environment: Environment = diary.environment()
-//				?: Environment().apply {
-//					diariesRepository.addLog(this, diary)
-//				}
-//
-//			environment.apply {
-//				type?.applyValue { this.type = it }
-//				temperature?.applyValue { this.temperature = it }
-//				humidity?.applyValue { this.humidity = it }
-//				relativeHumidity?.applyValue { this.relativeHumidity = it }
-//				size?.applyValue { this.size = it }
-//				light?.applyValue { this.light = it }
-//				schedule?.applyValue { this.schedule = it }
-//			}
-//
-//			diary.log(environment)
-//			save(diary)
-//		}
 	}
 
 	public fun clear()

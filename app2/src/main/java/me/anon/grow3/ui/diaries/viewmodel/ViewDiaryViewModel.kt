@@ -1,11 +1,11 @@
 package me.anon.grow3.ui.diaries.viewmodel
 
-import androidx.lifecycle.LiveData
 import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
-import androidx.lifecycle.liveData
-import kotlinx.coroutines.flow.collect
-import me.anon.grow3.data.exceptions.GrowTrackerException.InvalidDiaryId
+import androidx.lifecycle.viewModelScope
+import kotlinx.coroutines.flow.*
+import kotlinx.coroutines.launch
+import me.anon.grow3.data.exceptions.GrowTrackerException
 import me.anon.grow3.data.model.Diary
 import me.anon.grow3.data.repository.DiariesRepository
 import me.anon.grow3.ui.common.Extras
@@ -29,19 +29,33 @@ class ViewDiaryViewModel constructor(
 	sealed class UiResult
 	{
 		data class Loaded(val diary: Diary): UiResult()
+		object Loading : UiResult()
 		object Error : UiResult()
 	}
 
-	public val diaryId: String = savedState[Extras.EXTRA_DIARY_ID] ?: throw InvalidDiaryId()
-	public val diary: LiveData<UiResult> get()
-		= liveData {
-			diariesRepository.flowDiary(diaryId)
-				.collect {
-					when (it)
-					{
-						is DataResult.Success -> emit(UiResult.Loaded(it.data))
-						else -> emit(UiResult.Error)
+	public var diaryId: String = savedState[Extras.EXTRA_DIARY_ID] ?: ""; private set
+	private var diary: Flow<Diary> = flow {
+		if (diaryId.isNullOrEmpty()) return@flow
+		emitAll(diariesRepository.flowDiary(diaryId)
+			.mapLatest {
+				when (it)
+				{
+					is DataResult.Success -> {
+						(state as MutableStateFlow).emit(UiResult.Loaded(it.data))
+						it.data
 					}
+					else -> throw GrowTrackerException.DiaryLoadFailed()
 				}
+			})
+	}
+	private var _state = MutableStateFlow(UiResult.Loading)
+	public val state: StateFlow<UiResult> get() = _state
+
+	public fun loadDiary(id: String)
+	{
+		viewModelScope.launch {
+			diaryId = id
+			diary.collect()
 		}
+	}
 }

@@ -23,7 +23,7 @@ class DefaultDiariesRepository(
 {
 	private val dispatcher: CoroutineDispatcher = Dispatchers.IO
 	private val _logEvents: MutableSharedFlow<LogEvent> = MutableSharedFlow(replay = 0)
-	private val _refresh = MutableStateFlow(true)
+	private val _refresh = MutableStateFlow(1)
 	private val _diaries = _refresh.flatMapLatest { force ->
 		flow {
 			//if (force) dataSource.sync(DiariesDataSource.SyncDirection.LOAD)
@@ -35,25 +35,26 @@ class DefaultDiariesRepository(
 		)
 	}
 
-	override fun flowDiaries(includeDrafts: Boolean): Flow<DataResult<List<Diary>>> = _diaries.map {
+	override fun flowDiaries(includeDrafts: Boolean): Flow<DataResult<List<Diary>>> = _diaries.mapLatest {
 		DataResult.success(it.data.filter { diary -> diary.isDraft == includeDrafts || !diary.isDraft })
 	}
 
-	override fun flowDiary(diaryId: String): Flow<DataResult<Diary>> = flow {
-		emitAll(flowDiaries(true).map { result ->
-			when (result)
-			{
-				is DataResult.Success -> result.data
-				else -> throw GrowTrackerException.DiaryLoadFailed()
+	override fun flowDiary(diaryId: String): Flow<DataResult<Diary>>
+		= flowDiaries(true)
+			.map { result ->
+				when (result)
+				{
+					is DataResult.Success -> result.data
+					else -> throw GrowTrackerException.DiaryLoadFailed()
+				}
 			}
-		}
-		.map { it.filter { it.id == diaryId } }
-		.map { DataResult.Success(it.first()) })
-	}.shareIn(
-		ProcessLifecycleOwner.get().lifecycleScope,
-		SharingStarted.WhileSubscribed(),
-		1
-	)
+			.map { it.filter { it.id == diaryId } }
+			.map { DataResult.Success(it.first()) }
+			.shareIn(
+				ProcessLifecycleOwner.get().lifecycleScope,
+				SharingStarted.WhileSubscribed(),
+				1
+			)
 
 	override fun flowLogEvents(): SharedFlow<LogEvent> = _logEvents
 
@@ -155,7 +156,7 @@ class DefaultDiariesRepository(
 
 	override fun invalidate()
 	{
-		_refresh.value = true
+		_refresh.value = _refresh.value + 1
 	}
 
 	companion object : ParamSingletonHolder<DefaultDiariesRepository, DiariesDataSource>(::DefaultDiariesRepository)

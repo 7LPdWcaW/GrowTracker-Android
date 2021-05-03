@@ -1,6 +1,7 @@
 package me.anon.grow3.data.model
 
 import com.squareup.moshi.JsonClass
+import me.anon.grow3.util.ValueHolder
 
 /**
  * See [me.anon.grow3.ui.logs.view.EnvironmentLogCard]
@@ -19,6 +20,27 @@ data class Environment(
 	override var cropIds: List<String>
 		get() = listOf()
 		set(value){}
+}
+
+public fun Environment.applyValues(
+	type: ValueHolder<EnvironmentType?>? = null,
+	temperature: ValueHolder<Double?>? = null,
+	humidity: ValueHolder<Double?>? = null,
+	relativeHumidity: ValueHolder<Double?>? = null,
+	size: ValueHolder<Size?>? = null,
+	light: ValueHolder<Light?>? = null,
+	schedule: ValueHolder<LightSchedule?>? = null
+): Environment
+{
+	return apply {
+		type?.applyValue { this.type = it }
+		temperature?.applyValue { this.temperature = it }
+		humidity?.applyValue { this.humidity = it }
+		relativeHumidity?.applyValue { this.relativeHumidity = it }
+		size?.applyValue { this.size = it }
+		light?.applyValue { this.light = it }
+		schedule?.applyValue { this.schedule = it }
+	}
 }
 
 @JsonClass(generateAdapter = true)

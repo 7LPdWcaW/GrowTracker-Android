@@ -22,7 +22,6 @@ class DiaryListFragment : BaseFragment(FragmentDiariesBinding::class)
 	private val viewBindings by viewBinding<FragmentDiariesBinding>()
 	private val adapter = DiaryListAdapter()
 
-
 	override fun bindUi()
 	{
 		adapter.onItemClick = { item ->
