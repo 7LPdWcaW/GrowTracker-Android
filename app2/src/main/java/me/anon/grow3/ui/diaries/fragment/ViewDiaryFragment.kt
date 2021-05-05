@@ -1,6 +1,5 @@
 package me.anon.grow3.ui.diaries.fragment
 
-import android.os.Bundle
 import androidx.core.os.bundleOf
 import androidx.core.view.updatePadding
 import androidx.fragment.app.viewModels
@@ -34,13 +33,6 @@ class ViewDiaryFragment : BaseFragment(FragmentViewDiaryBinding::class)
 
 	override fun onBackPressed(): Boolean
 		= viewBindings.menuFab.isExpanded.also { viewBindings.menuFab.isExpanded = false }
-
-	override fun bindArguments(bundle: Bundle?)
-	{
-		bundle?.getString(Extras.EXTRA_DIARY_ID)?.let { id ->
-			viewModel.loadDiary(id)
-		}
-	}
 
 	override fun bindUi()
 	{
@@ -84,10 +76,7 @@ class ViewDiaryFragment : BaseFragment(FragmentViewDiaryBinding::class)
 			.collectWhileStarted(this) { state ->
 				when (state)
 				{
-					is ViewDiaryViewModel.UiResult.Loaded ->
-					{
-						updateDiaryUi(state.diary)
-					}
+					is ViewDiaryViewModel.UiResult.Loaded -> updateDiaryUi(state.diary)
 				}
 			}
 	}
@@ -97,6 +86,7 @@ class ViewDiaryFragment : BaseFragment(FragmentViewDiaryBinding::class)
 		viewBindings.collapsingToolbarLayout.title = diary.name
 		viewBindings.collapsingToolbarLayout.subtitle = diary.stages().shortSummary()
 
+		viewBindings.toolbar.menu.clear()
 		viewBindings.toolbar.inflateMenu(R.menu.menu_diary)
 		viewBindings.toolbar.setOnMenuItemClickListener { item ->
 			when (item.itemId)

@@ -34,28 +34,23 @@ class ViewDiaryViewModel constructor(
 	}
 
 	public var diaryId: String = savedState[Extras.EXTRA_DIARY_ID] ?: ""; private set
-	private var diary: Flow<Diary> = flow {
-		if (diaryId.isNullOrEmpty()) return@flow
-		emitAll(diariesRepository.flowDiary(diaryId)
-			.mapLatest {
-				when (it)
-				{
-					is DataResult.Success -> {
-						(state as MutableStateFlow).emit(UiResult.Loaded(it.data))
-						it.data
-					}
-					else -> throw GrowTrackerException.DiaryLoadFailed()
-				}
-			})
-	}
-	private var _state = MutableStateFlow(UiResult.Loading)
-	public val state: StateFlow<UiResult> get() = _state
+	private var diary: Flow<Diary> = diariesRepository.flowDiary(diaryId)
+		.mapLatest {
+			when (it)
+			{
+				is DataResult.Success -> it.data
+				else -> throw GrowTrackerException.DiaryLoadFailed()
+			}
+		}
 
-	public fun loadDiary(id: String)
-	{
+	private var _state = MutableStateFlow<UiResult>(UiResult.Loading)
+	public val state: StateFlow<UiResult> = _state
+
+	init {
 		viewModelScope.launch {
-			diaryId = id
-			diary.collect()
+			diary.collectLatest {
+				_state.emit(UiResult.Loaded(it))
+			}
 		}
 	}
 }

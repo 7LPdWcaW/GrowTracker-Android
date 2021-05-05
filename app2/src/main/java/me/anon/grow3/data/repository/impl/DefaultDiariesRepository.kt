@@ -5,6 +5,7 @@ import androidx.lifecycle.lifecycleScope
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.*
+import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import me.anon.grow3.data.event.LogEvent
 import me.anon.grow3.data.exceptions.GrowTrackerException
@@ -22,39 +23,23 @@ class DefaultDiariesRepository(
 ) : DiariesRepository
 {
 	private val dispatcher: CoroutineDispatcher = Dispatchers.IO
-	private val _logEvents: MutableSharedFlow<LogEvent> = MutableSharedFlow(replay = 0)
-	private val _refresh = MutableStateFlow(1)
-	private val _diaries = _refresh.flatMapLatest { force ->
-		flow {
-			//if (force) dataSource.sync(DiariesDataSource.SyncDirection.LOAD)
-			emit(DataResult.Success(dataSource.getDiaries()))
-		}.shareIn(
-			ProcessLifecycleOwner.get().lifecycleScope,
-			SharingStarted.WhileSubscribed(),
-			1
-		)
-	}
+	private val scope = ProcessLifecycleOwner.get().lifecycleScope
 
-	override fun flowDiaries(includeDrafts: Boolean): Flow<DataResult<List<Diary>>> = _diaries.mapLatest {
-		DataResult.success(it.data.filter { diary -> diary.isDraft == includeDrafts || !diary.isDraft })
+	private val _trigger = MutableStateFlow(1)
+	private val _logEvents = MutableSharedFlow<LogEvent>(replay = 0)
+
+	override fun flowDiaries(includeDrafts: Boolean): Flow<DataResult<List<Diary>>> = flow {
+		val diaries = DataResult.success(getDiaries().filter { diary -> diary.isDraft == includeDrafts || !diary.isDraft })
+		emit(diaries)
 	}
 
 	override fun flowDiary(diaryId: String): Flow<DataResult<Diary>>
-		= flowDiaries(true)
-			.map { result ->
-				when (result)
-				{
-					is DataResult.Success -> result.data
-					else -> throw GrowTrackerException.DiaryLoadFailed()
-				}
+		= _trigger
+			.flatMapLatest {
+				val diary = getDiaryById(diaryId) ?: throw GrowTrackerException.DiaryLoadFailed(diaryId)
+				flowOf(DataResult.success(diary))
 			}
-			.map { it.filter { it.id == diaryId } }
-			.map { DataResult.Success(it.first()) }
-			.shareIn(
-				ProcessLifecycleOwner.get().lifecycleScope,
-				SharingStarted.WhileSubscribed(),
-				1
-			)
+			.shareIn(scope, SharingStarted.WhileSubscribed(),1)
 
 	override fun flowLogEvents(): SharedFlow<LogEvent> = _logEvents
 
@@ -64,27 +49,17 @@ class DefaultDiariesRepository(
 
 	override suspend fun addDiary(diary: Diary): Diary
 		= dataSource.addDiary(diary)
-			.find { it.id == diary.id }!!
-			.also {
+			.let {
 				invalidate()
+				diary
 			}
 
 	override suspend fun deleteDiary(diaryId: String): Boolean
-		= !dataSource.deleteDiary(diaryId)
-			.any { it.id == diaryId }
-			.also {
+		= dataSource.deleteDiary(diaryId)
+			.let {
 				invalidate()
+				true
 			}
-
-	override fun sync()
-	{
-		/*_diaries.value?.asSuccess()?.let { diaries ->
-			CoroutineScope(dispatcher).launch {
-				dataSource.sync(DiariesDataSource.SyncDirection.SAVE, *diaries.toTypedArray())
-				invalidate()
-			}
-		}*/
-	}
 
 	override suspend fun addLog(log: Log, diary: Diary): Log
 	{
@@ -156,7 +131,9 @@ class DefaultDiariesRepository(
 
 	override fun invalidate()
 	{
-		_refresh.value = _refresh.value + 1
+		scope.launch {
+			_trigger.emit(_trigger.value + 1)
+		}
 	}
 
 	companion object : ParamSingletonHolder<DefaultDiariesRepository, DiariesDataSource>(::DefaultDiariesRepository)

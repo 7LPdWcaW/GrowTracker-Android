@@ -58,7 +58,10 @@ class NitriteDiariesDataSource @Inject constructor(
 		return repo.find(Diary::id eq diaryId).firstOrNull()
 	}
 
-	override suspend fun getDiaries(): List<Diary> = db.getRepository<Diary>().find().toList()
+	override suspend fun getDiaries(): List<Diary>
+	{
+		return db.getRepository<Diary>().find().toList()
+	}
 
 	override suspend fun sync(direction: DiariesDataSource.SyncDirection, vararg diary: Diary): List<Diary>
 	{
