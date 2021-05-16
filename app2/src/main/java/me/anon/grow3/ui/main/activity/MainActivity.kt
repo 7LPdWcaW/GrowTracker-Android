@@ -31,6 +31,7 @@ import me.anon.grow3.ui.main.fragment.MainNavigatorFragment
 import me.anon.grow3.ui.main.fragment.NavigationFragment
 import me.anon.grow3.ui.main.viewmodel.MainViewModel
 import me.anon.grow3.util.*
+import timber.log.Timber
 import javax.inject.Inject
 
 
@@ -170,6 +171,7 @@ class MainActivity : BaseActivity(ActivityMainBinding::class)
 			when (event)
 			{
 				is LogEvent.Added -> {
+					Timber.e(event.log.toJsonString())
 					Toast.makeText(this, "${event.log} added to ${event.diary.name}", Toast.LENGTH_LONG).show()
 				}
 			}
