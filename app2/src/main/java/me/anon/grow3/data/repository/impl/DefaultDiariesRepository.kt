@@ -25,6 +25,7 @@ class DefaultDiariesRepository(
 	private val dispatcher: CoroutineDispatcher = Dispatchers.IO
 	private val scope = ProcessLifecycleOwner.get().lifecycleScope
 
+	private val flows = hashMapOf<String, Flow<DataResult<Diary>>>()
 	private val _trigger = MutableStateFlow(1)
 	private val _logEvents = MutableSharedFlow<LogEvent>(replay = 0)
 
@@ -34,12 +35,18 @@ class DefaultDiariesRepository(
 	}
 
 	override fun flowDiary(diaryId: String): Flow<DataResult<Diary>>
-		= _trigger
+	{
+		return flows[diaryId] ?: _trigger
 			.flatMapLatest {
-				val diary = getDiaryById(diaryId) ?: throw GrowTrackerException.DiaryLoadFailed(diaryId)
+				val diary = getDiaryById(diaryId)
+					?: throw GrowTrackerException.DiaryLoadFailed(diaryId)
 				flowOf(DataResult.success(diary))
 			}
-			.shareIn(scope, SharingStarted.WhileSubscribed(),1)
+			.shareIn(scope, SharingStarted.WhileSubscribed(500L), 1)
+			.also {
+				flows[diaryId] = it
+			}
+	}
 
 	override fun flowLogEvents(): SharedFlow<LogEvent> = _logEvents
 
