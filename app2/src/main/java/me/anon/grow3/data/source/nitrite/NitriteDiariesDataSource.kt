@@ -10,6 +10,7 @@ import org.dizitart.kno2.KNO2JacksonMapper
 import org.dizitart.kno2.filters.eq
 import org.dizitart.kno2.getRepository
 import org.dizitart.kno2.nitrite
+import timber.log.Timber
 import java.io.File
 import javax.inject.Inject
 import javax.inject.Named
@@ -33,23 +34,18 @@ class NitriteDiariesDataSource @Inject constructor(
 		db.close()
 	}
 
-	override suspend fun addDiary(diary: Diary): List<Diary>
-	{
-		withContext(dispatcher) {
-			db.getRepository<Diary> {
-				update(diary, true)
-			}
-			db.commit()
+	override suspend fun addDiary(diary: Diary): List<Diary> = withContext(dispatcher) {
+		db.getRepository<Diary> {
+			update(diary, true)
 		}
-
-		return getDiaries()
+		db.commit()
+		getDiaries()
 	}
 
-	override suspend fun deleteDiary(diaryId: String): List<Diary>
-	{
+	override suspend fun deleteDiary(diaryId: String): List<Diary> = withContext(dispatcher) {
 		val repo = db.getRepository<Diary>()
 		repo.remove(Diary::id eq diaryId)
-		return getDiaries()
+		getDiaries()
 	}
 
 	override suspend fun getDiaryById(diaryId: String): Diary?
@@ -60,24 +56,23 @@ class NitriteDiariesDataSource @Inject constructor(
 
 	override suspend fun getDiaries(): List<Diary>
 	{
+		Timber.e("getting diaries")
 		return db.getRepository<Diary>().find().toList()
 	}
 
-	override suspend fun sync(direction: DiariesDataSource.SyncDirection, vararg diary: Diary): List<Diary>
-	{
+	override suspend fun sync(direction: DiariesDataSource.SyncDirection, vararg diary: Diary): List<Diary> = withContext(dispatcher) {
+		Timber.e("Syncing $direction")
 		when (direction)
 		{
 			DiariesDataSource.SyncDirection.SAVE -> {
-				withContext(dispatcher) {
-					db.getRepository<Diary> {
-						diary.forEach { update(it, true) }
-					}
-
-					db.commit()
+				db.getRepository<Diary> {
+					diary.forEach { update(it, true) }
 				}
+
+				db.commit()
 			}
 		}
 
-		return getDiaries()
+		getDiaries()
 	}
 }

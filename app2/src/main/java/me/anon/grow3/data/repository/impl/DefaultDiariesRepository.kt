@@ -1,12 +1,10 @@
 package me.anon.grow3.data.repository.impl
 
-import androidx.lifecycle.ProcessLifecycleOwner
-import androidx.lifecycle.lifecycleScope
 import kotlinx.coroutines.CoroutineDispatcher
+import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.SupervisorJob
 import kotlinx.coroutines.flow.*
-import kotlinx.coroutines.launch
-import kotlinx.coroutines.withContext
 import me.anon.grow3.data.event.LogEvent
 import me.anon.grow3.data.exceptions.GrowTrackerException
 import me.anon.grow3.data.model.Crop
@@ -20,10 +18,10 @@ import me.anon.grow3.util.tryNull
 
 class DefaultDiariesRepository(
 	private val dataSource: DiariesDataSource,
-) : DiariesRepository
+) : DiariesRepository//, CoroutineScope by ProcessLifecycleOwner.get().lifecycleScope
 {
-	private val dispatcher: CoroutineDispatcher = Dispatchers.IO
-	private val scope = ProcessLifecycleOwner.get().lifecycleScope
+	private val dispatcher: CoroutineDispatcher = Dispatchers.Main
+	private val scope = CoroutineScope(SupervisorJob() + dispatcher)
 
 	private val flows = hashMapOf<String, Flow<DataResult<Diary>>>()
 	private val _trigger = MutableStateFlow(1)
@@ -38,58 +36,67 @@ class DefaultDiariesRepository(
 	{
 		return flows[diaryId] ?: _trigger
 			.flatMapLatest {
-				val diary = getDiaryById(diaryId)
-					?: throw GrowTrackerException.DiaryLoadFailed(diaryId)
+				val diary = getDiaryById(diaryId) ?: throw GrowTrackerException.DiaryLoadFailed(diaryId)
 				flowOf(DataResult.success(diary))
 			}
 			.shareIn(scope, SharingStarted.WhileSubscribed(500L), 1)
 			.also {
+//				(it as ReadonlySharedFlow).subscriptionCount
+//					.mapLatest { it == 0 }
+//					.distinctUntilChanged()
+//					.onEach {
+//						if (it) flows.remove(diaryId)
+//					}
+//					.launchIn(scope)
+
 				flows[diaryId] = it
 			}
 	}
 
 	override fun flowLogEvents(): SharedFlow<LogEvent> = _logEvents
 
-	override suspend fun getDiaries(): List<Diary> = dataSource.getDiaries()
+	override suspend fun getDiaries(): List<Diary>
+	{
+		return dataSource.getDiaries()
+	}
 
-	override suspend fun getDiaryById(diaryId: String): Diary? = dataSource.getDiaryById(diaryId)
+	override suspend fun getDiaryById(diaryId: String): Diary?
+	{
+		return dataSource.getDiaryById(diaryId)
+	}
 
 	override suspend fun addDiary(diary: Diary): Diary
-		= dataSource.addDiary(diary)
+	{
+		return dataSource.addDiary(diary)
 			.let {
 				invalidate()
 				diary
 			}
+	}
 
 	override suspend fun deleteDiary(diaryId: String): Boolean
-		= dataSource.deleteDiary(diaryId)
+	{
+		return dataSource.deleteDiary(diaryId)
 			.let {
 				invalidate()
 				true
 			}
+	}
 
 	override suspend fun addLog(log: Log, diary: Diary): Log
 	{
-		withContext(dispatcher) {
-			diary.log(log)
+		diary.log(log)
 
-			dataSource.sync(DiariesDataSource.SyncDirection.SAVE, diary)
-			invalidate()
-		}
+		dataSource.sync(DiariesDataSource.SyncDirection.SAVE, diary)
+		invalidate()
 
 		if (!log.isDraft) _logEvents.emit(LogEvent.Added(log, diary))
-
 		return log
 	}
 
 	override suspend fun getLog(logId: String, diary: Diary): Log?
 	{
-		var log: Log?
-		withContext(dispatcher) {
-			log = diary.logOf(logId)
-		}
-
-		return log
+		return diary.logOf(logId)
 	}
 
 	override suspend fun removeLog(logId: String, diary: Diary)
@@ -122,7 +129,10 @@ class DefaultDiariesRepository(
 		return crop
 	}
 
-	override suspend fun getCrop(cropId: String, diary: Diary): Crop? = tryNull { diary.crop(cropId) }
+	override suspend fun getCrop(cropId: String, diary: Diary): Crop?
+	{
+		return tryNull { diary.crop(cropId) }
+	}
 
 	override suspend fun removeCrop(cropId: String, diary: Diary)
 	{
@@ -136,11 +146,9 @@ class DefaultDiariesRepository(
 		invalidate()
 	}
 
-	override fun invalidate()
+	override suspend fun invalidate()
 	{
-		scope.launch {
-			_trigger.emit(_trigger.value + 1)
-		}
+		_trigger.emit(_trigger.value + 1)
 	}
 
 	companion object : ParamSingletonHolder<DefaultDiariesRepository, DiariesDataSource>(::DefaultDiariesRepository)

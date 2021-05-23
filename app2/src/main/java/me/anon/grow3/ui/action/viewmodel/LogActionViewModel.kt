@@ -1,7 +1,7 @@
 package me.anon.grow3.ui.action.viewmodel
 
 import androidx.lifecycle.*
-import com.zhuinden.livedatacombinetuplekt.combineTuple
+import kotlinx.coroutines.flow.*
 import kotlinx.coroutines.launch
 import me.anon.grow3.data.exceptions.GrowTrackerException.*
 import me.anon.grow3.data.model.Diary
@@ -12,8 +12,8 @@ import me.anon.grow3.data.repository.DiariesRepository
 import me.anon.grow3.ui.common.Extras
 import me.anon.grow3.ui.common.Extras.EXTRA_LOG_TYPE
 import me.anon.grow3.util.ViewModelFactory
-import me.anon.grow3.util.clear
 import me.anon.grow3.util.nameOf
+import me.anon.grow3.util.states.DataResult
 import javax.inject.Inject
 
 class LogActionViewModel constructor(
@@ -32,6 +32,7 @@ class LogActionViewModel constructor(
 	sealed class UiResult
 	{
 		data class Loaded(val diary: Diary, val log: Log): UiResult()
+		object Loading : UiResult()
 	}
 
 	public var isNew: Boolean = false
@@ -41,37 +42,24 @@ class LogActionViewModel constructor(
 			field = value
 		}
 
-	private val diaryId: MutableLiveData<String> = savedState.getLiveData(Extras.EXTRA_DIARY_ID)
-	private val logId: MutableLiveData<String> = savedState.getLiveData(Extras.EXTRA_LOG_ID)
+	public var diaryId: String = savedState[Extras.EXTRA_DIARY_ID] ?: ""; private set
+	public var logId: String = savedState[Extras.EXTRA_LOG_ID] ?: ""; private set
 	private val logType: String = savedState[EXTRA_LOG_TYPE] ?: throw InvalidLogType()
 
-	public val log: LiveData<UiResult> = combineTuple(diaryId, logId).switchMap { (diaryId, logId) ->
-		liveData<UiResult> {
-			if (logId.isNullOrBlank() || diaryId.isNullOrBlank()) return@liveData
+	private var _state = MutableStateFlow<UiResult>(UiResult.Loading)
+	public val state: StateFlow<UiResult> = _state
 
-			// should this react to changes on the diary?
-			val result = diariesRepository.getDiaryById(diaryId) ?: throw IllegalState("$diaryId : $logId")
-			val log = diariesRepository.getLog(logId, result) ?: throw LogLoadFailed(logId)
-			emit(UiResult.Loaded(result, log))
-		}
-	}
-
-	public fun load(id: String): LiveData<UiResult>
-	{
-		isNew = false
-		logId.postValue(id)
-		return log
-	}
-
-	public fun new(): LiveData<UiResult>
-	{
-		isNew = true
-		logId.clear()
-
+	init {
 		viewModelScope.launch {
-			diaryId.value?.let { diaryId ->
-				val diary = diariesRepository.getDiaryById(diaryId) ?: throw DiaryLoadFailed(diaryId)
+			if (logId.isEmpty())
+			{
+				isNew = true
+			}
 
+			val diary = diariesRepository.getDiaryById(diaryId) ?: throw DiaryLoadFailed()
+
+			if (isNew)
+			{
 				val newLog: Log = when (logType)
 				{
 					nameOf<Water>() -> Water { }
@@ -80,22 +68,34 @@ class LogActionViewModel constructor(
 				}
 
 				newLog.isDraft = true
-
-				diariesRepository.addLog(newLog, diary)
-				logId.postValue(newLog.id)
+				logId = diariesRepository.addLog(newLog, diary).id
 			}
-		}
 
-		return log
+			diariesRepository.flowDiary(diaryId)
+				.mapLatest {
+					when (it)
+					{
+						is DataResult.Success -> it.data
+						else -> throw DiaryLoadFailed()
+					}
+				}
+				.collectLatest {
+					val diary = it
+					if (logId.isEmpty()) return@collectLatest
+
+					diariesRepository.getLog(logId, diary)?.let { log ->
+						_state.emit(UiResult.Loaded(diary, log))
+					}
+				}
+		}
 	}
 
 	public fun remove()
 	{
 		viewModelScope.launch {
-			val state = log.value as? UiResult.Loaded ?: return@launch
-			val diary = state.diary
-			val log = state.log
-			diariesRepository.removeLog(log.id, diary)
+			if (logId.isEmpty()) return@launch
+			val diary = (_state.value as? UiResult.Loaded)?.diary ?: return@launch
+			diariesRepository.removeLog(logId, diary)
 		}
 	}
 
@@ -103,8 +103,7 @@ class LogActionViewModel constructor(
 	{
 		isNew = false
 		viewModelScope.launch {
-			val diaryId = diaryId.value ?: return@launch
-			val diary = diariesRepository.getDiaryById(diaryId) ?: throw DiaryLoadFailed(diaryId)
+			val diary = (_state.value as? UiResult.Loaded)?.diary ?: return@launch
 			new.isDraft = false
 			diariesRepository.addLog(new, diary)
 		}
@@ -112,13 +111,13 @@ class LogActionViewModel constructor(
 
 	public fun clear()
 	{
-		if (isNew || (log.value as? UiResult.Loaded)?.log?.isDraft == true)
+		if (isNew || (state.value as? UiResult.Loaded)?.log?.isDraft == true)
 		{
 			remove()
 		}
 
-		logId.clear()
-		log.clear()
+		logId = ""
+		diaryId = ""
 		isNew = false
 	}
 }

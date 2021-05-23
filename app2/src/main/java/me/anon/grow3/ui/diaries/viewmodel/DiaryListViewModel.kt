@@ -2,9 +2,9 @@ package me.anon.grow3.ui.diaries.viewmodel
 
 import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
+import androidx.lifecycle.viewModelScope
 import kotlinx.coroutines.flow.Flow
-import kotlinx.coroutines.flow.emitAll
-import kotlinx.coroutines.flow.flow
+import kotlinx.coroutines.flow.flowOn
 import kotlinx.coroutines.flow.mapLatest
 import me.anon.grow3.data.exceptions.GrowTrackerException
 import me.anon.grow3.data.repository.DiariesRepository
@@ -31,13 +31,12 @@ class DiaryListViewModel constructor(
 		object Loading : UiResult()
 	}
 
-	public val state: Flow<UiResult> get() = flow {
-		emitAll(diariesRepository.flowDiaries()
-			.mapLatest {
-				val data = (it as? DataResult.Success)?.data ?: throw GrowTrackerException.DiaryLoadFailed()
-				UiResult.Loaded(data.map {
-					DiaryListAdapter.DiaryStub(it.id, it.name)
-				})
+	public val state: Flow<UiResult> get() = diariesRepository.flowDiaries()
+		.mapLatest {
+			val data = (it as? DataResult.Success)?.data ?: throw GrowTrackerException.DiaryLoadFailed()
+			UiResult.Loaded(data.map {
+				DiaryListAdapter.DiaryStub(it.id, it.name)
 			})
-	}
+		}
+		.flowOn(viewModelScope.coroutineContext)
 }

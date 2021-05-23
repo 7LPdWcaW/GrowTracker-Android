@@ -16,6 +16,7 @@ import androidx.fragment.app.commitNow
 import androidx.lifecycle.lifecycleScope
 import androidx.viewpager2.adapter.FragmentStateAdapter
 import androidx.viewpager2.widget.ViewPager2
+import com.freelapp.flowlifecycleobserver.collectWhileResumed
 import com.google.android.material.bottomsheet.BottomSheetBehavior
 import com.google.android.material.bottomsheet.BottomSheetBehavior.STATE_COLLAPSED
 import com.google.android.material.bottomsheet.BottomSheetBehavior.STATE_HIDDEN
@@ -167,7 +168,7 @@ class MainActivity : BaseActivity(ActivityMainBinding::class)
 
 	override fun bindVm()
 	{
-		viewModel.logEvents.observe(this) { event ->
+		viewModel.logEvents.collectWhileResumed(this) { event ->
 			when (event)
 			{
 				is LogEvent.Added -> {
