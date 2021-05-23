@@ -10,7 +10,6 @@ import org.dizitart.kno2.KNO2JacksonMapper
 import org.dizitart.kno2.filters.eq
 import org.dizitart.kno2.getRepository
 import org.dizitart.kno2.nitrite
-import timber.log.Timber
 import java.io.File
 import javax.inject.Inject
 import javax.inject.Named
@@ -56,12 +55,10 @@ class NitriteDiariesDataSource @Inject constructor(
 
 	override suspend fun getDiaries(): List<Diary>
 	{
-		Timber.e("getting diaries")
 		return db.getRepository<Diary>().find().toList()
 	}
 
 	override suspend fun sync(direction: DiariesDataSource.SyncDirection, vararg diary: Diary): List<Diary> = withContext(dispatcher) {
-		Timber.e("Syncing $direction")
 		when (direction)
 		{
 			DiariesDataSource.SyncDirection.SAVE -> {

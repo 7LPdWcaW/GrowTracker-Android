@@ -2,9 +2,7 @@ package me.anon.grow3.ui.diaries.viewmodel
 
 import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
-import androidx.lifecycle.viewModelScope
 import kotlinx.coroutines.flow.Flow
-import kotlinx.coroutines.flow.flowOn
 import kotlinx.coroutines.flow.mapLatest
 import me.anon.grow3.data.exceptions.GrowTrackerException
 import me.anon.grow3.data.repository.DiariesRepository
@@ -38,5 +36,4 @@ class DiaryListViewModel constructor(
 				DiaryListAdapter.DiaryStub(it.id, it.name)
 			})
 		}
-		.flowOn(viewModelScope.coroutineContext)
 }

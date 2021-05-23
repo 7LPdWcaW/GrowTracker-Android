@@ -1,6 +1,7 @@
 package me.anon.grow3.ui.crops.fragment
 
 import androidx.fragment.app.viewModels
+import com.freelapp.flowlifecycleobserver.collectWhileResumed
 import me.anon.grow3.data.model.Crop
 import me.anon.grow3.data.model.Diary
 import me.anon.grow3.ui.base.CardListFragment
@@ -22,10 +23,11 @@ class ViewCropFragment : CardListFragment()
 
 	override fun bindVm()
 	{
-		viewModel.state.observe(viewLifecycleOwner) { state ->
-			val state = state as? ViewCropViewModel.UiResult.Loaded ?: return@observe
-			updateCropUi(state.diary, state.crop)
-		}
+		viewModel.state
+			.collectWhileResumed(viewLifecycleOwner) { state ->
+				val state = state as? ViewCropViewModel.UiResult.Loaded ?: return@collectWhileResumed
+				updateCropUi(state.diary, state.crop)
+			}
 	}
 
 	private fun updateCropUi(diary: Diary, crop: Crop)

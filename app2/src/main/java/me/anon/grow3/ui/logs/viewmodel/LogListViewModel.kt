@@ -37,7 +37,7 @@ class LogListViewModel constructor(
 	}
 
 	public var diaryId: String = savedState[EXTRA_DIARY_ID] ?: ""; private set
-	public var cropIds: List<String> = savedState[EXTRA_CROP_IDS] ?: arrayListOf(); private set
+	public var cropIds: List<String> = (savedState.get(EXTRA_CROP_IDS) as? Array<String>)?.asList() ?: arrayListOf(); private set
 
 	private var diary: Flow<Diary> = diariesRepository.flowDiary(diaryId)
 		.mapLatest {

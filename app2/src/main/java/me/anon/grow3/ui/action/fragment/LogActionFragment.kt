@@ -2,8 +2,6 @@ package me.anon.grow3.ui.action.fragment
 
 import androidx.core.view.isVisible
 import androidx.core.view.plusAssign
-import androidx.fragment.app.commit
-import androidx.fragment.app.commitNow
 import androidx.fragment.app.viewModels
 import com.freelapp.flowlifecycleobserver.collectWhileStarted
 import com.google.android.material.textfield.TextInputLayout
@@ -108,9 +106,9 @@ open class LogActionFragment : BaseFragment(FragmentActionLogBinding::class)
 		isFinishing = true
 		viewModel.clear()
 
-		activity?.supportFragmentManager?.commit {
-			remove(this@LogActionFragment)
-		}
+//		activity?.supportFragmentManager?.commit {
+//			remove(this@LogActionFragment)
+//		}
 	}
 
 	override fun onDestroyView()
@@ -192,11 +190,7 @@ open class LogActionFragment : BaseFragment(FragmentActionLogBinding::class)
 		}
 		else
 		{
-			viewModel.clear()
-			isFinishing = true
-			requireActivity().supportFragmentManager.commitNow {
-				remove(this@LogActionFragment)
-			}
+			finish()
 		}
 
 		return true
