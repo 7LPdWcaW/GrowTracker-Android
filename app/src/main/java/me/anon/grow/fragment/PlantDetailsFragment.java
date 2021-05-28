@@ -774,6 +774,7 @@ public class PlantDetailsFragment extends Fragment
 
 										if (getActivity() != null)
 										{
+											getActivity().setResult(Activity.RESULT_CANCELED);
 											getActivity().finish();
 										}
 									}
@@ -984,7 +985,7 @@ public class PlantDetailsFragment extends Fragment
 		}
 
 		plant.setClone(clone.isChecked());
-		//PlantManager.getInstance().upsert(plant);
+		PlantManager.getInstance().upsert(plant);
 
 		if (gardenIndex != -1)
 		{

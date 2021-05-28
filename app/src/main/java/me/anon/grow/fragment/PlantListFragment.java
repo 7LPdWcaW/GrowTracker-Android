@@ -303,7 +303,6 @@ public class PlantListFragment extends Fragment
 		{
 			Plant plant = data.getParcelableExtra("plant");
 			PlantManager.getInstance().upsert(plant);
-			Log.e("TEST", "result " + plant);
 			PlantWidgetProvider.triggerUpdateAll(getActivity());
 		}
 

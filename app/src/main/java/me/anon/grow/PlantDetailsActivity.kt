@@ -65,6 +65,7 @@ class PlantDetailsActivity : BaseActivity()
 					{
 						fragment.save()
 						plant = PlantManager.instance.getPlant(plant.id)!!
+						intent.extras?.putParcelable("plant", plant)
 					}
 
 					toolbarLayout.removeViews(1, toolbarLayout.childCount - 1)
