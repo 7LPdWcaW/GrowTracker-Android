@@ -3,6 +3,9 @@ package me.anon.grow3.ui.crud.viewmodel
 import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.SupervisorJob
+import kotlinx.coroutines.cancelChildren
 import kotlinx.coroutines.flow.*
 import kotlinx.coroutines.launch
 import me.anon.grow3.data.model.*
@@ -16,6 +19,8 @@ class DiaryCrudViewModel(
 	private val savedStateHandle: SavedStateHandle
 ) : ViewModel()
 {
+	private val cropJob = SupervisorJob()
+
 	class Factory @Inject constructor(
 		private val diariesRepository: DiariesRepository
 	) : ViewModelFactory<DiaryCrudViewModel>
@@ -124,7 +129,8 @@ class DiaryCrudViewModel(
 
 	public fun newCrop()
 	{
-		viewModelScope.launch {
+		cropJob.cancelChildren()
+		CoroutineScope(viewModelScope.coroutineContext + cropJob).launch {
 			val diary = (state.value as? UiResult.Loaded)?.diary ?: return@launch
 			crop = cropVm.new(diary)
 			crop.collect {
@@ -135,7 +141,8 @@ class DiaryCrudViewModel(
 
 	public fun loadCrop(id: String)
 	{
-		viewModelScope.launch {
+		cropJob.cancelChildren()
+		CoroutineScope(viewModelScope.coroutineContext + cropJob).launch {
 			val diary = (state.value as? UiResult.Loaded)?.diary ?: return@launch
 			crop = cropVm.load(diary, id)
 			crop.collect {
@@ -146,7 +153,8 @@ class DiaryCrudViewModel(
 
 	public fun removeCrop()
 	{
-		viewModelScope.launch {
+		cropJob.cancelChildren()
+		CoroutineScope(viewModelScope.coroutineContext + cropJob).launch {
 			val diary = (state.value as? UiResult.Loaded)?.diary ?: return@launch
 			cropVm.remove(diary)
 			crop.collect {
@@ -157,6 +165,7 @@ class DiaryCrudViewModel(
 
 	public fun complete()
 	{
+		cropJob.cancelChildren()
 		viewModelScope.launch {
 			val diary = (state.value as? UiResult.Loaded)?.diary ?: return@launch
 			diary.isDraft = false

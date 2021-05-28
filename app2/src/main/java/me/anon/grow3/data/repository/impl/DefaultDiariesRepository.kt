@@ -34,23 +34,19 @@ class DefaultDiariesRepository(
 
 	override fun flowDiary(diaryId: String): Flow<DataResult<Diary>>
 	{
-		return flows[diaryId] ?: _trigger
-			.flatMapLatest {
-				val diary = getDiaryById(diaryId) ?: throw GrowTrackerException.DiaryLoadFailed(diaryId)
-				flowOf(DataResult.success(diary))
-			}
-			.shareIn(scope, SharingStarted.WhileSubscribed(500L), 1)
-			.also {
-//				(it as ReadonlySharedFlow).subscriptionCount
-//					.mapLatest { it == 0 }
-//					.distinctUntilChanged()
-//					.onEach {
-//						if (it) flows.remove(diaryId)
-//					}
-//					.launchIn(scope)
+		var flow = flows[diaryId]
+		if (flow == null)
+		{
+			flow = _trigger
+				.map {
+					val diary = getDiaryById(diaryId) ?: throw GrowTrackerException.DiaryLoadFailed(diaryId)
+					DataResult.success(diary)
+				}
 
-				flows[diaryId] = it
-			}
+			flows[diaryId] = flow
+		}
+
+		return flow.shareIn(scope, SharingStarted.WhileSubscribed(500L), 1)
 	}
 
 	override fun flowLogEvents(): SharedFlow<LogEvent> = _logEvents

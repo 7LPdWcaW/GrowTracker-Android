@@ -2,6 +2,7 @@ package me.anon.grow3.ui.crud.viewmodel
 
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.map
+import kotlinx.coroutines.flow.mapLatest
 import me.anon.grow3.data.exceptions.GrowTrackerException
 import me.anon.grow3.data.model.Crop
 import me.anon.grow3.data.model.Diary
@@ -38,14 +39,14 @@ class CropUseCase(
 		}
 
 		return diariesRepository.flowDiary(diary.id)
-			.map { result ->
+			.mapLatest { result ->
 				when (result)
 				{
 					is DataResult.Success -> {
 						originalCrop = crop.copy()
-						result.data.crop(crop.id)
+						diariesRepository.getCrop(crop.id, result.data) ?: throw GrowTrackerException.CropLoadFailed(crop.id)
 					}
-					else -> throw GrowTrackerException.CropLoadFailed(crop.id)
+					else -> throw GrowTrackerException.DiaryLoadFailed(diary.id)
 				}
 			}
 	}

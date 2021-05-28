@@ -27,11 +27,6 @@ class AppModule(
 
 	@Singleton
 	@Provides
-	@Named("cache_source")
-	public fun provideCacheSource(): String = appContext.application.dataPath + "/cache.db"
-
-	@Singleton
-	@Provides
 	public fun provideDiariesDataSource(dataSource: NitriteDiariesDataSource): DiariesDataSource = dataSource
 
 	@Singleton
