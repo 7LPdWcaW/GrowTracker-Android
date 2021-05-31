@@ -3,11 +3,8 @@ package me.anon.grow3.ui.crud.viewmodel
 import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.SupervisorJob
-import kotlinx.coroutines.cancelChildren
+import kotlinx.coroutines.*
 import kotlinx.coroutines.flow.*
-import kotlinx.coroutines.launch
 import me.anon.grow3.data.model.*
 import me.anon.grow3.data.repository.DiariesRepository
 import me.anon.grow3.util.ValueHolder
@@ -19,7 +16,8 @@ class DiaryCrudViewModel(
 	private val savedStateHandle: SavedStateHandle
 ) : ViewModel()
 {
-	private val cropJob = SupervisorJob()
+	private val diaryScope = CoroutineScope(viewModelScope.coroutineContext + SupervisorJob())
+	private val cropScope = CoroutineScope(diaryScope.coroutineContext + SupervisorJob())
 
 	class Factory @Inject constructor(
 		private val diariesRepository: DiariesRepository
@@ -35,9 +33,8 @@ class DiaryCrudViewModel(
 		object Loading : UiResult()
 	}
 
-	private var diary: Flow<Diary> = flowOf()
-	private var crop: Flow<Crop> = flowOf()
-	public val state: StateFlow<UiResult> = MutableStateFlow(UiResult.Loading)
+	private val _state = MutableStateFlow<UiResult>(UiResult.Loading)
+	public val state: StateFlow<UiResult> = _state
 
 	private val diaryVm = DiaryUseCase(diariesRepository)
 	private val cropVm = CropUseCase(diariesRepository)
@@ -46,7 +43,7 @@ class DiaryCrudViewModel(
 
 	public fun mutateDiary(block: Diary.() -> Diary)
 	{
-		viewModelScope.launch {
+		diaryScope.launch {
 			val diary = (state.value as? UiResult.Loaded)?.diary ?: return@launch
 			diaryVm.save(block(diary))
 		}
@@ -54,7 +51,7 @@ class DiaryCrudViewModel(
 
 	public fun mutateCrop(block: Crop.() -> Crop)
 	{
-		viewModelScope.launch {
+		cropScope.launch {
 			val diary = (state.value as? UiResult.Loaded)?.diary ?: return@launch
 			val crop = (state.value as? UiResult.Loaded)?.crop ?: return@launch
 			cropVm.save(diary, block(crop))
@@ -63,7 +60,7 @@ class DiaryCrudViewModel(
 
 	public fun mutateEnvironment(block: Environment.() -> Environment)
 	{
-		viewModelScope.launch {
+		diaryScope.launch {
 			val diary = (state.value as? UiResult.Loaded)?.diary ?: return@launch
 			val environment: Environment = diary.environment()
 				?: Environment().apply {
@@ -71,15 +68,15 @@ class DiaryCrudViewModel(
 				}
 
 			block(environment)
-			diary.log(environment)
+			diariesRepository.addLog(environment, diary)
 		}
 	}
 
 	public fun endCrop()
 	{
-		viewModelScope.launch {
+		cropScope.launch {
 			val diary = (state.value as? UiResult.Loaded)?.diary ?: return@launch
-			(state as MutableStateFlow).emit(UiResult.Loaded(diary))
+			_state.emit(UiResult.Loaded(diary))
 		}
 	}
 
@@ -109,68 +106,76 @@ class DiaryCrudViewModel(
 
 	public fun newDiary()
 	{
-		viewModelScope.launch {
-			diary = diaryVm.new()
+		diaryScope.launch {
+			val diary = diaryVm.new()
 			diary.collect {
-				(state as MutableStateFlow).emit(UiResult.Loaded(it))
+				_state.emit(UiResult.Loaded(it))
 			}
 		}
 	}
 
 	public fun loadDiary(id: String)
 	{
-		viewModelScope.launch {
-			diary = diaryVm.load(id)
+		diaryScope.launch {
+			val diary = diaryVm.load(id)
 			diary.collect {
-				(state as MutableStateFlow).emit(UiResult.Loaded(it))
+				_state.emit(UiResult.Loaded(it))
 			}
 		}
 	}
 
 	public fun newCrop()
 	{
-		cropJob.cancelChildren()
-		CoroutineScope(viewModelScope.coroutineContext + cropJob).launch {
+		cropScope.coroutineContext.cancelChildren()
+		cropScope.launch {
 			val diary = (state.value as? UiResult.Loaded)?.diary ?: return@launch
-			crop = cropVm.new(diary)
+			val crop = cropVm.new(diary)
 			crop.collect {
-				(state as MutableStateFlow).emit(UiResult.Loaded(diary, it))
+				_state.emit(UiResult.Loaded(diary, it))
 			}
 		}
 	}
 
 	public fun loadCrop(id: String)
 	{
-		cropJob.cancelChildren()
-		CoroutineScope(viewModelScope.coroutineContext + cropJob).launch {
+		cropScope.coroutineContext.cancelChildren()
+		cropScope.launch {
 			val diary = (state.value as? UiResult.Loaded)?.diary ?: return@launch
-			crop = cropVm.load(diary, id)
+			val crop = cropVm.load(diary, id)
 			crop.collect {
-				(state as MutableStateFlow).emit(UiResult.Loaded(diary, it))
+				_state.emit(UiResult.Loaded(diary, it))
 			}
 		}
 	}
 
 	public fun removeCrop()
 	{
-		cropJob.cancelChildren()
-		CoroutineScope(viewModelScope.coroutineContext + cropJob).launch {
+		cropScope.coroutineContext.cancelChildren()
+		cropScope.launch {
 			val diary = (state.value as? UiResult.Loaded)?.diary ?: return@launch
 			cropVm.remove(diary)
-			crop.collect {
-				(state as MutableStateFlow).emit(UiResult.Loaded(diary))
-			}
 		}
 	}
 
 	public fun complete()
 	{
-		cropJob.cancelChildren()
+		cropScope.coroutineContext.cancelChildren()
+		diaryScope.coroutineContext.cancelChildren()
 		viewModelScope.launch {
 			val diary = (state.value as? UiResult.Loaded)?.diary ?: return@launch
 			diary.isDraft = false
 			diaryVm.save(diary)
-			(state as MutableStateFlow).emit(UiResult.Loaded(diary))
+			_state.emit(UiResult.Loaded(diary))
+		}
+	}
+
+	public fun cancel()
+	{
+		cropScope.coroutineContext.cancelChildren()
+		diaryScope.coroutineContext.cancelChildren()
+		viewModelScope.launch {
+			_state.emit(UiResult.Loading)
+			diaryVm.remove()
 		}
 	}
 }

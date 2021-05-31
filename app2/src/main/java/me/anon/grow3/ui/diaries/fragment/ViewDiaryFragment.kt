@@ -77,6 +77,9 @@ class ViewDiaryFragment : BaseFragment(FragmentViewDiaryBinding::class)
 				when (state)
 				{
 					is ViewDiaryViewModel.UiResult.Loaded -> updateDiaryUi(state.diary)
+					is ViewDiaryViewModel.UiResult.Removed -> {
+						navigateTo<EmptyFragment>()
+					}
 				}
 			}
 	}

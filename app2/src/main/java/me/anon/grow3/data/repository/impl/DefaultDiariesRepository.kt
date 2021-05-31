@@ -18,7 +18,7 @@ import me.anon.grow3.util.tryNull
 
 class DefaultDiariesRepository(
 	private val dataSource: DiariesDataSource,
-) : DiariesRepository//, CoroutineScope by ProcessLifecycleOwner.get().lifecycleScope
+) : DiariesRepository
 {
 	private val dispatcher: CoroutineDispatcher = Dispatchers.Main
 	private val scope = CoroutineScope(SupervisorJob() + dispatcher)
@@ -38,9 +38,10 @@ class DefaultDiariesRepository(
 		if (flow == null)
 		{
 			flow = _trigger
-				.map {
-					val diary = getDiaryById(diaryId) ?: throw GrowTrackerException.DiaryLoadFailed(diaryId)
-					DataResult.success(diary)
+				.mapLatest {
+					val diary = getDiaryById(diaryId)
+					if (diary != null) DataResult.success(diary)
+					else DataResult.error(GrowTrackerException.DiaryLoadFailed(diaryId))
 				}
 
 			flows[diaryId] = flow
@@ -74,6 +75,7 @@ class DefaultDiariesRepository(
 	{
 		return dataSource.deleteDiary(diaryId)
 			.let {
+				flows.remove(diaryId)
 				invalidate()
 				true
 			}

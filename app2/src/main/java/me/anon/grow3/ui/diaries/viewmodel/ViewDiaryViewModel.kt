@@ -30,7 +30,7 @@ class ViewDiaryViewModel constructor(
 	{
 		data class Loaded(val diary: Diary): UiResult()
 		object Loading : UiResult()
-		object Error : UiResult()
+		object Removed : UiResult()
 	}
 
 	public var diaryId: String = savedState[Extras.EXTRA_DIARY_ID] ?: ""; private set
@@ -48,9 +48,13 @@ class ViewDiaryViewModel constructor(
 
 	init {
 		viewModelScope.launch {
-			diary.collectLatest {
-				_state.emit(UiResult.Loaded(it))
-			}
+			diary
+				.catch { cause ->
+					if (cause is GrowTrackerException.DiaryLoadFailed) _state.emit(UiResult.Removed)
+				}
+				.collectLatest {
+					_state.emit(UiResult.Loaded(it))
+				}
 		}
 	}
 }

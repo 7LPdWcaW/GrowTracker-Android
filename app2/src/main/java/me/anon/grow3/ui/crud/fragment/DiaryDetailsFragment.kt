@@ -3,6 +3,7 @@ package me.anon.grow3.ui.crud.fragment
 import android.view.View
 import androidx.core.os.bundleOf
 import androidx.core.view.isVisible
+import androidx.core.view.updatePadding
 import androidx.fragment.app.activityViewModels
 import androidx.navigation.fragment.findNavController
 import com.freelapp.flowlifecycleobserver.collectWhileStarted
@@ -33,8 +34,24 @@ class DiaryDetailsFragment : BaseFragment(FragmentCrudDiaryDetailsBinding::class
 			.collectWhileStarted(this) { state ->
 				val diary = (state as? DiaryCrudViewModel.UiResult.Loaded)?.diary ?: return@collectWhileStarted
 
+				viewBindings.deleteDiary.isVisible = !diary.isDraft
+				viewBindings.contentContainer.updatePadding(
+					bottom = (if (diary.isDraft) R.dimen.fab_spacing else R.dimen.content_margin).dimen(requireContext()).toInt()
+				)
+
 				viewBindings.diaryName.editText!!.text = diary.name.asEditable()
 				viewBindings.date.editText!!.text = diary.date.asDateTime().asDisplayString().asEditable()
+
+				viewBindings.includeCardStages.root.isVisible = !diary.isDraft
+				viewBindings.includeCardStages.stagesHeader.isVisible = true
+				viewBindings.includeCardStages.stagesView.setStages(diary)
+
+				viewBindings.deleteDiary.onClick {
+					requireActivity().promptRemove {
+						crudViewModel.cancel()
+						requireActivity().finish()
+					}
+				}
 
 				viewBindings.cropsContainer.removeAllViews()
 				diary.crops.mapToView<Crop, StubCrudCropBinding>(viewBindings.cropsContainer) { crop, cropBindings ->

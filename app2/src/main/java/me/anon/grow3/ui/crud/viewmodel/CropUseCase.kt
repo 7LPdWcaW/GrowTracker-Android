@@ -21,20 +21,20 @@ class CropUseCase(
 	public suspend fun new(diary: Diary): Flow<Crop>
 	{
 		val count = diary.crops.size + 1
-		val crop = Crop(
+		val temp = Crop(
 			name = "Crop $count",
 			genetics = "Unknown genetics"
 		)
-		crop.isDraft = true
+		temp.isDraft = true
 
-		diariesRepository.addCrop(crop, diary)
+		diariesRepository.addCrop(temp, diary)
 
-		if (diary.stageOf(crop) == null)
+		if (diary.stageOf(temp) == null)
 		{
 			// add default stage
 			diariesRepository.addLog(StageChange(StageType.Planted).apply {
-				date = crop.platedDate
-				cropIds += crop.id
+				date = temp.platedDate
+				cropIds += temp.id
 			}, diary)
 		}
 
@@ -43,8 +43,9 @@ class CropUseCase(
 				when (result)
 				{
 					is DataResult.Success -> {
-						originalCrop = crop.copy()
-						diariesRepository.getCrop(crop.id, result.data) ?: throw GrowTrackerException.CropLoadFailed(crop.id)
+						originalCrop = temp.copy()
+						crop = diariesRepository.getCrop(temp.id, result.data) ?: throw GrowTrackerException.CropLoadFailed(temp.id)
+						crop!!
 					}
 					else -> throw GrowTrackerException.DiaryLoadFailed(diary.id)
 				}
@@ -57,12 +58,11 @@ class CropUseCase(
 			.map { result ->
 				when (result)
 				{
-					is DataResult.Success ->
-					{
-						val crop = result.data.crop(cropId)
-						crop.isDraft = false
-						originalCrop = crop.copy()
-						result.data.crop(crop.id)
+					is DataResult.Success -> {
+						crop = diariesRepository.getCrop(cropId, result.data) ?: throw GrowTrackerException.CropLoadFailed(cropId, result.data.id)
+						crop!!.isDraft = false
+						originalCrop = crop!!.copy()
+						crop!!
 					}
 					else -> throw GrowTrackerException.DiaryLoadFailed(diary.id)
 				}
@@ -86,7 +86,5 @@ class CropUseCase(
 	{
 		this.crop = null
 		this.originalCrop = null
-//		isNew = false
-//		cropId = ""
 	}
 }

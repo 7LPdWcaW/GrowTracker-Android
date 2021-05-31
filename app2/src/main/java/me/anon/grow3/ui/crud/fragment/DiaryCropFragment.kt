@@ -7,6 +7,7 @@ import androidx.core.view.updatePadding
 import androidx.core.widget.doAfterTextChanged
 import androidx.fragment.app.activityViewModels
 import com.freelapp.flowlifecycleobserver.collectWhileStarted
+import me.anon.grow3.R
 import me.anon.grow3.data.model.*
 import me.anon.grow3.databinding.FragmentCrudDiaryCropBinding
 import me.anon.grow3.ui.action.fragment.LogActionFragment
@@ -42,7 +43,6 @@ class DiaryCropFragment : BaseFragment(FragmentCrudDiaryCropBinding::class)
 			crudViewModel.endCrop()
 			(activity as? DiaryActivity)?.popBackStack()
 		}
-		viewBindings.content.updatePadding(bottom = if (viewBindings.done.isVisible) 92.dp else 0.dp)
 
 		viewBindings.removeCrop.onClick {
 			requireContext().promptRemove {
@@ -116,6 +116,10 @@ class DiaryCropFragment : BaseFragment(FragmentCrudDiaryCropBinding::class)
 				val diary = state.diary
 				val crop = state.crop ?: return@collectWhileStarted
 				isNew = crop.isDraft
+
+				viewBindings.contentContainer.updatePadding(
+					bottom = (if (isNew) R.dimen.fab_spacing else R.dimen.content_margin).dimen(requireContext()).toInt()
+				)
 
 				viewBindings.done.isVisible = isNew
 				viewBindings.removeCrop.isVisible = !isNew

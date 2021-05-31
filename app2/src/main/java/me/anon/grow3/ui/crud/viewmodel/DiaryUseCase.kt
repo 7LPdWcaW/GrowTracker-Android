@@ -13,9 +13,7 @@ class DiaryUseCase(
 )
 {
 	private var diary: Diary? = null
-	public var isNew: Boolean = false; private set
-
-	public fun cached(): Diary = diary ?: throw GrowTrackerException.IllegalState("Diary was null")
+	private var isNew: Boolean = false
 
 	public suspend fun new(): Flow<Diary>
 	{

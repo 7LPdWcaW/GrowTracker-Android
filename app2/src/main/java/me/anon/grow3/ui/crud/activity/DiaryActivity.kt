@@ -32,7 +32,7 @@ class DiaryActivity : BaseActivity(ActivityCrudDiaryBinding::class)
 
 	override val injector: Injector = { it.inject(this) }
 	@Inject internal lateinit var crudViewModelFactory: DiaryCrudViewModel.Factory
-	private val crudViewModel: DiaryCrudViewModel by viewModels { ViewModelProvider(crudViewModelFactory, this) }
+	private val viewModel: DiaryCrudViewModel by viewModels { ViewModelProvider(crudViewModelFactory, this) }
 	private val viewBindings by viewBinding<ActivityCrudDiaryBinding>()
 	private val navController by lazy { findNavController(R.id.nav_host_fragment) }
 
@@ -41,18 +41,18 @@ class DiaryActivity : BaseActivity(ActivityCrudDiaryBinding::class)
 		super.onCreate(savedInstanceState)
 
 		(intent.extras ?: savedInstanceState ?: bundleOf()).getString(Extras.EXTRA_DIARY_ID).let {
-			if (it.isNullOrBlank()) crudViewModel.newDiary()
-			else crudViewModel.loadDiary(it)
+			if (it.isNullOrBlank()) viewModel.newDiary()
+			else viewModel.loadDiary(it)
 		}
 
 		navController.addOnDestinationChangedListener { _, destination, args ->
 			currentView = destination.id
 			viewBindings.back.isVisible = currentView != R.id.navigation_diary_details && currentView != R.id.navigation_diary_crop
-			viewBindings.next.isVisible = currentView != R.id.navigation_diary_crop && crudViewModel.diaryDraft
+			viewBindings.next.isVisible = currentView != R.id.navigation_diary_crop && viewModel.diaryDraft
 
 			if (currentView == R.id.navigation_diary_complete)
 			{
-				viewBindings.next.isVisible = currentView != R.id.navigation_diary_complete && crudViewModel.diaryDraft
+				viewBindings.next.isVisible = currentView != R.id.navigation_diary_complete && viewModel.diaryDraft
 				viewBindings.back.isVisible = currentView != R.id.navigation_diary_complete
 				viewBindings.includeToolbar.toolbar.isVisible = false
 			}
@@ -68,18 +68,14 @@ class DiaryActivity : BaseActivity(ActivityCrudDiaryBinding::class)
 
 	override fun bindVm()
 	{
-		crudViewModel.state
+		viewModel.state
 			.collectWhileStarted(this) { state ->
-				viewBindings.next.isVisible = crudViewModel.diaryDraft
+				viewBindings.next.isVisible = currentView != R.id.navigation_diary_crop && viewModel.diaryDraft
 			}
 	}
 
 	override fun bindUi()
 	{
-//		viewBindings.done.setOnClickListener {
-//			navController.popBackStack()
-//		}
-
 		viewBindings.back.onClick {
 			onBackPressed()
 		}
@@ -107,11 +103,11 @@ class DiaryActivity : BaseActivity(ActivityCrudDiaryBinding::class)
 		{
 			if (!navController.popBackStack())
 			{
-				if (crudViewModel.diaryDraft)
+				if (viewModel.diaryDraft)
 				{
 					promptExit {
 						lifecycleScope.launch {
-							//viewModel.cancel()
+							viewModel.cancel()
 							finish()
 						}
 					}
@@ -119,7 +115,7 @@ class DiaryActivity : BaseActivity(ActivityCrudDiaryBinding::class)
 				else
 				{
 					clearFocus()
-					crudViewModel.complete()
+					viewModel.complete()
 					finish()
 				}
 			}
