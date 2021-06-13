@@ -1,13 +1,12 @@
 package me.anon.grow3.ui.crops.fragment
 
 import androidx.fragment.app.viewModels
-import androidx.lifecycle.observe
+import com.freelapp.flowlifecycleobserver.collectWhileResumed
 import me.anon.grow3.ui.base.CardListFragment
 import me.anon.grow3.ui.crops.view.CropCard
 import me.anon.grow3.ui.crops.viewmodel.CropListViewModel
 import me.anon.grow3.util.Injector
 import me.anon.grow3.util.ViewModelProvider
-import me.anon.grow3.util.states.asSuccess
 import javax.inject.Inject
 
 class CropListFragment : CardListFragment()
@@ -19,11 +18,14 @@ class CropListFragment : CardListFragment()
 
 	override fun bindVm()
 	{
-		viewModel.crops.observe(viewLifecycleOwner) {
-			val cards = it.map {
-				CropCard(viewModel.diary.value!!.asSuccess(), it)
+		viewModel.state
+			.collectWhileResumed(viewLifecycleOwner) {
+				val result = it as? CropListViewModel.UiResult.Loaded ?: return@collectWhileResumed
+				val cards = result.crops.map { crop ->
+					CropCard(result.diary, crop)
+				}
+
+				viewAdapter.newStack { addAll(cards) }
 			}
-			viewAdapter.newStack { addAll(cards) }
-		}
 	}
 }

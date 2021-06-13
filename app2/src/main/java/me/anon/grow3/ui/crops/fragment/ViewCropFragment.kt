@@ -1,8 +1,9 @@
 package me.anon.grow3.ui.crops.fragment
 
 import androidx.fragment.app.viewModels
-import androidx.lifecycle.observe
+import com.freelapp.flowlifecycleobserver.collectWhileResumed
 import me.anon.grow3.data.model.Crop
+import me.anon.grow3.data.model.Diary
 import me.anon.grow3.ui.base.CardListFragment
 import me.anon.grow3.ui.common.view.LogMediumCard
 import me.anon.grow3.ui.common.view.StagesCard
@@ -11,7 +12,6 @@ import me.anon.grow3.ui.crops.view.CropLinksCard
 import me.anon.grow3.ui.crops.viewmodel.ViewCropViewModel
 import me.anon.grow3.util.Injector
 import me.anon.grow3.util.ViewModelProvider
-import me.anon.grow3.util.states.asSuccess
 import javax.inject.Inject
 
 class ViewCropFragment : CardListFragment()
@@ -23,24 +23,24 @@ class ViewCropFragment : CardListFragment()
 
 	override fun bindVm()
 	{
-		viewModel.crop.observe(viewLifecycleOwner) {
-			updateCropUi(it)
-		}
+		viewModel.state
+			.collectWhileResumed(viewLifecycleOwner) { state ->
+				val state = state as? ViewCropViewModel.UiResult.Loaded ?: return@collectWhileResumed
+				updateCropUi(state.diary, state.crop)
+			}
 	}
 
-	private fun updateCropUi(crop: Crop)
+	private fun updateCropUi(diary: Diary, crop: Crop)
 	{
 		requireActivity().title = crop.name
 
-		viewModel.diary.value?.asSuccess()?.let { diary ->
-			viewAdapter.newStack {
-				add(StagesCard(diary = diary, crop = crop))
-				add(CropDetailsCard(diary = diary, crop = crop))
-				diary.mediumOf(crop)?.let { medium ->
-					add(LogMediumCard(title = "Medium details", diary = diary, crop = crop, medium = medium))
-				}
-				add(CropLinksCard(diary = diary, crop = crop))
+		viewAdapter.newStack {
+			add(StagesCard(diary = diary, crop = crop))
+			add(CropDetailsCard(diary = diary, crop = crop))
+			diary.mediumOf(crop)?.let { medium ->
+				add(LogMediumCard(title = "Medium details", diary = diary, crop = crop, medium = medium))
 			}
+			add(CropLinksCard(diary = diary, crop = crop))
 		}
 	}
 }

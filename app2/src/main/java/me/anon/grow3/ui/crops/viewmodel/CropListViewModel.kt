@@ -1,10 +1,15 @@
 package me.anon.grow3.ui.crops.viewmodel
 
-import androidx.lifecycle.LiveData
 import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
-import androidx.lifecycle.map
-import me.anon.grow3.data.exceptions.GrowTrackerException.*
+import androidx.lifecycle.viewModelScope
+import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.collectLatest
+import kotlinx.coroutines.flow.mapLatest
+import kotlinx.coroutines.launch
+import me.anon.grow3.data.exceptions.GrowTrackerException
+import me.anon.grow3.data.exceptions.GrowTrackerException.InvalidDiaryId
 import me.anon.grow3.data.model.Crop
 import me.anon.grow3.data.model.Diary
 import me.anon.grow3.data.repository.DiariesRepository
@@ -26,14 +31,30 @@ class CropListViewModel constructor(
 			CropListViewModel(diariesRepository, handle)
 	}
 
+	sealed class UiResult
+	{
+		data class Loaded(val diary: Diary, val crops: List<Crop>) : UiResult()
+		object Loading : UiResult()
+	}
+
 	public val diaryId: String = savedState[Extras.EXTRA_DIARY_ID] ?: throw InvalidDiaryId()
 
-	public val diary: LiveData<DataResult<Diary>> = diariesRepository.observeDiary(diaryId)
-	public val crops: LiveData<List<Crop>> = diary.map { dataResult ->
-		when (dataResult)
-		{
-			is DataResult.Success -> dataResult.data.crops
-			else -> throw DiaryLoadFailed(diaryId)
+	private var _state = MutableStateFlow<UiResult>(UiResult.Loading)
+	public val state: StateFlow<UiResult> = _state
+
+	init {
+		viewModelScope.launch {
+			diariesRepository.flowDiary(diaryId)
+				.mapLatest {
+					when (it)
+					{
+						is DataResult.Success -> it.data
+						else -> throw GrowTrackerException.DiaryLoadFailed()
+					}
+				}
+				.collectLatest {
+					_state.emit(UiResult.Loaded(it, it.crops))
+				}
 		}
 	}
 }

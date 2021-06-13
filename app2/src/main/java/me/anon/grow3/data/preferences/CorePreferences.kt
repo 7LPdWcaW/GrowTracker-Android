@@ -10,11 +10,11 @@ class CorePreferences @Inject constructor(val context: Context)
 {
 	private val sharedPrefs = context.getSharedPreferences("core_prefs", Context.MODE_PRIVATE)
 
-	public fun isFirstLaunch(): Boolean = sharedPrefs.getBoolean("first_launch", true)
-	public fun completeFirstLaunch()
-	{
-		sharedPrefs.edit {
-			putBoolean("first_launch", false)
+	public var isFirstLaunch: Boolean
+		get() = sharedPrefs.getBoolean("first_launch", true)
+		set(value) {
+			sharedPrefs.edit {
+				putBoolean("first_launch", value)
+			}
 		}
-	}
 }

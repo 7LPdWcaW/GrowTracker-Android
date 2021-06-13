@@ -16,6 +16,7 @@ import androidx.fragment.app.commitNow
 import androidx.lifecycle.lifecycleScope
 import androidx.viewpager2.adapter.FragmentStateAdapter
 import androidx.viewpager2.widget.ViewPager2
+import com.freelapp.flowlifecycleobserver.collectWhileResumed
 import com.google.android.material.bottomsheet.BottomSheetBehavior
 import com.google.android.material.bottomsheet.BottomSheetBehavior.STATE_COLLAPSED
 import com.google.android.material.bottomsheet.BottomSheetBehavior.STATE_HIDDEN
@@ -31,6 +32,7 @@ import me.anon.grow3.ui.main.fragment.MainNavigatorFragment
 import me.anon.grow3.ui.main.fragment.NavigationFragment
 import me.anon.grow3.ui.main.viewmodel.MainViewModel
 import me.anon.grow3.util.*
+import timber.log.Timber
 import javax.inject.Inject
 
 
@@ -166,10 +168,11 @@ class MainActivity : BaseActivity(ActivityMainBinding::class)
 
 	override fun bindVm()
 	{
-		viewModel.logEvents.observe(this) { event ->
+		viewModel.logEvents.collectWhileResumed(this) { event ->
 			when (event)
 			{
 				is LogEvent.Added -> {
+					Timber.e(event.log.toJsonString())
 					Toast.makeText(this, "${event.log} added to ${event.diary.name}", Toast.LENGTH_LONG).show()
 				}
 			}
@@ -306,9 +309,9 @@ class MainActivity : BaseActivity(ActivityMainBinding::class)
 				val count = adapter.pages.size
 				if (count > INDEX_MAIN + 1)
 				{
-					supportFragmentManager.commitNow {
-						while (adapter.pages.size > INDEX_MAIN + 1)
-						{
+					while (adapter.pages.size > INDEX_MAIN + 1)
+					{
+						supportFragmentManager.commitNow {
 							adapter.getFragment(INDEX_MAIN + 1)?.let {
 								remove(it)
 							}

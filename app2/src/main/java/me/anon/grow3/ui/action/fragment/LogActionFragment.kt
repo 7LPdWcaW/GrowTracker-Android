@@ -1,12 +1,9 @@
 package me.anon.grow3.ui.action.fragment
 
-import android.os.Bundle
 import androidx.core.view.isVisible
 import androidx.core.view.plusAssign
-import androidx.fragment.app.activityViewModels
-import androidx.fragment.app.commit
-import androidx.fragment.app.commitNow
-import androidx.lifecycle.observe
+import androidx.fragment.app.viewModels
+import com.freelapp.flowlifecycleobserver.collectWhileStarted
 import com.google.android.material.textfield.TextInputLayout
 import me.anon.grow3.R
 import me.anon.grow3.data.model.*
@@ -32,18 +29,34 @@ open class LogActionFragment : BaseFragment(FragmentActionLogBinding::class)
 	override val injector: Injector = { it.inject(this) }
 
 	@Inject internal lateinit var viewModelFactory: LogActionViewModel.Factory
-	protected val viewModel: LogActionViewModel by activityViewModels { ViewModelProvider(viewModelFactory, this) }
+	protected val viewModel: LogActionViewModel by viewModels { ViewModelProvider(viewModelFactory, this) }
 	protected val viewBindings by viewBinding<FragmentActionLogBinding>()
-	private var logView: LogView<*>? = null
+	protected var logView: LogView<*>? = null
 	private var isFinishing = false
 
-	override fun bindArguments(bundle: Bundle?)
-	{
-		super.bindArguments(bundle)
+//	override fun bindArguments(bundle: Bundle?)
+//	{
+//		super.bindArguments(bundle)
+//
+//		bundle?.getString(Extras.EXTRA_LOG_ID).let {
+//			if (it.isNullOrBlank()) viewModel.new()
+//			else viewModel.load(it)
+//		}
+//	}
 
-		bundle?.getString(Extras.EXTRA_LOG_ID).let {
-			if (it.isNullOrBlank()) viewModel.new()
-			else viewModel.load(it)
+	public fun saveView()
+	{
+		if (isFinishing) return
+
+		logView?.let {
+			val log = it.saveView()
+
+			requireView().clearFocus()
+			requireView().findViewById<CropSelectView>(R.id.crop_select_view)?.let {
+				log.cropIds = it.selectedCrops.toList()
+			}
+
+			viewModel.save(log)
 		}
 	}
 
@@ -64,19 +77,9 @@ open class LogActionFragment : BaseFragment(FragmentActionLogBinding::class)
 		}
 
 		viewBindings.actionDone.onClick {
+			saveView()
 			isFinishing = true
-
-			logView?.let {
-				val log = it.saveView()
-
-				requireView().clearFocus()
-				requireView().findViewById<CropSelectView>(R.id.crop_select_view)?.let {
-					log.cropIds = it.selectedCrops.toList()
-				}
-
-				viewModel.save(log)
-				finish()
-			}
+			finish()
 		}
 
 		attachCallbacks()
@@ -84,13 +87,16 @@ open class LogActionFragment : BaseFragment(FragmentActionLogBinding::class)
 
 	override fun bindVm()
 	{
-		viewModel.log
-			.nonNull()
-			.observe(viewLifecycleOwner) { data ->
-				val diary = data.diary ?: return@observe
-				val log = data.log ?: return@observe
-
-				renderLogView(diary, log)
+		viewModel.state
+			.collectWhileStarted(viewLifecycleOwner) { state ->
+				when (state)
+				{
+					is LogActionViewModel.UiResult.Loaded -> {
+						val diary = state.diary
+						val log = state.log
+						renderLogView(diary, log)
+					}
+				}
 			}
 	}
 
@@ -100,9 +106,9 @@ open class LogActionFragment : BaseFragment(FragmentActionLogBinding::class)
 		isFinishing = true
 		viewModel.clear()
 
-		activity?.supportFragmentManager?.commit {
-			remove(this@LogActionFragment)
-		}
+//		activity?.supportFragmentManager?.commit {
+//			remove(this@LogActionFragment)
+//		}
 	}
 
 	override fun onDestroyView()
@@ -184,11 +190,7 @@ open class LogActionFragment : BaseFragment(FragmentActionLogBinding::class)
 		}
 		else
 		{
-			viewModel.clear()
-			isFinishing = true
-			requireActivity().supportFragmentManager.commitNow {
-				remove(this@LogActionFragment)
-			}
+			finish()
 		}
 
 		return true

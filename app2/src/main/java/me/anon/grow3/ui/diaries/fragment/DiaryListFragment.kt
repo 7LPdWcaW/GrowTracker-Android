@@ -2,8 +2,8 @@ package me.anon.grow3.ui.diaries.fragment
 
 import androidx.core.os.bundleOf
 import androidx.fragment.app.viewModels
-import androidx.lifecycle.observe
 import androidx.recyclerview.widget.LinearLayoutManager
+import com.freelapp.flowlifecycleobserver.collectWhileStarted
 import me.anon.grow3.databinding.FragmentDiariesBinding
 import me.anon.grow3.ui.base.BaseFragment
 import me.anon.grow3.ui.common.Extras.EXTRA_DIARY_ID
@@ -11,7 +11,6 @@ import me.anon.grow3.ui.crud.activity.DiaryActivity
 import me.anon.grow3.ui.diaries.adapter.DiaryListAdapter
 import me.anon.grow3.ui.diaries.viewmodel.DiaryListViewModel
 import me.anon.grow3.util.*
-import me.anon.grow3.util.states.DataResult
 import javax.inject.Inject
 
 class DiaryListFragment : BaseFragment(FragmentDiariesBinding::class)
@@ -21,7 +20,7 @@ class DiaryListFragment : BaseFragment(FragmentDiariesBinding::class)
 	@Inject internal lateinit var viewModelFactory: DiaryListViewModel.Factory
 	private val viewModel: DiaryListViewModel by viewModels { ViewModelProvider(viewModelFactory, this) }
 	private val viewBindings by viewBinding<FragmentDiariesBinding>()
-	private val adapter by lazy { DiaryListAdapter() }
+	private val adapter = DiaryListAdapter()
 
 	override fun bindUi()
 	{
@@ -41,14 +40,15 @@ class DiaryListFragment : BaseFragment(FragmentDiariesBinding::class)
 
 	override fun bindVm()
 	{
-		viewModel.diaries.observe(viewLifecycleOwner) {
-			when (it)
-			{
-				is DataResult.Success -> {
-					adapter.items = it.data
-					adapter.notifyDataSetChanged()
+		viewModel.state
+			.collectWhileStarted(this) {
+				when (it)
+				{
+					is DiaryListViewModel.UiResult.Loaded -> {
+						adapter.items = it.diaries
+						adapter.notifyDataSetChanged()
+					}
 				}
 			}
-		}
 	}
 }

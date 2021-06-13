@@ -1,7 +1,6 @@
 package me.anon.grow3.ui.main.fragment
 
 import androidx.core.view.updatePadding
-import androidx.lifecycle.observe
 import me.anon.grow3.databinding.FragmentNavigationBinding
 import me.anon.grow3.ui.base.BaseHostFragment
 import me.anon.grow3.ui.settings.activity.SettingsActivity

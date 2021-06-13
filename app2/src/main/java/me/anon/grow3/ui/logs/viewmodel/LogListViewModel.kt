@@ -1,9 +1,16 @@
 package me.anon.grow3.ui.logs.viewmodel
 
-import androidx.lifecycle.*
-import me.anon.grow3.data.exceptions.GrowTrackerException.DiaryLoadFailed
+import androidx.lifecycle.SavedStateHandle
+import androidx.lifecycle.ViewModel
+import androidx.lifecycle.viewModelScope
+import kotlinx.coroutines.flow.*
+import kotlinx.coroutines.launch
+import me.anon.grow3.data.exceptions.GrowTrackerException
+import me.anon.grow3.data.model.Crop
 import me.anon.grow3.data.model.Diary
+import me.anon.grow3.data.model.Log
 import me.anon.grow3.data.repository.DiariesRepository
+import me.anon.grow3.ui.common.Extras.EXTRA_CROP_IDS
 import me.anon.grow3.ui.common.Extras.EXTRA_DIARY_ID
 import me.anon.grow3.util.ViewModelFactory
 import me.anon.grow3.util.states.DataResult
@@ -22,30 +29,40 @@ class LogListViewModel constructor(
 			LogListViewModel(diariesRepository, handle)
 	}
 
-	public val diaryId = savedState.getLiveData<String>(EXTRA_DIARY_ID)
-	private val cropIds = MutableLiveData<List<String>>()
-
-	public val diary: LiveData<DataResult<Diary>> = diaryId.switchMap { diariesRepository.observeDiary(it) }
-	public val logs = diary.switchMap { diaryResult ->
-		when (diaryResult)
-		{
-			is DataResult.Success -> {
-				cropIds.switchMap { cropIds ->
-					MutableLiveData(
-						diaryResult.data.log.filter {
-							if (cropIds.isEmpty()) true
-							else it.cropIds.containsAll(cropIds)
-						}
-					)
-				}
-			}
-			else -> throw DiaryLoadFailed(diaryId.value!!)
-		}
+	sealed class UiResult
+	{
+		data class Loaded(val diary: Diary, val logs: List<Log>, val crops: List<Crop>? = null, val nonce: Long = System.currentTimeMillis()) : UiResult()
+		object Loading : UiResult()
+		object Error : UiResult()
 	}
 
-	public fun load(diaryId: String, filterCrops: List<String> = arrayListOf())
-	{
-		this.diaryId.postValue(diaryId)
-		this.cropIds.postValue(filterCrops)
+	public var diaryId: String = savedState[EXTRA_DIARY_ID] ?: ""; private set
+	public var cropIds: List<String> = (savedState.get(EXTRA_CROP_IDS) as? Array<String>)?.asList() ?: arrayListOf(); private set
+
+	private var diary: Flow<Diary> = diariesRepository.flowDiary(diaryId)
+		.mapLatest {
+			when (it)
+			{
+				is DataResult.Success -> it.data
+				else -> throw GrowTrackerException.DiaryLoadFailed()
+			}
+		}
+
+	private var _state = MutableStateFlow<UiResult>(UiResult.Loading)
+	public val state: StateFlow<UiResult> = _state
+
+	init {
+		viewModelScope.launch {
+			diary.collectLatest {
+				val diary = it
+				val logs = diary.log.filter {
+					if (cropIds.isNullOrEmpty()) true
+					else it.cropIds.containsAll(cropIds)
+				}
+				val crops = cropIds.map { diary.crop(it) }
+
+				_state.emit(UiResult.Loaded(diary = diary, logs = logs, crops = crops))
+			}
+		}
 	}
 }

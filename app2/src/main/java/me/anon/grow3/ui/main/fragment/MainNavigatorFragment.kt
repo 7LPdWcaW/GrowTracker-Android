@@ -121,7 +121,7 @@ class MainNavigatorFragment : BaseHostFragment(FragmentMainHostBinding::class)
 
 	private fun beginStack(fragment: Class<out BaseFragment>, args: Bundle?)
 	{
-		clearStack(true)
+		//clearStack(true)
 		childFragmentManager.commitNow {
 			setCustomAnimations(android.R.anim.fade_in, android.R.anim.fade_out)
 			replace(R.id.fragment_container, fragment.newInstance().apply {

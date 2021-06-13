@@ -19,7 +19,7 @@ class BootActivity : BaseActivity()
 
 		component.inject(this)
 
-		if (prefs.isFirstLaunch()) newTask<SetupActivity>()
+		if (prefs.isFirstLaunch) newTask<SetupActivity>()
 		else newTask<MainActivity>()
 
 		finish()

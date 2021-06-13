@@ -33,23 +33,18 @@ class NitriteDiariesDataSource @Inject constructor(
 		db.close()
 	}
 
-	override suspend fun addDiary(diary: Diary): List<Diary>
-	{
-		withContext(dispatcher) {
-			db.getRepository<Diary> {
-				update(diary, true)
-			}
-			db.commit()
+	override suspend fun addDiary(diary: Diary): List<Diary> = withContext(dispatcher) {
+		db.getRepository<Diary> {
+			update(diary, true)
 		}
-
-		return getDiaries()
+		db.commit()
+		getDiaries()
 	}
 
-	override suspend fun deleteDiary(diaryId: String): List<Diary>
-	{
+	override suspend fun deleteDiary(diaryId: String): List<Diary> = withContext(dispatcher) {
 		val repo = db.getRepository<Diary>()
 		repo.remove(Diary::id eq diaryId)
-		return getDiaries()
+		getDiaries()
 	}
 
 	override suspend fun getDiaryById(diaryId: String): Diary?
@@ -58,23 +53,23 @@ class NitriteDiariesDataSource @Inject constructor(
 		return repo.find(Diary::id eq diaryId).firstOrNull()
 	}
 
-	override suspend fun getDiaries(): List<Diary> = db.getRepository<Diary>().find().toList()
-
-	override suspend fun sync(direction: DiariesDataSource.SyncDirection, vararg diary: Diary): List<Diary>
+	override suspend fun getDiaries(): List<Diary>
 	{
+		return db.getRepository<Diary>().find().toList()
+	}
+
+	override suspend fun sync(direction: DiariesDataSource.SyncDirection, vararg diary: Diary): List<Diary> = withContext(dispatcher) {
 		when (direction)
 		{
 			DiariesDataSource.SyncDirection.SAVE -> {
-				withContext(dispatcher) {
-					db.getRepository<Diary> {
-						diary.forEach { update(it, true) }
-					}
-
-					db.commit()
+				db.getRepository<Diary> {
+					diary.forEach { update(it, true) }
 				}
+
+				db.commit()
 			}
 		}
 
-		return getDiaries()
+		getDiaries()
 	}
 }

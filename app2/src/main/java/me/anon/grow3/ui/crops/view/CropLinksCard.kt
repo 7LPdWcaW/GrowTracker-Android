@@ -3,9 +3,14 @@ package me.anon.grow3.ui.crops.view
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.core.os.bundleOf
 import me.anon.grow3.data.model.Crop
 import me.anon.grow3.data.model.Diary
 import me.anon.grow3.databinding.CardCropLinksBinding
+import me.anon.grow3.ui.common.Extras
+import me.anon.grow3.ui.logs.fragment.LogListFragment
+import me.anon.grow3.util.navigateTo
+import me.anon.grow3.util.onClick
 import me.anon.grow3.view.model.Card
 
 class CropLinksCard : Card<CardCropLinksBinding>
@@ -26,6 +31,13 @@ class CropLinksCard : Card<CardCropLinksBinding>
 
 	override fun bind(view: CardCropLinksBinding)
 	{
-
+		view.viewLogs.onClick {
+			it.navigateTo<LogListFragment> {
+				bundleOf(
+					Extras.EXTRA_DIARY_ID to diary.id,
+					Extras.EXTRA_CROP_IDS to arrayOf(crop.id)
+				)
+			}
+		}
 	}
 }

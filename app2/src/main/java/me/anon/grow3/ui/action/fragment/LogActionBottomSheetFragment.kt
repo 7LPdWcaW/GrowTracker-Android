@@ -3,7 +3,6 @@ package me.anon.grow3.ui.action.fragment
 import android.view.View
 import androidx.core.graphics.plus
 import androidx.core.view.updatePadding
-import androidx.lifecycle.observe
 import com.google.android.material.bottomsheet.BottomSheetBehavior
 import me.anon.grow3.R
 import me.anon.grow3.util.*
@@ -40,10 +39,17 @@ class LogActionBottomSheetFragment : LogActionFragment()
 			{
 				BottomSheetBehavior.STATE_COLLAPSED -> {
 					viewBindings.logContent.visibility = View.INVISIBLE
+					//saveView()
 				}
 				else -> viewBindings.logContent.visibility = View.VISIBLE
 			}
 		}
+	}
+
+	override fun onStop()
+	{
+		super.onStop()
+		saveView()
 	}
 
 	override fun bindUi()

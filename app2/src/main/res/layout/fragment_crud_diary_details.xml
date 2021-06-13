@@ -15,9 +15,10 @@
 		<LinearLayout
 			android:layout_width="match_parent"
 			android:layout_height="wrap_content"
+			android:id="@+id/content_container"
 			android:clipToPadding="false"
 			android:orientation="vertical"
-			android:paddingBottom="72dp"
+			android:paddingBottom="@dimen/fab_spacing"
 		>
 			<com.google.android.material.card.MaterialCardView
 				android:layout_width="match_parent"
@@ -131,11 +132,23 @@
 				</androidx.constraintlayout.widget.ConstraintLayout>
 			</com.google.android.material.card.MaterialCardView>
 
-<!--			<include-->
-<!--				layout="@layout/card_stages"-->
-<!--				android:id="@+id/include_card_stages"-->
-<!--				android:visibility="gone"-->
-<!--			/>-->
+			<include
+				layout="@layout/card_stages"
+				android:id="@+id/include_card_stages"
+				android:visibility="gone"
+			/>
+			
+			<Button
+				android:layout_width="match_parent"
+				android:layout_height="wrap_content"
+				android:id="@+id/delete_diary"
+				android:text="Delete diary"
+				android:layout_marginTop="4dp"
+				android:layout_marginStart="8dp"
+				android:layout_marginEnd="8dp"
+				android:layout_marginBottom="12dp"
+				style="@style/Button.Danger"
+			/>
 		</LinearLayout>
 	</ScrollView>
 </FrameLayout>

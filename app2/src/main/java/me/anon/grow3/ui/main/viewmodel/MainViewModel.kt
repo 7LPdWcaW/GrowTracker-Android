@@ -19,5 +19,5 @@ class MainViewModel constructor(
 			MainViewModel(diariesRepository, handle)
 	}
 
-	public val logEvents = diariesRepository.observeLogEvents()
+	public val logEvents = diariesRepository.flowLogEvents()
 }

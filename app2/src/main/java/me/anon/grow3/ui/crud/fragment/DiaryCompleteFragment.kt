@@ -3,6 +3,7 @@ package me.anon.grow3.ui.crud.fragment
 import androidx.core.os.bundleOf
 import androidx.fragment.app.activityViewModels
 import androidx.lifecycle.lifecycleScope
+import com.freelapp.flowlifecycleobserver.collectWhileStarted
 import me.anon.grow3.databinding.FragmentCrudDiaryCompleteBinding
 import me.anon.grow3.ui.base.BaseFragment
 import me.anon.grow3.ui.common.Extras.EXTRA_DIARY_ID
@@ -24,21 +25,24 @@ class DiaryCompleteFragment : BaseFragment(FragmentCrudDiaryCompleteBinding::cla
 
 	init {
 		lifecycleScope.launchWhenCreated {
-			crudViewModel.completeCrud()
+			crudViewModel.complete()
+			component.corePreferences().isFirstLaunch = false
 		}
 	}
 
-	override fun bindUi()
+	override fun bindVm()
 	{
-		component.corePreferences().completeFirstLaunch()
+		crudViewModel.state
+			.collectWhileStarted(this) { state ->
+				val diary = (state as? DiaryCrudViewModel.UiResult.Loaded)?.diary ?: return@collectWhileStarted
+				viewBindings.close.setOnClickListener {
+					navigateTo<ViewDiaryFragment> {
+						bundleOf(EXTRA_DIARY_ID to diary.id)
+					}
 
-		viewBindings.close.setOnClickListener {
-			navigateTo<ViewDiaryFragment> {
-				bundleOf(EXTRA_DIARY_ID to crudViewModel.diaryVm.diary.value!!.id)
+					requireActivity().finish()
+				}
 			}
-
-			requireActivity().finish()
-		}
 	}
 
 	override fun onBackPressed(): Boolean

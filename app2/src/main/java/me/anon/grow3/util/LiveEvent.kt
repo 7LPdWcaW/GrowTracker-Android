@@ -6,7 +6,7 @@ import androidx.lifecycle.LifecycleOwner
 import androidx.lifecycle.OnLifecycleEvent
 import com.zhuinden.eventemitter.EventSource
 
-private class LiveEvent<T> constructor(
+public class LiveEvent<T> constructor(
 	private val eventSource: EventSource<T>,
 	private val lifecycleOwner: LifecycleOwner,
 	private val observer: EventSource.EventObserver<T>

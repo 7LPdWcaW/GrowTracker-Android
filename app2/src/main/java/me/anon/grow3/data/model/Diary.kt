@@ -206,8 +206,6 @@ data class Diary(
 		var i = 0
 		//log.sortedBy { it.date }
 	}
-
-	override fun equals(other: Any?): Boolean = (other as? Diary)?.id == id || super.equals(other)
 }
 
 public fun Diary(block: Diary.() -> Unit): Diary = Diary(name = "").apply(block)

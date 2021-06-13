@@ -6,6 +6,8 @@ import android.util.TypedValue
 import androidx.annotation.*
 import me.anon.grow3.BaseApplication
 
+public fun @receiver:DimenRes Int.dimen(context: Context): Float = context.resources.getDimension(this)
+
 @ColorInt
 public fun @receiver:AttrRes Int.resColor(context: Context): Int
 {
