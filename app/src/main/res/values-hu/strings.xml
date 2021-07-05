@@ -134,9 +134,9 @@
 	<string name="ripening">Virágzat beérése</string>
 	<string name="drying">Szárítás</string>
 	<string name="curing">Érlelés</string>
-	<string name="harvested">Learatva</string>
+	<string name="harvested">Szüretelve/Ritkítva</string>
 	<!-- example "harvested 2 days ago" -->
-	<string name="harvested_ago" formatted="true">Learatva %s napja</string>
+	<string name="harvested_ago" formatted="true">Szüretelve/Ritkítva %s napja</string>
 	<string name="menu_export_garden">Kert exportálása</string>
 	<string name="menu_edit_garden">Kert módosítása</string>
 	<string name="menu_delete_garden">Kert törlése</string>
