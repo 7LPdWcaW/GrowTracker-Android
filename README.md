@@ -3,6 +3,7 @@
 Welcome to grow tracker. This is a utility app designed for gardening and tracking various parameters of your grow.
 
 [![Latest Nightly](https://travis-ci.com/7LPdWcaW/GrowTracker-Android.svg?branch=alpha)](https://travis-ci.com/7LPdWcaW/GrowTracker-Android)
+[![GitHub commits since latest release](https://img.shields.io/github/commits-since/7LPdWcaW/GrowTracker-Android/latest)](https://github.com/7LPdWcaW/GrowTracker-Android/releases/tag/latest) 
 
 [Latest Nightly Build (Experimental!)](https://github.com/7LPdWcaW/GrowTracker-Android/releases/tag/alpha)
 
@@ -26,6 +27,11 @@ The app requires no permissions except for external storage (for caching plant d
 2. Download the APK from [here](https://github.com/7LPdWcaW/GrowTracker-Android/releases)
 3. Click on downloaded app and install
 
+[![GitHub release (latest SemVer)](https://img.shields.io/github/v/release/7LPdWcaW/GrowTracker-Android?label=latest%20version&sort=semver)](https://github.com/7LPdWcaW/GrowTracker-Android/releases)
+[![F-Droid](https://img.shields.io/f-droid/v/me.anon.grow)](https://f-droid.org/en/packages/me.anon.grow/)
+
+[<img src="https://fdroid.gitlab.io/artwork/badge/get-it-on.png" alt="Get it on F-Droid" height="80">](https://f-droid.org/en/packages/me.anon.grow/)
+
 ## Updating
 
 You can either elect to update manually, or get notified on releases by installing the [Update plugin](https://github.com/7LPdWcaW/GrowUpdater-Android/releases)
@@ -37,6 +43,10 @@ You can either elect to update manually, or get notified on releases by installi
 [![install](fastlane/metadata/android/en-GB/images/phoneScreenshotsThumbs/install.png)](fastlane/metadata/android/en-GB/images/phoneScreenshots/install.png)
 [![main plant list](fastlane/metadata/android/en-GB/images/phoneScreenshotsThumbs/1.png)](fastlane/metadata/android/en-GB/images/phoneScreenshots/1.png)
 [![plant details](fastlane/metadata/android/en-GB/images/phoneScreenshotsThumbs/2.png)](fastlane/metadata/android/en-GB/images/phoneScreenshots/2.png)
+
+<details>
+  <summary>More screenshots</summary>
+
 [![plant photos](fastlane/metadata/android/en-GB/images/phoneScreenshotsThumbs/3.png)](fastlane/metadata/android/en-GB/images/phoneScreenshots/3.png)
 [![plant actions](fastlane/metadata/android/en-GB/images/phoneScreenshotsThumbs/4.png)](fastlane/metadata/android/en-GB/images/phoneScreenshots/4.png)
 [![plant statistics](fastlane/metadata/android/en-GB/images/phoneScreenshotsThumbs/5.png)](fastlane/metadata/android/en-GB/images/phoneScreenshots/5.png)
@@ -55,6 +65,9 @@ You can either elect to update manually, or get notified on releases by installi
 [![dark garden tracker](fastlane/metadata/android/en-GB/images/phoneScreenshotsThumbs/9b.png)](fastlane/metadata/android/en-GB/images/phoneScreenshots/9b.png)
 [![settings](fastlane/metadata/android/en-GB/images/phoneScreenshotsThumbs/10.png)](fastlane/metadata/android/en-GB/images/phoneScreenshots/10.png)
 
+</details>
+
+    
 # About the app
 
 The app was designed with data in mind. All data is easily accessible via the app's files folder in `Android/data/me.anon.grow/files/`. You will need a file explorer to browse this folder, or alternatively, you can back your data up via the app settings which will create copies in `backups/GrowTracker/`
