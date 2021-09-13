@@ -1,12 +1,12 @@
 # GrowTracker
 
-Welcome to grow tracker. This is a utility app designed for gardening and tracking various parameters of your grow.
-
 [![Latest Nightly](https://travis-ci.com/7LPdWcaW/GrowTracker-Android.svg?branch=alpha)](https://travis-ci.com/7LPdWcaW/GrowTracker-Android)
 [![GitHub commits since latest release](https://img.shields.io/github/commits-since/7LPdWcaW/GrowTracker-Android/latest)](https://github.com/7LPdWcaW/GrowTracker-Android/releases/tag/latest)
 [![Telegram](https://img.shields.io/badge/chat-on%20Telegram-blue)](https://t.me/GrowTracker) 
 [![Subreddit subscribers](https://img.shields.io/reddit/subreddit-subscribers/growutils?color=orange)](https://reddit.com/r/growutils)
 [![GitHub license](https://img.shields.io/github/license/7LPdWcaW/GrowTracker-Android?color=lightgrey)](https://github.com/7LPdWcaW/GrowTracker-Android/blob/master/LICENSE)
+
+Welcome to grow tracker. This is a utility app designed for gardening and tracking various parameters of your grow.
 
 # Install
 
