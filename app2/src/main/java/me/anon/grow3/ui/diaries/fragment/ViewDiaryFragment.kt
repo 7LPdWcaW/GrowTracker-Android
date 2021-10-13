@@ -7,6 +7,7 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import com.freelapp.flowlifecycleobserver.collectWhileStarted
 import me.anon.grow3.R
 import me.anon.grow3.data.model.Diary
+import me.anon.grow3.data.model.Photo
 import me.anon.grow3.data.model.Water
 import me.anon.grow3.data.model.shortSummary
 import me.anon.grow3.databinding.FragmentViewDiaryBinding
@@ -65,6 +66,17 @@ class ViewDiaryFragment : BaseFragment(FragmentViewDiaryBinding::class)
 				bundleOf(
 					Extras.EXTRA_DIARY_ID to viewModel.diaryId,
 					Extras.EXTRA_LOG_TYPE to nameOf<Water>()
+				)
+			}
+		}
+
+		viewBindings.menuLogPhoto.onClick {
+			viewBindings.menuFab.isExpanded = false
+			navigationPager?.isUserInputEnabled = true
+			navigateTo<LogActionBottomSheetFragment>(true) {
+				bundleOf(
+					Extras.EXTRA_DIARY_ID to viewModel.diaryId,
+					Extras.EXTRA_LOG_TYPE to nameOf<Photo>()
 				)
 			}
 		}

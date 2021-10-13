@@ -3,6 +3,8 @@ package me.anon.grow3
 import android.app.Application
 import android.content.Context
 import com.jakewharton.threetenabp.AndroidThreeTen
+import com.nostra13.universalimageloader.core.ImageLoader
+import com.nostra13.universalimageloader.core.ImageLoaderConfiguration
 import me.anon.grow3.di.ApplicationComponent
 import me.anon.grow3.di.DaggerApplicationComponent
 import me.anon.grow3.di.module.AppModule
@@ -31,6 +33,10 @@ abstract class BaseApplication : Application()
 		context = this
 		AndroidThreeTen.init(this)
 		Timber.plant(Timber.DebugTree())
+
+		val config = ImageLoaderConfiguration.Builder(this)
+			.build()
+		ImageLoader.getInstance().init(config)
 
 		dataPath = getExternalFilesDir(null)!!.absolutePath
 		setup()

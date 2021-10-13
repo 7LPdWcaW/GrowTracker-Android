@@ -4,10 +4,7 @@ import androidx.lifecycle.*
 import kotlinx.coroutines.flow.*
 import kotlinx.coroutines.launch
 import me.anon.grow3.data.exceptions.GrowTrackerException.*
-import me.anon.grow3.data.model.Diary
-import me.anon.grow3.data.model.Log
-import me.anon.grow3.data.model.StageChange
-import me.anon.grow3.data.model.Water
+import me.anon.grow3.data.model.*
 import me.anon.grow3.data.repository.DiariesRepository
 import me.anon.grow3.ui.common.Extras
 import me.anon.grow3.ui.common.Extras.EXTRA_LOG_TYPE
@@ -64,6 +61,7 @@ class LogActionViewModel constructor(
 				{
 					nameOf<Water>() -> Water { }
 					nameOf<StageChange>() -> StageChange(diary.stage().type)
+					nameOf<Photo>() -> Photo()
 					else -> throw InvalidLogType()
 				}
 

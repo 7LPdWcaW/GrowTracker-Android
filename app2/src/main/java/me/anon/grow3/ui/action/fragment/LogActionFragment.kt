@@ -1,12 +1,18 @@
 package me.anon.grow3.ui.action.fragment
 
+import android.app.Activity
+import android.content.Intent
+import androidx.activity.result.contract.ActivityResultContracts
+import androidx.core.view.get
 import androidx.core.view.isVisible
 import androidx.core.view.plusAssign
 import androidx.fragment.app.viewModels
 import com.freelapp.flowlifecycleobserver.collectWhileStarted
 import com.google.android.material.textfield.TextInputLayout
 import me.anon.grow3.R
-import me.anon.grow3.data.model.*
+import me.anon.grow3.data.model.Diary
+import me.anon.grow3.data.model.Log
+import me.anon.grow3.data.model.asView
 import me.anon.grow3.databinding.FragmentActionLogBinding
 import me.anon.grow3.databinding.ViewLogCommonBinding
 import me.anon.grow3.ui.action.view.LogView
@@ -33,6 +39,25 @@ open class LogActionFragment : BaseFragment(FragmentActionLogBinding::class)
 	protected val viewBindings by viewBinding<FragmentActionLogBinding>()
 	protected var logView: LogView<*>? = null
 	private var isFinishing = false
+
+	public var intentCallback: ((Intent) -> Unit)? = null
+	public val intentResult = registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { result ->
+		val resultCode = result.resultCode
+		val data = result.data
+
+		if (resultCode == Activity.RESULT_OK)
+		{
+			intentCallback?.invoke(data!!)
+			intentCallback = null
+			logView?.bindView(viewBindings.logContent[0])
+		}
+	}
+
+	override fun onDestroy()
+	{
+		super.onDestroy()
+		intentCallback = null
+	}
 
 //	override fun bindArguments(bundle: Bundle?)
 //	{
@@ -128,14 +153,10 @@ open class LogActionFragment : BaseFragment(FragmentActionLogBinding::class)
 	{
 		viewBindings.actionDelete.isVisible = !viewModel.isNew
 
-		logView = when (log)
-		{
-			is Water -> log.logView(diary, log)
-			is StageChange -> log.logView(diary, log)
-			else -> null
-		}
-
+		logView = log.asView(diary)
 		logView?.let { logView ->
+			logView.fragment = this
+
 			viewBindings.toolbar.title = logView.provideTitle() ?: R.string.log_action_new_title.string()
 
 			viewBindings.logContent.removeAllViews()

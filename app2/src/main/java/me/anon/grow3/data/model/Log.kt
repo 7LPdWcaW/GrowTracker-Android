@@ -2,6 +2,8 @@ package me.anon.grow3.data.model
 
 import com.fasterxml.jackson.annotation.JsonSubTypes
 import com.fasterxml.jackson.annotation.JsonTypeInfo
+import me.anon.grow3.data.exceptions.GrowTrackerException
+import me.anon.grow3.ui.action.view.LogView
 import me.anon.grow3.util.*
 import org.threeten.bp.ZonedDateTime
 import java.util.*
@@ -36,3 +38,14 @@ data class LogChange(
 ) : Delta()
 
 public fun Duo<Log>.difference(): LogChange = LogChange((first.date and second!!.date).dateDifferenceDays())
+
+public fun Log.asView(diary: Diary): LogView<out Log>
+{
+	return when (this)
+	{
+		is Water -> logView(diary, this)
+		is StageChange -> logView(diary, this)
+		is Photo -> logView(diary, this)
+		else -> throw GrowTrackerException.InvalidLog(this)
+	}
+}
