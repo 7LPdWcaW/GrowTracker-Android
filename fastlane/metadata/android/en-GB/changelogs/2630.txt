@@ -1,0 +1,6 @@
+- Fixes crash with accessibility conflict
+- Fixes issue with gallery folders showing up in photos
+- Refactors export diary functionality
+- Fixes issue with crash when adding a new plant
+- Fixes issue with deleting plant not working
+- Various tidyups
