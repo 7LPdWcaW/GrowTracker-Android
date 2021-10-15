@@ -1,3 +1,5 @@
+NOTE: This version is built with the latest Android SDK, but is only targeted for api 28 (Android 9). Some functionality may be broken.
+
 - Fixes crash with accessibility conflict
 - Fixes issue with gallery folders showing up in photos
 - Refactors export diary functionality
