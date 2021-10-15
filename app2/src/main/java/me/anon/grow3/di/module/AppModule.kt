@@ -5,7 +5,6 @@ import dagger.Module
 import dagger.Provides
 import me.anon.grow3.data.repository.DiariesRepository
 import me.anon.grow3.data.repository.impl.DefaultDiariesRepository
-import me.anon.grow3.data.source.DiariesDataSource
 import me.anon.grow3.data.source.nitrite.NitriteDiariesDataSource
 import me.anon.grow3.util.application
 import javax.inject.Named
@@ -18,19 +17,14 @@ class AppModule(
 {
 	@Singleton
 	@Provides
-	public fun provideAppContext() = appContext.applicationContext
+	public fun provideContext(): Context = appContext.applicationContext
 
-	@Singleton
 	@Provides
-	@Named("garden_source")
-	public fun provideGardenSource(): String = appContext.application.dataPath + "/diaries.db"
+	@Named("diaries_source")
+	public fun provideDiariesSource(context: Context): String
+		= context.application.dataPath + "/diaries.db"
 
-	@Singleton
 	@Provides
-	public fun provideDiariesDataSource(dataSource: NitriteDiariesDataSource): DiariesDataSource = dataSource
-
-	@Singleton
-	@Provides
-	public fun provideDiariesRepository(source: DiariesDataSource): DiariesRepository
+	public fun provideDiariesRepository(source: NitriteDiariesDataSource): DiariesRepository
 		= DefaultDiariesRepository.getInstance(source)
 }

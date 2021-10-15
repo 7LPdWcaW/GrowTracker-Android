@@ -15,8 +15,8 @@ import androidx.fragment.app.Fragment
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.viewbinding.ViewBinding
-import kotlinx.android.synthetic.main.include_toolbar.view.*
 import me.anon.grow3.R
+import me.anon.grow3.databinding.IncludeToolbarBinding
 import me.anon.grow3.util.Injector
 import me.anon.grow3.util.component
 import kotlin.reflect.KClass
@@ -93,8 +93,9 @@ open class BaseActivity : AppCompatActivity
 		super.setContentView(view)
 
 		findViewById<View?>(R.id.include_toolbar)?.let {
-			toolbar = it.toolbar
-			statusBarColor = it.toolbar.background.toBitmap(1, 1, Bitmap.Config.RGB_565)[0,0]
+			val bind = IncludeToolbarBinding.bind(it)
+			toolbar = bind.toolbar
+			statusBarColor = bind.toolbar.background.toBitmap(1, 1, Bitmap.Config.RGB_565)[0,0]
 		}
 	}
 

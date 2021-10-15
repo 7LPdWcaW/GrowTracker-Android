@@ -32,19 +32,19 @@ class DefaultDiariesRepository(
 		emit(diaries)
 	}
 
-	override fun flowDiary(diaryId: String): Flow<DataResult<Diary>>
+	override fun flowDiary(id: String): Flow<DataResult<Diary>>
 	{
-		var flow = flows[diaryId]
+		var flow = flows[id]
 		if (flow == null)
 		{
 			flow = _trigger
 				.mapLatest {
-					val diary = getDiaryById(diaryId)
+					val diary = getDiaryById(id)
 					if (diary != null) DataResult.success(diary)
-					else DataResult.error(GrowTrackerException.DiaryLoadFailed(diaryId))
+					else DataResult.error(GrowTrackerException.DiaryLoadFailed(id))
 				}
 
-			flows[diaryId] = flow
+			flows[id] = flow
 		}
 
 		return flow.shareIn(scope, SharingStarted.WhileSubscribed(500L), 1)

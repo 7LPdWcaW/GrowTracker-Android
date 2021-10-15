@@ -8,7 +8,6 @@ import com.freelapp.flowlifecycleobserver.collectWhileStarted
 import me.anon.grow3.R
 import me.anon.grow3.data.model.Diary
 import me.anon.grow3.data.model.Water
-import me.anon.grow3.data.model.shortSummary
 import me.anon.grow3.databinding.FragmentViewDiaryBinding
 import me.anon.grow3.ui.action.fragment.LogActionBottomSheetFragment
 import me.anon.grow3.ui.base.BaseFragment
@@ -87,7 +86,7 @@ class ViewDiaryFragment : BaseFragment(FragmentViewDiaryBinding::class)
 	private fun updateDiaryUi(diary: Diary)
 	{
 		viewBindings.collapsingToolbarLayout.title = diary.name
-		viewBindings.collapsingToolbarLayout.subtitle = diary.stages().shortSummary()
+//		viewBindings.collapsingToolbarLayout.subtitle = diary.stages().shortSummary()
 
 		viewBindings.toolbar.menu.clear()
 		viewBindings.toolbar.inflateMenu(R.menu.menu_diary)

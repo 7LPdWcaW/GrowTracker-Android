@@ -17,7 +17,7 @@ import javax.inject.Singleton
 
 @Singleton
 class NitriteDiariesDataSource @Inject constructor(
-	@Named("garden_source") private val sourcePath: String,
+	@Named("diaries_source") private val sourcePath: String,
 	@Named("io_dispatcher") private val dispatcher: CoroutineDispatcher = Dispatchers.IO
 ) : DiariesDataSource
 {
