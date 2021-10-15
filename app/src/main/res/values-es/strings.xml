@@ -129,7 +129,9 @@
 	<string name="germination">Germinación</string>
 	<string name="cutting">Esqueje</string>
 	<string name="vegetation">Vegetación</string>
+	<string name="budding">Cerniendo</string>
 	<string name="flowering">Florecimiento</string>
+	<string name="ripening">Madurado</string>
 	<string name="drying">Secado</string>
 	<string name="curing">Curando</string>
 	<string name="harvested">Cosechado</string>
@@ -146,14 +148,13 @@
 	<string name="ave_time_between_water_label">Tiempo promedio entre regados:</string>
 	<string name="filter_additives">Filtrar aditivos</string>
 	<string name="ph_title">PH</string>
-
 	<string name="min">Mín:</string>
 	<string name="max">Máx:</string>
 	<string name="ave">Promedio:</string>
 	<string name="temperature_title">Temperatura</string>
 	<string name="general_title">General</string>
 	<string name="failed_to_load_plant">Falló al cargar la planta</string>
-	<string name="action_fim">Mierda, se me olvidó (FIM)</string>
+	<string name="action_fim">FIM</string>
 	<string name="action_flush">Desagotar</string>
 	<string name="action_foliar_feed">Alimentación foliar</string>
 	<string name="action_lst">Entrenamiento de bajo stress</string>
@@ -163,6 +164,8 @@
 	<string name="action_transplanted">Transplantado</string>
 	<string name="action_trim">Recortar</string>
 	<string name="action_tuck">Meter debajo de follaje preexistente</string>
+	<string name="action_supercrop">Supercrop</string>
+	<string name="action_monstercrop">Monstercrop</string>
 
 	<string name="watered">Regado</string>
 	<string name="note">Nota</string>
@@ -246,7 +249,7 @@
 	<string name="failsafe_message">Provee esta contraseña durante la desencriptación para prevenir que la información se cargue</string>
 	<string name="warning">Alerta</string>
 	<string name="encryption_message">Esta es una forma básica de encriptación AES, basado en una frase contraseña. Esto no es una defensa garantizada contra organismos de justicia.</string>
-	<string name="backup_enable_toast">Copia de seguridad habilitada, copias se guardaran en /sdcard/backups/GrowTracker/</string>
+	<string name="backup_enable_toast" formatted="true">Copia de seguridad habilitada, copias se guardaran en /sdcard/backups/GrowTracker/</string>
 	<string name="restore_complete" formatted="true">Restauración a %s completada </string>
 	<string name="restore_error" formatted="true">No se pudo restaurar desde la copia de seguridad %s. El archivo puede ser %s</string>
 	<string name="encrypted">encriptado</string>
@@ -265,7 +268,6 @@
 	<string name="stat_input_ph">PH de entrada</string>
 	<string name="stat_runoff_ph">Perdida de PH</string>
 	<string name="stat_average_ph">PH promedio</string>
-
 	<string name="photos_title">Fotos de la planta</string>
 
 	<string name="plant_summary_ph">PH de entrada:</string>
@@ -408,4 +410,12 @@
 	<string name="no_data">No hay ninguna información disponible</string>
 
 	<string name="camera_permission_summary">Para tomar fotos se necesita el permiso para la cámara </string>
-</resources>
+	<string name="settings_backup_management_title">Manejo de copias de seguridad</string>
+	<string name="settings_backup_location_title">Lugar de guardadado de la copia de seguridad</string>
+	<string name="settings_backup_location_summary" formatted="true">Ubicación de la copia de seguridad, actualmente &lt;b&gt;%s&lt;/b&gt;</string>
+	<string name="settings_backup_location_error">Falló en establecer ubicación de la copia de seguridad</string>
+	<string name="settings_import_error">Falló al importar plantas desde archivo</string>
+	<string name="settings_import">Importar plantas desde archivo</string>
+	<string name="settings_import_success">Plantas importadas de archivo correctamente</string>
+
+	</resources>

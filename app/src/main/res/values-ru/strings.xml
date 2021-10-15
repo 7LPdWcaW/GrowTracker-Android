@@ -129,7 +129,9 @@
 	<string name="germination">Прорастание</string>
 	<string name="cutting">Срез</string>
 	<string name="vegetation">Вегетация</string>
+	<string name="budding">Формирование соцветий</string>
 	<string name="flowering">Цветение</string>
+	<string name="ripening">Созревание</string>
 	<string name="drying">Сушка</string>
 	<string name="curing">Выдержка (пролечка)</string>
 	<string name="harvested">Собрано</string>
@@ -143,9 +145,13 @@
 	<string name="total_time_label">Общее время:</string>
 	<string name="total_waters_label">Всего поливов:</string>
 	<string name="total_flushes_label">Всего промываний:</string>
+	<string name="total_water_amount_label">Всего воды:</string>
+	<string name="ave_water_amount_label">Средний объём полива:</string>
 	<string name="ave_time_between_water_label">Средний интервал между поливами:</string>
+	<string name="ave_time_stage_label" formatted="true">Сред. полив %s:</string>
 	<string name="filter_additives">Фильтр удобрений</string>
 	<string name="ph_title">pH</string>
+	<string name="tds_title">Минерализация</string>
 
 	<string name="min">Мин:</string>
 	<string name="max">Макс:</string>
@@ -153,7 +159,7 @@
 	<string name="temperature_title">Температура</string>
 	<string name="general_title">Общие</string>
 	<string name="failed_to_load_plant">Не удалось загрузить растение</string>
-	<string name="action_fim">Fuck I Missed (FIM)</string>
+	<string name="action_fim">FIM</string>
 	<string name="action_flush">Промывание</string>
 	<string name="action_foliar_feed">Листовая подкормка</string>
 	<string name="action_lst">LST (низкострессовая тренировка)</string>
@@ -163,6 +169,8 @@
 	<string name="action_transplanted">Пересадка</string>
 	<string name="action_trim">Тримминг</string>
 	<string name="action_tuck">Применение ScrOG</string>
+	<string name="action_supercrop">Суперкроппинг</string>
+	<string name="action_monstercrop">Монстркроппинг</string>
 
 	<string name="watered">Полито</string>
 	<string name="note">Заметка</string>
@@ -209,7 +217,7 @@
 	<string name="passphrase_error">Ошибка - пароли не совпадают</string>
 
 	<string name="fatal_error">Во время сохранения данных произошла ошибка. Пожалуйста, создайте резервную копию данных.</string>
-	<string name="taken">Готово</string>
+	<string name="taken">Сделано</string>
 	<string name="ago" formatted="true">%s назад</string>
 	<string name="watered_ago" formatted="true">Полито &lt;b&gt;%s&lt;/b&gt; назад</string>
 	<string name="last_watered_ago" formatted="true">Последний полив &lt;b&gt;%s&lt;/b&gt; назад</string>
@@ -265,6 +273,9 @@
 	<string name="stat_input_ph">Входной pH</string>
 	<string name="stat_runoff_ph">pH стока</string>
 	<string name="stat_average_ph">Средний pH</string>
+	<string name="stat_average_temp">Средняя температура</string>
+	<string name="stat_average_runoff_ph">Средний pH стоков</string>
+	<string name="stat_average_tds" formatted="true">Средний %s</string>
 
 	<string name="photos_title">Фото растения</string>
 
@@ -324,12 +335,12 @@
 
 	<!-- now = 1 second -->
 	<string name="now_abbr">1с</string>
-	<string name="second_abbr">с</string>
+	<string name="second_abbr">сек</string>
 	<string name="minute_abbr">мин</string>
-	<string name="hour_abbr">ч</string>
-	<string name="day_abbr">д</string>
-	<string name="week_abbr">н</string>
-	<string name="month_abbr">м</string>
+	<string name="hour_abbr">час</string>
+	<string name="day_abbr">дн</string>
+	<string name="week_abbr">нед</string>
+	<string name="month_abbr">мес</string>
 	<string name="year_abbr">г</string>
 
 	<string name="view_details_short">Детали</string>
@@ -411,7 +422,9 @@
 	<string name="cache_cleared">Кеш изображений очищен</string>
 	<string name="import_progress_warning">Импорт изображений, может занять некоторое время...</string>
 	<string name="data_task">Обработка данных</string>
-	<string name="task_complete">Задание выполнено</string>
+	<string name="import_task_complete">Импорт изображений завершён</string>
+	<string name="decrypt_task_complete">Расшифровка изображений завершена</string>
+	<string name="encrypt_task_complete">Шифрование изображений завершено</string>
 	<string name="empty_actions_list">Нет действий</string>
 
 	<string name="exporting_start">Экспортирую журнал для %s</string>
@@ -429,4 +442,13 @@
 	<string name="settings_import_error">Не удалось импортировать растения</string>
 	<string name="settings_import">Импортировать растения из файла</string>
 	<string name="settings_import_success">Растение успешно импортировано из файла</string>
+
+	<string name="additive_stat_header" formatted="true">Статистика %s</string>
+	<string name="additive_average_usage_label">Средняя доза:</string>
+	<string name="additive_usage_count_label">Использовано раз:</string>
+	<string name="additive_total_usage_label">Всего удобрений:</string>
+
+	<string name="additives_concentration_title">Концентрация удобрений:</string>
+	<string name="additives_overtime_title">Удобрений со временем</string>
+	<string name="additives_distribution_title">Распределение удобрений:</string>
 </resources>

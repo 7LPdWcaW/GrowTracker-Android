@@ -130,8 +130,15 @@ public class ImageLightboxDialog extends FragmentActivity
 				try
 				{
 					ExifInterface exifInterface = new ExifInterface(images[position]);
-					exifInterface.setAttribute("UserComment", ((EditText)((View)object).findViewById(R.id.comment)).getText().toString());
-					exifInterface.saveAttributes();
+					String comment = exifInterface.getAttribute("UserComment");
+					if (comment == null) comment = "";
+					String text = ((EditText)((View)object).findViewById(R.id.comment)).getText().toString();
+
+					if (!text.equalsIgnoreCase(comment))
+					{
+						exifInterface.setAttribute("UserComment", ((EditText)((View)object).findViewById(R.id.comment)).getText().toString());
+						exifInterface.saveAttributes();
+					}
 				}
 				catch (IOException e)
 				{

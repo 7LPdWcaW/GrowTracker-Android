@@ -9,6 +9,11 @@ import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.EditText;
+import android.widget.TextView;
+
+import java.text.DateFormat;
+import java.util.Calendar;
+import java.util.Date;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AlertDialog;
@@ -22,11 +27,13 @@ public class NoteDialogFragment extends DialogFragment
 {
 	public static interface OnDialogConfirmed
 	{
-		public void onDialogConfirmed(String notes);
+		public void onDialogConfirmed(String notes, Date date);
 	}
 
 	@Views.InjectView(R.id.notes) private EditText notes;
+	@Views.InjectView(R.id.date) private TextView date;
 	private NoteAction action;
+	private Date actionDate = new Date();
 
 	private OnDialogConfirmed onDialogConfirmed;
 	public DialogInterface.OnCancelListener onCancelListener;
@@ -55,10 +62,44 @@ public class NoteDialogFragment extends DialogFragment
 
 		Views.inject(this, view);
 
+		actionDate = Calendar.getInstance().getTime();
 		if (action != null)
 		{
 			notes.setText(action.getNotes());
+			actionDate = new Date(action.getDate());
 		}
+
+		final DateFormat dateFormat = android.text.format.DateFormat.getDateFormat(getActivity());
+		final DateFormat timeFormat = android.text.format.DateFormat.getTimeFormat(getActivity());
+
+		String dateStr = dateFormat.format(actionDate) + " " + timeFormat.format(actionDate);
+
+		this.date.setText(dateStr);
+		this.date.setOnClickListener(new View.OnClickListener()
+		{
+			@Override public void onClick(View v)
+			{
+				final DateDialogFragment fragment = DateDialogFragment.newInstance(actionDate.getTime());
+				fragment.setOnDateSelected(new DateDialogFragment.OnDateSelectedListener()
+				{
+					@Override public void onDateSelected(Calendar date)
+					{
+						String dateStr = dateFormat.format(date.getTime()) + " " + timeFormat.format(date.getTime());
+						NoteDialogFragment.this.date.setText(dateStr);
+
+						actionDate = date.getTime();
+
+						onCancelled();
+					}
+
+					@Override public void onCancelled()
+					{
+						getChildFragmentManager().beginTransaction().remove(fragment).commit();
+					}
+				});
+				getChildFragmentManager().beginTransaction().add(fragment, "date").commit();
+			}
+		});
 
 		dialog.setView(view);
 		dialog.setPositiveButton(action == null ? R.string.add : R.string.edit, new DialogInterface.OnClickListener()
@@ -67,7 +108,10 @@ public class NoteDialogFragment extends DialogFragment
 			{
 				if (onDialogConfirmed != null)
 				{
-					onDialogConfirmed.onDialogConfirmed(TextUtils.isEmpty(notes.getText()) ? null : notes.getText().toString());
+					onDialogConfirmed.onDialogConfirmed(
+						TextUtils.isEmpty(notes.getText()) ? null : notes.getText().toString(),
+						actionDate
+					);
 				}
 			}
 		});

@@ -129,12 +129,14 @@
 	<string name="germination">Germination</string>
 	<string name="cutting">Cutting</string>
 	<string name="vegetation">Vegetation</string>
+	<string name="budding">Budding</string>
 	<string name="flowering">Flowering</string>
+	<string name="ripening">Ripening</string>
 	<string name="drying">Drying</string>
 	<string name="curing">Curing</string>
-	<string name="harvested">Harvested</string>
+	<string name="harvested">Harvested/Culled</string>
 	<!-- example "harvested 2 days ago" -->
-	<string name="harvested_ago" formatted="true">Harvested %s ago</string>
+	<string name="harvested_ago" formatted="true">Harvested/Culled %s ago</string>
 	<string name="menu_export_garden">Export garden</string>
 	<string name="menu_edit_garden">Edit garden</string>
 	<string name="menu_delete_garden">Delete garden</string>
@@ -143,9 +145,13 @@
 	<string name="total_time_label">Total time:</string>
 	<string name="total_waters_label">Total waters:</string>
 	<string name="total_flushes_label">Total flushes:</string>
+	<string name="total_water_amount_label">Total water:</string>
+	<string name="ave_water_amount_label">Ave. water used:</string>
 	<string name="ave_time_between_water_label">Ave. time between water:</string>
+	<string name="ave_time_stage_label" formatted="true">Ave. %s water:</string>
 	<string name="filter_additives">Filter additives</string>
 	<string name="ph_title">pH</string>
+	<string name="tds_title">TDS</string>
 
 	<string name="min">Min:</string>
 	<string name="max">Max:</string>
@@ -153,7 +159,7 @@
 	<string name="temperature_title">Temperature</string>
 	<string name="general_title">General</string>
 	<string name="failed_to_load_plant">Failed to load plant</string>
-	<string name="action_fim">Fuck I Missed (FIM)</string>
+	<string name="action_fim">FIM</string>
 	<string name="action_flush">Flush</string>
 	<string name="action_foliar_feed">Foliar Feed</string>
 	<string name="action_lst">Low Stress Training</string>
@@ -163,6 +169,8 @@
 	<string name="action_transplanted">Transplanted</string>
 	<string name="action_trim">Trim</string>
 	<string name="action_tuck">ScrOG Tuck</string>
+	<string name="action_supercrop">Supercrop</string>
+	<string name="action_monstercrop">Monstercrop</string>
 
 	<string name="watered">Watered</string>
 	<string name="note">Note</string>
@@ -265,6 +273,9 @@
 	<string name="stat_input_ph">Input pH</string>
 	<string name="stat_runoff_ph">Runoff pH</string>
 	<string name="stat_average_ph">Average pH</string>
+	<string name="stat_average_temp">Average temp</string>
+	<string name="stat_average_runoff_ph">Average runoff pH</string>
+	<string name="stat_average_tds" formatted="true">Average %s</string>
 
 	<string name="photos_title">Plant photos</string>
 
@@ -415,7 +426,9 @@
 	<string name="cache_cleared">Image disk and memory cache cleared</string>
 	<string name="import_progress_warning">Importing images, this may take a while…</string>
 	<string name="data_task">Data task</string>
-	<string name="task_complete">Task completed</string>
+	<string name="import_task_complete">Image import completed</string>
+	<string name="decrypt_task_complete">Image decryption completed</string>
+	<string name="encrypt_task_complete">Image encryption completed</string>
 	<string name="empty_actions_list">There are no actions to show</string>
 
 	<string name="exporting_start">Exporting grow log for %s</string>
@@ -433,4 +446,13 @@
 	<string name="settings_import_error">Failed to import plants from file</string>
 	<string name="settings_import">Import plants from file</string>
 	<string name="settings_import_success">Plants successfully imported from file</string>
+
+	<string name="additive_stat_header" formatted="true">%s stats</string>
+	<string name="additive_average_usage_label">Ave. per feeding:</string>
+	<string name="additive_usage_count_label">Times used:</string>
+	<string name="additive_total_usage_label">Total additive:</string>
+
+	<string name="additives_concentration_title">Additive concentration</string>
+	<string name="additives_overtime_title">Additives over time</string>
+	<string name="additives_distribution_title">Additives distribution</string>
 </resources>

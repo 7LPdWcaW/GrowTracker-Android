@@ -1,0 +1,455 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<resources>
+	<string name="version">Različica %s</string>
+	<string name="menu_settings">Nastavitve</string>
+
+	<!-- Garden Plant list title "garden name plants" -->
+	<string name="list_title">%srastlin</string>
+	<!-- All plants list -->
+	<string name="all_list_title">Vse rastline</string>
+	<!-- All/everything -->
+	<string name="all">Vse</string>
+	<string name="snackbar_action_add">Dejanja dodana</string>
+	<string name="snackbar_note_add">Zapiski dodani</string>
+	<string name="snackbar_watering_add">Zalivanje dodano</string>
+	<string name="snackbar_garden_deleted">Vrt izbrisan</string>
+
+	<string name="dialog_garden_delete_body">Ali ste prepričani, da želite izbrisati vrt &lt;b&gt;%s&lt;/b&gt;? Dejanje ne bo izbrisalo rastlin</string>
+	<string name="action_feed">Voda</string>
+	<string name="action_action">Dejanje</string>
+
+	<string name="widget_encrypt_error">Pripomoček ni na voljo, ko je vključena nastavitev za šifriranje</string>
+	<string name="new_plant_title">Dodaj novo rastlino</string>
+	<string name="plant_details_title">Podrobnosti o rastlini</string>
+	<string name="statistics_title">Statistika o rastlini</string>
+	<!-- select from camera -->
+	<string name="photo_option_camera">Iz fotoaparata</string>
+	<!-- select from gallery -->
+	<string name="photo_option_gallery">Iz galerije</string>
+	<string name="dialog_option_title">Izberi možnost</string>
+	<string name="dialog_select_picture_title">izberi sliko</string>
+	<string name="snackbar_action_apply">Uporabi za drugo rastlino</string>
+	<string name="dialog_select_plant_title">Izberi rastlino</string>
+	<string name="snackbar_image_added">Slika dodana</string>
+	<string name="snackbar_action_take_another">Zajami še eno</string>
+
+	<string name="nav_feeding_schedule">Urniki</string>
+	<string name="schedule_details_title">Podrobnosti o urniku</string>
+	<string name="schedule_date_title">Datum urnika</string>
+	<string name="schedule_name">Ime</string>
+	<string name="schedule_name_hint">Rahlo hranjenje</string>
+	<string name="schedule_description">Opis</string>
+	<!-- an example of a feeding schedule -->
+	<string name="schedule_description_hint">Rahlo hranjene z 2 tedenskim izpiranjem</string>
+
+	<string name="schedules_new_feeding">+ Novo hranjenje</string>
+	<string name="schedules_new_schedule">+ Nov urnik</string>
+	<string name="new_additive">+ Nov dodatek</string>
+	<string name="additives">Dodatki</string>
+	<string name="additive">Dodatek</string>
+	<string name="from_date">Od datuma</string>
+	<string name="from_stage">Od faze</string>
+	<string name="to_date">Do datuma</string>
+	<string name="to_stage">Do faze</string>
+	<string name="populate_from_schedule">Napolni iz urnika</string>
+	<string name="populate_from_previous">Napolni iz prejšnjega</string>
+	<string name="confirm_title">Ali ste prepričani?</string>
+	<string name="confirm_copy_schedule">Kopiranje izbranega urnika?</string>
+	<string name="confirm_delete_schedule">Brisanje izbranega urnika?</string>
+	<string name="schedule_copied">Urnik kopiran</string>
+	<string name="schedule_deleted">Urnik izbrisan</string>
+	<string name="undo">Razveljavi</string>
+	<string name="feeding_schedules_title">Urniki hranjenja</string>
+	<string name="feeding_schedule_title">Urniki hranjenja</string>
+	<string name="update_dialog_title">Aplikacija posodobljena</string>
+	<string name="update_dialog_message" formatted="true">Aplikacija je bila posodobljena na različico %s</string>
+	<string name="update_dialog_view_changes_button">Preglej spremembe</string>
+	<string name="update_dialog_dismiss_button">Zavrzi</string>
+
+	<!-- Feeding {plant name} -->
+	<string name="feeding_single_title" formatted="true">Zalivanje %s</string>
+	<string name="feeding_multiple_title">Zalivanje več rastlin</string>
+
+	<string name="action_dialog_notes">Beležka</string>
+	<string name="water_details_title">Podrobnosti o vodi</string>
+	<string name="water_ph_label">pH vode</string>
+	<string name="ppm_label">ppm</string>
+	<string name="runoff_label">Odtok</string>
+	<string name="amount_label" formatted="true">Količina (%s)</string>
+	<string name="temp_label" formatted="true">Temp. (º%s)</string>
+	<string name="date_and_time_header">Datum in čas</string>
+	<string name="date_now">Zdaj</string>
+	<string name="date_label">Datum</string>
+	<string name="today">Danes</string>
+	<string name="length_cured">Zori že %s dni</string>
+
+	<string name="filter_waterings">Zalivanja</string>
+	<string name="filter_stage_changes">Spremembe faz</string>
+
+	<string name="menu_duplicate">Podvojeno</string>
+	<string name="menu_copy_to">Kopiraj v</string>
+	<string name="menu_edit_action">Uredi dejanje</string>
+	<string name="menu_delete_action">Izbriši dejanje</string>
+
+	<string name="garden_dialog_select">Izberi rastline</string>
+	<string name="nav_gardens">Vrtovi</string>
+	<string name="nav_all_plants">Vse rastline</string>
+	<string name="nav_new_garden">+ Nov vrt</string>
+	<string name="nav_additional">Dodatno</string>
+	<string name="nav_settings">Nastavitve</string>
+	<string name="delete">Izbriši</string>
+	<string name="share">Deli</string>
+	<string name="menu_photo">Slika</string>
+	<string name="last_watering_title">Zadnje zalivanje</string>
+	<string name="feed_again">Zalij znova</string>
+
+	<string name="plant_name_label">Ime rastline</string>
+	<string name="new_plant_hint">Nova rastlina</string>
+	<string name="plant_strain_label">Sorta rastline</string>
+	<string name="plant_strain_hint">Lemon haze</string>
+	<string name="grow_details_title">Podrobnosti gojenja</string>
+	<string name="plant_date_label">Datum posaditve</string>
+	<string name="plant_medium_label">Substrat</string>
+
+	<string name="medium_details_label">Podrobnosti substrata</string>
+	<!-- Example of medium mix -->
+	<string name="medium_details_hint">Zemlja, Perlit, 50/50 mešanica</string>
+	<string name="from_clone_label">Iz potaknjenca?</string>
+	<string name="stage_details_title">Podrobnosti faze</string>
+	<string name="plant_stage_label">Faza rastline</string>
+	<string name="view_photos">Preglej slike</string>
+	<string name="view_history">Preglej zgodovino</string>
+	<string name="view_statistics">Preglej statistiko</string>
+	<string name="view_photos_short">Slike</string>
+	<string name="view_history_short">Zgodovina</string>
+	<string name="view_statistics_short">Statistika</string>
+	<string name="filter">Filter</string>
+	<string name="planted">Posajeno</string>
+	<string name="germination">Kalitev</string>
+	<string name="cutting">Potaknjenec</string>
+	<string name="vegetation">Vegetacija</string>
+	<string name="budding">Brstenje</string>
+	<string name="flowering">Cvetenje</string>
+	<string name="ripening">Zorenje</string>
+	<string name="drying">Sušenje</string>
+	<string name="curing">Zorenje</string>
+	<string name="harvested">Požeto</string>
+	<!-- example "harvested 2 days ago" -->
+	<string name="harvested_ago" formatted="true">Požeto pred %s</string>
+	<string name="menu_export_garden">Izvozi vrt</string>
+	<string name="menu_edit_garden">Uredi vrt</string>
+	<string name="menu_delete_garden">Izbriši vrt</string>
+	<string name="menu_export">Izvozi</string>
+
+	<string name="total_time_label">Celoten čas:</string>
+	<string name="total_waters_label">Skupno zalivanja:</string>
+	<string name="total_flushes_label">Skupno izpiranja:</string>
+	<string name="total_water_amount_label">Skupno vode:</string>
+	<string name="ave_water_amount_label">Uporabljeno povp. vode:</string>
+	<string name="ave_time_between_water_label">Povp. čas med zalivanji:</string>
+	<string name="ave_time_stage_label" formatted="true">povp. %s vode:</string>
+	<string name="filter_additives">Dodatki filtra</string>
+	<string name="ph_title">pH</string>
+	<string name="tds_title">TDS</string>
+
+	<string name="min">Min:</string>
+	<string name="max">Max:</string>
+	<string name="ave">Povp.:</string>
+	<string name="temperature_title">Temperatura</string>
+	<string name="general_title">Splošno</string>
+	<string name="failed_to_load_plant">Neuspešno nalaganje rastline</string>
+	<string name="action_fim">FIM</string>
+	<string name="action_flush">Izpiranje</string>
+	<string name="action_foliar_feed">Foliarno hranjenje</string>
+	<string name="action_lst">Low Stress Training</string>
+	<string name="action_lolipop">Lizika</string>
+	<string name="action_pesticide_application">Aplikacija pesticida</string>
+	<string name="action_topped">Vršičkano</string>
+	<string name="action_transplanted">Presajeno</string>
+	<string name="action_trim">Obrezano</string>
+	<string name="action_tuck">ScrOG tlačenje</string>
+	<string name="action_supercrop">Supercrop</string>
+	<string name="action_monstercrop">Monstercrop</string>
+
+	<string name="watered">Zalito</string>
+	<string name="note">Zapisek</string>
+	<string name="delete_event_dialog_title">Izbriši ta dogodek?</string>
+	<string name="confirm_delete_item_message">Ali ste prepričani, da želite izbrisati?</string>
+	<string name="confirm_delete_photos_message" formatted="true">Ali ste prepričani, da želite izbrisati &lt;b&gt;%s&lt;/b&gt; slike ? Teh ne boste mogli več obnoviti.</string>
+	<string name="edit">Uredi</string>
+	<string name="stage">Faza</string>
+	<string name="set">Nastavi</string>
+	<string name="change">Spremeni</string>
+	<string name="add">Dodaj</string>
+	<string name="cancel">Prekliči</string>
+	<string name="action">Dejanje</string>
+	<string name="ok">Ok</string>
+	<string name="field_required">Polje je potrebno</string>
+	<string name="encrypt_passphrase_error">Napaka - nepravilno geslo</string>
+	<string name="edit_feeding">Uredi zalivanje</string>
+	<string name="added">Dodano</string>
+	<string name="action_duplicated">Podvojeno dejanje</string>
+	<string name="multiple_plants">Več rastlin</string>
+	<string name="added_to">Dejanje dodano k</string>
+	<string name="note_updated">Zapisek posodobljen</string>
+	<string name="updated">Posodobljeno</string>
+	<string name="stage_updated">Faza posodobljena</string>
+	<string name="event_deleted">Dogodek izbrisan</string>
+	<string name="done">Končano</string>
+	<string name="garden">Vrt</string>
+	<string name="select_all">Izberi vse</string>
+	<string name="select_none">Ne izberi nobenega</string>
+	<string name="accept">Sprejmi</string>
+	<string name="enable">Omogoči</string>
+	<string name="decline">Zavrni</string>
+	<string name="seedling_label">Sadika</string>
+	<string name="seedling">Sadika</string>
+
+	<string name="crash_title">Oh ne</string>
+	<string name="crash_message" formatted="true">Izgleda, da je od zadnje uporabe aplikacije prišlo do sesutja.
+Ali bi želeli poslati ta anonimna poročila? Ta poročila bodo poslana na &lt;a href=\"https://github.com/7LPdWcaW/GrowTracker-Android/issues\"&gt;github.com/7LPdWcaW/GrowTracker-Android/issues&lt;/a&gt;, priloženih ne bo nič osebnih podatkov. Poljubno lahko tudi objavite ta poročila na &lt;a href=\"https://reddit.com/r/growutils\"&gt;reddit.com/r/growutils&lt;/a&gt; ročno, če želite. Poročila so shranjena v &lt;i&gt;%s&lt;i&gt;</string>
+	<string name="yes">Da</string>
+	<string name="no">Ne</string>
+
+	<string name="passphrase_title">Vnesite svoje geslo</string>
+	<string name="add_passphrase_title">Vnesite geslo</string>
+	<string name="readd_passphrase_title">Znova vnesite svoje geslo</string>
+	<string name="passphrase_error">Napaka - geslo se ne ujema</string>
+
+	<string name="fatal_error">Nastala je usodna napaka pri shranjevanju podatkov o vrtu, prosimo naredite varnostno kopijo teh podatkov</string>
+	<string name="taken">Vzeto</string>
+	<string name="ago" formatted="true">Pred %s</string>
+	<string name="watered_ago" formatted="true">Zalito pred &lt;b&gt;%s&lt;/b&gt;</string>
+	<string name="last_watered_ago" formatted="true">Zadnje zalivanje pred &lt;b&gt;%s&lt;/b&gt;</string>
+	<string name="planted_ago" formatted="true">Posajeno pred &lt;b&gt;%s&lt;/b&gt;</string>
+
+	<string name="permission_summary">Za shranjevanje fotografij je potreben dostop do zunanje shrambe. Nobeni drugi podatki niso potrebni.</string>
+
+	<string name="waterings_added">Zalivanja dodana</string>
+	<string name="delete_plant_message">Izbrisali boste &lt;b&gt;%s&lt;/b&gt; in vse slike povezane s tem, ste prepričani ? To ne more biti razveljavljeno.</string>
+	<string name="delete_plant_progress">Brisanje rastline...</string>
+
+	<string name="plant_duplicated">Podvojena rastlina</string>
+	<string name="open">Odpri</string>
+
+	<string name="export_progress">Izvažanje dnevnika gojenja...</string>
+	<string name="garden_export">Izvažanje dnevnika gojenja vrta...</string>
+	<string name="action_added" formatted="true">%s dodano</string>
+	<string name="name_input_error">Ime ne more biti prazno</string>
+	<string name="exporting" formatted="true">Izvažanje %s</string>
+
+	<string name="soil">Zemlja</string>
+	<string name="hydroponics">Hidroponika</string>
+	<string name="coco_coir">Substrat iz kokosa</string>
+	<string name="aeroponics">Aeroponika</string>
+	<string name="hide_images">Skrij slike</string>
+	<string name="show_images">Prikaži slike</string>
+
+	<string name="settings_default_garden">Privzet vrt za prikaz ob odprtju, trenutno: &lt;b&gt;%s&lt;/b&gt;</string>
+	<string name="settings_card_style">Izberi stil kartic, trenutno: %s</string>
+	<string name="settings_delivery">Uporaba privzetih enot merjenja, trenutno: &lt;b&gt;%s&lt;/b&gt;</string>
+	<string name="settings_measurement">Uporaba privzetih enot merjenja dodatkov, trenutno: &lt;b&gt;%s&lt;/b&gt;</string>
+	<string name="settings_temperature">Uporaba privzetih enot merjenja temperature, trenutno: &lt;b&gt;%s&lt;/b&gt;</string>
+	<string name="settings_backup_size" formatted="true">Trenutno: &lt;b&gt;%s MiB&lt;/b&gt; / Uporabljate &lt;b&gt;%s&lt;/b&gt;</string>
+	<string name="failsafe_message">Vnesite to geslo med fazo dešifriranja, da preprečite nalaganje podatkov</string>
+	<string name="warning">Opozorilo</string>
+	<string name="encryption_message">To je osnovna oblika AES šifriranja, ki temelji na podanem geslu. To ni garantirana oblika zaščite pred organi pregona.</string>
+	<string name="backup_enable_toast" formatted="true">Varnostna kopija omogočena, kopije bodo shranjene v %s</string>
+	<string name="restore_complete" formatted="true">Obnovitev v %s končana</string>
+	<string name="restore_error" formatted="true">Obnovitev varnostne kopije iz %s je spodletela. Datoteka je morda %s</string>
+	<string name="encrypted">Šifrirano</string>
+	<string name="unencrypted">Nešifrirano</string>
+
+	<string name="select_measurement_title">Izberi mersko enoto</string>
+	<string name="select_temperature_title">Izberi temperaturo</string>
+	<string name="select_garden_title">Izberi vrt</string>
+	<string name="select_backup_title">Izberi varnostno kopijo</string>
+	<string name="backup_restore_error">Da obnovite to varnostno kopijo, morate imeti omogočen način šifracije z enakim geslom</string>
+
+	<string name="backed_up_to">Kopirano do</string>
+	<string name="no_backups">Ni varnostnih kopij iz katerih bi lahko obnovili podatke</string>
+	<string name="all_none">Vse/Nič</string>
+
+	<string name="stat_input_ph">Vnesi pH</string>
+	<string name="stat_runoff_ph">pH odtočne vode</string>
+	<string name="stat_average_ph">Povprečen pH</string>
+	<string name="stat_average_temp">Povprečna temp</string>
+	<string name="stat_average_runoff_ph">Povprečen odtok pH</string>
+	<string name="stat_average_tds" formatted="true">Povprečno %s</string>
+
+	<string name="photos_title">Slike rastline</string>
+
+	<string name="plant_summary_ph">Vhodni pH:</string>
+	<string name="plant_summary_out_ph">Izhodni pH:</string>
+	<string name="plant_summary_amount">Količina:</string>
+	<string name="plant_summary_temp">Temp.:</string>
+	<string name="plant_summary_additives">Dodatki:</string>
+	<string name="plant_summary_ec">EC:</string>
+	<string name="plant_summary_ppm">ppm:</string>
+
+	<string name="select_schedule_title">Izberi urnik</string>
+	<string name="actions">Dejanja</string>
+	<string name="settings_dark_title">Vsili temno temo</string>
+	<string name="settings_dark_summary">Vsili aplikaciji, da uporabi temno temo, ne glede na sistemske nastavitve dnevne-temne teme</string>
+	<string name="settings_harvest_title">Skrij požeto</string>
+	<string name="settings_harvest_summary">Skrij vse požete rastline</string>
+	<string name="settings_reverse_title">Obrni vrstni red rastlin</string>
+	<string name="settings_reverse_summary">Pokaže rastline v obratnem vrstnem redu. (Potreben je ponovni zagon aplikacije)</string>
+	<string name="settings_garden_title">Privzet vrt</string>
+
+	<string name="settings_units">Enote</string>
+	<string name="settings_delivery_title">Enota dostave</string>
+	<string name="settings_measurement_title">Merska enota</string>
+	<string name="settings_temp_title">Temperaturska enota</string>
+	<string name="settings_tds_title">TDS enota</string>
+	<string name="settings_tds_summary" formatted="true">Privzeta uporaba TDS, trenutno: &lt;b&gt;%s&lt;/b&gt;</string>
+	<string name="settings_data_management">Upravljanje podatkov</string>
+	<string name="settings_autobackup_title">Samodejna varnostna kopija</string>
+	<string name="settings_autobackup_summary">Samodejno naredi varnostno kopijo vsakih 24 ur</string>
+	<string name="settings_backupnow">Naredi varnostno kopijo zdaj</string>
+	<string name="settings_backupsize_title">Omejitev velikosti varnostne kopije</string>
+	<string name="settings_backupsize_hint">Velikost v MiB</string>
+	<string name="settings_backupsize_dialogtitle">Omejena velikost varnostne kopije (MiB)</string>
+	<string name="settings_restore_backup">Obnovi iz varnostne kopije</string>
+	<string name="settings_encrypt_title">Šifriraj podatke</string>
+	<string name="settings_encrypt_summary">Doda zaklepanje aplikacije s pin kodo in zašifrira vse podatke/slike</string>
+	<string name="settings_failsafe_title">Varovalni mehanizem</string>
+	<string name="settings_failsafe_summary">Nastavi geslo varnostnega mehanizma da preprečiš dostop do podatkov</string>
+	<string name="settings_addons">Dodatki</string>
+	<string name="settings_about">O aplikaciji</string>
+	<string name="settings_readme">Preberi</string>
+	<string name="settings_export">Izvozi podatke</string>
+	<string name="settings_cardstyle_title">Stil kartic</string>
+	<string name="empty_plant_list">Ni rastlin za prikaz</string>
+	<string name="empty_schedules">Ni urnikov</string>
+	<string name="empty_photos">Ni slik za prikaz</string>
+	<string name="events_title">Pretekla dejanja</string>
+	<string name="show_hide_calendar">Prikaži/skrij kolendar</string>
+	<!-- "1 selected" -->
+	<string name="selected_len" formatted="true">%d izbrano</string>
+	<string name="translations_title">Hvala vam do slednjega</string>
+	<string name="translations_by">Prevodi</string>
+	<string name="help_translate">Pomagaj pri prevodu</string>
+	<string name="encrypt_progress_warning">Šifriranje podatkov in slik</string>
+	<string name="decrypt_progress_warning">Dešifriram podatke in slike, to lahko vzame nekaj časa...</string>
+
+	<!-- now = 1 second -->
+	<string name="now_abbr">1 sekunda</string>
+	<string name="second_abbr">s</string>
+	<string name="minute_abbr">min.</string>
+	<string name="hour_abbr">h</string>
+	<string name="day_abbr">dni</string>
+	<string name="week_abbr">ted.</string>
+	<string name="month_abbr">mes.</string>
+	<string name="year_abbr">l</string>
+
+	<string name="view_details_short">Podrobnosti</string>
+
+	<plurals name="time_second">
+		<item quantity="one">sekunda</item>
+		<item quantity="two">sekundi</item>
+		<item quantity="few">sekund</item>
+		<item quantity="other">sekunde</item>
+	</plurals>
+
+	<plurals name="time_minute">
+		<item quantity="one">minuta</item>
+		<item quantity="two">minuti</item>
+		<item quantity="few">minut</item>
+		<item quantity="other">minute</item>
+	</plurals>
+
+	<plurals name="time_hour">
+		<item quantity="one">ura</item>
+		<item quantity="two">uri</item>
+		<item quantity="few">ur</item>
+		<item quantity="other">ure</item>
+	</plurals>
+
+	<plurals name="time_day">
+		<item quantity="one">dan</item>
+		<item quantity="two">dneva</item>
+		<item quantity="few">dni</item>
+		<item quantity="other">dnevi</item>
+	</plurals>
+
+	<plurals name="time_week">
+		<item quantity="one">teden</item>
+		<item quantity="two">tedna</item>
+		<item quantity="few">tednov</item>
+		<item quantity="other">tedni</item>
+	</plurals>
+
+	<plurals name="time_month">
+		<item quantity="one">mesec</item>
+		<item quantity="two">meseca</item>
+		<item quantity="few">mesecev</item>
+		<item quantity="other">meseci</item>
+	</plurals>
+
+	<plurals name="time_year">
+		<item quantity="one">leto</item>
+		<item quantity="two">leti</item>
+		<item quantity="few">let</item>
+		<item quantity="other">leta</item>
+	</plurals>
+
+	<string-array name="settings_card_entries">
+		<item>Izvirno</item>
+		<item>Kompaktno</item>
+		<item>Ekstremno</item>
+	</string-array>
+
+	<string name="confirm_quit">Izgubili boste kakršnekoli neshranjene spremembe</string>
+	<string name="accept_quit">Končaj</string>
+	<string name="plants">Rastline</string>
+	<string name="humidity">Vlažnost</string>
+	<string name="current_temp">Trenutna temp.:</string>
+	<string name="current_humidity">Trenutna vlažnost:</string>
+	<string name="lighting_title">Urnik osvetljave</string>
+	<string name="delete_item_dialog_title">Izbriši ta predmet?</string>
+	<string name="confirm_delete_item_message_holder">Ali ste prepričani da želite izbrisati &lt;b&gt;%s&lt;/b&gt;?</string>
+	<string name="show">Pokaži</string>
+	<string name="hide">Skrij</string>
+	<string name="lights_on">Vključene luči</string>
+	<string name="lights_off">Izključene luči</string>
+
+	<string name="settings_lastbackup_summary" formatted="true">Zadnja varnostna kopija: &lt;b&gt;%s&lt;/b&gt;</string>
+	<string name="settings_image_location_summary" formatted="true">Mesto shrambe za slike, trenutno &lt;b&gt;%s&lt;/b&gt;</string>
+	<string name="settings_image_location_error">Neuspešna nastavitev mesta slike</string>
+	<string name="settings_image_location_title">Mesto shrambe slik</string>
+	<string name="settings_image_cache_title">Počisti predpomnilnik slik</string>
+	<string name="cache_cleared">Shramba slik in spomin prepomnilnika počiščena</string>
+	<string name="import_progress_warning">Uvažanje slik, to lahko traja nekaj časa...</string>
+	<string name="data_task">Opravilo podatkov</string>
+	<string name="import_task_complete">Uvoz slike končan</string>
+	<string name="decrypt_task_complete">Dešifriranje slike končano</string>
+	<string name="encrypt_task_complete">Šifriranje slike končano</string>
+	<string name="empty_actions_list">Ni dejanj za prikaz</string>
+
+	<string name="exporting_start">Izvažanje dnevnika gojenja za %s</string>
+	<string name="exporting_complete">Izvoz %s končan</string>
+	<string name="exporting_path">Izvoženo %s v %s</string>
+	<string name="export_complete">Izvoz končan</string>
+	<string name="export_dialog_label">Vključim slike?</string>
+	<string name="no_data">Podatki niso na voljo</string>
+
+	<string name="camera_permission_summary">Za zajem slik je potreben dostop do fotoaparata</string>
+	<string name="settings_backup_management_title">Uprabljanje varnostnih kopij</string>
+	<string name="settings_backup_location_title">Mesto shrambe varnostnih kopij</string>
+	<string name="settings_backup_location_summary" formatted="true">Mesto shrambe varnostnih kopij, trenutno &lt;b&gt;%s&lt;/b&gt;</string>
+	<string name="settings_backup_location_error">Neuspešna nastavitev mesta varnostne kopije</string>
+	<string name="settings_import_error">Neuspešen uvoz rastlin iz datoteke</string>
+	<string name="settings_import">Uvozi rastline iz datoteke</string>
+	<string name="settings_import_success">Uspešen uvoz rastlin iz datoteke</string>
+
+	<string name="additive_stat_header" formatted="true">%s statistika</string>
+	<string name="additive_average_usage_label">povp. na dovajanje:</string>
+	<string name="additive_usage_count_label">Kolikokrat uporabljeno:</string>
+	<string name="additive_total_usage_label">Skupno aditivov:</string>
+
+	<string name="additives_concentration_title">Koncentracija aditivov</string>
+	<string name="additives_overtime_title">Aditivi čez čas</string>
+	<string name="additives_distribution_title">Distribucija aditivov</string>
+</resources>

@@ -17,6 +17,7 @@ import com.github.mikephil.charting.components.MarkerView
 import com.github.mikephil.charting.data.Entry
 import com.github.mikephil.charting.highlight.Highlight
 import com.github.mikephil.charting.listener.OnChartValueSelectedListener
+import com.github.mikephil.charting.utils.MPPointF
 import kotlinx.android.synthetic.main.data_label_stub.view.*
 import kotlinx.android.synthetic.main.garden_tracker_view.*
 import me.anon.controller.adapter.GardenActionAdapter
@@ -99,8 +100,8 @@ class GardenTrackerFragment : Fragment()
 
 		(activity as MainActivity).toolbarLayout.findViewById<View>(R.id.note).setOnClickListener {
 			val dialogFragment = NoteDialogFragment()
-			dialogFragment.setOnDialogConfirmed {
-				garden.actions.add(NoteAction(notes = it))
+			dialogFragment.setOnDialogConfirmed { notes, date ->
+				garden.actions.add(NoteAction(notes = notes, date = date.time))
 				updateDataReferences()
 			}
 			dialogFragment.show(childFragmentManager, null)
@@ -257,8 +258,13 @@ class GardenTrackerFragment : Fragment()
 
 			is NoteAction -> {
 				val dialogFragment = NoteDialogFragment(action)
-				dialogFragment.setOnDialogConfirmed { notes ->
-					if (index > -1) garden.actions[index].notes = notes
+				dialogFragment.setOnDialogConfirmed { notes, dates ->
+					if (index > -1)
+					{
+						garden.actions[index].notes = notes
+						garden.actions[index].date = dates.time
+					}
+
 					updateDataReferences()
 				}
 				dialogFragment.show(childFragmentManager, null)
@@ -303,7 +309,8 @@ class GardenTrackerFragment : Fragment()
 			if (data_container.findViewById<View?>(R.id.stats_temp) == null) data_container.addView(view)
 		}
 		StatsHelper.setTempData(garden, activity!!, temp, tempAdditional)
-		temp.markerView = object : MarkerView(context, R.layout.chart_marker)
+
+		temp.marker = object : MarkerView(context, R.layout.chart_marker)
 		{
 			override fun refreshContent(e: Entry, highlight: Highlight)
 			{
@@ -313,18 +320,11 @@ class GardenTrackerFragment : Fragment()
 
 				if (action != null) date = "\n" + timeFormat.format(Date(action.date))
 
-				(findViewById<View>(R.id.content) as TextView).text = e.getVal().formatWhole() + "°" + tempUnit.label + date
+				(findViewById<View>(R.id.content) as TextView).text = e.y.formatWhole() + "°" + tempUnit.label + date
+				super.refreshContent(e, highlight)
 			}
 
-			override fun getXOffset(xpos: Float): Int
-			{
-				return -(width / 2)
-			}
-
-			override fun getYOffset(ypos: Float): Int
-			{
-				return -height
-			}
+			override fun getOffset(): MPPointF = MPPointF.getInstance(-(width / 2f), -(height * 1.2f))
 		}
 		temp.notifyDataSetChanged()
 		temp.postInvalidate()
@@ -342,7 +342,7 @@ class GardenTrackerFragment : Fragment()
 			if (data_container.findViewById<View?>(R.id.stats_humidity) == null) data_container.addView(view)
 		}
 		StatsHelper.setHumidityData(garden, activity!!, humidity, humidityAdditional)
-		humidity.markerView = object : MarkerView(context, R.layout.chart_marker)
+		humidity.marker = object : MarkerView(context, R.layout.chart_marker)
 		{
 			override fun refreshContent(e: Entry, highlight: Highlight)
 			{
@@ -351,18 +351,11 @@ class GardenTrackerFragment : Fragment()
 				var date = ""
 
 				if (action != null) date = "\n" + timeFormat.format(Date(action.date))
-				(findViewById<View>(R.id.content) as TextView).text = e.getVal().toInt().toString() + "%" + date
+				(findViewById<View>(R.id.content) as TextView).text = e.y.toInt().toString() + "%" + date
+				super.refreshContent(e, highlight)
 			}
 
-			override fun getXOffset(xpos: Float): Int
-			{
-				return -(width / 2)
-			}
-
-			override fun getYOffset(ypos: Float): Int
-			{
-				return -height
-			}
+			override fun getOffset(): MPPointF = MPPointF.getInstance(-(width / 2f), -(height * 1.2f))
 		}
 		humidity.notifyDataSetChanged()
 		humidity.postInvalidate()
@@ -378,7 +371,7 @@ class GardenTrackerFragment : Fragment()
 				delete_humidity.visibility = View.GONE
 			}
 
-			override fun onValueSelected(e: Entry?, dataSetIndex: Int, h: Highlight?)
+			override fun onValueSelected(e: Entry?, h: Highlight?)
 			{
 				edit_humidity.visibility = View.VISIBLE
 				delete_humidity.visibility = View.VISIBLE
@@ -405,7 +398,7 @@ class GardenTrackerFragment : Fragment()
 				delete_temp.visibility = View.GONE
 			}
 
-			override fun onValueSelected(e: Entry?, dataSetIndex: Int, h: Highlight?)
+			override fun onValueSelected(e: Entry?, h: Highlight?)
 			{
 				edit_temp.visibility = View.VISIBLE
 				delete_temp.visibility = View.VISIBLE

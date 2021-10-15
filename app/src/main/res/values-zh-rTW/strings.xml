@@ -1,0 +1,79 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<resources>
+	<string name="version">版本 %s</string>
+	<string name="menu_settings">設定</string>
+
+	<!-- All plants list -->
+	<string name="all_list_title">所有植物</string>
+	<!-- All/everything -->
+	<string name="all">全部</string>
+	<string name="snackbar_note_add">筆記已加入</string>
+	<string name="snackbar_garden_deleted">已刪除園子</string>
+
+	<string name="action_feed">水</string>
+	<string name="new_plant_title">增加新植物</string>
+	<string name="plant_details_title">植物詳情</string>
+	<!-- select from camera -->
+	<string name="photo_option_camera">從相機</string>
+	<!-- select from gallery -->
+	<string name="photo_option_gallery">從圖庫</string>
+	<string name="dialog_select_picture_title">選擇圖片</string>
+	<string name="dialog_select_plant_title">選擇植物</string>
+	<string name="snackbar_image_added">已加入圖片</string>
+	<string name="schedule_name">名字</string>
+	<string name="schedule_description">描述</string>
+	<string name="confirm_title">你確定嗎？</string>
+	<string name="action_dialog_notes">筆記</string>
+	<string name="date_and_time_header">日期與時間</string>
+	<string name="today">今天</string>
+	<string name="menu_copy_to">複製到</string>
+	<string name="nav_all_plants">所有植物</string>
+	<string name="delete">刪除</string>
+	<string name="share">分享</string>
+	<string name="menu_photo">相片</string>
+	<string name="view_history">查看歷史紀錄</string>
+	<string name="view_statistics">查看統計資料</string>
+	<string name="view_photos_short">相片</string>
+	<string name="view_history_short">歷程</string>
+	<string name="view_statistics_short">統計</string>
+	<string name="filter">過濾器</string>
+	<string name="note">筆記</string>
+	<string name="delete_event_dialog_title">刪除這個活動？</string>
+	<string name="confirm_delete_item_message">你確定要刪除</string>
+	<string name="edit">編輯</string>
+	<string name="cancel">取消</string>
+	<string name="ok">好</string>
+	<string name="select_all">全選</string>
+	<string name="yes">好</string>
+	<string name="no">不</string>
+
+	<string name="passphrase_title">輸入你的密碼</string>
+	<string name="add_passphrase_title">輸入一組密碼</string>
+	<string name="readd_passphrase_title">重新輸入你的密碼</string>
+	<string name="ago" formatted="true">%s 之前</string>
+	<string name="delete_plant_progress">正在刪除植物...</string>
+
+	<string name="open">打開</string>
+
+	<string name="show_images">顯示圖片</string>
+
+	<string name="warning">警告</string>
+	<string name="encrypted">已加密</string>
+	<string name="unencrypted">未加密</string>
+
+	<string name="select_temperature_title">選擇溫度</string>
+	<string name="settings_about">關於</string>
+	<!-- "1 selected" -->
+	<string name="selected_len" formatted="true">%d 已選擇</string>
+	<string name="help_translate">幫助翻譯</string>
+	<string name="view_details_short">細節</string>
+
+	<string name="accept_quit">離開</string>
+	<string name="show">顯示</string>
+	<string name="hide">隱藏</string>
+	<string name="export_dialog_label">包含圖片？</string>
+	<string name="no_data">沒有資料</string>
+
+	<string name="camera_permission_summary">拍照需要相機權限</string>
+	</resources>

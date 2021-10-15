@@ -19,6 +19,7 @@ import com.esotericsoftware.kryo.Kryo;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
+import java.util.Date;
 import java.util.LinkedHashSet;
 import java.util.Set;
 
@@ -39,10 +40,7 @@ import me.anon.grow.MainApplication;
 import me.anon.grow.PlantDetailsActivity;
 import me.anon.grow.R;
 import me.anon.lib.SnackBar;
-import me.anon.lib.SnackBarListener;
 import me.anon.lib.Views;
-import me.anon.lib.ext.IntUtilsKt;
-import me.anon.lib.helper.FabAnimator;
 import me.anon.lib.manager.PlantManager;
 import me.anon.model.EmptyAction;
 import me.anon.model.NoteAction;
@@ -175,7 +173,7 @@ public class PlantListFragment extends Fragment
 		if (filterList == null)
 		{
 			filterList = new ArrayList<>();
-			Set<String> prefsList = androidx.preference.PreferenceManager.getDefaultSharedPreferences(getActivity()).getStringSet("filter_list", null);
+			Set<String> prefsList = androidx.preference.PreferenceManager.getDefaultSharedPreferences(getActivity()).getStringSet("new_filter_list", null);
 			if (prefsList == null)
 			{
 				filterList.addAll(Arrays.asList(PlantStage.values()));
@@ -186,8 +184,7 @@ public class PlantListFragment extends Fragment
 				{
 					try
 					{
-						int ordinal = IntUtilsKt.toSafeInt(s);
-						filterList.add(PlantStage.values()[ordinal]);
+						filterList.add(PlantStage.valueOf(s));
 					}
 					catch (Exception e)
 					{
@@ -273,28 +270,7 @@ public class PlantListFragment extends Fragment
 
 				PlantManager.getInstance().save();
 
-				SnackBar.show(getActivity(), R.string.snackbar_action_add, new SnackBarListener()
-				{
-					@Override public void onSnackBarStarted(Object o)
-					{
-						if (getView() != null)
-						{
-							FabAnimator.animateUp(getView().findViewById(R.id.fab_add));
-						}
-					}
-
-					@Override public void onSnackBarFinished(Object o)
-					{
-						if (getView() != null)
-						{
-							FabAnimator.animateDown(getView().findViewById(R.id.fab_add));
-						}
-					}
-
-					@Override public void onSnackBarAction(View v)
-					{
-					}
-				});
+				SnackBar.show(getActivity(), R.string.snackbar_action_add, null);
 			}
 		});
 		dialogFragment.show(getChildFragmentManager(), null);
@@ -305,38 +281,17 @@ public class PlantListFragment extends Fragment
 		NoteDialogFragment dialogFragment = new NoteDialogFragment();
 		dialogFragment.setOnDialogConfirmed(new NoteDialogFragment.OnDialogConfirmed()
 		{
-			@Override public void onDialogConfirmed(String notes)
+			@Override public void onDialogConfirmed(String notes, Date date)
 			{
 				for (Plant plant : adapter.getPlants())
 				{
-					NoteAction action = new NoteAction(System.currentTimeMillis(), notes);
+					NoteAction action = new NoteAction(date.getTime(), notes);
 					plant.getActions().add(action);
 				}
 
 				PlantManager.getInstance().save();
 
-				SnackBar.show(getActivity(), R.string.snackbar_note_add, new SnackBarListener()
-				{
-					@Override public void onSnackBarStarted(Object o)
-					{
-						if (getView() != null)
-						{
-							FabAnimator.animateUp(getView().findViewById(R.id.fab_add));
-						}
-					}
-
-					@Override public void onSnackBarFinished(Object o)
-					{
-						if (getView() != null)
-						{
-							FabAnimator.animateDown(getView().findViewById(R.id.fab_add));
-						}
-					}
-
-					@Override public void onSnackBarAction(View v)
-					{
-					}
-				});
+				SnackBar.show(getActivity(), R.string.snackbar_note_add, null);
 			}
 		});
 		dialogFragment.show(getChildFragmentManager(), null);
@@ -348,7 +303,6 @@ public class PlantListFragment extends Fragment
 		{
 			Plant plant = data.getParcelableExtra("plant");
 			PlantManager.getInstance().upsert(plant);
-			Log.e("TEST", "result " + plant);
 			PlantWidgetProvider.triggerUpdateAll(getActivity());
 		}
 
@@ -357,29 +311,7 @@ public class PlantListFragment extends Fragment
 			if (resultCode != Activity.RESULT_CANCELED)
 			{
 				adapter.notifyDataSetChanged();
-				SnackBar.show(getActivity(), R.string.snackbar_watering_add, new SnackBarListener()
-				{
-					@Override public void onSnackBarStarted(Object o)
-					{
-						if (getView() != null)
-						{
-							FabAnimator.animateUp(getView().findViewById(R.id.fab_add));
-						}
-					}
-
-					@Override public void onSnackBarAction(View v)
-					{
-
-					}
-
-					@Override public void onSnackBarFinished(Object o)
-					{
-						if (getView() != null)
-						{
-							FabAnimator.animateDown(getView().findViewById(R.id.fab_add));
-						}
-					}
-				});
+				SnackBar.show(getActivity(), R.string.snackbar_watering_add, null);
 			}
 		}
 
@@ -390,8 +322,20 @@ public class PlantListFragment extends Fragment
 	{
 		inflater.inflate(R.menu.plant_list_menu, menu);
 
-		int[] ids = {R.id.filter_germination, R.id.filter_vegetation, R.id.filter_seedling, R.id.filter_cutting, R.id.filter_flowering, R.id.filter_drying, R.id.filter_curing, R.id.filter_harvested, R.id.filter_planted};
-		PlantStage[] stages = {PlantStage.GERMINATION, PlantStage.VEGETATION, PlantStage.SEEDLING, PlantStage.CUTTING, PlantStage.FLOWER, PlantStage.DRYING, PlantStage.CURING, PlantStage.HARVESTED, PlantStage.PLANTED};
+		int[] ids = {
+			R.id.filter_planted,
+			R.id.filter_germination,
+			R.id.filter_seedling,
+			R.id.filter_cutting,
+			R.id.filter_vegetation,
+			R.id.filter_budding,
+			R.id.filter_flowering,
+			R.id.filter_ripening,
+			R.id.filter_drying,
+			R.id.filter_curing,
+			R.id.filter_harvested
+		};
+		PlantStage[] stages = PlantStage.values();
 
 		for (int index = 0; index < ids.length; index++)
 		{
@@ -419,7 +363,19 @@ public class PlantListFragment extends Fragment
 			saveCurrentState();
 		}
 
-		int[] ids = {R.id.filter_planted, R.id.filter_germination, R.id.filter_seedling, R.id.filter_cutting, R.id.filter_vegetation, R.id.filter_flowering, R.id.filter_drying, R.id.filter_curing, R.id.filter_harvested};
+		int[] ids = {
+			R.id.filter_planted,
+			R.id.filter_germination,
+			R.id.filter_seedling,
+			R.id.filter_cutting,
+			R.id.filter_vegetation,
+			R.id.filter_budding,
+			R.id.filter_flowering,
+			R.id.filter_ripening,
+			R.id.filter_drying,
+			R.id.filter_curing,
+			R.id.filter_harvested
+		};
 		PlantStage[] stages = PlantStage.values();
 
 		for (int index = 0; index < ids.length; index++)
@@ -443,11 +399,11 @@ public class PlantListFragment extends Fragment
 		Set<String> stageOrdinals = new LinkedHashSet<>();
 		for (PlantStage plantStage : filterList)
 		{
-			stageOrdinals.add(plantStage.ordinal() + "");
+			stageOrdinals.add(plantStage.name() + "");
 		}
 
 		PreferenceManager.getDefaultSharedPreferences(getActivity()).edit()
-			.putStringSet("filter_list", stageOrdinals)
+			.putStringSet("new_filter_list", stageOrdinals)
 			.apply();
 
 		if (filter)
@@ -460,7 +416,6 @@ public class PlantListFragment extends Fragment
 
 	private void filter()
 	{
-		Log.e("TEST", "filtering");
 		ArrayList<Plant> plantList = PlantManager.getInstance().getSortedPlantList(null);
 		if (reverse)
 		{

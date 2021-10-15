@@ -43,8 +43,20 @@
 				/>
 
 				<item
+					android:id="@+id/filter_budding"
+					android:title="@string/budding"
+					android:checked="true"
+				/>
+
+				<item
 					android:id="@+id/filter_flowering"
 					android:title="@string/flowering"
+					android:checked="true"
+				/>
+
+				<item
+					android:id="@+id/filter_ripening"
+					android:title="@string/ripening"
 					android:checked="true"
 				/>
 
@@ -75,7 +87,7 @@
 		app:showAsAction="never"
 		android:visible="false"
 	/>
-	
+
 	<item
 		android:id="@+id/export_garden"
 		android:title="@string/menu_export_garden"

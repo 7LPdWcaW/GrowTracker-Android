@@ -129,7 +129,9 @@
 	<string name="germination">Ontkiemd</string>
 	<string name="cutting">Gewied</string>
 	<string name="vegetation">Groeiende</string>
+	<string name="budding">Ontkieming</string>
 	<string name="flowering">Bloeiende</string>
+	<string name="ripening">Rijping</string>
 	<string name="drying">Drogende</string>
 	<string name="curing">Genezende</string>
 	<string name="harvested">Geplukt</string>
@@ -143,9 +145,13 @@
 	<string name="total_time_label">Totaaltijd:</string>
 	<string name="total_waters_label">Totaal water gegeven:</string>
 	<string name="total_flushes_label">Totaal bijgesteld:</string>
+	<string name="total_water_amount_label">Totaal water gegeven:</string>
+	<string name="ave_water_amount_label">Gem. waterverbruik:</string>
 	<string name="ave_time_between_water_label">Gem. tijd tussen water geven:</string>
+	<string name="ave_time_stage_label" formatted="true">Gemiddeld %swater:</string>
 	<string name="filter_additives">Toevoegingen filteren</string>
 	<string name="ph_title">pH-waarde</string>
+	<string name="tds_title">TDS</string>
 
 	<string name="min">Min.:</string>
 	<string name="max">Max.:</string>
@@ -153,7 +159,7 @@
 	<string name="temperature_title">Temperatuur</string>
 	<string name="general_title">Algemeen</string>
 	<string name="failed_to_load_plant">Kan plant niet laden</string>
-	<string name="action_fim">Oeps, vergeten! (OV)</string>
+	<string name="action_fim">FIM</string>
 	<string name="action_flush">Bijstellen</string>
 	<string name="action_foliar_feed">Bladvoeding</string>
 	<string name="action_lst">Lagestresstraining</string>
@@ -163,6 +169,8 @@
 	<string name="action_transplanted">Verpot</string>
 	<string name="action_trim">Bijsnijden</string>
 	<string name="action_tuck">ScrOG Tuck</string>
+	<string name="action_supercrop">Supergroot gewas</string>
+	<string name="action_monstercrop">Immens gewas</string>
 
 	<string name="watered">Water gegeven</string>
 	<string name="note">Aantekening</string>
@@ -265,6 +273,9 @@
 	<string name="stat_input_ph">Toevoer-pH-waarde</string>
 	<string name="stat_runoff_ph">Afvoer-pH-waarde</string>
 	<string name="stat_average_ph">Gemiddelde pH-waarde</string>
+	<string name="stat_average_temp">Gemiddelde temperatuur</string>
+	<string name="stat_average_runoff_ph">Gemiddelde afvoer-pH-waarde</string>
+	<string name="stat_average_tds" formatted="true">Gemiddeld %s</string>
 
 	<string name="photos_title">Plantenfoto\'s</string>
 
@@ -397,7 +408,9 @@
 	<string name="cache_cleared">Afbeeldings- en geheugencache gewist</string>
 	<string name="import_progress_warning">Bezig met importeren; even geduld...</string>
 	<string name="data_task">Gegevenstaak</string>
-	<string name="task_complete">Taak volbracht</string>
+	<string name="import_task_complete">De afbeelding is geïmporteerd</string>
+	<string name="decrypt_task_complete">De afbeelding is ontsleuteld</string>
+	<string name="encrypt_task_complete">De afbeelding is versleuteld</string>
 	<string name="empty_actions_list">Er zijn geen acties</string>
 
 	<string name="exporting_start">Bezig met exporteren van groeilog van %s...</string>
@@ -415,4 +428,13 @@
 	<string name="settings_import_error">Kan planten niet importeren uit bestand</string>
 	<string name="settings_import">Planten importeren uit bestand</string>
 	<string name="settings_import_success">De planten zijn geïmporteerd</string>
+
+	<string name="additive_stat_header" formatted="true">%s-statistieken</string>
+	<string name="additive_average_usage_label">Gem. per voeding:</string>
+	<string name="additive_usage_count_label">Aantal keer gebruikt:</string>
+	<string name="additive_total_usage_label">Totale toevoegingen:</string>
+
+	<string name="additives_concentration_title">Toegevoegde concentratie</string>
+	<string name="additives_overtime_title">Toevoegingen in de loop der tijd</string>
+	<string name="additives_distribution_title">Toegevoegde verspreiding</string>
 </resources>

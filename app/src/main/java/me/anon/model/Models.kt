@@ -13,6 +13,8 @@ import me.anon.lib.TempUnit
 import me.anon.lib.Unit
 import me.anon.lib.ext.formatWhole
 import me.anon.lib.helper.TimeHelper
+import org.threeten.bp.LocalDateTime
+import org.threeten.bp.format.DateTimeFormatter
 import java.util.*
 
 /**
@@ -46,17 +48,11 @@ class FeedingSchedule(
 @Parcelize
 @JsonClass(generateAdapter = true)
 class FeedingScheduleDate(
-	var id: String = UUID.randomUUID().toString(),
-	var dateRange: Array<Int>,
-	var stageRange: Array<PlantStage>,
+	@Transient var id: String = UUID.randomUUID().toString(),
+	var dateRange: Array<Int> = arrayOf(),
+	var stageRange: Array<PlantStage> = arrayOf(),
 	var additives: ArrayList<Additive> = arrayListOf()
 ) : Parcelable {
-	constructor() : this(
-		id = UUID.randomUUID().toString(),
-		dateRange = arrayOf(),
-		stageRange = arrayOf(),
-		additives = arrayListOf()
-	){}
 }
 
 abstract class Action(
@@ -77,7 +73,9 @@ abstract class Action(
 		TOP(R.string.action_topped, -0x6543555c, "Topped"),
 		TRANSPLANTED(R.string.action_transplanted, -0x65000073, "Transplanted"),
 		TRIM(R.string.action_trim, -0x6500546f, "Trim"),
-		TUCK(R.string.action_tuck, -0x65800046, "ScrOG Tuck");
+		TUCK(R.string.action_tuck, -0x65800046, "ScrOG Tuck"),
+		SUPERCROP(R.string.action_supercrop, 0xFF72C7D6.toInt(), "Supercrop"),
+		MONSTERCROP(R.string.action_monstercrop, 0xFFFF7681.toInt(), "Monstercrop");
 
 		companion object
 		{
@@ -147,7 +145,7 @@ class StageChange(
 @Parcelize
 @JsonClass(generateAdapter = true)
 class Plant(
-	var id: String = UUID.randomUUID().toString(),
+	var id: String = LocalDateTime.now().format(DateTimeFormatter.ofPattern("yyyy-MM-dd-hh-mm-ss")),
 	var name: String = "",
 	var strain: String? = null,
 	var plantDate: Long = System.currentTimeMillis(),
@@ -450,10 +448,12 @@ enum class PlantStage private constructor(val printString: Int, val enString: St
 	SEEDLING(R.string.seedling, "Seedling"),
 	CUTTING(R.string.cutting, "Cutting"),
 	VEGETATION(R.string.vegetation, "Vegetation"),
+	BUDDING(R.string.budding, "Budding"),
 	FLOWER(R.string.flowering, "Flowering"),
+	RIPENING(R.string.ripening, "Ripening"),
 	DRYING(R.string.drying, "Drying"),
 	CURING(R.string.curing, "Curing"),
-	HARVESTED(R.string.harvested, "Harvested");
+	HARVESTED(R.string.harvested, "Harvested/Culled");
 
 	companion object
 	{

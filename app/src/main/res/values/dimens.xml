@@ -2,6 +2,7 @@
 
 <resources>
 	<dimen name="padding_8dp">8dp</dimen>
+	<dimen name="padding_16dp">16dp</dimen>
 	<dimen name="elevation">4dp</dimen>
 	<dimen name="navigation_width">190dp</dimen>
 	<dimen name="empty_size">256dp</dimen>

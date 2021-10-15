@@ -82,17 +82,20 @@ object BackupHelper
 	public fun limitBackups(size: String = MainApplication.getDefaultPreferences().getString("backup_size", "20")!!)
 	{
 		File(FILES_PATH).listFiles()?.let {
-			val sorted = ArrayList(it.sortedBy { it.lastModified() })
-			val limit = size.toSafeInt() * 1_048_576
-
-			var currentSize = backupSize()
-			while (currentSize > limit)
+			if (it.isNotEmpty())
 			{
-				val remove = sorted.removeAt(0)
-				val len = remove.length()
-				if (remove.delete())
+				val sorted = ArrayList(it.sortedBy { it.lastModified() })
+				val limit = size.toSafeInt() * 1_048_576
+
+				var currentSize = backupSize()
+				while (currentSize > limit)
 				{
-					currentSize -= len
+					val remove = sorted.removeAt(0)
+					val len = remove.length()
+					if (remove.delete())
+					{
+						currentSize -= len
+					}
 				}
 			}
 		}

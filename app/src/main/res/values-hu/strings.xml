@@ -1,0 +1,440 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<resources>
+	<string name="version">Verzió %s</string>
+	<string name="menu_settings">Beállítások</string>
+
+	<!-- Garden Plant list title "garden name plants" -->
+	<string name="list_title">%s növények</string>
+	<!-- All plants list -->
+	<string name="all_list_title">Összes növény</string>
+	<!-- All/everything -->
+	<string name="all">Összes</string>
+	<string name="snackbar_action_add">Tevékenység hozzáadva</string>
+	<string name="snackbar_note_add">Jegyzet hozzáadva</string>
+	<string name="snackbar_watering_add">Öntözés hozzáadva</string>
+	<string name="snackbar_garden_deleted">Kert törölve</string>
+
+	<string name="dialog_garden_delete_body">Biztos hogy törlöd a &lt;b&gt;\"%s\"&lt;/b&gt; kertet? Ezáltal a növények nem törlődnek.</string>
+	<string name="action_feed">Víz</string>
+	<string name="action_action">Tevékenység</string>
+
+	<string name="widget_encrypt_error">A kisalkalmazás nem elérhető, ha a titkosítás engedélyezve van</string>
+	<string name="new_plant_title">Új növény hozzáadása</string>
+	<string name="plant_details_title">Növény részletek</string>
+	<string name="statistics_title">Növény statisztikák</string>
+	<!-- select from camera -->
+	<string name="photo_option_camera">Új kép kamerával</string>
+	<!-- select from gallery -->
+	<string name="photo_option_gallery">Választás galériából</string>
+	<string name="dialog_option_title">Válassz egy lehetőséget</string>
+	<string name="dialog_select_picture_title">Válassz egy képet</string>
+	<string name="snackbar_action_apply">Alkalmazás másik növényre</string>
+	<string name="dialog_select_plant_title">Növény kiválasztása</string>
+	<string name="snackbar_image_added">Kép hozzáadva</string>
+	<string name="snackbar_action_take_another">Másik választása</string>
+
+	<string name="nav_feeding_schedule">Ütemterv</string>
+	<string name="schedule_details_title">Ütemterv részletei</string>
+	<string name="schedule_date_title">Ütemterv dátuma</string>
+	<string name="schedule_name">Név</string>
+	<string name="schedule_name_hint">Gyenge táplálás</string>
+	<string name="schedule_description">Leírás</string>
+	<!-- an example of a feeding schedule -->
+	<string name="schedule_description_hint">Gyenge táplálás 2 hét öblítéssel</string>
+
+	<string name="schedules_new_feeding">+ Új táplálás</string>
+	<string name="schedules_new_schedule">+ Új ütemterv</string>
+	<string name="new_additive">+ Új adalékanyag</string>
+	<string name="additives">Adalékanyagok</string>
+	<string name="additive">Adalékanyag</string>
+	<string name="from_date">Dátumtól</string>
+	<string name="from_stage">Szakasztól</string>
+	<string name="to_date">Dátumig</string>
+	<string name="to_stage">Szakaszig</string>
+	<string name="populate_from_schedule">Megosztás az ütemtervből</string>
+	<string name="populate_from_previous">Megosztás az előzőből</string>
+	<string name="confirm_title">Biztos vagy benne?</string>
+	<string name="confirm_copy_schedule">Másoljam az ütemtervet?</string>
+	<string name="confirm_delete_schedule">Töröljem a kiválasztott ütemtervet?</string>
+	<string name="schedule_copied">Ütemterv másolva</string>
+	<string name="schedule_deleted">Ütemterv törölve</string>
+	<string name="undo">Visszavonás</string>
+	<string name="feeding_schedules_title">Táplálási ütemtervek</string>
+	<string name="feeding_schedule_title">Táplálási ütemterv</string>
+	<string name="update_dialog_title">Alkalmazás frissítve</string>
+	<string name="update_dialog_message" formatted="true">Alkalmazás frissítve a %s verzióra</string>
+	<string name="update_dialog_view_changes_button">Változások megtekintése</string>
+	<string name="update_dialog_dismiss_button">Bezárás</string>
+
+	<!-- Feeding {plant name} -->
+	<string name="feeding_single_title" formatted="true">Öntözés %s</string>
+	<string name="feeding_multiple_title">Több növény öntözése</string>
+
+	<string name="action_dialog_notes">Jegyzetek</string>
+	<string name="water_details_title">Víz részletei</string>
+	<string name="water_ph_label">Víz pH</string>
+	<string name="ppm_label">PPM</string>
+	<string name="runoff_label">Túlfolyás</string>
+	<string name="amount_label" formatted="true">Mennyiség (%s)</string>
+	<string name="temp_label" formatted="true">Hőmérséklet (°%s)</string>
+	<string name="date_and_time_header">Dátum és idő</string>
+	<string name="date_now">Mai dátum</string>
+	<string name="date_label">Dátum</string>
+	<string name="today">Mai nap</string>
+	<string name="length_cured">Érlelve %s napig</string>
+
+	<string name="filter_waterings">Öntözések</string>
+	<string name="filter_stage_changes">Szakasz változások</string>
+
+	<string name="menu_duplicate">Duplikálás</string>
+	<string name="menu_copy_to">Másolás máshova</string>
+	<string name="menu_edit_action">Tevékenység szerkesztése</string>
+	<string name="menu_delete_action">Tevékenység törlése</string>
+
+	<string name="garden_dialog_select">Növények kijelölése</string>
+	<string name="nav_gardens">Kertek</string>
+	<string name="nav_all_plants">Összes növény</string>
+	<string name="nav_new_garden">+ Új kert</string>
+	<string name="nav_additional">Továbbiak</string>
+	<string name="nav_settings">Beállítások</string>
+	<string name="delete">Törlés</string>
+	<string name="share">Megosztás</string>
+	<string name="menu_photo">Fénykép</string>
+	<string name="last_watering_title">Legutóbbi öntözés</string>
+	<string name="feed_again">Öntözés újra</string>
+
+	<string name="plant_name_label">Növény neve</string>
+	<string name="new_plant_hint">Új növény</string>
+	<string name="plant_strain_label">Növény fajtája</string>
+	<string name="plant_strain_hint">Lemon haze</string>
+	<string name="grow_details_title">Termesztés részletei</string>
+	<string name="plant_date_label">Ültetés dátuma</string>
+	<string name="plant_medium_label">Termőközeg</string>
+
+	<string name="medium_details_label">Termőközeg részletei</string>
+	<!-- Example of medium mix -->
+	<string name="medium_details_hint">Föld, Perlit 50/50 keveréke</string>
+	<string name="from_clone_label">Klónból?</string>
+	<string name="stage_details_title">Szakasz részletei</string>
+	<string name="plant_stage_label">Növény szakasza</string>
+	<string name="view_photos">Fényképek megtekintése</string>
+	<string name="view_history">Napló megtekintése</string>
+	<string name="view_statistics">Statisztika megtekintése</string>
+	<string name="view_photos_short">Fényképek</string>
+	<string name="view_history_short">Napló</string>
+	<string name="view_statistics_short">Statisztikák</string>
+	<string name="filter">Szűrés</string>
+	<string name="planted">Elültetve</string>
+	<string name="germination">Csírázás</string>
+	<string name="cutting">Dugvány</string>
+	<string name="vegetation">Vegetáció</string>
+	<string name="budding">Virágzás kezdete</string>
+	<string name="flowering">Virágzás</string>
+	<string name="ripening">Virágzat beérése</string>
+	<string name="drying">Szárítás</string>
+	<string name="curing">Érlelés</string>
+	<string name="harvested">Learatva</string>
+	<!-- example "harvested 2 days ago" -->
+	<string name="harvested_ago" formatted="true">Learatva %s napja</string>
+	<string name="menu_export_garden">Kert exportálása</string>
+	<string name="menu_edit_garden">Kert módosítása</string>
+	<string name="menu_delete_garden">Kert törlése</string>
+	<string name="menu_export">Exportálás</string>
+
+	<string name="total_time_label">Teljes időtartam:</string>
+	<string name="total_waters_label">Összes öntözés:</string>
+	<string name="total_flushes_label">Összes öblítés:</string>
+	<string name="total_water_amount_label">Összes öntözés:</string>
+	<string name="ave_water_amount_label">Átlag felhasznált öntözővíz:</string>
+	<string name="ave_time_between_water_label">Átlag idő két öntözés között:</string>
+	<string name="ave_time_stage_label" formatted="true">Átlag %s öntözővíz:</string>
+	<string name="filter_additives">Adalékanyagok szűrése</string>
+	<string name="ph_title">pH</string>
+	<string name="tds_title">TDS</string>
+
+	<string name="min">Min:</string>
+	<string name="max">Max:</string>
+	<string name="ave">Átlag:</string>
+	<string name="temperature_title">Hőmérséklet</string>
+	<string name="general_title">Általános</string>
+	<string name="failed_to_load_plant">Nem sikerült a növény betöltése</string>
+	<string name="action_fim">FIM</string>
+	<string name="action_flush">Öblítés</string>
+	<string name="action_foliar_feed">Levéltrágyázás</string>
+	<string name="action_lst">Low Stress Training </string>
+	<string name="action_lolipop">Nyalóka</string>
+	<string name="action_pesticide_application">Kártevőirtás</string>
+	<string name="action_topped">Toppolva</string>
+	<string name="action_transplanted">Átültetve</string>
+	<string name="action_trim">Ritkítás</string>
+	<string name="action_tuck">ScrOG lomb igazítás</string>
+	<string name="action_supercrop">Supercrop</string>
+	<string name="action_monstercrop">Monstercrop</string>
+
+	<string name="watered">Öntözve</string>
+	<string name="note">Jegyzet</string>
+	<string name="delete_event_dialog_title">Esemény törlése?</string>
+	<string name="confirm_delete_item_message">Biztos hogy töröljem?</string>
+	<string name="confirm_delete_photos_message" formatted="true">Biztos hogy törlöd a &lt;b&gt;%s&lt;/b&gt; képeket? A törlés végleges!</string>
+	<string name="edit">Módosítás</string>
+	<string name="stage">szakasz</string>
+	<string name="set">Beállít</string>
+	<string name="change">Módosít</string>
+	<string name="add">Hozzáad</string>
+	<string name="cancel">Mégsem</string>
+	<string name="action">tevékenység</string>
+	<string name="ok">OK</string>
+	<string name="field_required">A mező kötelező</string>
+	<string name="encrypt_passphrase_error">Hiba - helytelen jelszó</string>
+	<string name="edit_feeding">Öntözés módosítása</string>
+	<string name="added">hozzáadva</string>
+	<string name="action_duplicated">Tevékenység duplikálva</string>
+	<string name="multiple_plants">több növény</string>
+	<string name="added_to">Tevékenység hozzáadva</string>
+	<string name="note_updated">Jegyzet frissítve</string>
+	<string name="updated">Frissítve</string>
+	<string name="stage_updated">Szakasz frissítve</string>
+	<string name="event_deleted">Esemény törölve</string>
+	<string name="done">Kész</string>
+	<string name="garden">Kert</string>
+	<string name="select_all">Mindegyik kijelölése</string>
+	<string name="select_none">Kijelölések törlése</string>
+	<string name="accept">Elfogadás</string>
+	<string name="enable">Engedélyezés</string>
+	<string name="decline">Tiltás</string>
+	<string name="seedling_label">Magonc:</string>
+	<string name="seedling">Magonc</string>
+
+	<string name="crash_title">A francba</string>
+	<string name="crash_message" formatted="true">Úgy tűnik az alkalmazás a legutóbbi használatkor összeomlott. Szeretnéd elküldeni az anonim jelentést? Ezek ide lesznek elküldve: &lt;a href=\"https://github.com/7LPdWcaW/GrowTracker-Android/issues\"&gt;github.com/7LPdWcaW/GrowTracker-Android/issues&lt;/a&gt;, személyes információt nem tartalmaznak. Opcionálisan posztolhatod is a reportokat kézileg, ha szeretnéd ide: &lt;a href=\"https://reddit.com/r/growutils\"&gt;reddit.com/r/growutils&lt;/a&gt;. A jelentések itt vannak tárolva: &lt;i&gt;%s&lt;i&gt;</string>
+	<string name="yes">Igen</string>
+	<string name="no">Nem</string>
+
+	<string name="passphrase_title">Add meg a jelszavad</string>
+	<string name="add_passphrase_title">Adj meg egy jelszót</string>
+	<string name="readd_passphrase_title">Add meg újra a jelszavad</string>
+	<string name="passphrase_error">Hiba - a jelszavaid nem egyeznek</string>
+
+	<string name="fatal_error">Egy súlyos probléma lépett fel a kerted mentése közben, kérlek készíts biztonsági mentést ezekről az adatokról</string>
+	<string name="taken">Elhasznált</string>
+	<string name="ago" formatted="true">%s -el ezelőtt</string>
+	<string name="watered_ago" formatted="true">Öntözve &lt;b&gt;%s&lt;/b&gt; ideje</string>
+	<string name="last_watered_ago" formatted="true">Utoljára öntözve &lt;b&gt;%s&lt;/b&gt; ideje</string>
+	<string name="planted_ago" formatted="true">Elültetve &lt;b&gt;%s&lt;/b&gt; ideje</string>
+
+	<string name="permission_summary">A külső tárolóhoz való hozzáférés szükséges hogy ezen alkamazás fényképeket tudjon tárolni. További adatot nem használ az alkalmazás.</string>
+
+	<string name="waterings_added">Öntözések hozzáadva</string>
+	<string name="delete_plant_message">Törölni szeretnéd a következőt: &lt;b&gt;%s&lt;/b&gt; és minden képet ami hozzá tartozik. Biztos vagy benne? A törlés végleges!</string>
+	<string name="delete_plant_progress">Növény törlése...</string>
+
+	<string name="plant_duplicated">Növény megkettőzve</string>
+	<string name="open">Megnyitás</string>
+
+	<string name="export_progress">A növekedési napló exportálása....</string>
+	<string name="garden_export">A kert növekedési naplójának exportálása....</string>
+	<string name="action_added" formatted="true">%s hozzáadva</string>
+	<string name="name_input_error">A név nem lehet üres</string>
+	<string name="exporting" formatted="true">Exportálás %s</string>
+
+	<string name="soil">Virágföld</string>
+	<string name="hydroponics">Hirdopónia</string>
+	<string name="coco_coir">Kókuszrost</string>
+	<string name="aeroponics">Aeropónia</string>
+	<string name="hide_images">Képek elrejtése</string>
+	<string name="show_images">Képek mutatása</string>
+
+	<string name="settings_default_garden">Az alapértelmezett kert mutatása indításkor, jelenleg: &lt;b&gt;%s&lt;/b&gt;</string>
+	<string name="settings_card_style">Válassz megjelenítési stílust, jelenleg: %s</string>
+	<string name="settings_delivery">Alap mértékegység kiválasztása, jelenleg: &lt;b&gt;%s&lt;/b&gt;</string>
+	<string name="settings_measurement">Adalékanyag mértékegység kiválasztása, jelenleg: &lt;b&gt;%s&lt;/b&gt;</string>
+	<string name="settings_temperature">Alap hőmérséklet típus kiválasztása, jelenleg: &lt;b&gt;%s&lt;/b&gt;</string>
+	<string name="settings_backup_size" formatted="true">Jelenleg: &lt;b&gt;%s MiB&lt;/b&gt; / Használatban &lt;b&gt;%s&lt;/b&gt;</string>
+	<string name="failsafe_message">A titkosítás feloldásához ezt a jelszót használd, hogy az adatok ne töltődjenek be</string>
+	<string name="warning">Figyelmeztetés</string>
+	<string name="encryption_message">Ez egy alap formája az AES titkosításnak. Ez nem garantál semmilyen védelmet a hatósági szervektől.</string>
+	<string name="backup_enable_toast" formatted="true">Biztosnági mentés engedélyezve, a mentések ide lesznek tárolva: %s</string>
+	<string name="restore_complete" formatted="true">Visszaállítás a következő állapotra: %s kész</string>
+	<string name="restore_error" formatted="true">Nem sikerült a mentás visszaállítása az alábbi helyről: %s. A fájl lehet hogy %s.</string>
+	<string name="encrypted">titkosítva</string>
+	<string name="unencrypted">titkosítatlan</string>
+
+	<string name="select_measurement_title">Válassz mértékegységet</string>
+	<string name="select_temperature_title">Válassz hőmérsékletet</string>
+	<string name="select_garden_title">Válassz kertet</string>
+	<string name="select_backup_title">Válassz mentést</string>
+	<string name="backup_restore_error">Titkosított módot kellett volna választanod ugyanezzel a jelszóval hogy ezt a mentést visszaállítsd.</string>
+
+	<string name="backed_up_to">Elmentve ide</string>
+	<string name="no_backups">Nincs mentés a visszaállításhoz</string>
+	<string name="all_none">Összes/Semelyik</string>
+
+	<string name="stat_input_ph">Beviteli pH</string>
+	<string name="stat_runoff_ph">Túlfolyó pH</string>
+	<string name="stat_average_ph">Átlag pH</string>
+	<string name="stat_average_temp">Átlag hőmérséklet</string>
+	<string name="stat_average_runoff_ph">Átlag túlfolyó pH</string>
+	<string name="stat_average_tds" formatted="true">Átlag %s</string>
+
+	<string name="photos_title">Növény képek</string>
+
+	<string name="plant_summary_ph">Beviteli pH:</string>
+	<string name="plant_summary_out_ph">Kimeneti pH:</string>
+	<string name="plant_summary_amount">Mennyiség:</string>
+	<string name="plant_summary_temp">Hőmérséklet:</string>
+	<string name="plant_summary_additives">Adalékanyagok:</string>
+	<string name="plant_summary_ec">EC:</string>
+	<string name="plant_summary_ppm">PPM:</string>
+
+	<string name="select_schedule_title">Ütemterv kijelölése</string>
+	<string name="actions">Tevékenységek</string>
+	<string name="settings_dark_title">Sötét mód</string>
+	<string name="settings_dark_summary">Sötét mód erőltetése a rendszerbeállításoktól függetlenül</string>
+	<string name="settings_harvest_title">Learatottak elrejtése</string>
+	<string name="settings_harvest_summary">Minden learatott növény elrejtése</string>
+	<string name="settings_reverse_title">Növények sorrendjének megfordítása</string>
+	<string name="settings_reverse_summary">Fordított sorrendben mutatja a növényeket. (Újraindítás szükséges)</string>
+	<string name="settings_garden_title">Alapértelmezett kert</string>
+
+	<string name="settings_units">Mértékegységek</string>
+	<string name="settings_delivery_title">Szállítási egység</string>
+	<string name="settings_measurement_title">Mértékegység</string>
+	<string name="settings_temp_title">Hőmérséklet egység</string>
+	<string name="settings_tds_title">TDS érték</string>
+	<string name="settings_tds_summary" formatted="true">Alapértelmezett TDS egység, jelenleg: &lt;b&gt;%s&lt;/b&gt;</string>
+	<string name="settings_data_management">Adatok kezelése</string>
+	<string name="settings_autobackup_title">Automatikus mentés</string>
+	<string name="settings_autobackup_summary">Automatikus mentés 24 óránként</string>
+	<string name="settings_backupnow">Mentés most</string>
+	<string name="settings_backupsize_title">Mentés maximális mérete</string>
+	<string name="settings_backupsize_hint">Méret MiB-ban</string>
+	<string name="settings_backupsize_dialogtitle">Mentés hatáértéke (MiB)</string>
+	<string name="settings_restore_backup">Visszaállítás mentésből</string>
+	<string name="settings_encrypt_title">Adatok titkosítása</string>
+	<string name="settings_encrypt_summary">Egy PIN-t ad az alkamazáshoz és titkosít minden adatot/képet</string>
+	<string name="settings_failsafe_title">Biztosíték</string>
+	<string name="settings_failsafe_summary">Biztosíték jelszó megadása az adatok hozzáféréséhez</string>
+	<string name="settings_addons">Bővítmények</string>
+	<string name="settings_about">Az alkalmazásról</string>
+	<string name="settings_readme">Olvass el</string>
+	<string name="settings_export">Adatok exportálása</string>
+	<string name="settings_cardstyle_title">Kártya stílusa</string>
+	<string name="empty_plant_list">Nincs mutatható növény</string>
+	<string name="empty_schedules">Nincs ütemterv</string>
+	<string name="empty_photos">Nincs fénykép</string>
+	<string name="events_title">Előző tevékenységek</string>
+	<string name="show_hide_calendar">Naptár mutatása/elrejtése</string>
+	<!-- "1 selected" -->
+	<string name="selected_len" formatted="true">%d kijelölve</string>
+	<string name="translations_title">Köszönjük az alábbiakat</string>
+	<string name="translations_by">Fordította</string>
+	<string name="help_translate">Segíts a fordításban</string>
+	<string name="encrypt_progress_warning">Adatok és képek titkosítása, ez eltarthat egy darabig...</string>
+	<string name="decrypt_progress_warning">Adatok és képek titkosításának feloldása, ez eltarthat egy darabig...</string>
+
+	<!-- now = 1 second -->
+	<string name="now_abbr">1s</string>
+	<string name="second_abbr">mp</string>
+	<string name="minute_abbr">p</string>
+	<string name="hour_abbr">ó</string>
+	<string name="day_abbr">nap</string>
+	<string name="week_abbr">hét</string>
+	<string name="month_abbr">hónap</string>
+	<string name="year_abbr">év</string>
+
+	<string name="view_details_short">Részletek</string>
+
+	<plurals name="time_second">
+		<item quantity="one">másodperc</item>
+		<item quantity="other">másodpercek</item>
+	</plurals>
+
+	<plurals name="time_minute">
+		<item quantity="one">perc</item>
+		<item quantity="other">percek</item>
+	</plurals>
+
+	<plurals name="time_hour">
+		<item quantity="one">óra</item>
+		<item quantity="other">órák</item>
+	</plurals>
+
+	<plurals name="time_day">
+		<item quantity="one">nap</item>
+		<item quantity="other">napok</item>
+	</plurals>
+
+	<plurals name="time_week">
+		<item quantity="one">hét</item>
+		<item quantity="other">hetek</item>
+	</plurals>
+
+	<plurals name="time_month">
+		<item quantity="one">hónap</item>
+		<item quantity="other">hónapok</item>
+	</plurals>
+
+	<plurals name="time_year">
+		<item quantity="one">év</item>
+		<item quantity="other">évek</item>
+	</plurals>
+
+	<string-array name="settings_card_entries">
+		<item>Eredeti</item>
+		<item>Kompakt</item>
+		<item>Extrém</item>
+	</string-array>
+
+	<string name="confirm_quit">Minden nem mentett módosítás elveszik</string>
+	<string name="accept_quit">Kilépés</string>
+	<string name="plants">Növények</string>
+	<string name="humidity">Páratartalom</string>
+	<string name="current_temp">Jelenlegi hőmérséklet:</string>
+	<string name="current_humidity">Jelenlegi páratartalom:</string>
+	<string name="lighting_title">Világítás ütemterv</string>
+	<string name="delete_item_dialog_title">Elem törlése?</string>
+	<string name="confirm_delete_item_message_holder">Biztos hogy törlöd: &lt;b&gt;%s&lt;/b&gt;?</string>
+	<string name="show">Mutatás</string>
+	<string name="hide">Elrejtés</string>
+	<string name="lights_on">Lámpa BE</string>
+	<string name="lights_off">Lámpa KI</string>
+
+	<string name="settings_lastbackup_summary" formatted="true">Utolsó mentés: &lt;b&gt;%s&lt;/b&gt;</string>
+	<string name="settings_image_location_summary" formatted="true">Képek mentési helye, jelenleg &lt;b&gt;%s&lt;/b&gt;</string>
+	<string name="settings_image_location_error">Nem sikerült a képek mentési helyét megadni</string>
+	<string name="settings_image_location_title">Képek mentési helye</string>
+	<string name="settings_image_cache_title">Kép gyorsítótár törölve</string>
+	<string name="cache_cleared">Képfájl és memória gyorsítótár törölve</string>
+	<string name="import_progress_warning">Képek importálása, ez eltarthat egy darabig...</string>
+	<string name="data_task">Feladat időzítése</string>
+	<string name="import_task_complete">Kép importálás kész</string>
+	<string name="decrypt_task_complete">Kép visszafejtés kész</string>
+	<string name="encrypt_task_complete">Kép titkosítás kész</string>
+	<string name="empty_actions_list">Nincs mutatható tevékenység</string>
+
+	<string name="exporting_start">Termesztési napló exportálása a következőnek: %s</string>
+	<string name="exporting_complete">A %s exportálása sikeres</string>
+	<string name="exporting_path">Exportálva innen: %s ide %s</string>
+	<string name="export_complete">Exportálás sikeres</string>
+	<string name="export_dialog_label">Képek csatolása?</string>
+	<string name="no_data">Nincs adat</string>
+
+	<string name="camera_permission_summary">Fényképek készítéséhez szükséges a kamera engedélyezése</string>
+	<string name="settings_backup_management_title">Mentések kezelése</string>
+	<string name="settings_backup_location_title">Mentés helye</string>
+	<string name="settings_backup_location_summary" formatted="true">Mentés helye, jelenleg  &lt;b&gt;%s&lt;/b&gt;</string>
+	<string name="settings_backup_location_error">Nem sikerült a mentés helyének beállítása</string>
+	<string name="settings_import_error">Nem sikerült a növények importálása fájlból</string>
+	<string name="settings_import">Növények importálása fájlból</string>
+	<string name="settings_import_success">Növények sikeres importálása fájlból</string>
+
+	<string name="additive_stat_header" formatted="true">%s statisztika</string>
+	<string name="additive_average_usage_label">Átlagos mennyiség táplálásonként:</string>
+	<string name="additive_usage_count_label">Ennyi alkalommal használva:</string>
+	<string name="additive_total_usage_label">Összes adalékanyag:</string>
+
+	<string name="additives_concentration_title">Adalékanyagok koncentrációja</string>
+	<string name="additives_overtime_title">Adalékanyagok az idő során</string>
+	<string name="additives_distribution_title">Adalékanyagok eloszlása</string>
+</resources>

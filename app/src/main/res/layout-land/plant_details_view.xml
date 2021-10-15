@@ -1,10 +1,11 @@
 <?xml version="1.0" encoding="utf-8"?>
 
-<FrameLayout
+<androidx.coordinatorlayout.widget.CoordinatorLayout
 	xmlns:android="http://schemas.android.com/apk/res/android"
 	xmlns:app="http://schemas.android.com/apk/res-auto"
 	android:layout_width="match_parent"
-	android:layout_height="wrap_content"
+	android:layout_height="match_parent"
+	android:id="@+id/coordinator"
 >
 	<ScrollView
 		android:layout_width="match_parent"
@@ -180,6 +181,55 @@
 				android:elevation="4dp"
 				android:layout_marginTop="12dp"
 				style="@style/PaperCard"
+				>
+				<TextView
+					android:layout_width="wrap_content"
+					android:layout_height="wrap_content"
+					android:text="@string/stage_details_title"
+					style="@style/SectionTitle"
+					/>
+
+				<LinearLayout
+					android:layout_width="match_parent"
+					android:layout_height="wrap_content"
+					android:id="@+id/plant_stage_container"
+					android:orientation="vertical"
+					android:divider="?android:listDivider"
+					android:showDividers="middle"
+					android:layout_marginTop="8dp"
+					android:background="?selectableItemBackground"
+					>
+					<LinearLayout
+						android:layout_width="match_parent"
+						android:layout_height="wrap_content"
+						android:orientation="vertical"
+						android:padding="16dp"
+						>
+						<TextView
+							android:layout_width="match_parent"
+							android:layout_height="wrap_content"
+							android:text="@string/plant_stage_label"
+							style="@style/SubsectionTitle"
+							/>
+
+						<TextView
+							android:layout_width="match_parent"
+							android:layout_height="wrap_content"
+							android:text="@string/germination"
+							android:id="@+id/plant_stage"
+							style="@style/SubsectionSubTitle"
+							/>
+					</LinearLayout>
+				</LinearLayout>
+			</LinearLayout>
+
+			<LinearLayout
+				android:layout_width="match_parent"
+				android:layout_height="wrap_content"
+				android:orientation="vertical"
+				android:elevation="4dp"
+				android:layout_marginTop="12dp"
+				style="@style/PaperCard"
 			>
 				<TextView
 					android:layout_width="wrap_content"
@@ -310,55 +360,6 @@
 			<LinearLayout
 				android:layout_width="match_parent"
 				android:layout_height="wrap_content"
-				android:orientation="vertical"
-				android:elevation="4dp"
-				android:layout_marginTop="12dp"
-				style="@style/PaperCard"
-			>
-				<TextView
-					android:layout_width="wrap_content"
-					android:layout_height="wrap_content"
-					android:text="@string/stage_details_title"
-					style="@style/SectionTitle"
-				/>
-
-				<LinearLayout
-					android:layout_width="match_parent"
-					android:layout_height="wrap_content"
-					android:id="@+id/plant_stage_container"
-					android:orientation="vertical"
-					android:divider="?android:listDivider"
-					android:showDividers="middle"
-					android:layout_marginTop="8dp"
-					android:background="?selectableItemBackground"
-				>
-					<LinearLayout
-						android:layout_width="match_parent"
-						android:layout_height="wrap_content"
-						android:orientation="vertical"
-						android:padding="16dp"
-					>
-						<TextView
-							android:layout_width="match_parent"
-							android:layout_height="wrap_content"
-							android:text="@string/plant_stage_label"
-							style="@style/SubsectionTitle"
-						/>
-
-						<TextView
-							android:layout_width="match_parent"
-							android:layout_height="wrap_content"
-							android:text="@string/germination"
-							android:id="@+id/plant_stage"
-							style="@style/SubsectionSubTitle"
-						/>
-					</LinearLayout>
-				</LinearLayout>
-			</LinearLayout>
-
-			<LinearLayout
-				android:layout_width="match_parent"
-				android:layout_height="wrap_content"
 				android:id="@+id/link_container"
 				android:orientation="vertical"
 				android:layout_marginTop="12dp"
@@ -406,4 +407,4 @@
 			<Space android:layout_width="1dp" android:layout_height="1dp" />
 		</LinearLayout>
 	</ScrollView>
-</FrameLayout>
+</androidx.coordinatorlayout.widget.CoordinatorLayout>

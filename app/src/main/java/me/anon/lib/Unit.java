@@ -3,9 +3,6 @@ package me.anon.lib;
 import android.content.Context;
 import android.preference.PreferenceManager;
 
-import java.math.BigDecimal;
-import java.math.RoundingMode;
-
 /**
  * Unit class used for measurement input
  */
@@ -30,7 +27,7 @@ public enum Unit
 		}
 	},
 
-	L("l")
+	L("L")
 	{
 		@Override public double to(Unit to, double fromValue)
 		{
@@ -165,7 +162,7 @@ public enum Unit
 
 	private String label;
 
-	private Unit(String label)
+	Unit(String label)
 	{
 		this.label = label;
 	}
@@ -177,7 +174,7 @@ public enum Unit
 
 	public static Double toTwoDecimalPlaces(double input)
 	{
-		return Double.isInfinite(input) || Double.isNaN(input) ? 0.0d : new BigDecimal(input).setScale(2, RoundingMode.HALF_EVEN).doubleValue();
+		return Double.isInfinite(input) || Double.isNaN(input) ? 0.0d : input;
 	}
 
 	/**

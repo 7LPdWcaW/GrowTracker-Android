@@ -59,7 +59,13 @@ class PlantManager private constructor()
 		}
 
 		synchronized(this.plants) {
-			return ArrayList(plants.filterIndexed { index, plant -> garden?.plantIds?.contains(plant.id) ?: true })
+			val list = garden?.let {
+				ArrayList((garden?.plantIds ?: arrayListOf<String>()).map { id ->
+					plants.firstOrNull { it.id == id }
+				}).filterNotNull() as ArrayList
+			} ?: plants
+
+			return list
 		}
 	}
 
@@ -85,9 +91,18 @@ class PlantManager private constructor()
 			override fun doInBackground(vararg params: Void?): Void?
 			{
 				plants.find { it.id == plant.id }?.let { plant ->
+					val parents = plant.images?.mapNotNull { File(it).parentFile } ?: arrayListOf()
+
 					// Delete images
 					plant.images?.forEach { filePath ->
 						File(filePath).delete()
+					}
+
+					parents.distinct().forEach {
+						var children = (it.list() ?: arrayOf())
+						if (children.firstOrNull()?.endsWith(".nomedia") == true) File(it, children.first()).delete()
+						children = (it.list() ?: arrayOf())
+						if (children.isEmpty()) it.delete()
 					}
 
 					// Remove plant

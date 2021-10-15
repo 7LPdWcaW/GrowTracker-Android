@@ -146,14 +146,13 @@
 	<string name="ave_time_between_water_label">Temps moyen entre arrosage</string>
 	<string name="filter_additives">Filtrer les engrais et additifs</string>
 	<string name="ph_title">pH</string>
-
 	<string name="min">Min:</string>
 	<string name="max">Max:</string>
 	<string name="ave">Moy:</string>
 	<string name="temperature_title">Temperature</string>
 	<string name="general_title">Général</string>
 	<string name="failed_to_load_plant">Echec lors du chargement des plantes</string>
-	<string name="action_fim">Putain j\'ai oublié (PJO)</string>
+	<string name="action_fim">PJO</string>
 	<string name="action_flush">Rinçage</string>
 	<string name="action_foliar_feed">Arrosage foliaire</string>
 	<string name="action_lst">Palissage</string>
@@ -163,7 +162,6 @@
 	<string name="action_transplanted">Rempotage</string>
 	<string name="action_trim">Taillée</string>
 	<string name="action_tuck">Tricotage ScrOG</string>
-
 	<string name="watered">Arrosée</string>
 	<string name="note">Note</string>
 	<string name="delete_event_dialog_title">Supprimer cet événement ?</string>
@@ -265,7 +263,6 @@
 	<string name="stat_input_ph">pH de la solution nutritive</string>
 	<string name="stat_runoff_ph">pH du surplus</string>
 	<string name="stat_average_ph">pH moyen</string>
-
 	<string name="photos_title">Photos de la plante</string>
 
 	<string name="plant_summary_ph">pH interne :</string>
@@ -415,4 +412,5 @@
 	<string name="settings_import_error">Impossible d\'importer les plantes depuis le fichier</string>
 	<string name="settings_import">Importer des plantes depuis un fichier</string>
 	<string name="settings_import_success">Plantes bien importées depuis le fichier</string>
-</resources>
+
+	</resources>

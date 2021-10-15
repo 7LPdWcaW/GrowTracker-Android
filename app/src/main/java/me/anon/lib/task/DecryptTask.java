@@ -139,13 +139,13 @@ public class DecryptTask extends AsyncTask<ArrayList<String>, Integer, Void>
 		if (values[1].equals(values[0]))
 		{
 			notification = new NotificationCompat.Builder(appContext, "export")
-				.setContentText(appContext.getString(R.string.data_task))
-				.setContentTitle(appContext.getString(R.string.task_complete))
+				.setContentText(appContext.getString(R.string.decrypt_task_complete))
+				.setContentTitle(appContext.getString(R.string.data_task))
 				.setContentIntent(PendingIntent.getActivity(appContext, 0, new Intent(), PendingIntent.FLAG_UPDATE_CURRENT))
-				.setTicker(appContext.getString(R.string.task_complete))
+				.setTicker(appContext.getString(R.string.decrypt_task_complete))
 				.setSmallIcon(R.drawable.ic_floting_done)
-				.setPriority(NotificationCompat.PRIORITY_LOW)
-				.setAutoCancel(false)
+				.setPriority(NotificationCompat.PRIORITY_DEFAULT)
+				.setAutoCancel(true)
 				.setOngoing(false)
 				.setSound(null)
 				.setProgress(0, 0, false);

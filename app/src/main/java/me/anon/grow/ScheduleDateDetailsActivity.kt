@@ -25,7 +25,7 @@ class ScheduleDateDetailsActivity : BaseActivity()
 		if (supportFragmentManager.findFragmentByTag(TAG_FRAGMENT) == null)
 		{
 			supportFragmentManager.beginTransaction().replace(
-				R.id.coordinator,
+				R.id.fragment_holder,
 				ScheduleDateDetailsFragment.newInstance(intent.extras!!),
 				TAG_FRAGMENT
 			).commit()
