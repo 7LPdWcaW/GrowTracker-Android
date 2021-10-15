@@ -1,24 +1,32 @@
 # GrowTracker
 
+[![Latest alpha](https://travis-ci.com/7LPdWcaW/GrowTracker-Android.svg?branch=alpha)](https://travis-ci.com/7LPdWcaW/GrowTracker-Android)
+[![GitHub commits since latest release](https://img.shields.io/github/commits-since/7LPdWcaW/GrowTracker-Android/latest)](https://github.com/7LPdWcaW/GrowTracker-Android/releases/tag/latest)
+[![Subreddit subscribers](https://img.shields.io/reddit/subreddit-subscribers/growutils?color=orange)](https://reddit.com/r/growutils)
+[![GitHub license](https://img.shields.io/github/license/7LPdWcaW/GrowTracker-Android?color=lightgrey)](https://github.com/7LPdWcaW/GrowTracker-Android/blob/master/LICENSE)
+
 Welcome to grow tracker. This is a utility app designed for gardening and tracking various parameters of your grow.
 
-[![Latest Nightly](https://travis-ci.com/7LPdWcaW/GrowTracker-Android.svg?branch=alpha)](https://travis-ci.com/7LPdWcaW/GrowTracker-Android)
+# Discontinuation
 
-[Latest Nightly Build (Experimental!)](https://github.com/7LPdWcaW/GrowTracker-Android/releases/tag/alpha)
+As of 2020, major version 2 of the app is in maintenance mode, meaning only critical bugs will be fixed. All further development is reserved for **major version 3** of the application which will eventually replace this. [Read more here](https://github.com/7LPdWcaW/GrowTracker-Android/issues/206)
 
-[Latest APK: (SHA256) 501786b7350eceb7b894a5745c06c378f1d2f2e6f4bf659ee2576b3dfaca5732 v2.6.1](https://github.com/7LPdWcaW/GrowTracker-Android/releases/download/v2.6.1/v2.6.1-production.apk)
+# Install
 
-[Latest APK (English only): (SHA256) e366c67c54548da4c46206c953e8847ba6e4c933449ca8d33525601ee2d87bb8 v2.6.1](https://github.com/7LPdWcaW/GrowTracker-Android/releases/download/v2.6.1/v2.6.1-en.apk)
+[![GitHub release (latest SemVer)](https://img.shields.io/github/v/release/7LPdWcaW/GrowTracker-Android?label=latest%20version&sort=semver)](https://github.com/7LPdWcaW/GrowTracker-Android/releases)
+[![F-Droid](https://img.shields.io/f-droid/v/me.anon.grow)](https://f-droid.org/en/packages/me.anon.grow/)
 
-[Latest APK (Discrete): (SHA256) 3b5edaceb462c6fcd51d11652943357976f75b53dacdfe650f422933357688d9 v2.6.1](https://github.com/7LPdWcaW/GrowTracker-Android/releases/download/v2.6.1/v2.6.1-discrete.apk)
-
-[Get it on F-Droid with automatic updates](https://f-droid.org/packages/me.anon.grow/)
-
-You can follow development, post questions, or grow logs in the [Subreddit](https://reddit.com/r/growutils)
-
-# Installation
+[<img src="https://fdroid.gitlab.io/artwork/badge/get-it-on.png" alt="Get it on F-Droid" height="80">](https://f-droid.org/en/packages/me.anon.grow/)
 
 The app requires no permissions except for external storage (for caching plant data and images) which you can see [here](https://github.com/7LPdWcaW/GrowTracker-Android/blob/develop/app/src/main/AndroidManifest.xml) in order for users to maintain anonymity, and a minimum Android version of `4.2` and above
+
+- [Latest Nightly Build (Experimental!)](https://github.com/7LPdWcaW/GrowTracker-Android/releases/tag/alpha)
+
+- [Latest APK: (SHA256) 501786b7350eceb7b894a5745c06c378f1d2f2e6f4bf659ee2576b3dfaca5732 v2.6.1](https://github.com/7LPdWcaW/GrowTracker-Android/releases/download/v2.6.1/v2.6.1-production.apk)
+
+- [Latest APK (English only): (SHA256) e366c67c54548da4c46206c953e8847ba6e4c933449ca8d33525601ee2d87bb8 v2.6.1](https://github.com/7LPdWcaW/GrowTracker-Android/releases/download/v2.6.1/v2.6.1-en.apk)
+
+- [Latest APK (Discrete): (SHA256) 3b5edaceb462c6fcd51d11652943357976f75b53dacdfe650f422933357688d9 v2.6.1](https://github.com/7LPdWcaW/GrowTracker-Android/releases/download/v2.6.1/v2.6.1-discrete.apk)
 
 ## How to install from APK
 
@@ -28,11 +36,20 @@ The app requires no permissions except for external storage (for caching plant d
 
 ## Updating
 
-You can either elect to update manually, or get notified on releases by installing the [Update plugin](https://github.com/7LPdWcaW/GrowUpdater-Android/releases)
+You can either elect to update manually, or get notified on releases by installing the [Update plugin](https://github.com/7LPdWcaW/GrowUpdater-Android/releases).
 
 **For updates, do not uninstall first, you will lose your existing plant data. Always back up your data!**
 
+Installing the app via F-Droid makes it updateable through the F-Droid mechanism.
+
 # Screenshots
+
+[![main plant list](fastlane/metadata/android/en-GB/images/phoneScreenshotsThumbs/1.png)](fastlane/metadata/android/en-GB/images/phoneScreenshots/1.png)
+[![dark main plant list](fastlane/metadata/android/en-GB/images/phoneScreenshotsThumbs/1b.png)](fastlane/metadata/android/en-GB/images/phoneScreenshots/1b.png)
+
+
+<details>
+  <summary>More screenshots</summary>
 
 [![install](fastlane/metadata/android/en-GB/images/phoneScreenshotsThumbs/install.png)](fastlane/metadata/android/en-GB/images/phoneScreenshots/install.png)
 [![main plant list](fastlane/metadata/android/en-GB/images/phoneScreenshotsThumbs/1.png)](fastlane/metadata/android/en-GB/images/phoneScreenshots/1.png)
@@ -55,6 +72,8 @@ You can either elect to update manually, or get notified on releases by installi
 [![dark garden tracker](fastlane/metadata/android/en-GB/images/phoneScreenshotsThumbs/9b.png)](fastlane/metadata/android/en-GB/images/phoneScreenshots/9b.png)
 [![settings](fastlane/metadata/android/en-GB/images/phoneScreenshotsThumbs/10.png)](fastlane/metadata/android/en-GB/images/phoneScreenshots/10.png)
 
+</details>
+
 # About the app
 
 The app was designed with data in mind. All data is easily accessible via the app's files folder in `Android/data/me.anon.grow/files/`. You will need a file explorer to browse this folder, or alternatively, you can back your data up via the app settings which will create copies in `backups/GrowTracker/`
@@ -63,7 +82,12 @@ The structure is very simple, and consists of a few different objects.
 
 *Note*: date timestamps are all unix timestamps from 1/1/1970 in milliseconds. All objects in arrays are in date order, where index 0 is the oldest and index (size - 1) is the newest.
 
-## Plant object
+## API Data structure
+
+<details>
+  <summary>Expand section</summary>
+
+### Plant object
 
 - `plantDate` in milliseconds
 - `images` is an array of file paths. Image file names are the taken date as unix timestamp in milliseconds
@@ -88,7 +112,7 @@ One of,
 
 `SOIL`, `HYDRO`, `COCO`, `AERO`
 
-## Actions
+### Actions
 
 All actions have the following 3 properties
 
@@ -209,7 +233,7 @@ One of,
 }
 ```
 
-## Garden object
+### Garden object
 
 The garden object is similar to the plant object, and accepts `Action` types, but is software-restricted to the following
 
@@ -264,6 +288,7 @@ The garden object is similar to the plant object, and accepts `Action` types, bu
     "type": "LightingChange"
 }
 ```
+</details>
 
 # Encryption
 
@@ -274,6 +299,10 @@ Encryption in the app uses basic AES for encryption using a provided passphrase.
 You can decrypt your files using your passphrase either by writing a script that uses AES decryption, or an online tool such as [Online-Domain-Tools](http://aes.online-domain-tools.com/).
 
 # Translators
+
+Translating is done conveniently through [Transifex](https://www.transifex.com/growutils/growtracker/)
+
+See [more](https://github.com/7LPdWcaW/GrowTracker-Android/issues/116) about translating GrowTracker
 
 Translations provided by;
 
@@ -289,11 +318,9 @@ Translations provided by;
 - Ukranian - ![UK - Ukrainian](https://transifex-open-api.herokuapp.com/badge/growutils/project/growtracker/language/uk/translated.png); 9YbQiuEohUu1
 
 
-See [more](https://github.com/7LPdWcaW/GrowTracker-Android/issues/116) about translating GrowTracker
-
 # License
 
-Copyright 2014-2019 7LPdWcaW
+Copyright 2014-2021 7LPdWcaW
 
 Licensed under the Apache License, Version 2.0 (the "License");
 you may not use this file except in compliance with the License.
