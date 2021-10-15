@@ -6,7 +6,6 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import com.github.appintro.SlideBackgroundColorHolder
-import kotlinx.android.synthetic.main.fragment_intro_slide_diary.*
 import me.anon.grow3.R
 import me.anon.grow3.ui.crud.activity.DiaryActivity
 import me.anon.grow3.util.color
@@ -24,7 +23,7 @@ class FirstDiarySlideFragment : Fragment(), SlideBackgroundColorHolder
 	{
 		super.onViewCreated(view, savedInstanceState)
 
-		new_diary.setOnClickListener {
+		view.findViewById<View>(R.id.new_diary).setOnClickListener {
 			newTask<DiaryActivity>()
 			requireActivity().finish()
 		}
@@ -35,6 +34,6 @@ class FirstDiarySlideFragment : Fragment(), SlideBackgroundColorHolder
 
 	override fun setBackgroundColor(backgroundColor: Int)
 	{
-		content.setBackgroundColor(backgroundColor)
+		requireView().findViewById<View>(R.id.content).setBackgroundColor(backgroundColor)
 	}
 }

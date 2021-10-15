@@ -14,7 +14,7 @@
 		android:background="?colorPrimary"
 		android:theme="@style/ThemeOverlay.AppCompat.Dark.ActionBar"
 	>
-		<com.google.android.material.appbar.SubtitleCollapsingToolbarLayout
+		<com.google.android.material.appbar.CollapsingToolbarLayout
 			android:layout_width="match_parent"
 			android:layout_height="match_parent"
 			android:id="@+id/collapsing_toolbar_layout"
@@ -39,7 +39,7 @@
 				app:layout_collapseMode="pin"
 				app:navigationIcon="@drawable/ic_arrow_back"
 			/>
-		</com.google.android.material.appbar.SubtitleCollapsingToolbarLayout>
+		</com.google.android.material.appbar.CollapsingToolbarLayout>
 	</com.google.android.material.appbar.AppBarLayout>
 
 	<com.google.android.material.floatingactionbutton.FloatingActionButton
