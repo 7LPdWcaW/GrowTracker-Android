@@ -109,6 +109,7 @@
 	<style name="Button.Bordered" parent="Widget.MaterialComponents.Button.OutlinedButton">
 		<item name="android:textColor">?colorAccent</item>
 		<item name="strokeColor">?colorAccent</item>
+		<item name="rippleColor">?colorAccent</item>
 		<item name="android:padding">16dp</item>
 	</style>
 

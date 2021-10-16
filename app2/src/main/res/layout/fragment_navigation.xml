@@ -32,28 +32,29 @@
 			app:layout_constraintBottom_toBottomOf="parent"
 			android:orientation="vertical"
 			android:divider="@drawable/spacer_8dp"
-			android:paddingEnd="16dp"
 			android:showDividers="middle"
 		>
-			<com.google.android.material.textview.MaterialTextView
-				android:layout_width="match_parent"
-				android:layout_height="wrap_content"
-				android:id="@+id/navigation_about"
-				android:text="About"
-				android:drawableStart="@drawable/menu_ic_calendar"
-				android:textColor="?textOnPrimary"
-				android:backgroundTint="?textOnPrimary"
-				app:drawableTint="?textOnPrimary"
-				style="@style/Text.Link"
-			/>
+<!--			<com.google.android.material.textview.MaterialTextView-->
+<!--				android:layout_width="match_parent"-->
+<!--				android:layout_height="wrap_content"-->
+<!--				android:id="@+id/navigation_about"-->
+<!--				android:text="About"-->
+<!--				android:drawableStart="@drawable/menu_ic_info"-->
+<!--				android:textColor="?textOnPrimary"-->
+<!--				android:backgroundTint="?textOnPrimary"-->
+<!--				app:drawableTint="?textOnPrimary"-->
+<!--				style="@style/Text.Link"-->
+<!--			/>-->
 
 			<com.google.android.material.textview.MaterialTextView
 				android:layout_width="match_parent"
 				android:layout_height="wrap_content"
 				android:id="@+id/navigation_settings"
 				android:text="Settings"
-				android:drawableStart="@drawable/menu_ic_calendar"
+				android:drawableStart="@drawable/menu_ic_settings"
+				android:foreground="@drawable/menu_rounded_selectable_item_background"
 				android:textColor="?textOnPrimary"
+				android:paddingEnd="16dp"
 				app:drawableTint="?textOnPrimary"
 				style="@style/Text.Link.End"
 			/>
