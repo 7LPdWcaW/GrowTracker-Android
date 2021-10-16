@@ -39,9 +39,7 @@ class WaterLogCard : Card<CardWaterLogBinding>
 	override fun bind(view: CardWaterLogBinding)
 	{
 		view.includeStubCardHeader.header.text = "Watered"
-		view.includeStubCardHeader.date.text = "${log.date.asDateTime().formatTime()} - " + diary.stageWhen(log).transform {
-			toString() + "/" + total
-		}
+		view.includeStubCardHeader.date.text = "${log.date.asDateTime().formatTime()}"
 
 		view.content.removeAllViews()
 

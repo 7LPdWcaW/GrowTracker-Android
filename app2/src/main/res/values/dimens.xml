@@ -13,6 +13,7 @@
 
 	<dimen name="section_header_spacing">18dp</dimen>
 	<dimen name="section_spacing">12dp</dimen>
+	<dimen name="content_spacing">8dp</dimen>
 	<dimen name="subsection_header_spacing">32dp</dimen>
 	
 	<dimen name="fab_spacing">78dp</dimen>

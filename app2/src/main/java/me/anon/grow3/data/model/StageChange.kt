@@ -22,6 +22,7 @@ data class StageChange(
 ) : Log(action = "StageChange")
 {
 	override val typeRes: Int = me.anon.grow3.R.string.log_type_stage_change
+
 }
 
 public fun StageChange.logView(diary: Diary) = StageChangeLogView(diary, this)
@@ -84,5 +85,10 @@ data class StageAt(
 	override fun toString(): String
 	{
 		return "$days${stage.type.strRes.string()[0]}"
+	}
+
+	public fun longString(): String
+	{
+		return "$days days ${stage.type.strRes.string()} • $total total"
 	}
 }

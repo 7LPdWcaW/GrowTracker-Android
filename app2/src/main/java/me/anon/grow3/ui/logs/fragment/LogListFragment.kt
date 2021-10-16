@@ -6,10 +6,7 @@ import me.anon.grow3.data.model.*
 import me.anon.grow3.ui.base.CardListFragment
 import me.anon.grow3.ui.logs.view.LogDateSeparator
 import me.anon.grow3.ui.logs.viewmodel.LogListViewModel
-import me.anon.grow3.util.Injector
-import me.anon.grow3.util.ViewModelProvider
-import me.anon.grow3.util.asDate
-import me.anon.grow3.util.asDisplayString
+import me.anon.grow3.util.*
 import javax.inject.Inject
 
 class LogListFragment : CardListFragment()
@@ -42,7 +39,7 @@ class LogListFragment : CardListFragment()
 						}
 
 					group.forEach { (date, logs) ->
-						add(LogDateSeparator(date.asDisplayString()))
+						add(LogDateSeparator(date.asDisplayString(), logs.last().date.ago(false) + " • " + diary.stageWhen(logs.last()).longString()))
 						addAll(logs.reversed().map { it.asCard(diary) })
 					}
 				}
