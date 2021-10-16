@@ -7,9 +7,9 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import com.freelapp.flowlifecycleobserver.collectWhileStarted
 import me.anon.grow3.R
 import me.anon.grow3.data.model.Diary
-import me.anon.grow3.data.model.Photo
-import me.anon.grow3.data.model.Water
+import me.anon.grow3.data.model.LogConstants
 import me.anon.grow3.databinding.FragmentViewDiaryBinding
+import me.anon.grow3.databinding.StubMenuLogActionBinding
 import me.anon.grow3.ui.action.fragment.LogActionBottomSheetFragment
 import me.anon.grow3.ui.base.BaseFragment
 import me.anon.grow3.ui.common.Extras
@@ -58,25 +58,22 @@ class ViewDiaryFragment : BaseFragment(FragmentViewDiaryBinding::class)
 			navigationPager?.isUserInputEnabled = true
 		}
 
-		viewBindings.menuLogWater.onClick {
-			viewBindings.menuFab.isExpanded = false
-			navigationPager?.isUserInputEnabled = true
-			navigateTo<LogActionBottomSheetFragment>(true) {
-				bundleOf(
-					Extras.EXTRA_DIARY_ID to viewModel.diaryId,
-					Extras.EXTRA_LOG_TYPE to nameOf<Water>()
-				)
-			}
-		}
+		viewBindings.menuLogContainer.removeViewsBefore(count = 1)
+		LogConstants.quickMenu.forEach { type ->
+			val menuView = StubMenuLogActionBinding.inflate(layoutInflater, viewBindings.menuLogContainer, false)
+			menuView.logName.text = type.name
+			viewBindings.menuLogContainer.addView(menuView.root, 0)
 
-		viewBindings.menuLogPhoto.onClick {
-			viewBindings.menuFab.isExpanded = false
-			navigationPager?.isUserInputEnabled = true
-			navigateTo<LogActionBottomSheetFragment>(true) {
-				bundleOf(
-					Extras.EXTRA_DIARY_ID to viewModel.diaryId,
-					Extras.EXTRA_LOG_TYPE to nameOf<Photo>()
-				)
+			// routing
+			menuView.root.onClick {
+				viewBindings.menuFab.isExpanded = false
+				navigationPager?.isUserInputEnabled = true
+				navigateTo<LogActionBottomSheetFragment>(true) {
+					bundleOf(
+						Extras.EXTRA_DIARY_ID to viewModel.diaryId,
+						Extras.EXTRA_LOG_TYPE to type.type.name
+					)
+				}
 			}
 		}
 	}

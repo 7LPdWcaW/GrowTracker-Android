@@ -124,6 +124,18 @@ public fun <T : View> View.findChildrenByClass(t: Class<T>): ArrayList<T>
 }
 
 /**
+ * Removes views up until the size - count, starting with 0
+ */
+public fun ViewGroup.removeViewsBefore(start: Int = 0, count: Int = 0)
+{
+	val size = childCount
+	if (start < 0 || start > size) throw IllegalArgumentException()
+	if (start > size - count) throw IllegalArgumentException()
+	if (size - count < size) return
+	removeViews(start, size - count)
+}
+
+/**
  * Removes all views from the start index
  */
 public fun ViewGroup.removeViewsFrom(start: Int = 0)

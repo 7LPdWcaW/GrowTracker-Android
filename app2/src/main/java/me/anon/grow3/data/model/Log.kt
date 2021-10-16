@@ -1,6 +1,5 @@
 package me.anon.grow3.data.model
 
-import com.fasterxml.jackson.annotation.JsonSubTypes
 import com.fasterxml.jackson.annotation.JsonTypeInfo
 import me.anon.grow3.data.exceptions.GrowTrackerException
 import me.anon.grow3.ui.action.view.LogView
@@ -9,17 +8,26 @@ import me.anon.grow3.view.model.Card
 import org.threeten.bp.ZonedDateTime
 import java.util.*
 
-@JsonTypeInfo(use = JsonTypeInfo.Id.NAME, include = JsonTypeInfo.As.PROPERTY, property = "action")
-@JsonSubTypes(
-	JsonSubTypes.Type(value = Environment::class, name = "Environment"),
-	JsonSubTypes.Type(value = Transplant::class, name = "Transplant"),
-	JsonSubTypes.Type(value = Harvest::class, name = "Harvest"),
-	JsonSubTypes.Type(value = Maintenance::class, name = "Maintenance"),
-	JsonSubTypes.Type(value = Pesticide::class, name = "Pesticide"),
-	JsonSubTypes.Type(value = Photo::class, name = "Photo"),
-	JsonSubTypes.Type(value = StageChange::class, name = "StageChange"),
-	JsonSubTypes.Type(value = Water::class, name = "Water")
+data class LogType(
+	val name: String,
+	val type: Class<out Log>,
+	val iconRes: Int = -1,
 )
+
+object LogConstants
+{
+	public val types = arrayOf(
+		LogType("Water", Water::class.java, -1),
+		LogType("Photo", Photo::class.java, -1),
+		LogType("StageChange", StageChange::class.java, -1),
+	)
+	public val quickMenu = arrayOf(
+		LogType("Water", Water::class.java, -1),
+		LogType("Photo", Photo::class.java, -1),
+	)
+}
+
+@JsonTypeInfo(use = JsonTypeInfo.Id.NAME, include = JsonTypeInfo.As.EXISTING_PROPERTY, property = "action")
 abstract class Log(
 	open val id: String = UUID.randomUUID().toString(),
 	open var date: String = ZonedDateTime.now().asApiString(),
