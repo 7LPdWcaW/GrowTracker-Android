@@ -1,10 +1,7 @@
 package me.anon.grow3.data.model
 
 import com.squareup.moshi.JsonClass
-import me.anon.grow3.util.and
-import me.anon.grow3.util.asApiString
-import me.anon.grow3.util.asDateTime
-import me.anon.grow3.util.dateDifferenceDays
+import me.anon.grow3.util.*
 import org.dizitart.no2.objects.Id
 import org.threeten.bp.ZonedDateTime
 import java.util.*
@@ -192,13 +189,22 @@ data class Diary(
 
 	private fun findWater(): Water?
 		= log.sortedBy { it.date }
-		.filterIsInstance<Water>()
-		.lastOrNull()
+			.filterIsInstance<Water>()
+			.lastOrNull()
 
 	private fun findEnvironment(): Environment?
 		= log.sortedBy { it.date }
-		.filterIsInstance<Environment>()
-		.lastOrNull()
+			.filterIsInstance<Environment>()
+			.lastOrNull()
+
+	public fun shortMenuSummary(): String
+	{
+		val retString = arrayListOf("${crops.size} Crops")
+		retString += findAllStages().shortSummary().toString()
+		findWater()?.let { retString += "Last watered ${it.date.ago()}" }
+
+		return retString.joinToString(" • ")
+	}
 
 	init {
 		if (log.isEmpty() || !log.any { it is StageChange })

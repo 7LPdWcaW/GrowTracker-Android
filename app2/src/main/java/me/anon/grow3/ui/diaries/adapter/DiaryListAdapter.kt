@@ -9,9 +9,13 @@ import me.anon.grow3.util.onClick
 
 class DiaryListAdapter : RecyclerView.Adapter<DiaryViewHolder>()
 {
+	/**
+	 * Lightweight data struct for navigation
+	 */
 	data class DiaryStub(
 		val id: String,
-		val name: String
+		val name: String,
+		val summary: String
 	)
 
 	public var items: List<DiaryStub> = arrayListOf()

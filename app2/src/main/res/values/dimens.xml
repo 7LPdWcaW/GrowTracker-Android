@@ -8,6 +8,7 @@
 	<dimen name="text_title1">22sp</dimen>
 	<dimen name="text_title2">18sp</dimen>
 	<dimen name="text_body">16sp</dimen>
+	<dimen name="text_subbody">14sp</dimen>
 	<dimen name="text_caption">12sp</dimen>
 
 	<dimen name="section_header_spacing">18dp</dimen>

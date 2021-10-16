@@ -7,10 +7,13 @@ import me.anon.grow3.ui.diaries.adapter.DiaryListAdapter
 
 class DiaryViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView)
 {
-	private val name = ListDiaryBinding.bind(itemView).name
+	private val binding = ListDiaryBinding.bind(itemView)
+	private val name = binding.name
+	private val summary = binding.shortSummary
 
-	public fun bind(diary: DiaryListAdapter.DiaryStub)
+	public fun bind(stub: DiaryListAdapter.DiaryStub)
 	{
-		name.text = diary.name
+		name.text = stub.name
+		summary.text = stub.summary
 	}
 }

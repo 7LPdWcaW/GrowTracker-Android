@@ -30,6 +30,25 @@ public fun StageChange.logCard(diary: Diary) = StageChangeLogCard(diary, this)
 public fun List<StageChange>.shortSummary(): Spannable
 {
 	val stringBuilder = StringBuilder()
+	if (size - 1 >= 0)
+	{
+		val firstStage = get(0)
+		val currentStage = get(size - 1)
+		val now = ZonedDateTime.now()
+
+		val days = ChronoUnit.DAYS.between(currentStage.date.asDateTime(), now)
+		val total = ChronoUnit.DAYS.between(firstStage.date.asDateTime(), now)
+		stringBuilder += "$days"
+		stringBuilder += currentStage.type.strRes.string()[0].toLowerCase()
+		stringBuilder += "/$total"
+	}
+
+	return SpannableString.valueOf(stringBuilder.toString())
+}
+
+public fun List<StageChange>.longSummary(): Spannable
+{
+	val stringBuilder = StringBuilder()
 	for (stageIndex in 0 until size)
 	{
 		val stage = get(stageIndex)

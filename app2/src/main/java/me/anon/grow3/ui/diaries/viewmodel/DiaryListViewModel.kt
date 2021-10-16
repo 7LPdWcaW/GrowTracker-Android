@@ -2,8 +2,11 @@ package me.anon.grow3.ui.diaries.viewmodel
 
 import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
+import androidx.lifecycle.viewModelScope
 import kotlinx.coroutines.flow.Flow
-import kotlinx.coroutines.flow.mapLatest
+import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.collectLatest
+import kotlinx.coroutines.launch
 import me.anon.grow3.data.exceptions.GrowTrackerException
 import me.anon.grow3.data.repository.DiariesRepository
 import me.anon.grow3.ui.diaries.adapter.DiaryListAdapter
@@ -23,17 +26,30 @@ class DiaryListViewModel constructor(
 			DiaryListViewModel(diariesRepository)
 	}
 
-	sealed class UiResult
+	sealed class UiState
 	{
-		data class Loaded(val diaries: List<DiaryListAdapter.DiaryStub>) : UiResult()
-		object Loading : UiResult()
+		object Loading : UiState()
+		data class Loaded(val diaries: List<DiaryListAdapter.DiaryStub>) : UiState()
 	}
 
-	public val state: Flow<UiResult> get() = diariesRepository.flowDiaries()
-		.mapLatest {
-			val data = (it as? DataResult.Success)?.data ?: throw GrowTrackerException.DiaryLoadFailed()
-			UiResult.Loaded(data.map {
-				DiaryListAdapter.DiaryStub(it.id, it.name)
-			})
+	private val _state = MutableStateFlow<UiState>(UiState.Loading)
+	public val state: Flow<UiState> = _state
+
+	init {
+		viewModelScope.launch {
+			diariesRepository.flowDiaries()
+				.collectLatest { result ->
+					when (result)
+					{
+						is DataResult.Success -> {
+							val stubs = result.data.map {
+								DiaryListAdapter.DiaryStub(it.id, it.name, it.shortMenuSummary())
+							}
+							_state.emit(UiState.Loaded(stubs))
+						}
+						else -> throw GrowTrackerException.DiaryLoadFailed()
+					}
+				}
 		}
+	}
 }

@@ -11,6 +11,8 @@ import org.threeten.bp.ZoneId
 import org.threeten.bp.ZonedDateTime
 import org.threeten.bp.format.DateTimeFormatter
 import org.threeten.bp.format.DateTimeFormatterBuilder
+import org.threeten.bp.temporal.ChronoUnit
+import java.util.concurrent.TimeUnit
 
 /**
  * Date util class for formatting/converting strings into date objects
@@ -51,6 +53,39 @@ public fun String.asDate(): LocalDate
 		.appendPattern(API_FORMAT)
 		.appendOffset("+HH:mm", "+00:00")
 		.toFormatter())
+
+/**
+ * Ago
+ */
+public fun String.ago(short: Boolean = true): String
+{
+	val now = ZonedDateTime.now()
+	val then = asDateTime()
+	val seconds = ChronoUnit.SECONDS.between(then, now)
+	return when
+	{
+		seconds > 2629746L -> {
+			val duration = ChronoUnit.MONTHS.between(then, now)
+			duration.toString() + (if (short) "mo" else " month${if (duration > 1) "s" else ""} ago")
+		}
+		seconds > TimeUnit.DAYS.toSeconds(1) -> {
+			val duration = ChronoUnit.DAYS.between(then, now)
+			duration.toString() + (if (short) "d" else " day${if (duration > 1) "s" else ""} ago")
+		}
+		seconds > TimeUnit.HOURS.toSeconds(1) -> {
+			val duration = ChronoUnit.HOURS.between(then, now)
+			duration.toString() + (if (short) "h" else " hour${if (duration > 1) "s" else ""} ago")
+		}
+		seconds > TimeUnit.MINUTES.toSeconds(1) -> {
+			val duration = ChronoUnit.MINUTES.between(then, now)
+			duration.toString() + (if (short) "m" else " minute${if (duration > 1) "s" else ""} ago")
+		}
+		else -> {
+			val duration = ChronoUnit.SECONDS.between(then, now)
+			duration.toString() + (if (short) "s" else " second${if (duration > 1) "s" else ""} ago")
+		}
+	}
+}
 
 /**
  * Formats a zoned date time into API format for storage

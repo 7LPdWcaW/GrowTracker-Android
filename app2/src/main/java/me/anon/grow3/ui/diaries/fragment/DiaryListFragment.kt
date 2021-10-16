@@ -41,11 +41,11 @@ class DiaryListFragment : BaseFragment(FragmentDiariesBinding::class)
 	override fun bindVm()
 	{
 		viewModel.state
-			.collectWhileStarted(this) {
-				when (it)
+			.collectWhileStarted(this) { state ->
+				when (state)
 				{
-					is DiaryListViewModel.UiResult.Loaded -> {
-						adapter.items = it.diaries
+					is DiaryListViewModel.UiState.Loaded -> {
+						adapter.items = state.diaries
 						adapter.notifyDataSetChanged()
 					}
 				}
