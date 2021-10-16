@@ -9,37 +9,17 @@
 >
 	<com.google.android.material.appbar.AppBarLayout
 		android:layout_width="match_parent"
-		android:layout_height="256dp"
+		android:layout_height="wrap_content"
 		android:id="@+id/toolbar_layout"
 		android:background="?colorPrimary"
 		android:theme="@style/ThemeOverlay.AppCompat.Dark.ActionBar"
 	>
-		<com.google.android.material.appbar.CollapsingToolbarLayout
+		<com.google.android.material.appbar.MaterialToolbar
 			android:layout_width="match_parent"
-			android:layout_height="match_parent"
-			android:id="@+id/collapsing_toolbar_layout"
-			app:contentScrim="?attr/colorPrimary"
-			app:layout_scrollFlags="scroll|exitUntilCollapsed"
-			app:expandedTitleMarginStart="16dp"
-		>
-			<ImageView
-				android:layout_width="match_parent"
-				android:layout_height="match_parent"
-				android:src="@drawable/sample"
-				android:scaleType="centerCrop"
-				android:adjustViewBounds="true"
-				app:layout_collapseMode="parallax"
-				android:tint="#2F000000"
-			/>
-
-			<com.google.android.material.appbar.MaterialToolbar
-				android:layout_width="match_parent"
-				android:layout_height="?attr/actionBarSize"
-				android:id="@+id/toolbar"
-				app:layout_collapseMode="pin"
-				app:navigationIcon="@drawable/ic_arrow_back"
-			/>
-		</com.google.android.material.appbar.CollapsingToolbarLayout>
+			android:layout_height="?attr/actionBarSize"
+			android:id="@+id/toolbar"
+			app:navigationIcon="@drawable/ic_arrow_back"
+		/>
 	</com.google.android.material.appbar.AppBarLayout>
 
 	<com.google.android.material.floatingactionbutton.FloatingActionButton
@@ -88,198 +68,13 @@
 			<LinearLayout
 				android:layout_width="match_parent"
 				android:layout_height="wrap_content"
+				android:id="@+id/menu_log_container"
 				android:orientation="vertical"
 			>
-				<LinearLayout
-					android:layout_width="match_parent"
-					android:layout_height="wrap_content"
-					android:id="@+id/menu_log_water"
-					android:orientation="horizontal"
-					android:paddingStart="18dp"
-					android:paddingEnd="18dp"
-					android:paddingTop="12dp"
-					android:paddingBottom="12dp"
-					android:background="?selectableItemBackground"
-					android:clickable="true"
-					android:focusable="true"
-				>
-					<ImageView
-						android:layout_width="42dp"
-						android:layout_height="42dp"
-						android:padding="4dp"
-						app:srcCompat="@drawable/ic_calendar"
-						app:tint="?textOnSurface"
-					/>
-
-					<TextView
-						android:layout_width="wrap_content"
-						android:layout_height="match_parent"
-						android:text="Water"
-						android:textSize="16sp"
-						android:layout_marginStart="18dp"
-						android:gravity="center_vertical"
-					/>
-				</LinearLayout>
-
-				<LinearLayout
-					android:layout_width="match_parent"
-					android:layout_height="wrap_content"
-					android:id="@+id/menu_log_transplant"
-					android:orientation="horizontal"
-					android:paddingStart="18dp"
-					android:paddingEnd="18dp"
-					android:paddingTop="12dp"
-					android:paddingBottom="12dp"
-					android:background="?selectableItemBackground"
-					android:clickable="true"
-					android:focusable="true"
-				>
-					<ImageView
-						android:layout_width="42dp"
-						android:layout_height="42dp"
-						android:padding="4dp"
-						app:srcCompat="@drawable/ic_calendar"
-						app:tint="?textOnSurface"
-					/>
-
-					<TextView
-						android:layout_width="wrap_content"
-						android:layout_height="match_parent"
-						android:text="Transplant"
-						android:textSize="16sp"
-						android:layout_marginStart="18dp"
-						android:gravity="center_vertical"
-					/>
-				</LinearLayout>
-
-				<LinearLayout
-					android:layout_width="match_parent"
-					android:layout_height="wrap_content"
-					android:id="@+id/menu_log_environment"
-					android:orientation="horizontal"
-					android:paddingStart="18dp"
-					android:paddingEnd="18dp"
-					android:paddingTop="12dp"
-					android:paddingBottom="12dp"
-					android:background="?selectableItemBackground"
-					android:clickable="true"
-					android:focusable="true"
-				>
-					<ImageView
-						android:layout_width="42dp"
-						android:layout_height="42dp"
-						android:padding="4dp"
-						app:srcCompat="@drawable/ic_calendar"
-						app:tint="?textOnSurface"
-					/>
-
-					<TextView
-						android:layout_width="wrap_content"
-						android:layout_height="match_parent"
-						android:text="Environment"
-						android:textSize="16sp"
-						android:layout_marginStart="18dp"
-						android:gravity="center_vertical"
-					/>
-				</LinearLayout>
-
-				<LinearLayout
-					android:layout_width="match_parent"
-					android:layout_height="wrap_content"
-					android:id="@+id/menu_log_maintenance"
-					android:orientation="horizontal"
-					android:paddingStart="18dp"
-					android:paddingEnd="18dp"
-					android:paddingTop="12dp"
-					android:paddingBottom="12dp"
-					android:background="?selectableItemBackground"
-					android:clickable="true"
-					android:focusable="true"
-				>
-					<ImageView
-						android:layout_width="42dp"
-						android:layout_height="42dp"
-						android:padding="4dp"
-						app:srcCompat="@drawable/ic_calendar"
-						app:tint="?textOnSurface"
-					/>
-
-					<TextView
-						android:layout_width="wrap_content"
-						android:layout_height="match_parent"
-						android:text="Maintenance"
-						android:textSize="16sp"
-						android:layout_marginStart="18dp"
-						android:gravity="center_vertical"
-					/>
-				</LinearLayout>
-
-				<LinearLayout
-					android:layout_width="match_parent"
-					android:layout_height="wrap_content"
-					android:id="@+id/menu_log_pesticide"
-					android:orientation="horizontal"
-					android:paddingStart="18dp"
-					android:paddingEnd="18dp"
-					android:paddingTop="12dp"
-					android:paddingBottom="12dp"
-					android:background="?selectableItemBackground"
-					android:clickable="true"
-					android:focusable="true"
-				>
-					<ImageView
-						android:layout_width="42dp"
-						android:layout_height="42dp"
-						android:padding="4dp"
-						app:srcCompat="@drawable/ic_calendar"
-						app:tint="?textOnSurface"
-					/>
-
-					<TextView
-						android:layout_width="wrap_content"
-						android:layout_height="match_parent"
-						android:text="Pesticide"
-						android:textSize="16sp"
-						android:layout_marginStart="18dp"
-						android:gravity="center_vertical"
-					/>
-				</LinearLayout>
-
-				<LinearLayout
-					android:layout_width="match_parent"
-					android:layout_height="wrap_content"
-					android:id="@+id/menu_log_photo"
-					android:orientation="horizontal"
-					android:paddingStart="18dp"
-					android:paddingEnd="18dp"
-					android:paddingTop="12dp"
-					android:paddingBottom="12dp"
-					android:background="?selectableItemBackground"
-					android:clickable="true"
-					android:focusable="true"
-				>
-					<ImageView
-						android:layout_width="42dp"
-						android:layout_height="42dp"
-						android:padding="4dp"
-						app:srcCompat="@drawable/ic_calendar"
-						app:tint="?textOnSurface"
-					/>
-
-					<TextView
-						android:layout_width="wrap_content"
-						android:layout_height="match_parent"
-						android:text="Photo"
-						android:textSize="16sp"
-						android:layout_marginStart="18dp"
-						android:gravity="center_vertical"
-					/>
-				</LinearLayout>
-
 				<TextView
 					android:layout_width="match_parent"
 					android:layout_height="wrap_content"
-					android:minWidth="240dp"
+					android:minWidth="200dp"
 					android:text="log action"
 					app:drawableTint="#ffffff"
 					android:gravity="center_horizontal"
@@ -289,6 +84,7 @@
 					android:fontFamily="sans-serif-smallcaps"
 					android:textStyle="bold"
 					android:background="?colorAccent"
+					app:drawableEndCompat="@drawable/ic_arrow_forward"
 				/>
 			</LinearLayout>
 		</com.google.android.material.card.MaterialCardView>

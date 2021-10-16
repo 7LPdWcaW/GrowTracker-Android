@@ -97,7 +97,8 @@ class ViewDiaryFragment : BaseFragment(FragmentViewDiaryBinding::class)
 
 	private fun updateDiaryUi(diary: Diary)
 	{
-		viewBindings.collapsingToolbarLayout.title = diary.name
+		viewBindings.toolbar.title = diary.name
+		//viewBindings.collapsingToolbarLayout.title = diary.name
 //		viewBindings.collapsingToolbarLayout.subtitle = diary.stages().shortSummary()
 
 		viewBindings.toolbar.menu.clear()
