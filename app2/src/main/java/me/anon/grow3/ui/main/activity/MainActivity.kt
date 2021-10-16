@@ -7,7 +7,6 @@ import android.view.ViewGroup
 import android.widget.Toast
 import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
-import androidx.core.os.bundleOf
 import androidx.core.view.isVisible
 import androidx.core.view.updatePadding
 import androidx.fragment.app.Fragment
@@ -26,7 +25,6 @@ import me.anon.grow3.databinding.ActivityMainBinding
 import me.anon.grow3.ui.base.BaseActivity
 import me.anon.grow3.ui.base.BaseFragment
 import me.anon.grow3.ui.base.BaseHostFragment
-import me.anon.grow3.ui.diaries.fragment.EmptyFragment
 import me.anon.grow3.ui.main.fragment.AdditionalPageHostFragment
 import me.anon.grow3.ui.main.fragment.MainNavigatorFragment
 import me.anon.grow3.ui.main.fragment.NavigationFragment
@@ -85,7 +83,7 @@ class MainActivity : BaseActivity(ActivityMainBinding::class)
 			})
 			add(INDEX_MAIN, object : FragmentInstance(
 				MainNavigatorFragment::class.java,
-				activity.intent?.extras ?: bundleOf(EXTRA_NAVIGATE to nameOf<EmptyFragment>())
+				activity.intent?.extras
 			)
 			{
 				override val id: Long

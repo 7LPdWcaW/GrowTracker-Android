@@ -21,6 +21,8 @@ import me.anon.grow3.ui.diaries.fragment.DiaryListFragment
 import me.anon.grow3.ui.diaries.fragment.ViewDiaryFragment
 import me.anon.grow3.ui.logs.fragment.LogListFragment
 import me.anon.grow3.ui.main.activity.MainActivity
+import me.anon.grow3.ui.main.fragment.MainNavigatorFragment
+import me.anon.grow3.ui.main.fragment.NavigationFragment
 import me.anon.grow3.util.handler.ExceptionHandler
 import javax.inject.Singleton
 
@@ -34,6 +36,9 @@ interface ApplicationComponent
 	public fun corePreferences(): CorePreferences
 	public fun exceptionHandler(): ExceptionHandler
 	public fun diariesRepo(): DiariesRepository
+
+	public fun inject(fragment: MainNavigatorFragment)
+	public fun inject(fragment: NavigationFragment)
 
 	public fun inject(fragment: DiaryListFragment)
 	public fun inject(fragment: DiaryDetailsFragment)
