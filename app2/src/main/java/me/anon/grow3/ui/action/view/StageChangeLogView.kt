@@ -8,36 +8,43 @@ import me.anon.grow3.data.model.StageChange
 import me.anon.grow3.data.model.StageType
 import me.anon.grow3.databinding.FragmentActionLogStageChangeBinding
 
-class StageChangeLogView(
-	diary: Diary,
-	log: StageChange
-) : LogView<StageChange>(diary, log)
+class StageChangeLogView : LogView<FragmentActionLogStageChangeBinding>
 {
-	private lateinit var bindings: FragmentActionLogStageChangeBinding
+	private lateinit var diary: Diary
+	private lateinit var log: StageChange
 
-	override fun createView(inflater: LayoutInflater, parent: ViewGroup): View
-		= FragmentActionLogStageChangeBinding.inflate(inflater, parent, false).root
-
-	override fun bindView(view: View)
+	constructor() : super()
+	constructor(diary: Diary, log: StageChange) : super()
 	{
-		bindings = FragmentActionLogStageChangeBinding.bind(view)
-		bindings.common.setLog(diary, log)
+		this.diary = diary
+		this.log = log
+	}
 
-		bindings.stages.setMenu(StageType.toMenu())
-		bindings.stages.singleSelection = true
-		bindings.stages.checkItems(diary.stage().type.strRes)
-		bindings.stages.itemSelectListener = { item ->
+	override fun createView(inflater: LayoutInflater, parent: ViewGroup): FragmentActionLogStageChangeBinding
+		= FragmentActionLogStageChangeBinding.inflate(inflater, parent, false)
+
+	override fun bindView(view: View): FragmentActionLogStageChangeBinding
+		= FragmentActionLogStageChangeBinding.bind(view)
+
+	override fun bind(view: FragmentActionLogStageChangeBinding)
+	{
+		view.common.setLog(diary, log)
+
+		view.stages.setMenu(StageType.toMenu())
+		view.stages.singleSelection = true
+		view.stages.checkItems(diary.stage().type.strRes)
+		view.stages.itemSelectListener = { item ->
 
 		}
 	}
 
-	override fun saveView(): StageChange
+	override fun save(view: FragmentActionLogStageChangeBinding): StageChange
 	{
-		bindings.root.clearFocus()
-		bindings.common.saveTo(log)
-		log.type = StageType.ofId(bindings.stages.getSelectedItems().first().itemId)
+		view.root.clearFocus()
+		view.common.saveTo(log)
+		log.type = StageType.ofId(view.stages.getSelectedItems().first().itemId)
 		return log
 	}
 
-	override fun provideTitle(): String? = "Plant stage change"
+	override fun provideTitle(): String = "Plant stage change"
 }

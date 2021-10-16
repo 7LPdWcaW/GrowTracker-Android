@@ -2,13 +2,9 @@ package me.anon.grow3.ui.logs.fragment
 
 import androidx.fragment.app.viewModels
 import com.freelapp.flowlifecycleobserver.collectWhileStarted
-import me.anon.grow3.data.exceptions.GrowTrackerException.InvalidLog
-import me.anon.grow3.data.model.StageChange
-import me.anon.grow3.data.model.Water
-import me.anon.grow3.data.model.logCard
+import me.anon.grow3.data.model.*
 import me.anon.grow3.ui.base.CardListFragment
 import me.anon.grow3.ui.logs.view.LogDateSeparator
-import me.anon.grow3.ui.logs.view.StageChangeLogCard
 import me.anon.grow3.ui.logs.viewmodel.LogListViewModel
 import me.anon.grow3.util.Injector
 import me.anon.grow3.util.ViewModelProvider
@@ -33,8 +29,7 @@ class LogListFragment : CardListFragment()
 				val logs = state.logs
 				val crop = state.crops?.firstOrNull()
 
-				val title = crop?.name
-					?: diary.name
+				val title = crop?.name ?: diary.name
 				requireActivity().title = "$title logs"
 
 				viewAdapter.newStack {
@@ -48,22 +43,7 @@ class LogListFragment : CardListFragment()
 
 					group.forEach { (date, logs) ->
 						add(LogDateSeparator(date.asDisplayString()))
-
-						logs.reversed()
-							.forEach { log ->
-								add(when (log)
-								{
-									// is Environment -> EnvironmentLogCard(diary, log)
-									// is Harvest -> HarvestLogCard(diary, log)
-									// is Maintenance -> MaintenanceLogCard(diary, log)
-									// is Pesticide -> PesticideLogCard(diary, log)
-									// is Photo -> PhotoLogCard(diary, log)
-									// is Transplant -> TransplantLogCard(diary, log)
-									is StageChange -> StageChangeLogCard(diary, log)
-									is Water -> log.logCard(diary, log)
-									else -> throw InvalidLog(log)
-								})
-							}
+						addAll(logs.reversed().map { it.asCard(diary) })
 					}
 				}
 			}

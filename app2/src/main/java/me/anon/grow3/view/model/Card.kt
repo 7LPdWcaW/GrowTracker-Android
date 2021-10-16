@@ -26,10 +26,8 @@ abstract class Card<T : ViewBinding>
 	/**
 	 * No-use. This method is called by the adapter to correctly typecast
 	 */
-	public fun _bindView(view: View)
-	{
-		bind(bindView(view))
-	}
+	public fun bindAdapter(view: View)
+		= bind(bindView(view))
 
 	/**
 	 * Binds the card to the view

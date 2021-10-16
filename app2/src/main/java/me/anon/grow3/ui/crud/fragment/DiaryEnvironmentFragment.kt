@@ -81,7 +81,7 @@ class DiaryEnvironmentFragment : BaseFragment(FragmentCrudDiaryEnvironmentBindin
 		viewBindings.environmentTypeOptions.setMenu(EnvironmentType.toMenu())
 		viewBindings.environmentTypeOptions.itemSelectListener = { item ->
 			crudViewModel.mutateEnvironment {
-				applyValues(type = ValueHolder(item.isChecked then EnvironmentType.ofId(item.itemId)))
+				patch(type = ValueHolder(item.isChecked then EnvironmentType.ofId(item.itemId)))
 			}
 		}
 	}
@@ -106,7 +106,7 @@ class DiaryEnvironmentFragment : BaseFragment(FragmentCrudDiaryEnvironmentBindin
 			else null
 
 			crudViewModel.mutateEnvironment {
-				applyValues(size = ValueHolder(size))
+				patch(size = ValueHolder(size))
 			}
 		}
 
@@ -142,7 +142,7 @@ class DiaryEnvironmentFragment : BaseFragment(FragmentCrudDiaryEnvironmentBindin
 			viewBindings.lightTypeOptions.getSelectedItems().firstOrNull()?.let {
 				val type = LightType.ofId(it.itemId)
 				crudViewModel.mutateEnvironment {
-					applyValues(
+					patch(
 						light = ValueHolder(Light(type = type).apply {
 							if (type != LightType.Sunlight)
 							{

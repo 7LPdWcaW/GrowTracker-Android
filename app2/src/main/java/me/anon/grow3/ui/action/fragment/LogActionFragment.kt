@@ -37,7 +37,7 @@ open class LogActionFragment : BaseFragment(FragmentActionLogBinding::class)
 	@Inject internal lateinit var viewModelFactory: LogActionViewModel.Factory
 	protected val viewModel: LogActionViewModel by viewModels { ViewModelProvider(viewModelFactory, this) }
 	protected val viewBindings by viewBinding<FragmentActionLogBinding>()
-	protected var logView: LogView<*>? = null
+	private var logView: LogView<*>? = null
 	private var isFinishing = false
 
 	public var intentCallback: ((Intent) -> Unit)? = null
@@ -73,8 +73,8 @@ open class LogActionFragment : BaseFragment(FragmentActionLogBinding::class)
 	{
 		if (isFinishing) return
 
-		logView?.let {
-			val log = it.saveView()
+		logView?.let { logView ->
+			val log = logView.saveAdapter(viewBindings.logContent[0])
 
 			requireView().clearFocus()
 			requireView().findViewById<CropSelectView>(R.id.crop_select_view)?.let {
@@ -155,14 +155,14 @@ open class LogActionFragment : BaseFragment(FragmentActionLogBinding::class)
 
 		logView = log.asView(diary)
 		logView?.let { logView ->
-			logView.fragment = this
+			//logView.fragment = this
 
 			viewBindings.toolbar.title = logView.provideTitle() ?: R.string.log_action_new_title.string()
 
 			viewBindings.logContent.removeAllViews()
 			val view = logView.createView(layoutInflater, viewBindings.logContent)
-			logView.bindView(view)
-			viewBindings.logContent += view
+			viewBindings.logContent += view.root
+			logView.bindAdapter(view.root)
 
 			val common = ViewLogCommonBinding.inflate(layoutInflater, viewBindings.logContent, false)
 			common.date.editText!!.text = diary.date.asDateTime().asDisplayString().asEditable()

@@ -16,9 +16,18 @@
 				"date": "2020-01-01T00:00:00+00:00",
 				"action": "Environment",
 				"size": {
-					"width": 1000.0,
-					"height": 1000.0,
-					"depth": 1000.0
+					"width": {
+						"amount": 1000.0,
+						"unit": "mm"
+					},
+					"height": {
+						"amount": 1000.0,
+						"unit": "mm"
+					},
+					"depth": {
+						"amount": 1000.0,
+						"unit": "mm"
+					}
 				},
 				"light": {
 					"type": "LED",
@@ -195,9 +204,18 @@
 					"0002-000004"
 				],
 				"size": {
-					"width": 10000.0,
-					"height": 3000.0,
-					"depth": 5000.0
+					"width": {
+						"amount": 10000.0,
+						"unit": "mm"
+					},
+					"height": {
+						"amount": 3000.0,
+						"unit": "mm"
+					},
+					"depth": {
+						"amount": 5000.0,
+						"unit": "mm"
+					},
 				}
 			},
 			{

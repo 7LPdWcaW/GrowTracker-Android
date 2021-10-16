@@ -1,9 +1,9 @@
 package me.anon.grow3.view.adapter
 
+import android.annotation.SuppressLint
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
-import me.anon.grow3.util.uniqueBy
 import me.anon.grow3.view.model.Card
 
 open class CardListAdapter : RecyclerView.Adapter<RecyclerView.ViewHolder>()
@@ -16,20 +16,22 @@ open class CardListAdapter : RecyclerView.Adapter<RecyclerView.ViewHolder>()
 	 */
 	public fun clearStack()
 	{
+		val size = cards.size
 		cards.clear()
 		cardTypes.clear()
-		this.notifyDataSetChanged()
+		this.notifyItemRangeRemoved(0, size)
 	}
 
 	/**
 	 * Clears the adapter and provides a new stack of cards to display
 	 */
+	@SuppressLint("NotifyDataSetChanged")
 	public fun newStack(block: ArrayList<Card<*>>.() -> Unit)
 	{
 		cards.clear()
 		block(this.cards)
 		cardTypes.clear()
-		cardTypes.addAll(cards.map { it::class.java }.uniqueBy { it })
+		cardTypes.addAll(cards.map { it::class.java }.distinctBy { it })
 		this.notifyDataSetChanged()
 	}
 
@@ -47,6 +49,6 @@ open class CardListAdapter : RecyclerView.Adapter<RecyclerView.ViewHolder>()
 
 	override fun onBindViewHolder(holder: RecyclerView.ViewHolder, position: Int)
 	{
-		cards[position]._bindView(holder.itemView)
+		cards[position].bindAdapter(holder.itemView)
 	}
 }

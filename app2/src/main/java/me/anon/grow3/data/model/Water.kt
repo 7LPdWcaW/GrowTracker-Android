@@ -9,11 +9,11 @@ import me.anon.grow3.ui.logs.view.WaterLogCard
  */
 @JsonClass(generateAdapter = true)
 data class Water(
-	public var inPH: PHUnit?,
-	public var outPH: PHUnit?,
-	public var tds: TdsUnit?,
-	public var amount: Volume?,
-	public var temperature: Double?,
+	public var inPH: PHUnit? = null,
+	public var outPH: PHUnit? = null,
+	public var tds: TdsUnit? = null,
+	public var amount: Volume? = null,
+	public var temperature: Double? = null,
 	public val additives: ArrayList<Additive> = arrayListOf()
 ) : Log(action = "Water")
 {
@@ -31,11 +31,7 @@ data class Water(
 		public var amount: Double
 	)
 
-	override fun equals(other: Any?): Boolean = id == (other as? Log)?.id || super.equals(other)
-
 	override val typeRes: Int = me.anon.grow3.R.string.log_type_water
 }
-
-public fun Water(block: Water.() -> Unit): Water = Water(null, null, null, null, null).apply(block)
-public fun Water.logView(diary: Diary, log: Log) = WaterLogView(diary, log as Water)
-public fun Water.logCard(diary: Diary, log: Log) = WaterLogCard(diary, log as Water)
+public fun Water.logView(diary: Diary) = WaterLogView(diary, this)
+public fun Water.logCard(diary: Diary) = WaterLogCard(diary, this)

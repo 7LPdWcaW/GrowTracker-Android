@@ -59,7 +59,7 @@ class LogActionViewModel constructor(
 			{
 				val newLog: Log = when (logType)
 				{
-					nameOf<Water>() -> Water { }
+					nameOf<Water>() -> Water()
 					nameOf<StageChange>() -> StageChange(diary.stage().type)
 					nameOf<Photo>() -> Photo()
 					else -> throw InvalidLogType()

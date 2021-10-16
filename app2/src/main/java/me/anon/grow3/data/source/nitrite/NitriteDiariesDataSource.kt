@@ -61,7 +61,7 @@ class NitriteDiariesDataSource @Inject constructor(
 	override suspend fun sync(direction: DiariesDataSource.SyncDirection, vararg diary: Diary): List<Diary> = withContext(dispatcher) {
 		when (direction)
 		{
-			DiariesDataSource.SyncDirection.SAVE -> {
+			DiariesDataSource.SyncDirection.Commit -> {
 				db.getRepository<Diary> {
 					diary.forEach { update(it, true) }
 				}

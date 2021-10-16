@@ -6,8 +6,8 @@ interface DiariesDataSource
 {
 	enum class SyncDirection
 	{
-		SAVE,
-		LOAD
+		Commit,
+		//LOAD
 	}
 
 	public fun close()
@@ -19,5 +19,5 @@ interface DiariesDataSource
 
 	suspend fun getDiaries(): List<Diary>
 
-	suspend fun sync(direction: SyncDirection = SyncDirection.SAVE, vararg diary: Diary): List<Diary>
+	suspend fun sync(direction: SyncDirection = SyncDirection.Commit, vararg diary: Diary): List<Diary>
 }

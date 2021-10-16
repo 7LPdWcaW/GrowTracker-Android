@@ -5,6 +5,7 @@ import com.fasterxml.jackson.annotation.JsonTypeInfo
 import me.anon.grow3.data.exceptions.GrowTrackerException
 import me.anon.grow3.ui.action.view.LogView
 import me.anon.grow3.util.*
+import me.anon.grow3.view.model.Card
 import org.threeten.bp.ZonedDateTime
 import java.util.*
 
@@ -33,19 +34,30 @@ abstract class Log(
 	open val typeRes: Int = -1
 }
 
+public fun Log.asView(diary: Diary): LogView<*>
+{
+	return when (this)
+	{
+		is Water -> logView(diary)
+		is StageChange -> logView(diary)
+		is Photo -> logView(diary)
+		else -> throw GrowTrackerException.InvalidLog(this)
+	}
+}
+
+public fun Log.asCard(diary: Diary): Card<*>
+{
+	return when (this)
+	{
+		is Water -> logCard(diary)
+		is StageChange -> logCard(diary)
+		is Photo -> logCard(diary)
+		else -> throw GrowTrackerException.InvalidLog(this)
+	}
+}
+
 data class LogChange(
 	var days: Int
 ) : Delta()
 
 public fun Duo<Log>.difference(): LogChange = LogChange((first.date and second!!.date).dateDifferenceDays())
-
-public fun Log.asView(diary: Diary): LogView<out Log>
-{
-	return when (this)
-	{
-		is Water -> logView(diary, this)
-		is StageChange -> logView(diary, this)
-		is Photo -> logView(diary, this)
-		else -> throw GrowTrackerException.InvalidLog(this)
-	}
-}

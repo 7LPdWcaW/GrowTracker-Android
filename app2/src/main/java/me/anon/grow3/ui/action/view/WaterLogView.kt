@@ -12,54 +12,60 @@ import me.anon.grow3.databinding.FragmentActionLogWaterBinding
 import me.anon.grow3.databinding.StubLogWaterAdditiveBinding
 import me.anon.grow3.util.*
 
-class WaterLogView(
-	diary: Diary,
-	log: Water
-) : LogView<Water>(diary, log)
+class WaterLogView : LogView<FragmentActionLogWaterBinding>
 {
-	private lateinit var bindings: FragmentActionLogWaterBinding
+	private lateinit var diary: Diary
+	private lateinit var log: Water
 
-	override fun createView(inflater: LayoutInflater, parent: ViewGroup): View
-		= FragmentActionLogWaterBinding.inflate(inflater, parent, false).root
-
-	override fun bindView(view: View)
+	constructor() : super()
+	constructor(diary: Diary, log: Water) : super()
 	{
-		bindings = FragmentActionLogWaterBinding.bind(view)
+		this.diary = diary
+		this.log = log
+	}
 
-		bindings.waterPh.editText!!.onFocusLoss {
+	override fun createView(inflater: LayoutInflater, parent: ViewGroup): FragmentActionLogWaterBinding
+		= FragmentActionLogWaterBinding.inflate(inflater, parent, false)
+
+	override fun bindView(view: View): FragmentActionLogWaterBinding
+		= FragmentActionLogWaterBinding.bind(view)
+
+	override fun bind(view: FragmentActionLogWaterBinding)
+	{
+		view.waterPh.editText!!.onFocusLoss {
 			it.text.toDoubleOrNull()?.let { log.inPH = Water.PHUnit(it) }
 		}
 
-		bindings.waterRunoff.editText!!.onFocusLoss {
+		view.waterRunoff.editText!!.onFocusLoss {
 			it.text.toDoubleOrNull()?.let { log.outPH = Water.PHUnit(it) }
 		}
 
-		bindings.waterAmount.editText!!.onFocusLoss {
+		view.waterAmount.editText!!.onFocusLoss {
 			it.text.toDoubleOrNull()?.let { log.amount = Volume(it, VolumeUnit.L) }
 		}
-		bindings.waterAmount.editText!!.doAfterTextChanged { text ->
-			updateAdditiveTotals(text?.toDoubleOrNull() ?: 0.0)
+		view.waterAmount.editText!!.doAfterTextChanged { text ->
+			updateAdditiveTotals(view, text?.toDoubleOrNull() ?: 0.0)
 		}
 
-		bindings.waterTds.editText!!.onFocusLoss {
+		view.waterTds.editText!!.onFocusLoss {
 			it.text.toDoubleOrNull()?.let { log.tds = Water.TdsUnit(it, TdsType.EC) }
 		}
-		bindings.waterTemp.editText!!.onFocusLoss {
+		view.waterTemp.editText!!.onFocusLoss {
 			it.text.toDoubleOrNull()?.let { log.temperature = it }
 		}
 
-		bindings.waterPh.editText!!.text = log.inPH?.amount.asStringOrNull()?.asEditable()
-		bindings.waterRunoff.editText!!.text = log.outPH?.amount.asStringOrNull()?.asEditable()
-		bindings.waterAmount.editText!!.text = log.amount?.amount.asStringOrNull()?.asEditable()
-		bindings.waterTds.editText!!.text = log.tds?.amount.asStringOrNull()?.asEditable()
-		bindings.waterTemp.editText!!.text = log.temperature?.asStringOrNull()?.asEditable()
+		view.waterPh.editText!!.text = log.inPH?.amount.asStringOrNull()?.asEditable()
+		view.waterRunoff.editText!!.text = log.outPH?.amount.asStringOrNull()?.asEditable()
+		view.waterAmount.editText!!.text = log.amount?.amount.asStringOrNull()?.asEditable()
+		view.waterTds.editText!!.text = log.tds?.amount.asStringOrNull()?.asEditable()
+		view.waterTemp.editText!!.text = log.temperature?.asStringOrNull()?.asEditable()
 
-		addAdditiveView(bindings.additivesContainer)
+		addAdditiveView(view, view.additivesContainer)
 	}
 
-	private fun updateAdditiveTotals(amount: Double)
+	private fun updateAdditiveTotals(view: FragmentActionLogWaterBinding, amount: Double)
 	{
-		bindings.additivesContainer.childViews.forEach { child ->
+		view.additivesContainer.childViews.forEach { child ->
 			val child = StubLogWaterAdditiveBinding.bind(child)
 			val total = (child.amountEdit.text!!.toDoubleOrNull() ?: 0.0) * amount
 			child.totals.text = "@${total.asStringOrNull()}ml"
@@ -67,12 +73,12 @@ class WaterLogView(
 		}
 	}
 
-	private fun addAdditiveView(container: ViewGroup): View
+	private fun addAdditiveView(view: FragmentActionLogWaterBinding, container: ViewGroup): View
 	{
 		val additive = Water.Additive(amount = 0.0)
 		log.additives += additive
 
-		val additiveView = StubLogWaterAdditiveBinding.inflate(LayoutInflater.from(container.context), bindings.additivesContainer, false)
+		val additiveView = StubLogWaterAdditiveBinding.inflate(LayoutInflater.from(container.context), container, false)
 		val textChangeListener = { text: CharSequence?, start: Int, count: Int, after: Int ->
 			// remove last empty inputs
 			var emptyCount = 0
@@ -91,8 +97,8 @@ class WaterLogView(
 			{
 				if (emptyCount < 1)
 				{
-					addAdditiveView(container)
-					bindings.waterAmount.editText?.text?.toDoubleOrNull()?.let { updateAdditiveTotals(it) }
+					addAdditiveView(view, container)
+					view.waterAmount.editText?.text?.toDoubleOrNull()?.let { updateAdditiveTotals(view, it) }
 				}
 			}
 			else if (emptyCount > 1 && emptyIndex < container.childViews.count())
@@ -124,7 +130,7 @@ class WaterLogView(
 			additive.amount = it.text.toDoubleOrNull() ?: 0.0
 		}
 		additiveView.amount.editText!!.doAfterTextChanged {
-			bindings.waterAmount.editText?.text?.toDoubleOrNull()?.let { updateAdditiveTotals(it) }
+			view.waterAmount.editText?.text?.toDoubleOrNull()?.let { updateAdditiveTotals(view, it) }
 		}
 		additiveView.description.editText!!.doOnTextChanged(textChangeListener)
 		additiveView.description.editText!!.onFocusLoss {
@@ -134,9 +140,9 @@ class WaterLogView(
 		return additiveView.root
 	}
 
-	override fun saveView(): Water
+	override fun save(view: FragmentActionLogWaterBinding): Log
 	{
-		bindings.root.clearFocus()
+		view.root.clearFocus()
 
 		// remove empty additives
 		log.additives.removeAll { it.amount == 0.0 && it.description.isEmpty() }
@@ -144,5 +150,5 @@ class WaterLogView(
 		return log
 	}
 
-	override fun provideTitle(): String? = "Edit water log"
+	override fun provideTitle(): String = "Edit water log"
 }

@@ -3,48 +3,53 @@ package me.anon.grow3.ui.action.view
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import com.github.dhaval2404.imagepicker.ImagePicker
 import com.nostra13.universalimageloader.core.ImageLoader
 import me.anon.grow3.data.model.Diary
 import me.anon.grow3.data.model.Photo
 import me.anon.grow3.databinding.FragmentActionLogPhotoBinding
 import me.anon.grow3.util.onClick
 
-class PhotoLogView(
-	diary: Diary,
-	log: Photo
-) : LogView<Photo>(diary, log)
+class PhotoLogView : LogView<FragmentActionLogPhotoBinding>
 {
-	private lateinit var bindings: FragmentActionLogPhotoBinding
+	private lateinit var diary: Diary
+	private lateinit var log: Photo
 
-	override fun createView(inflater: LayoutInflater, parent: ViewGroup): View
-		= FragmentActionLogPhotoBinding.inflate(inflater, parent, false).root
-
-	override fun bindView(view: View)
+	constructor() : super()
+	constructor(diary: Diary, log: Photo) : super()
 	{
-		bindings = FragmentActionLogPhotoBinding.bind(view)
-		bindings.photo.onClick {
-			ImagePicker.with(fragment)
-				.createIntent { intent ->
-					fragment.intentCallback = { result ->
-						val fileUri = result.data!!
-						log.imagePaths += fileUri.toString()
-					}
-					fragment.intentResult.launch(intent)
-				}
+		this.diary = diary
+		this.log = log
+	}
+
+	override fun createView(inflater: LayoutInflater, parent: ViewGroup): FragmentActionLogPhotoBinding
+		= FragmentActionLogPhotoBinding.inflate(inflater, parent, false)
+
+	override fun bindView(view: View): FragmentActionLogPhotoBinding
+		= FragmentActionLogPhotoBinding.bind(view)
+
+	override fun bind(view: FragmentActionLogPhotoBinding)
+	{
+		view.photo.onClick {
+//			ImagePicker.with(fragment)
+//				.createIntent { intent ->
+//					fragment.intentCallback = { result ->
+//						val fileUri = result.data!!
+//						log.imagePaths += fileUri.toString()
+//					}
+//					fragment.intentResult.launch(intent)
+//				}
 		}
 
 		log.imagePaths.firstOrNull()?.let { image ->
 			ImageLoader.getInstance()
-				.displayImage(image, bindings.photo)
+				.displayImage(image, view.photo)
 		}
 	}
 
-	override fun saveView(): Photo
+	override fun save(view: FragmentActionLogPhotoBinding): Photo
 	{
-		bindings.root.clearFocus()
 		return log
 	}
 
-	override fun provideTitle(): String? = "Edit photo log"
+	override fun provideTitle(): String = "Edit photo log"
 }

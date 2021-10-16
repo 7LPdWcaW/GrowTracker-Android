@@ -7,16 +7,6 @@ import org.junit.Test
 class ListExtTest
 {
 	@Test
-	public fun `test unique by`()
-	{
-		class test(val type: String)
-
-		val list = listOf(test("a"), test("b"), test("c"), test("a"))
-		list.uniqueBy { it.type }
-			.size.`should be equal to`(3)
-	}
-
-	@Test
 	public fun `test last instance of`()
 	{
 		open class C(open val test: Int)

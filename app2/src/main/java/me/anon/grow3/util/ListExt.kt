@@ -13,31 +13,12 @@ public inline fun <reified J> List<Any?>.lastInstanceOf(): J? = this.lastOrNull 
 public inline fun <reified J> List<Any?>.lastInstanceOf(additionalPredicate: (item: J) -> Boolean): J? = this.lastOrNull { it is J && additionalPredicate(it) } as? J
 
 /**
- * Returns a de-duplicated list by the query predicate
- */
-public inline fun <T, R> List<T>.uniqueBy(crossinline predicate: (T) -> R): List<T>
-{
-	val list = mutableListOf<R>()
-	val subList = mutableListOf<T>()
-	this.forEach {
-		val selector = predicate(it)
-		if (!list.contains(selector))
-		{
-			subList.add(it)
-			list.add(selector)
-		}
-	}
-
-	return subList
-}
-
-/**
  * Loops over an iterable, two elements at a time
  */
 public inline fun <T> Iterable<T>.forEachPair(action: (T, T?) -> Unit): Unit
 {
 	val count = count()
-	for (index in 0 until count() step 2) action(elementAt(index), elementAtOrNull(index + 1))
+	for (index in 0 until count step 2) action(elementAt(index), elementAtOrNull(index + 1))
 }
 
 /**

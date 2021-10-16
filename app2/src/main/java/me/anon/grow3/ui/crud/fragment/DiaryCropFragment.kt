@@ -55,7 +55,7 @@ class DiaryCropFragment : BaseFragment(FragmentCrudDiaryCropBinding::class)
 		viewBindings.cropName.editText!!.onFocusLoss {
 			it.text.toStringOrNull()?.let {
 				crudViewModel.mutateCrop {
-					applyValues(name = ValueHolder(it))
+					patch(name = ValueHolder(it))
 				}
 			}
 		}
@@ -66,13 +66,13 @@ class DiaryCropFragment : BaseFragment(FragmentCrudDiaryCropBinding::class)
 
 		viewBindings.cropGenetics.editText!!.onFocusLoss {
 			crudViewModel.mutateCrop {
-				applyValues(genetics = ValueHolder(it.text.toStringOrNull()))
+				patch(genetics = ValueHolder(it.text.toStringOrNull()))
 			}
 		}
 
 		viewBindings.cropNumPlants.editText!!.onFocusLoss {
 			crudViewModel.mutateCrop {
-				applyValues(numberOfPlants = ValueHolder(it.text.toIntOrNull() ?: 1))
+				patch(numberOfPlants = ValueHolder(it.text.toIntOrNull() ?: 1))
 			}
 		}
 

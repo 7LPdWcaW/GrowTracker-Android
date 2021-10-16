@@ -12,5 +12,5 @@ data class Photo(
 	public val imagePaths: ArrayList<String> = arrayListOf()
 ) : Log(action = "Photo")
 
-public fun Photo.logView(diary: Diary, log: Log) = PhotoLogView(diary, log as Photo)
-public fun Photo.logCard(diary: Diary, log: Log) = PhotoLogCard(diary, log as Photo)
+public fun Photo.logView(diary: Diary) = PhotoLogView(diary, this)
+public fun Photo.logCard(diary: Diary) = PhotoLogCard(diary, this)

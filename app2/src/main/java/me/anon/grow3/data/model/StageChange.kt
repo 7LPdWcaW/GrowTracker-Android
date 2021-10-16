@@ -4,6 +4,7 @@ import android.text.Spannable
 import android.text.SpannableString
 import com.squareup.moshi.JsonClass
 import me.anon.grow3.ui.action.view.StageChangeLogView
+import me.anon.grow3.ui.logs.view.StageChangeLogCard
 import me.anon.grow3.util.asDateTime
 import me.anon.grow3.util.plusAssign
 import me.anon.grow3.util.string
@@ -22,6 +23,9 @@ data class StageChange(
 {
 	override val typeRes: Int = me.anon.grow3.R.string.log_type_stage_change
 }
+
+public fun StageChange.logView(diary: Diary) = StageChangeLogView(diary, this)
+public fun StageChange.logCard(diary: Diary) = StageChangeLogCard(diary, this)
 
 public fun List<StageChange>.shortSummary(): Spannable
 {
@@ -63,5 +67,3 @@ data class StageAt(
 		return "$days${stage.type.strRes.string()[0]}"
 	}
 }
-
-public fun StageChange.logView(diary: Diary, log: Log) = StageChangeLogView(diary, log as StageChange)

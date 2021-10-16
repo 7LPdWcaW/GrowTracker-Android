@@ -54,6 +54,7 @@
 		app:srcCompat="@drawable/ic_delete"
 		app:tint="?colorOnError"
 		app:backgroundTint="?colorError"
+		
 	/>
 
 	<com.google.android.material.floatingactionbutton.FloatingActionButton
@@ -61,8 +62,8 @@
 		android:layout_height="wrap_content"
 		android:id="@+id/action_done"
 		android:layout_gravity="bottom|end"
-		app:srcCompat="@drawable/ic_appintro_done"
 		android:layout_margin="16dp"
+		app:srcCompat="@drawable/ic_appintro_done"
 		app:tint="?colorOnPrimary"
 		app:backgroundTint="?colorPrimary"
 	/>

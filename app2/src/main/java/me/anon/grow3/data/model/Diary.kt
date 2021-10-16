@@ -1,7 +1,10 @@
 package me.anon.grow3.data.model
 
 import com.squareup.moshi.JsonClass
-import me.anon.grow3.util.*
+import me.anon.grow3.util.and
+import me.anon.grow3.util.asApiString
+import me.anon.grow3.util.asDateTime
+import me.anon.grow3.util.dateDifferenceDays
 import org.dizitart.no2.objects.Id
 import org.threeten.bp.ZonedDateTime
 import java.util.*
@@ -122,7 +125,7 @@ data class Diary(
 	{
 		return crops.associateWith { crop ->
 			val stages = findAllStages(crop)
-			val unique = stages.uniqueBy { it.type }
+			val unique = stages.distinctBy { it.type }
 			val ret = unique.associateWith { 0.0 }.toMutableMap()
 
 			// loop through each stage until we move from stage -> different stage
@@ -207,5 +210,3 @@ data class Diary(
 		//log.sortedBy { it.date }
 	}
 }
-
-public fun Diary(block: Diary.() -> Unit): Diary = Diary(name = "").apply(block)

@@ -97,8 +97,8 @@ class DiaryCrudViewModel(
 				}
 
 			medium?.apply {
-				mediumType?.applyValue { this.medium = it }
-				volume?.applyValue { this.size = it }
+				mediumType?.patch { this.medium = it }
+				volume?.patch { this.size = it }
 				diariesRepository.addLog(this, diary)
 			}
 		}

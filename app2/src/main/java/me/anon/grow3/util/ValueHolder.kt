@@ -22,7 +22,7 @@ class ValueHolder<T> (
 	var setValue: Boolean = true
 )
 {
-	fun applyValue(block: (T) -> Unit) { if (setValue) block(value) }
+	public fun patch(block: (T) -> Unit) { if (setValue) block(value) }
 }
 
 public fun <T> T.hold(): ValueHolder<T> = ValueHolder(this)

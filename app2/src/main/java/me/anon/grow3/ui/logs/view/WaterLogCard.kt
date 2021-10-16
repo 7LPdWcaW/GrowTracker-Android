@@ -103,7 +103,6 @@ class WaterLogCard : Card<CardWaterLogBinding>
 		view.includeStubCardFooter.cropsContainer.removeAllViews()
 		log.cropIds
 			.mapToView<String, StubCropSmallBinding>(view.includeStubCardFooter.cropsContainer) { cropId, cropView ->
-				val crop = diary.crop(cropId)
 				cropView.cropImage.onClick {
 					it.navigateTo<ViewCropFragment> {
 						bundleOf(
