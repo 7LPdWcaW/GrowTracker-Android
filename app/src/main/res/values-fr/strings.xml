@@ -129,12 +129,14 @@
 	<string name="germination">Germination</string>
 	<string name="cutting">Bouturage (coupe sur plan mère)</string>
 	<string name="vegetation">Végétatif / croissance</string>
+	<string name="budding">Bourgeonnement</string>
 	<string name="flowering">Floraison</string>
+	<string name="ripening">Maturation</string>
 	<string name="drying">Séchage</string>
 	<string name="curing">Curing</string>
-	<string name="harvested">Récolté</string>
+	<string name="harvested">Récolté/Coupé</string>
 	<!-- example "harvested 2 days ago" -->
-	<string name="harvested_ago" formatted="true">Récolté  il y a %s</string>
+	<string name="harvested_ago" formatted="true">Récolté/Coupé il y a %s</string>
 	<string name="menu_export_garden">Exporter le jardin</string>
 	<string name="menu_edit_garden">Modifier le jardin</string>
 	<string name="menu_delete_garden">Supprimer le jardin</string>
@@ -143,16 +145,21 @@
 	<string name="total_time_label">Temps total</string>
 	<string name="total_waters_label">Arrosage total</string>
 	<string name="total_flushes_label">Rinçage total:</string>
+	<string name="total_water_amount_label">Volume d\'eau total :</string>
+	<string name="ave_water_amount_label">Eau utilisée en moy. :</string>
 	<string name="ave_time_between_water_label">Temps moyen entre arrosage</string>
+	<string name="ave_time_stage_label" formatted="true">Moyenne d\'arrosage en %s</string>
 	<string name="filter_additives">Filtrer les engrais et additifs</string>
 	<string name="ph_title">pH</string>
+	<string name="tds_title">TDS</string>
+
 	<string name="min">Min:</string>
 	<string name="max">Max:</string>
 	<string name="ave">Moy:</string>
 	<string name="temperature_title">Temperature</string>
 	<string name="general_title">Général</string>
 	<string name="failed_to_load_plant">Echec lors du chargement des plantes</string>
-	<string name="action_fim">PJO</string>
+	<string name="action_fim">taille FIM</string>
 	<string name="action_flush">Rinçage</string>
 	<string name="action_foliar_feed">Arrosage foliaire</string>
 	<string name="action_lst">Palissage</string>
@@ -162,6 +169,9 @@
 	<string name="action_transplanted">Rempotage</string>
 	<string name="action_trim">Taillée</string>
 	<string name="action_tuck">Tricotage ScrOG</string>
+	<string name="action_supercrop">Supercrop</string>
+	<string name="action_monstercrop">Monstercrop</string>
+
 	<string name="watered">Arrosée</string>
 	<string name="note">Note</string>
 	<string name="delete_event_dialog_title">Supprimer cet événement ?</string>
@@ -263,6 +273,10 @@
 	<string name="stat_input_ph">pH de la solution nutritive</string>
 	<string name="stat_runoff_ph">pH du surplus</string>
 	<string name="stat_average_ph">pH moyen</string>
+	<string name="stat_average_temp">Température moyenne</string>
+	<string name="stat_average_runoff_ph">pH moyen du drain</string>
+	<string name="stat_average_tds" formatted="true">%s moy.</string>
+
 	<string name="photos_title">Photos de la plante</string>
 
 	<string name="plant_summary_ph">pH interne :</string>
@@ -394,7 +408,9 @@
 	<string name="cache_cleared">Mémoire cache pour le chargement des images nettoyée</string>
 	<string name="import_progress_warning">Import des images, ceci peut prendre un certain temps ...</string>
 	<string name="data_task">Détail de la tâche</string>
-	<string name="task_complete">Tâche effectuée </string>
+	<string name="import_task_complete">Import de l\'image effectué</string>
+	<string name="decrypt_task_complete">Déchiffrement de l\'image effectué</string>
+	<string name="encrypt_task_complete">Chiffrement de l\'image effectué</string>
 	<string name="empty_actions_list">Aucune action à montrer</string>
 
 	<string name="exporting_start">Export du log de culture pour %s</string>
@@ -413,4 +429,12 @@
 	<string name="settings_import">Importer des plantes depuis un fichier</string>
 	<string name="settings_import_success">Plantes bien importées depuis le fichier</string>
 
-	</resources>
+	<string name="additive_stat_header" formatted="true">Statistiques de %s</string>
+	<string name="additive_average_usage_label">Moy. par arrosage :</string>
+	<string name="additive_usage_count_label">Nbr de fois utilisé :</string>
+	<string name="additive_total_usage_label">Volume total :</string>
+
+	<string name="additives_concentration_title">Concentration en additifs</string>
+	<string name="additives_overtime_title">Additifs au cours du temps</string>
+	<string name="additives_distribution_title">Distribution des besoins en additifs</string>
+</resources>
