@@ -38,7 +38,7 @@ data class Diary(
 	public fun stageWhen(log: Log): StageAt
 	{
 		val stage = stages()
-			.last { it.date.asDateTime() <= log.date.asDateTime() } // should at least return Planted
+			.lastOrNull { it.date.asDateTime() < log.date.asDateTime() } ?: stages().first() // should at least return Planted
 
 		return StageAt(
 			days = (stage.date and log.date).dateDifferenceDays(),
@@ -54,7 +54,7 @@ data class Diary(
 	public fun stageWhen(crop: Crop, log: Log): StageAt
 	{
 		val stage = stagesOf(crop)
-			.last { it.date.asDateTime() <= log.date.asDateTime() } // should at least return Planted
+			.lastOrNull { it.date.asDateTime() < log.date.asDateTime() } ?: stages().first()  // should at least return Planted
 
 		return StageAt(
 			days = (stage.date and log.date).dateDifferenceDays(),

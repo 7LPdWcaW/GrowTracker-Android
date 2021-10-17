@@ -26,10 +26,9 @@ public inline fun <T> Iterable<T>.forEachPair(action: (T, T?) -> Unit): Unit
  */
 public inline fun <T, reified J : ViewBinding> Iterable<T>.mapToView(container: View, crossinline mapper: (T, J) -> Unit): View
 {
+	val method = J::class.java.getDeclaredMethod("inflate", LayoutInflater::class.java, ViewGroup::class.java, Boolean::class.java)
 	forEach {
-		val viewBinder = J::class.java
-			.getDeclaredMethod("inflate", LayoutInflater::class.java, ViewGroup::class.java, Boolean::class.java)
-			.invoke(null, LayoutInflater.from(container.context), container, false) as ViewBinding
+		val viewBinder = method.invoke(null, LayoutInflater.from(container.context), container, false) as ViewBinding
 		val viewBinding = viewBinder as J
 
 		mapper(it, viewBinding)

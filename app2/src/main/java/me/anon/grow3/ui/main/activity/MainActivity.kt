@@ -170,7 +170,7 @@ class MainActivity : BaseActivity(ActivityMainBinding::class)
 			when (event)
 			{
 				is LogEvent.Added -> {
-					Timber.e(event.log.toJsonString())
+					Timber.d(event.log.toJsonString())
 					Toast.makeText(this, "${event.log} added to ${event.diary.name}", Toast.LENGTH_LONG).show()
 				}
 			}

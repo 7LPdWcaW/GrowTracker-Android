@@ -28,8 +28,6 @@ class StageChangeLogView : LogView<FragmentActionLogStageChangeBinding>
 
 	override fun bind(view: FragmentActionLogStageChangeBinding)
 	{
-		view.common.setLog(diary, log)
-
 		view.stages.setMenu(StageType.toMenu())
 		view.stages.singleSelection = true
 		view.stages.checkItems(diary.stage().type.strRes)
@@ -41,7 +39,6 @@ class StageChangeLogView : LogView<FragmentActionLogStageChangeBinding>
 	override fun save(view: FragmentActionLogStageChangeBinding): StageChange
 	{
 		view.root.clearFocus()
-		view.common.saveTo(log)
 		log.type = StageType.ofId(view.stages.getSelectedItems().first().itemId)
 		return log
 	}

@@ -74,7 +74,6 @@
 				<TextView
 					android:layout_width="match_parent"
 					android:layout_height="wrap_content"
-					android:minWidth="200dp"
 					android:text="log action"
 					app:drawableTint="#ffffff"
 					android:gravity="center_horizontal"

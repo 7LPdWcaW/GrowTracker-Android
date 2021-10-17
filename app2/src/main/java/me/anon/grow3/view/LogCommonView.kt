@@ -6,23 +6,68 @@ import android.os.Parcelable
 import android.util.AttributeSet
 import android.view.LayoutInflater
 import androidx.constraintlayout.widget.ConstraintLayout
+import androidx.core.view.isVisible
 import me.anon.grow3.data.model.Diary
 import me.anon.grow3.data.model.Log
 import me.anon.grow3.databinding.ViewLogCommonBinding
 import me.anon.grow3.util.*
 
-class LogCommonView : ConstraintLayout
+class LogCommonView(context: Context, attrs: AttributeSet? = null) : ConstraintLayout(context, attrs)
 {
-	private lateinit var bindings: ViewLogCommonBinding
+	private val bindings: ViewLogCommonBinding
 
-	constructor(context: Context) : this(context, null)
-	constructor(context: Context, attrs: AttributeSet?) : this(context, attrs, 0)
-	constructor(context: Context, attrs: AttributeSet?, defStyleAttr: Int) : super(context, attrs, defStyleAttr)
+	init {
+		bindings = ViewLogCommonBinding.inflate(LayoutInflater.from(context), this, true)
+	}
+
+	private var diary: Diary? = null
+	private var log: Log? = null
+	public var dateChangePrompt: () -> Unit = {}
+	public var cropIds: HashSet<String> = hashSetOf()
+		set(value) {
+			field = value
+
+			bindings.cropSelectView.selectedCrops = value
+			if (value.isEmpty())
+			{
+				bindings.cropSelectView.selectAll = true
+			}
+		}
+	public var cropSelectViewVisible = true
+		set(value) {
+			field = value
+			bindings.cropSelectView.isVisible = value
+		}
 
 	override fun onFinishInflate()
 	{
 		super.onFinishInflate()
-		bindings = ViewLogCommonBinding.inflate(LayoutInflater.from(context), this, true)
+		populate()
+	}
+
+	override fun onAttachedToWindow()
+	{
+		super.onAttachedToWindow()
+		populate()
+	}
+
+	private fun populate()
+	{
+		diary ?: return
+		log ?: return
+
+		bindings.cropSelectView.setDiary(diary!!)
+
+		bindings.date.editText!!.text = log!!.date.asDateTime().asDisplayString().asEditable()
+		bindings.notes.editText!!.text = log!!.notes.asEditable()
+
+		bindings.date.editText!!.onFocus {
+			dateChangePrompt()
+		}
+
+		bindings.notes.editText!!.onFocusLoss {
+			log?.notes = it.text.toString()
+		}
 	}
 
 	override fun onSaveInstanceState(): Parcelable?
@@ -41,10 +86,10 @@ class LogCommonView : ConstraintLayout
 
 	public fun setLog(diary: Diary, log: Log)
 	{
-		bindings.cropSelectView.setDiary(diary)
-
-		bindings.date.editText!!.text = log.date.asDateTime().asDisplayString().asEditable()
-		bindings.notes.editText!!.text = log.notes.asEditable()
+		this.diary = diary
+		this.log = log
+		requestLayout()
+		populate()
 	}
 
 	public fun saveTo(log: Log): Log

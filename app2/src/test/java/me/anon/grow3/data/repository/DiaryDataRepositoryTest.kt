@@ -154,7 +154,7 @@ class DiaryDataRepositoryTest
 		val diaryFlow = diariesRepository.flowDiary("0000-000000")
 		val result = diaryFlow.first()
 		val data = (result as DataResult.Success).data
-		val log = Water {}
+		val log = Water()
 
 		diariesRepository.addLog(log, data)
 		val retrieved = diariesRepository.getLog(log.id, data)

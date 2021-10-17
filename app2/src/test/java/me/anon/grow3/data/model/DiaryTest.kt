@@ -39,7 +39,8 @@ class DiaryTest
 		}
 
 		diary.environment().`should not be null`()
-			.`should be`(EnvironmentType.Greenhouse)
+			.type
+				.`should be`(EnvironmentType.Greenhouse)
 		diary.size().`should not be null`()
 			.`should be equal to`(Size(Dimension(10000.0), Dimension(3000.0), Dimension(5000.0)))
 
@@ -126,6 +127,18 @@ class DiaryTest
 	}
 
 	@Test
+	public fun `test stage at StageChange log is of stage at the time`()
+	{
+		val diary = diaries.first()
+		val current = diary.stage()
+		val stageAt = diary.stageWhen(current)
+		stageAt.stage.type
+			.`should not be equal to`(current.type)
+		stageAt.stage.id
+			.`should not be equal to`(current.id)
+	}
+
+	@Test
 	public fun `test harvested crop`()
 	{
 		val diary = diaries.first()
@@ -172,9 +185,9 @@ class DiaryTest
 		val timelineStart = ZonedDateTime.now()
 		var logCounter = 10000
 		var cropCounter = 100
-		val diary = Diary {
+		val diary = Diary(
 			name = "Test diary"
-		}
+		)
 
 		do
 		{
@@ -217,13 +230,13 @@ class DiaryTest
 
 	private fun generateWater(): Water
 	{
-		return Water {
-			inPH = ((1..2).random() % 2 == 0) then Water.PHUnit((40..70).random() / 10.0)
-			outPH = ((1..2).random() % 2 == 0) then Water.PHUnit((40..70).random() / 10.0)
-			tds = ((1..2).random() % 2 == 0) then Water.TdsUnit((0..1000).random().toDouble(), TdsType.values().random())
-			amount = Volume(if ((1..2).random() % 2 == 0) (1000..10_000).random().toDouble() else 0.0)
-			temperature = ((1..2).random() % 2 == 0) then (20..35).random().toDouble()
-			additives.addAll(ArrayList<Water.Additive>().apply {
+		return Water(
+			inPH = ((1..2).random() % 2 == 0) then Water.PHUnit((40..70).random() / 10.0),
+			outPH = ((1..2).random() % 2 == 0) then Water.PHUnit((40..70).random() / 10.0),
+			tds = ((1..2).random() % 2 == 0) then Water.TdsUnit((0..1000).random().toDouble(), TdsType.values().random()),
+			amount = Volume(if ((1..2).random() % 2 == 0) (1000..10_000).random().toDouble() else 0.0),
+			temperature = ((1..2).random() % 2 == 0) then (20..35).random().toDouble(),
+			additives = ArrayList<Water.Additive>().apply {
 				((1..2).random() % 2 == 0) then run {
 					var counter = (0..5).random()
 					while (counter-- >= 0)
@@ -231,8 +244,8 @@ class DiaryTest
 						add(Water.Additive(UUID.randomUUID().toString(), (10..50).random() / 10.0))
 					}
 				}
-			})
-		}
+			}
+		)
 	}
 
 	private fun generateStageChange(): StageChange = StageChange(StageType.values().random())

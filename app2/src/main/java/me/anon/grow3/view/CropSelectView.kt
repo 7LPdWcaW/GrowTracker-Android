@@ -1,14 +1,14 @@
 package me.anon.grow3.view
 
 import android.content.Context
-import android.graphics.drawable.BitmapDrawable
 import android.os.Bundle
 import android.os.Parcelable
 import android.util.AttributeSet
+import android.view.LayoutInflater
 import androidx.core.view.ViewCompat
+import androidx.core.view.children
 import com.google.android.material.chip.Chip
 import com.google.android.material.chip.ChipGroup
-import com.nostra13.universalimageloader.core.display.CircleBitmapDisplayer
 import me.anon.grow3.R
 import me.anon.grow3.data.model.Crop
 import me.anon.grow3.data.model.Diary
@@ -25,7 +25,7 @@ class CropSelectView : ChipGroup
 
 	public var selectedCrops = hashSetOf<String>()
 	public var onCropSelected: (Crop, Boolean) -> Unit = { _, _ -> }
-	public var selectAll: Boolean = false
+	public var selectAll: Boolean = true
 
 	constructor(context: Context) : this(context, null)
 	constructor(context: Context, attrs: AttributeSet?) : this(context, attrs, 0)
@@ -76,24 +76,44 @@ class CropSelectView : ChipGroup
 	{
 		removeAllViews()
 
+		val allChip = StubSelectCropBinding.inflate(LayoutInflater.from(context), this, false)
+		allChip.chip.id = ViewCompat.generateViewId()
+		allChip.chip.text = "All"
+		allChip.chip.tag = "All"
+		allChip.chip.isChecked = selectAll
+		allChip.chip.onClick {
+			selectAll = it.isChecked
+			selectedCrops.clear()
+			children.forEach { child ->
+				if (child != allChip.root)
+				{
+					val chipBinding = StubSelectCropBinding.bind(child)
+					chipBinding.chip.isChecked = it.isChecked
+					chipBinding.chip.isEnabled = !it.isChecked
+				}
+			}
+		}
+		addView(allChip.root)
+
 		diary?.crops?.mapToView<Crop, StubSelectCropBinding>(this) { crop, binding ->
 			binding.chip.id = ViewCompat.generateViewId()
 			binding.chip.text = crop.name
 			binding.chip.tag = crop
-			binding.chip.isChecked = selectedCrops.contains(crop.id)
-			if (binding.chip.isChecked)
+			binding.chip.isEnabled = !selectAll
+			binding.chip.isChecked = selectedCrops.contains(crop.id) || selectAll
+			if (binding.chip.isChecked && !selectAll)
 			{
 				selectedCrops.add(crop.id)
 			}
 
-			val image = R.drawable.sample.drawable(context)
-			binding.chip.chipIcon = CircleBitmapDisplayer.CircleDrawable((image as BitmapDrawable).bitmap, 0, 0f)
+			val image = R.drawable.ic_coloured_icon.drawable(context)
+			binding.chip.chipIcon = image
 
 			binding.chip.onClick {
 				if (it.isChecked) selectedCrops.add(crop.id)
 				else selectedCrops.remove(crop.id)
 
-				onCropSelected(crop, it.isCheckable)
+				onCropSelected(crop, it.isChecked)
 			}
 		}
 	}

@@ -1,7 +1,6 @@
 package me.anon.grow3.ui.base
 
 import androidx.core.view.updatePadding
-import androidx.lifecycle.observe
 import androidx.recyclerview.widget.LinearLayoutManager
 import me.anon.grow3.databinding.FragmentCardListBinding
 import me.anon.grow3.util.dp

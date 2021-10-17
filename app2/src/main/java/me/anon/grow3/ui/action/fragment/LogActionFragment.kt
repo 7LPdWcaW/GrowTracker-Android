@@ -2,6 +2,8 @@ package me.anon.grow3.ui.action.fragment
 
 import android.app.Activity
 import android.content.Intent
+import android.view.ViewGroup
+import android.view.ViewGroup.LayoutParams.MATCH_PARENT
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.core.view.get
 import androidx.core.view.isVisible
@@ -14,14 +16,13 @@ import me.anon.grow3.data.model.Diary
 import me.anon.grow3.data.model.Log
 import me.anon.grow3.data.model.asView
 import me.anon.grow3.databinding.FragmentActionLogBinding
-import me.anon.grow3.databinding.ViewLogCommonBinding
 import me.anon.grow3.ui.action.view.LogView
 import me.anon.grow3.ui.action.viewmodel.LogActionViewModel
 import me.anon.grow3.ui.base.BaseFragment
 import me.anon.grow3.ui.common.Extras
 import me.anon.grow3.ui.common.fragment.DateSelectDialogFragment
 import me.anon.grow3.util.*
-import me.anon.grow3.view.CropSelectView
+import me.anon.grow3.view.LogCommonView
 import org.threeten.bp.ZonedDateTime
 import javax.inject.Inject
 
@@ -75,12 +76,9 @@ open class LogActionFragment : BaseFragment(FragmentActionLogBinding::class)
 
 		logView?.let { logView ->
 			val log = logView.saveAdapter(viewBindings.logContent[0])
+			(viewBindings.logContent[1] as? LogCommonView)?.saveTo(log)
 
 			requireView().clearFocus()
-			requireView().findViewById<CropSelectView>(R.id.crop_select_view)?.let {
-				log.cropIds = it.selectedCrops.toList()
-			}
-
 			viewModel.save(log)
 		}
 	}
@@ -117,9 +115,7 @@ open class LogActionFragment : BaseFragment(FragmentActionLogBinding::class)
 				when (state)
 				{
 					is LogActionViewModel.UiResult.Loaded -> {
-						val diary = state.diary
-						val log = state.log
-						renderLogView(diary, log)
+						renderLogView(state.diary, state.log)
 					}
 				}
 			}
@@ -164,38 +160,22 @@ open class LogActionFragment : BaseFragment(FragmentActionLogBinding::class)
 			viewBindings.logContent += view.root
 			logView.bindAdapter(view.root)
 
-			val common = ViewLogCommonBinding.inflate(layoutInflater, viewBindings.logContent, false)
-			common.date.editText!!.text = diary.date.asDateTime().asDisplayString().asEditable()
-			common.date.editText!!.onFocus {
+			val logCommon = LogCommonView(requireContext())
+			logCommon.dateChangePrompt = {
 				val current = diary.date
 				DateSelectDialogFragment.show(current, true, childFragmentManager).apply {
 					onDateTimeSelected = ::onDateSelected
 					onDismiss = ::onDateDismissed
 				}
 			}
-
-			common.notes.editText!!.text = log.notes.asEditable()
-			common.notes.editText!!.onFocusLoss {
-				log.notes = it.text.toString()
-			}
-
-			common.cropSelectView.let {
-				it.selectedCrops = arguments?.getStringArray(Extras.EXTRA_CROP_IDS)
-					?.asSequence()
-					?.toHashSet()
-					?: diary.crops
-						.map { it.id }
-						.toHashSet()
-
-				it.setDiary(diary)
-			}
-
+			logCommon.setLog(diary, log)
+			logCommon.cropIds = arguments?.getStringArray(Extras.EXTRA_CROP_IDS)?.asSequence()?.toHashSet() ?: hashSetOf()
 			if (arguments?.getBoolean(EXTRA_SINGLE_CROP, false) == true)
 			{
-				common.cropSelectView.isVisible = false
+				logCommon.cropSelectViewVisible = false
 			}
 
-			viewBindings.logContent += common.root
+			viewBindings.logContent.addView(logCommon, ViewGroup.LayoutParams(MATCH_PARENT, MATCH_PARENT))
 		}
 	}
 
