@@ -123,6 +123,9 @@ class DiaryDetailsFragment : BaseFragment(FragmentCrudDiaryDetailsBinding::class
 
 	public fun onDateDismissed()
 	{
-		if (viewBindings.date.editText?.focusSearch(View.FOCUS_RIGHT)?.requestFocus() != true) viewBindings.date.editText?.clearFocus()
+		if (viewBindings.date.editText?.focusSearch(View.FOCUS_RIGHT)?.requestFocus() != true)
+		{
+			viewBindings.date.editText?.clearFocus()
+		}
 	}
 }

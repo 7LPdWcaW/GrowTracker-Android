@@ -9,8 +9,9 @@ import androidx.core.view.get
 import androidx.core.view.isVisible
 import androidx.core.view.plusAssign
 import androidx.fragment.app.viewModels
-import com.freelapp.flowlifecycleobserver.collectWhileStarted
+import androidx.lifecycle.lifecycleScope
 import com.google.android.material.textfield.TextInputLayout
+import kotlinx.coroutines.flow.collectLatest
 import me.anon.grow3.R
 import me.anon.grow3.data.model.Diary
 import me.anon.grow3.data.model.Log
@@ -49,15 +50,16 @@ open class LogActionFragment : BaseFragment(FragmentActionLogBinding::class)
 		if (resultCode == Activity.RESULT_OK)
 		{
 			intentCallback?.invoke(data!!)
+			logView?.saveAdapter(viewBindings.logContent[0])
+			logView?.bindAdapter(viewBindings.logContent[0])
 			intentCallback = null
-			logView?.bindView(viewBindings.logContent[0])
 		}
 	}
 
 	override fun onDestroy()
 	{
 		super.onDestroy()
-		intentCallback = null
+		//intentCallback = null
 	}
 
 //	override fun bindArguments(bundle: Bundle?)
@@ -110,15 +112,17 @@ open class LogActionFragment : BaseFragment(FragmentActionLogBinding::class)
 
 	override fun bindVm()
 	{
-		viewModel.state
-			.collectWhileStarted(viewLifecycleOwner) { state ->
-				when (state)
-				{
-					is LogActionViewModel.UiResult.Loaded -> {
-						renderLogView(state.diary, state.log)
+		lifecycleScope.launchWhenStarted {
+			viewModel.state
+				.collectLatest { state ->
+					when (state)
+					{
+						is LogActionViewModel.UiResult.Loaded -> {
+							renderLogView(state.diary, state.log)
+						}
 					}
 				}
-			}
+		}
 	}
 
 	open fun finish()

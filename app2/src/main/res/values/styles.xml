@@ -35,6 +35,7 @@
 
 		<item name="android:windowBackground">@drawable/window_background</item>
 		<item name="textOnWindow">#ffffff</item>
+		<item name="selectableItemBackground">@drawable/rounded_selectable_item_background</item>
 
 		<item name="android:windowTranslucentNavigation">true</item>
 	</style>
