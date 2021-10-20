@@ -18,11 +18,12 @@ import javax.inject.Singleton
 @Singleton
 class NitriteDiariesDataSource @Inject constructor(
 	@Named("diaries_source") private val sourcePath: String,
+	val nitriteFacade: NitriteFacade,
 	@Named("io_dispatcher") private val dispatcher: CoroutineDispatcher = Dispatchers.IO
 ) : DiariesDataSource
 {
 	private val db = nitrite {
-		nitriteMapper = KNO2JacksonMapper(NitriteFacade())
+		nitriteMapper = KNO2JacksonMapper(nitriteFacade)
 		file = File(sourcePath)
 		autoCommit = true
 		autoCommitBufferSize = 1024

@@ -1,7 +1,8 @@
 package me.anon.grow3.ui.logs.fragment
 
 import androidx.fragment.app.viewModels
-import com.freelapp.flowlifecycleobserver.collectWhileStarted
+import androidx.lifecycle.lifecycleScope
+import kotlinx.coroutines.flow.collectLatest
 import me.anon.grow3.data.model.*
 import me.anon.grow3.ui.base.CardListFragment
 import me.anon.grow3.ui.logs.view.LogDateSeparator
@@ -18,31 +19,34 @@ class LogListFragment : CardListFragment()
 
 	override fun bindVm()
 	{
-		viewModel.state
-			.collectWhileStarted(viewLifecycleOwner) { state ->
-				if (state !is LogListViewModel.UiResult.Loaded) return@collectWhileStarted
+		lifecycleScope.launchWhenCreated {
+			viewModel.state
+				.collectLatest { state ->
+					if (state !is LogListViewModel.UiResult.Loaded) return@collectLatest
 
-				val diary = state.diary
-				val logs = state.logs
-				val crop = state.crops?.firstOrNull()
+					val diary = state.diary
+					val logs = state.logs
+					val crop = state.crops?.firstOrNull()
 
-				val title = crop?.name ?: diary.name
-				requireActivity().title = "$title logs"
+					val title = crop?.name
+						?: diary.name
+					requireActivity().title = "$title logs"
 
-				viewAdapter.newStack {
-					val group = logs
-						.groupBy { log ->
-							log.date.asDate()
+					viewAdapter.newStack {
+						val group = logs
+							.groupBy { log ->
+								log.date.asDate()
+							}
+							.toSortedMap { o1, o2 ->
+								-o1.compareTo(o2)
+							}
+
+						group.forEach { (date, logs) ->
+							add(LogDateSeparator(date.asDisplayString(), logs.last().date.ago(false) + " • " + diary.stageWhen(logs.last()).longString()))
+							addAll(logs.reversed().map { it.asCard(diary) })
 						}
-						.toSortedMap { o1, o2 ->
-							-o1.compareTo(o2)
-						}
-
-					group.forEach { (date, logs) ->
-						add(LogDateSeparator(date.asDisplayString(), logs.last().date.ago(false) + " • " + diary.stageWhen(logs.last()).longString()))
-						addAll(logs.reversed().map { it.asCard(diary) })
 					}
 				}
-			}
+		}
 	}
 }

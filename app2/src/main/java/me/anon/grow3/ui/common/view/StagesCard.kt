@@ -29,8 +29,10 @@ class StagesCard : Card<CardStagesBinding>
 		this.crop = crop
 	}
 
-	override fun createView(inflater: LayoutInflater, parent: ViewGroup): CardStagesBinding
-		= CardStagesBinding.inflate(inflater, parent, false)
+	inner class StagesCardHolder(view: View) : CardViewHolder(view)
+	override fun createViewHolder(inflater: LayoutInflater, parent: ViewGroup): CardViewHolder
+		= StagesCardHolder(CardStagesBinding.inflate(inflater, parent, false).root)
+
 	override fun bindView(view: View): CardStagesBinding = CardStagesBinding.bind(view)
 
 	override fun bind(view: CardStagesBinding)

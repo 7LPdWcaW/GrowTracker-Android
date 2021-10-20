@@ -29,8 +29,10 @@ class DiaryCropsCard : Card<CardDiaryCropsBinding>
 		this.diary = diary
 	}
 
-	override fun createView(inflater: LayoutInflater, parent: ViewGroup): CardDiaryCropsBinding
-		= CardDiaryCropsBinding.inflate(inflater, parent, false)
+	inner class DiaryCropsCardHolder(view: View) : CardViewHolder(view)
+	override fun createViewHolder(inflater: LayoutInflater, parent: ViewGroup): CardViewHolder
+		= DiaryCropsCardHolder(CardDiaryCropsBinding.inflate(inflater, parent, false).root)
+
 	override fun bindView(view: View): CardDiaryCropsBinding = CardDiaryCropsBinding.bind(view)
 
 	override fun bind(view: CardDiaryCropsBinding)

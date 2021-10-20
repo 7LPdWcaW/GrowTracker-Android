@@ -24,3 +24,22 @@ public suspend fun <T> tryNull(block: suspend () -> T?): T?
 	}
 }
 
+public inline fun <p1, p2> whenNotNull(param1: p1?, param2: p2?, crossinline block: (p1, p2) -> Unit)
+{
+	param1?.let { p1 ->
+		param2?.let { p2 ->
+			block(p1, p2)
+		}
+	}
+}
+
+public inline fun <p1, p2, p3> whenNotNull(param1: p1?, param2: p2?, param3: p3?, crossinline block: (p1, p2, p3) -> Unit)
+{
+	param1?.let { p1 ->
+		param2?.let { p2 ->
+			param3?.let { p3 ->
+				block(p1, p2, p3)
+			}
+		}
+	}
+}

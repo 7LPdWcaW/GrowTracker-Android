@@ -1,6 +1,5 @@
 package me.anon.grow3.util
 
-import com.fasterxml.jackson.databind.Module
 import com.fasterxml.jackson.databind.ObjectMapper
 import com.fasterxml.jackson.databind.SerializationFeature
 import com.fasterxml.jackson.databind.jsontype.NamedType
@@ -9,8 +8,11 @@ import com.fasterxml.jackson.module.kotlin.KotlinFeature
 import com.fasterxml.jackson.module.kotlin.KotlinModule
 import me.anon.grow3.data.model.LogConstants
 import org.dizitart.no2.mapper.JacksonFacade
+import javax.inject.Inject
+import javax.inject.Singleton
 
-open class NitriteFacade(modules: Set<Module>? = setOf()) : JacksonFacade(modules)
+@Singleton
+class NitriteFacade @Inject constructor() : JacksonFacade(setOf())
 {
 	override fun createObjectMapper(): ObjectMapper
 	{

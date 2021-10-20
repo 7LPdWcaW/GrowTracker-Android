@@ -5,42 +5,28 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.appcompat.widget.PopupMenu
-import androidx.core.os.bundleOf
-import androidx.core.view.isVisible
 import androidx.core.view.plusAssign
 import androidx.core.view.updatePadding
 import me.anon.grow3.R
 import me.anon.grow3.data.model.Diary
 import me.anon.grow3.data.model.Water
 import me.anon.grow3.databinding.CardWaterLogBinding
-import me.anon.grow3.databinding.StubCropSmallBinding
 import me.anon.grow3.databinding.StubDataLabelBinding
-import me.anon.grow3.ui.common.Extras
-import me.anon.grow3.ui.crops.fragment.ViewCropFragment
 import me.anon.grow3.util.*
-import me.anon.grow3.view.model.Card
 
-class WaterLogCard : Card<CardWaterLogBinding>
+class WaterLogCard : LogCard<CardWaterLogBinding, Water>
 {
-	private lateinit var diary: Diary
-	private lateinit var log: Water
-
 	constructor() : super()
-	constructor(diary: Diary, log: Water) : super()
-	{
-		this.diary = diary
-		this.log = log
-	}
+	constructor(diary: Diary, log: Water) : super(diary, log)
 
-	override fun createView(inflater: LayoutInflater, parent: ViewGroup): CardWaterLogBinding
-		= CardWaterLogBinding.inflate(inflater, parent, false)
+	inner class WaterLogCardHolder(view: View) : CardViewHolder(view)
+	override fun createViewHolder(inflater: LayoutInflater, parent: ViewGroup): CardViewHolder
+		= WaterLogCardHolder(CardWaterLogBinding.inflate(inflater, parent, false).root)
+
 	override fun bindView(view: View): CardWaterLogBinding = CardWaterLogBinding.bind(view)
 
-	override fun bind(view: CardWaterLogBinding)
+	override fun bindLog(view: CardWaterLogBinding)
 	{
-		view.includeStubCardHeader.header.text = "Watered"
-		view.includeStubCardHeader.date.text = "${log.date.asDateTime().formatTime()}"
-
 		view.content.removeAllViews()
 
 		log.inPH?.let { ph ->
@@ -92,23 +78,6 @@ class WaterLogCard : Card<CardWaterLogBinding>
 				dataView.data.text = "${additive.amount}ml/l"
 				dataView.label.text = "• ${additive.description}: "
 				dataView.root.updatePadding(left = 16.dp)
-			}
-			.hideIfEmpty()
-
-		view.includeStubCardFooter.notes.text = log.notes
-		view.includeStubCardFooter.notes.isVisible = log.notes.isNotBlank()
-
-		view.includeStubCardFooter.cropsContainer.removeAllViews()
-		log.cropIds
-			.mapToView<String, StubCropSmallBinding>(view.includeStubCardFooter.cropsContainer) { cropId, cropView ->
-				cropView.cropImage.onClick {
-					it.navigateTo<ViewCropFragment> {
-						bundleOf(
-							Extras.EXTRA_DIARY_ID to diary.id,
-							Extras.EXTRA_CROP_ID to cropId
-						)
-					}
-				}
 			}
 			.hideIfEmpty()
 

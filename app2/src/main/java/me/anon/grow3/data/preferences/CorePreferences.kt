@@ -2,13 +2,13 @@ package me.anon.grow3.data.preferences
 
 import android.content.SharedPreferences
 import androidx.core.content.edit
+import me.anon.grow3.di.CorePrefs
 import javax.inject.Inject
-import javax.inject.Named
 import javax.inject.Singleton
 
 @Singleton
 class CorePreferences @Inject constructor(
-	@Named("core_prefs") val prefs: SharedPreferences
+	@CorePrefs val prefs: SharedPreferences
 )
 {
 	public var isFirstLaunch: Boolean

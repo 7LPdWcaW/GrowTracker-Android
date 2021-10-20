@@ -30,8 +30,10 @@ class LogMediumCard : Card<CardLogMediumBinding>
 		this.medium = medium
 	}
 
-	override fun createView(inflater: LayoutInflater, parent: ViewGroup): CardLogMediumBinding
-		= CardLogMediumBinding.inflate(inflater, parent, false)
+	inner class LogMediumCardHolder(view: View) : CardViewHolder(view)
+	override fun createViewHolder(inflater: LayoutInflater, parent: ViewGroup): CardViewHolder
+		= LogMediumCardHolder(CardLogMediumBinding.inflate(inflater, parent, false).root)
+
 	override fun bindView(view: View): CardLogMediumBinding = CardLogMediumBinding.bind(view)
 
 	override fun bind(view: CardLogMediumBinding)

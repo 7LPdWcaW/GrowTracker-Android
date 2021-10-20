@@ -29,7 +29,7 @@ class ViewDiaryFragment : BaseFragment(FragmentViewDiaryBinding::class)
 	@Inject internal lateinit var viewModelFactory: ViewDiaryViewModel.Factory
 	private val viewModel: ViewDiaryViewModel by viewModels { ViewModelProvider(viewModelFactory, this) }
 	private val viewBindings by viewBinding<FragmentViewDiaryBinding>()
-	private val viewAdapter = CardListAdapter()
+	@Inject internal lateinit var viewAdapter: CardListAdapter
 
 	override fun onBackPressed(): Boolean
 		= viewBindings.menuFab.isExpanded.also { viewBindings.menuFab.isExpanded = false }

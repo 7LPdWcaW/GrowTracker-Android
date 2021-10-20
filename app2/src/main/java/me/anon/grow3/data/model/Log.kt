@@ -20,6 +20,7 @@ object LogConstants
 		LogType("Water", Water::class.java, -1),
 		LogType("Photo", Photo::class.java, -1),
 		LogType("StageChange", StageChange::class.java, -1),
+		LogType("Transplant", Transplant::class.java, -1),
 	)
 	public val quickMenu = arrayOf(
 		LogType("Water", Water::class.java, -1),

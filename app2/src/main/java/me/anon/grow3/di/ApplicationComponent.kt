@@ -3,13 +3,13 @@ package me.anon.grow3.di
 
 import dagger.Component
 import me.anon.grow3.data.preferences.CorePreferences
-import me.anon.grow3.data.repository.DiariesRepository
 import me.anon.grow3.di.module.AppModule
 import me.anon.grow3.di.module.DispatcherModule
 import me.anon.grow3.ui.BootActivity
 import me.anon.grow3.ui.DemoUiActivity
 import me.anon.grow3.ui.action.fragment.LogActionBottomSheetFragment
 import me.anon.grow3.ui.action.fragment.LogActionFragment
+import me.anon.grow3.ui.base.CardListFragment
 import me.anon.grow3.ui.crops.fragment.CropListFragment
 import me.anon.grow3.ui.crops.fragment.ViewCropFragment
 import me.anon.grow3.ui.crud.activity.DiaryActivity
@@ -35,11 +35,12 @@ interface ApplicationComponent
 {
 	public fun corePreferences(): CorePreferences
 	public fun exceptionHandler(): ExceptionHandler
-	public fun diariesRepo(): DiariesRepository
+//	public fun diariesRepo(): DiariesRepository
 
 	public fun inject(fragment: MainNavigatorFragment)
 	public fun inject(fragment: NavigationFragment)
 
+	public fun inject(fragment: CardListFragment)
 	public fun inject(fragment: DiaryListFragment)
 	public fun inject(fragment: DiaryDetailsFragment)
 	public fun inject(fragment: DiaryCropFragment)

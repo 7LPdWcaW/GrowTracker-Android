@@ -18,8 +18,10 @@ class LogDateSeparator : Card<CardLogDateSeparatorBinding>
 		this.stage = stage
 	}
 
-	override fun createView(inflater: LayoutInflater, parent: ViewGroup): CardLogDateSeparatorBinding
-		= CardLogDateSeparatorBinding.inflate(inflater, parent, false)
+	inner class LogDateCardHolder(view: View) : CardViewHolder(view)
+	override fun createViewHolder(inflater: LayoutInflater, parent: ViewGroup): CardViewHolder
+		= LogDateCardHolder(CardLogDateSeparatorBinding.inflate(inflater, parent, false).root)
+
 	override fun bindView(view: View): CardLogDateSeparatorBinding = CardLogDateSeparatorBinding.bind(view)
 
 	override fun bind(view: CardLogDateSeparatorBinding)

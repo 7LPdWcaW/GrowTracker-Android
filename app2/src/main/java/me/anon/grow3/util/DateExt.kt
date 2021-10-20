@@ -19,13 +19,13 @@ import java.util.concurrent.TimeUnit
  */
 object DateUtils
 {
-	const val TIME_FORMAT = "HH:mm"
-	const val CLOCK_FORMAT = "HH:mm"
+	const val TIME_FORMAT = "HH:mm:ss"
+	const val CLOCK_FORMAT = "HH:mm:ss"
 	const val DATE_FORMAT = "dd/MM/yyyy"
 
 	const val API_FORMAT = "yyyy-MM-dd'T'HH:mm:ss"
 
-	const val DATETIME_MID_DISPLAY_FORMAT = "dd MMM yyyy HH:mm"
+	const val DATETIME_MID_DISPLAY_FORMAT = "dd MMM yyyy HH:mm:ss"
 	const val DATETIME_SHORT_DISPLAY_FORMAT_UK = "dd/MM/yy HH:mm"
 	const val DATETIME_SHORT_DISPLAY_FORMAT_INT = "MM-dd-yy HH:mm"
 	const val DATETIME_SHORT_DISPLAY_FORMAT_ISO = "yy-MM-dd HH:mm"

@@ -1,16 +1,25 @@
 package me.anon.grow3.ui.base
 
+import android.content.Context
 import androidx.core.view.updatePadding
 import androidx.recyclerview.widget.LinearLayoutManager
 import me.anon.grow3.databinding.FragmentCardListBinding
+import me.anon.grow3.util.component
 import me.anon.grow3.util.dp
 import me.anon.grow3.util.updateMargin
 import me.anon.grow3.view.adapter.CardListAdapter
+import javax.inject.Inject
 
 abstract class CardListFragment : BaseFragment(FragmentCardListBinding::class)
 {
 	private val viewBindings by viewBinding<FragmentCardListBinding>()
-	protected val viewAdapter = CardListAdapter()
+	@Inject protected lateinit var viewAdapter: CardListAdapter
+
+	override fun onAttach(context: Context)
+	{
+		super.onAttach(context)
+		component.inject(this)
+	}
 
 	override fun bindUi()
 	{
