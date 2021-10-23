@@ -54,10 +54,13 @@ class DiaryCropsCard : Card<CardDiaryCropsBinding>
 		})
 
 		// TODO: Hide when there's an overflow
-		view.moreCrops.isVisible = view.cropsContainer.totalItemDisplayed < diary.crops.size
-		view.moreCrops.onClick {
-			it.navigateTo<CropListFragment> {
-				bundleOf(Extras.EXTRA_DIARY_ID to diary.id)
+		view.moreCrops.isVisible = false
+		view.cropsContainer.post {
+			view.moreCrops.isVisible = view.cropsContainer.totalItemDisplayed < diary.crops.size
+			view.moreCrops.onClick {
+				it.navigateTo<CropListFragment> {
+					bundleOf(Extras.EXTRA_DIARY_ID to diary.id)
+				}
 			}
 		}
 	}

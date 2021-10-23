@@ -5,7 +5,6 @@ import com.freelapp.flowlifecycleobserver.collectWhileResumed
 import me.anon.grow3.data.model.Crop
 import me.anon.grow3.data.model.Diary
 import me.anon.grow3.ui.base.CardListFragment
-import me.anon.grow3.ui.common.view.LogMediumCard
 import me.anon.grow3.ui.common.view.StagesCard
 import me.anon.grow3.ui.crops.view.CropDetailsCard
 import me.anon.grow3.ui.crops.view.CropLinksCard
@@ -38,7 +37,7 @@ class ViewCropFragment : CardListFragment()
 			add(StagesCard(diary = diary, crop = crop))
 			add(CropDetailsCard(diary = diary, crop = crop))
 			diary.mediumOf(crop)?.let { medium ->
-				add(LogMediumCard(title = "Medium details", diary = diary, crop = crop, medium = medium))
+				//add(LogMediumCard(title = "Medium details", diary = diary, crop = crop, medium = medium))
 			}
 			add(CropLinksCard(diary = diary, crop = crop))
 		}

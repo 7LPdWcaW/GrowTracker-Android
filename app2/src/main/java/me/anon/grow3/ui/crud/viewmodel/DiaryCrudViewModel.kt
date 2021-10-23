@@ -80,26 +80,45 @@ class DiaryCrudViewModel(
 		}
 	}
 
-	public fun setCropMedium(mediumType: ValueHolder<MediumType>? = null, volume: ValueHolder<Volume?>? = null)
+	public fun saveCropAndFinish()
 	{
-		viewModelScope.launch {
+		cropScope.launch {
+			val diary = (state.value as? UiResult.Loaded)?.diary ?: return@launch
+			val crop = (state.value as? UiResult.Loaded)?.crop
+
+			if (crop != null)
+			{
+				cropVm.save(diary, crop)
+				cropVm.clear()
+			}
+
+			_state.emit(UiResult.Loaded(diary))
+		}
+	}
+
+	public fun setCropMedium(mediumType: ValueHolder<MediumType>? = null, volume: ValueHolder<Volume?>? = null, draft: Boolean = true)
+	{
+		cropScope.launch {
 			val diary = (state.value as? UiResult.Loaded)?.diary ?: return@launch
 			val crop = (state.value as? UiResult.Loaded)?.crop ?: return@launch
 
 			// medium - only 1 medium type to set
-			val medium = diary.mediumOf(crop)
-				?: let {
-					mediumType?.let { type ->
-						Medium(type.value).also {
-							diariesRepository.addLog(it, diary)
-						}
-					}
+			var medium = diary.mediumOf(crop)
+			if (medium == null && mediumType != null)
+			{
+				medium = Medium(mediumType.value).also {
+					it.isDraft = true
 				}
+			}
 
-			medium?.apply {
-				mediumType?.patch { this.medium = it }
-				volume?.patch { this.size = it }
-				diariesRepository.addLog(this, diary)
+			if (medium?.isDraft == true)
+			{
+				medium.apply {
+					isDraft = draft
+					mediumType?.patch { this.medium = it }
+					volume?.patch { this.size = it }
+					diariesRepository.addLog(this, diary)
+				}
 			}
 		}
 	}
@@ -162,10 +181,11 @@ class DiaryCrudViewModel(
 		cropScope.coroutineContext.cancelChildren()
 		diaryScope.coroutineContext.cancelChildren()
 		viewModelScope.launch {
-			val diary = (state.value as? UiResult.Loaded)?.diary ?: return@launch
+			val diary = diaryVm.latest()
 			diary.isDraft = false
+			diary.purge()
 			diaryVm.save(diary)
-			_state.emit(UiResult.Loaded(diary))
+//			_state.emit(UiResult.Loaded(diary))
 		}
 	}
 

@@ -5,7 +5,8 @@ import androidx.core.os.bundleOf
 import androidx.core.view.isVisible
 import androidx.core.widget.doAfterTextChanged
 import androidx.fragment.app.activityViewModels
-import com.freelapp.flowlifecycleobserver.collectWhileStarted
+import androidx.lifecycle.lifecycleScope
+import kotlinx.coroutines.flow.collectLatest
 import me.anon.grow3.data.model.*
 import me.anon.grow3.databinding.FragmentCrudDiaryCropBinding
 import me.anon.grow3.ui.action.fragment.LogActionFragment
@@ -36,12 +37,6 @@ class DiaryCropFragment : BaseFragment(FragmentCrudDiaryCropBinding::class)
 
 	override fun bindUi()
 	{
-//		viewBindings.done.onClick {
-//			crudViewModel.mutateCrop { this }
-//			crudViewModel.endCrop()
-//			(activity as? DiaryActivity)?.popBackStack()
-//		}
-
 		viewBindings.removeCrop.onClick {
 			requireContext().promptRemove {
 				crudViewModel.removeCrop()
@@ -74,6 +69,7 @@ class DiaryCropFragment : BaseFragment(FragmentCrudDiaryCropBinding::class)
 			}
 		}
 
+		viewBindings.mediumCard.isVisible = false
 		viewBindings.mediumTypeOptions.singleSelection = true
 		viewBindings.mediumTypeOptions.setMenu(MediumType.toMenu())
 		viewBindings.mediumTypeOptions.itemSelectListener = { item ->
@@ -106,84 +102,87 @@ class DiaryCropFragment : BaseFragment(FragmentCrudDiaryCropBinding::class)
 		}
 	}
 
-	override fun bindVm()
-	{
-		crudViewModel.state
-			.collectWhileStarted(this) { state ->
-				val state = state as? DiaryCrudViewModel.UiResult.Loaded ?: return@collectWhileStarted
-				val diary = state.diary
-				val crop = state.crop ?: return@collectWhileStarted
-				isNew = crop.isDraft
+	init {
+		lifecycleScope.launchWhenCreated {
+			crudViewModel.state
+				.collectLatest { state ->
+					val state = state as? DiaryCrudViewModel.UiResult.Loaded
+						?: return@collectLatest
+					val diary = state.diary
+					val crop = state.crop
+						?: return@collectLatest
 
-//				viewBindings.contentContainer.updatePadding(
-//					bottom = (if (isNew) R.dimen.fab_spacing else R.dimen.content_margin).dimen(requireContext()).toInt()
-//				)
+					isNew = crop.isDraft
 
-				//viewBindings.done.isVisible = isNew
-				//viewBindings.removeCrop.isVisible = !isNew
+					viewBindings.cropName.editText!!.text = crop.name.asEditable()
+					viewBindings.cropGenetics.editText!!.text = crop.genetics?.asEditable()
+					viewBindings.cropNumPlants.editText!!.text = crop.numberOfPlants.toString().asEditable()
 
-				viewBindings.cropName.editText!!.text = crop.name.asEditable()
-				viewBindings.cropGenetics.editText!!.text = crop.genetics?.asEditable()
-				viewBindings.cropNumPlants.editText!!.text = crop.numberOfPlants.toString().asEditable()
+					val medium = diary.mediumOf(crop)
+					viewBindings.mediumCard.isVisible = medium == null || medium.isDraft
 
-				val medium = diary.mediumOf(crop)
-				medium?.let {
-					viewBindings.mediumTypeOptions.checkItems(it.medium.strRes)
-					it.size?.let { size ->
-						viewBindings.mediumSizeUnitOptions.checkItems(size.unit.strRes)
-						viewBindings.mediumSize.editText!!.text = size.amount.asStringOrNull()?.asEditable()
+					//					viewBindings.mediumTypeOptions.checkItems(it.medium.strRes)
+					//					it.size?.let { size ->
+					//						viewBindings.mediumSizeUnitOptions.checkItems(size.unit.strRes)
+					//						viewBindings.mediumSize.editText!!.text = size.amount.asStringOrNull()?.asEditable()
+					//					}
+
+					viewBindings.includeCardStages.stagesHeader.isVisible = true
+					viewBindings.includeCardStages.stagesView.setStages(diary, crop)
+					viewBindings.includeCardStages.stagesView.onStageClick = { stage ->
+						// diary needs to be saved at this point before modal is opened otherwise changes get overwritten
+						requireView().clearFocus()
+
+						(activity as DiaryActivity).openModal(LogActionFragment().apply {
+							arguments = bundleOf(
+								Extras.EXTRA_DIARY_ID to diary.id,
+								Extras.EXTRA_LOG_ID to stage.id,
+								Extras.EXTRA_LOG_TYPE to nameOf<StageChange>(),
+								Extras.EXTRA_CROP_IDS to arrayOf(crop.id),
+								LogActionFragment.EXTRA_SINGLE_CROP to true
+							)
+						})
+					}
+					viewBindings.includeCardStages.stagesView.onNewStageClick = {
+						// diary needs to be saved at this point before modal is opened otherwise changes get overwritten
+						requireView().clearFocus()
+
+						(activity as DiaryActivity).openModal(LogActionFragment().apply {
+							arguments = bundleOf(
+								Extras.EXTRA_DIARY_ID to diary.id,
+								Extras.EXTRA_LOG_TYPE to nameOf<StageChange>(),
+								Extras.EXTRA_CROP_IDS to arrayOf(crop.id),
+								LogActionFragment.EXTRA_SINGLE_CROP to true
+							)
+						})
 					}
 				}
+		}
+	}
 
-				viewBindings.includeCardStages.stagesHeader.isVisible = true
-				viewBindings.includeCardStages.stagesView.setStages(diary, crop)
-				viewBindings.includeCardStages.stagesView.onStageClick = { stage ->
-					// diary needs to be saved at this point before modal is opened otherwise changes get overwritten
-					requireView().clearFocus()
+	private fun saveView()
+	{
+		val type = viewBindings.mediumTypeOptions.getSelectedItems().firstOrNull() ?: return
+		val sizeUnit = viewBindings.mediumSizeUnitOptions.getSelectedItems().firstOrNull() ?: return
+		val size = viewBindings.mediumSize.editText!!.text.toDoubleOrNull() ?: return
 
-					(activity as DiaryActivity).openModal(LogActionFragment().apply {
-						arguments = bundleOf(
-							Extras.EXTRA_DIARY_ID to diary.id,
-							Extras.EXTRA_LOG_ID to stage.id,
-							Extras.EXTRA_LOG_TYPE to nameOf<StageChange>(),
-							Extras.EXTRA_CROP_IDS to arrayOf(crop.id),
-							LogActionFragment.EXTRA_SINGLE_CROP to true
-						)
-					})
-				}
-				viewBindings.includeCardStages.stagesView.onNewStageClick = {
-					// diary needs to be saved at this point before modal is opened otherwise changes get overwritten
-					requireView().clearFocus()
-
-					(activity as DiaryActivity).openModal(LogActionFragment().apply {
-						arguments = bundleOf(
-							Extras.EXTRA_DIARY_ID to diary.id,
-							Extras.EXTRA_LOG_TYPE to nameOf<StageChange>(),
-							Extras.EXTRA_CROP_IDS to arrayOf(crop.id),
-							LogActionFragment.EXTRA_SINGLE_CROP to true
-						)
-					})
-				}
-			}
+		crudViewModel.setCropMedium(
+			mediumType = ValueHolder(MediumType.ofId(type.itemId)),
+			volume = ValueHolder(Volume(size, VolumeUnit.ofId(sizeUnit.itemId))),
+			draft = false,
+		)
 	}
 
 	private var backPress = true
 	override fun onBackPressed(): Boolean
 	{
-//		if (backPress && isNew)
-//		{
-//			activity?.promptExit {
-//				backPress = false
-//				crudViewModel.removeCrop()
-//				crudViewModel.endCrop()
-//				activity?.onBackPressed()
-//			}
-//		}
-//		else
-//		{
-			requireView().clearFocus()
+		if (backPress)
+		{
+			saveView()
+			crudViewModel.saveCropAndFinish()
 			backPress = false
-//		}
+			//activity?.onBackPressed()
+		}
 
 		return backPress
 	}

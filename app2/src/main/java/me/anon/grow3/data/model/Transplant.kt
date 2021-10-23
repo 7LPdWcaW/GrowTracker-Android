@@ -10,7 +10,7 @@ typealias Medium = Transplant
  */
 @JsonClass(generateAdapter = true)
 data class Transplant(
-	public var medium: MediumType,
+	public var medium: MediumType = MediumType.Soil,
 	public var size: Volume? = null
 ) : Log(action = "Transplant")
 {

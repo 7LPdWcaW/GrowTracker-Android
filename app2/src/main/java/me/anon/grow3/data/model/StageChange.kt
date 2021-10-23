@@ -18,7 +18,7 @@ typealias Stage = StageChange
  */
 @JsonClass(generateAdapter = true)
 data class StageChange(
-	public var type: StageType
+	public var type: StageType = StageType.Planted
 ) : Log(action = "StageChange")
 {
 	override val typeRes: Int = me.anon.grow3.R.string.log_type_stage_change

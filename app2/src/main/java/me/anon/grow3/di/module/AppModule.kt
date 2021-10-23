@@ -5,6 +5,7 @@ import android.content.SharedPreferences
 import dagger.Module
 import dagger.Provides
 import kotlinx.coroutines.CoroutineDispatcher
+import me.anon.grow3.data.model.LogConstants
 import me.anon.grow3.data.repository.DiariesRepository
 import me.anon.grow3.data.repository.impl.DefaultDiariesRepository
 import me.anon.grow3.data.source.DiariesDataSource
@@ -12,7 +13,6 @@ import me.anon.grow3.data.source.nitrite.NitriteDiariesDataSource
 import me.anon.grow3.di.Cards
 import me.anon.grow3.di.CorePrefs
 import me.anon.grow3.di.DiariesSource
-import me.anon.grow3.ui.common.view.LogMediumCard
 import me.anon.grow3.ui.common.view.StagesCard
 import me.anon.grow3.ui.crops.view.CropCard
 import me.anon.grow3.ui.crops.view.CropDetailsCard
@@ -20,9 +20,6 @@ import me.anon.grow3.ui.crops.view.CropLinksCard
 import me.anon.grow3.ui.diaries.view.DiaryCropsCard
 import me.anon.grow3.ui.diaries.view.DiaryLinksCard
 import me.anon.grow3.ui.logs.view.LogDateSeparator
-import me.anon.grow3.ui.logs.view.PhotoLogCard
-import me.anon.grow3.ui.logs.view.StageChangeLogCard
-import me.anon.grow3.ui.logs.view.WaterLogCard
 import me.anon.grow3.util.NitriteFacade
 import me.anon.grow3.util.application
 import me.anon.grow3.view.model.Card
@@ -65,24 +62,27 @@ class AppModule(
 	@Provides
 	@Singleton
 	@Cards
-	public fun provideCardsList(): Array<Class<out Card<*>>> = arrayOf(
-		// logs
-		LogDateSeparator::class.java,
-		PhotoLogCard::class.java,
-		StageChangeLogCard::class.java,
-		WaterLogCard::class.java,
+	public fun provideCardsList(): Array<Class<out Card<*>>>
+	{
+		return arrayListOf(
+			// logs
+			LogDateSeparator::class.java,
 
-		// common
-		LogMediumCard::class.java,
-		StagesCard::class.java,
+			// common
+			StagesCard::class.java,
 
-		// crop
-		CropCard::class.java,
-		CropDetailsCard::class.java,
-		CropLinksCard::class.java,
+			// crop
+			CropCard::class.java,
+			CropDetailsCard::class.java,
+			CropLinksCard::class.java,
 
-		// diary
-		DiaryCropsCard::class.java,
-		DiaryLinksCard::class.java,
-	)
+			// diary
+			DiaryCropsCard::class.java,
+			DiaryLinksCard::class.java,
+		).also {
+			LogConstants.types.forEach { (k, v) ->
+				it.add(v.cardType)
+			}
+		}.toTypedArray()
+	}
 }

@@ -28,7 +28,7 @@ class NitriteFacade @Inject constructor() : JacksonFacade(setOf())
 		objectMapper.registerModule(JodaModule())
 
 		LogConstants.types.forEach { type ->
-			objectMapper.registerSubtypes(NamedType(type.type))
+			objectMapper.registerSubtypes(NamedType(type.value.type))
 		}
 
 		objectMapper.disable(SerializationFeature.WRITE_DATES_AS_TIMESTAMPS)

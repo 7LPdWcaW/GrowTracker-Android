@@ -9,7 +9,6 @@ import me.anon.grow3.data.repository.DiariesRepository
 import me.anon.grow3.ui.common.Extras
 import me.anon.grow3.ui.common.Extras.EXTRA_LOG_TYPE
 import me.anon.grow3.util.ViewModelFactory
-import me.anon.grow3.util.nameOf
 import me.anon.grow3.util.states.DataResult
 import javax.inject.Inject
 
@@ -58,13 +57,9 @@ class LogActionViewModel constructor(
 
 			if (isNew)
 			{
-				val newLog: Log = when (logType)
-				{
-					nameOf<Water>() -> Water()
-					nameOf<StageChange>() -> StageChange(diary.stage().type)
-					nameOf<Photo>() -> Photo()
-					else -> throw InvalidLogType()
-				}
+				val constructor = LogConstants.types.values.firstOrNull { it.type.name == logType }?.logConstructor
+					?: throw InvalidLogType(logType)
+				val newLog = constructor.invoke(diary)
 
 				newLog.isDraft = true
 				logId = diariesRepository.addLog(newLog, diary).id

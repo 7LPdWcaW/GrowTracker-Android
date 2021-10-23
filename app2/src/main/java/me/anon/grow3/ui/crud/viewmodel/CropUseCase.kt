@@ -3,6 +3,7 @@ package me.anon.grow3.ui.crud.viewmodel
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.mapLatest
+import kotlinx.coroutines.flow.takeWhile
 import me.anon.grow3.data.exceptions.GrowTrackerException
 import me.anon.grow3.data.model.Crop
 import me.anon.grow3.data.model.Diary
@@ -17,6 +18,7 @@ class CropUseCase(
 {
 	private var originalCrop: Crop? = null
 	private var crop: Crop? = null
+	private var cropId: String? = null
 
 	public suspend fun new(diary: Diary): Flow<Crop>
 	{
@@ -38,12 +40,14 @@ class CropUseCase(
 			}, diary)
 		}
 
+		cropId = temp.id
+		originalCrop = temp.copy()
 		return diariesRepository.flowDiary(diary.id)
+			.takeWhile { cropId != null }
 			.mapLatest { result ->
 				when (result)
 				{
 					is DataResult.Success -> {
-						originalCrop = temp.copy()
 						crop = diariesRepository.getCrop(temp.id, result.data) ?: throw GrowTrackerException.CropLoadFailed(temp.id)
 						crop!!
 					}
@@ -54,7 +58,9 @@ class CropUseCase(
 
 	public fun load(diary: Diary, cropId: String): Flow<Crop>
 	{
+		this.cropId = cropId
 		return diariesRepository.flowDiary(diary.id)
+			.takeWhile { this.cropId != null }
 			.map { result ->
 				when (result)
 				{
@@ -73,8 +79,7 @@ class CropUseCase(
 	{
 		val crop = crop ?: return
 		diariesRepository.removeCrop(crop.id, diary)
-		this.crop = null
-		this.originalCrop = null
+		clear()
 	}
 
 	public suspend fun save(diary: Diary, crop: Crop)
@@ -86,5 +91,6 @@ class CropUseCase(
 	{
 		this.crop = null
 		this.originalCrop = null
+		this.cropId = null
 	}
 }

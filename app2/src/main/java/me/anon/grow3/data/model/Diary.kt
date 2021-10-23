@@ -206,13 +206,21 @@ data class Diary(
 		return retString.joinToString(" • ")
 	}
 
+	/**
+	 * Removes all draft logs and re-sorts log order
+	 */
+	public fun purge()
+	{
+		(log as ArrayList).removeAll { it.isDraft }
+		log.sortedBy { it.date }
+	}
+
 	init {
 		if (log.isEmpty() || !log.any { it is StageChange })
 		{
 			log as ArrayList += StageChange(StageType.Planted)
 		}
 
-		var i = 0
-		//log.sortedBy { it.date }
+		log.sortedBy { it.date }
 	}
 }

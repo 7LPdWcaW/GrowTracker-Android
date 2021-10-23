@@ -2,30 +2,75 @@ package me.anon.grow3.data.model
 
 import com.fasterxml.jackson.annotation.JsonTypeInfo
 import me.anon.grow3.data.exceptions.GrowTrackerException
-import me.anon.grow3.ui.action.view.LogView
+import me.anon.grow3.ui.action.view.*
+import me.anon.grow3.ui.logs.view.PhotoLogCard
+import me.anon.grow3.ui.logs.view.StageChangeLogCard
+import me.anon.grow3.ui.logs.view.TransplantLogCard
+import me.anon.grow3.ui.logs.view.WaterLogCard
 import me.anon.grow3.util.*
 import me.anon.grow3.view.model.Card
 import org.threeten.bp.ZonedDateTime
 import java.util.*
 
-data class LogType(
+class LogType<T>(
 	val name: String,
-	val type: Class<out Log>,
 	val iconRes: Int = -1,
-)
+	val type: Class<out T>,
+	val viewType: Class<out LogView<*>>,
+	val cardType: Class<out Card<*>>,
+	val logConstructor: (Diary) -> T,
+	val viewConstructor: (Diary, T) -> LogView<*>,
+	val cardConstructor: (Diary, T) -> Card<*>,
+) where T : Log
 
 object LogConstants
 {
-	public val types = arrayOf(
-		LogType("Water", Water::class.java, -1),
-		LogType("Photo", Photo::class.java, -1),
-		LogType("StageChange", StageChange::class.java, -1),
-		LogType("Transplant", Transplant::class.java, -1),
+	public val types = hashMapOf<String, LogType<*>>(
+		"Water" to LogType(
+			"Water",
+			-1,
+			Water::class.java,
+			WaterLogView::class.java,
+			WaterLogCard::class.java,
+			{ Water() },
+			{ a,b -> WaterLogView(a, b) },
+			{ a,b -> WaterLogCard(a, b) },
+		),
+		"Photo" to LogType(
+			"Photo",
+			-1,
+			Photo::class.java,
+			PhotoLogView::class.java,
+			PhotoLogCard::class.java,
+			{ Photo() },
+			{ a,b -> PhotoLogView(a, b) },
+			{ a,b -> PhotoLogCard(a, b) },
+		),
+		"StageChange" to LogType(
+			"StageChange",
+			-1,
+			StageChange::class.java,
+			StageChangeLogView::class.java,
+			StageChangeLogCard::class.java,
+			{ StageChange() },
+			{ a,b -> StageChangeLogView(a, b) },
+			{ a,b -> StageChangeLogCard(a, b) },
+		),
+		"Transplant" to LogType(
+			"Transplant",
+			-1,
+			Transplant::class.java,
+			TransplantLogView::class.java,
+			TransplantLogCard::class.java,
+			{ Transplant() },
+			{ a,b -> TransplantLogView(a, b) },
+			{ a,b -> TransplantLogCard(a, b) },
+		),
 	)
-	public val quickMenu = arrayOf(
-		LogType("Water", Water::class.java, -1),
-		LogType("Photo", Photo::class.java, -1),
-		LogType("StageChange", StageChange::class.java, -1),
+	public val quickMenu get() = arrayOf(
+		types["Water"]!!,
+		types["Photo"]!!,
+		types["Transplant"]!!,
 	)
 }
 
@@ -44,26 +89,18 @@ abstract class Log(
 	open val typeRes: Int = -1
 }
 
-public fun Log.asView(diary: Diary): LogView<*>
+public fun <T : Log> T.asView(diary: Diary): LogView<*>
 {
-	return when (this)
-	{
-		is Water -> logView(diary)
-		is StageChange -> logView(diary)
-		is Photo -> logView(diary)
-		else -> throw GrowTrackerException.InvalidLog(this)
-	}
+	val constructor = LogConstants.types[this.action]?.viewConstructor as? (Diary, T) -> LogView<*>
+		?: throw GrowTrackerException.InvalidLog(this)
+	return constructor.invoke(diary, this)
 }
 
-public fun Log.asCard(diary: Diary): Card<*>
+public fun <T : Log> T.asCard(diary: Diary): Card<*>
 {
-	return when (this)
-	{
-		is Water -> logCard(diary)
-		is StageChange -> logCard(diary)
-		is Photo -> logCard(diary)
-		else -> throw GrowTrackerException.InvalidLog(this)
-	}
+	val constructor = LogConstants.types[this.action]?.cardConstructor as? (Diary, T) -> Card<*>
+		?: throw GrowTrackerException.InvalidLog(this)
+	return constructor.invoke(diary, this)
 }
 
 data class LogChange(
