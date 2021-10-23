@@ -3,6 +3,7 @@ package me.anon.grow3.di
 
 import dagger.Component
 import me.anon.grow3.data.preferences.CorePreferences
+import me.anon.grow3.data.repository.DiariesRepository
 import me.anon.grow3.di.module.AppModule
 import me.anon.grow3.di.module.DispatcherModule
 import me.anon.grow3.ui.BootActivity
@@ -35,7 +36,7 @@ interface ApplicationComponent
 {
 	public fun corePreferences(): CorePreferences
 	public fun exceptionHandler(): ExceptionHandler
-//	public fun diariesRepo(): DiariesRepository
+	public fun diariesRepo(): DiariesRepository
 
 	public fun inject(fragment: MainNavigatorFragment)
 	public fun inject(fragment: NavigationFragment)

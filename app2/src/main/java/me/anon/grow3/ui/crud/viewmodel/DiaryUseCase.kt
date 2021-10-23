@@ -18,7 +18,7 @@ class DiaryUseCase(
 	public suspend fun new(): Flow<Diary>
 	{
 		isNew = true
-		val count = diariesRepository.getDiaries().filter { !it.isDraft }.size
+		val count = diariesRepository.getDiaryCount(false)
 		val newDiary = Diary(name = "Gen ${count + 1}").apply {
 			isDraft = true
 			crops as ArrayList += Crop(

@@ -16,6 +16,7 @@ interface DiariesRepository
 	public fun flowLogEvents(): SharedFlow<LogEvent>
 
 	public suspend fun getDiaries(): List<Diary>
+	public suspend fun getDiaryCount(includeDrafts: Boolean): Int
 
 	public suspend fun getDiaryById(diaryId: String): Diary?
 
