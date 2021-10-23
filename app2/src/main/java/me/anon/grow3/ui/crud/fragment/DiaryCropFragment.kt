@@ -3,11 +3,9 @@ package me.anon.grow3.ui.crud.fragment
 import android.os.Bundle
 import androidx.core.os.bundleOf
 import androidx.core.view.isVisible
-import androidx.core.view.updatePadding
 import androidx.core.widget.doAfterTextChanged
 import androidx.fragment.app.activityViewModels
 import com.freelapp.flowlifecycleobserver.collectWhileStarted
-import me.anon.grow3.R
 import me.anon.grow3.data.model.*
 import me.anon.grow3.databinding.FragmentCrudDiaryCropBinding
 import me.anon.grow3.ui.action.fragment.LogActionFragment
@@ -38,11 +36,11 @@ class DiaryCropFragment : BaseFragment(FragmentCrudDiaryCropBinding::class)
 
 	override fun bindUi()
 	{
-		viewBindings.done.onClick {
-			crudViewModel.mutateCrop { this }
-			crudViewModel.endCrop()
-			(activity as? DiaryActivity)?.popBackStack()
-		}
+//		viewBindings.done.onClick {
+//			crudViewModel.mutateCrop { this }
+//			crudViewModel.endCrop()
+//			(activity as? DiaryActivity)?.popBackStack()
+//		}
 
 		viewBindings.removeCrop.onClick {
 			requireContext().promptRemove {
@@ -117,12 +115,12 @@ class DiaryCropFragment : BaseFragment(FragmentCrudDiaryCropBinding::class)
 				val crop = state.crop ?: return@collectWhileStarted
 				isNew = crop.isDraft
 
-				viewBindings.contentContainer.updatePadding(
-					bottom = (if (isNew) R.dimen.fab_spacing else R.dimen.content_margin).dimen(requireContext()).toInt()
-				)
+//				viewBindings.contentContainer.updatePadding(
+//					bottom = (if (isNew) R.dimen.fab_spacing else R.dimen.content_margin).dimen(requireContext()).toInt()
+//				)
 
-				viewBindings.done.isVisible = isNew
-				viewBindings.removeCrop.isVisible = !isNew
+				//viewBindings.done.isVisible = isNew
+				//viewBindings.removeCrop.isVisible = !isNew
 
 				viewBindings.cropName.editText!!.text = crop.name.asEditable()
 				viewBindings.cropGenetics.editText!!.text = crop.genetics?.asEditable()
@@ -172,20 +170,20 @@ class DiaryCropFragment : BaseFragment(FragmentCrudDiaryCropBinding::class)
 	private var backPress = true
 	override fun onBackPressed(): Boolean
 	{
-		if (backPress && isNew)
-		{
-			activity?.promptExit {
-				backPress = false
-				crudViewModel.removeCrop()
-				crudViewModel.endCrop()
-				activity?.onBackPressed()
-			}
-		}
-		else
-		{
+//		if (backPress && isNew)
+//		{
+//			activity?.promptExit {
+//				backPress = false
+//				crudViewModel.removeCrop()
+//				crudViewModel.endCrop()
+//				activity?.onBackPressed()
+//			}
+//		}
+//		else
+//		{
 			requireView().clearFocus()
 			backPress = false
-		}
+//		}
 
 		return backPress
 	}

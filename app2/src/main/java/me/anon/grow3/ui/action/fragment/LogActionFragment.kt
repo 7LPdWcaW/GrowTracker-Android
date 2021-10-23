@@ -20,6 +20,7 @@ import me.anon.grow3.databinding.FragmentActionLogBinding
 import me.anon.grow3.ui.action.view.LogView
 import me.anon.grow3.ui.action.viewmodel.LogActionViewModel
 import me.anon.grow3.ui.base.BaseFragment
+import me.anon.grow3.ui.base.ModalFragment
 import me.anon.grow3.ui.common.Extras
 import me.anon.grow3.ui.common.fragment.DateSelectDialogFragment
 import me.anon.grow3.util.*
@@ -27,7 +28,7 @@ import me.anon.grow3.view.LogCommonView
 import org.threeten.bp.ZonedDateTime
 import javax.inject.Inject
 
-open class LogActionFragment : BaseFragment(FragmentActionLogBinding::class)
+open class LogActionFragment : BaseFragment(FragmentActionLogBinding::class), ModalFragment
 {
 	companion object
 	{
@@ -42,7 +43,9 @@ open class LogActionFragment : BaseFragment(FragmentActionLogBinding::class)
 	private var logView: LogView<*>? = null
 	private var isFinishing = false
 
+	override var completionListener: (() -> Unit)? = null
 	public var intentCallback: ((Intent) -> Unit)? = null
+
 	public val intentResult = registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { result ->
 		val resultCode = result.resultCode
 		val data = result.data
@@ -59,7 +62,8 @@ open class LogActionFragment : BaseFragment(FragmentActionLogBinding::class)
 	override fun onDestroy()
 	{
 		super.onDestroy()
-		//intentCallback = null
+		intentCallback = null
+		completionListener = null
 	}
 
 //	override fun bindArguments(bundle: Bundle?)
@@ -93,7 +97,7 @@ open class LogActionFragment : BaseFragment(FragmentActionLogBinding::class)
 			onBackPressed()
 		}
 
-		viewBindings.actionDelete.isVisible = !viewModel.isNew
+		//viewBindings.actionDelete.isVisible = !viewModel.isNew
 		viewBindings.actionDelete.onClick {
 			requireActivity().promptRemove {
 				viewModel.remove()
@@ -102,9 +106,13 @@ open class LogActionFragment : BaseFragment(FragmentActionLogBinding::class)
 		}
 
 		viewBindings.actionDone.onClick {
-			saveView()
-			isFinishing = true
-			finish()
+			logView?.let { logView ->
+				val log = logView.saveAdapter(viewBindings.logContent[0])
+				(viewBindings.logContent[1] as? LogCommonView)?.saveTo(log)
+
+				requireView().clearFocus()
+				viewModel.saveAndFinish(log)
+			}
 		}
 
 		attachCallbacks()
@@ -120,6 +128,10 @@ open class LogActionFragment : BaseFragment(FragmentActionLogBinding::class)
 						is LogActionViewModel.UiResult.Loaded -> {
 							renderLogView(state.diary, state.log)
 						}
+
+						is LogActionViewModel.UiResult.Finishing -> {
+							finish()
+						}
 					}
 				}
 		}
@@ -130,23 +142,7 @@ open class LogActionFragment : BaseFragment(FragmentActionLogBinding::class)
 		requireView().hideKeyboard()
 		isFinishing = true
 		viewModel.clear()
-
-//		activity?.supportFragmentManager?.commit {
-//			remove(this@LogActionFragment)
-//		}
-	}
-
-	override fun onDestroyView()
-	{
-//		if (!isFinishing)
-//		{
-//			logView?.let {
-//				it.saveView()
-//				viewModel.saveLog()
-//			}
-//		}
-
-		super.onDestroyView()
+		completionListener?.invoke()
 	}
 
 	private fun renderLogView(diary: Diary, log: Log)
@@ -155,8 +151,6 @@ open class LogActionFragment : BaseFragment(FragmentActionLogBinding::class)
 
 		logView = log.asView(diary)
 		logView?.let { logView ->
-			//logView.fragment = this
-
 			viewBindings.toolbar.title = logView.provideTitle() ?: R.string.log_action_new_title.string()
 
 			viewBindings.logContent.removeAllViews()

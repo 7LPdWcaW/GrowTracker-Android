@@ -18,6 +18,7 @@ import me.anon.grow3.ui.crud.activity.DiaryActivity
 import me.anon.grow3.ui.diaries.view.DiaryCropsCard
 import me.anon.grow3.ui.diaries.view.DiaryLinksCard
 import me.anon.grow3.ui.diaries.viewmodel.ViewDiaryViewModel
+import me.anon.grow3.ui.main.activity.MainActivity
 import me.anon.grow3.util.*
 import me.anon.grow3.view.adapter.CardListAdapter
 import javax.inject.Inject
@@ -95,6 +96,11 @@ class ViewDiaryFragment : BaseFragment(FragmentViewDiaryBinding::class)
 	private fun updateDiaryUi(diary: Diary)
 	{
 		viewBindings.toolbar.title = diary.name
+		viewBindings.toolbar.navigationIcon = R.drawable.ic_baseline_menu_24.drawable(requireContext())
+		viewBindings.toolbar.setNavigationOnClickListener {
+			(requireActivity() as? MainActivity)?.openMenu()
+		}
+
 		//viewBindings.collapsingToolbarLayout.title = diary.name
 //		viewBindings.collapsingToolbarLayout.subtitle = diary.stages().shortSummary()
 

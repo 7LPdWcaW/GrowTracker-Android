@@ -52,7 +52,7 @@ open class BaseActivity : AppCompatActivity
 	public val insets: LiveData<Rect> = _insets
 
 	@ColorInt
-	protected var statusBarColor: Int = -1
+	public var statusBarColor: Int = -1
 		set(value) {
 			window.clearFlags(WindowManager.LayoutParams.FLAG_TRANSLUCENT_STATUS)
 			window.addFlags(WindowManager.LayoutParams.FLAG_DRAWS_SYSTEM_BAR_BACKGROUNDS)

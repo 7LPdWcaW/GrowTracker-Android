@@ -190,7 +190,7 @@ class MainActivity : BaseActivity(ActivityMainBinding::class)
 			override fun onStateChanged(bottomSheet: View, newState: Int)
 			{
 				adapter.getFragment(INDEX_MENU)?.let {
-					it.requireView().updatePadding(bottom = insets.value?.bottom ?: 0)
+					it.requireView().updatePadding(bottom = 0)
 					if (newState == STATE_COLLAPSED)
 					{
 						it.requireView().updatePadding(bottom = layoutSheetBehavior.peekHeight - (insets.value?.bottom ?: 0))
@@ -413,5 +413,10 @@ class MainActivity : BaseActivity(ActivityMainBinding::class)
 				}
 			}
 		}
+	}
+
+	public fun openMenu()
+	{
+		viewBindings.viewPager.setCurrentItem(0, true)
 	}
 }

@@ -30,6 +30,7 @@ class LogActionViewModel constructor(
 	{
 		data class Loaded(val diary: Diary, val log: Log): UiResult()
 		object Loading : UiResult()
+		object Finishing : UiResult()
 	}
 
 	public var isNew: Boolean = false
@@ -77,9 +78,12 @@ class LogActionViewModel constructor(
 						else -> throw DiaryLoadFailed()
 					}
 				}
-				.collectLatest {
-					val diary = it
-					if (logId.isEmpty()) return@collectLatest
+				.collectLatest { diary ->
+					if (logId.isEmpty() && diaryId.isEmpty()) // cleared vm
+					{
+						_state.emit(UiResult.Finishing)
+						return@collectLatest
+					}
 
 					diariesRepository.getLog(logId, diary)?.let { log ->
 						_state.emit(UiResult.Loaded(diary, log))
@@ -99,10 +103,20 @@ class LogActionViewModel constructor(
 
 	public fun save(new: Log)
 	{
+		viewModelScope.launch {
+			val diary = (_state.value as? UiResult.Loaded)?.diary ?: return@launch
+			diariesRepository.addLog(new, diary)
+		}
+	}
+
+	public fun saveAndFinish(new: Log)
+	{
 		isNew = false
 		viewModelScope.launch {
 			val diary = (_state.value as? UiResult.Loaded)?.diary ?: return@launch
 			new.isDraft = false
+			diaryId = ""
+			logId = ""
 			diariesRepository.addLog(new, diary)
 		}
 	}

@@ -131,7 +131,7 @@ class DiaryCrudViewModel(
 			val diary = (state.value as? UiResult.Loaded)?.diary ?: return@launch
 			val crop = cropVm.new(diary)
 			crop.collect {
-				_state.emit(UiResult.Loaded(diary, it))
+				_state.emit(UiResult.Loaded(diaryVm.latest(), it))
 			}
 		}
 	}
@@ -143,7 +143,7 @@ class DiaryCrudViewModel(
 			val diary = (state.value as? UiResult.Loaded)?.diary ?: return@launch
 			val crop = cropVm.load(diary, id)
 			crop.collect {
-				_state.emit(UiResult.Loaded(diary, it))
+				_state.emit(UiResult.Loaded(diaryVm.latest(), it))
 			}
 		}
 	}

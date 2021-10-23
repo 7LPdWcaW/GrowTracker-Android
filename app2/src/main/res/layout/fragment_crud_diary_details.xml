@@ -3,14 +3,28 @@
 <FrameLayout
 	xmlns:android="http://schemas.android.com/apk/res/android"
 	xmlns:app="http://schemas.android.com/apk/res-auto"
+	xmlns:tools="http://schemas.android.com/tools"
 	android:layout_width="match_parent"
 	android:layout_height="match_parent"
 >
+	<ProgressBar
+		android:layout_width="wrap_content"
+		android:layout_height="wrap_content"
+		android:id="@+id/progress"
+		android:layout_gravity="center"
+		android:visibility="visible"
+		tools:visibility="gone"
+	/>
+	
 	<ScrollView
 		android:layout_width="match_parent"
 		android:layout_height="match_parent"
+		android:id="@+id/content_scroller"
 		android:clipToPadding="false"
 		android:fillViewport="true"
+		android:visibility="gone"
+		android:animateLayoutChanges="true"
+		tools:visibility="visible"
 	>
 		<LinearLayout
 			android:layout_width="match_parent"
@@ -23,6 +37,9 @@
 			<com.google.android.material.card.MaterialCardView
 				android:layout_width="match_parent"
 				android:layout_height="wrap_content"
+				android:id="@+id/details_card"
+				android:visibility="gone"
+				tools:visibility="visible"
 			>
 				<androidx.constraintlayout.widget.ConstraintLayout
 					android:layout_width="match_parent"
@@ -83,6 +100,9 @@
 			<com.google.android.material.card.MaterialCardView
 				android:layout_width="match_parent"
 				android:layout_height="wrap_content"
+				android:id="@+id/crops_card"
+				android:visibility="gone"
+				tools:visibility="visible"
 				style="@style/Card"
 			>
 				<androidx.constraintlayout.widget.ConstraintLayout
@@ -136,6 +156,7 @@
 				layout="@layout/card_stages"
 				android:id="@+id/include_card_stages"
 				android:visibility="gone"
+				tools:visibility="visible"
 			/>
 			
 			<Button
@@ -147,6 +168,8 @@
 				android:layout_marginStart="8dp"
 				android:layout_marginEnd="8dp"
 				android:layout_marginBottom="12dp"
+				android:visibility="gone"
+				tools:visibility="visible"
 				style="@style/Button.Danger"
 			/>
 		</LinearLayout>

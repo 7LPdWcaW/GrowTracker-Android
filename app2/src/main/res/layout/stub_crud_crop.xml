@@ -74,6 +74,7 @@
 		app:iconTint="?textOnSurface"
 		android:minWidth="0dp"
 		android:minHeight="0dp"
+		android:visibility="gone"
 		style="@style/Button.Text"
 	/>
 </androidx.constraintlayout.widget.ConstraintLayout>

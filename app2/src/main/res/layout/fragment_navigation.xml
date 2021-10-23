@@ -10,11 +10,12 @@
 >
 	<androidx.constraintlayout.widget.ConstraintLayout
 		android:layout_width="0dp"
-		android:layout_height="match_parent"
+		android:layout_height="0dp"
 		android:id="@+id/menu_view"
 		app:layout_constraintEnd_toEndOf="parent"
 		app:layout_constraintTop_toTopOf="parent"
 		app:layout_constraintWidth_percent="0.85"
+		app:layout_constraintBottom_toBottomOf="parent"
 	>
 		<androidx.fragment.app.FragmentContainerView
 			android:layout_width="match_parent"
