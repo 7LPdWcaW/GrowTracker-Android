@@ -1,5 +1,6 @@
 package me.anon.grow3
 
+import android.annotation.SuppressLint
 import android.app.Application
 import android.content.Context
 import com.jakewharton.threetenabp.AndroidThreeTen
@@ -17,14 +18,16 @@ abstract class BaseApplication : Application()
 		/**
 		 * Do not use this except for string/resource access!
 		 */
+		@SuppressLint("StaticFieldLeak")
 		@JvmStatic
 		public lateinit var context: Context
+
+		@JvmStatic
+		public lateinit var appComponent: ApplicationComponent
 	}
 
 	// todo: change this to pref to inject
 	public var dataPath: String = ""
-
-	public lateinit var appComponent: ApplicationComponent
 
 	override fun onCreate()
 	{

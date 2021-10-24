@@ -22,6 +22,7 @@ import me.anon.grow3.ui.diaries.fragment.LoadingFragment
 import me.anon.grow3.ui.diaries.fragment.ViewDiaryFragment
 import me.anon.grow3.ui.logs.fragment.LogListFragment
 import me.anon.grow3.ui.main.activity.MainActivity
+import me.anon.grow3.ui.main.activity.MainActivity.Companion.EXTRA_CLEAR
 import me.anon.grow3.ui.main.activity.MainActivity.Companion.EXTRA_NAVIGATE
 import me.anon.grow3.ui.main.activity.MainActivity.Companion.EXTRA_ORIGINATOR
 import me.anon.grow3.ui.main.activity.MainActivity.Companion.INDEX_MAIN
@@ -94,6 +95,7 @@ class MainNavigatorFragment : BaseHostFragment(FragmentMainHostBinding::class)
 				val item = this.removeAt(0)
 				val route = item.getString(EXTRA_NAVIGATE) ?: throw NoRoute()
 				val origin = item.getString(EXTRA_ORIGINATOR)
+				val clear = item.getBoolean(EXTRA_CLEAR, false)
 
 				when (origin)
 				{
@@ -101,6 +103,8 @@ class MainNavigatorFragment : BaseHostFragment(FragmentMainHostBinding::class)
 						clearStack(true)
 					}
 				}
+
+				if (clear) clearStack(false)
 
 				// TODO: we should re-open a page if it exists in the stack,
 				// but we cant because we clear the stack also. Possibly look

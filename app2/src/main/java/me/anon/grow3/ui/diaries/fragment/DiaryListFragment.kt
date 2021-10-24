@@ -26,7 +26,7 @@ class DiaryListFragment : BaseFragment(FragmentDiariesBinding::class)
 	override fun bindUi()
 	{
 		adapter.onItemClick = { item ->
-			navigateTo<ViewDiaryFragment> {
+			navigateTo<ViewDiaryFragment>(clearTask = true) {
 				bundleOf(EXTRA_DIARY_ID to item.id)
 			}
 		}

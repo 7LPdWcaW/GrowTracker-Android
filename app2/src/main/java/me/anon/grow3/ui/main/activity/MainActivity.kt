@@ -43,6 +43,7 @@ class MainActivity : BaseActivity(ActivityMainBinding::class)
 		const val INDEX_NAVSTACK = 2
 
 		const val EXTRA_ORIGINATOR = "origin"
+		const val EXTRA_CLEAR = "clear"
 		const val EXTRA_NAVIGATE = "navigation"
 	}
 

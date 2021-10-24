@@ -11,7 +11,7 @@ import me.anon.grow3.BaseApplication
 import me.anon.grow3.ui.base.BaseFragment
 import me.anon.grow3.ui.main.activity.MainActivity
 
-public val Fragment.component get() = (requireContext().applicationContext as BaseApplication).appComponent
+public val Fragment.component get() = BaseApplication.appComponent
 public val Fragment.navigationPager: ViewPager2? get() = (requireActivity() as? MainActivity)?.viewPager
 
 public inline fun <reified T : Activity> Fragment.newTask(block: Intent.() -> Unit = {})
@@ -23,11 +23,16 @@ public inline fun <reified T : Activity> Fragment.newTaskForResult(block: Intent
 public inline fun <reified T : Activity> Fragment.newTaskForResult(requestCode: Int, block: Intent.() -> Unit = {})
 	= startActivityForResult(Intent(requireContext(), T::class.java).apply(block), requestCode)
 
-public inline fun <reified T : BaseFragment> Fragment.navigateTo(ontop: Boolean = false, arguments: () -> Bundle? = { null })
+public inline fun <reified T : BaseFragment> Fragment.navigateTo(ontop: Boolean = false, clearTask: Boolean = false, arguments: () -> Bundle? = { null })
 	= startActivity(Intent(requireContext(), MainActivity::class.java).apply {
 		if (!ontop)
 		{
 			putExtra(MainActivity.EXTRA_ORIGINATOR, this@navigateTo::class.java.name)
+		}
+
+		if (clearTask)
+		{
+			putExtra(MainActivity.EXTRA_CLEAR, true)
 		}
 
 		putExtra(MainActivity.EXTRA_NAVIGATE, T::class.java.name)

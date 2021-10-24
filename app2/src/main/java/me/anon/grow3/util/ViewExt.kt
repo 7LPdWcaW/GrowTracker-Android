@@ -17,8 +17,8 @@ import androidx.fragment.app.findFragment
 import androidx.recyclerview.widget.RecyclerView
 import me.anon.grow3.ui.base.BaseFragment
 
-public inline fun <reified T : BaseFragment> View.navigateTo(ontop: Boolean = false, arguments: () -> Bundle? = { null })
-	= findFragment<BaseFragment>().navigateTo<T>(ontop, arguments)
+public inline fun <reified T : BaseFragment> View.navigateTo(ontop: Boolean = false, clearTask: Boolean = false, arguments: () -> Bundle? = { null })
+	= findFragment<BaseFragment>().navigateTo<T>(ontop, clearTask, arguments)
 
 /**
  * Creates a click listener for generic type extending [View] and passes as a typed argument
