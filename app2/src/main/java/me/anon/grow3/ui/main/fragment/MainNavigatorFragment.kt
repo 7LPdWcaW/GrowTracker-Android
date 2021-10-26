@@ -11,6 +11,7 @@ import kotlinx.coroutines.launch
 import me.anon.grow3.R
 import me.anon.grow3.data.exceptions.GrowTrackerException.*
 import me.anon.grow3.databinding.FragmentMainHostBinding
+import me.anon.grow3.ui.action.fragment.DeleteActionFragment
 import me.anon.grow3.ui.action.fragment.LogActionBottomSheetFragment
 import me.anon.grow3.ui.base.BaseFragment
 import me.anon.grow3.ui.base.BaseHostFragment
@@ -117,6 +118,15 @@ class MainNavigatorFragment : BaseHostFragment(FragmentMainHostBinding::class)
 						activity().openSheet(LogActionBottomSheetFragment().apply {
 							arguments = item
 						})
+					}
+
+					nameOf<DeleteActionFragment>() -> {
+						childFragmentManager.commitNow {
+							setCustomAnimations(android.R.anim.fade_in, android.R.anim.fade_out)
+							add(R.id.fragment_container, DeleteActionFragment().apply {
+								arguments = item
+							}, "delete-action")
+						}
 					}
 
 					nameOf<LoadingFragment>() -> {

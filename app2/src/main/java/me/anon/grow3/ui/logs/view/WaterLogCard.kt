@@ -1,10 +1,8 @@
 package me.anon.grow3.ui.logs.view
 
-import android.view.Gravity
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import androidx.appcompat.widget.PopupMenu
 import androidx.core.view.plusAssign
 import androidx.core.view.updatePadding
 import me.anon.grow3.R
@@ -80,11 +78,5 @@ class WaterLogCard : LogCard<CardWaterLogBinding, Water>
 				dataView.root.updatePadding(left = 16.dp)
 			}
 			.hideIfEmpty()
-
-		view.root.onClick {
-			val menu = PopupMenu(it.context, it, Gravity.BOTTOM or Gravity.END)
-			menu.inflate(R.menu.menu_sample)
-			menu.show()
-		}
 	}
 }

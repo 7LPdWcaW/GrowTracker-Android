@@ -6,10 +6,13 @@ import kotlinx.coroutines.launch
 import me.anon.grow3.data.exceptions.GrowTrackerException.*
 import me.anon.grow3.data.model.*
 import me.anon.grow3.data.repository.DiariesRepository
+import me.anon.grow3.ui.action.fragment.LogActionFragment
 import me.anon.grow3.ui.common.Extras
 import me.anon.grow3.ui.common.Extras.EXTRA_LOG_TYPE
 import me.anon.grow3.util.ViewModelFactory
+import me.anon.grow3.util.asApiString
 import me.anon.grow3.util.states.DataResult
+import org.threeten.bp.ZonedDateTime
 import javax.inject.Inject
 
 class LogActionViewModel constructor(
@@ -63,6 +66,16 @@ class LogActionViewModel constructor(
 
 				newLog.isDraft = true
 				logId = diariesRepository.addLog(newLog, diary).id
+			}
+
+			if (savedState.get<Boolean>(LogActionFragment.EXTRA_COPY) == true && logId.isNotBlank())
+			{
+				diariesRepository.getLog(logId, diary)?.copy()?.let { newLog ->
+					newLog.date = ZonedDateTime.now().asApiString()
+					newLog.isDraft = true
+					isNew = true
+					logId = diariesRepository.addLog(newLog, diary).id
+				}
 			}
 
 			diariesRepository.flowDiary(diaryId)

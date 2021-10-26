@@ -76,7 +76,7 @@ object LogConstants
 
 @JsonTypeInfo(use = JsonTypeInfo.Id.NAME, include = JsonTypeInfo.As.EXISTING_PROPERTY, property = "action")
 abstract class Log(
-	open val id: String = UUID.randomUUID().toString(),
+	open var id: String = UUID.randomUUID().toString(),
 	open var date: String = ZonedDateTime.now().asApiString(),
 	open var notes: String = "",
 	open var cropIds: List<String> = arrayListOf(),
@@ -87,6 +87,14 @@ abstract class Log(
 
 	open fun summary(): CharSequence = ""
 	open val typeRes: Int = -1
+}
+
+public inline fun <reified T : Log> T.copy(): T
+{
+	val encoded = this.toJsonString()
+	return encoded.fromJsonString<T>().apply {
+		id = UUID.randomUUID().toString()
+	}
 }
 
 public fun <T : Log> T.asView(diary: Diary): LogView<*>

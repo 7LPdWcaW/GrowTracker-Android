@@ -237,7 +237,7 @@
 							android:text="Select type"
 							android:editable="false"
 							android:inputType="none"
-							app:menu="@menu/menu_sample"
+							app:menu="@menu/menu_log"
 						/>
 					</com.google.android.material.textfield.TextInputLayout>
 
@@ -261,7 +261,7 @@
 							app:singleSelection="true"
 							android:icon="@drawable/ic_calendar"
 							android:iconTint="@color/text_surface_color"
-							app:menu="@menu/menu_sample"
+							app:menu="@menu/menu_log"
 						/>
 					</com.google.android.material.textfield.TextInputLayout>
 

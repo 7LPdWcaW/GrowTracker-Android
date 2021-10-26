@@ -33,6 +33,7 @@ open class LogActionFragment : BaseFragment(FragmentActionLogBinding::class), Mo
 	companion object
 	{
 		public const val EXTRA_SINGLE_CROP = "logaction.single"
+		public const val EXTRA_COPY = "log.copy"
 	}
 
 	override val injector: Injector = { it.inject(this) }

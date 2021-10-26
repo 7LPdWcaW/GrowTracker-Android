@@ -23,12 +23,12 @@ public inline fun Context.promptExit(crossinline callback: () -> Unit)
 		.show()
 }
 
-public inline fun Fragment.promptRemove(crossinline callback: () -> Unit)
+public inline fun Fragment.promptRemove(crossinline callback: (Boolean) -> Unit)
 {
 	requireActivity().promptRemove(callback)
 }
 
-public inline fun Context.promptRemove(crossinline callback: () -> Unit)
+public inline fun Context.promptRemove(crossinline callback: (Boolean) -> Unit)
 {
 	if (this !is Activity) return
 
@@ -36,8 +36,13 @@ public inline fun Context.promptRemove(crossinline callback: () -> Unit)
 		.setTitle("Are you sure?")
 		.setMessage("Delete the selected item?")
 		.setPositiveButton("Delete") { dialog, which ->
-			callback()
+			callback(true)
 		}
-		.setNegativeButton("Cancel", null)
+		.setNegativeButton("Cancel") { dialog, which ->
+			callback(false)
+		}
+		.setOnCancelListener {
+			callback(false)
+		}
 		.show()
 }

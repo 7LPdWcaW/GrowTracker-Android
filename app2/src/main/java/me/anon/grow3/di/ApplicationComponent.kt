@@ -8,6 +8,7 @@ import me.anon.grow3.di.module.AppModule
 import me.anon.grow3.di.module.DispatcherModule
 import me.anon.grow3.ui.BootActivity
 import me.anon.grow3.ui.DemoUiActivity
+import me.anon.grow3.ui.action.fragment.DeleteActionFragment
 import me.anon.grow3.ui.action.fragment.LogActionBottomSheetFragment
 import me.anon.grow3.ui.action.fragment.LogActionFragment
 import me.anon.grow3.ui.base.CardListFragment
@@ -53,6 +54,7 @@ interface ApplicationComponent
 	public fun inject(fragment: LogListFragment)
 	public fun inject(fragment: LogActionBottomSheetFragment)
 	public fun inject(fragment: LogActionFragment)
+	public fun inject(fragment: DeleteActionFragment)
 
 	public fun inject(activity: BootActivity)
 	public fun inject(activity: MainActivity)
