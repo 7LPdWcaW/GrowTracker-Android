@@ -24,6 +24,7 @@ abstract class CardListFragment : BaseFragment(FragmentCardListBinding::class)
 	override fun bindUi()
 	{
 		setToolbar(viewBindings.includeToolbar.toolbar)
+		viewBindings.includeToolbar.toolbar.title = ""
 
 		insets.observe(viewLifecycleOwner) {
 			viewBindings.includeToolbar.toolbar.updateMargin(it.left, it.top, it.right)

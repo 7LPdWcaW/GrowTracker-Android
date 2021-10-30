@@ -1,12 +1,18 @@
 package me.anon.grow3.util
 
+import android.os.Bundle
+import androidx.core.os.bundleOf
+import androidx.fragment.app.Fragment
 import me.anon.grow3.di.ApplicationComponent
+import me.anon.grow3.ui.common.Extras
 
 typealias Injector = (ApplicationComponent) -> Unit
 
 public fun codeOf(any: Any): Int = any.toString().toCharArray().sumBy { it.toInt() }
 public inline fun <reified T : Any> codeOf(): Int = T::class.java.name.hashCode().and(0xffff)
 public inline fun <reified T : Any> nameOf(): String = T::class.java.name
+public inline fun <reified T : Fragment> tagOf(bundle: Bundle = bundleOf()): String
+	= T::class.java.name + "." + bundle.getString(Extras.EXTRA_DIARY_ID)// + "." + bundle.getString(Extras.EXTRA_CROP_ID)
 public fun Any.nameOf(): String = this::class.java.name
 
 public inline fun <I, O> I.transform(crossinline block: I.() -> O): O = block(this)

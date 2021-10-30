@@ -53,6 +53,7 @@ class MainActivity : BaseActivity(ActivityMainBinding::class)
 	)
 	{
 		open val id: Long = args?.let { codeOf(it).toLong() } ?: -1L
+		open val tag: String = ""
 		open fun newInstance(): BaseFragment = fragment.newInstance().apply {
 			arguments = args
 		} as BaseFragment
@@ -274,7 +275,7 @@ class MainActivity : BaseActivity(ActivityMainBinding::class)
 		}
 	}
 
-	public fun addToStack(fragment: Class<out BaseFragment>, _args: Bundle?)
+	public fun addToStack(fragment: Class<out BaseFragment>, _args: Bundle?, replaceTag: String = "")
 	{
 		val index = adapter.pages.size
 		val transaction = Bundle().apply {
@@ -282,19 +283,52 @@ class MainActivity : BaseActivity(ActivityMainBinding::class)
 			putString(EXTRA_NAVIGATE, fragment.name)
 		}
 
-		adapter.pages.add(index, object : FragmentInstance(AdditionalPageHostFragment::class.java, transaction)
+		// find
+		val existing = adapter.pages
+			.indexOfFirst { it.tag == replaceTag }
+			.takeIf { replaceTag.isNotBlank() } ?: -1
+		if (existing > -1)
 		{
-			override fun newInstance(): BaseFragment = super.newInstance().apply {
-				lifecycleScope.launchWhenCreated {
-					viewBindings.viewPager.post {
-						viewBindings.viewPager.setCurrentItem(index, true)
+			adapter.pages[existing] = object : FragmentInstance(AdditionalPageHostFragment::class.java, transaction)
+			{
+				override fun newInstance(): BaseFragment = super.newInstance().apply {
+					lifecycleScope.launchWhenCreated {
+						viewBindings.viewPager.post {
+							viewBindings.viewPager.setCurrentItem(existing, true)
+						}
 					}
 				}
-			}
-			override val id: Long get() = codeOf<AdditionalPageHostFragment>().toLong() + codeOf(args!!)
-		})
 
-		adapter.notifyItemInserted(index)
+				override val tag: String get() = replaceTag
+				override val id: Long get() = codeOf<AdditionalPageHostFragment>().toLong() + codeOf(args!!)
+			}
+
+			for (page in existing + 1 until adapter.pages.size)
+			{
+				adapter.pages.removeAt(page)
+				adapter.notifyItemRemoved(page)
+			}
+
+			adapter.notifyItemChanged(existing)
+		}
+		else
+		{
+			adapter.pages.add(index, object : FragmentInstance(AdditionalPageHostFragment::class.java, transaction)
+			{
+				override fun newInstance(): BaseFragment = super.newInstance().apply {
+					lifecycleScope.launchWhenCreated {
+						viewBindings.viewPager.post {
+							viewBindings.viewPager.setCurrentItem(index, true)
+						}
+					}
+				}
+
+				override val tag: String get() = replaceTag
+				override val id: Long get() = codeOf<AdditionalPageHostFragment>().toLong() + codeOf(args!!)
+			})
+
+			adapter.notifyItemInserted(index)
+		}
 	}
 
 	public fun clearStack(now: Boolean = false)

@@ -28,10 +28,7 @@ import me.anon.grow3.ui.main.activity.MainActivity.Companion.EXTRA_NAVIGATE
 import me.anon.grow3.ui.main.activity.MainActivity.Companion.EXTRA_ORIGINATOR
 import me.anon.grow3.ui.main.activity.MainActivity.Companion.INDEX_MAIN
 import me.anon.grow3.ui.main.viewmodel.MainViewModel
-import me.anon.grow3.util.Injector
-import me.anon.grow3.util.ViewModelProvider
-import me.anon.grow3.util.nameOf
-import me.anon.grow3.util.navigateTo
+import me.anon.grow3.util.*
 import javax.inject.Inject
 import kotlin.random.Random
 
@@ -143,7 +140,7 @@ class MainNavigatorFragment : BaseHostFragment(FragmentMainHostBinding::class)
 					}
 
 					nameOf<ViewCropFragment>() -> {
-						addToStack(ViewCropFragment::class.java, item)
+						addToStack(ViewCropFragment::class.java, item, tagOf<ViewCropFragment>(item))
 					}
 
 					nameOf<CropListFragment>() -> {
@@ -185,8 +182,8 @@ class MainNavigatorFragment : BaseHostFragment(FragmentMainHostBinding::class)
 		}
 	}
 
-	private fun addToStack(fragment: Class<out BaseFragment>, args: Bundle?)
+	private fun addToStack(fragment: Class<out BaseFragment>, args: Bundle?, replaceTag: String = "")
 	{
-		activity().addToStack(fragment, args)
+		activity().addToStack(fragment, args, replaceTag)
 	}
 }
