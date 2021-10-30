@@ -25,9 +25,18 @@ jobs:
       - name: Upload APK
         uses: actions/upload-artifact@v2
         with:
+          name: apk
           path: app2/build/outputs/apk/production/release/app2-production-release.apk
-      - name: Releasing using Hub
-        uses: kyze8439690/action-release-releaseapk@master
+      - name: Create Release
+        id: create_release
+        uses: actions/create-release@v1
         env:
-          GITHUB_TOKEN: ${{ secrets.TOKEN }}
-          APP_FOLDER: app2
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          tag_name: ${{ github.ref }}
+          release_name: Release ${{ github.ref }}
+      - name: Release
+        uses: softprops/action-gh-release@v1
+        if: startsWith(github.ref, 'refs/tags/')
+        with:
+          files: app2/build/outputs/apk/production/release/app2-production-release.apk
