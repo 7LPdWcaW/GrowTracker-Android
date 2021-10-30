@@ -12,6 +12,7 @@ public fun String.parseAsDiaries(): List<Diary> = MoshiHelper.parse(
 	type = Types.newParameterizedType(ArrayList::class.java, Diary::class.java)
 )
 
+public inline fun <reified T> String.fromJsonString(): T = MoshiHelper.parse(this, T::class.java)
 public inline fun <reified T> T.toJsonString(): String = MoshiHelper.toJson(this, T::class.java)
 public inline fun <reified T> List<T>.toJsonString(): String = MoshiHelper.toJson(this, Types.newParameterizedType(List::class.java, T::class.java))
 

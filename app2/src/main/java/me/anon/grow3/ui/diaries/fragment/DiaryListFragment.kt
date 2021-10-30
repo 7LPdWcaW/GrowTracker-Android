@@ -2,8 +2,9 @@ package me.anon.grow3.ui.diaries.fragment
 
 import androidx.core.os.bundleOf
 import androidx.fragment.app.viewModels
+import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.LinearLayoutManager
-import com.freelapp.flowlifecycleobserver.collectWhileStarted
+import kotlinx.coroutines.flow.collectLatest
 import me.anon.grow3.databinding.FragmentDiariesBinding
 import me.anon.grow3.ui.base.BaseFragment
 import me.anon.grow3.ui.common.Extras.EXTRA_DIARY_ID
@@ -25,7 +26,7 @@ class DiaryListFragment : BaseFragment(FragmentDiariesBinding::class)
 	override fun bindUi()
 	{
 		adapter.onItemClick = { item ->
-			navigateTo<ViewDiaryFragment> {
+			navigateTo<ViewDiaryFragment>(clearTask = true) {
 				bundleOf(EXTRA_DIARY_ID to item.id)
 			}
 		}
@@ -40,15 +41,17 @@ class DiaryListFragment : BaseFragment(FragmentDiariesBinding::class)
 
 	override fun bindVm()
 	{
-		viewModel.state
-			.collectWhileStarted(this) {
-				when (it)
-				{
-					is DiaryListViewModel.UiResult.Loaded -> {
-						adapter.items = it.diaries
-						adapter.notifyDataSetChanged()
+		lifecycleScope.launchWhenCreated {
+			viewModel.state
+				.collectLatest { state ->
+					when (state)
+					{
+						is DiaryListViewModel.UiState.Loaded -> {
+							adapter.items = state.diaries
+							adapter.notifyDataSetChanged()
+						}
 					}
 				}
-			}
+		}
 	}
 }

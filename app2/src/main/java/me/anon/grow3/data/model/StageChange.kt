@@ -4,6 +4,7 @@ import android.text.Spannable
 import android.text.SpannableString
 import com.squareup.moshi.JsonClass
 import me.anon.grow3.ui.action.view.StageChangeLogView
+import me.anon.grow3.ui.logs.view.StageChangeLogCard
 import me.anon.grow3.util.asDateTime
 import me.anon.grow3.util.plusAssign
 import me.anon.grow3.util.string
@@ -17,13 +18,36 @@ typealias Stage = StageChange
  */
 @JsonClass(generateAdapter = true)
 data class StageChange(
-	public var type: StageType
+	public var type: StageType = StageType.Planted
 ) : Log(action = "StageChange")
 {
 	override val typeRes: Int = me.anon.grow3.R.string.log_type_stage_change
+
 }
 
+public fun StageChange.logView(diary: Diary) = StageChangeLogView(diary, this)
+public fun StageChange.logCard(diary: Diary) = StageChangeLogCard(diary, this)
+
 public fun List<StageChange>.shortSummary(): Spannable
+{
+	val stringBuilder = StringBuilder()
+	if (size - 1 >= 0)
+	{
+		val firstStage = get(0)
+		val currentStage = get(size - 1)
+		val now = ZonedDateTime.now()
+
+		val days = ChronoUnit.DAYS.between(currentStage.date.asDateTime(), now)
+		val total = ChronoUnit.DAYS.between(firstStage.date.asDateTime(), now)
+		stringBuilder += "$days"
+		stringBuilder += currentStage.type.strRes.string()[0].toLowerCase()
+		stringBuilder += "/$total"
+	}
+
+	return SpannableString.valueOf(stringBuilder.toString())
+}
+
+public fun List<StageChange>.longSummary(): Spannable
 {
 	val stringBuilder = StringBuilder()
 	for (stageIndex in 0 until size)
@@ -62,6 +86,9 @@ data class StageAt(
 	{
 		return "$days${stage.type.strRes.string()[0]}"
 	}
-}
 
-public fun StageChange.logView(diary: Diary, log: Log) = StageChangeLogView(diary, log as StageChange)
+	public fun longString(): String
+	{
+		return "$days days ${stage.type.strRes.string()} • $total total"
+	}
+}

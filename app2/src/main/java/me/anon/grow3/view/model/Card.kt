@@ -3,20 +3,24 @@ package me.anon.grow3.view.model
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.recyclerview.widget.RecyclerView
 import androidx.viewbinding.ViewBinding
 
 /**
  * View model for displaying a card within the [CardListAdapter].
- * Subclasses must contain a no-args constructor and [createView] must
- * only return the inflated view.
+ * Subclasses must contain a no-args constructor.
  */
 abstract class Card<T : ViewBinding>
 {
-	/**
-	 * Inflates the view for the adapter. This must not contain other UI or
-	 * model logic as it may be called from a different instance
-	 */
-	abstract fun createView(inflater: LayoutInflater, parent: ViewGroup): T
+	abstract class CardViewHolder(view: View) : RecyclerView.ViewHolder(view)
+	{
+		open fun bind(card: Card<ViewBinding>)
+		{
+			card.bindAdapter(itemView)
+		}
+	}
+
+	abstract fun createViewHolder(inflater: LayoutInflater, parent: ViewGroup): CardViewHolder
 
 	/**
 	 * Binds the provided view into the view binding instance
@@ -26,10 +30,8 @@ abstract class Card<T : ViewBinding>
 	/**
 	 * No-use. This method is called by the adapter to correctly typecast
 	 */
-	public fun _bindView(view: View)
-	{
-		bind(bindView(view))
-	}
+	public fun bindAdapter(view: View)
+		= bind(bindView(view))
 
 	/**
 	 * Binds the card to the view

@@ -28,7 +28,8 @@
 				android:layout_height="wrap_content"
 				android:singleLine="true"
 				android:maxLines="1"
-				android:imeOptions="actionNext"
+				android:editable="false"
+				android:inputType="none"
 			/>
 		</com.google.android.material.textfield.TextInputLayout>
 
@@ -47,7 +48,8 @@
 				android:layout_height="wrap_content"
 				android:singleLine="true"
 				android:maxLines="1"
-				android:imeOptions="actionNext"
+				android:editable="false"
+				android:inputType="none"
 			/>
 		</com.google.android.material.textfield.TextInputLayout>
 
@@ -69,7 +71,8 @@
 				android:maxLines="1"
 				android:imeOptions="actionNext"
 				android:text="1"
-				android:inputType="number"
+				android:editable="false"
+				android:inputType="none"
 			/>
 		</com.google.android.material.textfield.TextInputLayout>
 	</androidx.constraintlayout.widget.ConstraintLayout>

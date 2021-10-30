@@ -6,10 +6,10 @@ git:
   depth: false
 android:
   components:
-  - build-tools-29.0.2
-  - android-29
+  - build-tools-31.0.0
+  - android-31
 script:
-- "./gradlew assembleProductionRelease"
+- "./gradlew app2:assembleProductionRelease"
 deploy:
   provider: releases
   overwrite: true
@@ -17,7 +17,7 @@ deploy:
   api_key:
     secure: STZ3GgkRifzhMunZ9WA9vQqSGvP/h/2fWHDDF82vqPR5FjMAqIIMj3K4NKYuTj/ge/gxoHghJYXRBSa/DsWAe5CIKt72s1WnXlPo+8kg8ZnyWajmLBV9Xd5iok5vP67GZG7QeENg5usmWczI4nt+c+8cj41zsMbWoAPbBj7vQak1ySat+MuqR9W0OCGMyhAyX+ey+ot75WYwIuHaOYbKyid8iZAo2P88Tb8lcbFB6YpDhUhe71n/2/NHIDueds0qBRwINzXBhUCgEST4j9mduJPwsw7VdArX4Cl0/lY8up565s/gFgvCoTjz4v1sHm6Jy0m1qWZlf7OLqhxkH0rEcXWncxBmyLTltdGMXILehfcGuFxSXQatL+fhdsw96l0UrWCznl4SE3KxbONQ5exTu38qsHOH85A/UpskZDKwWYTk4icWucriMKo3dua5xNxg923r7Gpjxjyf+RsU6Q7AN7T0fg586jGkYRLkOq88A2suP9lTlDCX/1cUdsJGM5ijXcdYSs0Vi9oJp/H4HxT7unQfboi6vurK4YGqSRLW7DPyCLytelSBRuGbluXqc8pvHaYpFDxEf1y3inuox43X5C+Bo3DGHk9By0aWd+l7+CcKLJpsKGSpghzr/3ExtROiorP+Pro08vE3bZs+UVzF8OdQ2us+D796uGBZw9+KkAY=
   file_glob: true
-  file: /home/travis/build/7LPdWcaW/GrowTracker-Android/app/build/outputs/apk/production/release/*
+  file: /home/travis/build/7LPdWcaW/GrowTracker-Android/app2/build/outputs/apk/production/release/*
   on:
     repo: 7LPdWcaW/GrowTracker-Android
     tags: true

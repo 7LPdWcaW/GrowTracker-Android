@@ -25,8 +25,10 @@ class CropLinksCard : Card<CardCropLinksBinding>
 		this.crop = crop
 	}
 
-	override fun createView(inflater: LayoutInflater, parent: ViewGroup): CardCropLinksBinding
-		= CardCropLinksBinding.inflate(inflater, parent, false)
+	inner class CropLinksCardHolder(view: View) : CardViewHolder(view)
+	override fun createViewHolder(inflater: LayoutInflater, parent: ViewGroup): CardViewHolder
+		= CropLinksCardHolder(CardCropLinksBinding.inflate(inflater, parent, false).root)
+
 	override fun bindView(view: View): CardCropLinksBinding = CardCropLinksBinding.bind(view)
 
 	override fun bind(view: CardCropLinksBinding)

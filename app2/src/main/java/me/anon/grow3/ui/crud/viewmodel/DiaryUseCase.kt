@@ -1,10 +1,11 @@
 package me.anon.grow3.ui.crud.viewmodel
 
-import androidx.lifecycle.*
 import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.emitAll
+import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.flow.map
 import me.anon.grow3.data.exceptions.GrowTrackerException
-import me.anon.grow3.data.model.*
+import me.anon.grow3.data.model.Diary
 import me.anon.grow3.data.repository.DiariesRepository
 import me.anon.grow3.util.states.DataResult
 
@@ -15,33 +16,34 @@ class DiaryUseCase(
 	private var diary: Diary? = null
 	private var isNew: Boolean = false
 
-	public suspend fun new(): Flow<Diary>
-	{
+	public suspend fun new(): Flow<Diary> = flow {
 		isNew = true
-		val count = diariesRepository.getDiaries().filter { !it.isDraft }.size
+		val count = diariesRepository.getDiaryCount(false)
 		val newDiary = Diary(name = "Gen ${count + 1}").apply {
 			isDraft = true
-			crops as ArrayList += Crop(
-				name = "Crop 1",
-				genetics = "Unknown genetics",
-				platedDate = this@apply.date
-			)
+//			crops as ArrayList += Crop(
+//				name = "Crop 1",
+//				genetics = "Unknown genetics",
+//				platedDate = this@apply.date
+//			)
 		}
 
 		diary = diariesRepository.addDiary(newDiary)
-		return diariesRepository.flowDiary(newDiary.id)
+		emitAll(diariesRepository.flowDiary(newDiary.id)
 			.map { result ->
 				when (result)
 				{
-					is DataResult.Success -> result.data
+					is DataResult.Success -> {
+						diary = result.data
+						result.data
+					}
 					else -> throw GrowTrackerException.DiaryLoadFailed(newDiary.id)
 				}
-			}
+			})
 	}
 
 	public fun load(id: String): Flow<Diary>
-	{
-		return diariesRepository.flowDiary(id)
+		= diariesRepository.flowDiary(id)
 			.map { result ->
 				when (result)
 				{
@@ -52,7 +54,8 @@ class DiaryUseCase(
 					else -> throw GrowTrackerException.DiaryLoadFailed(id)
 				}
 			}
-	}
+
+	public fun latest(): Diary = diary!!
 
 	public suspend fun remove()
 	{

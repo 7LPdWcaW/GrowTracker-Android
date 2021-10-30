@@ -63,6 +63,7 @@ class LogActionBottomSheetFragment : LogActionFragment()
 
 		insets.observe(viewLifecycleOwner) { insets ->
 			viewBindings.actionDone.updateMargin(insets + 16.dp)
+			viewBindings.actionDelete.updateMargin(insets + 16.dp)
 			viewBindings.logContent.updatePadding(bottom = insets.bottom)
 		}
 
@@ -104,9 +105,9 @@ class LogActionBottomSheetFragment : LogActionFragment()
 				layoutSheetBehavior.state = BottomSheetBehavior.STATE_COLLAPSED
 				return true
 			}
-		}
 
-		return false
+			else -> return false
+		}
 	}
 
 	override fun onDestroy()

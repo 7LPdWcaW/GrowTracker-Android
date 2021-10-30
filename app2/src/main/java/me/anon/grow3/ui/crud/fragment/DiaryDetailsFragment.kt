@@ -9,6 +9,7 @@ import androidx.navigation.fragment.findNavController
 import com.freelapp.flowlifecycleobserver.collectWhileStarted
 import me.anon.grow3.R
 import me.anon.grow3.data.model.Crop
+import me.anon.grow3.data.model.Diary
 import me.anon.grow3.databinding.FragmentCrudDiaryDetailsBinding
 import me.anon.grow3.databinding.StubCrudCropBinding
 import me.anon.grow3.ui.base.BaseFragment
@@ -17,7 +18,6 @@ import me.anon.grow3.ui.common.fragment.DateSelectDialogFragment
 import me.anon.grow3.ui.crud.viewmodel.DiaryCrudViewModel
 import me.anon.grow3.util.*
 import org.threeten.bp.ZonedDateTime
-import java.util.*
 import javax.inject.Inject
 
 class DiaryDetailsFragment : BaseFragment(FragmentCrudDiaryDetailsBinding::class)
@@ -32,51 +32,20 @@ class DiaryDetailsFragment : BaseFragment(FragmentCrudDiaryDetailsBinding::class
 	{
 		crudViewModel.state
 			.collectWhileStarted(this) { state ->
-				val diary = (state as? DiaryCrudViewModel.UiResult.Loaded)?.diary ?: return@collectWhileStarted
+				when (state)
+				{
+					is DiaryCrudViewModel.UiResult.Loading -> {
+						viewBindings.progress.isVisible = true
+						viewBindings.contentScroller.isVisible = false
+					}
 
-				viewBindings.deleteDiary.isVisible = !diary.isDraft
-				viewBindings.contentContainer.updatePadding(
-					bottom = (if (diary.isDraft) R.dimen.fab_spacing else R.dimen.content_margin).dimen(requireContext()).toInt()
-				)
-
-				viewBindings.diaryName.editText!!.text = diary.name.asEditable()
-				viewBindings.date.editText!!.text = diary.date.asDateTime().asDisplayString().asEditable()
-
-				viewBindings.includeCardStages.root.isVisible = !diary.isDraft
-				viewBindings.includeCardStages.stagesHeader.isVisible = true
-				viewBindings.includeCardStages.stagesView.setStages(diary)
-
-				viewBindings.deleteDiary.onClick {
-					requireActivity().promptRemove {
-						crudViewModel.cancel()
-						requireActivity().finish()
+					is DiaryCrudViewModel.UiResult.Loaded -> {
+						viewBindings.progress.isVisible = false
+						viewBindings.contentScroller.isVisible = true
+						renderUi(state.diary)
 					}
 				}
 
-				viewBindings.cropsContainer.removeAllViews()
-				diary.crops.mapToView<Crop, StubCrudCropBinding>(viewBindings.cropsContainer) { crop, cropBindings ->
-					cropBindings.cropName.text = crop.name
-
-					cropBindings.cropGenetics.text = crop.genetics
-					cropBindings.cropGenetics.isVisible = !crop.genetics.isNullOrBlank()
-
-					cropBindings.duplicate.onClick {
-						//crudViewModel.save(crop.copy(id = UUID.randomUUID().toString()))
-					}
-
-					cropBindings.root.onClick {
-						// reveal crop edit fragment dialog
-						val navController = findNavController()
-						navController.navigate(R.id.page_1_to_2, bundleOf(Extras.EXTRA_CROP_ID to crop.id))
-					}
-
-	//				 Broken for now
-	//				BadgeUtils.attachBadgeDrawable(BadgeDrawable.create(view.context).apply {
-	//					this.number = crop.numberOfPlants
-	//					this.backgroundColor = R.attr.colorSecondary.resColor(view.context)
-	//					this.badgeGravity = BadgeDrawable.TOP_END
-	//				}, view.crop_image, null))
-				}
 		}
 	}
 
@@ -108,6 +77,51 @@ class DiaryDetailsFragment : BaseFragment(FragmentCrudDiaryDetailsBinding::class
 		attachCallbacks()
 	}
 
+	private fun renderUi(diary: Diary)
+	{
+		viewBindings.deleteDiary.isVisible = !diary.isDraft
+		viewBindings.contentContainer.updatePadding(
+			bottom = (if (diary.isDraft) R.dimen.fab_spacing else R.dimen.content_margin).dimen(requireContext()).toInt()
+		)
+
+		viewBindings.diaryName.editText!!.text = diary.name.asEditable()
+		viewBindings.date.editText!!.text = diary.date.asDateTime().asDisplayString().asEditable()
+		viewBindings.detailsCard.isVisible = true
+
+		viewBindings.includeCardStages.root.isVisible = !diary.isDraft
+		viewBindings.includeCardStages.stagesHeader.isVisible = true
+		viewBindings.includeCardStages.stagesView.setStages(diary)
+
+		viewBindings.deleteDiary.onClick {
+			requireActivity().promptRemove {
+				if (it)
+				{
+					crudViewModel.remove()
+				}
+			}
+		}
+
+		viewBindings.cropsContainer.removeAllViews()
+		diary.crops.mapToView<Crop, StubCrudCropBinding>(viewBindings.cropsContainer) { crop, cropBindings ->
+			cropBindings.cropName.text = crop.name
+
+			cropBindings.cropGenetics.text = crop.genetics
+			cropBindings.cropGenetics.isVisible = !crop.genetics.isNullOrBlank()
+
+//			cropBindings.duplicate.onClick {
+//				//crudViewModel.save(crop.copy(id = UUID.randomUUID().toString()))
+//			}
+
+			cropBindings.root.onClick {
+				// reveal crop edit fragment dialog
+				val navController = findNavController()
+				navController.navigate(R.id.page_1_to_2, bundleOf(Extras.EXTRA_CROP_ID to crop.id))
+			}
+		}
+		viewBindings.cropsContainer.hideIfEmpty()
+		viewBindings.cropsCard.isVisible = true
+	}
+
 	private fun attachCallbacks()
 	{
 		DateSelectDialogFragment.attach(childFragmentManager, ::onDateSelected, ::onDateDismissed)
@@ -123,6 +137,9 @@ class DiaryDetailsFragment : BaseFragment(FragmentCrudDiaryDetailsBinding::class
 
 	public fun onDateDismissed()
 	{
-		if (viewBindings.date.editText?.focusSearch(View.FOCUS_RIGHT)?.requestFocus() != true) viewBindings.date.editText?.clearFocus()
+		if (viewBindings.date.editText?.focusSearch(View.FOCUS_RIGHT)?.requestFocus() != true)
+		{
+			viewBindings.date.editText?.clearFocus()
+		}
 	}
 }

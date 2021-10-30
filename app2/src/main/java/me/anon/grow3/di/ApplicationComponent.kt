@@ -8,8 +8,10 @@ import me.anon.grow3.di.module.AppModule
 import me.anon.grow3.di.module.DispatcherModule
 import me.anon.grow3.ui.BootActivity
 import me.anon.grow3.ui.DemoUiActivity
+import me.anon.grow3.ui.action.fragment.DeleteActionFragment
 import me.anon.grow3.ui.action.fragment.LogActionBottomSheetFragment
 import me.anon.grow3.ui.action.fragment.LogActionFragment
+import me.anon.grow3.ui.base.CardListFragment
 import me.anon.grow3.ui.crops.fragment.CropListFragment
 import me.anon.grow3.ui.crops.fragment.ViewCropFragment
 import me.anon.grow3.ui.crud.activity.DiaryActivity
@@ -21,6 +23,8 @@ import me.anon.grow3.ui.diaries.fragment.DiaryListFragment
 import me.anon.grow3.ui.diaries.fragment.ViewDiaryFragment
 import me.anon.grow3.ui.logs.fragment.LogListFragment
 import me.anon.grow3.ui.main.activity.MainActivity
+import me.anon.grow3.ui.main.fragment.MainNavigatorFragment
+import me.anon.grow3.ui.main.fragment.NavigationFragment
 import me.anon.grow3.util.handler.ExceptionHandler
 import javax.inject.Singleton
 
@@ -35,6 +39,10 @@ interface ApplicationComponent
 	public fun exceptionHandler(): ExceptionHandler
 	public fun diariesRepo(): DiariesRepository
 
+	public fun inject(fragment: MainNavigatorFragment)
+	public fun inject(fragment: NavigationFragment)
+
+	public fun inject(fragment: CardListFragment)
 	public fun inject(fragment: DiaryListFragment)
 	public fun inject(fragment: DiaryDetailsFragment)
 	public fun inject(fragment: DiaryCropFragment)
@@ -46,6 +54,7 @@ interface ApplicationComponent
 	public fun inject(fragment: LogListFragment)
 	public fun inject(fragment: LogActionBottomSheetFragment)
 	public fun inject(fragment: LogActionFragment)
+	public fun inject(fragment: DeleteActionFragment)
 
 	public fun inject(activity: BootActivity)
 	public fun inject(activity: MainActivity)

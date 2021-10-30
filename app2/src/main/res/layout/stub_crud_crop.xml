@@ -21,7 +21,10 @@
 		android:scaleType="centerCrop"
 		android:adjustViewBounds="true"
 		app:shapeAppearanceOverlay="@style/CircleImage"
-		app:srcCompat="@drawable/sample"
+		app:srcCompat="@drawable/ic_default_icon_drawable"
+		android:background="?colorSecondary"
+		android:duplicateParentState="true"
+		android:foreground="@drawable/circular_selectable_item_background"
 		app:layout_constraintTop_toTopOf="parent"
 		app:layout_constraintStart_toStartOf="parent"
 		android:transitionName="crop_image"
@@ -71,6 +74,7 @@
 		app:iconTint="?textOnSurface"
 		android:minWidth="0dp"
 		android:minHeight="0dp"
+		android:visibility="gone"
 		style="@style/Button.Text"
 	/>
 </androidx.constraintlayout.widget.ConstraintLayout>

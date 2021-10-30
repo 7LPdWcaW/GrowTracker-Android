@@ -1,19 +1,13 @@
 package me.anon.grow3.ui.logs.fragment
 
 import androidx.fragment.app.viewModels
-import com.freelapp.flowlifecycleobserver.collectWhileStarted
-import me.anon.grow3.data.exceptions.GrowTrackerException.InvalidLog
-import me.anon.grow3.data.model.StageChange
-import me.anon.grow3.data.model.Water
-import me.anon.grow3.data.model.logCard
+import androidx.lifecycle.lifecycleScope
+import kotlinx.coroutines.flow.collectLatest
+import me.anon.grow3.data.model.*
 import me.anon.grow3.ui.base.CardListFragment
 import me.anon.grow3.ui.logs.view.LogDateSeparator
-import me.anon.grow3.ui.logs.view.StageChangeLogCard
 import me.anon.grow3.ui.logs.viewmodel.LogListViewModel
-import me.anon.grow3.util.Injector
-import me.anon.grow3.util.ViewModelProvider
-import me.anon.grow3.util.asDate
-import me.anon.grow3.util.asDisplayString
+import me.anon.grow3.util.*
 import javax.inject.Inject
 
 class LogListFragment : CardListFragment()
@@ -25,47 +19,36 @@ class LogListFragment : CardListFragment()
 
 	override fun bindVm()
 	{
-		viewModel.state
-			.collectWhileStarted(viewLifecycleOwner) { state ->
-				if (state !is LogListViewModel.UiResult.Loaded) return@collectWhileStarted
+		lifecycleScope.launchWhenCreated {
+			viewModel.state
+				.collectLatest { state ->
+					if (state !is LogListViewModel.UiResult.Loaded) return@collectLatest
 
-				val diary = state.diary
-				val logs = state.logs
-				val crop = state.crops?.firstOrNull()
+					val diary = state.diary
+					val logs = state.logs
+					val crop = state.crops?.firstOrNull()
 
-				val title = crop?.name
-					?: diary.name
-				requireActivity().title = "$title logs"
+					val title = crop?.name
+						?: diary.name
+					requireActivity().title = "$title logs"
 
-				viewAdapter.newStack {
-					val group = logs
-						.groupBy { log ->
-							log.date.asDate()
-						}
-						.toSortedMap { o1, o2 ->
-							-o1.compareTo(o2)
-						}
-
-					group.forEach { (date, logs) ->
-						add(LogDateSeparator(date.asDisplayString()))
-
-						logs.reversed()
-							.forEach { log ->
-								add(when (log)
-								{
-									// is Environment -> EnvironmentLogCard(diary, log)
-									// is Harvest -> HarvestLogCard(diary, log)
-									// is Maintenance -> MaintenanceLogCard(diary, log)
-									// is Pesticide -> PesticideLogCard(diary, log)
-									// is Photo -> PhotoLogCard(diary, log)
-									// is Transplant -> TransplantLogCard(diary, log)
-									is StageChange -> StageChangeLogCard(diary, log)
-									is Water -> log.logCard(diary, log)
-									else -> throw InvalidLog(log)
-								})
+					viewAdapter.newStack {
+						val group = logs
+							.groupBy { log ->
+								log.date.asDate()
 							}
+							.toSortedMap { o1, o2 ->
+								-o1.compareTo(o2)
+							}
+
+						// group "first log" cards for new crop into "new crop" log card with all details
+
+						group.forEach { (date, logs) ->
+							add(LogDateSeparator(date.asDisplayString(), logs.last().date.ago(false) + " • " + diary.stageWhen(logs.last()).longString()))
+							addAll(logs.reversed().map { it.asCard(diary) })
+						}
 					}
 				}
-			}
+		}
 	}
 }

@@ -1,52 +1,53 @@
 package me.anon.grow3.view.adapter
 
+import android.annotation.SuppressLint
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
-import me.anon.grow3.util.uniqueBy
+import androidx.viewbinding.ViewBinding
+import me.anon.grow3.di.Cards
 import me.anon.grow3.view.model.Card
+import javax.inject.Inject
 
-open class CardListAdapter : RecyclerView.Adapter<RecyclerView.ViewHolder>()
+class CardListAdapter @Inject constructor(
+	@Cards val types: Array<Class<out Card<*>>>
+) : RecyclerView.Adapter<Card.CardViewHolder>()
 {
 	private val cards: ArrayList<Card<*>> = arrayListOf()
-	private val cardTypes: ArrayList<Class<out Card<*>>> = arrayListOf()
 
 	/**
 	 * Clears the stack of cards
 	 */
 	public fun clearStack()
 	{
+		val size = cards.size
 		cards.clear()
-		cardTypes.clear()
-		this.notifyDataSetChanged()
+		this.notifyItemRangeRemoved(0, size)
 	}
 
 	/**
 	 * Clears the adapter and provides a new stack of cards to display
 	 */
+	@SuppressLint("NotifyDataSetChanged")
 	public fun newStack(block: ArrayList<Card<*>>.() -> Unit)
 	{
 		cards.clear()
 		block(this.cards)
-		cardTypes.clear()
-		cardTypes.addAll(cards.map { it::class.java }.uniqueBy { it })
 		this.notifyDataSetChanged()
 	}
 
-	override fun getItemViewType(position: Int): Int = cardTypes.indexOf(cards[position]::class.java)
+	override fun getItemViewType(position: Int): Int = types.indexOf(cards[position]::class.java)
 
-	override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): RecyclerView.ViewHolder
+	override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): Card.CardViewHolder
 	{
-		val binder = cardTypes[viewType].newInstance()
-			.createView(LayoutInflater.from(parent.context), parent)
-
-		return object : RecyclerView.ViewHolder(binder.root) {}
+		return types[viewType].newInstance()
+			.createViewHolder(LayoutInflater.from(parent.context), parent)
 	}
 
 	override fun getItemCount(): Int = cards.size
 
-	override fun onBindViewHolder(holder: RecyclerView.ViewHolder, position: Int)
+	override fun onBindViewHolder(holder: Card.CardViewHolder, position: Int)
 	{
-		cards[position]._bindView(holder.itemView)
+		holder.bind(cards[position] as Card<ViewBinding>)
 	}
 }

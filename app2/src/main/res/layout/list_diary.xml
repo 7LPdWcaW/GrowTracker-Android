@@ -10,8 +10,6 @@
 	app:layout_constraintStart_toStartOf="parent"
 	android:clickable="true"
 	android:focusable="true"
-	android:paddingTop="4dp"
-	android:paddingBottom="4dp"
 >
 	<androidx.constraintlayout.widget.ConstraintLayout
 		android:layout_width="match_parent"
@@ -22,13 +20,22 @@
 			android:layout_width="wrap_content"
 			android:layout_height="wrap_content"
 			android:id="@+id/name"
-			android:textSize="16sp"
-			android:paddingBottom="0dp"
+			android:textSize="@dimen/text_body"
 			app:layout_constraintTop_toTopOf="parent"
 			app:layout_constraintStart_toStartOf="parent"
-			app:layout_constraintBottom_toBottomOf="parent"
 			style="@style/Text.Header"
 			tools:text="Diary 1"
+		/>
+		
+		<TextView
+			android:layout_width="wrap_content"
+			android:layout_height="wrap_content"
+			android:id="@+id/short_summary"
+			android:textSize="@dimen/text_subbody"
+			app:layout_constraintTop_toBottomOf="@id/name"
+			app:layout_constraintStart_toStartOf="parent"
+			style="@style/Text.Header.Sub"
+			tools:text="2 Crops ▪ 15f/150 ▪ 30f/150 ▪ Last watered 2d"
 		/>
 	</androidx.constraintlayout.widget.ConstraintLayout>
 </com.google.android.material.card.MaterialCardView>

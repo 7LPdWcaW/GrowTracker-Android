@@ -1,11 +1,13 @@
 <?xml version="1.0" encoding="utf-8"?>
 
-<FrameLayout
+<LinearLayout
 	xmlns:android="http://schemas.android.com/apk/res/android"
 	xmlns:app="http://schemas.android.com/apk/res-auto"
 	xmlns:tools="http://schemas.android.com/tools"
 	android:layout_width="match_parent"
 	android:layout_height="wrap_content"
+	android:orientation="vertical"
+	android:padding="12dp"
 >
 	<TextView
 		android:layout_width="match_parent"
@@ -13,8 +15,17 @@
 		android:id="@+id/date"
 		android:layout_gravity="center_horizontal"
 		android:gravity="center_horizontal"
-		android:padding="12dp"
-		tools:text="16 March 2020 / 22f / 30"
+		tools:text="Mon 16 March 2020"
 		style="@style/Text.Window"
 	/>
-</FrameLayout>
+	
+	<TextView
+		android:layout_width="match_parent"
+		android:layout_height="wrap_content"
+		android:id="@+id/stage"
+		android:layout_gravity="center_horizontal"
+		android:gravity="center_horizontal"
+		tools:text="17 days Planted - 45 total"
+		style="@style/Text.Window.Sub"
+	/>
+</LinearLayout>

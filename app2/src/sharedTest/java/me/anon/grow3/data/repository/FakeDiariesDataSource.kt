@@ -2,7 +2,6 @@ package me.anon.grow3.data.repository
 
 import me.anon.grow3.data.model.Diary
 import me.anon.grow3.data.source.DiariesDataSource
-import me.anon.grow3.util.parseAsDiaries
 import me.anon.grow3.util.toJsonString
 
 public class FakeDiariesDataSource(private val diaries: MutableList<Diary>) : DiariesDataSource
@@ -33,12 +32,12 @@ public class FakeDiariesDataSource(private val diaries: MutableList<Diary>) : Di
 	{
 		when (direction)
 		{
-			DiariesDataSource.SyncDirection.LOAD -> {
-				diaries.clear()
-				diaries.addAll(cachedData.parseAsDiaries())
-			}
+//			DiariesDataSource.SyncDirection.LOAD -> {
+//				diaries.clear()
+//				diaries.addAll(cachedData.parseAsDiaries())
+//			}
 
-			DiariesDataSource.SyncDirection.SAVE ->
+			DiariesDataSource.SyncDirection.Commit ->
 			{
 				cachedData = diaries.toJsonString()
 			}

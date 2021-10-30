@@ -13,19 +13,13 @@
 		android:label="@string/navigation_diary_details"
 		tools:layout="@layout/fragment_crud_diary_details"
 	>
-		<action
-			android:id="@+id/page_1_to_2"
-			app:destination="@id/navigation_diary_crop"
-			app:enterAnim="@anim/nav_default_enter_anim"
-			app:exitAnim="@anim/nav_default_exit_anim"
-			app:popEnterAnim="@anim/nav_default_pop_enter_anim"
-			app:popExitAnim="@anim/nav_default_pop_exit_anim"
-			app:launchSingleTop="true" />
-
-		<action
-			android:id="@+id/page_1_to_3"
-			app:destination="@id/navigation_diary_environment"
-		/>
+		<action android:id="@+id/page_1_to_2" app:destination="@id/navigation_diary_crop"
+			app:enterAnim="@android:anim/fade_in" app:exitAnim="@android:anim/fade_out"
+			app:launchSingleTop="true" app:popEnterAnim="@anim/nav_default_pop_enter_anim"
+			app:popExitAnim="@anim/nav_default_pop_exit_anim" />
+		
+		<action android:id="@+id/page_1_to_3" app:destination="@id/navigation_diary_environment"
+			app:enterAnim="@android:anim/fade_in" app:exitAnim="@android:anim/fade_out" />
 	</fragment>
 
 	<fragment
@@ -39,10 +33,8 @@
 		android:name="me.anon.grow3.ui.crud.fragment.DiaryEnvironmentFragment"
 		android:label="@string/navigation_diary_environment"
 	>
-		<action
-			android:id="@+id/page_3_to_4"
-			app:destination="@id/navigation_diary_complete"
-		/>
+		<action android:id="@+id/page_3_to_4" app:destination="@id/navigation_diary_complete"
+			app:enterAnim="@android:anim/fade_in" app:exitAnim="@android:anim/fade_out" />
 	</fragment>
 
 	<fragment

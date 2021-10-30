@@ -4,15 +4,14 @@ import android.content.Context
 import android.util.AttributeSet
 import android.view.LayoutInflater
 import android.view.MotionEvent
-import android.view.ViewGroup
+import android.view.View
 import android.view.ViewGroup.LayoutParams.MATCH_PARENT
+import android.view.ViewGroup.LayoutParams.WRAP_CONTENT
 import android.widget.FrameLayout
 import android.widget.HorizontalScrollView
-import android.widget.LinearLayout
-import androidx.core.view.get
-import androidx.core.view.isVisible
-import androidx.core.view.plusAssign
-import androidx.core.view.updateLayoutParams
+import androidx.core.view.*
+import com.google.android.flexbox.FlexDirection.ROW
+import com.google.android.flexbox.FlexboxLayout
 import me.anon.grow3.R
 import me.anon.grow3.data.model.Crop
 import me.anon.grow3.data.model.Diary
@@ -30,7 +29,7 @@ class StageView : HorizontalScrollView
 	private val container: StageViewContainer
 	private var diary: Diary? = null
 	private var crop: Crop? = null
-	public var onNewStageClick: () -> Unit = {}
+	public var onNewStageClick: (View) -> Unit = {}
 	public var onStageClick: (StageChange) -> Unit = {}
 
 	constructor(context: Context) : this(context, null)
@@ -38,24 +37,15 @@ class StageView : HorizontalScrollView
 	constructor(context: Context, attrs: AttributeSet?, defStyleAttr: Int) : super(context, attrs, defStyleAttr)
 	{
 		container = StageViewContainer(context)
-		addView(container, LayoutParams.WRAP_CONTENT, LayoutParams.WRAP_CONTENT)
+		addView(container, LayoutParams.WRAP_CONTENT, LayoutParams.MATCH_PARENT)
 	}
 
-	public fun setStages(diary: Diary, crop: Crop)
+	public fun setStages(diary: Diary, crop: Crop? = null)
 	{
 		this.diary = diary
 		this.crop = crop
 		this.stages.clear()
-		this.stages.addAll(diary.stagesOf(crop))
-
-		layoutStages()
-	}
-
-	public fun setStages(diary: Diary)
-	{
-		this.diary = diary
-		this.stages.clear()
-		this.stages.addAll(diary.stages())
+		this.stages.addAll(crop?.run { diary.stagesOf(this) } ?: diary.stages())
 
 		layoutStages()
 	}
@@ -77,10 +67,13 @@ class StageView : HorizontalScrollView
 
 			val arrow = ArrowViewStub(context)
 			arrow.single = stages.size == 1
-			arrow.layoutParams = ViewGroup.LayoutParams(
-				MATCH_PARENT,
+			arrow.layoutParams = FlexboxLayout.LayoutParams(
+				WRAP_CONTENT,
 				MATCH_PARENT
-			)
+			).apply {
+				flexGrow = 1f
+				minWidth = 112.dp
+			}
 
 			container += arrow
 
@@ -98,12 +91,13 @@ class StageView : HorizontalScrollView
 		end.onClick {
 			// todo: center clicked view in the scroll container
 			smoothScrollTo(it.x.toInt(), 0)
-			onNewStageClick()
+			onNewStageClick(it)
 		}
 		container += end
 
 		requestLayout()
 		container.requestLayout()
+		invalidate()
 	}
 
 	override fun onMeasure(widthMeasureSpec: Int, heightMeasureSpec: Int)
@@ -113,16 +107,13 @@ class StageView : HorizontalScrollView
 
 		if (container.childCount == 3)
 		{
-			val stageWidth = container[0].measuredWidth
-			(container[1] as ArrowViewStub).updateLayoutParams {
-				this.width = width - (stageWidth * 2)
-			}
+
 		}
 		else
 		{
 			container.childViews.forEach {
 				(it as? ArrowViewStub)?.updateLayoutParams {
-					this.width = width / 3
+					this.width = 500//width / 3
 				}
 			}
 		}
@@ -150,15 +141,20 @@ class StageView : HorizontalScrollView
 		return super.onTouchEvent(ev)
 	}
 
-	inner class StageViewContainer : LinearLayout
+	inner class StageViewContainer : FlexboxLayout
 	{
 		constructor(context: Context) : this(context, null)
 		constructor(context: Context, attrs: AttributeSet?) : this(context, attrs, 0)
 		constructor(context: Context, attrs: AttributeSet?, defStyleAttr: Int) : super(context, attrs, defStyleAttr)
 		{
-			orientation = HORIZONTAL
+			flexDirection = ROW
 			isFillViewport = true
 			//setPadding(12.dp(this), 0, 12.dp(this), 0)
+		}
+
+		override fun onLayout(changed: Boolean, l: Int, t: Int, r: Int, b: Int)
+		{
+			super.onLayout(changed, l, t, r, b)
 		}
 	}
 
@@ -220,21 +216,6 @@ class StageView : HorizontalScrollView
 		{
 			bindings.stageLabel.isVisible = days > 0
 			bindings.stageLabel.text = R.string.days.string(context, days)
-		}
-
-		override fun onMeasure(widthMeasureSpec: Int, heightMeasureSpec: Int)
-		{
-			super.onMeasure(widthMeasureSpec, heightMeasureSpec)
-
-			var width = MeasureSpec.getSize(widthMeasureSpec)
-			val mode = MeasureSpec.getMode(widthMeasureSpec)
-
-			if (parentView.parentView.measuredWidth != 0 && mode == MeasureSpec.AT_MOST)
-			{
-				width = parentView.parentView.measuredWidth / 3
-			}
-
-			setMeasuredDimension(width, measuredHeight)
 		}
 	}
 }

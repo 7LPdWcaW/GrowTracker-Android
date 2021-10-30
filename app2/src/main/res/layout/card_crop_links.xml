@@ -22,19 +22,19 @@
 			app:layout_constraintTop_toTopOf="parent"
 			app:layout_constraintStart_toStartOf="parent"
 			app:layout_constraintEnd_toEndOf="parent"
-			style="@style/Text.Link"
-		/>
-
-		<com.google.android.material.textview.MaterialTextView
-			android:layout_width="0dp"
-			android:layout_height="wrap_content"
-			android:id="@+id/view_stats"
-			android:text="Filter stats"
-			android:drawableStart="@drawable/menu_ic_calendar"
-			app:layout_constraintTop_toBottomOf="@id/view_logs"
-			app:layout_constraintStart_toStartOf="parent"
-			app:layout_constraintEnd_toEndOf="parent"
 			style="@style/Text.Link.End"
 		/>
+
+<!--		<com.google.android.material.textview.MaterialTextView-->
+<!--			android:layout_width="0dp"-->
+<!--			android:layout_height="wrap_content"-->
+<!--			android:id="@+id/view_stats"-->
+<!--			android:text="Filter stats"-->
+<!--			android:drawableStart="@drawable/menu_ic_calendar"-->
+<!--			app:layout_constraintTop_toBottomOf="@id/view_logs"-->
+<!--			app:layout_constraintStart_toStartOf="parent"-->
+<!--			app:layout_constraintEnd_toEndOf="parent"-->
+<!--			style="@style/Text.Link.End"-->
+<!--		/>-->
 	</androidx.constraintlayout.widget.ConstraintLayout>
 </com.google.android.material.card.MaterialCardView>

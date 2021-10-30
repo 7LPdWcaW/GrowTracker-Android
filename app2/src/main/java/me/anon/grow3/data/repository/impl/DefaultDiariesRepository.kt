@@ -15,8 +15,11 @@ import me.anon.grow3.data.source.DiariesDataSource
 import me.anon.grow3.util.ParamSingletonHolder
 import me.anon.grow3.util.states.DataResult
 import me.anon.grow3.util.tryNull
+import javax.inject.Inject
+import javax.inject.Singleton
 
-class DefaultDiariesRepository(
+@Singleton
+class DefaultDiariesRepository @Inject constructor(
 	private val dataSource: DiariesDataSource,
 ) : DiariesRepository
 {
@@ -27,9 +30,9 @@ class DefaultDiariesRepository(
 	private val _trigger = MutableStateFlow(1)
 	private val _logEvents = MutableSharedFlow<LogEvent>(replay = 0)
 
-	override fun flowDiaries(includeDrafts: Boolean): Flow<DataResult<List<Diary>>> = flow {
+	override fun flowDiaries(includeDrafts: Boolean): Flow<DataResult<List<Diary>>> = _trigger.flatMapLatest {
 		val diaries = DataResult.success(getDiaries().filter { diary -> diary.isDraft == includeDrafts || !diary.isDraft })
-		emit(diaries)
+		flowOf(diaries)
 	}
 
 	override fun flowDiary(id: String): Flow<DataResult<Diary>>
@@ -55,6 +58,13 @@ class DefaultDiariesRepository(
 	override suspend fun getDiaries(): List<Diary>
 	{
 		return dataSource.getDiaries()
+	}
+
+	override suspend fun getDiaryCount(includeDrafts: Boolean): Int
+	{
+		return getDiaries()
+			.filter { diary -> diary.isDraft == includeDrafts || !diary.isDraft }
+			.count()
 	}
 
 	override suspend fun getDiaryById(diaryId: String): Diary?
@@ -85,7 +95,7 @@ class DefaultDiariesRepository(
 	{
 		diary.log(log)
 
-		dataSource.sync(DiariesDataSource.SyncDirection.SAVE, diary)
+		dataSource.sync(DiariesDataSource.SyncDirection.Commit, diary)
 		invalidate()
 
 		if (!log.isDraft) _logEvents.emit(LogEvent.Added(log, diary))
@@ -105,7 +115,7 @@ class DefaultDiariesRepository(
 			(diary.log as ArrayList).removeAt(index)
 		}
 
-		dataSource.sync(DiariesDataSource.SyncDirection.SAVE, diary)
+		dataSource.sync(DiariesDataSource.SyncDirection.Commit, diary)
 		invalidate()
 	}
 
@@ -121,7 +131,7 @@ class DefaultDiariesRepository(
 			diary.crops as ArrayList += crop
 		}
 
-		dataSource.sync(DiariesDataSource.SyncDirection.SAVE, diary)
+		dataSource.sync(DiariesDataSource.SyncDirection.Commit, diary)
 		invalidate()
 
 		return crop
@@ -140,7 +150,7 @@ class DefaultDiariesRepository(
 			(diary.crops as ArrayList).removeAt(index)
 		}
 
-		dataSource.sync(DiariesDataSource.SyncDirection.SAVE, diary)
+		dataSource.sync(DiariesDataSource.SyncDirection.Commit, diary)
 		invalidate()
 	}
 

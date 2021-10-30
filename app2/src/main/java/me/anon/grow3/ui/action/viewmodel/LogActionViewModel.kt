@@ -4,16 +4,15 @@ import androidx.lifecycle.*
 import kotlinx.coroutines.flow.*
 import kotlinx.coroutines.launch
 import me.anon.grow3.data.exceptions.GrowTrackerException.*
-import me.anon.grow3.data.model.Diary
-import me.anon.grow3.data.model.Log
-import me.anon.grow3.data.model.StageChange
-import me.anon.grow3.data.model.Water
+import me.anon.grow3.data.model.*
 import me.anon.grow3.data.repository.DiariesRepository
+import me.anon.grow3.ui.action.fragment.LogActionFragment
 import me.anon.grow3.ui.common.Extras
 import me.anon.grow3.ui.common.Extras.EXTRA_LOG_TYPE
 import me.anon.grow3.util.ViewModelFactory
-import me.anon.grow3.util.nameOf
+import me.anon.grow3.util.asApiString
 import me.anon.grow3.util.states.DataResult
+import org.threeten.bp.ZonedDateTime
 import javax.inject.Inject
 
 class LogActionViewModel constructor(
@@ -33,6 +32,7 @@ class LogActionViewModel constructor(
 	{
 		data class Loaded(val diary: Diary, val log: Log): UiResult()
 		object Loading : UiResult()
+		object Finishing : UiResult()
 	}
 
 	public var isNew: Boolean = false
@@ -60,15 +60,22 @@ class LogActionViewModel constructor(
 
 			if (isNew)
 			{
-				val newLog: Log = when (logType)
-				{
-					nameOf<Water>() -> Water { }
-					nameOf<StageChange>() -> StageChange(diary.stage().type)
-					else -> throw InvalidLogType()
-				}
+				val constructor = LogConstants.types.values.firstOrNull { it.type.name == logType }?.logConstructor
+					?: throw InvalidLogType(logType)
+				val newLog = constructor.invoke(diary)
 
 				newLog.isDraft = true
 				logId = diariesRepository.addLog(newLog, diary).id
+			}
+
+			if (savedState.get<Boolean>(LogActionFragment.EXTRA_COPY) == true && logId.isNotBlank())
+			{
+				diariesRepository.getLog(logId, diary)?.copy()?.let { newLog ->
+					newLog.date = ZonedDateTime.now().asApiString()
+					newLog.isDraft = true
+					isNew = true
+					logId = diariesRepository.addLog(newLog, diary).id
+				}
 			}
 
 			diariesRepository.flowDiary(diaryId)
@@ -79,9 +86,12 @@ class LogActionViewModel constructor(
 						else -> throw DiaryLoadFailed()
 					}
 				}
-				.collectLatest {
-					val diary = it
-					if (logId.isEmpty()) return@collectLatest
+				.collectLatest { diary ->
+					if (logId.isEmpty() && diaryId.isEmpty()) // cleared vm
+					{
+						_state.emit(UiResult.Finishing)
+						return@collectLatest
+					}
 
 					diariesRepository.getLog(logId, diary)?.let { log ->
 						_state.emit(UiResult.Loaded(diary, log))
@@ -101,10 +111,20 @@ class LogActionViewModel constructor(
 
 	public fun save(new: Log)
 	{
+		viewModelScope.launch {
+			val diary = (_state.value as? UiResult.Loaded)?.diary ?: return@launch
+			diariesRepository.addLog(new, diary)
+		}
+	}
+
+	public fun saveAndFinish(new: Log)
+	{
 		isNew = false
 		viewModelScope.launch {
 			val diary = (_state.value as? UiResult.Loaded)?.diary ?: return@launch
 			new.isDraft = false
+			diaryId = ""
+			logId = ""
 			diariesRepository.addLog(new, diary)
 		}
 	}

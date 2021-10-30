@@ -18,6 +18,7 @@ import me.anon.grow3.databinding.ActivityCrudDiaryBinding
 import me.anon.grow3.ui.action.fragment.LogActionFragment
 import me.anon.grow3.ui.base.BaseActivity
 import me.anon.grow3.ui.base.BaseFragment
+import me.anon.grow3.ui.base.ModalFragment
 import me.anon.grow3.ui.common.Extras
 import me.anon.grow3.ui.crud.viewmodel.DiaryCrudViewModel
 import me.anon.grow3.util.*
@@ -71,6 +72,11 @@ class DiaryActivity : BaseActivity(ActivityCrudDiaryBinding::class)
 		viewModel.state
 			.collectWhileStarted(this) { state ->
 				viewBindings.next.isVisible = currentView != R.id.navigation_diary_crop && viewModel.diaryDraft
+
+				if (state is DiaryCrudViewModel.UiResult.Finishing)
+				{
+					finish()
+				}
 			}
 	}
 
@@ -107,7 +113,7 @@ class DiaryActivity : BaseActivity(ActivityCrudDiaryBinding::class)
 				{
 					promptExit {
 						lifecycleScope.launch {
-							viewModel.cancel()
+							viewModel.remove()
 							finish()
 						}
 					}
@@ -155,8 +161,14 @@ class DiaryActivity : BaseActivity(ActivityCrudDiaryBinding::class)
 		}
 	}
 
-	public fun openModal(fragment: Fragment)
+	public fun <T> openModal(fragment: T) where T : Fragment, T : ModalFragment
 	{
+		fragment.completionListener = {
+			supportFragmentManager.commitNow {
+				remove(fragment)
+			}
+		}
+
 		supportFragmentManager.commitNow {
 			replace(R.id.dialog_fragment_container, fragment, "modal")
 		}

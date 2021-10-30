@@ -13,14 +13,20 @@
 		android:layout_height="wrap_content"
 		android:padding="16dp"
 	>
-		<include layout="@layout/stub_card_header" android:id="@+id/include_stub_card_header" />
+		<me.anon.grow3.view.LogHeaderView
+			android:layout_width="match_parent"
+			android:layout_height="wrap_content"
+			android:id="@+id/header"
+			app:layout_constraintTop_toTopOf="parent"
+			app:layout_constraintStart_toStartOf="parent"
+		/>
 
 		<com.google.android.flexbox.FlexboxLayout
 			android:layout_width="match_parent"
 			android:layout_height="wrap_content"
 			android:id="@+id/content"
 			android:layout_marginTop="@dimen/section_spacing"
-			app:layout_constraintTop_toBottomOf="@id/include_stub_card_header"
+			app:layout_constraintTop_toBottomOf="@id/header"
 			app:layout_constraintStart_toStartOf="parent"
 			app:layout_constraintEnd_toStartOf="parent"
 			android:visibility="gone"
@@ -46,13 +52,10 @@
 			android:showDividers="middle"
 		/>
 		
-		<include
+		<me.anon.grow3.view.LogFooterView
 			android:layout_width="match_parent"
 			android:layout_height="wrap_content"
-			layout="@layout/stub_card_footer"
-			android:id="@+id/include_stub_card_footer"
-			android:layout_marginTop="@dimen/section_header_spacing"
-			app:layout_goneMarginTop="0dp"
+			android:id="@+id/footer"
 			app:layout_constraintTop_toBottomOf="@id/additives_container"
 		/>
 	</androidx.constraintlayout.widget.ConstraintLayout>

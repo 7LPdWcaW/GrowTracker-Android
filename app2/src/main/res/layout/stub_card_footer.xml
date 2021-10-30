@@ -1,15 +1,12 @@
 <?xml version="1.0" encoding="utf-8"?>
 
-<LinearLayout
+<androidx.constraintlayout.widget.ConstraintLayout
 	xmlns:android="http://schemas.android.com/apk/res/android"
 	xmlns:app="http://schemas.android.com/apk/res-auto"
 	xmlns:tools="http://schemas.android.com/tools"
-	android:id="@+id/stub_card_header"
 	android:layout_width="match_parent"
 	android:layout_height="wrap_content"
 	android:orientation="vertical"
-	android:divider="@drawable/spacer_16dp"
-	android:showDividers="middle"
 >
 	<TextView
 		android:layout_width="match_parent"
@@ -17,6 +14,9 @@
 		android:id="@+id/notes"
 		tools:text="Notes about the log will go here"
 		android:visibility="gone"
+		android:layout_marginTop="@dimen/section_spacing"
+		app:layout_constraintTop_toTopOf="parent"
+		app:layout_constraintStart_toStartOf="parent"
 		style="@style/Text"
 	/>
 	
@@ -24,12 +24,14 @@
 		android:layout_width="match_parent"
 		android:layout_height="wrap_content"
 		android:id="@+id/crops_container"
+		android:layout_marginTop="@dimen/section_spacing"
 		app:layout_constraintStart_toStartOf="parent"
 		app:layout_constraintEnd_toStartOf="parent"
+		app:layout_constraintTop_toBottomOf="@id/notes"
 		app:flexWrap="wrap"
 		app:flexDirection="row"
 		app:dividerDrawable="@drawable/section_spacer"
 		app:showDivider="middle"
 		android:visibility="gone"
 	/>
-</LinearLayout>
+</androidx.constraintlayout.widget.ConstraintLayout>

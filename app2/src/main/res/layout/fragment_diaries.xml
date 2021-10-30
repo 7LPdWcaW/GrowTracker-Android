@@ -39,8 +39,6 @@
 		android:layout_height="0dp"
 		android:id="@+id/recycler_view"
 		android:layout_marginTop="12dp"
-		android:paddingStart="6dp"
-		android:paddingEnd="6dp"
 		android:clipToPadding="false"
 		app:layout_constraintTop_toBottomOf="@id/new_diary"
 		app:layout_constraintStart_toStartOf="parent"

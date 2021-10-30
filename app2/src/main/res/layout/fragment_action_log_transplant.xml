@@ -1,0 +1,62 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<com.google.android.flexbox.FlexboxLayout
+	xmlns:android="http://schemas.android.com/apk/res/android"
+	xmlns:app="http://schemas.android.com/apk/res-auto"
+	xmlns:tools="http://schemas.android.com/tools"
+	android:layout_width="match_parent"
+	android:layout_height="wrap_content"
+	app:flexWrap="wrap"
+	app:dividerDrawable="@drawable/spacer_4dp"
+	app:showDivider="middle"
+	app:alignItems="stretch"
+>
+	<com.google.android.material.textfield.TextInputLayout
+		android:layout_width="wrap_content"
+		android:layout_height="wrap_content"
+		android:id="@+id/medium_type"
+		android:hint="@string/add_crop_medium_type"
+		app:layout_flexGrow="1"
+		style="@style/Dropdown"
+	>
+		<me.anon.grow3.view.DropDownEditText
+			android:layout_width="match_parent"
+			android:layout_height="wrap_content"
+			android:id="@+id/medium_type_options"
+			app:singleSelection="true"
+		/>
+	</com.google.android.material.textfield.TextInputLayout>
+	
+	<com.google.android.material.textfield.TextInputLayout
+		android:layout_width="0dp"
+		android:layout_height="wrap_content"
+		android:id="@+id/medium_size"
+		app:layout_flexGrow="0.5"
+		app:layout_wrapBefore="true"
+		android:hint="@string/add_crop_medium_size"
+	>
+		<EditText
+			android:layout_width="match_parent"
+			android:layout_height="wrap_content"
+			android:inputType="number"
+		/>
+	</com.google.android.material.textfield.TextInputLayout>
+	
+	<com.google.android.material.textfield.TextInputLayout
+		android:layout_width="0dp"
+		android:layout_height="wrap_content"
+		android:id="@+id/medium_size_unit"
+		app:layout_flexGrow="0.5"
+		android:hint="Unit"
+		style="@style/Dropdown"
+	>
+		<me.anon.grow3.view.DropDownEditText
+			android:layout_width="match_parent"
+			android:layout_height="wrap_content"
+			android:id="@+id/medium_size_unit_options"
+			app:singleSelection="true"
+			app:required="true"
+			app:menu="@menu/quantity_units"
+		/>
+	</com.google.android.material.textfield.TextInputLayout>
+</com.google.android.flexbox.FlexboxLayout>

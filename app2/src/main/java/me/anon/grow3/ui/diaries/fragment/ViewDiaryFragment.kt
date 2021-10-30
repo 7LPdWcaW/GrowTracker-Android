@@ -1,14 +1,16 @@
 package me.anon.grow3.ui.diaries.fragment
 
 import androidx.core.os.bundleOf
+import androidx.core.view.size
 import androidx.core.view.updatePadding
 import androidx.fragment.app.viewModels
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.freelapp.flowlifecycleobserver.collectWhileStarted
 import me.anon.grow3.R
 import me.anon.grow3.data.model.Diary
-import me.anon.grow3.data.model.Water
+import me.anon.grow3.data.model.LogConstants
 import me.anon.grow3.databinding.FragmentViewDiaryBinding
+import me.anon.grow3.databinding.StubMenuLogActionBinding
 import me.anon.grow3.ui.action.fragment.LogActionBottomSheetFragment
 import me.anon.grow3.ui.base.BaseFragment
 import me.anon.grow3.ui.common.Extras
@@ -17,6 +19,7 @@ import me.anon.grow3.ui.crud.activity.DiaryActivity
 import me.anon.grow3.ui.diaries.view.DiaryCropsCard
 import me.anon.grow3.ui.diaries.view.DiaryLinksCard
 import me.anon.grow3.ui.diaries.viewmodel.ViewDiaryViewModel
+import me.anon.grow3.ui.main.activity.MainActivity
 import me.anon.grow3.util.*
 import me.anon.grow3.view.adapter.CardListAdapter
 import javax.inject.Inject
@@ -28,7 +31,7 @@ class ViewDiaryFragment : BaseFragment(FragmentViewDiaryBinding::class)
 	@Inject internal lateinit var viewModelFactory: ViewDiaryViewModel.Factory
 	private val viewModel: ViewDiaryViewModel by viewModels { ViewModelProvider(viewModelFactory, this) }
 	private val viewBindings by viewBinding<FragmentViewDiaryBinding>()
-	private val viewAdapter = CardListAdapter()
+	@Inject internal lateinit var viewAdapter: CardListAdapter
 
 	override fun onBackPressed(): Boolean
 		= viewBindings.menuFab.isExpanded.also { viewBindings.menuFab.isExpanded = false }
@@ -57,14 +60,22 @@ class ViewDiaryFragment : BaseFragment(FragmentViewDiaryBinding::class)
 			navigationPager?.isUserInputEnabled = true
 		}
 
-		viewBindings.menuLogWater.onClick {
-			viewBindings.menuFab.isExpanded = false
-			navigationPager?.isUserInputEnabled = true
-			navigateTo<LogActionBottomSheetFragment>(true) {
-				bundleOf(
-					Extras.EXTRA_DIARY_ID to viewModel.diaryId,
-					Extras.EXTRA_LOG_TYPE to nameOf<Water>()
-				)
+		viewBindings.menuLogContainer.removeViewsBefore(count = 1)
+		LogConstants.quickMenu.sortedBy { it.name }.forEach { type ->
+			val menuView = StubMenuLogActionBinding.inflate(layoutInflater, viewBindings.menuLogContainer, false)
+			menuView.logName.text = type.name
+			viewBindings.menuLogContainer.addView(menuView.root, viewBindings.menuLogContainer.size - 1)
+
+			// routing
+			menuView.root.onClick {
+				viewBindings.menuFab.isExpanded = false
+				navigationPager?.isUserInputEnabled = true
+				navigateTo<LogActionBottomSheetFragment>(true) {
+					bundleOf(
+						Extras.EXTRA_DIARY_ID to viewModel.diaryId,
+						Extras.EXTRA_LOG_TYPE to type.type.name
+					)
+				}
 			}
 		}
 	}
@@ -78,6 +89,7 @@ class ViewDiaryFragment : BaseFragment(FragmentViewDiaryBinding::class)
 					is ViewDiaryViewModel.UiResult.Loaded -> updateDiaryUi(state.diary)
 					is ViewDiaryViewModel.UiResult.Removed -> {
 						navigateTo<EmptyFragment>()
+						(activity as? MainActivity)?.openMenu()
 					}
 				}
 			}
@@ -85,7 +97,13 @@ class ViewDiaryFragment : BaseFragment(FragmentViewDiaryBinding::class)
 
 	private fun updateDiaryUi(diary: Diary)
 	{
-		viewBindings.collapsingToolbarLayout.title = diary.name
+		viewBindings.toolbar.title = diary.name
+		viewBindings.toolbar.navigationIcon = R.drawable.ic_baseline_menu_24.drawable(requireContext())
+		viewBindings.toolbar.setNavigationOnClickListener {
+			(requireActivity() as? MainActivity)?.openMenu()
+		}
+
+		//viewBindings.collapsingToolbarLayout.title = diary.name
 //		viewBindings.collapsingToolbarLayout.subtitle = diary.stages().shortSummary()
 
 		viewBindings.toolbar.menu.clear()
@@ -103,7 +121,12 @@ class ViewDiaryFragment : BaseFragment(FragmentViewDiaryBinding::class)
 
 		viewAdapter.newStack {
 			add(StagesCard(diary = diary, title = "Stages summary"))
-			add(DiaryCropsCard(diary = diary, title = "Crops"))
+
+			if (diary.crops.isNotEmpty())
+			{
+				add(DiaryCropsCard(diary = diary, title = "Crops"))
+			}
+
 			add(DiaryLinksCard(diary = diary))
 		}
 	}

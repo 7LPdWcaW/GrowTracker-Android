@@ -14,12 +14,12 @@
 		android:id="@+id/empty_text"
 		android:layout_gravity="center"
 		android:gravity="center"
-		android:text="You have no diaries"
 		app:layout_constraintTop_toTopOf="parent"
 		app:layout_constraintBottom_toTopOf="@id/new_diary"
 		app:layout_constraintStart_toStartOf="parent"
 		app:layout_constraintEnd_toEndOf="parent"
 		app:layout_constraintVertical_chainStyle="packed"
+		android:visibility="gone"
 		android:textColor="?textOnWindow"
 		style="@style/Text.Header.Sub"
 	/>

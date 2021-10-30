@@ -35,6 +35,7 @@
 
 		<item name="android:windowBackground">@drawable/window_background</item>
 		<item name="textOnWindow">#ffffff</item>
+		<item name="selectableItemBackground">@drawable/rounded_selectable_item_background</item>
 
 		<item name="android:windowTranslucentNavigation">true</item>
 	</style>
@@ -109,6 +110,7 @@
 	<style name="Button.Bordered" parent="Widget.MaterialComponents.Button.OutlinedButton">
 		<item name="android:textColor">?colorAccent</item>
 		<item name="strokeColor">?colorAccent</item>
+		<item name="rippleColor">?colorAccent</item>
 		<item name="android:padding">16dp</item>
 	</style>
 
@@ -118,9 +120,17 @@
 	</style>
 
 	<style name="Text">
+		<item name="android:textSize">@dimen/text_body</item>
 		<item name="android:textColor">?textOnSurface</item>
 		<item name="android:lineSpacingMultiplier">1.2</item>
 		<item name="android:fontFamily">sans-serif</item>
+	</style>
+
+	<style name="Text.Body">
+		<item name="android:textSize">@dimen/text_body</item>
+		<item name="android:textColor">?textOnSurface</item>
+		<item name="android:lineSpacingMultiplier">1.4</item>
+		<item name="android:fontFamily">sans-serif-light</item>
 	</style>
 
 	<style name="Text.Header">
@@ -166,6 +176,14 @@
 		<item name="android:fontFamily">sans-serif-smallcaps</item>
 		<item name="android:textAllCaps">true</item>
 		<item name="android:textColor">?textOnPrimary</item>
+	</style>
+
+	<style name="Text.Window.Sub">
+		<item name="android:textSize">@dimen/text_subbody</item>
+		<item name="android:fontFamily">sans-serif</item>
+		<item name="android:textAllCaps">false</item>
+		<item name="android:textColor">?textOnPrimary</item>
+		<item name="android:alpha">0.8</item>
 	</style>
 
 	<style name="Checkbox" parent="Widget.MaterialComponents.CompoundButton.CheckBox">

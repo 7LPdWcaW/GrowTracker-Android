@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<LinearLayout
+	xmlns:android="http://schemas.android.com/apk/res/android"
+	xmlns:app="http://schemas.android.com/apk/res-auto"
+	android:layout_width="200dp"
+	android:layout_height="wrap_content"
+	android:minHeight="42dp"
+	android:id="@+id/log_container"
+	android:orientation="horizontal"
+	android:paddingStart="18dp"
+	android:paddingEnd="18dp"
+	android:paddingTop="12dp"
+	android:paddingBottom="12dp"
+	android:background="?selectableItemBackground"
+	android:clickable="true"
+	android:focusable="true"
+>
+	<ImageView
+		android:layout_width="0dp"
+		android:layout_height="42dp"
+		android:id="@+id/log_action"
+		android:padding="4dp"
+		app:srcCompat="@drawable/ic_calendar"
+		app:tint="?textOnSurface"
+	/>
+	
+	<TextView
+		android:layout_width="wrap_content"
+		android:layout_height="match_parent"
+		android:id="@+id/log_name"
+		android:textSize="16sp"
+		android:layout_marginStart="8dp"
+		android:gravity="center_vertical"
+	/>
+</LinearLayout>

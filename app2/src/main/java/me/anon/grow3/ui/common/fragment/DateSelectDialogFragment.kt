@@ -9,6 +9,7 @@ import androidx.fragment.app.FragmentManager
 import androidx.fragment.app.commit
 import me.anon.grow3.util.asApiString
 import me.anon.grow3.util.asDateTime
+import org.joda.time.DateTime
 import org.threeten.bp.ZonedDateTime
 
 /**
@@ -60,6 +61,7 @@ class DateSelectDialogFragment : Fragment()
 			.withDayOfMonth(dayOfMonth)
 			.withHour(0)
 			.withMinute(0)
+			.withSecond(0)
 
 		if (includeTime) showTimeDialog()
 		else
@@ -73,6 +75,7 @@ class DateSelectDialogFragment : Fragment()
 		selectedDate = selectedDate
 			.withHour(hourOfDay)
 			.withMinute(minute)
+			.withSecond(DateTime.now().secondOfMinute)
 
 		onDateTimeSelected(selectedDate)
 		dismiss()

@@ -5,6 +5,9 @@ import me.anon.grow3.util.ValueHolder
 
 /**
  * See [me.anon.grow3.ui.logs.view.EnvironmentLogCard]
+ * See [me.anon.grow3.ui.action.view.EnvironmentLogView]
+ *
+ * An environment applies to the entire diary
  */
 @JsonClass(generateAdapter = true)
 data class Environment(
@@ -19,10 +22,10 @@ data class Environment(
 {
 	override var cropIds: List<String>
 		get() = listOf()
-		set(value){}
+		set(_){}
 }
 
-public fun Environment.applyValues(
+public fun Environment.patch(
 	type: ValueHolder<EnvironmentType?>? = null,
 	temperature: ValueHolder<Double?>? = null,
 	humidity: ValueHolder<Double?>? = null,
@@ -33,13 +36,13 @@ public fun Environment.applyValues(
 ): Environment
 {
 	return apply {
-		type?.applyValue { this.type = it }
-		temperature?.applyValue { this.temperature = it }
-		humidity?.applyValue { this.humidity = it }
-		relativeHumidity?.applyValue { this.relativeHumidity = it }
-		size?.applyValue { this.size = it }
-		light?.applyValue { this.light = it }
-		schedule?.applyValue { this.schedule = it }
+		type?.patch { this.type = it }
+		temperature?.patch { this.temperature = it }
+		humidity?.patch { this.humidity = it }
+		relativeHumidity?.patch { this.relativeHumidity = it }
+		size?.patch { this.size = it }
+		light?.patch { this.light = it }
+		schedule?.patch { this.schedule = it }
 	}
 }
 

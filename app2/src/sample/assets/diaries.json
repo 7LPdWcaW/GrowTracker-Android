@@ -16,9 +16,18 @@
 				"date": "2020-01-01T00:00:00+00:00",
 				"action": "Environment",
 				"size": {
-					"width": 1000.0,
-					"height": 1000.0,
-					"depth": 1000.0
+					"width": {
+						"amount": 1000.0,
+						"unit": "mm"
+					},
+					"height": {
+						"amount": 1000.0,
+						"unit": "mm"
+					},
+					"depth": {
+						"amount": 1000.0,
+						"unit": "mm"
+					}
 				},
 				"light": {
 					"type": "LED",
@@ -37,7 +46,10 @@
 				"date": "2020-01-01T00:00:00+00:00",
 				"action": "Transplant",
 				"medium": "Coco",
-				"size": 4000.0,
+				"size": {
+					"amount": 4000.0,
+					"unit": "Ml"
+				},
 				"notes": "Initial potting"
 			},
 			{
@@ -62,7 +74,10 @@
 					"type": "EC",
 					"amount": 2.0
 				},
-				"amount": 1000.0,
+				"amount": {
+					"amount": 1000.0,
+					"unit": "Ml"
+				},
 				"temperature": 27.0,
 				"additives": [
 					{
@@ -121,7 +136,10 @@
 				"date": "2020-01-10T02:00:00+00:00",
 				"action": "Pesticide",
 				"type": "Spray",
-				"amount": 3,
+				"amount": {
+					"amount": 3,
+					"unit": "Ml"
+				},
 				"name": "Herbicide"
 			},
 			{
@@ -149,7 +167,10 @@
 				"date": "2020-01-12T02:00:00+00:00",
 				"action": "Transplant",
 				"medium": "Coco",
-				"size": 16000.0,
+				"size": {
+					"amount": 16000.0,
+					"unit": "Ml"
+				},
 				"cropIds": [
 					"0002-000001"
 				]
@@ -195,9 +216,18 @@
 					"0002-000004"
 				],
 				"size": {
-					"width": 10000.0,
-					"height": 3000.0,
-					"depth": 5000.0
+					"width": {
+						"amount": 10000.0,
+						"unit": "mm"
+					},
+					"height": {
+						"amount": 3000.0,
+						"unit": "mm"
+					},
+					"depth": {
+						"amount": 5000.0,
+						"unit": "mm"
+					}
 				}
 			},
 			{

@@ -17,8 +17,8 @@ import me.anon.grow3.util.states.DataResult
 import javax.inject.Inject
 
 class LogListViewModel constructor(
-	private val diariesRepository: DiariesRepository,
-	private val savedState: SavedStateHandle
+	diariesRepository: DiariesRepository,
+	savedState: SavedStateHandle
 ) : ViewModel()
 {
 	class Factory @Inject constructor(
@@ -39,7 +39,7 @@ class LogListViewModel constructor(
 	public var diaryId: String = savedState[EXTRA_DIARY_ID] ?: ""; private set
 	public var cropIds: List<String> = (savedState.get(EXTRA_CROP_IDS) as? Array<String>)?.asList() ?: arrayListOf(); private set
 
-	private var diary: Flow<Diary> = diariesRepository.flowDiary(diaryId)
+	private var _diary: Flow<Diary> = diariesRepository.flowDiary(diaryId)
 		.mapLatest {
 			when (it)
 			{
@@ -53,16 +53,21 @@ class LogListViewModel constructor(
 
 	init {
 		viewModelScope.launch {
-			diary.collectLatest {
-				val diary = it
-				val logs = diary.log.filter {
-					if (cropIds.isNullOrEmpty()) true
-					else it.cropIds.containsAll(cropIds)
+			_diary
+				.catch { error ->
+					_state.emit(UiResult.Error)
 				}
-				val crops = cropIds.map { diary.crop(it) }
+				.collectLatest { diary ->
+					val logs = diary.log
+						.filter {
+							if (cropIds.isNullOrEmpty()) true
+							else it.cropIds.containsAll(cropIds)
+						}
+						.filterNot { it.isDraft }
+					val crops = cropIds.map { diary.crop(it) }
 
-				_state.emit(UiResult.Loaded(diary = diary, logs = logs, crops = crops))
-			}
+					_state.emit(UiResult.Loaded(diary = diary, logs = logs, crops = crops))
+				}
 		}
 	}
 }

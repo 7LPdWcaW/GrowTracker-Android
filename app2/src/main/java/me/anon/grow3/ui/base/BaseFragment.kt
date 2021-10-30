@@ -25,6 +25,7 @@ abstract class BaseFragment : Fragment
 		this._viewBinder = kClass.java
 	}
 
+	public val baseActivity: BaseActivity get() = requireActivity() as BaseActivity
 	private var _viewBinder: Class<out ViewBinding>? = null
 	public lateinit var viewBinder: ViewBinding private set
 

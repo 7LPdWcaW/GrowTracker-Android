@@ -7,7 +7,6 @@ import android.view.ViewGroup
 import android.widget.Toast
 import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
-import androidx.core.os.bundleOf
 import androidx.core.view.isVisible
 import androidx.core.view.updatePadding
 import androidx.fragment.app.Fragment
@@ -26,7 +25,6 @@ import me.anon.grow3.databinding.ActivityMainBinding
 import me.anon.grow3.ui.base.BaseActivity
 import me.anon.grow3.ui.base.BaseFragment
 import me.anon.grow3.ui.base.BaseHostFragment
-import me.anon.grow3.ui.diaries.fragment.EmptyFragment
 import me.anon.grow3.ui.main.fragment.AdditionalPageHostFragment
 import me.anon.grow3.ui.main.fragment.MainNavigatorFragment
 import me.anon.grow3.ui.main.fragment.NavigationFragment
@@ -45,6 +43,7 @@ class MainActivity : BaseActivity(ActivityMainBinding::class)
 		const val INDEX_NAVSTACK = 2
 
 		const val EXTRA_ORIGINATOR = "origin"
+		const val EXTRA_CLEAR = "clear"
 		const val EXTRA_NAVIGATE = "navigation"
 	}
 
@@ -54,6 +53,7 @@ class MainActivity : BaseActivity(ActivityMainBinding::class)
 	)
 	{
 		open val id: Long = args?.let { codeOf(it).toLong() } ?: -1L
+		open val tag: String = ""
 		open fun newInstance(): BaseFragment = fragment.newInstance().apply {
 			arguments = args
 		} as BaseFragment
@@ -85,7 +85,7 @@ class MainActivity : BaseActivity(ActivityMainBinding::class)
 			})
 			add(INDEX_MAIN, object : FragmentInstance(
 				MainNavigatorFragment::class.java,
-				activity.intent?.extras ?: bundleOf(EXTRA_NAVIGATE to nameOf<EmptyFragment>())
+				activity.intent?.extras
 			)
 			{
 				override val id: Long
@@ -172,7 +172,7 @@ class MainActivity : BaseActivity(ActivityMainBinding::class)
 			when (event)
 			{
 				is LogEvent.Added -> {
-					Timber.e(event.log.toJsonString())
+					Timber.d(event.log.toJsonString())
 					Toast.makeText(this, "${event.log} added to ${event.diary.name}", Toast.LENGTH_LONG).show()
 				}
 			}
@@ -192,7 +192,7 @@ class MainActivity : BaseActivity(ActivityMainBinding::class)
 			override fun onStateChanged(bottomSheet: View, newState: Int)
 			{
 				adapter.getFragment(INDEX_MENU)?.let {
-					it.requireView().updatePadding(bottom = insets.value?.bottom ?: 0)
+					it.requireView().updatePadding(bottom = 0)
 					if (newState == STATE_COLLAPSED)
 					{
 						it.requireView().updatePadding(bottom = layoutSheetBehavior.peekHeight - (insets.value?.bottom ?: 0))
@@ -275,7 +275,7 @@ class MainActivity : BaseActivity(ActivityMainBinding::class)
 		}
 	}
 
-	public fun addToStack(fragment: Class<out BaseFragment>, _args: Bundle?)
+	public fun addToStack(fragment: Class<out BaseFragment>, _args: Bundle?, replaceTag: String = "")
 	{
 		val index = adapter.pages.size
 		val transaction = Bundle().apply {
@@ -283,19 +283,52 @@ class MainActivity : BaseActivity(ActivityMainBinding::class)
 			putString(EXTRA_NAVIGATE, fragment.name)
 		}
 
-		adapter.pages.add(index, object : FragmentInstance(AdditionalPageHostFragment::class.java, transaction)
+		// find
+		val existing = adapter.pages
+			.indexOfFirst { it.tag == replaceTag }
+			.takeIf { replaceTag.isNotBlank() } ?: -1
+		if (existing > -1)
 		{
-			override fun newInstance(): BaseFragment = super.newInstance().apply {
-				lifecycleScope.launchWhenCreated {
-					viewBindings.viewPager.post {
-						viewBindings.viewPager.setCurrentItem(index, true)
+			adapter.pages[existing] = object : FragmentInstance(AdditionalPageHostFragment::class.java, transaction)
+			{
+				override fun newInstance(): BaseFragment = super.newInstance().apply {
+					lifecycleScope.launchWhenCreated {
+						viewBindings.viewPager.post {
+							viewBindings.viewPager.setCurrentItem(existing, true)
+						}
 					}
 				}
-			}
-			override val id: Long get() = codeOf<AdditionalPageHostFragment>().toLong() + codeOf(args!!)
-		})
 
-		adapter.notifyItemInserted(index)
+				override val tag: String get() = replaceTag
+				override val id: Long get() = codeOf<AdditionalPageHostFragment>().toLong() + codeOf(args!!)
+			}
+
+			for (page in existing + 1 until adapter.pages.size)
+			{
+				adapter.pages.removeAt(page)
+				adapter.notifyItemRemoved(page)
+			}
+
+			adapter.notifyItemChanged(existing)
+		}
+		else
+		{
+			adapter.pages.add(index, object : FragmentInstance(AdditionalPageHostFragment::class.java, transaction)
+			{
+				override fun newInstance(): BaseFragment = super.newInstance().apply {
+					lifecycleScope.launchWhenCreated {
+						viewBindings.viewPager.post {
+							viewBindings.viewPager.setCurrentItem(index, true)
+						}
+					}
+				}
+
+				override val tag: String get() = replaceTag
+				override val id: Long get() = codeOf<AdditionalPageHostFragment>().toLong() + codeOf(args!!)
+			})
+
+			adapter.notifyItemInserted(index)
+		}
 	}
 
 	public fun clearStack(now: Boolean = false)
@@ -415,5 +448,10 @@ class MainActivity : BaseActivity(ActivityMainBinding::class)
 				}
 			}
 		}
+	}
+
+	public fun openMenu()
+	{
+		viewBindings.viewPager.setCurrentItem(0, true)
 	}
 }

@@ -20,7 +20,7 @@ data class Crop(
 	public var isDraft = false
 }
 
-public fun Crop.applyValues(
+public fun Crop.patch(
 	name: ValueHolder<String>? = null,
 	genetics: ValueHolder<String?>? = null,
 	numberOfPlants: ValueHolder<Int>? = null,
@@ -28,9 +28,9 @@ public fun Crop.applyValues(
 ): Crop
 {
 	return apply {
-		name?.applyValue { this.name = it }
-		genetics?.applyValue { this.genetics = it.toStringOrNull() }
-		numberOfPlants?.applyValue { this.numberOfPlants = it }
-		platedDate?.applyValue { this.platedDate = it }
+		name?.patch { this.name = it }
+		genetics?.patch { this.genetics = it.toStringOrNull() }
+		numberOfPlants?.patch { this.numberOfPlants = it }
+		platedDate?.patch { this.platedDate = it }
 	}
 }

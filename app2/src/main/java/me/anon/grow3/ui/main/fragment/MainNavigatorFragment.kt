@@ -1,10 +1,17 @@
 package me.anon.grow3.ui.main.fragment
 
 import android.os.Bundle
+import androidx.core.os.bundleOf
+import androidx.fragment.app.activityViewModels
 import androidx.fragment.app.commitNow
+import androidx.lifecycle.lifecycleScope
+import androidx.lifecycle.whenStarted
+import kotlinx.coroutines.flow.collectLatest
+import kotlinx.coroutines.launch
 import me.anon.grow3.R
 import me.anon.grow3.data.exceptions.GrowTrackerException.*
 import me.anon.grow3.databinding.FragmentMainHostBinding
+import me.anon.grow3.ui.action.fragment.DeleteActionFragment
 import me.anon.grow3.ui.action.fragment.LogActionBottomSheetFragment
 import me.anon.grow3.ui.base.BaseFragment
 import me.anon.grow3.ui.base.BaseHostFragment
@@ -12,13 +19,17 @@ import me.anon.grow3.ui.common.Extras.EXTRA_DIARY_ID
 import me.anon.grow3.ui.crops.fragment.CropListFragment
 import me.anon.grow3.ui.crops.fragment.ViewCropFragment
 import me.anon.grow3.ui.diaries.fragment.EmptyFragment
+import me.anon.grow3.ui.diaries.fragment.LoadingFragment
 import me.anon.grow3.ui.diaries.fragment.ViewDiaryFragment
 import me.anon.grow3.ui.logs.fragment.LogListFragment
 import me.anon.grow3.ui.main.activity.MainActivity
+import me.anon.grow3.ui.main.activity.MainActivity.Companion.EXTRA_CLEAR
 import me.anon.grow3.ui.main.activity.MainActivity.Companion.EXTRA_NAVIGATE
 import me.anon.grow3.ui.main.activity.MainActivity.Companion.EXTRA_ORIGINATOR
 import me.anon.grow3.ui.main.activity.MainActivity.Companion.INDEX_MAIN
-import me.anon.grow3.util.nameOf
+import me.anon.grow3.ui.main.viewmodel.MainViewModel
+import me.anon.grow3.util.*
+import javax.inject.Inject
 import kotlin.random.Random
 
 /**
@@ -28,6 +39,25 @@ import kotlin.random.Random
 class MainNavigatorFragment : BaseHostFragment(FragmentMainHostBinding::class)
 {
 	private val pendingActions = ArrayList<Bundle>(1)
+	override val injector: Injector = { it.inject(this) }
+
+	@Inject internal lateinit var viewModelFactory: MainViewModel.Factory
+	private val viewModel: MainViewModel by activityViewModels { ViewModelProvider(viewModelFactory, this, arguments) }
+
+	init {
+		lifecycleScope.launch {
+			whenStarted {
+				viewModel.state.collectLatest { state ->
+					when (state)
+					{
+						is MainViewModel.UiState.Loading -> navigateTo<LoadingFragment>()
+						is MainViewModel.UiState.EmptyDiaries -> navigateTo<EmptyFragment>()
+						is MainViewModel.UiState.ViewDiary -> navigateTo<ViewDiaryFragment> { bundleOf(EXTRA_DIARY_ID to state.diaryId) }
+					}
+				}
+			}
+		}
+	}
 
 	override fun onActivityCreated(savedInstanceState: Bundle?)
 	{
@@ -63,6 +93,7 @@ class MainNavigatorFragment : BaseHostFragment(FragmentMainHostBinding::class)
 				val item = this.removeAt(0)
 				val route = item.getString(EXTRA_NAVIGATE) ?: throw NoRoute()
 				val origin = item.getString(EXTRA_ORIGINATOR)
+				val clear = item.getBoolean(EXTRA_CLEAR, false)
 
 				when (origin)
 				{
@@ -70,6 +101,8 @@ class MainNavigatorFragment : BaseHostFragment(FragmentMainHostBinding::class)
 						clearStack(true)
 					}
 				}
+
+				if (clear) clearStack(false)
 
 				// TODO: we should re-open a page if it exists in the stack,
 				// but we cant because we clear the stack also. Possibly look
@@ -84,6 +117,19 @@ class MainNavigatorFragment : BaseHostFragment(FragmentMainHostBinding::class)
 						})
 					}
 
+					nameOf<DeleteActionFragment>() -> {
+						childFragmentManager.commitNow {
+							setCustomAnimations(android.R.anim.fade_in, android.R.anim.fade_out)
+							add(R.id.fragment_container, DeleteActionFragment().apply {
+								arguments = item
+							}, "delete-action")
+						}
+					}
+
+					nameOf<LoadingFragment>() -> {
+						beginStack(LoadingFragment::class.java, null)
+					}
+
 					nameOf<EmptyFragment>() -> {
 						beginStack(EmptyFragment::class.java, item)
 					}
@@ -94,7 +140,7 @@ class MainNavigatorFragment : BaseHostFragment(FragmentMainHostBinding::class)
 					}
 
 					nameOf<ViewCropFragment>() -> {
-						addToStack(ViewCropFragment::class.java, item)
+						addToStack(ViewCropFragment::class.java, item, tagOf<ViewCropFragment>(item))
 					}
 
 					nameOf<CropListFragment>() -> {
@@ -136,8 +182,8 @@ class MainNavigatorFragment : BaseHostFragment(FragmentMainHostBinding::class)
 		}
 	}
 
-	private fun addToStack(fragment: Class<out BaseFragment>, args: Bundle?)
+	private fun addToStack(fragment: Class<out BaseFragment>, args: Bundle?, replaceTag: String = "")
 	{
-		activity().addToStack(fragment, args)
+		activity().addToStack(fragment, args, replaceTag)
 	}
 }

@@ -38,7 +38,7 @@ data class Diary(
 	public fun stageWhen(log: Log): StageAt
 	{
 		val stage = stages()
-			.last { it.date.asDateTime() <= log.date.asDateTime() } // should at least return Planted
+			.lastOrNull { it.date.asDateTime() < log.date.asDateTime() } ?: stages().first() // should at least return Planted
 
 		return StageAt(
 			days = (stage.date and log.date).dateDifferenceDays(),
@@ -54,7 +54,7 @@ data class Diary(
 	public fun stageWhen(crop: Crop, log: Log): StageAt
 	{
 		val stage = stagesOf(crop)
-			.last { it.date.asDateTime() <= log.date.asDateTime() } // should at least return Planted
+			.lastOrNull { it.date.asDateTime() < log.date.asDateTime() } ?: stages().first()  // should at least return Planted
 
 		return StageAt(
 			days = (stage.date and log.date).dateDifferenceDays(),
@@ -122,7 +122,7 @@ data class Diary(
 	{
 		return crops.associateWith { crop ->
 			val stages = findAllStages(crop)
-			val unique = stages.uniqueBy { it.type }
+			val unique = stages.distinctBy { it.type }
 			val ret = unique.associateWith { 0.0 }.toMutableMap()
 
 			// loop through each stage until we move from stage -> different stage
@@ -189,13 +189,31 @@ data class Diary(
 
 	private fun findWater(): Water?
 		= log.sortedBy { it.date }
-		.filterIsInstance<Water>()
-		.lastOrNull()
+			.filterIsInstance<Water>()
+			.lastOrNull()
 
 	private fun findEnvironment(): Environment?
 		= log.sortedBy { it.date }
-		.filterIsInstance<Environment>()
-		.lastOrNull()
+			.filterIsInstance<Environment>()
+			.lastOrNull()
+
+	public fun shortMenuSummary(): String
+	{
+		val retString = arrayListOf("${crops.size} Crops")
+		retString += findAllStages().shortSummary().toString()
+		findWater()?.let { retString += "Last watered ${it.date.ago()}" }
+
+		return retString.joinToString(" • ")
+	}
+
+	/**
+	 * Removes all draft logs and re-sorts log order
+	 */
+	public fun purge()
+	{
+		(log as ArrayList).removeAll { it.isDraft }
+		log.sortedBy { it.date }
+	}
 
 	init {
 		if (log.isEmpty() || !log.any { it is StageChange })
@@ -203,9 +221,6 @@ data class Diary(
 			log as ArrayList += StageChange(StageType.Planted)
 		}
 
-		var i = 0
-		//log.sortedBy { it.date }
+		log.sortedBy { it.date }
 	}
 }
-
-public fun Diary(block: Diary.() -> Unit): Diary = Diary(name = "").apply(block)

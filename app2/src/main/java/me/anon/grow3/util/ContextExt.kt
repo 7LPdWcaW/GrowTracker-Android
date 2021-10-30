@@ -7,11 +7,11 @@ import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import me.anon.grow3.BaseApplication
 
 public val Context.application get() = applicationContext as BaseApplication
-public val Context.component get() = application.appComponent
+public val Context.component get() = BaseApplication.appComponent
 
 public inline fun Context.promptExit(crossinline callback: () -> Unit)
 {
-	if (this !is Activity && this !is Fragment) return
+	if (this !is Activity) return
 
 	MaterialAlertDialogBuilder(this)
 		.setTitle("Are you sure?")
@@ -23,16 +23,26 @@ public inline fun Context.promptExit(crossinline callback: () -> Unit)
 		.show()
 }
 
-public inline fun Context.promptRemove(crossinline callback: () -> Unit)
+public inline fun Fragment.promptRemove(crossinline callback: (Boolean) -> Unit)
 {
-	if (this !is Activity && this !is Fragment) return
+	requireActivity().promptRemove(callback)
+}
+
+public inline fun Context.promptRemove(crossinline callback: (Boolean) -> Unit)
+{
+	if (this !is Activity) return
 
 	MaterialAlertDialogBuilder(this)
 		.setTitle("Are you sure?")
 		.setMessage("Delete the selected item?")
 		.setPositiveButton("Delete") { dialog, which ->
-			callback()
+			callback(true)
 		}
-		.setNegativeButton("Cancel", null)
+		.setNegativeButton("Cancel") { dialog, which ->
+			callback(false)
+		}
+		.setOnCancelListener {
+			callback(false)
+		}
 		.show()
 }

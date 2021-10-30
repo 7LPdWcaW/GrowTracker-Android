@@ -9,6 +9,7 @@
 	<ScrollView
 		android:layout_width="match_parent"
 		android:layout_height="match_parent"
+		android:id="@+id/content_scroller"
 		android:clipToPadding="false"
 		android:fillViewport="true"
 	>
@@ -22,6 +23,7 @@
 			<com.google.android.material.card.MaterialCardView
 				android:layout_width="match_parent"
 				android:layout_height="wrap_content"
+				android:id="@+id/details_card"
 				style="@style/Card"
 			>
 				<androidx.constraintlayout.widget.ConstraintLayout
@@ -36,7 +38,8 @@
 						android:scaleType="centerCrop"
 						android:adjustViewBounds="true"
 						app:shapeAppearanceOverlay="@style/CircleImage"
-						app:srcCompat="@drawable/sample"
+						app:srcCompat="@drawable/ic_default_icon_drawable"
+						android:background="?colorSecondary"
 						android:clickable="true"
 						android:focusable="true"
 						android:foreground="@drawable/circular_selectable_item_background"
@@ -118,6 +121,8 @@
 			<com.google.android.material.card.MaterialCardView
 				android:layout_width="match_parent"
 				android:layout_height="wrap_content"
+				android:id="@+id/medium_card"
+				android:visibility="gone"
 				style="@style/Card"
 			>
 				<androidx.constraintlayout.widget.ConstraintLayout
@@ -209,15 +214,15 @@
 		</LinearLayout>
 	</ScrollView>
 
-	<com.google.android.material.floatingactionbutton.FloatingActionButton
-		android:layout_width="wrap_content"
-		android:layout_height="wrap_content"
-		android:id="@+id/done"
-		android:layout_margin="16dp"
-		android:contentDescription="@string/app_intro_done_button"
-		android:layout_gravity="bottom|end"
-		app:backgroundTint="?colorPrimary"
-		app:tint="?textOnPrimary"
-		app:srcCompat="@drawable/ic_check"
-	/>
+<!--	<com.google.android.material.floatingactionbutton.FloatingActionButton-->
+<!--		android:layout_width="wrap_content"-->
+<!--		android:layout_height="wrap_content"-->
+<!--		android:id="@+id/done"-->
+<!--		android:layout_margin="16dp"-->
+<!--		android:contentDescription="@string/app_intro_done_button"-->
+<!--		android:layout_gravity="bottom|end"-->
+<!--		app:backgroundTint="?colorPrimary"-->
+<!--		app:tint="?textOnPrimary"-->
+<!--		app:srcCompat="@drawable/ic_check"-->
+<!--	/>-->
 </FrameLayout>

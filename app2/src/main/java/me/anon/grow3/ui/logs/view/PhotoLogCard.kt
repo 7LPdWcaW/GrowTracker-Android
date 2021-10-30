@@ -3,29 +3,33 @@ package me.anon.grow3.ui.logs.view
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.core.view.isVisible
+import com.nostra13.universalimageloader.core.ImageLoader
 import me.anon.grow3.data.model.Diary
 import me.anon.grow3.data.model.Photo
-import me.anon.grow3.databinding.CardWaterLogBinding
-import me.anon.grow3.view.model.Card
+import me.anon.grow3.databinding.CardPhotoLogBinding
+import me.anon.grow3.databinding.StubPhotoLogPhotoBinding
+import me.anon.grow3.util.mapToView
 
-class PhotoLogCard : Card<CardWaterLogBinding>
+class PhotoLogCard : LogCard<CardPhotoLogBinding, Photo>
 {
-	private lateinit var diary: Diary
-	private lateinit var log: Photo
-
 	constructor() : super()
-	constructor(diary: Diary, log: Photo) : super()
-	{
-		this.diary = diary
-		this.log = log
-	}
+	constructor(diary: Diary, log: Photo) : super(diary, log)
 
-	override fun createView(inflater: LayoutInflater, parent: ViewGroup): CardWaterLogBinding
-		= CardWaterLogBinding.inflate(inflater, parent, false)
-	override fun bindView(view: View): CardWaterLogBinding = CardWaterLogBinding.bind(view)
+	inner class PhotoLogCardHolder(view: View) : CardViewHolder(view)
+	override fun createViewHolder(inflater: LayoutInflater, parent: ViewGroup): CardViewHolder
+		= PhotoLogCardHolder(CardPhotoLogBinding.inflate(inflater, parent, false).root)
 
-	override fun bind(view: CardWaterLogBinding)
+	override fun bindView(view: View): CardPhotoLogBinding = CardPhotoLogBinding.bind(view)
+
+	override fun bindLog(view: CardPhotoLogBinding)
 	{
-//		view.stubCardHeader.header.text = log.summary()
+		view.content.removeAllViews()
+		log.imagePaths.mapToView<String, StubPhotoLogPhotoBinding>(view.content) { image, view ->
+			ImageLoader.getInstance()
+				.displayImage(image, view.photo)
+		}
+
+		view.content.isVisible = view.content.childCount > 0
 	}
 }

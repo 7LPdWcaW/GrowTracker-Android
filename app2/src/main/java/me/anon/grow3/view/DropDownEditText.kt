@@ -19,10 +19,7 @@ import androidx.core.view.size
 import com.google.android.material.textfield.MaterialAutoCompleteTextView
 import com.google.android.material.textfield.TextInputLayout
 import me.anon.grow3.R
-import me.anon.grow3.util.afterMeasured
-import me.anon.grow3.util.drawable
-import me.anon.grow3.util.inflate
-import me.anon.grow3.util.parentView
+import me.anon.grow3.util.*
 
 class DropDownEditText : MaterialAutoCompleteTextView
 {
@@ -101,14 +98,14 @@ class DropDownEditText : MaterialAutoCompleteTextView
 				.setChecked(it.isChecked)
 		})
 
-		popup.height = items.size * 180
+		popup.height = items.size.coerceAtMost(4) * 64.dp
 		adapter.notifyDataSetChanged()
 		populateText()
 	}
 
 	private fun init()
 	{
-		popup.height = items.size * 180
+		popup.height = items.size.coerceAtMost(4) * 64.dp
 		popup.anchorView = this
 		popup.setDropDownGravity(Gravity.END)
 		popup.isModal = true

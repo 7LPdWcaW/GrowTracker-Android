@@ -1,8 +1,11 @@
 package me.anon.grow3
 
+import android.annotation.SuppressLint
 import android.app.Application
 import android.content.Context
 import com.jakewharton.threetenabp.AndroidThreeTen
+import com.nostra13.universalimageloader.core.ImageLoader
+import com.nostra13.universalimageloader.core.ImageLoaderConfiguration
 import me.anon.grow3.di.ApplicationComponent
 import me.anon.grow3.di.DaggerApplicationComponent
 import me.anon.grow3.di.module.AppModule
@@ -15,14 +18,16 @@ abstract class BaseApplication : Application()
 		/**
 		 * Do not use this except for string/resource access!
 		 */
+		@SuppressLint("StaticFieldLeak")
 		@JvmStatic
 		public lateinit var context: Context
+
+		@JvmStatic
+		public lateinit var appComponent: ApplicationComponent
 	}
 
 	// todo: change this to pref to inject
 	public var dataPath: String = ""
-
-	public lateinit var appComponent: ApplicationComponent
 
 	override fun onCreate()
 	{
@@ -31,6 +36,10 @@ abstract class BaseApplication : Application()
 		context = this
 		AndroidThreeTen.init(this)
 		Timber.plant(Timber.DebugTree())
+
+		val config = ImageLoaderConfiguration.Builder(this)
+			.build()
+		ImageLoader.getInstance().init(config)
 
 		dataPath = getExternalFilesDir(null)!!.absolutePath
 		setup()

@@ -107,7 +107,7 @@ class NitriteDiariesDataSourceTest
 		diary.name = updateString
 
 		// transactional databases require re-saving
-		dataSource.sync(DiariesDataSource.SyncDirection.SAVE, diary)
+		dataSource.sync(DiariesDataSource.SyncDirection.Commit, diary)
 
 		// diary in backing list should be updated as [diary] should be an object reference
 		with (dataSource.getDiaryById(diary.id)) {
@@ -119,14 +119,14 @@ class NitriteDiariesDataSourceTest
 	@Test
 	public fun `test load from disk`() = runBlocking<Unit> {
 		dataSource.addDiary(TestConstants.newDiary)
-		dataSource.sync(DiariesDataSource.SyncDirection.LOAD)
+		dataSource.sync(DiariesDataSource.SyncDirection.Commit)
 		val diary = dataSource.getDiaryById(TestConstants.newDiary.id)
 			.`should not be null`()
 
 		val updateString = "Updated name"
 		diary.name = updateString
 
-		dataSource.sync(DiariesDataSource.SyncDirection.LOAD)
+		dataSource.sync(DiariesDataSource.SyncDirection.Commit)
 
 		// we didn't save so the diary should not be updated
 		val diary2 = dataSource.getDiaryById(TestConstants.newDiary.id)
