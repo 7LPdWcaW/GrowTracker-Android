@@ -2,8 +2,8 @@ name: 3.0 Development build
 
 on:
   push:
-    branches:
-      - 'develop3'
+    tags:
+      - 'v3.*'
 
 jobs:
   apk:
@@ -26,3 +26,8 @@ jobs:
         uses: actions/upload-artifact@v2
         with:
           path: app2/build/outputs/apk/production/release/app2-production-release.apk
+      - name: Releasing using Hub
+        uses: kyze8439690/action-release-releaseapk@master
+        env:
+          GITHUB_TOKEN: ${{ secrets.TOKEN }}
+          APP_FOLDER: app2
