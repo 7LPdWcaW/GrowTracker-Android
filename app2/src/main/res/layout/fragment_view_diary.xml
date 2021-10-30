@@ -70,6 +70,8 @@
 				android:layout_height="wrap_content"
 				android:id="@+id/menu_log_container"
 				android:orientation="vertical"
+				android:showDividers="middle"
+				android:divider="@drawable/menu_divider"
 			>
 				<TextView
 					android:layout_width="match_parent"

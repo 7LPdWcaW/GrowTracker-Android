@@ -14,6 +14,7 @@ import com.google.android.material.textfield.TextInputLayout
 import kotlinx.coroutines.flow.collectLatest
 import me.anon.grow3.R
 import me.anon.grow3.data.model.Diary
+import me.anon.grow3.data.model.Environment
 import me.anon.grow3.data.model.Log
 import me.anon.grow3.data.model.asView
 import me.anon.grow3.databinding.FragmentActionLogBinding
@@ -101,8 +102,11 @@ open class LogActionFragment : BaseFragment(FragmentActionLogBinding::class), Mo
 		//viewBindings.actionDelete.isVisible = !viewModel.isNew
 		viewBindings.actionDelete.onClick {
 			requireActivity().promptRemove {
-				viewModel.remove()
-				finish()
+				if (it)
+				{
+					viewModel.remove()
+					finish()
+				}
 			}
 		}
 
@@ -126,11 +130,18 @@ open class LogActionFragment : BaseFragment(FragmentActionLogBinding::class), Mo
 				.collectLatest { state ->
 					when (state)
 					{
+						is LogActionViewModel.UiResult.Loading -> {
+							viewBindings.logContent.isVisible = false
+							viewBindings.progress.isVisible = true
+						}
+
 						is LogActionViewModel.UiResult.Loaded -> {
 							renderLogView(state.diary, state.log)
 						}
 
 						is LogActionViewModel.UiResult.Finishing -> {
+							viewBindings.logContent.isVisible = false
+							viewBindings.progress.isVisible = false
 							finish()
 						}
 					}
@@ -174,7 +185,14 @@ open class LogActionFragment : BaseFragment(FragmentActionLogBinding::class), Mo
 				logCommon.cropSelectViewVisible = false
 			}
 
+			if (log is Environment)
+			{
+				logCommon.cropSelectViewVisible = false
+			}
+
 			viewBindings.logContent.addView(logCommon, ViewGroup.LayoutParams(MATCH_PARENT, MATCH_PARENT))
+			viewBindings.logContent.isVisible = true
+			viewBindings.progress.isVisible = false
 		}
 	}
 

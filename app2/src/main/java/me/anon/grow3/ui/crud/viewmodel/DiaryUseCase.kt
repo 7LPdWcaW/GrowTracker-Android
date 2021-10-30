@@ -1,12 +1,11 @@
 package me.anon.grow3.ui.crud.viewmodel
 
-import androidx.lifecycle.*
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.emitAll
 import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.flow.map
 import me.anon.grow3.data.exceptions.GrowTrackerException
-import me.anon.grow3.data.model.*
+import me.anon.grow3.data.model.Diary
 import me.anon.grow3.data.repository.DiariesRepository
 import me.anon.grow3.util.states.DataResult
 
@@ -22,11 +21,11 @@ class DiaryUseCase(
 		val count = diariesRepository.getDiaryCount(false)
 		val newDiary = Diary(name = "Gen ${count + 1}").apply {
 			isDraft = true
-			crops as ArrayList += Crop(
-				name = "Crop 1",
-				genetics = "Unknown genetics",
-				platedDate = this@apply.date
-			)
+//			crops as ArrayList += Crop(
+//				name = "Crop 1",
+//				genetics = "Unknown genetics",
+//				platedDate = this@apply.date
+//			)
 		}
 
 		diary = diariesRepository.addDiary(newDiary)

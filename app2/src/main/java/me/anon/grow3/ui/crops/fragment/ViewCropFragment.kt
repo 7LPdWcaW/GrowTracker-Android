@@ -37,7 +37,7 @@ class ViewCropFragment : CardListFragment()
 			add(StagesCard(diary = diary, crop = crop))
 			add(CropDetailsCard(diary = diary, crop = crop))
 			diary.mediumOf(crop)?.let { medium ->
-				//add(LogMediumCard(title = "Medium details", diary = diary, crop = crop, medium = medium))
+//				add(LogMediumCard(title = "Medium details", diary = diary, crop = crop, medium = medium))
 			}
 			add(CropLinksCard(diary = diary, crop = crop))
 		}

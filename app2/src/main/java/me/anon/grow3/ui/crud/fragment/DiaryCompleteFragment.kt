@@ -39,7 +39,7 @@ class DiaryCompleteFragment : BaseFragment(FragmentCrudDiaryCompleteBinding::cla
 			.collectWhileStarted(this) { state ->
 				val diary = (state as? DiaryCrudViewModel.UiResult.Loaded)?.diary ?: return@collectWhileStarted
 				viewBindings.close.setOnClickListener {
-					navigateTo<ViewDiaryFragment> {
+					navigateTo<ViewDiaryFragment>(clearTask = true) {
 						bundleOf(EXTRA_DIARY_ID to diary.id)
 					}
 

@@ -26,6 +26,13 @@
 			app:navigationIcon="@drawable/ic_cross"
 		/>
 	</com.google.android.material.appbar.AppBarLayout>
+	
+	<ProgressBar
+		android:layout_width="wrap_content"
+		android:layout_height="wrap_content"
+		android:id="@+id/progress"
+		android:layout_gravity="center"
+	/>
 
 	<androidx.core.widget.NestedScrollView
 		android:layout_width="match_parent"
@@ -41,6 +48,7 @@
 			android:padding="16dp"
 			android:divider="@drawable/spacer_16dp"
 			android:showDividers="middle"
+			android:visibility="gone"
 		/>
 	</androidx.core.widget.NestedScrollView>
 

@@ -41,6 +41,8 @@ class LogListFragment : CardListFragment()
 								-o1.compareTo(o2)
 							}
 
+						// group "first log" cards for new crop into "new crop" log card with all details
+
 						group.forEach { (date, logs) ->
 							add(LogDateSeparator(date.asDisplayString(), logs.last().date.ago(false) + " • " + diary.stageWhen(logs.last()).longString()))
 							addAll(logs.reversed().map { it.asCard(diary) })

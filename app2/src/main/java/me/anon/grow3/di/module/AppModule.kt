@@ -31,8 +31,8 @@ class AppModule(
 	private val appContext: Context
 )
 {
-	@Singleton
 	@Provides
+	@Singleton
 	public fun provideContext(): Context = appContext.applicationContext
 
 	@Provides

@@ -120,12 +120,14 @@
 	</style>
 
 	<style name="Text">
+		<item name="android:textSize">@dimen/text_body</item>
 		<item name="android:textColor">?textOnSurface</item>
 		<item name="android:lineSpacingMultiplier">1.2</item>
 		<item name="android:fontFamily">sans-serif</item>
 	</style>
 
 	<style name="Text.Body">
+		<item name="android:textSize">@dimen/text_body</item>
 		<item name="android:textColor">?textOnSurface</item>
 		<item name="android:lineSpacingMultiplier">1.4</item>
 		<item name="android:fontFamily">sans-serif-light</item>

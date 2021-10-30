@@ -94,8 +94,10 @@ class DiaryDetailsFragment : BaseFragment(FragmentCrudDiaryDetailsBinding::class
 
 		viewBindings.deleteDiary.onClick {
 			requireActivity().promptRemove {
-				crudViewModel.cancel()
-				requireActivity().finish()
+				if (it)
+				{
+					crudViewModel.remove()
+				}
 			}
 		}
 
@@ -116,6 +118,7 @@ class DiaryDetailsFragment : BaseFragment(FragmentCrudDiaryDetailsBinding::class
 				navController.navigate(R.id.page_1_to_2, bundleOf(Extras.EXTRA_CROP_ID to crop.id))
 			}
 		}
+		viewBindings.cropsContainer.hideIfEmpty()
 		viewBindings.cropsCard.isVisible = true
 	}
 

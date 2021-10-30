@@ -136,9 +136,10 @@
 						app:layout_constraintBottom_toTopOf="@id/add_crop"
 						android:layout_marginBottom="@dimen/section_spacing"
 						android:layout_marginTop="@dimen/section_spacing"
+						android:visibility="gone"
 					/>
 
-					<Button
+					<com.google.android.material.button.MaterialButton
 						android:layout_width="wrap_content"
 						android:layout_height="wrap_content"
 						android:id="@+id/add_crop"

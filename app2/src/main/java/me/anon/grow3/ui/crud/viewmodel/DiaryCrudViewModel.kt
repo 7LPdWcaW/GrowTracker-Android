@@ -31,6 +31,7 @@ class DiaryCrudViewModel(
 	{
 		data class Loaded(val diary: Diary, val crop: Crop? = null, val nonce: Long = 0L) : UiResult()
 		object Loading : UiResult()
+		object Finishing : UiResult()
 	}
 
 	private val _state = MutableStateFlow<UiResult>(UiResult.Loading)
@@ -190,13 +191,14 @@ class DiaryCrudViewModel(
 		}
 	}
 
-	public fun cancel()
+	public fun remove()
 	{
 		cropScope.coroutineContext.cancelChildren()
 		diaryScope.coroutineContext.cancelChildren()
 		viewModelScope.launch {
 			_state.emit(UiResult.Loading)
 			diaryVm.remove()
+			_state.emit(UiResult.Finishing)
 		}
 	}
 }

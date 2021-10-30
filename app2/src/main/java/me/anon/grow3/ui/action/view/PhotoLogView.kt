@@ -66,8 +66,11 @@ class PhotoLogView : LogView<FragmentActionLogPhotoBinding>
 			photo.root.onLongClick {
 				view.root.findFragment<LogActionFragment>().let { fragment ->
 					fragment.promptRemove {
-						log.imagePaths.removeAll { it == image }
-						view.photosContainer.removeView(photo.root)
+						if (it)
+						{
+							log.imagePaths.removeAll { it == image }
+							view.photosContainer.removeView(photo.root)
+						}
 					}
 				}
 				true

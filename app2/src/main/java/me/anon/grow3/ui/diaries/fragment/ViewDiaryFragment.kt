@@ -1,6 +1,7 @@
 package me.anon.grow3.ui.diaries.fragment
 
 import androidx.core.os.bundleOf
+import androidx.core.view.size
 import androidx.core.view.updatePadding
 import androidx.fragment.app.viewModels
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -60,10 +61,10 @@ class ViewDiaryFragment : BaseFragment(FragmentViewDiaryBinding::class)
 		}
 
 		viewBindings.menuLogContainer.removeViewsBefore(count = 1)
-		LogConstants.quickMenu.forEach { type ->
+		LogConstants.quickMenu.sortedBy { it.name }.forEach { type ->
 			val menuView = StubMenuLogActionBinding.inflate(layoutInflater, viewBindings.menuLogContainer, false)
 			menuView.logName.text = type.name
-			viewBindings.menuLogContainer.addView(menuView.root, 0)
+			viewBindings.menuLogContainer.addView(menuView.root, viewBindings.menuLogContainer.size - 1)
 
 			// routing
 			menuView.root.onClick {
@@ -88,6 +89,7 @@ class ViewDiaryFragment : BaseFragment(FragmentViewDiaryBinding::class)
 					is ViewDiaryViewModel.UiResult.Loaded -> updateDiaryUi(state.diary)
 					is ViewDiaryViewModel.UiResult.Removed -> {
 						navigateTo<EmptyFragment>()
+						(activity as? MainActivity)?.openMenu()
 					}
 				}
 			}
@@ -119,7 +121,12 @@ class ViewDiaryFragment : BaseFragment(FragmentViewDiaryBinding::class)
 
 		viewAdapter.newStack {
 			add(StagesCard(diary = diary, title = "Stages summary"))
-			add(DiaryCropsCard(diary = diary, title = "Crops"))
+
+			if (diary.crops.isNotEmpty())
+			{
+				add(DiaryCropsCard(diary = diary, title = "Crops"))
+			}
+
 			add(DiaryLinksCard(diary = diary))
 		}
 	}

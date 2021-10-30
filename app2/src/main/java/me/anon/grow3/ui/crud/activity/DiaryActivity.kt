@@ -72,6 +72,11 @@ class DiaryActivity : BaseActivity(ActivityCrudDiaryBinding::class)
 		viewModel.state
 			.collectWhileStarted(this) { state ->
 				viewBindings.next.isVisible = currentView != R.id.navigation_diary_crop && viewModel.diaryDraft
+
+				if (state is DiaryCrudViewModel.UiResult.Finishing)
+				{
+					finish()
+				}
 			}
 	}
 
@@ -108,7 +113,7 @@ class DiaryActivity : BaseActivity(ActivityCrudDiaryBinding::class)
 				{
 					promptExit {
 						lifecycleScope.launch {
-							viewModel.cancel()
+							viewModel.remove()
 							finish()
 						}
 					}

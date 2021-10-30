@@ -50,6 +50,7 @@ class ViewDiaryViewModel constructor(
 		viewModelScope.launch {
 			diary
 				.catch { cause ->
+					_state.emit(UiResult.Loading)
 					if (cause is GrowTrackerException.DiaryLoadFailed) _state.emit(UiResult.Removed)
 				}
 				.collectLatest {

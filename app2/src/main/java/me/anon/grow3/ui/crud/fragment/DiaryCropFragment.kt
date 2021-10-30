@@ -39,9 +39,12 @@ class DiaryCropFragment : BaseFragment(FragmentCrudDiaryCropBinding::class)
 	{
 		viewBindings.removeCrop.onClick {
 			requireContext().promptRemove {
-				crudViewModel.removeCrop()
-				crudViewModel.endCrop()
-				(activity as? DiaryActivity)?.popBackStack()
+				if (it)
+				{
+					crudViewModel.removeCrop()
+					crudViewModel.endCrop()
+					(activity as? DiaryActivity)?.popBackStack()
+				}
 			}
 		}
 

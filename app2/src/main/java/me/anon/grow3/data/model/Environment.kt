@@ -5,6 +5,9 @@ import me.anon.grow3.util.ValueHolder
 
 /**
  * See [me.anon.grow3.ui.logs.view.EnvironmentLogCard]
+ * See [me.anon.grow3.ui.action.view.EnvironmentLogView]
+ *
+ * An environment applies to the entire diary
  */
 @JsonClass(generateAdapter = true)
 data class Environment(
