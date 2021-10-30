@@ -3,10 +3,7 @@ package me.anon.grow3.data.model
 import com.fasterxml.jackson.annotation.JsonTypeInfo
 import me.anon.grow3.data.exceptions.GrowTrackerException
 import me.anon.grow3.ui.action.view.*
-import me.anon.grow3.ui.logs.view.PhotoLogCard
-import me.anon.grow3.ui.logs.view.StageChangeLogCard
-import me.anon.grow3.ui.logs.view.TransplantLogCard
-import me.anon.grow3.ui.logs.view.WaterLogCard
+import me.anon.grow3.ui.logs.view.*
 import me.anon.grow3.util.*
 import me.anon.grow3.view.model.Card
 import org.threeten.bp.ZonedDateTime
@@ -26,15 +23,15 @@ class LogType<T>(
 object LogConstants
 {
 	public val types = hashMapOf<String, LogType<*>>(
-		"Water" to LogType(
-			"Water",
+		"Environment" to LogType(
+			"Environment",
 			-1,
-			Water::class.java,
-			WaterLogView::class.java,
-			WaterLogCard::class.java,
-			{ Water() },
-			{ a,b -> WaterLogView(a, b) },
-			{ a,b -> WaterLogCard(a, b) },
+			Environment::class.java,
+			EnvironmentLogView::class.java,
+			EnvironmentLogCard::class.java,
+			{ Environment() },
+			{ a,b -> EnvironmentLogView(a, b) },
+			{ a,b -> EnvironmentLogCard(a, b) },
 		),
 		"Photo" to LogType(
 			"Photo",
@@ -66,11 +63,22 @@ object LogConstants
 			{ a,b -> TransplantLogView(a, b) },
 			{ a,b -> TransplantLogCard(a, b) },
 		),
+		"Water" to LogType(
+			"Water",
+			-1,
+			Water::class.java,
+			WaterLogView::class.java,
+			WaterLogCard::class.java,
+			{ Water() },
+			{ a,b -> WaterLogView(a, b) },
+			{ a,b -> WaterLogCard(a, b) },
+		),
 	)
 	public val quickMenu get() = arrayOf(
-		types["Water"]!!,
+		types["Environment"]!!,
 		types["Photo"]!!,
 		types["Transplant"]!!,
+		types["Water"]!!,
 	)
 }
 
