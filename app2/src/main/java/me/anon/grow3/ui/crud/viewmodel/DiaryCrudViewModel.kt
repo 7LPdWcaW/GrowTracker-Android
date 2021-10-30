@@ -29,7 +29,7 @@ class DiaryCrudViewModel(
 
 	sealed class UiResult
 	{
-		data class Loaded(val diary: Diary, val crop: Crop? = null) : UiResult()
+		data class Loaded(val diary: Diary, val crop: Crop? = null, val nonce: Long = 0L) : UiResult()
 		object Loading : UiResult()
 	}
 
@@ -127,8 +127,9 @@ class DiaryCrudViewModel(
 	{
 		diaryScope.launch {
 			val diary = diaryVm.new()
-			diary.collect {
-				_state.emit(UiResult.Loaded(it))
+			diary.collectLatest {
+				// new diary is same as old so state doesnt re-trigger for collectors
+				_state.emit(UiResult.Loaded(it, nonce = System.currentTimeMillis()))
 			}
 		}
 	}
