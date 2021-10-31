@@ -411,7 +411,7 @@ class MainActivity : BaseActivity(ActivityMainBinding::class)
 						if (layoutSheetBehavior.state == STATE_COLLAPSED)
 						{
 							promptExit {
-								super.onBackPressed()
+								if (it) super.onBackPressed()
 							}
 
 							return@onBackPressed

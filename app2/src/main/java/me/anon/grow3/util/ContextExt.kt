@@ -9,7 +9,7 @@ import me.anon.grow3.BaseApplication
 public val Context.application get() = applicationContext as BaseApplication
 public val Context.component get() = BaseApplication.appComponent
 
-public inline fun Context.promptExit(crossinline callback: () -> Unit)
+public inline fun Context.promptExit(crossinline callback: (Boolean) -> Unit)
 {
 	if (this !is Activity) return
 
@@ -17,7 +17,13 @@ public inline fun Context.promptExit(crossinline callback: () -> Unit)
 		.setTitle("Are you sure?")
 		.setMessage("You will lose any unsaved changes")
 		.setPositiveButton("Quit") { dialog, which ->
-			callback()
+			callback(true)
+		}
+		.setNegativeButton("Cancel") { dialog, which ->
+			callback(false)
+		}
+		.setOnCancelListener {
+			callback(false)
 		}
 		.setNegativeButton("Cancel", null)
 		.show()
