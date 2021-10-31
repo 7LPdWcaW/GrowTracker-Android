@@ -114,6 +114,10 @@ enum class LightType : Type
 
 enum class StageType : Type
 {
+	Started {
+		override val strRes = R.string.stage_type_started
+		override val iconRes = R.drawable.ic_coloured_icon
+	},
 	Planted {
 		override val strRes = R.string.stage_type_planted
 		override val iconRes = R.drawable.ic_coloured_icon
@@ -166,14 +170,16 @@ enum class StageType : Type
 		fun ofId(id: Int): StageType = values().first { it.strRes == id }
 
 		fun toMenu(): List<DropDownEditText.DropDownMenuItem>
-			= values().map {
-				DropDownEditText.DropDownMenuItem(
-					it.strRes,
-					false,
-					true,
-					titleRes = it.strRes
-				)
-			}
+			= values()
+				.filterNot { it == Started }
+				.map {
+					DropDownEditText.DropDownMenuItem(
+						it.strRes,
+						false,
+						true,
+						titleRes = it.strRes
+					)
+				}
 	}
 }
 

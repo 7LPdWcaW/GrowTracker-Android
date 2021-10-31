@@ -30,7 +30,15 @@ data class Diary(
 	public fun light(): Light? = findLight()
 
 	public fun crop(id: String): Crop = crops.first { it.id == id }
-	public fun stages(): List<Stage> = findAllStages().filter { it.cropIds.isEmpty() }
+	public fun stages(): List<Stage>
+		= findAllStages()
+			.filter { it.cropIds.isEmpty() }
+			.run {
+				if (this.isEmpty()) arrayListOf(Stage(StageType.Started).apply {
+					this.date = this@Diary.date
+				})
+				else this
+			}
 
 	/**
 	 * Calculates the stage info at the time of the given log for the provided crop
@@ -38,7 +46,7 @@ data class Diary(
 	public fun stageWhen(log: Log): StageAt
 	{
 		val stage = stages()
-			.lastOrNull { it.date.asDateTime() < log.date.asDateTime() } ?: stages().first() // should at least return Planted
+			.lastOrNull { it.date.asDateTime() < log.date.asDateTime() } ?: stages().first() // should at least return Started
 
 		return StageAt(
 			days = (stage.date and log.date).dateDifferenceDays(),
@@ -54,7 +62,7 @@ data class Diary(
 	public fun stageWhen(crop: Crop, log: Log): StageAt
 	{
 		val stage = stagesOf(crop)
-			.lastOrNull { it.date.asDateTime() < log.date.asDateTime() } ?: stages().first()  // should at least return Planted
+			.lastOrNull { it.date.asDateTime() < log.date.asDateTime() } ?: stages().first()  // should at least return Started
 
 		return StageAt(
 			days = (stage.date and log.date).dateDifferenceDays(),
@@ -218,7 +226,9 @@ data class Diary(
 	init {
 		if (log.isEmpty() || !log.any { it is StageChange })
 		{
-			log as ArrayList += StageChange(StageType.Planted)
+			log as ArrayList += StageChange(StageType.Started).apply {
+				this.date = this@Diary.date
+			}
 		}
 
 		log.sortedBy { it.date }
