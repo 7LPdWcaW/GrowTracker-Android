@@ -1,20 +1,20 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest
 	xmlns:android="http://schemas.android.com/apk/res/android"
+	xmlns:tools="http://schemas.android.com/tools"
 	package="me.anon.grow3"
 >
-	<uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
-
 	<application
 		android:icon="@mipmap/ic_launcher"
 		android:roundIcon="@mipmap/ic_launcher_round"
 		android:supportsRtl="true"
 		android:name=".MainApplication"
 		android:theme="@style/AppTheme"
+		tools:node="merge"
 	>
 		<activity
 			android:name=".ui.BootActivity"
-			android:label="@string/app_name"
+			android:label="${appName}"
 			android:noHistory="true"
 			android:theme="@style/AppTheme.Launch"
 			android:exported="true"
@@ -29,11 +29,8 @@
 			android:name=".ui.main.activity.MainActivity"
 			android:theme="@style/AppTheme.FullScrim"
 			android:launchMode="singleTask"
-			android:label=""
 			android:exported="false"
 		/>
-
-<!--		<activity android:name=".ui.crud.activity.CropActivity" android:theme="@style/AppTheme.Lightstatus" />-->
 
 		<activity
 			android:name=".ui.crud.activity.DiaryActivity"
@@ -57,16 +54,5 @@
 			android:parentActivityName=".ui.main.activity.MainActivity"
 			android:exported="false"
 		/>
-
-		<activity
-			android:name=".ui.DemoUiActivity"
-			android:label="Demo UI"
-			android:exported="true"
-		>
-			<intent-filter>
-				<action android:name="android.intent.action.MAIN" />
-				<category android:name="android.intent.category.LAUNCHER" />
-			</intent-filter>
-		</activity>
 	</application>
 </manifest>

@@ -15,6 +15,7 @@ android {
 		versionName "3.0"
 		multiDexEnabled true
 
+		//resValue "string", "app_name", "GrowTracker"
 //		testInstrumentationRunner "me.anon.grow3.TestRunner"
 	}
 
@@ -56,8 +57,20 @@ android {
 	}
 
 	buildTypes {
+		debug {
+			applicationIdSuffix ".debug"
+			manifestPlaceholders = [
+//				resValue "string", "app_name", "Dev"
+				appName: "Dev"
+			]
+		}
 		release {
 			signingConfig signingConfigs.release
+			resValue "string", "app_name", "GrowTracker"
+			manifestPlaceholders = [
+//				resValue "string", "app_name", "Dev"
+				appName: "GrowTracker"
+			]
 		}
 	}
 

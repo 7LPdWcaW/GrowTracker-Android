@@ -3,6 +3,7 @@ package me.anon.grow3.view
 import android.content.Context
 import android.util.AttributeSet
 import android.view.LayoutInflater
+import android.widget.TextView
 import androidx.constraintlayout.widget.ConstraintLayout
 import me.anon.grow3.data.model.Diary
 import me.anon.grow3.data.model.Log
@@ -20,20 +21,21 @@ class LogHeaderView(context: Context, attrs: AttributeSet? = null) : ConstraintL
 		bindings = StubCardHeaderBinding.inflate(LayoutInflater.from(context), this, true)
 	}
 
+	public val title: TextView get() = bindings.header
 	private var diary: Diary? = null
 	private var log: Log? = null
 
-	override fun onFinishInflate()
-	{
-		super.onFinishInflate()
-		populate()
-	}
-
-	override fun onAttachedToWindow()
-	{
-		super.onAttachedToWindow()
-		populate()
-	}
+//	override fun onFinishInflate()
+//	{
+//		super.onFinishInflate()
+//		populate()
+//	}
+//
+//	override fun onAttachedToWindow()
+//	{
+//		super.onAttachedToWindow()
+//		populate()
+//	}
 
 	private fun populate()
 	{
