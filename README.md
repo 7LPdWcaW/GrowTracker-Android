@@ -1,5 +1,7 @@
 # GrowTracker
 
+[![3.0 Development build](https://github.com/7LPdWcaW/GrowTracker-Android/actions/workflows/android-build-3-0.yml/badge.svg?branch=develop3&event=release)](https://github.com/7LPdWcaW/GrowTracker-Android/actions/workflows/android-build-3-0.yml)
+
 Welcome to Grow Tracker. This is a placeholder README for the future release of the app. To view the current app click [here](https://github.com/7LPdWcaW/GrowTracker-Android/tree/master).
 
 # License
@@ -8,9 +10,7 @@ Copyright 2014-2021 7LPdWcaW
 
 Licensed under the Apache License, Version 2.0 (the "License");
 you may not use this file except in compliance with the License.
-You may obtain a copy of the License at
-
-   http://www.apache.org/licenses/LICENSE-2.0
+You may obtain a copy of the License at http://www.apache.org/licenses/LICENSE-2.0
 
 Unless required by applicable law or agreed to in writing, software
 distributed under the License is distributed on an "AS IS" BASIS,
@@ -21,7 +21,7 @@ limitations under the License.
 “Commons Clause” License Condition v1.0
 
 The Software is provided to you by the Licensor under the License,
-as defined below, subject to the following condition.
+as defined above, subject to the following condition.
 
 Without limiting other conditions in the License, the grant of rights
 under the License will not include, and the License does not grant to you,
