@@ -8,6 +8,10 @@
 
 Welcome to grow tracker. This is a utility app designed for gardening and tracking various parameters of your grow.
 
+# Discontinuation
+
+As of 2020, major version 2 of the app is in maintenance mode, meaning only critical bugs will be fixed. All further development is reserved for major version 3 of the application which will eventually replace this. [Read more here](https://github.com/7LPdWcaW/GrowTracker-Android/issues/206)
+
 # Install
 
 [![GitHub release (latest SemVer)](https://img.shields.io/github/v/release/7LPdWcaW/GrowTracker-Android?label=latest%20version&sort=semver)](https://github.com/7LPdWcaW/GrowTracker-Android/releases)
@@ -33,7 +37,7 @@ The app requires no permissions except for external storage (for caching plant d
 
 ## Updating
 
-You can either elect to update manually, or get notified on releases by installing the [Update plugin](https://github.com/7LPdWcaW/GrowUpdater-Android/releases).
+You can either select to update manually, or get notified on releases by installing the [Update plugin](https://github.com/7LPdWcaW/GrowUpdater-Android/releases).
 
 **For updates, do not uninstall first, you will lose your existing plant data. Always back up your data!**
 
