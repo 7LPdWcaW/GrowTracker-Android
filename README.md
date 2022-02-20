@@ -17,13 +17,13 @@ Welcome to grow tracker. This is a utility app designed for gardening and tracki
 
 The app requires no permissions except for external storage (for caching plant data and images) which you can see [here](https://github.com/7LPdWcaW/GrowTracker-Android/blob/develop/app/src/main/AndroidManifest.xml) in order for users to maintain anonymity, and a minimum Android version of `4.2` and above
 
-- [Latest Nightly Build (Experimental!)](https://github.com/7LPdWcaW/GrowTracker-Android/releases/tag/alpha)
+- Latest Nightly Build (Experimental) [Releases](https://github.com/7LPdWcaW/GrowTracker-Android/releases/tag/alpha)
 
-- [Latest APK: (SHA256) 501786b7350eceb7b894a5745c06c378f1d2f2e6f4bf659ee2576b3dfaca5732 v2.6.1](https://github.com/7LPdWcaW/GrowTracker-Android/releases/download/v2.6.1/v2.6.1-production.apk)
+- Latest APK v2.6.1 [Download](https://github.com/7LPdWcaW/GrowTracker-Android/releases/download/v2.6.1/v2.6.1-production.apk) `SHA256:501786b7350eceb7b894a5745c06c378f1d2f2e6f4bf659ee2576b3dfaca5732`
 
-- [Latest APK (English only): (SHA256) e366c67c54548da4c46206c953e8847ba6e4c933449ca8d33525601ee2d87bb8 v2.6.1](https://github.com/7LPdWcaW/GrowTracker-Android/releases/download/v2.6.1/v2.6.1-en.apk)
+- Latest APK (English only) v2.6.1 [Download](https://github.com/7LPdWcaW/GrowTracker-Android/releases/download/v2.6.1/v2.6.1-en.apk) `SHA256:e366c67c54548da4c46206c953e8847ba6e4c933449ca8d33525601ee2d87bb8`
 
-- [Latest APK (Discrete): (SHA256) 3b5edaceb462c6fcd51d11652943357976f75b53dacdfe650f422933357688d9 v2.6.1](https://github.com/7LPdWcaW/GrowTracker-Android/releases/download/v2.6.1/v2.6.1-discrete.apk)
+- Latest APK (Discrete) v2.6.1 [Download](https://github.com/7LPdWcaW/GrowTracker-Android/releases/download/v2.6.1/v2.6.1-discrete.apk) `SHA256:3b5edaceb462c6fcd51d11652943357976f75b53dacdfe650f422933357688d9`
 
 ## How to install from APK
 
@@ -40,6 +40,8 @@ You can either elect to update manually, or get notified on releases by installi
 Installing the app via F-Droid makes it updateable through the F-Droid mechanism.
 
 # Screenshots
+
+Click on a screenshot to expand it!
 
 [![install](fastlane/metadata/android/en-GB/images/phoneScreenshotsThumbs/install.png)](fastlane/metadata/android/en-GB/images/phoneScreenshots/install.png)
 [![main plant list](fastlane/metadata/android/en-GB/images/phoneScreenshotsThumbs/1.png)](fastlane/metadata/android/en-GB/images/phoneScreenshots/1.png)
