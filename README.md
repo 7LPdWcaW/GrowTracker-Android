@@ -27,7 +27,7 @@ The app requires no permissions except for external storage (for caching plant d
 
 ## How to install from APK
 
-1. Follow [this guide](http://www.inbox.com/article/how-do-enable-third-party-apps-on-android.html) to enable unknown sources
+1. Follow [this guide](https://www.androidauthority.com/how-to-install-apks-31494/) to enable unknown sources
 2. Download the APK from [here](https://github.com/7LPdWcaW/GrowTracker-Android/releases)
 3. Click on downloaded app and install
 
