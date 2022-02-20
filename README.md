@@ -293,13 +293,14 @@ Encryption in the app uses basic AES for encryption using a provided passphrase.
 
 You can decrypt your files using your passphrase either by writing a script that uses AES decryption, or an online tool such as [Online-Domain-Tools](http://aes.online-domain-tools.com/).
 
-# Translators
+# Translations
 
 Translating is done conveniently through [Transifex](https://www.transifex.com/growutils/growtracker/)
 
 See [more](https://github.com/7LPdWcaW/GrowTracker-Android/issues/116) about translating GrowTracker
 
-Translations provided by;
+<details>
+  <summary>Translation contributors</summary>
 
 - Alex (Noxmiles) - de ![DE - German](https://transifex-open-api.herokuapp.com/badge/growutils/project/growtracker/language/de_DE/translated.png)
 - Basti B (Weltenesche) - de ![DE - German](https://transifex-open-api.herokuapp.com/badge/growutils/project/growtracker/language/de_DE/translated.png)
@@ -311,6 +312,8 @@ Translations provided by;
 - Vexatos - de ![DE - German](https://transifex-open-api.herokuapp.com/badge/growutils/project/growtracker/language/de_DE/translated.png)
 - W Q (williq) - de ![DE - German](https://transifex-open-api.herokuapp.com/badge/growutils/project/growtracker/language/de_DE/translated.png)
 - 9YbQiuEohUu1 - ru/uk ![UK - Ukrainian](https://transifex-open-api.herokuapp.com/badge/growutils/project/growtracker/language/uk/translated.png) ![RU - Russian](https://transifex-open-api.herokuapp.com/badge/growutils/project/growtracker/language/ru/translated.png)
+
+  </details>
 
 # License
 
