@@ -15,7 +15,7 @@ class AddWateringActivity : BaseActivity()
 		setSupportActionBar(toolbar)
 
 		var plantIndex: IntArray? = intent.extras?.getIntArray("plant_index") ?: intArrayOf(-1)
-		var gardenIndex: Int = intent.extras?.getInt("garden_index") ?: -1
+		var gardenIndex: Int = intent.extras?.getInt("garden_index", -1) ?: -1
 
 		if (plantIndex == null || plantIndex.size == 0)
 		{
