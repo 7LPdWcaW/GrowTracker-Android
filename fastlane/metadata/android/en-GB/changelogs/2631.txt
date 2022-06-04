@@ -1,0 +1,3 @@
+- Fixes issue with crash caused by no gardens when watering a plant
+- Fixes widgets
+- Small project maintenance upgrade
