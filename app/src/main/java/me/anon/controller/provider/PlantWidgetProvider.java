@@ -120,20 +120,9 @@ public class PlantWidgetProvider extends AppWidgetProvider
 
 			if (!TextUtils.isEmpty(plantId) && !MainApplication.isEncrypted())
 			{
-				int plantIndex = -1;
-				for (int index = 0, plantsSize = PlantManager.getInstance().getPlants().size(); index < plantsSize; index++)
+				Plant plant = PlantManager.getInstance().getPlant(plantId);
+				if (plant != null)
 				{
-					if (PlantManager.getInstance().getPlants().get(index).getId().equalsIgnoreCase(plantId))
-					{
-						plantIndex = index;
-						break;
-					}
-				}
-
-				if (plantIndex > -1)
-				{
-					Plant plant = PlantManager.getInstance().getPlants().get(plantIndex);
-
 					RemoteViews remoteViews = new RemoteViews(context.getPackageName(), R.layout.widget_plant_item);
 					setWidgetUi(widgetId, remoteViews, plant);
 
@@ -141,7 +130,7 @@ public class PlantWidgetProvider extends AppWidgetProvider
 					intent.setAction(Long.toString(System.currentTimeMillis()));
 					intent.putExtra("plant", plant);
 					intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_NEW_TASK);
-					PendingIntent plantIntent = PendingIntent.getActivity(context, 0, intent, PendingIntent.FLAG_UPDATE_CURRENT);
+					PendingIntent plantIntent = PendingIntent.getActivity(context, 0, intent, PendingIntent.FLAG_UPDATE_CURRENT | PendingIntent.FLAG_MUTABLE);
 					remoteViews.setOnClickPendingIntent(R.id.card_view, plantIntent);
 
 					appWidgetManager.updateAppWidget(widgetId, remoteViews);

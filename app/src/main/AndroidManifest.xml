@@ -30,7 +30,7 @@
 		<service android:name="me.anon.lib.export.ExportService" android:enabled="true" android:exported="false" />
 		<receiver android:name="me.anon.controller.receiver.BackupService" />
 
-		<receiver android:name="me.anon.controller.provider.PlantWidgetProvider">
+		<receiver android:name="me.anon.controller.provider.PlantWidgetProvider" android:exported="true">
 			<intent-filter>
 				<action android:name="android.appwidget.action.APPWIDGET_UPDATE" />
 				<action android:name="android.appwidget.action.APPWIDGET_RESIZE" />
@@ -48,6 +48,7 @@
 			android:finishOnTaskLaunch="true"
 			android:configChanges="orientation|screenSize"
 			android:theme="@style/AppThemeLaunch"
+			android:exported="true"
 		>
 			<intent-filter>
 				<category android:name="android.intent.category.LAUNCHER" />
@@ -55,7 +56,7 @@
 			</intent-filter>
 		</activity>
 
-		<activity android:name=".PlantSelectActivity" android:theme="@style/Theme.Transparent">
+		<activity android:name=".PlantSelectActivity" android:theme="@style/Theme.Transparent" android:exported="true">
 			<intent-filter>
 				<action android:name="android.appwidget.action.APPWIDGET_CONFIGURE" />
 			</intent-filter>
