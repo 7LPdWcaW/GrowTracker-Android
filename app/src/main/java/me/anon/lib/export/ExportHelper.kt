@@ -9,6 +9,7 @@ import android.graphics.Bitmap
 import android.graphics.Color
 import android.graphics.Typeface
 import android.os.AsyncTask
+import android.os.Build
 import android.os.Environment
 import android.view.View
 import android.view.ViewGroup
@@ -43,7 +44,6 @@ import java.io.File
 import java.io.FileInputStream
 import java.text.SimpleDateFormat
 import java.util.*
-import kotlin.collections.ArrayList
 import kotlin.math.absoluteValue
 import kotlin.math.max
 
@@ -257,7 +257,7 @@ class ExportHelper(
 				exportNotification = NotificationCompat.Builder(appContext, "export")
 					.setContentText(appContext.getString(R.string.exporting_start, notificationTitle))
 					.setContentTitle(appContext.getString(R.string.export_progress))
-					.setContentIntent(PendingIntent.getActivity(appContext, 0, Intent(), PendingIntent.FLAG_UPDATE_CURRENT))
+					.setContentIntent(PendingIntent.getActivity(appContext, 0, Intent(), PendingIntent.FLAG_UPDATE_CURRENT or (if (Build.VERSION.SDK_INT >= 31) PendingIntent.FLAG_MUTABLE else 0)))
 					.setTicker(appContext.getString(R.string.exporting_start, notificationTitle))
 					.setSmallIcon(R.drawable.ic_stat_name)
 					.setPriority(NotificationCompat.PRIORITY_LOW)
@@ -330,7 +330,7 @@ class ExportHelper(
 							.setContentText(context.getString(R.string.exporting_path, notificationTitle, file.absolutePath))
 							.setTicker(context.getString(R.string.exporting_complete, notificationTitle))
 							.setContentTitle(context.getString(R.string.export_complete))
-							.setContentIntent(PendingIntent.getActivity(context, 0, openIntent, PendingIntent.FLAG_UPDATE_CURRENT))
+							.setContentIntent(PendingIntent.getActivity(context, 0, openIntent, PendingIntent.FLAG_UPDATE_CURRENT or if (Build.VERSION.SDK_INT >= 31) PendingIntent.FLAG_MUTABLE else 0))
 							.setStyle(NotificationCompat.BigTextStyle()
 								.bigText(context.getString(R.string.exporting_path, notificationTitle, file.absolutePath))
 							)

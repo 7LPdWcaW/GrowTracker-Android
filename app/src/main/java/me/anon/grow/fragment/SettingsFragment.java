@@ -566,7 +566,7 @@ public class SettingsFragment extends PreferenceFragmentCompat implements Prefer
 		{
 			Intent backupIntent = new Intent(getActivity(), BackupService.class);
 			AlarmManager alarmManager = (AlarmManager)getActivity().getSystemService(Context.ALARM_SERVICE);
-			alarmManager.cancel(PendingIntent.getBroadcast(getActivity(), 0, backupIntent, 0));
+			alarmManager.cancel(PendingIntent.getBroadcast(getActivity(), 0, backupIntent, (Build.VERSION.SDK_INT >= 31 ? PendingIntent.FLAG_MUTABLE : 0)));
 
 			if ((Boolean)newValue)
 			{

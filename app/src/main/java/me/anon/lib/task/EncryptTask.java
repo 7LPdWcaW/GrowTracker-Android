@@ -5,6 +5,7 @@ import android.app.PendingIntent;
 import android.content.Context;
 import android.content.Intent;
 import android.os.AsyncTask;
+import android.os.Build;
 
 import java.io.File;
 import java.io.FileInputStream;
@@ -48,7 +49,7 @@ public class EncryptTask extends AsyncTask<ArrayList<String>, Integer, Void>
 		notification = new NotificationCompat.Builder(appContext, "export")
 			.setContentText(appContext.getString(R.string.data_task))
 			.setContentTitle(appContext.getString(R.string.encrypt_progress_warning))
-			.setContentIntent(PendingIntent.getActivity(appContext, 0, new Intent(), PendingIntent.FLAG_UPDATE_CURRENT))
+			.setContentIntent(PendingIntent.getActivity(appContext, 0, new Intent(), PendingIntent.FLAG_UPDATE_CURRENT | (Build.VERSION.SDK_INT >= 31 ? PendingIntent.FLAG_MUTABLE : 0)))
 			.setTicker(appContext.getString(R.string.encrypt_progress_warning))
 			.setSmallIcon(R.drawable.ic_stat_name)
 			.setPriority(NotificationCompat.PRIORITY_LOW)
@@ -141,7 +142,7 @@ public class EncryptTask extends AsyncTask<ArrayList<String>, Integer, Void>
 			notification = new NotificationCompat.Builder(appContext, "export")
 				.setContentText(appContext.getString(R.string.encrypt_task_complete))
 				.setContentTitle(appContext.getString(R.string.data_task))
-				.setContentIntent(PendingIntent.getActivity(appContext, 0, new Intent(), PendingIntent.FLAG_UPDATE_CURRENT))
+				.setContentIntent(PendingIntent.getActivity(appContext, 0, new Intent(), PendingIntent.FLAG_UPDATE_CURRENT | (Build.VERSION.SDK_INT >= 31 ? PendingIntent.FLAG_MUTABLE : 0)))
 				.setTicker(appContext.getString(R.string.encrypt_task_complete))
 				.setSmallIcon(R.drawable.ic_floting_done)
 				.setPriority(NotificationCompat.PRIORITY_DEFAULT)

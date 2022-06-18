@@ -17,6 +17,7 @@ import android.graphics.PorterDuffXfermode;
 import android.graphics.Rect;
 import android.graphics.RectF;
 import android.media.ThumbnailUtils;
+import android.os.Build;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
 import android.text.Html;
@@ -130,7 +131,7 @@ public class PlantWidgetProvider extends AppWidgetProvider
 					intent.setAction(Long.toString(System.currentTimeMillis()));
 					intent.putExtra("plant", plant);
 					intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_NEW_TASK);
-					PendingIntent plantIntent = PendingIntent.getActivity(context, 0, intent, PendingIntent.FLAG_UPDATE_CURRENT | PendingIntent.FLAG_MUTABLE);
+					PendingIntent plantIntent = PendingIntent.getActivity(context, 0, intent, PendingIntent.FLAG_UPDATE_CURRENT | (Build.VERSION.SDK_INT >= 31 ? PendingIntent.FLAG_MUTABLE : 0));
 					remoteViews.setOnClickPendingIntent(R.id.card_view, plantIntent);
 
 					appWidgetManager.updateAppWidget(widgetId, remoteViews);
