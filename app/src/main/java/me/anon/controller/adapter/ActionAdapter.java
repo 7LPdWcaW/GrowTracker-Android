@@ -41,7 +41,7 @@ import androidx.annotation.Nullable;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.widget.PopupMenu;
 import androidx.recyclerview.widget.RecyclerView;
-import kotlinx.android.parcel.Parcelize;
+import kotlinx.parcelize.Parcelize;
 import me.anon.grow.R;
 import me.anon.lib.DateRenderer;
 import me.anon.lib.TempUnit;

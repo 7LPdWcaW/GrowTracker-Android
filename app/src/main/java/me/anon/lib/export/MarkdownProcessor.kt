@@ -1,6 +1,5 @@
 package me.anon.lib.export
 
-import kotlinx.android.synthetic.main.statistics2_view.*
 import me.anon.grow.R
 import me.anon.grow.fragment.StatisticsFragment2
 import me.anon.lib.TdsUnit

@@ -1,7 +1,8 @@
 package me.anon.grow
 
 import android.os.Bundle
-import kotlinx.android.synthetic.main.fragment_holder.*
+import android.view.View
+import androidx.appcompat.widget.Toolbar
 import me.anon.grow.fragment.FeedingScheduleDetailsFragment
 
 /**
@@ -19,7 +20,7 @@ class FeedingScheduleDetailsActivity : BaseActivity()
 		super.onCreate(savedInstanceState)
 
 		setContentView(R.layout.fragment_holder)
-		setSupportActionBar(toolbar)
+		setSupportActionBar(findViewById<View>(R.id.toolbar) as Toolbar)
 		setTitle(R.string.schedule_details_title)
 
 		if (supportFragmentManager.findFragmentByTag(TAG_FRAGMENT) == null)

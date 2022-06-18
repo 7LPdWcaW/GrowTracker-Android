@@ -1,8 +1,8 @@
 package me.anon.grow
 
 import android.os.Bundle
-import kotlinx.android.synthetic.main.fragment_holder.*
-import me.anon.grow.fragment.StatisticsFragment
+import android.view.View
+import androidx.appcompat.widget.Toolbar
 import me.anon.grow.fragment.StatisticsFragment2
 import me.anon.lib.manager.PlantManager
 
@@ -13,7 +13,7 @@ class StatisticsActivity : BaseActivity()
 		super.onCreate(savedInstanceState)
 
 		setContentView(R.layout.fragment_holder)
-		setSupportActionBar(toolbar)
+		setSupportActionBar(findViewById<View>(R.id.toolbar) as Toolbar)
 
 //		if (intent.extras == null || !intent.hasExtra("plant"))
 //		{

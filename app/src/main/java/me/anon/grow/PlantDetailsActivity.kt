@@ -4,11 +4,10 @@ import android.content.Intent
 import android.os.Bundle
 import android.view.MenuItem
 import android.view.View
+import androidx.appcompat.widget.Toolbar
 import androidx.fragment.app.Fragment
 import com.google.android.material.appbar.AppBarLayout
-import kotlinx.android.synthetic.main.fragment_holder.toolbar
-import kotlinx.android.synthetic.main.fragment_holder.toolbar_layout
-import kotlinx.android.synthetic.main.tabbed_fragment_holder.*
+import com.google.android.material.bottomnavigation.BottomNavigationView
 import me.anon.grow.fragment.ActionsListFragment
 import me.anon.grow.fragment.PlantDetailsFragment
 import me.anon.grow.fragment.StatisticsFragment2
@@ -18,7 +17,7 @@ import me.anon.model.Plant
 
 class PlantDetailsActivity : BaseActivity()
 {
-	public val toolbarLayout: AppBarLayout by lazy { toolbar_layout }
+	public val toolbarLayout: AppBarLayout by lazy { findViewById(R.id.toolbar_layout) }
 	private lateinit var plant: Plant
 
 	override fun onCreate(savedInstanceState: Bundle?)
@@ -28,9 +27,10 @@ class PlantDetailsActivity : BaseActivity()
 			super.onCreate(savedInstanceState)
 
 			setContentView(R.layout.tabbed_fragment_holder)
-			setSupportActionBar(toolbar)
+			setSupportActionBar(findViewById<View>(R.id.toolbar) as Toolbar)
 			supportActionBar?.setDisplayHomeAsUpEnabled(true)
 			supportActionBar?.setHomeAsUpIndicator(R.drawable.ic_done_white_24dp)
+			val tabs = findViewById<BottomNavigationView>(R.id.tabs)
 
 			supportFragmentManager.findFragmentByTag(TAG_FRAGMENT) ?: let {
 				val fragment = when (intent.extras?.get("forward"))

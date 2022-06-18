@@ -11,13 +11,12 @@ import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.Fragment
 import com.esotericsoftware.kryo.Kryo
-import kotlinx.android.synthetic.main.feeding_date_stub.view.*
-import kotlinx.android.synthetic.main.schedule_details_view.*
 import me.anon.grow.R
 import me.anon.grow.ScheduleDateDetailsActivity
+import me.anon.grow.databinding.FeedingDateStubBinding
+import me.anon.grow.databinding.ScheduleDetailsViewBinding
 import me.anon.lib.SnackBar
 import me.anon.lib.Unit
-import me.anon.lib.ext.T
 import me.anon.lib.manager.ScheduleManager
 import me.anon.model.FeedingSchedule
 import me.anon.model.FeedingScheduleDate
@@ -41,9 +40,13 @@ class FeedingScheduleDetailsFragment : Fragment()
 	private var scheduleDates = arrayListOf<FeedingScheduleDate>()
 	private val measureUnit: Unit by lazy { Unit.getSelectedMeasurementUnit(activity); }
 	private val deliveryUnit: Unit by lazy { Unit.getSelectedDeliveryUnit(activity); }
+	private lateinit var binding: ScheduleDetailsViewBinding
 
 	override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View?
-		= inflater.inflate(R.layout.schedule_details_view, container, false) ?: View(activity)
+		= ScheduleDetailsViewBinding.inflate(inflater, container, false).let {
+			binding = it
+			it.root
+		}
 
 	override fun onActivityCreated(savedInstanceState: Bundle?)
 	{
@@ -55,17 +58,17 @@ class FeedingScheduleDetailsFragment : Fragment()
 			scheduleDates = savedInstanceState.getParcelableArrayList<FeedingScheduleDate>("schedule_dates") as ArrayList<FeedingScheduleDate>
 		}
 
-		title.setText(schedule?.name)
-		description.setText(schedule?.description)
+		binding.title.setText(schedule?.name)
+		binding.description.setText(schedule?.description)
 
 		populateScheduleDates()
 
-		fab_complete.setOnClickListener {
-			title.error = null
+		binding.fabComplete.setOnClickListener {
+			binding.title.error = null
 
-			if (title.text.isEmpty())
+			if (binding.title.text.isEmpty())
 			{
-				title.error = getString(R.string.field_required)
+				binding.title.error = getString(R.string.field_required)
 			}
 			else
 			{
@@ -73,15 +76,15 @@ class FeedingScheduleDetailsFragment : Fragment()
 				{
 					null -> {
 						FeedingSchedule(
-							name = title.text.toString(),
-							description = description.text.toString(),
+							name = binding.title.text.toString(),
+							description = binding.description.text.toString(),
 							_schedules = scheduleDates
 						)
 					}
 					else -> {
 						schedule!!.apply {
-							name = this@FeedingScheduleDetailsFragment.title.text.toString()
-							description = this@FeedingScheduleDetailsFragment.description.text.toString()
+							name = binding.title.text.toString()
+							description = binding.description.text.toString()
 							_schedules = this@FeedingScheduleDetailsFragment.scheduleDates
 						}
 					}
@@ -121,10 +124,10 @@ class FeedingScheduleDetailsFragment : Fragment()
 	 */
 	private fun populateScheduleDates()
 	{
-		schedule_dates_container.removeViews(0, schedule_dates_container.indexOfChild(new_schedule))
+		binding.scheduleDatesContainer.removeViews(0, binding.scheduleDatesContainer.indexOfChild(binding.newSchedule))
 		scheduleDates.sortWith(compareBy<FeedingScheduleDate> { it.stageRange[0].ordinal }.thenBy { it.dateRange[0] })
 		scheduleDates.forEachIndexed { index, date ->
-			val feedingView = LayoutInflater.from(activity).inflate(R.layout.feeding_date_stub, schedule_dates_container, false)
+			val feedingView = FeedingDateStubBinding.inflate(LayoutInflater.from(activity), binding.scheduleDatesContainer, false)
 			feedingView.title.text = "${date.dateRange[0]}${getString(date.stageRange[0].printString)[0]}"
 			if (date.dateRange[0] != date.dateRange[1] || date.stageRange[0] != date.stageRange[1])
 			{
@@ -168,27 +171,27 @@ class FeedingScheduleDetailsFragment : Fragment()
 				scheduleDates.add(newSchedule)
 				populateScheduleDates()
 
-				SnackBar().show(activity!!, R.string.schedule_copied, R.string.undo, action = {
+				SnackBar().show(requireActivity(), R.string.schedule_copied, R.string.undo, action = {
 					scheduleDates.remove(newSchedule)
 					populateScheduleDates()
 				})
 			}
 
-			feedingView.setOnClickListener {
+			feedingView.root.setOnClickListener {
 				startActivityForResult(Intent(it.context, ScheduleDateDetailsActivity::class.java).also {
 					it.putExtra("schedule_date", date)
 				}, 0)
 			}
-			schedule_dates_container.addView(feedingView, schedule_dates_container.childCount - 1)
+			binding.scheduleDatesContainer.addView(feedingView.root, binding.scheduleDatesContainer.childCount - 1)
 		}
 
-		new_schedule.setOnClickListener {
+		binding.newSchedule.setOnClickListener {
 			if (schedule == null)
 			{
 				scheduleDates = arrayListOf()
 				schedule = FeedingSchedule(
-					name = title.text.toString(),
-					description = description.text.toString(),
+					name = binding.title.text.toString(),
+					description = binding.description.text.toString(),
 					_schedules = scheduleDates
 				)
 				ScheduleManager.instance.insert(schedule!!)

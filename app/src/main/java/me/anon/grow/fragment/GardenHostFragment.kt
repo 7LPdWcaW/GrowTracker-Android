@@ -6,17 +6,20 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
-import kotlinx.android.synthetic.main.tabbed_fragment_holder.*
 import me.anon.grow.R
+import me.anon.grow.databinding.GardenFragmentHolderBinding
 import me.anon.model.Garden
 
 class GardenHostFragment : Fragment()
 {
 	public lateinit var garden: Garden
 
+	private lateinit var binding: GardenFragmentHolderBinding
+
 	override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View?
-	{
-		return inflater.inflate(R.layout.garden_fragment_holder, container, false)
+		= GardenFragmentHolderBinding.inflate(inflater).let {
+		binding = it
+		it.root
 	}
 
 	override fun onActivityCreated(savedInstanceState: Bundle?)
@@ -31,7 +34,7 @@ class GardenHostFragment : Fragment()
 			childFragmentManager.beginTransaction().replace(R.id.fragment_holder, GardenFragment.newInstance(garden), "child_fragment").commit()
 		}
 
-		tabs.setOnNavigationItemSelectedListener {
+		binding.tabs.setOnNavigationItemSelectedListener {
 			childFragmentManager.beginTransaction()
 				.setCustomAnimations(R.anim.fade_in, R.anim.fade_out)
 				.replace(R.id.fragment_holder, when (it.itemId)

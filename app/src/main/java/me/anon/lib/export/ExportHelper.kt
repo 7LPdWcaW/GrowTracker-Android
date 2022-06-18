@@ -501,7 +501,7 @@ class ExportHelper(
 					{
 						stackedEntry?.let {
 							(it.data as? List<PlantStage>)?.let { stages ->
-								val stageIndex = it.yVals.indexOf(value)
+								val stageIndex = it.yVals.indexOfFirst { it == value }
 								return "${value.toInt()}${context.getString(stages[stageIndex].printString)[0].toLowerCase()}"
 							}
 						}

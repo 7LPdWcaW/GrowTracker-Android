@@ -4,10 +4,10 @@ import android.content.Intent
 import android.view.View
 import androidx.appcompat.app.AlertDialog
 import androidx.recyclerview.widget.RecyclerView
-import kotlinx.android.synthetic.main.schedule_item.view.*
 import me.anon.controller.adapter.FeedingScheduleAdapter
 import me.anon.grow.FeedingScheduleDetailsActivity
 import me.anon.grow.R
+import me.anon.grow.databinding.ScheduleItemBinding
 import me.anon.model.FeedingSchedule
 
 /**
@@ -15,10 +15,11 @@ import me.anon.model.FeedingSchedule
  */
 class ScheduleHolder(val adapter: FeedingScheduleAdapter, itemView: View) : RecyclerView.ViewHolder(itemView)
 {
-	private val title = itemView.title
-	private val summary = itemView.summary
-	private val delete = itemView.delete
-	private val copy = itemView.copy
+	private var binding = ScheduleItemBinding.bind(itemView)
+	private val title = binding.title
+	private val summary = binding.summary
+	private val delete = binding.delete
+	private val copy = binding.copy
 
 	public fun bind(feedingSchedule: FeedingSchedule)
 	{

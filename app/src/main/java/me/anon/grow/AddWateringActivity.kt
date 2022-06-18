@@ -2,7 +2,6 @@ package me.anon.grow
 
 import android.os.Bundle
 import androidx.appcompat.app.AlertDialog
-import kotlinx.android.synthetic.main.fragment_holder.*
 import me.anon.grow.fragment.WateringFragment
 
 class AddWateringActivity : BaseActivity()
@@ -12,7 +11,7 @@ class AddWateringActivity : BaseActivity()
 		super.onCreate(savedInstanceState)
 
 		setContentView(R.layout.fragment_holder)
-		setSupportActionBar(toolbar)
+		setSupportActionBar(findViewById(R.id.toolbar))
 
 		var plantIndex: IntArray? = intent.extras?.getIntArray("plant_index") ?: intArrayOf(-1)
 		var gardenIndex: Int = intent.extras?.getInt("garden_index", -1) ?: -1

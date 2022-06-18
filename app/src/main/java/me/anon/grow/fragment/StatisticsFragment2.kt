@@ -20,9 +20,8 @@ import com.github.mikephil.charting.interfaces.datasets.IBarDataSet
 import com.github.mikephil.charting.interfaces.datasets.ILineDataSet
 import com.github.mikephil.charting.utils.MPPointF
 import com.google.android.material.chip.Chip
-import kotlinx.android.synthetic.main.data_label_stub.view.*
-import kotlinx.android.synthetic.main.statistics2_view.*
 import me.anon.grow.R
+import me.anon.grow.databinding.Statistics2ViewBinding
 import me.anon.grow.fragment.StatisticsFragment2.template.data
 import me.anon.grow.fragment.StatisticsFragment2.template.header
 import me.anon.lib.TdsUnit
@@ -318,8 +317,13 @@ class StatisticsFragment2 : Fragment()
 		}
 	}
 
+	private lateinit var binding: Statistics2ViewBinding
+
 	override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View?
-		= inflater.inflate(R.layout.statistics2_view, container, false)
+		= Statistics2ViewBinding.inflate(inflater, container, false).let {
+		binding = it
+		it.root
+	}
 
 	override fun onActivityCreated(savedInstanceState: Bundle?)
 	{
@@ -356,7 +360,7 @@ class StatisticsFragment2 : Fragment()
 	{
 		val statTemplates = arrayListOf<template>()
 
-		stats_container.removeAllViews()
+		binding.statsContainer.removeAllViews()
 
 		PlantStage.values().forEach { stage ->
 			if (viewModel.plantStages.containsKey(stage))
@@ -426,7 +430,7 @@ class StatisticsFragment2 : Fragment()
 				}
 			}
 
-		renderStats(stats_container, statTemplates)
+		renderStats(binding.statsContainer, statTemplates)
 
 		// stage chart
 		val labels = arrayOfNulls<String>(viewModel.plantStages.size)
@@ -454,7 +458,7 @@ class StatisticsFragment2 : Fragment()
 			{
 				stackedEntry?.let {
 					(it.data as? List<PlantStage>)?.let { stages ->
-						val stageIndex = it.yVals.indexOf(value)
+						val stageIndex = it.yVals.indexOfFirst { it == value }
 						return "${value.toInt()}${getString(stages[stageIndex].printString)[0].toLowerCase()}"
 					}
 				}
@@ -465,17 +469,17 @@ class StatisticsFragment2 : Fragment()
 
 		val barData = BarData(stageData)
 
-		stage_chart.data = barData
-		stage_chart.setDrawGridBackground(false)
-		stage_chart.description = null
-		stage_chart.isScaleYEnabled = false
-		stage_chart.setDrawBorders(false)
-		stage_chart.setDrawValueAboveBar(false)
+		binding.stageChart.data = barData
+		binding.stageChart.setDrawGridBackground(false)
+		binding.stageChart.description = null
+		binding.stageChart.isScaleYEnabled = false
+		binding.stageChart.setDrawBorders(false)
+		binding.stageChart.setDrawValueAboveBar(false)
 
-		stage_chart.axisLeft.setDrawGridLines(false)
-		stage_chart.axisLeft.axisMinimum = 0f
-		stage_chart.axisLeft.textColor = R.attr.colorOnSurface.resolveColor(context!!)
-		stage_chart.axisLeft.valueFormatter = object : ValueFormatter()
+		binding.stageChart.axisLeft.setDrawGridLines(false)
+		binding.stageChart.axisLeft.axisMinimum = 0f
+		binding.stageChart.axisLeft.textColor = R.attr.colorOnSurface.resolveColor(requireContext())
+		binding.stageChart.axisLeft.valueFormatter = object : ValueFormatter()
 		{
 			override fun getAxisLabel(value: Float, axis: AxisBase?): String
 			{
@@ -483,15 +487,15 @@ class StatisticsFragment2 : Fragment()
 			}
 		}
 
-		stage_chart.axisRight.setDrawLabels(false)
-		stage_chart.axisRight.setDrawGridLines(false)
+		binding.stageChart.axisRight.setDrawLabels(false)
+		binding.stageChart.axisRight.setDrawGridLines(false)
 
-		stage_chart.xAxis.setDrawGridLines(false)
-		stage_chart.xAxis.setDrawAxisLine(false)
-		stage_chart.xAxis.setDrawLabels(false)
+		binding.stageChart.xAxis.setDrawGridLines(false)
+		binding.stageChart.xAxis.setDrawAxisLine(false)
+		binding.stageChart.xAxis.setDrawLabels(false)
 
-		stage_chart.legend.textColor = R.attr.colorOnSurface.resolveColor(context!!).toInt()
-		stage_chart.legend.isWordWrapEnabled = true
+		binding.stageChart.legend.textColor = R.attr.colorOnSurface.resolveColor(requireContext()).toInt()
+		binding.stageChart.legend.isWordWrapEnabled = true
 	}
 
 	private fun populateAdditiveStats()
@@ -499,11 +503,11 @@ class StatisticsFragment2 : Fragment()
 		val selectedAdditives = arrayListOf<String>()
 		var totalMax = Double.MIN_VALUE
 		val hasItems = viewModel.additiveValues.size > 0
-		additive_group.isVisible = hasItems
+		binding.additiveGroup.isVisible = hasItems
 
 		fun displayStats()
 		{
-			additives_stats_container.removeAllViews()
+			binding.additivesStatsContainer.removeAllViews()
 
 			selectedAdditives.forEach { name ->
 				viewModel.additiveStats[name]?.let { stat ->
@@ -530,7 +534,7 @@ class StatisticsFragment2 : Fragment()
 						data = "${Unit.ML.to(viewModel.selectedMeasurementUnit, stat.totalAdjusted).formatWhole()} ${viewModel.selectedMeasurementUnit.label}"
 					)
 
-					renderStats(additives_stats_container, stats)
+					renderStats(binding.additivesStatsContainer, stats)
 				}
 			}
 		}
@@ -547,7 +551,7 @@ class StatisticsFragment2 : Fragment()
 							color = statsColours[index]
 							fillColor = color
 							setCircleColor(color)
-							styleDataset(context!!, this, color)
+							styleDataset(requireContext(), this, color)
 						}
 					}
 
@@ -558,9 +562,9 @@ class StatisticsFragment2 : Fragment()
 
 			val lineData = LineData(dataSets)
 
-			additives_concentration_chart.data = lineData
-			additives_concentration_chart.notifyDataSetChanged()
-			additives_concentration_chart.invalidate()
+			binding.additivesConcentrationChart.data = lineData
+			binding.additivesConcentrationChart.notifyDataSetChanged()
+			binding.additivesConcentrationChart.invalidate()
 		}
 
 		fun displayTotalsChart()
@@ -588,7 +592,7 @@ class StatisticsFragment2 : Fragment()
 				}
 			}
 
-			additives_count_chart.data = PieData(PieDataSet(pieData, "").apply {
+			binding.additivesCountChart.data = PieData(PieDataSet(pieData, "").apply {
 				this.colors = colors
 				this.valueTextSize = 12f
 				this.valueFormatter = object : ValueFormatter()
@@ -599,8 +603,8 @@ class StatisticsFragment2 : Fragment()
 					}
 				}
 			})
-			additives_count_chart.notifyDataSetChanged()
-			additives_count_chart.invalidate()
+			binding.additivesCountChart.notifyDataSetChanged()
+			binding.additivesCountChart.invalidate()
 		}
 
 		fun displayOvertimeChart()
@@ -628,7 +632,7 @@ class StatisticsFragment2 : Fragment()
 							color = statsColours[index]
 							fillColor = color
 							setCircleColor(color)
-							styleDataset(context!!, this, color)
+							styleDataset(requireContext(), this, color)
 						}
 					}
 
@@ -646,9 +650,9 @@ class StatisticsFragment2 : Fragment()
 
 			val lineData = LineData(dataSets)
 
-			additives_overtime_chart.data = lineData
-			additives_overtime_chart.notifyDataSetChanged()
-			additives_overtime_chart.invalidate()
+			binding.additivesOvertimeChart.data = lineData
+			binding.additivesOvertimeChart.notifyDataSetChanged()
+			binding.additivesOvertimeChart.invalidate()
 		}
 
 		fun refreshCharts()
@@ -660,7 +664,7 @@ class StatisticsFragment2 : Fragment()
 		}
 
 		viewModel.additiveStats.forEach { (k, v) ->
-			val chip = LayoutInflater.from(context!!).inflate(R.layout.filter_chip_stub, additive_chips_container, false) as Chip
+			val chip = LayoutInflater.from(requireContext()).inflate(R.layout.filter_chip_stub, binding.additiveChipsContainer, false) as Chip
 			chip.text = k
 			chip.isChecked = true
 			chip.setOnCheckedChangeListener { buttonView, isChecked ->
@@ -671,7 +675,7 @@ class StatisticsFragment2 : Fragment()
 			}
 
 			selectedAdditives += k
-			additive_chips_container += chip
+			binding.additiveChipsContainer += chip
 		}
 
 		val entries = arrayListOf<LegendEntry>()
@@ -691,14 +695,14 @@ class StatisticsFragment2 : Fragment()
 			}
 		}
 
-		with (additives_concentration_chart) {
+		with (binding.additivesConcentrationChart) {
 			style()
 
 			marker = object : MarkerView(activity, R.layout.chart_marker)
 			{
 				override fun refreshContent(e: Entry, highlight: Highlight): kotlin.Unit
 				{
-					val color = additives_concentration_chart.data.dataSets[highlight.dataSetIndex].color
+					val color = binding.additivesConcentrationChart.data.dataSets[highlight.dataSetIndex].color
 					with (this.findViewById<TextView>(R.id.content)) {
 						text = "${e.y.formatWhole()} ${viewModel.selectedMeasurementUnit.label}/${viewModel.selectedDeliveryUnit.label}"
 						setTextColor(color)
@@ -726,14 +730,14 @@ class StatisticsFragment2 : Fragment()
 			legend.xOffset = 10f
 		}
 
-		with (additives_overtime_chart) {
+		with (binding.additivesOvertimeChart) {
 			style()
 
 			marker = object : MarkerView(activity, R.layout.chart_marker)
 			{
 				override fun refreshContent(e: Entry, highlight: Highlight): kotlin.Unit
 				{
-					val color = additives_overtime_chart.data.dataSets[highlight.dataSetIndex].color
+					val color = binding.additivesOvertimeChart.data.dataSets[highlight.dataSetIndex].color
 					with (this.findViewById<TextView>(R.id.content)) {
 						text = "${e.y.formatWhole()} ${viewModel.selectedMeasurementUnit.label}"
 						setTextColor(color)
@@ -761,12 +765,12 @@ class StatisticsFragment2 : Fragment()
 			legend.xOffset = 10f
 		}
 
-		with (additives_count_chart) {
+		with (binding.additivesCountChart) {
 			description = null
 			setHoleColor(0x00ffffff)
 			legend.setCustom(entries)
 			legend.form = Legend.LegendForm.CIRCLE
-			legend.textColor = R.attr.colorOnSurface.resolveColor(context!!)
+			legend.textColor = R.attr.colorOnSurface.resolveColor(requireContext())
 			legend.isWordWrapEnabled = true
 		}
 
@@ -790,7 +794,7 @@ class StatisticsFragment2 : Fragment()
 					color = statsColours[0]
 					fillColor = color
 					setCircleColor(color)
-					styleDataset(context!!, this, color)
+					styleDataset(requireContext(), this, color)
 				}
 
 				if (AVERAGE_PH in selectedModes)
@@ -814,7 +818,7 @@ class StatisticsFragment2 : Fragment()
 					color = statsColours[1]
 					fillColor = color
 					setCircleColor(color)
-					styleDataset(context!!, this, color)
+					styleDataset(requireContext(), this, color)
 				}
 
 				if (AVERAGE_PH in selectedModes)
@@ -832,15 +836,15 @@ class StatisticsFragment2 : Fragment()
 				}
 			}
 
-			input_ph.data = LineData(sets)
-			ph_group.isVisible = input_ph.data.entryCount > 0
-			input_ph.notifyDataSetChanged()
-			input_ph.invalidate()
+			binding.inputPh.data = LineData(sets)
+			binding.phGroup.isVisible = binding.inputPh.data.entryCount > 0
+			binding.inputPh.notifyDataSetChanged()
+			binding.inputPh.invalidate()
 		}
 
 		fun displayStats()
 		{
-			ph_stats_container.removeAllViews()
+			binding.phStatsContainer.removeAllViews()
 
 			selectedModes.forEach { mode ->
 				val stats = arrayListOf<template>()
@@ -875,7 +879,7 @@ class StatisticsFragment2 : Fragment()
 					)
 				}
 
-				if (stats.size > 1) renderStats(ph_stats_container, stats)
+				if (stats.size > 1) renderStats(binding.phStatsContainer, stats)
 			}
 		}
 
@@ -884,7 +888,7 @@ class StatisticsFragment2 : Fragment()
 			if (viewModel.runoffValues.isNotEmpty()) add(RUNOFF_PH)
 			if (isNotEmpty()) add(AVERAGE_PH)
 		}.forEach { mode ->
-			val chip = LayoutInflater.from(context!!).inflate(R.layout.filter_chip_stub, ph_chips_container, false) as Chip
+			val chip = LayoutInflater.from(requireContext()).inflate(R.layout.filter_chip_stub, binding.phChipsContainer, false) as Chip
 			chip.setText(mode)
 			chip.isChecked = true
 			chip.setOnCheckedChangeListener { buttonView, isChecked ->
@@ -896,10 +900,10 @@ class StatisticsFragment2 : Fragment()
 			}
 
 			selectedModes += mode
-			ph_chips_container += chip
+			binding.phChipsContainer += chip
 		}
 
-		with (input_ph) {
+		with (binding.inputPh) {
 			setVisibleYRangeMaximum(max(viewModel.phStats.max?.toFloat() ?: 0.0f, viewModel.runoffStats.max?.toFloat() ?: 0.0f), YAxis.AxisDependency.LEFT)
 			style()
 
@@ -907,7 +911,7 @@ class StatisticsFragment2 : Fragment()
 			{
 				override fun refreshContent(e: Entry, highlight: Highlight): kotlin.Unit
 				{
-					val color = input_ph.data.dataSets[highlight.dataSetIndex].color
+					val color = binding.inputPh.data.dataSets[highlight.dataSetIndex].color
 					with (this.findViewById<TextView>(R.id.content)) {
 						text = e.y.formatWhole()
 						setTextColor(color)
@@ -939,7 +943,7 @@ class StatisticsFragment2 : Fragment()
 					color = statsColours[viewModel.tdsValues.keys.indexOfFirst { it == selectedUnit }.absoluteValue % statsColours.size]
 					fillColor = color
 					setCircleColor(color)
-					styleDataset(context!!, this, color)
+					styleDataset(requireContext(), this, color)
 				}
 
 				sets += LineDataSet(values.rollingAverage(), getString(R.string.stat_average_tds, selectedUnit.label)).apply {
@@ -954,16 +958,16 @@ class StatisticsFragment2 : Fragment()
 				}
 			}
 
-			tds_chart.data = LineData(sets)
-			tds_group.isVisible = tds_chart.data.entryCount > 0
-			tds_chart.notifyDataSetChanged()
-			tds_chart.fitScreen()
-			tds_chart.invalidate()
+			binding.tdsChart.data = LineData(sets)
+			binding.tdsGroup.isVisible = binding.tdsChart.data.entryCount > 0
+			binding.tdsChart.notifyDataSetChanged()
+			binding.tdsChart.fitScreen()
+			binding.tdsChart.invalidate()
 		}
 
 		fun displayStats()
 		{
-			tds_stats_container.removeAllViews()
+			binding.tdsStatsContainer.removeAllViews()
 
 			viewModel.tdsStats[selectedUnit]?.let { stat ->
 				val stats = arrayListOf<template>()
@@ -990,7 +994,7 @@ class StatisticsFragment2 : Fragment()
 					)
 				}
 
-				if (stats.size > 1) renderStats(tds_stats_container, stats)
+				if (stats.size > 1) renderStats(binding.tdsStatsContainer, stats)
 			}
 		}
 
@@ -998,7 +1002,7 @@ class StatisticsFragment2 : Fragment()
 		if (values.size > 1)
 		{
 			values.forEach { unit ->
-				val chip = LayoutInflater.from(context!!).inflate(R.layout.filter_chip_stub, tds_chips_container, false) as Chip
+				val chip = LayoutInflater.from(requireContext()).inflate(R.layout.filter_chip_stub, binding.tdsChipsContainer, false) as Chip
 				chip.setText(unit.strRes)
 				chip.isCheckable = true
 				chip.id = unit.strRes
@@ -1010,25 +1014,25 @@ class StatisticsFragment2 : Fragment()
 					displayStats()
 				}
 
-				tds_chips_container += chip
+				binding.tdsChipsContainer += chip
 			}
 
-			tds_chips_container.check(selectedUnit.strRes)
+			binding.tdsChipsContainer.check(selectedUnit.strRes)
 		}
 		else
 		{
-			tds_chips_container.isVisible = false
+			binding.tdsChipsContainer.isVisible = false
 			selectedUnit = values.firstOrNull() ?: viewModel.selectedTdsUnit
 		}
 
-		with (tds_chart) {
+		with (binding.tdsChart) {
 			style()
 
 			marker = object : MarkerView(activity, R.layout.chart_marker)
 			{
 				override fun refreshContent(e: Entry, highlight: Highlight): kotlin.Unit
 				{
-					val color = tds_chart.data.dataSets[highlight.dataSetIndex].color
+					val color = binding.tdsChart.data.dataSets[highlight.dataSetIndex].color
 					with (this.findViewById<TextView>(R.id.content)) {
 						text = e.y.formatWhole()
 						setTextColor(color)
@@ -1049,7 +1053,7 @@ class StatisticsFragment2 : Fragment()
 
 	private fun populateTempStats()
 	{
-		with (temp_chart) {
+		with (binding.tempChart) {
 			setVisibleYRangeMaximum(viewModel.tempStats.max?.toFloat() ?: 0.0f, YAxis.AxisDependency.LEFT)
 			style()
 
@@ -1065,7 +1069,7 @@ class StatisticsFragment2 : Fragment()
 			{
 				override fun refreshContent(e: Entry, highlight: Highlight): kotlin.Unit
 				{
-					val color = temp_chart.data.dataSets[highlight.dataSetIndex].color
+					val color = binding.tempChart.data.dataSets[highlight.dataSetIndex].color
 					with (this.findViewById<TextView>(R.id.content)) {
 						text = "${e.y.formatWhole()}°${viewModel.selectedTempUnit.label}"
 						setTextColor(color)
@@ -1086,7 +1090,7 @@ class StatisticsFragment2 : Fragment()
 			color = statsColours[0]
 			fillColor = color
 			setCircleColor(color)
-			styleDataset(context!!, this, color)
+			styleDataset(requireContext(), this, color)
 		}
 
 		sets += LineDataSet(viewModel.tempValues.rollingAverage(), getString(R.string.stat_average_temp)).apply {
@@ -1100,8 +1104,8 @@ class StatisticsFragment2 : Fragment()
 			isHighlightEnabled = false
 		}
 
-		temp_chart.data = LineData(sets)
-		temp_group.isVisible = temp_chart.data.entryCount > 0
+		binding.tempChart.data = LineData(sets)
+		binding.tempGroup.isVisible = binding.tempChart.data.entryCount > 0
 
 		val stats = arrayListOf<template>()
 		viewModel.tempStats.min?.let {
@@ -1125,7 +1129,7 @@ class StatisticsFragment2 : Fragment()
 			)
 		}
 
-		if (stats.size > 0) renderStats(temp_stats_container, stats)
+		if (stats.size > 0) renderStats(binding.tempStatsContainer, stats)
 	}
 
 	private fun renderStats(container: ViewGroup, templates: ArrayList<template>)
@@ -1134,14 +1138,14 @@ class StatisticsFragment2 : Fragment()
 			var dataView = when (template)
 			{
 				is data -> {
-					LayoutInflater.from(activity).inflate(R.layout.data_label_stub, stats_container, false).also {
-						it.label.text = template.label
-						it.data.text = template.data
+					LayoutInflater.from(activity).inflate(R.layout.data_label_stub, binding.statsContainer, false).also {
+						it.findViewById<TextView>(R.id.label).text = template.label
+						it.findViewById<TextView>(R.id.data).text = template.data
 					}
 				}
 
 				is header -> {
-					LayoutInflater.from(activity).inflate(R.layout.subtitle_stub, stats_container, false).also {
+					LayoutInflater.from(activity).inflate(R.layout.subtitle_stub, binding.statsContainer, false).also {
 						(it as TextView).text = template.label
 						it.setPadding(0, resources.getDimension(R.dimen.padding_16dp).toInt(), 0, 0)
 					}

@@ -19,7 +19,7 @@ class HumidityDialogFragment(var action: HumidityChange? = null, val callback: (
 	override fun onCreateDialog(savedInstanceState: Bundle?): Dialog
 	{
 		val view = LayoutInflater.from(activity).inflate(R.layout.humidity_dialog, null)
-		val dialog = AlertDialog.Builder(context!!)
+		val dialog = AlertDialog.Builder(requireContext())
 		dialog.setTitle(R.string.humidity)
 		dialog.setPositiveButton(if (newAction) R.string.add else R.string.edit) { dialog, which ->
 			if (view.findViewById<EditText>(R.id.humidity_input).text.toString().isNotBlank())
