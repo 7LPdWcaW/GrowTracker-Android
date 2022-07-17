@@ -175,6 +175,7 @@ class MainActivity : BaseActivity(ActivityMainBinding::class)
 					Timber.d(event.log.toJsonString())
 					Toast.makeText(this, "${event.log} added to ${event.diary.name}", Toast.LENGTH_LONG).show()
 				}
+				else -> {}
 			}
 		}
 	}
@@ -411,7 +412,7 @@ class MainActivity : BaseActivity(ActivityMainBinding::class)
 						if (layoutSheetBehavior.state == STATE_COLLAPSED)
 						{
 							promptExit {
-								super.onBackPressed()
+								if (it) super.onBackPressed()
 							}
 
 							return@onBackPressed

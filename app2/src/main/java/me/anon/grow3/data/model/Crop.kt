@@ -14,7 +14,7 @@ data class Crop(
 	public var genetics: String? = null,
 	public var numberOfPlants: Int = 1,
 	//public var cloneOf: String? = null,
-	public var platedDate: String = ZonedDateTime.now().asApiString(),
+	public var dateAdded: String = ZonedDateTime.now().asApiString(),
 )
 {
 	public var isDraft = false
@@ -24,13 +24,13 @@ public fun Crop.patch(
 	name: ValueHolder<String>? = null,
 	genetics: ValueHolder<String?>? = null,
 	numberOfPlants: ValueHolder<Int>? = null,
-	platedDate: ValueHolder<String>? = null,
+	dateAdded: ValueHolder<String>? = null,
 ): Crop
 {
 	return apply {
 		name?.patch { this.name = it }
 		genetics?.patch { this.genetics = it.toStringOrNull() }
 		numberOfPlants?.patch { this.numberOfPlants = it }
-		platedDate?.patch { this.platedDate = it }
+		dateAdded?.patch { this.dateAdded = it }
 	}
 }

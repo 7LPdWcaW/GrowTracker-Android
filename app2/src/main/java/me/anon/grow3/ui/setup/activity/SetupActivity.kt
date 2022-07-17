@@ -1,6 +1,5 @@
 package me.anon.grow3.ui.setup.activity
 
-import android.Manifest
 import android.os.Bundle
 import android.view.View
 import androidx.constraintlayout.widget.ConstraintLayout
@@ -9,7 +8,6 @@ import com.github.appintro.AppIntro2
 import com.github.appintro.AppIntroFragment
 import me.anon.grow3.R
 import me.anon.grow3.ui.setup.fragment.FirstDiarySlideFragment
-import me.anon.grow3.ui.setup.fragment.ImportSlideFragment
 import me.anon.grow3.util.color
 
 class SetupActivity : AppIntro2()
@@ -33,12 +31,12 @@ class SetupActivity : AppIntro2()
 			description = "Welcome to GrowTracker 3.0",
 			backgroundColor = colors[0]
 		))
-		addSlide(AppIntroFragment.newInstance(
-			title = "Application permissions",
-			description = "GrowTracker requires Storage permissions to function fully",
-			backgroundColor = colors[1]
-		))
-		addSlide(ImportSlideFragment())
+//		addSlide(AppIntroFragment.newInstance(
+//			title = "Application permissions",
+//			description = "GrowTracker requires Storage permissions to function fully",
+//			backgroundColor = colors[1]
+//		))
+		//addSlide(ImportSlideFragment())
 		addSlide(FirstDiarySlideFragment())
 
 		isColorTransitionsEnabled = true
@@ -52,11 +50,11 @@ class SetupActivity : AppIntro2()
 			unselectedIndicatorColor = 0xff333333.toInt()
 		)
 
-		askForPermissions(
-			permissions = arrayOf(Manifest.permission.WRITE_EXTERNAL_STORAGE),
-			slideNumber = 2,
-			required = true
-		)
+//		askForPermissions(
+//			permissions = arrayOf(Manifest.permission.WRITE_EXTERNAL_STORAGE),
+//			slideNumber = 2,
+//			required = true
+//		)
 
 		findViewById<View>(R.id.bottom).setOnApplyWindowInsetsListener { view, windowInsets ->
 			view.onApplyWindowInsets(windowInsets).also {

@@ -35,7 +35,7 @@ class CropUseCase(
 		{
 			// add default stage
 			diariesRepository.addLog(StageChange(StageType.Planted).apply {
-				date = temp.platedDate
+				if (diary.isDraft) date = temp.dateAdded
 				cropIds += temp.id
 			}, diary)
 		}

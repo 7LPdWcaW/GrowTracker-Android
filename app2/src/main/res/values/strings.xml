@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 
 <resources>
-	<string name="app_name">GrowTracker 3.0</string>
+<!--	<string name="app_name"></string>-->
 	<string name="version">Version %s</string>
 	<string name="menu_settings">Settings</string>
 
@@ -67,6 +67,7 @@
 	<string name="medium_type_coco">Coco</string>
 	<string name="medium_type_aqua">Aqua</string>
 
+	<string name="stage_type_started">Started</string>
 	<string name="stage_type_planted">Planted</string>
 	<string name="stage_type_germination">Germination</string>
 	<string name="stage_type_seedling">Seedling</string>

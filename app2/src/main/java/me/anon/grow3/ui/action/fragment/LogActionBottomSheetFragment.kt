@@ -57,7 +57,7 @@ class LogActionBottomSheetFragment : LogActionFragment()
 		super.bindUi()
 		viewBindings.toolbar.setNavigationOnClickListener {
 			requireActivity().promptExit {
-				finish()
+				if (it) finish()
 			}
 		}
 
@@ -96,7 +96,7 @@ class LogActionBottomSheetFragment : LogActionFragment()
 		{
 			BottomSheetBehavior.STATE_COLLAPSED -> {
 				requireActivity().promptExit {
-					finish()
+					if (it) finish()
 				}
 				return true
 			}

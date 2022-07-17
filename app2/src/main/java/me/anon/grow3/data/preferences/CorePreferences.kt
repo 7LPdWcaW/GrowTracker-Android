@@ -8,7 +8,7 @@ import javax.inject.Singleton
 
 @Singleton
 class CorePreferences @Inject constructor(
-	@CorePrefs val prefs: SharedPreferences
+	@CorePrefs val prefs: SharedPreferences,
 )
 {
 	public var isFirstLaunch: Boolean

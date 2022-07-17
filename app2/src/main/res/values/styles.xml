@@ -29,7 +29,8 @@
 		<item name="textInputStyle">@style/Input</item>
 		<item name="materialCardViewStyle">@style/Card</item>
 		<item name="bottomSheetStyle">@style/BottomSheet</item>
-
+		<item name="materialAlertDialogTheme">@style/MaterialAlertDialog</item>
+		
 		<item name="android:textColor">?textOnSurface</item>
 		<item name="android:windowContentTransitions">true</item>
 
@@ -54,6 +55,14 @@
 	</style>
 
 	<!-- -->
+	<style name="MaterialAlertDialog" parent="ThemeOverlay.MaterialComponents.MaterialAlertDialog">
+		<item name="alertDialogStyle">@style/Dialog</item>
+	</style>
+	
+	<style name="Dialog" parent="MaterialAlertDialog.MaterialComponents">
+		<item name="shapeAppearance">@style/ShapeAppearance.Large</item>
+	</style>
+	
 	<style name="BottomSheet" parent="Widget.Design.BottomSheet.Modal">
 		<item name="android:background">@drawable/bottom_sheet_bg_drawable</item>
 		<item name="elevation">16dp</item>
@@ -91,7 +100,7 @@
 		<item name="cornerSize">8dp</item>
 	</style>
 
-	<style name="ShapeAppearance.Small" parent="ShapeAppearance.MaterialComponents.LargeComponent">
+	<style name="ShapeAppearance.Small" parent="ShapeAppearance.MaterialComponents.SmallComponent">
 		<item name="cornerFamily">rounded</item>
 		<item name="cornerSize">8dp</item>
 	</style>

@@ -112,9 +112,12 @@ class DiaryActivity : BaseActivity(ActivityCrudDiaryBinding::class)
 				if (viewModel.diaryDraft)
 				{
 					promptExit {
-						lifecycleScope.launch {
-							viewModel.remove()
-							finish()
+						if (it)
+						{
+							lifecycleScope.launch {
+								viewModel.remove()
+								finish()
+							}
 						}
 					}
 				}

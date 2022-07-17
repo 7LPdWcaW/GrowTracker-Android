@@ -1,5 +1,6 @@
 package me.anon.grow3.data.model
 
+import androidx.annotation.VisibleForTesting
 import com.squareup.moshi.JsonClass
 import me.anon.grow3.util.*
 import org.dizitart.no2.objects.Id
@@ -17,8 +18,16 @@ data class Diary(
 {
 	public var isDraft = false
 
-	private fun cropFilter(crop: Crop?, log: Log)
-		= if (crop == null) true else (log.cropIds.isNotEmpty() && log.cropIds.contains(crop.id)) || log.cropIds.isEmpty()
+	@VisibleForTesting
+	public fun cropFilter(crop: Crop?, log: Log): Boolean
+	{
+		crop ?: return true
+		var accept = log.cropIds.isEmpty()
+		accept = accept or (log.cropIds.isNotEmpty() && log.cropIds.contains(crop.id))
+		accept = accept and crop.dateAdded.asDateTime().isBeforeOrEqual(log.date.asDateTime())
+
+		return accept
+	}
 
 	public fun stage(): Stage = findStage()
 	public fun water(): Water? = findWater()
@@ -30,7 +39,15 @@ data class Diary(
 	public fun light(): Light? = findLight()
 
 	public fun crop(id: String): Crop = crops.first { it.id == id }
-	public fun stages(): List<Stage> = findAllStages().filter { it.cropIds.isEmpty() }
+	public fun stages(): List<Stage>
+		= findAllStages()
+			.filter { it.cropIds.isEmpty() }
+			.run {
+				if (this.isEmpty()) arrayListOf(Stage(StageType.Started).apply {
+					this.date = this@Diary.date
+				})
+				else this
+			}
 
 	/**
 	 * Calculates the stage info at the time of the given log for the provided crop
@@ -38,7 +55,7 @@ data class Diary(
 	public fun stageWhen(log: Log): StageAt
 	{
 		val stage = stages()
-			.lastOrNull { it.date.asDateTime() < log.date.asDateTime() } ?: stages().first() // should at least return Planted
+			.lastOrNull { it.date.asDateTime() < log.date.asDateTime() } ?: stages().first() // should at least return Started
 
 		return StageAt(
 			days = (stage.date and log.date).dateDifferenceDays(),
@@ -54,13 +71,13 @@ data class Diary(
 	public fun stageWhen(crop: Crop, log: Log): StageAt
 	{
 		val stage = stagesOf(crop)
-			.lastOrNull { it.date.asDateTime() < log.date.asDateTime() } ?: stages().first()  // should at least return Planted
+			.lastOrNull { it.date.asDateTime() < log.date.asDateTime() } ?: stages().first()  // should at least return Started
 
 		return StageAt(
 			days = (stage.date and log.date).dateDifferenceDays(),
 			stage = stage,
 			log = log,
-			total = (crop.platedDate and log.date).dateDifferenceDays()
+			total = (crop.dateAdded and log.date).dateDifferenceDays()
 		)
 	}
 
@@ -74,7 +91,7 @@ data class Diary(
 		if (index > -1) (this.log as ArrayList)[index] = log
 		else this.log as ArrayList += log
 
-		this.log.sortBy { it.date }
+		//this.log.sortBy { it.date }
 		return log
 	}
 
@@ -83,13 +100,13 @@ data class Diary(
 
 	public fun harvestedOf(id: String): Harvest? = harvestedOf(crop(id))
 	public fun harvestedOf(crop: Crop): Harvest?
-		= log.sortedBy { it.date }
+		= log//.sortedBy { it.date }
 			.filterIsInstance<Harvest>()
 			.lastOrNull()
 
 	public fun stageOf(id: String) = stageOf(crop(id))
 	public fun stageOf(crop: Crop): Stage?
-		= with (log.sortedBy { it.date }) {
+		= with (log/*.sortedBy { it.date }*/) {
 			val harvest = harvestedOf(crop.id)
 			if (harvest != null)
 			{
@@ -107,7 +124,7 @@ data class Diary(
 
 	public fun mediumOf(id: String) = mediumOf(crop(id))
 	public fun mediumOf(crop: Crop): Medium?
-		= log.sortedBy { it.date }
+		= log//.sortedBy { it.date }
 			.filterIsInstance<Transplant>()
 			.findLast {
 				cropFilter(crop, it)
@@ -154,46 +171,46 @@ data class Diary(
 	}
 
 	private fun findAllStages(crop: Crop? = null): List<Stage>
-		= log.sortedBy { it.date }
+		= log//.sortedBy { it.date }
 			.filterIsInstance<StageChange>()
 			.filter {
 				cropFilter(crop, it)
 			}
 
 	private fun findStage(crop: Crop? = null): Stage
-		= log.sortedBy { it.date }
+		= log//.sortedBy { it.date }
 			.filterIsInstance<StageChange>()
 			.findLast {
 				cropFilter(crop, it)
 			}!!
 
 	private fun findEnvironmentType(): EnvironmentType?
-		= log.sortedBy { it.date }
+		= log//.sortedBy { it.date }
 			.filterIsInstance<Environment>()
 			.findLast { it.type != null }?.type
 
 	private fun findSize(): Size?
-		= log.sortedBy { it.date }
+		= log//.sortedBy { it.date }
 			.filterIsInstance<Environment>()
 			.findLast { it.size != null }?.size
 
 	private fun findLight(): Light?
-		= log.sortedBy { it.date }
+		= log//.sortedBy { it.date }
 			.filterIsInstance<Environment>()
 			.findLast { it.light != null }?.light
 
 	private fun findMedium(): Medium?
-		= log.sortedBy { it.date }
+		= log//.sortedBy { it.date }
 			.filterIsInstance<Medium>()
 			.lastOrNull()
 
 	private fun findWater(): Water?
-		= log.sortedBy { it.date }
+		= log//.sortedBy { it.date }
 			.filterIsInstance<Water>()
 			.lastOrNull()
 
 	private fun findEnvironment(): Environment?
-		= log.sortedBy { it.date }
+		= log//.sortedBy { it.date }
 			.filterIsInstance<Environment>()
 			.lastOrNull()
 
@@ -212,15 +229,18 @@ data class Diary(
 	public fun purge()
 	{
 		(log as ArrayList).removeAll { it.isDraft }
-		log.sortedBy { it.date }
+		//log.sortedBy { it.date }
 	}
 
 	init {
 		if (log.isEmpty() || !log.any { it is StageChange })
 		{
-			log as ArrayList += StageChange(StageType.Planted)
+			log as ArrayList += StageChange(StageType.Started).apply {
+				this.date = this@Diary.date
+			}
 		}
 
-		log.sortedBy { it.date }
+		// retain natural sort order
+		//log.sortedBy { it.date }
 	}
 }

@@ -4,6 +4,7 @@ import android.app.DatePickerDialog
 import android.app.Dialog
 import android.app.TimePickerDialog
 import android.os.Bundle
+import android.view.View
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentManager
 import androidx.fragment.app.commit
@@ -91,9 +92,9 @@ class DateSelectDialogFragment : Fragment()
 		}
 	}
 
-	override fun onActivityCreated(savedInstanceState: Bundle?)
+	override fun onViewCreated(view: View, savedInstanceState: Bundle?)
 	{
-		super.onActivityCreated(savedInstanceState)
+		super.onViewCreated(view, savedInstanceState)
 
 		savedInstanceState?.getBundle(SAVED_DIALOG_STATE_TAG)?.apply {
 			when (savedInstanceState.getString(SAVED_DIALOG_CURRENT_DIALOG))

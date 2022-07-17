@@ -50,6 +50,7 @@ class DiaryListFragment : BaseFragment(FragmentDiariesBinding::class)
 							adapter.items = state.diaries
 							adapter.notifyDataSetChanged()
 						}
+						else -> {}
 					}
 				}
 		}

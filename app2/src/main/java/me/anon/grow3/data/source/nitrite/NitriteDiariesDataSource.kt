@@ -5,6 +5,8 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 import me.anon.grow3.data.model.Diary
 import me.anon.grow3.data.source.DiariesDataSource
+import me.anon.grow3.di.DiariesSource
+import me.anon.grow3.di.IoDispatcher
 import me.anon.grow3.util.NitriteFacade
 import org.dizitart.kno2.KNO2JacksonMapper
 import org.dizitart.kno2.filters.eq
@@ -12,14 +14,13 @@ import org.dizitart.kno2.getRepository
 import org.dizitart.kno2.nitrite
 import java.io.File
 import javax.inject.Inject
-import javax.inject.Named
 import javax.inject.Singleton
 
 @Singleton
 class NitriteDiariesDataSource @Inject constructor(
-	@Named("diaries_source") private val sourcePath: String,
+	@DiariesSource private val sourcePath: String,
 	val nitriteFacade: NitriteFacade,
-	@Named("io_dispatcher") private val dispatcher: CoroutineDispatcher = Dispatchers.IO
+	@IoDispatcher private val dispatcher: CoroutineDispatcher = Dispatchers.IO
 ) : DiariesDataSource
 {
 	private val db = nitrite {

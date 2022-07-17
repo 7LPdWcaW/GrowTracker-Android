@@ -8,7 +8,6 @@ import me.anon.grow3.MainCoroutineRule
 import me.anon.grow3.TestConstants
 import me.anon.grow3.data.model.Crop
 import me.anon.grow3.data.model.Diary
-import me.anon.grow3.data.model.Water
 import me.anon.grow3.data.repository.impl.DefaultDiariesRepository
 import me.anon.grow3.data.source.DiariesDataSource
 import me.anon.grow3.util.initThreeTen
@@ -147,18 +146,5 @@ class DiaryDataRepositoryTest
 		val result = diaryFlow.first()
 		val data = (result as DataResult.Success).data
 		data.name = "changed name"
-	}
-
-	@Test
-	public fun `test cache log`() = mainCoroutineRule.runBlockingTest {
-		val diaryFlow = diariesRepository.flowDiary("0000-000000")
-		val result = diaryFlow.first()
-		val data = (result as DataResult.Success).data
-		val log = Water()
-
-		diariesRepository.addLog(log, data)
-		val retrieved = diariesRepository.getLog(log.id, data)
-		retrieved.`should be equal to`(log)
-		data.logOf(log.id).`should be null`()
 	}
 }

@@ -242,36 +242,41 @@
 				"id": "0002-000001",
 				"name": "Crop 1",
 				"genetics": "Unknown",
-				"numberOfPlants": 1
+				"numberOfPlants": 1,
+				"dateAdded": "2020-01-01T00:00:00+00:00"
 			},
 			{
 				"id": "0002-000002",
 				"name": "Vegetating Crop",
 				"genetics": "Unknown",
-				"numberOfPlants": 2
+				"numberOfPlants": 2,
+				"dateAdded": "2020-01-01T00:00:00+00:00"
 			},
 			{
 				"id": "0002-000003",
 				"name": "Flowering Crop",
 				"genetics": "Unknown",
-				"numberOfPlants": 5
+				"numberOfPlants": 5,
+				"dateAdded": "2020-01-01T00:00:00+00:00"
 			},
 			{
 				"id": "0002-000004",
 				"name": "Multi Stage Crop",
 				"genetics": "Unknown",
-				"numberOfPlants": 10
+				"numberOfPlants": 10,
+				"dateAdded": "2020-01-01T00:00:00+00:00"
 			},
 			{
 				"id": "0002-000005",
 				"name": "Harvested Crop",
 				"genetics": "Unknown",
-				"numberOfPlants": 4
+				"numberOfPlants": 4,
+				"dateAdded": "2020-01-01T00:00:00+00:00"
 			}
 		]
 	},
 	{
-		"id": "0000-000001",
+		"id": "0000-000002",
 		"name": "Secondary diary",
 		"date": "2020-01-01T00:00:00+00:00",
 		"log": [
@@ -303,7 +308,15 @@
 				"id": "0002-000001",
 				"name": "Default",
 				"genetics": "Unknown",
-				"numberOfPlants": 1
+				"numberOfPlants": 1,
+				"dateAdded": "2020-01-01T00:00:00+00:00"
+			},
+			{
+				"id": "0002-000002",
+				"name": "Second",
+				"genetics": "Unknown",
+				"numberOfPlants": 1,
+				"dateAdded": "2020-02-02T00:00:00+00:00"
 			}
 		]
 	}

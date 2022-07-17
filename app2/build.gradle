@@ -4,17 +4,18 @@ apply plugin: 'kotlin-kapt'
 apply plugin: "androidx.navigation.safeargs"
 
 android {
-	compileSdkVersion 31
+	compileSdkVersion 32
 	buildToolsVersion "31.0.0"
 
 	defaultConfig {
 		applicationId "me.anon.grow3"
 		minSdkVersion 23
-		targetSdkVersion 31
+		targetSdkVersion 32
 		versionCode 1
 		versionName "3.0"
 		multiDexEnabled true
 
+		//resValue "string", "app_name", "GrowTracker"
 //		testInstrumentationRunner "me.anon.grow3.TestRunner"
 	}
 
@@ -56,8 +57,20 @@ android {
 	}
 
 	buildTypes {
+		debug {
+			applicationIdSuffix ".debug"
+			manifestPlaceholders = [
+//				resValue "string", "app_name", "Dev"
+				appName: "Dev"
+			]
+		}
 		release {
 			signingConfig signingConfigs.release
+			resValue "string", "app_name", "GrowTracker"
+			manifestPlaceholders = [
+//				resValue "string", "app_name", "Dev"
+				appName: "GrowTracker"
+			]
 		}
 	}
 
@@ -89,35 +102,35 @@ android {
 }
 
 dependencies {
-	implementation 'androidx.lifecycle:lifecycle-process:2.3.1'
+	implementation 'androidx.lifecycle:lifecycle-process:2.5.0'
 //	debugImplementation 'androidx.fragment:fragment-testing:1.3.6'
 
 	implementation 'androidx.multidex:multidex:2.0.1'
-	implementation 'androidx.core:core-ktx:1.6.0'
-	implementation 'androidx.appcompat:appcompat:1.3.1'
-	implementation 'androidx.preference:preference-ktx:1.1.1'
+	implementation 'androidx.core:core-ktx:1.8.0'
+	implementation 'androidx.appcompat:appcompat:1.4.2'
+	implementation 'androidx.preference:preference-ktx:1.2.0'
 	implementation 'androidx.recyclerview:recyclerview:1.2.1'
-	implementation 'androidx.constraintlayout:constraintlayout:2.1.1'
+	implementation 'androidx.constraintlayout:constraintlayout:2.1.4'
 	implementation 'androidx.cardview:cardview:1.0.0'
 	implementation 'androidx.exifinterface:exifinterface:1.3.3'
 	implementation 'androidx.documentfile:documentfile:1.0.1'
 
-	implementation "androidx.lifecycle:lifecycle-viewmodel-ktx:2.3.1"
-	implementation "androidx.lifecycle:lifecycle-viewmodel-savedstate:2.3.1"
-	implementation "androidx.lifecycle:lifecycle-livedata-ktx:2.3.1"
-	implementation "androidx.lifecycle:lifecycle-runtime-ktx:2.3.1"
+	implementation 'androidx.lifecycle:lifecycle-viewmodel-ktx:2.5.0'
+	implementation 'androidx.lifecycle:lifecycle-viewmodel-savedstate:2.5.0'
+	implementation 'androidx.lifecycle:lifecycle-livedata-ktx:2.5.0'
+	implementation 'androidx.lifecycle:lifecycle-runtime-ktx:2.5.0'
 	implementation 'com.github.psteiger:flow-lifecycle-observer:0.2.1'
 
-	implementation "androidx.activity:activity-ktx:1.3.1"
-	implementation "androidx.fragment:fragment-ktx:1.3.6"
-	implementation "androidx.navigation:navigation-fragment-ktx:2.3.5"
-	implementation "androidx.navigation:navigation-ui-ktx:2.3.5"
+	implementation 'androidx.activity:activity-ktx:1.5.0'
+	implementation 'androidx.fragment:fragment-ktx:1.5.0'
+	implementation 'androidx.navigation:navigation-fragment-ktx:2.5.0'
+	implementation 'androidx.navigation:navigation-ui-ktx:2.5.0'
 
-	implementation 'com.jakewharton.threetenabp:threetenabp:1.3.1'
+	implementation 'com.jakewharton.threetenabp:threetenabp:1.4.0'
 	implementation 'com.jakewharton.timber:timber:5.0.1'
 
-	implementation "org.jetbrains.kotlinx:kotlinx-coroutines-core:1.5.2"
-	implementation "org.jetbrains.kotlinx:kotlinx-coroutines-android:1.5.2"
+	implementation 'org.jetbrains.kotlinx:kotlinx-coroutines-core:1.6.4'
+	implementation 'org.jetbrains.kotlinx:kotlinx-coroutines-android:1.6.4'
 
 	implementation 'com.github.prolificinteractive:material-calendarview:2.0.0'
 	implementation 'com.github.PhilJay:MPAndroidChart:v2.1.6'
@@ -127,52 +140,52 @@ dependencies {
 	implementation 'com.github.haiithust:flexbox-layout:9cbd2c96ff'
 	implementation 'com.github.dhaval2404:imagepicker:2.1'
 
-	implementation 'com.google.android.material:material:1.5.0-alpha04'
+	implementation 'com.google.android.material:material:1.7.0-alpha03'
 
 //	implementation 'com.google.android:flexbox:2.0.1'
-	implementation 'com.google.dagger:dagger:2.39.1'
+	implementation 'com.google.dagger:dagger:2.42'
 
-	implementation 'com.squareup.moshi:moshi-kotlin:1.12.0'
+	implementation 'com.squareup.moshi:moshi-kotlin:1.13.0'
 
 	implementation 'com.nostra13.universalimageloader:universal-image-loader:1.9.5'
 	implementation 'com.davemorrissey.labs:subsampling-scale-image-view:3.10.0'
 
-	implementation 'net.lingala.zip4j:zip4j:2.9.0'
+	implementation 'net.lingala.zip4j:zip4j:2.11.1'
 
-	implementation ('org.dizitart:potassium-nitrite:3.4.3') {
+	implementation ('org.dizitart:potassium-nitrite:3.4.4') {
 		exclude group: 'com.squareup.okhttp3'
 		exclude group: 'com.fasterxml.jackson.datatype', module: 'jackson-datatype-jdk8'
 		exclude group: 'com.fasterxml.jackson.datatype', module: 'jackson-datatype-jsr310'
 	}
 
-	implementation 'com.fasterxml.jackson.datatype:jackson-datatype-joda:2.13.0'
+	implementation 'com.fasterxml.jackson.datatype:jackson-datatype-joda:2.13.3'
 
 	androidTestImplementation 'androidx.test.ext:junit:1.1.3'
 	androidTestImplementation 'androidx.test:rules:1.4.0'
 	androidTestImplementation 'androidx.test.espresso:espresso-core:3.4.0'
 	androidTestImplementation 'androidx.test:runner:1.4.0'
-	androidTestImplementation "org.jetbrains.kotlinx:kotlinx-coroutines-test:1.5.2"
-	androidTestImplementation "org.jetbrains.kotlinx:kotlinx-coroutines-android:1.5.2"
-	androidTestImplementation 'org.assertj:assertj-core:3.19.0'
+	androidTestImplementation 'org.jetbrains.kotlinx:kotlinx-coroutines-test:1.6.4'
+	androidTestImplementation 'org.jetbrains.kotlinx:kotlinx-coroutines-android:1.6.4'
+	androidTestImplementation 'org.assertj:assertj-core:3.23.1'
 	androidTestImplementation 'org.amshove.kluent:kluent-android:1.68'
-	androidTestImplementation 'io.mockk:mockk-android:1.12.0'
-	androidTestImplementation 'org.mockito:mockito-android:4.0.0'
+	androidTestImplementation 'io.mockk:mockk-android:1.12.4'
+	androidTestImplementation 'org.mockito:mockito-android:4.6.1'
 
-	testImplementation "androidx.test:core-ktx:1.4.1-alpha03"
+	testImplementation 'androidx.test:core-ktx:1.5.0-alpha01'
 	testImplementation "androidx.test.ext:junit-ktx:1.1.3"
 	testImplementation "androidx.test:rules:1.4.0"
 	testImplementation 'androidx.arch.core:core-testing:2.1.0'
 	testImplementation 'junit:junit:4.13.2'
-	testImplementation "org.jetbrains.kotlinx:kotlinx-coroutines-test:1.5.2"
-	testImplementation "org.jetbrains.kotlinx:kotlinx-coroutines-android:1.5.2"
-	testImplementation 'io.mockk:mockk:1.12.0'
-	testImplementation 'org.mockito:mockito-core:4.0.0'
+	testImplementation 'org.jetbrains.kotlinx:kotlinx-coroutines-test:1.6.4'
+	testImplementation 'org.jetbrains.kotlinx:kotlinx-coroutines-android:1.6.4'
+	testImplementation 'io.mockk:mockk:1.12.4'
+	testImplementation 'org.mockito:mockito-core:4.6.1'
 	testImplementation 'org.amshove.kluent:kluent:1.68'
 
-	kapt 'com.google.dagger:dagger-compiler:2.39.1'
-	kaptAndroidTest 'com.google.dagger:dagger-compiler:2.39.1'
+	kapt 'com.google.dagger:dagger-compiler:2.42'
+	kaptAndroidTest 'com.google.dagger:dagger-compiler:2.42'
 
 	api "org.jetbrains.kotlin:kotlin-reflect:$kotlin_version"
 
-	kapt 'com.squareup.moshi:moshi-kotlin-codegen:1.12.0'
+	kapt 'com.squareup.moshi:moshi-kotlin-codegen:1.13.0'
 }

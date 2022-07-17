@@ -3,9 +3,11 @@ package me.anon.grow3.ui.logs.view
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.core.view.isVisible
 import me.anon.grow3.data.model.Diary
 import me.anon.grow3.data.model.StageAt
 import me.anon.grow3.data.model.StageChange
+import me.anon.grow3.data.model.StageType
 import me.anon.grow3.databinding.CardStagechangeLogBinding
 import me.anon.grow3.util.string
 
@@ -27,13 +29,23 @@ class StageChangeLogCard : LogCard<CardStagechangeLogBinding, StageChange>
 
 	override fun bindLog(view: CardStagechangeLogBinding)
 	{
-		if (previousStage.stage.type == log.type)
+		if (log.type == StageType.Started)
 		{
-			view.content.text = "Stage set to ${log.type.strRes.string()}"
+			view.header.title.text = "Diary started"
+			view.content.text = ""
+			view.content.isVisible = false
 		}
 		else
 		{
-			view.content.text = "Changed from ${previousStage.stage.type.strRes.string()} to ${log.type.strRes.string()}"
+			view.content.isVisible = true
+			if (previousStage.stage.type == log.type)
+			{
+				view.content.text = "Stage set to ${log.type.strRes.string()}"
+			}
+			else
+			{
+				view.content.text = "Changed from ${previousStage.stage.type.strRes.string()} to ${log.type.strRes.string()}"
+			}
 		}
 	}
 }

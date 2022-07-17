@@ -3,16 +3,17 @@ package me.anon.grow3.di.module
 import dagger.Module
 import dagger.Provides
 import kotlinx.coroutines.Dispatchers
-import javax.inject.Named
+import me.anon.grow3.di.IoDispatcher
+import me.anon.grow3.di.MainDispatcher
 
 @Module
 class DispatcherModule
 {
 	@Provides
-	@Named("io_dispatcher")
+	@IoDispatcher
 	public fun provideIODispatcher() = Dispatchers.IO
 
 	@Provides
-	@Named("main_dispatcher")
+	@MainDispatcher
 	public fun provideMainDispatcher() = Dispatchers.Main
 }

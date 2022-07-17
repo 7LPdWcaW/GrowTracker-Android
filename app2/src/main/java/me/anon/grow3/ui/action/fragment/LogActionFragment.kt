@@ -180,12 +180,10 @@ open class LogActionFragment : BaseFragment(FragmentActionLogBinding::class), Mo
 			}
 			logCommon.setLog(diary, log)
 			logCommon.cropIds = arguments?.getStringArray(Extras.EXTRA_CROP_IDS)?.asSequence()?.toHashSet() ?: hashSetOf()
-			if (arguments?.getBoolean(EXTRA_SINGLE_CROP, false) == true)
-			{
-				logCommon.cropSelectViewVisible = false
-			}
 
-			if (log is Environment)
+			if (arguments?.getBoolean(EXTRA_SINGLE_CROP, false) == true
+				|| diary.crops.isEmpty()
+				|| log is Environment)
 			{
 				logCommon.cropSelectViewVisible = false
 			}
@@ -202,8 +200,11 @@ open class LogActionFragment : BaseFragment(FragmentActionLogBinding::class), Mo
 		if (toConfirm)
 		{
 			requireActivity().promptExit {
-				toConfirm = false
-				activity?.onBackPressed()
+				if (it)
+				{
+					toConfirm = false
+					activity?.onBackPressed()
+				}
 			}
 		}
 		else
