@@ -39,7 +39,7 @@ class DropDownEditText : MaterialAutoCompleteTextView
 	private var defaultText = ""
 	private var defaultIcon: Drawable? = null
 	private var menuRes = NO_ID
-	private var popup: ListPopupWindow
+	private var popup: ListPopupWindow? = null
 	private val adapter = SelectableMenuAdapter()
 
 	constructor(context: Context) : this(context, null)
@@ -100,19 +100,19 @@ class DropDownEditText : MaterialAutoCompleteTextView
 				.setChecked(it.isChecked)
 		})
 
-		popup.height = items.size.coerceAtMost(4) * 64.dp
+		popup?.height = items.size.coerceAtMost(4) * 64.dp
 		adapter.notifyDataSetChanged()
 		populateText()
 	}
 
 	private fun init()
 	{
-		popup.height = items.size.coerceAtMost(4) * 64.dp
-		popup.anchorView = this
-		popup.setDropDownGravity(Gravity.END)
-		popup.isModal = true
-		popup.setAdapter(adapter)
-		popup.setOnDismissListener {
+		popup?.height = items.size.coerceAtMost(4) * 64.dp
+		popup?.anchorView = this
+		popup?.setDropDownGravity(Gravity.END)
+		popup?.isModal = true
+		popup?.setAdapter(adapter)
+		popup?.setOnDismissListener {
 			rootView.findFocus()?.clearFocus()
 		}
 		doOnLayout {
@@ -136,10 +136,10 @@ class DropDownEditText : MaterialAutoCompleteTextView
 
 	override fun showDropDown()
 	{
-		popup.show()
+		popup?.show()
 	}
 
-	override fun isPopupShowing(): Boolean = false//popup.isShowing ?: false
+	override fun isPopupShowing(): Boolean = popup?.isShowing ?: false
 
 	private fun populateText()
 	{
@@ -190,7 +190,7 @@ class DropDownEditText : MaterialAutoCompleteTextView
 						items.forEach { it.isChecked = false }
 						if (isChecked) item.isChecked = true
 						notifyDataSetChanged()
-						popup.dismiss()
+						popup?.dismiss()
 					}
 				}
 

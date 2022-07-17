@@ -13,6 +13,7 @@ import me.anon.grow3.data.source.nitrite.NitriteDiariesDataSource
 import me.anon.grow3.di.Cards
 import me.anon.grow3.di.CorePrefs
 import me.anon.grow3.di.DiariesSource
+import me.anon.grow3.di.IoDispatcher
 import me.anon.grow3.ui.common.view.StagesCard
 import me.anon.grow3.ui.crops.view.CropCard
 import me.anon.grow3.ui.crops.view.CropDetailsCard
@@ -23,10 +24,11 @@ import me.anon.grow3.ui.logs.view.LogDateSeparator
 import me.anon.grow3.util.NitriteFacade
 import me.anon.grow3.util.application
 import me.anon.grow3.view.model.Card
-import javax.inject.Named
 import javax.inject.Singleton
 
-@Module
+@Module(includes = [
+	DispatcherModule::class
+])
 class AppModule(
 	private val appContext: Context
 )
@@ -50,14 +52,14 @@ class AppModule(
 	public fun provideDiariesDataSource(
 		@DiariesSource sourcePath: String,
 		nitriteFacade: NitriteFacade,
-		@Named("io_dispatcher") dispatcher: CoroutineDispatcher
+		@IoDispatcher dispatcher: CoroutineDispatcher,
 	): DiariesDataSource
 		= NitriteDiariesDataSource(sourcePath, nitriteFacade, dispatcher)
 
 	@Provides
 	@Singleton
 	public fun provideDiariesRepository(source: DiariesDataSource): DiariesRepository
-		= DefaultDiariesRepository.getInstance(source)
+		= DefaultDiariesRepository(source)
 
 	@Provides
 	@Singleton
