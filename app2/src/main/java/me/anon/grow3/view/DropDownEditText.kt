@@ -174,7 +174,7 @@ class DropDownEditText : MaterialAutoCompleteTextView
 			val icon = view.findViewById<ImageView>(R.id.icon)
 			checkbox.isChecked = item.isChecked
 			checkbox.isVisible = item.isChecked && item.isCheckable
-			icon.isVisible = item.icon != null
+			icon.isVisible = false//item.icon != null
 			icon.setImageDrawable(item.icon)
 
 			view.setOnClickListener {
