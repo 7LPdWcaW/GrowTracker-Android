@@ -1,9 +1,11 @@
 package me.anon.grow3.util
 
+import me.anon.grow3.component
+import me.anon.grow3.data.exceptions.GrowTrackerException
 import me.anon.grow3.util.DateUtils.API_FORMAT
 import me.anon.grow3.util.DateUtils.DATETIME_MID_DISPLAY_FORMAT
+import me.anon.grow3.util.DateUtils.DATETIME_SHORT_DISPLAY_FORMAT
 import me.anon.grow3.util.DateUtils.DATE_FORMAT
-import me.anon.grow3.util.DateUtils.DATE_MID_DISPLAY_FORMAT
 import me.anon.grow3.util.DateUtils.TIME_FORMAT
 import org.threeten.bp.LocalDate
 import org.threeten.bp.LocalTime
@@ -26,6 +28,7 @@ object DateUtils
 	const val API_FORMAT = "yyyy-MM-dd'T'HH:mm:ss"
 
 	const val DATETIME_MID_DISPLAY_FORMAT = "dd MMM yyyy HH:mm:ss"
+	const val DATETIME_SHORT_DISPLAY_FORMAT = "dd MMM yyyy"
 	const val DATETIME_SHORT_DISPLAY_FORMAT_UK = "dd/MM/yy HH:mm"
 	const val DATETIME_SHORT_DISPLAY_FORMAT_INT = "MM-dd-yy HH:mm"
 	const val DATETIME_SHORT_DISPLAY_FORMAT_ISO = "yy-MM-dd HH:mm"
@@ -65,8 +68,7 @@ public fun String.ago(short: Boolean = true): String
 	val now = ZonedDateTime.now()
 	val then = asDateTime()
 	val seconds = ChronoUnit.SECONDS.between(then, now)
-	return when
-	{
+	return when {
 		seconds > 2629746L -> {
 			val duration = ChronoUnit.MONTHS.between(then, now)
 			duration.toString() + (if (short) "mo" else " month${if (duration > 1) "s" else ""} ago")
@@ -104,13 +106,27 @@ public fun ZonedDateTime.asApiString(): String
  * Formats a zoned date time into a mid string
  * TODO: Add user display format setting
  */
-public fun ZonedDateTime.asDisplayString(): String = format(DateTimeFormatter.ofPattern(DATETIME_MID_DISPLAY_FORMAT))
+public fun ZonedDateTime.asDisplayString(): String
+{
+	return when (component().userSettings().dateFormatType()) {
+		0 -> format(DateTimeFormatter.ofPattern(DATETIME_MID_DISPLAY_FORMAT))
+		1 -> format(DateTimeFormatter.ofPattern(DATETIME_SHORT_DISPLAY_FORMAT))
+		else -> throw GrowTrackerException.InvalidValue()
+	}
+}
 
 /**
  * Formats a zoned date time into a mid string
  * TODO: Add user display format setting
  */
-public fun LocalDate.asDisplayString(): String = format(DateTimeFormatter.ofPattern(DATE_MID_DISPLAY_FORMAT))
+public fun LocalDate.asDisplayString(): String
+{
+	return when (component().userSettings().dateFormatType()) {
+		0 -> format(DateTimeFormatter.ofPattern(DATETIME_MID_DISPLAY_FORMAT))
+		1 -> format(DateTimeFormatter.ofPattern(DATETIME_SHORT_DISPLAY_FORMAT))
+		else -> throw GrowTrackerException.InvalidValue()
+	}
+}
 
 /**
  * Parses a display string into zoned date time. This will override the timezone to use current system default.

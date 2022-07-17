@@ -11,6 +11,8 @@ import me.anon.grow3.di.DaggerApplicationComponent
 import me.anon.grow3.di.module.AppModule
 import timber.log.Timber
 
+public fun Any.component(): ApplicationComponent = BaseApplication.appComponent
+
 abstract class BaseApplication : Application()
 {
 	companion object

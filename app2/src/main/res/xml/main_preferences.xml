@@ -3,7 +3,18 @@
 <PreferenceScreen
 	xmlns:android="http://schemas.android.com/apk/res/android"
 	xmlns:app="http://schemas.android.com/apk/res-auto"
+	app:key="main_prefs"
 >
+	<ListPreference
+		app:key="date_precision"
+		android:title="Date Precision"
+		android:summary="How precise to format and calculate entry dates"
+		android:entries="@array/date_precision_entries"
+		android:entryValues="@array/date_precision_entry_values"
+		app:useSimpleSummaryProvider="true"
+		app:iconSpaceReserved="false"
+	/>
+	
 	<Preference
 		app:key="about"
 		app:summary="Grow Tracker 3.0 by 7LPdWcaW"

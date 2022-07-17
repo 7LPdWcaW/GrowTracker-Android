@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<resources>
+	<array name="date_precision_entries">
+		<item>Precise yyyy-MM-dd HH:mm:ss</item>
+		<item>Simple yyyy-MM-dd</item>
+	</array>
+	
+	<array name="date_precision_entry_values">
+		<item>precise</item>
+		<item>simple</item>
+	</array>
+</resources>

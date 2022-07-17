@@ -18,6 +18,11 @@ annotation class DiariesSource
 @Retention(AnnotationRetention.RUNTIME)
 annotation class CorePrefs
 
+
+@Qualifier
+@Retention(AnnotationRetention.RUNTIME)
+annotation class UserPrefs
+
 @Qualifier
 @Retention(AnnotationRetention.RUNTIME)
 annotation class Cards

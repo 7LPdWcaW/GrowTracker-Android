@@ -16,4 +16,6 @@ sealed class GrowTrackerException(msg: String) : java.lang.Exception(msg)
 	class NoRoute : GrowTrackerException("No route set")
 	class InvalidRoute(route: String = "") : GrowTrackerException("Could not route to $route")
 	class IllegalState(state: String = "") : GrowTrackerException("Application was in an illegal state: $state")
+
+	class InvalidValue(value: Any? = null) : GrowTrackerException("Unexpected invalid value $value")
 }

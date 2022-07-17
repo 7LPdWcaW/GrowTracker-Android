@@ -2,6 +2,7 @@ package me.anon.grow3.di.module
 
 import android.content.Context
 import android.content.SharedPreferences
+import androidx.preference.PreferenceManager
 import dagger.Module
 import dagger.Provides
 import kotlinx.coroutines.CoroutineDispatcher
@@ -10,10 +11,7 @@ import me.anon.grow3.data.repository.DiariesRepository
 import me.anon.grow3.data.repository.impl.DefaultDiariesRepository
 import me.anon.grow3.data.source.DiariesDataSource
 import me.anon.grow3.data.source.nitrite.NitriteDiariesDataSource
-import me.anon.grow3.di.Cards
-import me.anon.grow3.di.CorePrefs
-import me.anon.grow3.di.DiariesSource
-import me.anon.grow3.di.IoDispatcher
+import me.anon.grow3.di.*
 import me.anon.grow3.ui.common.view.StagesCard
 import me.anon.grow3.ui.crops.view.CropCard
 import me.anon.grow3.ui.crops.view.CropDetailsCard
@@ -46,6 +44,11 @@ class AppModule(
 	@CorePrefs
 	public fun provideCorePrefs(context: Context): SharedPreferences
 		= context.getSharedPreferences("core_prefs", Context.MODE_PRIVATE)
+
+	@Provides
+	@UserPrefs
+	public fun provideUserPrefs(context: Context): SharedPreferences
+		= PreferenceManager.getDefaultSharedPreferences(context)
 
 	@Provides
 	@Singleton
