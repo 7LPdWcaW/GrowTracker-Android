@@ -1,6 +1,7 @@
 package me.anon.grow3.ui.main.fragment
 
 import android.os.Bundle
+import android.view.View
 import androidx.core.os.bundleOf
 import androidx.fragment.app.activityViewModels
 import androidx.fragment.app.commitNow
@@ -59,9 +60,9 @@ class MainNavigatorFragment : BaseHostFragment(FragmentMainHostBinding::class)
 		}
 	}
 
-	override fun onActivityCreated(savedInstanceState: Bundle?)
+	override fun onViewCreated(view: View, savedInstanceState: Bundle?)
 	{
-		super.onActivityCreated(savedInstanceState)
+		super.onViewCreated(view, savedInstanceState)
 
 		if (activity !is MainActivity) throw InvalidHostActivity()
 

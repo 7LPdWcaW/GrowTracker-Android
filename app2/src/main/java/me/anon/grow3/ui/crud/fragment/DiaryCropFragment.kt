@@ -26,6 +26,62 @@ class DiaryCropFragment : BaseFragment(FragmentCrudDiaryCropBinding::class)
 	private val viewBindings by viewBinding<FragmentCrudDiaryCropBinding>()
 	private var isNew = false
 
+	init {
+		lifecycleScope.launchWhenCreated {
+			crudViewModel.state
+				.collectLatest { state ->
+					if (state !is DiaryCrudViewModel.UiResult.Loaded) return@collectLatest
+					val diary = state.diary
+					val crop = state.crop ?: return@collectLatest
+
+					isNew = crop.isDraft
+
+					viewBindings.cropName.editText!!.text = crop.name.asEditable()
+					viewBindings.cropGenetics.editText!!.text = crop.genetics?.asEditable()
+					viewBindings.cropNumPlants.editText!!.text = crop.numberOfPlants.toString().asEditable()
+
+					val medium = diary.mediumOf(crop)
+					viewBindings.mediumCard.isVisible = medium == null || medium.isDraft
+
+//					viewBindings.mediumTypeOptions.checkItems(it.medium.strRes)
+//					it.size?.let { size ->
+//						viewBindings.mediumSizeUnitOptions.checkItems(size.unit.strRes)
+//						viewBindings.mediumSize.editText!!.text = size.amount.asStringOrNull()?.asEditable()
+//					}
+
+					viewBindings.includeCardStages.stagesHeader.isVisible = true
+					viewBindings.includeCardStages.stagesView.setStages(diary, crop)
+					viewBindings.includeCardStages.stagesView.onStageClick = { stage ->
+						// diary needs to be saved at this point before modal is opened otherwise changes get overwritten
+						requireView().clearFocus()
+
+						(activity as DiaryActivity).openModal(LogActionFragment().apply {
+							arguments = bundleOf(
+								Extras.EXTRA_DIARY_ID to diary.id,
+								Extras.EXTRA_LOG_ID to stage.id,
+								Extras.EXTRA_LOG_TYPE to nameOf<StageChange>(),
+								Extras.EXTRA_CROP_IDS to arrayOf(crop.id),
+								LogActionFragment.EXTRA_SINGLE_CROP to true
+							)
+						})
+					}
+					viewBindings.includeCardStages.stagesView.onNewStageClick = {
+						// diary needs to be saved at this point before modal is opened otherwise changes get overwritten
+						requireView().clearFocus()
+
+						(activity as DiaryActivity).openModal(LogActionFragment().apply {
+							arguments = bundleOf(
+								Extras.EXTRA_DIARY_ID to diary.id,
+								Extras.EXTRA_LOG_TYPE to nameOf<StageChange>(),
+								Extras.EXTRA_CROP_IDS to arrayOf(crop.id),
+								LogActionFragment.EXTRA_SINGLE_CROP to true
+							)
+						})
+					}
+				}
+		}
+	}
+
 	override fun bindArguments(bundle: Bundle?)
 	{
 		super.bindArguments(bundle)
@@ -102,64 +158,6 @@ class DiaryCropFragment : BaseFragment(FragmentCrudDiaryCropBinding::class)
 					Volume(it, VolumeUnit.ofId(viewBindings.mediumSizeUnitOptions.getSelectedItems().first().itemId))
 				})
 			)
-		}
-	}
-
-	init {
-		lifecycleScope.launchWhenCreated {
-			crudViewModel.state
-				.collectLatest { state ->
-					val state = state as? DiaryCrudViewModel.UiResult.Loaded
-						?: return@collectLatest
-					val diary = state.diary
-					val crop = state.crop
-						?: return@collectLatest
-
-					isNew = crop.isDraft
-
-					viewBindings.cropName.editText!!.text = crop.name.asEditable()
-					viewBindings.cropGenetics.editText!!.text = crop.genetics?.asEditable()
-					viewBindings.cropNumPlants.editText!!.text = crop.numberOfPlants.toString().asEditable()
-
-					val medium = diary.mediumOf(crop)
-					viewBindings.mediumCard.isVisible = medium == null || medium.isDraft
-
-					//					viewBindings.mediumTypeOptions.checkItems(it.medium.strRes)
-					//					it.size?.let { size ->
-					//						viewBindings.mediumSizeUnitOptions.checkItems(size.unit.strRes)
-					//						viewBindings.mediumSize.editText!!.text = size.amount.asStringOrNull()?.asEditable()
-					//					}
-
-					viewBindings.includeCardStages.stagesHeader.isVisible = true
-					viewBindings.includeCardStages.stagesView.setStages(diary, crop)
-					viewBindings.includeCardStages.stagesView.onStageClick = { stage ->
-						// diary needs to be saved at this point before modal is opened otherwise changes get overwritten
-						requireView().clearFocus()
-
-						(activity as DiaryActivity).openModal(LogActionFragment().apply {
-							arguments = bundleOf(
-								Extras.EXTRA_DIARY_ID to diary.id,
-								Extras.EXTRA_LOG_ID to stage.id,
-								Extras.EXTRA_LOG_TYPE to nameOf<StageChange>(),
-								Extras.EXTRA_CROP_IDS to arrayOf(crop.id),
-								LogActionFragment.EXTRA_SINGLE_CROP to true
-							)
-						})
-					}
-					viewBindings.includeCardStages.stagesView.onNewStageClick = {
-						// diary needs to be saved at this point before modal is opened otherwise changes get overwritten
-						requireView().clearFocus()
-
-						(activity as DiaryActivity).openModal(LogActionFragment().apply {
-							arguments = bundleOf(
-								Extras.EXTRA_DIARY_ID to diary.id,
-								Extras.EXTRA_LOG_TYPE to nameOf<StageChange>(),
-								Extras.EXTRA_CROP_IDS to arrayOf(crop.id),
-								LogActionFragment.EXTRA_SINGLE_CROP to true
-							)
-						})
-					}
-				}
 		}
 	}
 

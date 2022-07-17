@@ -11,6 +11,9 @@
 		android:name=".MainApplication"
 		android:theme="@style/AppTheme"
 		tools:node="merge"
+		android:allowBackup="false"
+		android:fullBackupContent="false"
+		android:dataExtractionRules="@xml/data_extraction_rules"
 	>
 		<activity
 			android:name=".ui.BootActivity"

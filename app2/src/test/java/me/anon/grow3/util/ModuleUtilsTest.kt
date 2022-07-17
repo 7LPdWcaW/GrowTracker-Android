@@ -1,7 +1,10 @@
 package me.anon.grow3.util
 
 import me.anon.grow3.TestConstants
-import org.amshove.kluent.*
+import org.amshove.kluent.`should be greater than`
+import org.amshove.kluent.`should be`
+import org.amshove.kluent.`should not be empty`
+import org.amshove.kluent.`should not be null`
 import org.junit.Test
 import org.junit.runner.RunWith
 import org.junit.runners.JUnit4
@@ -36,18 +39,6 @@ class ModuleUtilsTest
 		parsed
 			.`should not be null`()
 			.`should not be empty`()
-	}
-
-	@Test
-	public fun `test load diaries fallback`()
-	{
-		val file = File("does-not-exist")
-		val parsed = file.loadAsDiaries { TestConstants.diaries }
-
-		// all items should be the same
-		parsed
-			.`should not be null`()
-			.`should contain all`(TestConstants.diaries)
 	}
 
 	@Test

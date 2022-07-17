@@ -42,15 +42,15 @@ abstract class BaseFragment : Fragment
 
 	override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View?
 	{
-		if (_viewBinder == null)
+		return if (_viewBinder == null)
 		{
-			return super.onCreateView(inflater, container, savedInstanceState)
+			super.onCreateView(inflater, container, savedInstanceState)
 		}
 		else
 		{
 			viewBinder = _viewBinder!!.getDeclaredMethod("inflate", LayoutInflater::class.java, ViewGroup::class.java, Boolean::class.java)
 				.invoke(_viewBinder, inflater, container, false) as ViewBinding
-			return viewBinder.root
+			viewBinder.root
 		}
 	}
 
@@ -61,9 +61,8 @@ abstract class BaseFragment : Fragment
 		(activity as? BaseActivity)?.onFragmentAdded(this)
 	}
 
-	override fun onActivityCreated(savedInstanceState: Bundle?)
+	override fun onViewCreated(view: View, savedInstanceState: Bundle?)
 	{
-		super.onActivityCreated(savedInstanceState)
 
 		bindArguments(arguments ?: savedInstanceState)
 		bindUi()

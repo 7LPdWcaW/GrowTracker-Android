@@ -10,9 +10,9 @@ import kotlinx.coroutines.test.setMain
 import me.anon.grow3.MainCoroutineRule
 import me.anon.grow3.TestConstants
 import me.anon.grow3.data.source.DiariesDataSource
+import me.anon.grow3.util.NitriteFacade
 import me.anon.grow3.util.initThreeTen
 import org.amshove.kluent.*
-import org.dizitart.no2.exceptions.UniqueConstraintException
 import org.junit.After
 import org.junit.Before
 import org.junit.Rule
@@ -48,7 +48,7 @@ class NitriteDiariesDataSourceTest
 			deleteOnExit()
 		}
 
-		dataSource = NitriteDiariesDataSource(file.absolutePath)
+		dataSource = NitriteDiariesDataSource(file.absolutePath, NitriteFacade())
 
 		runBlocking {
 			dataSource.getDiaries().`should be empty`()
@@ -73,21 +73,6 @@ class NitriteDiariesDataSourceTest
 		dataSource.getDiaries().`should not contain`(TestConstants.newDiary)
 		dataSource.addDiary(TestConstants.newDiary)
 		dataSource.getDiaries().`should contain`(TestConstants.newDiary)
-	}
-
-	@Test
-	public fun `test add duplicate diary`() = runBlocking<Unit> {
-		dataSource.addDiary(TestConstants.newDiary)
-
-		try
-		{
-			dataSource.addDiary(TestConstants.newDiary)
-			throw Exception()
-		}
-		catch (e: Exception)
-		{
-			e.`should be instance of`(UniqueConstraintException::class)
-		}
 	}
 
 	@Test

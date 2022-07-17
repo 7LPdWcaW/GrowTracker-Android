@@ -44,6 +44,8 @@ class DiaryDetailsFragment : BaseFragment(FragmentCrudDiaryDetailsBinding::class
 						viewBindings.contentScroller.isVisible = true
 						renderUi(state.diary)
 					}
+
+					else -> {}
 				}
 
 		}

@@ -1,6 +1,8 @@
 package me.anon.grow3.data.model
 
 import me.anon.grow3.TestConstants
+import me.anon.grow3.util.asApiString
+import me.anon.grow3.util.asDateTime
 import me.anon.grow3.util.initThreeTen
 import me.anon.grow3.util.then
 import org.amshove.kluent.*
@@ -22,6 +24,49 @@ class DiaryTest
 	public fun setupDiaries()
 	{
 		diaries = TestConstants.diaries
+	}
+
+	@Test
+	public fun `test crop filter accepts`()
+	{
+		class TestLog : Log()
+
+		val diary = diaries[1]
+		val crop1 = diary.crops.first()
+
+		// log from before started time
+		diary.cropFilter(crop1, TestLog().apply {
+			date = crop1.dateAdded.asDateTime().minusDays(1).asApiString()
+		}).`should be false`()
+
+		// log with crop id
+		diary.cropFilter(crop1, TestLog().apply {
+			cropIds += crop1.id
+		}).`should be true`()
+	}
+
+	@Test
+	public fun `test diary crop filter`()
+	{
+		val diary = diaries[1]
+		diary.id.`should be equal to`("0000-000002")
+
+		val crop = diary.crops.first()
+		with (diary.stagesOf(crop)) {
+			size.`should be equal to`(4)
+			get(0).type.`should be equal to`(StageType.Planted)
+			get(1).type.`should be equal to`(StageType.Vegetation)
+			get(2).type.`should be equal to`(StageType.Flower)
+			get(3).type.`should be equal to`(StageType.Curing)
+		}
+
+		// added later into diary, dont apply any logs before that date
+		val crop2 = diary.crops.get(1)
+		with (diary.stagesOf(crop2)) {
+			size.`should be equal to`(2)
+			get(0).type.`should be equal to`(StageType.Flower)
+			get(1).type.`should be equal to`(StageType.Curing)
+		}
 	}
 
 	@Test
@@ -65,7 +110,7 @@ class DiaryTest
 	{
 		val newDiary = Diary(name = "Test")
 		newDiary.stage().`should not be null`()
-			.type.`should be equal to`(StageType.Planted)
+			.type.`should be equal to`(StageType.Started)
 	}
 
 	@Test

@@ -36,6 +36,9 @@ object DateUtils
 	const val DATE_SHORT_DISPLAY_FORMAT_ISO = "yy-MM-dd"
 }
 
+public fun ZonedDateTime.isBeforeOrEqual(other: ZonedDateTime): Boolean
+	= this.isBefore(other) || this.isEqual(other)
+
 /**
  * Parses the given string as ISO-8601
  */

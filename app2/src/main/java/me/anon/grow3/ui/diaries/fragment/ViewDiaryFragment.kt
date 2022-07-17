@@ -91,6 +91,7 @@ class ViewDiaryFragment : BaseFragment(FragmentViewDiaryBinding::class)
 						navigateTo<EmptyFragment>()
 						(activity as? MainActivity)?.openMenu()
 					}
+					else -> {}
 				}
 			}
 	}

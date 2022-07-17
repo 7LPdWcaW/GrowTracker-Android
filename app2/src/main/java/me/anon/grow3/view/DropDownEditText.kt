@@ -39,7 +39,7 @@ class DropDownEditText : MaterialAutoCompleteTextView
 	private var defaultText = ""
 	private var defaultIcon: Drawable? = null
 	private var menuRes = NO_ID
-	private val popup by lazy { ListPopupWindow(context) }
+	private var popup: ListPopupWindow
 	private val adapter = SelectableMenuAdapter()
 
 	constructor(context: Context) : this(context, null)
@@ -56,6 +56,8 @@ class DropDownEditText : MaterialAutoCompleteTextView
 			requiredSelection = typedArray.getBoolean(R.styleable.DropDownEditText_required, false)
 			typedArray.recycle()
 		}
+
+		popup = ListPopupWindow(context)
 
 		if (menuRes != NO_ID)
 		{
@@ -137,7 +139,7 @@ class DropDownEditText : MaterialAutoCompleteTextView
 		popup.show()
 	}
 
-	override fun isPopupShowing(): Boolean = popup.isShowing
+	override fun isPopupShowing(): Boolean = false//popup.isShowing ?: false
 
 	private fun populateText()
 	{
