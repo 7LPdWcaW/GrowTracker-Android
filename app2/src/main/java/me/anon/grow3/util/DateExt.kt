@@ -133,7 +133,16 @@ public fun LocalDate.asDisplayString(): String
  * TODO: Allow for passing of stored zone to retain
  */
 public fun String.fromDisplayString(): ZonedDateTime
-	= ZonedDateTime.from(DateTimeFormatter.ofPattern(DATETIME_MID_DISPLAY_FORMAT).withZone(ZoneId.systemDefault()).parse(this))
+{
+	return when (component().userSettings().dateFormatType()) {
+		0 -> ZonedDateTime.from(DateTimeFormatter.ofPattern(DATETIME_MID_DISPLAY_FORMAT).withZone(ZoneId.systemDefault()).parse(this))
+		1 -> {
+			val formatter = DateTimeFormatter.ofPattern(DATETIME_SHORT_DISPLAY_FORMAT)
+			LocalDate.parse(this, formatter).atStartOfDay(ZoneId.systemDefault())
+		}
+		else -> throw GrowTrackerException.InvalidValue()
+	}
+}
 
 public fun ZonedDateTime.formatDate(): String = format(DateTimeFormatter.ofPattern(DATE_FORMAT))
 public fun ZonedDateTime.formatTime(): String = format(DateTimeFormatter.ofPattern(TIME_FORMAT))
