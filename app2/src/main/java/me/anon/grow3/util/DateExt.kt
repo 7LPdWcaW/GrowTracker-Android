@@ -37,6 +37,19 @@ object DateUtils
 	const val DATE_SHORT_DISPLAY_FORMAT_UK = "dd/MM/yy"
 	const val DATE_SHORT_DISPLAY_FORMAT_INT = "MM-dd-yy"
 	const val DATE_SHORT_DISPLAY_FORMAT_ISO = "yy-MM-dd"
+
+	public fun newApiDateString(): String
+	{
+		return when (this.component().userSettings().dateFormatType()) {
+			0 -> ZonedDateTime.now().asApiString()
+			1 -> ZonedDateTime.now()
+				.withHour(0)
+				.withMinute(0)
+				.withSecond(0)
+				.asApiString()
+			else -> throw GrowTrackerException.InvalidValue()
+		}
+	}
 }
 
 public fun ZonedDateTime.isBeforeOrEqual(other: ZonedDateTime): Boolean
@@ -104,7 +117,7 @@ public fun ZonedDateTime.asApiString(): String
 
 /**
  * Formats a zoned date time into a mid string
- * TODO: Add user display format setting
+ * TODO: Add user locale display format setting
  */
 public fun ZonedDateTime.asDisplayString(): String
 {
@@ -116,17 +129,11 @@ public fun ZonedDateTime.asDisplayString(): String
 }
 
 /**
- * Formats a zoned date time into a mid string
- * TODO: Add user display format setting
+ * Formats a local date object to short display string
+ * TODO: Add user locale display format setting
  */
 public fun LocalDate.asDisplayString(): String
-{
-	return when (component().userSettings().dateFormatType()) {
-		0 -> format(DateTimeFormatter.ofPattern(DATETIME_MID_DISPLAY_FORMAT))
-		1 -> format(DateTimeFormatter.ofPattern(DATETIME_SHORT_DISPLAY_FORMAT))
-		else -> throw GrowTrackerException.InvalidValue()
-	}
-}
+	= format(DateTimeFormatter.ofPattern(DATETIME_SHORT_DISPLAY_FORMAT))
 
 /**
  * Parses a display string into zoned date time. This will override the timezone to use current system default.

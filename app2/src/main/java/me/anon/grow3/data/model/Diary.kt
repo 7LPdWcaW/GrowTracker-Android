@@ -3,15 +3,15 @@ package me.anon.grow3.data.model
 import androidx.annotation.VisibleForTesting
 import com.squareup.moshi.JsonClass
 import me.anon.grow3.util.*
+import me.anon.grow3.util.DateUtils.newApiDateString
 import org.dizitart.no2.objects.Id
-import org.threeten.bp.ZonedDateTime
 import java.util.*
 
 @JsonClass(generateAdapter = true)
 data class Diary(
 	@Id public val id: String = UUID.randomUUID().toString(),
 	public var name: String,
-	public var date: String = ZonedDateTime.now().asApiString(),
+	public var date: String = newApiDateString(),
 	public val log: List<Log> = arrayListOf(),
 	public val crops: List<Crop> = arrayListOf()
 )
@@ -162,7 +162,7 @@ data class Diary(
 				}
 
 				// ongoing
-				if (lastStage == stage) daysInStage += (lastStage!!.date and ZonedDateTime.now().asApiString()).dateDifferenceDays()
+				if (lastStage == stage) daysInStage += (lastStage!!.date and newApiDateString()).dateDifferenceDays()
 				ret[stage] = ret.getOrElse(stage, { 0.0 }) + daysInStage
 			}
 

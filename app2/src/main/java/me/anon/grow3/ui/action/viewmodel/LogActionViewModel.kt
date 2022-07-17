@@ -1,18 +1,26 @@
 package me.anon.grow3.ui.action.viewmodel
 
-import androidx.lifecycle.*
-import kotlinx.coroutines.flow.*
+import androidx.lifecycle.SavedStateHandle
+import androidx.lifecycle.ViewModel
+import androidx.lifecycle.viewModelScope
+import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.collectLatest
+import kotlinx.coroutines.flow.mapLatest
 import kotlinx.coroutines.launch
-import me.anon.grow3.data.exceptions.GrowTrackerException.*
-import me.anon.grow3.data.model.*
+import me.anon.grow3.data.exceptions.GrowTrackerException.DiaryLoadFailed
+import me.anon.grow3.data.exceptions.GrowTrackerException.InvalidLogType
+import me.anon.grow3.data.model.Diary
+import me.anon.grow3.data.model.Log
+import me.anon.grow3.data.model.LogConstants
+import me.anon.grow3.data.model.copy
 import me.anon.grow3.data.repository.DiariesRepository
 import me.anon.grow3.ui.action.fragment.LogActionFragment
 import me.anon.grow3.ui.common.Extras
 import me.anon.grow3.ui.common.Extras.EXTRA_LOG_TYPE
+import me.anon.grow3.util.DateUtils
 import me.anon.grow3.util.ViewModelFactory
-import me.anon.grow3.util.asApiString
 import me.anon.grow3.util.states.DataResult
-import org.threeten.bp.ZonedDateTime
 import javax.inject.Inject
 
 class LogActionViewModel constructor(
@@ -71,7 +79,7 @@ class LogActionViewModel constructor(
 			if (savedState.get<Boolean>(LogActionFragment.EXTRA_COPY) == true && logId.isNotBlank())
 			{
 				diariesRepository.getLog(logId, diary)?.copy()?.let { newLog ->
-					newLog.date = ZonedDateTime.now().asApiString()
+					newLog.date = DateUtils.newApiDateString()
 					newLog.isDraft = true
 					isNew = true
 					logId = diariesRepository.addLog(newLog, diary).id

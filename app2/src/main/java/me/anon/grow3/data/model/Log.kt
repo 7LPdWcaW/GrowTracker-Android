@@ -5,8 +5,8 @@ import me.anon.grow3.data.exceptions.GrowTrackerException
 import me.anon.grow3.ui.action.view.*
 import me.anon.grow3.ui.logs.view.*
 import me.anon.grow3.util.*
+import me.anon.grow3.util.DateUtils.newApiDateString
 import me.anon.grow3.view.model.Card
-import org.threeten.bp.ZonedDateTime
 import java.util.*
 
 class LogType<T>(
@@ -85,7 +85,7 @@ object LogConstants
 @JsonTypeInfo(use = JsonTypeInfo.Id.NAME, include = JsonTypeInfo.As.EXISTING_PROPERTY, property = "action")
 abstract class Log(
 	open var id: String = UUID.randomUUID().toString(),
-	open var date: String = ZonedDateTime.now().asApiString(),
+	open var date: String = newApiDateString(),
 	open var notes: String = "",
 	open var cropIds: List<String> = arrayListOf(),
 	open var action: String = "Log"
