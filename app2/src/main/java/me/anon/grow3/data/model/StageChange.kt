@@ -79,7 +79,8 @@ data class StageAt(
 	val days: Int,
 	val stage: Stage,
 	val log: Log,
-	val total: Int
+	val total: Int,
+	val week: Int = 1,
 )
 {
 	override fun toString(): String
@@ -89,6 +90,6 @@ data class StageAt(
 
 	public fun longString(): String
 	{
-		return "$days days ${stage.type.strRes.string()} • $total total"
+		return "$days days ${stage.type.strRes.string()} • $total days total • week $week"
 	}
 }

@@ -7,6 +7,7 @@ import me.anon.grow3.util.DateUtils.DATETIME_MID_DISPLAY_FORMAT
 import me.anon.grow3.util.DateUtils.DATETIME_SHORT_DISPLAY_FORMAT
 import me.anon.grow3.util.DateUtils.DATE_FORMAT
 import me.anon.grow3.util.DateUtils.TIME_FORMAT
+import me.anon.grow3.util.DateUtils.newApiDate
 import org.threeten.bp.LocalDate
 import org.threeten.bp.LocalTime
 import org.threeten.bp.ZoneId
@@ -38,18 +39,19 @@ object DateUtils
 	const val DATE_SHORT_DISPLAY_FORMAT_INT = "MM-dd-yy"
 	const val DATE_SHORT_DISPLAY_FORMAT_ISO = "yy-MM-dd"
 
-	public fun newApiDateString(): String
+	public fun newApiDate(): ZonedDateTime
 	{
 		return when (this.component().userSettings().dateFormatType()) {
-			0 -> ZonedDateTime.now().asApiString()
+			0 -> ZonedDateTime.now()
 			1 -> ZonedDateTime.now()
 				.withHour(0)
 				.withMinute(0)
 				.withSecond(0)
-				.asApiString()
 			else -> throw GrowTrackerException.InvalidValue()
 		}
 	}
+
+	public fun newApiDateString(): String = newApiDate().asApiString()
 }
 
 public fun ZonedDateTime.isBeforeOrEqual(other: ZonedDateTime): Boolean
@@ -62,7 +64,13 @@ public fun String.asDateTime(): ZonedDateTime
 	= ZonedDateTime.parse(this, DateTimeFormatterBuilder()
 		.appendPattern(API_FORMAT)
 		.appendOffset("+HH:mm", "+00:00")
-		.toFormatter())
+		.toFormatter()).run {
+			when (this.component().userSettings().dateFormatType()) {
+				0 -> this
+				1 -> this.withHour(0).withMinute(0).withSecond(0)
+				else -> throw GrowTrackerException.InvalidValue()
+			}
+		}
 
 /**
  * Parses the given string as ISO-8601
@@ -78,7 +86,7 @@ public fun String.asDate(): LocalDate
  */
 public fun String.ago(short: Boolean = true): String
 {
-	val now = ZonedDateTime.now()
+	val now = newApiDate()
 	val then = asDateTime()
 	val seconds = ChronoUnit.SECONDS.between(then, now)
 	return when {
@@ -98,6 +106,7 @@ public fun String.ago(short: Boolean = true): String
 			val duration = ChronoUnit.MINUTES.between(then, now)
 			duration.toString() + (if (short) "m" else " minute${if (duration > 1) "s" else ""} ago")
 		}
+		seconds == 0L -> "today"
 		else -> {
 			val duration = ChronoUnit.SECONDS.between(then, now)
 			duration.toString() + (if (short) "s" else " second${if (duration > 1) "s" else ""} ago")
@@ -113,7 +122,13 @@ public fun ZonedDateTime.asApiString(): String
 		.appendPattern(API_FORMAT)
 		.appendOffset("+HH:mm", "+00:00")
 		.toFormatter()
-		.format(this)
+		.format(this.run {
+			when (this.component().userSettings().dateFormatType()) {
+				0 -> this
+				1 -> this.withHour(0).withMinute(0).withSecond(0)
+				else -> throw GrowTrackerException.InvalidValue()
+			}
+		})
 
 /**
  * Formats a zoned date time into a mid string

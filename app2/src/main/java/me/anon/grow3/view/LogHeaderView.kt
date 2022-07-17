@@ -5,6 +5,8 @@ import android.util.AttributeSet
 import android.view.LayoutInflater
 import android.widget.TextView
 import androidx.constraintlayout.widget.ConstraintLayout
+import androidx.core.view.isVisible
+import me.anon.grow3.component
 import me.anon.grow3.data.model.Diary
 import me.anon.grow3.data.model.Log
 import me.anon.grow3.databinding.StubCardHeaderBinding
@@ -44,7 +46,12 @@ class LogHeaderView(context: Context, attrs: AttributeSet? = null) : ConstraintL
 
 		whenNotNull(log, diary) { log, diary ->
 			bindings.header.text = if (log.typeRes != -1) log.typeRes.string() else log.action
-			bindings.date.text = "${log.date.asDateTime().formatTime()}"
+
+			bindings.date.isVisible = true
+			when (component().userSettings().dateFormatType()) {
+				0 -> bindings.date.text = log.date.asDateTime().formatTime()
+				else -> bindings.date.isVisible = false
+			}
 		}
 	}
 
