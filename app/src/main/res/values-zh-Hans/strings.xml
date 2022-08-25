@@ -1,0 +1,433 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<resources>
+	<string name="version">版本 %s</string>
+	<string name="menu_settings">设置</string>
+
+	<!-- Garden Plant list title "garden name plants" -->
+	<string name="list_title">%s 棵绿植</string>
+	<!-- All plants list -->
+	<string name="all_list_title">所有绿植</string>
+	<!-- All/everything -->
+	<string name="all">所有</string>
+	<string name="snackbar_action_add">添加的操作</string>
+	<string name="snackbar_note_add">添加的笔记</string>
+	<string name="snackbar_watering_add">添加的浇灌</string>
+	<string name="snackbar_garden_deleted">删除的花园</string>
+
+	<string name="dialog_garden_delete_body">确定要删除花园&lt;b&gt;\"%s\"&lt;/b&gt;?吗？此操作不会删除植物。</string>
+	<string name="action_feed">浇水</string>
+	<string name="action_action">操作</string>
+
+	<string name="widget_encrypt_error">启用加密设置时，小部件不可用。</string>
+	<string name="new_plant_title">添加新绿植</string>
+	<string name="plant_details_title">绿植详情</string>
+	<string name="statistics_title">绿植统计</string>
+	<!-- select from camera -->
+	<string name="photo_option_camera">来自相机</string>
+	<!-- select from gallery -->
+	<string name="photo_option_gallery">来自相册</string>
+	<string name="dialog_option_title">选择一个选项</string>
+	<string name="dialog_select_picture_title">选择图片</string>
+	<string name="snackbar_action_apply">应用到其它绿植</string>
+	<string name="dialog_select_plant_title">选择绿植</string>
+	<string name="snackbar_image_added">添加的图片</string>
+	<string name="snackbar_action_take_another">再来一张</string>
+
+	<string name="nav_feeding_schedule">日程</string>
+	<string name="schedule_details_title">日程详情</string>
+	<string name="schedule_date_title">日程日期</string>
+	<string name="schedule_name">名称</string>
+	<string name="schedule_name_hint">略施水肥</string>
+	<string name="schedule_description">详情</string>
+	<!-- an example of a feeding schedule -->
+	<string name="schedule_description_hint">略施水肥2周</string>
+
+	<string name="schedules_new_feeding">+ 新建管护</string>
+	<string name="schedules_new_schedule">+ 新建日程</string>
+	<string name="new_additive">+ 新建添加剂</string>
+	<string name="additives">添加剂</string>
+	<string name="additive">添加剂</string>
+	<string name="from_date">开始日期</string>
+	<string name="from_stage">开始阶段</string>
+	<string name="to_date">结束日期</string>
+	<string name="to_stage">结束阶段</string>
+	<string name="populate_from_schedule">从日程中提取</string>
+	<string name="populate_from_previous">从前一项套用</string>
+	<string name="confirm_title">确定吗？</string>
+	<string name="confirm_copy_schedule">复制选定的日程吗？</string>
+	<string name="confirm_delete_schedule">删除选定的日程吗？</string>
+	<string name="schedule_copied">日程已复制</string>
+	<string name="schedule_deleted">日程已删除</string>
+	<string name="undo">撤消</string>
+	<string name="feeding_schedules_title">管护日程</string>
+	<string name="feeding_schedule_title">管护日程</string>
+	<string name="update_dialog_title">应用已升级</string>
+	<string name="update_dialog_message" formatted="true">应用已升级至版本 %s</string>
+	<string name="update_dialog_view_changes_button">查看变化</string>
+	<string name="update_dialog_dismiss_button">刈除</string>
+
+	<!-- Feeding {plant name} -->
+	<string name="feeding_single_title" formatted="true">浇灌 %s</string>
+	<string name="feeding_multiple_title">浇灌多种绿植</string>
+
+	<string name="action_dialog_notes">笔记</string>
+	<string name="water_details_title">浇水详情</string>
+	<string name="water_ph_label">水质pH值</string>
+	<string name="ppm_label">PPM</string>
+	<string name="runoff_label">径流</string>
+	<string name="amount_label" formatted="true">数量 （%s）</string>
+	<string name="temp_label" formatted="true">温度 （º%s）</string>
+	<string name="date_and_time_header">日期和时间</string>
+	<string name="date_now">此刻</string>
+	<string name="date_label">日期</string>
+	<string name="today">今天</string>
+	<string name="length_cured">已痊愈 %s 天</string>
+
+	<string name="filter_waterings">浇灌</string>
+	<string name="filter_stage_changes">阶段修改</string>
+
+	<string name="menu_duplicate">复制</string>
+	<string name="menu_copy_to">复制到</string>
+	<string name="menu_edit_action">编辑操作</string>
+	<string name="menu_delete_action">删除操作</string>
+
+	<string name="garden_dialog_select">选择绿植</string>
+	<string name="nav_gardens">花园</string>
+	<string name="nav_all_plants">所有绿植</string>
+	<string name="nav_new_garden">+ 新建花园</string>
+	<string name="nav_additional">附加</string>
+	<string name="nav_settings">设置</string>
+	<string name="delete">删除</string>
+	<string name="share">分享</string>
+	<string name="menu_photo">照片</string>
+	<string name="last_watering_title">上次浇灌</string>
+	<string name="feed_again">再次浇灌</string>
+
+	<string name="plant_name_label">绿植名称</string>
+	<string name="new_plant_hint">新建绿植</string>
+	<string name="plant_strain_label">植物品系</string>
+	<string name="plant_strain_hint">柠檬烟雾</string>
+	<string name="grow_details_title">成长详情</string>
+	<string name="plant_date_label">栽植日期</string>
+	<string name="plant_medium_label">土壤</string>
+
+	<string name="medium_details_label">土壤详情</string>
+	<!-- Example of medium mix -->
+	<string name="medium_details_hint">土壤、珍珠岩1:1混合物</string>
+	<string name="from_clone_label">来自克隆？</string>
+	<string name="stage_details_title">阶段详情</string>
+	<string name="plant_stage_label">栽植阶段</string>
+	<string name="view_photos">查看照片</string>
+	<string name="view_history">查看历史</string>
+	<string name="view_statistics">查看统计</string>
+	<string name="view_photos_short">照片</string>
+	<string name="view_history_short">历史</string>
+	<string name="view_statistics_short">统计</string>
+	<string name="filter">过滤</string>
+	<string name="planted">已栽植</string>
+	<string name="germination">发芽</string>
+	<string name="cutting">修剪</string>
+	<string name="vegetation">植被</string>
+	<string name="budding">正在萌芽</string>
+	<string name="flowering">正在开花</string>
+	<string name="ripening">正在成熟</string>
+	<string name="drying">正在干枯</string>
+	<string name="curing">正在养护</string>
+	<string name="harvested">已采收/摘除</string>
+	<!-- example "harvested 2 days ago" -->
+	<string name="harvested_ago" formatted="true">%s 前已采收/摘除</string>
+	<string name="menu_export_garden">导出花园</string>
+	<string name="menu_edit_garden">编辑花园</string>
+	<string name="menu_delete_garden">删除花园</string>
+	<string name="menu_export">导出</string>
+
+	<string name="total_time_label">时间总计：</string>
+	<string name="total_waters_label">浇灌总计：</string>
+	<string name="total_flushes_label">浇水总计：</string>
+	<string name="total_water_amount_label">浇灌总计：</string>
+	<string name="ave_water_amount_label">平均用水量：</string>
+	<string name="ave_time_between_water_label">浇灌平均间隔时间：</string>
+	<string name="ave_time_stage_label" formatted="true">平均%s浇灌：</string>
+	<string name="filter_additives">过滤添加剂</string>
+	<string name="ph_title">pH值</string>
+	<string name="tds_title">TDS</string>
+
+	<string name="min">最小：</string>
+	<string name="max">最大：</string>
+	<string name="ave">平均：</string>
+	<string name="temperature_title">温度</string>
+	<string name="general_title">常规</string>
+	<string name="failed_to_load_plant">载入绿枝失败</string>
+	<string name="action_fim">FIM</string>
+	<string name="action_flush">冲洗</string>
+	<string name="action_foliar_feed">叶面施肥</string>
+	<string name="action_lst">低压力训练</string>
+	<string name="action_lolipop">棒棒糖</string>
+	<string name="action_pesticide_application">农药施用</string>
+	<string name="action_topped">达到顶端</string>
+	<string name="action_transplanted">移载</string>
+	<string name="action_trim">修剪</string>
+	<string name="action_tuck">蜷缩</string>
+	<string name="action_supercrop">超级作物</string>
+	<string name="action_monstercrop">大型作物</string>
+
+	<string name="watered">已浇水</string>
+	<string name="note">笔记</string>
+	<string name="delete_event_dialog_title">删除此事件？</string>
+	<string name="confirm_delete_item_message">确定删除？</string>
+	<string name="confirm_delete_photos_message" formatted="true">确定删除照片 &lt;b&gt;%s&lt;/b&gt; 吗？删除后无法恢复。</string>
+	<string name="edit">编辑</string>
+	<string name="stage">阶段</string>
+	<string name="set">设置</string>
+	<string name="change">修改</string>
+	<string name="add">添加</string>
+	<string name="cancel">取消</string>
+	<string name="action">操作</string>
+	<string name="ok">确定</string>
+	<string name="field_required">此字段必填</string>
+	<string name="encrypt_passphrase_error">错误 - 密码不正确</string>
+	<string name="edit_feeding">编辑浇水</string>
+	<string name="added">已添加</string>
+	<string name="action_duplicated">操作已复制</string>
+	<string name="multiple_plants">多个绿植</string>
+	<string name="added_to">将操作添加到</string>
+	<string name="note_updated">笔记已更新</string>
+	<string name="updated">已更新</string>
+	<string name="stage_updated">阶段已更新</string>
+	<string name="event_deleted">事件已删除</string>
+	<string name="done">完成</string>
+	<string name="garden">花园</string>
+	<string name="select_all">全选</string>
+	<string name="select_none">全不选</string>
+	<string name="accept">接受</string>
+	<string name="enable">启用</string>
+	<string name="decline">拒绝</string>
+	<string name="seedling_label">幼苗：</string>
+	<string name="seedling">幼苗成长</string>
+
+	<string name="crash_title">哎哟</string>
+	<string name="crash_message" formatted="true">看来上次使用时，此应用崩溃了。想要发送匿名报告给作者吗？报告会被发送到：&lt;a href=\"https://github.com/7LPdWcaW/GrowTracker-Android/issues\"&gt;github.com/7LPdWcaW/GrowTracker-Android/issues&lt;/a&gt;，其中不会包含个人信息。如果愿意，您也可以手动发送到：&lt;a href=\"https://reddit.com/r/growutils\"&gt;reddit.com/r/growutils&lt;/a&gt; 。包含存储在：&lt;i&gt;%s&lt;i&gt;</string>
+	<string name="yes">是</string>
+	<string name="no">否</string>
+
+	<string name="passphrase_title">输入密码</string>
+	<string name="add_passphrase_title">输入密码</string>
+	<string name="readd_passphrase_title">再次输入密码</string>
+	<string name="passphrase_error">错误 - 密码不正确</string>
+
+	<string name="fatal_error">保存花园数据时出现致命问题，请备份此数据</string>
+	<string name="taken">带走</string>
+	<string name="ago" formatted="true">%s前</string>
+	<string name="watered_ago" formatted="true">&lt;b&gt;%s&lt;/b&gt; 前已浇水</string>
+	<string name="last_watered_ago" formatted="true">上次浇水是&lt;b&gt;%s&lt;/b&gt;前</string>
+	<string name="planted_ago" formatted="true">&lt;b&gt;%s&lt;/b&gt; 前已栽种</string>
+
+	<string name="permission_summary">存储照片需要访问外部存储。此应用未使用其他数据</string>
+
+	<string name="waterings_added">添加的浇水</string>
+	<string name="delete_plant_message">即将刪除 &lt;b&gt;%s&lt;/b&gt; 以及与之相关的所有图片，确定吗？此操作无法撤销。</string>
+	<string name="delete_plant_progress">正在刪除绿植...</string>
+
+	<string name="plant_duplicated">绿植已复制</string>
+	<string name="open">打开</string>
+
+	<string name="export_progress">正在导出生长日志…</string>
+	<string name="garden_export">正在导出花园的生长日志…</string>
+	<string name="action_added" formatted="true">%s已添加</string>
+	<string name="name_input_error">名称不能为空</string>
+	<string name="exporting" formatted="true">正在导出%s</string>
+
+	<string name="soil">土壤</string>
+	<string name="hydroponics">水培</string>
+	<string name="coco_coir">椰油</string>
+	<string name="aeroponics">气培</string>
+	<string name="hide_images">隐藏图片</string>
+	<string name="show_images">显示图片</string>
+
+	<string name="settings_default_garden">打开时显示默认花园，当前显示：&lt;b&gt;%s&lt;/b&gt;</string>
+	<string name="settings_card_style">选择卡片风格，当前： %s</string>
+	<string name="settings_delivery">设置默认传递计量单位，当前：&lt;b&gt;%s&lt;/b&gt;</string>
+	<string name="settings_measurement">设置默认相加测量单位，当前：&lt;b&gt;%s&lt;/b&gt;</string>
+	<string name="settings_temperature">设置默认的温度计量单位，当前：&lt;b&gt;%s&lt;/b&gt;</string>
+	<string name="settings_backup_size" formatted="true">当前：&lt;b&gt; %sMiB&lt;/b&gt; /使用&lt;b&gt;%s&lt;/b&gt;</string>
+	<string name="failsafe_message">在未加密阶段提供此密码，以防止加载数据</string>
+	<string name="warning">警告</string>
+	<string name="encryption_message">这是基于提供的密码短语的AES加密的基本形式。这不是执法机构提供的一种有保障的保护形式。</string>
+	<string name="backup_enable_toast" formatted="true">已启用备份，备份将存储在%s</string>
+	<string name="restore_complete" formatted="true">存储到%s已完成</string>
+	<string name="restore_error" formatted="true">不能从备份%s恢复。文件可能%s</string>
+	<string name="encrypted">已加密</string>
+	<string name="unencrypted">未加密</string>
+
+	<string name="select_measurement_title">选择计量单位</string>
+	<string name="select_temperature_title">选择温度</string>
+	<string name="select_garden_title">选择花园</string>
+	<string name="select_backup_title">选择备份</string>
+	<string name="backup_restore_error">必须使用相同的密码启用加密模式才能还原此备份</string>
+
+	<string name="backed_up_to">备份到</string>
+	<string name="no_backups">无备份可供还原</string>
+	<string name="all_none">所有/全无</string>
+
+	<string name="stat_input_ph">输入pH值</string>
+	<string name="stat_runoff_ph">径流pH</string>
+	<string name="stat_average_ph">平均pH</string>
+	<string name="stat_average_temp">平均温度</string>
+	<string name="stat_average_runoff_ph">平均径流pH</string>
+	<string name="stat_average_tds" formatted="true">平均%s</string>
+
+	<string name="photos_title">绿植照片</string>
+
+	<string name="plant_summary_ph">输入ph值：</string>
+	<string name="plant_summary_out_ph">输出pH值：</string>
+	<string name="plant_summary_amount">总计：</string>
+	<string name="plant_summary_temp">温度：</string>
+	<string name="plant_summary_additives">添加剂：</string>
+	<string name="plant_summary_ec">EC:</string>
+	<string name="plant_summary_ppm">PPM:</string>
+
+	<string name="select_schedule_title">选择日程</string>
+	<string name="actions">操作</string>
+	<string name="settings_dark_title">強制使用暗色主题</string>
+	<string name="settings_dark_summary">强制应用使用暗色主题，而不考虑系统昼夜设置</string>
+	<string name="settings_harvest_title">隐藏已收获绿植</string>
+	<string name="settings_harvest_summary">隐藏所有已经被收获的绿植</string>
+	<string name="settings_reverse_title">反转绿植顺序</string>
+	<string name="settings_reverse_summary">以相反的顺序显示绿植。（需要重启应用）</string>
+	<string name="settings_garden_title">默认花园</string>
+
+	<string name="settings_units">单位</string>
+	<string name="settings_delivery_title">传输单位</string>
+	<string name="settings_measurement_title">测量单位</string>
+	<string name="settings_temp_title">温度单位</string>
+	<string name="settings_tds_title">TDS单位</string>
+	<string name="settings_tds_summary" formatted="true">设置默认tds单位，当前：&lt;b&gt;%s&lt;/b&gt;</string>
+	<string name="settings_data_management">数量管理</string>
+	<string name="settings_autobackup_title">自动备份</string>
+	<string name="settings_autobackup_summary">每24小时自动备份您的植物</string>
+	<string name="settings_backupnow">立即备份</string>
+	<string name="settings_backupsize_title">限制备份大小</string>
+	<string name="settings_backupsize_hint">以MB计</string>
+	<string name="settings_backupsize_dialogtitle">备份限制（MB）</string>
+	<string name="settings_restore_backup">从备份恢复</string>
+	<string name="settings_encrypt_title">加密数据</string>
+	<string name="settings_encrypt_summary">给应用添加密码并加密所有数据和图片</string>
+	<string name="settings_failsafe_title">故障安全</string>
+	<string name="settings_failsafe_summary">设置故障安全密码可保护对数据的访问</string>
+	<string name="settings_addons">附件</string>
+	<string name="settings_about">关于</string>
+	<string name="settings_readme">自述文档</string>
+	<string name="settings_export">导出数据</string>
+	<string name="settings_cardstyle_title">卡片风格</string>
+	<string name="empty_plant_list">无植物可显示</string>
+	<string name="empty_schedules">无日程</string>
+	<string name="empty_photos">无照片可显示</string>
+	<string name="events_title">之前的操作</string>
+	<string name="show_hide_calendar">显示/隐藏日历</string>
+	<!-- "1 selected" -->
+	<string name="selected_len" formatted="true">已选定%d</string>
+	<string name="translations_title">感谢关注</string>
+	<string name="translations_by">翻译：</string>
+	<string name="help_translate">帮助翻译</string>
+	<string name="encrypt_progress_warning">正在加密数据和图片，此操作可能会花些时间…</string>
+	<string name="decrypt_progress_warning">正在解密数据和图片，此操作可能会花些时间…</string>
+
+	<!-- now = 1 second -->
+	<string name="now_abbr">1秒</string>
+	<string name="second_abbr">秒</string>
+	<string name="minute_abbr">分钟</string>
+	<string name="hour_abbr">小时</string>
+	<string name="day_abbr">天</string>
+	<string name="week_abbr">周</string>
+	<string name="month_abbr">月</string>
+	<string name="year_abbr">年</string>
+
+	<string name="view_details_short">详情</string>
+
+	<plurals name="time_second">
+		<item quantity="other">秒</item>
+	</plurals>
+
+	<plurals name="time_minute">
+		<item quantity="other">分钟</item>
+	</plurals>
+
+	<plurals name="time_hour">
+		<item quantity="other">小时</item>
+	</plurals>
+
+	<plurals name="time_day">
+		<item quantity="other">天</item>
+	</plurals>
+
+	<plurals name="time_week">
+		<item quantity="other">周</item>
+	</plurals>
+
+	<plurals name="time_month">
+		<item quantity="other">月</item>
+	</plurals>
+
+	<plurals name="time_year">
+		<item quantity="other">年</item>
+	</plurals>
+
+	<string-array name="settings_card_entries">
+		<item>原始</item>
+		<item>简约</item>
+		<item>详尽</item>
+	</string-array>
+
+	<string name="confirm_quit">未保存的修改将丢失</string>
+	<string name="accept_quit">退出</string>
+	<string name="plants">植物</string>
+	<string name="humidity">湿度</string>
+	<string name="current_temp">当前温度：</string>
+	<string name="current_humidity">当前湿度：</string>
+	<string name="lighting_title">光照日程</string>
+	<string name="delete_item_dialog_title">删除此物？</string>
+	<string name="confirm_delete_item_message_holder">确定要删除&lt;b&gt;%s&lt;/b&gt;吗？</string>
+	<string name="show">显示</string>
+	<string name="hide">隐藏</string>
+	<string name="lights_on">光照开始</string>
+	<string name="lights_off">光照结束</string>
+
+	<string name="settings_lastbackup_summary" formatted="true">最近备份：&lt;b&gt;%s&lt;/b&gt;</string>
+	<string name="settings_image_location_summary" formatted="true">图像存储位置，当前：&lt;b&gt;%s&lt;/b&gt;</string>
+	<string name="settings_image_location_error">设置图片位置失败</string>
+	<string name="settings_image_location_title">图片存储位置</string>
+	<string name="settings_image_cache_title">清除图片缓存</string>
+	<string name="cache_cleared">图片的磁盘和内存缓存已清除</string>
+	<string name="import_progress_warning">正在导入图片，此操作可能会花些时间…</string>
+	<string name="data_task">数据任务</string>
+	<string name="import_task_complete">图片导入完成</string>
+	<string name="decrypt_task_complete">图片解密完成</string>
+	<string name="encrypt_task_complete">图片加密完成</string>
+	<string name="empty_actions_list">无操作可显示</string>
+
+	<string name="exporting_start">正在为%s导出生长记录</string>
+	<string name="exporting_complete">%s导出完成</string>
+	<string name="exporting_path">已导出%s到%s</string>
+	<string name="export_complete">导出完成</string>
+	<string name="export_dialog_label">包含图片？</string>
+	<string name="no_data">无有效数据</string>
+
+	<string name="camera_permission_summary">拍照需要相机权限</string>
+	<string name="settings_backup_management_title">备份管理</string>
+	<string name="settings_backup_location_title">备份存储位置</string>
+	<string name="settings_backup_location_summary" formatted="true">备份存储位置，当前为&lt;b&gt;%s&lt;/b&gt;</string>
+	<string name="settings_backup_location_error">设置备份位置失败</string>
+	<string name="settings_import_error">从文件导入植物失败</string>
+	<string name="settings_import">从文件导入植物</string>
+	<string name="settings_import_success">成功从文件导入植物</string>
+
+	<string name="additive_stat_header" formatted="true">%s统计</string>
+	<string name="additive_average_usage_label">平均每次养护：</string>
+	<string name="additive_usage_count_label">用时：</string>
+	<string name="additive_total_usage_label">添加剂总计：</string>
+
+	<string name="additives_concentration_title">添加剂浓度</string>
+	<string name="additives_overtime_title">添加剂失效时间</string>
+	<string name="additives_distribution_title">添加剂分布</string>
+</resources>
