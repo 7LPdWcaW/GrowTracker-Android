@@ -7,7 +7,9 @@ import com.squareup.moshi.kotlin.reflect.KotlinJsonAdapterFactory
 import me.anon.lib.adapter.ActionJsonAdapter
 import me.anon.lib.adapter.ArrayListJsonAdapter
 import me.anon.model.Action
-import okio.Okio
+import okio.buffer
+import okio.sink
+import okio.source
 import java.io.File
 import java.io.InputStream
 import java.io.OutputStream
@@ -24,13 +26,13 @@ object MoshiHelper
 	@JvmStatic
 	public fun <T> parse(json: File, type: Type): T
 	{
-		return getMoshi().adapter<T>(type).fromJson(JsonReader.of(Okio.buffer(Okio.source(json)))) as T
+		return getMoshi().adapter<T>(type).fromJson(JsonReader.of(json.source().buffer())) as T
 	}
 
 	@JvmStatic
 	public fun <T> parse(json: InputStream, type: Type): T
 	{
-		return getMoshi().adapter<T>(type).fromJson(JsonReader.of(Okio.buffer(Okio.source(json)))) as T
+		return getMoshi().adapter<T>(type).fromJson(JsonReader.of(json.source().buffer())) as T
 	}
 
 	@JvmStatic
@@ -48,7 +50,7 @@ object MoshiHelper
 	@JvmStatic
 	public fun <T> toJson(obj: T, type: Type, outputStream: OutputStream)
 	{
-		getMoshi().adapter<T>(type).toJson(JsonWriter.of(Okio.buffer(Okio.sink(outputStream))), obj)
+		getMoshi().adapter<T>(type).toJson(JsonWriter.of(outputStream.sink().buffer()), obj)
 	}
 
 	public fun getMoshi(): Moshi

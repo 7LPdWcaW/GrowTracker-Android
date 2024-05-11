@@ -11,10 +11,10 @@ import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.DividerItemDecoration
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.esotericsoftware.kryo.Kryo
-import kotlinx.android.synthetic.main.schedule_list_view.*
 import me.anon.controller.adapter.FeedingScheduleAdapter
 import me.anon.grow.FeedingScheduleDetailsActivity
 import me.anon.grow.R
+import me.anon.grow.databinding.ScheduleListViewBinding
 import me.anon.lib.SnackBar
 import me.anon.lib.manager.ScheduleManager
 import java.util.*
@@ -26,17 +26,22 @@ class FeedingScheduleListFragment : Fragment()
 {
 	private val adapter = FeedingScheduleAdapter()
 
+	private lateinit var binding: ScheduleListViewBinding
+
 	override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View?
-		= inflater.inflate(R.layout.schedule_list_view, container, false) ?: View(activity)
+		= ScheduleListViewBinding.inflate(inflater, container, false).let {
+		binding = it
+		it.root
+	}
 
 	override fun onActivityCreated(savedInstanceState: Bundle?)
 	{
 		super.onActivityCreated(savedInstanceState)
 
 		adapter.items = ScheduleManager.instance.schedules
-		recycler_view.adapter = adapter
-		recycler_view.layoutManager = LinearLayoutManager(activity)
-		recycler_view.addItemDecoration(DividerItemDecoration(activity, VERTICAL))
+		binding.recyclerView.adapter = adapter
+		binding.recyclerView.layoutManager = LinearLayoutManager(activity)
+		binding.recyclerView.addItemDecoration(DividerItemDecoration(activity, VERTICAL))
 
 		adapter.onDeleteCallback = { schedule ->
 			val index = ScheduleManager.instance.schedules.indexOf(schedule)
@@ -73,7 +78,7 @@ class FeedingScheduleListFragment : Fragment()
 			})
 		}
 
-		fab_add.setOnClickListener {
+		binding.fabAdd.setOnClickListener {
 			startActivity(Intent(activity, FeedingScheduleDetailsActivity::class.java))
 		}
 	}
@@ -91,13 +96,13 @@ class FeedingScheduleListFragment : Fragment()
 	{
 		if (adapter.itemCount == 0)
 		{
-			empty.visibility = View.VISIBLE
-			recycler_view.visibility = View.GONE
+			binding.empty.visibility = View.VISIBLE
+			binding.recyclerView.visibility = View.GONE
 		}
 		else
 		{
-			empty.visibility = View.GONE
-			recycler_view.visibility = View.VISIBLE
+			binding.empty.visibility = View.GONE
+			binding.recyclerView.visibility = View.VISIBLE
 		}
 	}
 }

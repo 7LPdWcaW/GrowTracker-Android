@@ -5,7 +5,7 @@ import android.os.Parcelable
 import android.preference.PreferenceManager
 import com.squareup.moshi.Json
 import com.squareup.moshi.JsonClass
-import kotlinx.android.parcel.Parcelize
+import kotlinx.parcelize.Parcelize
 import me.anon.grow.R
 import me.anon.lib.DateRenderer
 import me.anon.lib.TdsUnit

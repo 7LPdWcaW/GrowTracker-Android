@@ -1,7 +1,7 @@
 package me.anon.grow
 
 import android.os.Bundle
-import kotlinx.android.synthetic.main.fragment_holder.*
+import me.anon.grow.databinding.FragmentHolderBinding
 import me.anon.grow.fragment.ActionsListFragment
 
 class ActionsActivity : BaseActivity()
@@ -11,7 +11,8 @@ class ActionsActivity : BaseActivity()
 		super.onCreate(savedInstanceState)
 
 		setContentView(R.layout.fragment_holder)
-		setSupportActionBar(toolbar)
+		val binding = FragmentHolderBinding.inflate(layoutInflater)
+		setSupportActionBar(binding.toolbar)
 
 		if (intent.extras == null || !intent.hasExtra("plant"))
 		{

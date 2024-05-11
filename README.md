@@ -22,11 +22,11 @@ The app requires no permissions except for external storage (for caching plant d
 
 - [Latest Nightly Build (Experimental!)](https://github.com/7LPdWcaW/GrowTracker-Android/releases/tag/alpha)
 
-- [Latest APK: (SHA256) 501786b7350eceb7b894a5745c06c378f1d2f2e6f4bf659ee2576b3dfaca5732 v2.6.1](https://github.com/7LPdWcaW/GrowTracker-Android/releases/download/v2.6.1/v2.6.1-production.apk)
+- [Latest APK: (SHA256) 893ce94c1d7da17c57869273e4c74ee3bb9ea5d6fae306bb7f96feb785601ef4 v2.6.3](https://github.com/7LPdWcaW/GrowTracker-Android/releases/download/v2.6.3/v2.6.3-production.apk)
 
-- [Latest APK (English only): (SHA256) e366c67c54548da4c46206c953e8847ba6e4c933449ca8d33525601ee2d87bb8 v2.6.1](https://github.com/7LPdWcaW/GrowTracker-Android/releases/download/v2.6.1/v2.6.1-en.apk)
+- [Latest APK (English only): (SHA256) 44242d3f022ea25549d0f0d4c5d04bbe659901098d5fe96b63583a33dd5f29d0 v2.6.3](https://github.com/7LPdWcaW/GrowTracker-Android/releases/download/v2.6.3/v2.6.3-en.apk)
 
-- [Latest APK (Discrete): (SHA256) 3b5edaceb462c6fcd51d11652943357976f75b53dacdfe650f422933357688d9 v2.6.1](https://github.com/7LPdWcaW/GrowTracker-Android/releases/download/v2.6.1/v2.6.1-discrete.apk)
+- [Latest APK (Discrete): (SHA256) f8a73f83bff3b0dc00d8b4bf5670a6e43d1a37fed2d7c506e2033c619fab8012 v2.6.3](https://github.com/7LPdWcaW/GrowTracker-Android/releases/download/v2.6.3/v2.6.3-discrete.apk)
 
 ## How to install from APK
 

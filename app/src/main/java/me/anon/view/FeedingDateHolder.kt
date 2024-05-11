@@ -3,10 +3,9 @@ package me.anon.view
 import android.text.Html
 import android.view.View
 import androidx.recyclerview.widget.RecyclerView
-import com.google.android.material.card.MaterialCardView
-import kotlinx.android.synthetic.main.feeding_date_stub.view.*
 import me.anon.controller.adapter.FeedingDateAdapter
 import me.anon.grow.R
+import me.anon.grow.databinding.FeedingDateStubBinding
 import me.anon.lib.Unit
 import me.anon.lib.ext.resolveColor
 import me.anon.lib.helper.TimeHelper
@@ -18,11 +17,13 @@ import kotlin.math.floor
  */
 class FeedingDateHolder(val adapter: FeedingDateAdapter, itemView: View) : RecyclerView.ViewHolder(itemView)
 {
-	private val card = itemView as MaterialCardView
-	private val title = itemView.title
-	private val additives = itemView.additives
-	private val delete = itemView.delete
-	private val copy = itemView.copy
+	private var binding = FeedingDateStubBinding.bind(itemView)
+
+	private val card = binding.root
+	private val title = binding.title
+	private val additives = binding.additives
+	private val delete = binding.delete
+	private val copy = binding.copy
 
 	private val measureUnit: Unit by lazy { Unit.getSelectedMeasurementUnit(itemView.context); }
 	private val deliveryUnit: Unit by lazy { Unit.getSelectedDeliveryUnit(itemView.context); }

@@ -1,7 +1,8 @@
 package me.anon.grow
 
 import android.os.Bundle
-import kotlinx.android.synthetic.main.fragment_holder.*
+import android.view.View
+import androidx.appcompat.widget.Toolbar
 import me.anon.grow.fragment.ViewPhotosFragment
 
 class ViewPhotosActivity : BaseActivity()
@@ -11,7 +12,8 @@ class ViewPhotosActivity : BaseActivity()
 		super.onCreate(savedInstanceState)
 
 		setContentView(R.layout.fragment_holder)
-		setSupportActionBar(toolbar)
+
+		setSupportActionBar(findViewById<View>(R.id.toolbar) as Toolbar)
 
 		if (intent.extras == null || !intent.hasExtra("plant_index") && !intent.hasExtra("plant"))
 		{

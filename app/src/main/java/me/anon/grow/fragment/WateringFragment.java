@@ -143,15 +143,15 @@ public class WateringFragment extends Fragment
 		if (savedInstanceState != null)
 		{
 			plantIndex = savedInstanceState.getIntArray("plant_index");
-			gardenIndex = savedInstanceState.getInt("garden_index");
-			actionIndex = savedInstanceState.getInt("action_index");
+			gardenIndex = savedInstanceState.getInt("garden_index", -1);
+			actionIndex = savedInstanceState.getInt("action_index", -1);
 			water = savedInstanceState.getParcelable("water");
 		}
 		else if (getArguments() != null)
 		{
 			plantIndex = getArguments().getIntArray("plant_index");
-			gardenIndex = getArguments().getInt("garden_index");
-			actionIndex = getArguments().getInt("action_index");
+			gardenIndex = getArguments().getInt("garden_index", -1);
+			actionIndex = getArguments().getInt("action_index", -1);
 
 			if (actionIndex > -1 && plantIndex.length == 1)
 			{

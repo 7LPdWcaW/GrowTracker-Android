@@ -19,9 +19,9 @@ class TemperatureDialogFragment(var action: TemperatureChange? = null, val callb
 
 	override fun onCreateDialog(savedInstanceState: Bundle?): Dialog
 	{
-		val tempUnit = TempUnit.getSelectedTemperatureUnit(context!!)
+		val tempUnit = TempUnit.getSelectedTemperatureUnit(requireContext())
 		val view = LayoutInflater.from(activity).inflate(R.layout.temperature_dialog, null)
-		val dialog = AlertDialog.Builder(context!!)
+		val dialog = AlertDialog.Builder(requireContext())
 		dialog.setTitle(R.string.temperature_title)
 		dialog.setPositiveButton(if (newAction) R.string.add else R.string.edit) { dialog, which ->
 			if (view.findViewById<EditText>(R.id.temperature_input).text.toString().isNotBlank())

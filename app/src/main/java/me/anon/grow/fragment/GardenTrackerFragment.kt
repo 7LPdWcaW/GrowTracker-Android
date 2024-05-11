@@ -18,11 +18,10 @@ import com.github.mikephil.charting.data.Entry
 import com.github.mikephil.charting.highlight.Highlight
 import com.github.mikephil.charting.listener.OnChartValueSelectedListener
 import com.github.mikephil.charting.utils.MPPointF
-import kotlinx.android.synthetic.main.data_label_stub.view.*
-import kotlinx.android.synthetic.main.garden_tracker_view.*
 import me.anon.controller.adapter.GardenActionAdapter
 import me.anon.grow.MainActivity
 import me.anon.grow.R
+import me.anon.grow.databinding.GardenTrackerViewBinding
 import me.anon.lib.TempUnit
 import me.anon.lib.ext.formatWhole
 import me.anon.lib.ext.inflate
@@ -66,9 +65,13 @@ class GardenTrackerFragment : Fragment()
 		save()
 	}
 
+
+	private lateinit var binding: GardenTrackerViewBinding
+
 	override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View?
-	{
-		return inflater.inflate(R.layout.garden_tracker_view, container, false)
+		= GardenTrackerViewBinding.inflate(inflater).let {
+		binding = it
+		it.root
 	}
 
 	override fun onActivityCreated(savedInstanceState: Bundle?)
@@ -126,36 +129,36 @@ class GardenTrackerFragment : Fragment()
 	{
 		var currentLighting = (transactions.lastOrNull { it is LightingChange } ?: garden.actions.lastOrNull { it is LightingChange }) as LightingChange?
 		currentLighting?.let {
-			lighton_input.text = it.on
-			lightoff_input.text = it.off
+			binding.lightonInput.text = it.on
+			binding.lightoffInput.text = it.off
 
 			if (it.off.isEmpty()) return@let
 			val lightOnTime = LocalTime.parse(it.on, DateTimeFormatter.ofPattern("HH:mm"))
 			val lightOffTime = LocalTime.parse(it.off, DateTimeFormatter.ofPattern("HH:mm"))
 			var diff = (abs(Duration.between(lightOnTime, lightOffTime).toMinutes()) / 15.0)
 			if (diff == 0.0) diff = 96.0
-			light_ratio.progress = diff.toInt()
+			binding.lightRatio.progress = diff.toInt()
 
-			val on = ((light_ratio.progress.toDouble() * 15.0) / 60.0).round(2).formatWhole()
-			val off = ((1440.0 - (light_ratio.progress.toDouble() * 15.0)) / 60.0).round(2).formatWhole()
-			progresson_label.text = "$on" + getString(R.string.hour_abbr)
-			progressoff_label.text = "$off" + getString(R.string.hour_abbr)
+			val on = ((binding.lightRatio.progress.toDouble() * 15.0) / 60.0).round(2).formatWhole()
+			val off = ((1440.0 - (binding.lightRatio.progress.toDouble() * 15.0)) / 60.0).round(2).formatWhole()
+			binding.progressonLabel.text = "$on" + getString(R.string.hour_abbr)
+			binding.progressoffLabel.text = "$off" + getString(R.string.hour_abbr)
 		}
 
-		lightson_container.setOnClickListener {
+		binding.lightsonContainer.setOnClickListener {
 			val currentLighting = (transactions.lastOrNull { it is LightingChange } ?: Kryo().copy(garden.actions.lastOrNull { it is LightingChange })) as LightingChange? ?: LightingChange()
 
 			val lightOnTime = LocalTime.parse(currentLighting.on, DateTimeFormatter.ofPattern("HH:mm"))
 			val dialog = TimePickerDialog(activity, TimePickerDialog.OnTimeSetListener { view, hourOfDay, minute ->
-				light_ratio.isEnabled = true
-				val currentProgress = light_ratio.progress
+				binding.lightRatio.isEnabled = true
+				val currentProgress = binding.lightRatio.progress
 				val timeOff = LocalTime.of(hourOfDay, minute).plusMinutes(currentProgress.toLong() * 15)
 
-				lighton_input.text = LocalTime.of(hourOfDay, minute).format(DateTimeFormatter.ofPattern("HH:mm"))
-				lightoff_input.text = timeOff.format(DateTimeFormatter.ofPattern("HH:mm"))
+				binding.lightonInput.text = LocalTime.of(hourOfDay, minute).format(DateTimeFormatter.ofPattern("HH:mm"))
+				binding.lightoffInput.text = timeOff.format(DateTimeFormatter.ofPattern("HH:mm"))
 
-				currentLighting.on = lighton_input.text.toString()
-				currentLighting.off = lightoff_input.text.toString()
+				currentLighting.on = binding.lightonInput.text.toString()
+				currentLighting.off = binding.lightoffInput.text.toString()
 				currentLighting.date = System.currentTimeMillis()
 
 				addTransaction(currentLighting)
@@ -163,20 +166,20 @@ class GardenTrackerFragment : Fragment()
 			dialog.show()
 		}
 
-		lightsoff_container.setOnClickListener {
+		binding.lightsoffContainer.setOnClickListener {
 			val currentLighting = (transactions.lastOrNull { it is LightingChange } ?: Kryo().copy(garden.actions.lastOrNull { it is LightingChange })) as LightingChange? ?: LightingChange()
 
 			val lightOffTime = LocalTime.parse(currentLighting.off, DateTimeFormatter.ofPattern("HH:mm"))
 			val dialog = TimePickerDialog(activity, TimePickerDialog.OnTimeSetListener { view, hourOfDay, minute ->
-				light_ratio.isEnabled = true
-				val currentProgress = light_ratio.progress
+				binding.lightRatio.isEnabled = true
+				val currentProgress = binding.lightRatio.progress
 				val timeOn = LocalTime.of(hourOfDay, minute).minusMinutes(currentProgress.toLong() * 15)
 
-				lightoff_input.text = LocalTime.of(hourOfDay, minute).format(DateTimeFormatter.ofPattern("HH:mm"))
-				lighton_input.text = timeOn.format(DateTimeFormatter.ofPattern("HH:mm"))
+				binding.lightoffInput.text = LocalTime.of(hourOfDay, minute).format(DateTimeFormatter.ofPattern("HH:mm"))
+				binding.lightonInput.text = timeOn.format(DateTimeFormatter.ofPattern("HH:mm"))
 
-				currentLighting.on = lighton_input.text.toString()
-				currentLighting.off = lightoff_input.text.toString()
+				currentLighting.on = binding.lightonInput.text.toString()
+				currentLighting.off = binding.lightoffInput.text.toString()
 				currentLighting.date = System.currentTimeMillis()
 
 				addTransaction(currentLighting)
@@ -184,20 +187,20 @@ class GardenTrackerFragment : Fragment()
 			dialog.show()
 		}
 
-		light_ratio.isEnabled = currentLighting != null
-		light_ratio.setOnSeekBarChangeListener(object : SeekBar.OnSeekBarChangeListener
+		binding.lightRatio.isEnabled = currentLighting != null
+		binding.lightRatio.setOnSeekBarChangeListener(object : SeekBar.OnSeekBarChangeListener
 		{
 			override fun onProgressChanged(p0: SeekBar?, progress: Int, p2: Boolean)
 			{
 				val on = ((progress.toDouble() * 15.0) / 60.0).round(2).formatWhole()
 				val off = ((1440.0 - (progress.toDouble() * 15.0)) / 60.0).round(2).formatWhole()
-				progresson_label.text = "$on" + getString(R.string.hour_abbr)
-				progressoff_label.text = "$off" + getString(R.string.hour_abbr)
+				binding.progressonLabel.text = "$on" + getString(R.string.hour_abbr)
+				binding.progressoffLabel.text = "$off" + getString(R.string.hour_abbr)
 
-				if (lighton_input.text.isNotEmpty())
+				if (binding.lightonInput.text.isNotEmpty())
 				{
-					val timeOff = LocalTime.parse(lighton_input.text, DateTimeFormatter.ofPattern("HH:mm")).plusMinutes(progress.toLong() * 15)
-					lightoff_input.text = timeOff.format(DateTimeFormatter.ofPattern("HH:mm"))
+					val timeOff = LocalTime.parse(binding.lightonInput.text, DateTimeFormatter.ofPattern("HH:mm")).plusMinutes(progress.toLong() * 15)
+					binding.lightoffInput.text = timeOff.format(DateTimeFormatter.ofPattern("HH:mm"))
 				}
 			}
 
@@ -206,30 +209,30 @@ class GardenTrackerFragment : Fragment()
 			{
 				val currentLighting = (transactions.lastOrNull { it is LightingChange } ?: garden.actions.lastOrNull { it is LightingChange }) as LightingChange?
 				currentLighting?.let {
-					currentLighting.on = lighton_input.text.toString()
-					currentLighting.off = lightoff_input.text.toString()
+					currentLighting.on = binding.lightonInput.text.toString()
+					currentLighting.off = binding.lightoffInput.text.toString()
 				}
 			}
 		})
 
-		fake_toggle_actions.setOnClickListener {
-			actions_container.visibility = View.VISIBLE
-			details_container.visibility = View.GONE
+		binding.fakeToggleActions.setOnClickListener {
+			binding.actionsContainer.visibility = View.VISIBLE
+			binding.detailsContainer.visibility = View.GONE
 		}
 
-		toggle_actions.setOnClickListener {
-			actions_container.visibility = View.GONE
-			details_container.visibility = View.VISIBLE
+		binding.toggleActions.setOnClickListener {
+			binding.actionsContainer.visibility = View.GONE
+			binding.detailsContainer.visibility = View.VISIBLE
 		}
 
-		actions_recycler.adapter ?: let {
-			actions_recycler.adapter = GardenActionAdapter()
-			actions_recycler.layoutManager = LinearLayoutManager(activity!!)
+		binding.actionsRecycler.adapter ?: let {
+			binding.actionsRecycler.adapter = GardenActionAdapter()
+			binding.actionsRecycler.layoutManager = LinearLayoutManager(requireActivity())
 		}
 
 		updateDataReferences()
 
-		(actions_recycler.adapter as GardenActionAdapter?)?.let {
+		(binding.actionsRecycler.adapter as GardenActionAdapter?)?.let {
 			it.editListener = ::editAction
 			it.deleteListener = ::deleteAction
 		}
@@ -285,7 +288,7 @@ class GardenTrackerFragment : Fragment()
 			else -> -1
 		}
 
-		AlertDialog.Builder(activity!!)
+		AlertDialog.Builder(requireActivity())
 			.setTitle(R.string.delete_item_dialog_title)
 			.setMessage(Html.fromHtml(getString(R.string.confirm_delete_item_message_holder, getString(title))))
 			.setPositiveButton(R.string.delete, DialogInterface.OnClickListener { dialogInterface, i ->
@@ -298,19 +301,19 @@ class GardenTrackerFragment : Fragment()
 
 	private fun setStatistics()
 	{
-		val tempUnit = TempUnit.getSelectedTemperatureUnit(activity!!)
+		val tempUnit = TempUnit.getSelectedTemperatureUnit(requireActivity())
 		val tempAdditional = arrayOfNulls<String>(3)
 		(garden.actions.lastOrNull { it is TemperatureChange } as TemperatureChange?)?.let {
-			val view = data_container.findViewById<View?>(R.id.stats_temp) ?: data_container.inflate(R.layout.data_label_stub)
-			view.label.setText(R.string.current_temp)
-			view.data.text = "${TempUnit.CELCIUS.to(tempUnit, it.temp).formatWhole()}°${tempUnit.label}"
+			val view = binding.dataContainer.findViewById<View?>(R.id.stats_temp) ?: binding.dataContainer.inflate(R.layout.data_label_stub)
+			view.findViewById<TextView>(R.id.label).setText(R.string.current_temp)
+			view.findViewById<TextView>(R.id.data).text = "${TempUnit.CELCIUS.to(tempUnit, it.temp).formatWhole()}°${tempUnit.label}"
 			view.id = R.id.stats_temp
 
-			if (data_container.findViewById<View?>(R.id.stats_temp) == null) data_container.addView(view)
+			if (binding.dataContainer.findViewById<View?>(R.id.stats_temp) == null) binding.dataContainer.addView(view)
 		}
-		StatsHelper.setTempData(garden, activity!!, temp, tempAdditional)
+		StatsHelper.setTempData(garden, requireActivity(), binding.temp, tempAdditional)
 
-		temp.marker = object : MarkerView(context, R.layout.chart_marker)
+		binding.temp.marker = object : MarkerView(context, R.layout.chart_marker)
 		{
 			override fun refreshContent(e: Entry, highlight: Highlight)
 			{
@@ -326,23 +329,23 @@ class GardenTrackerFragment : Fragment()
 
 			override fun getOffset(): MPPointF = MPPointF.getInstance(-(width / 2f), -(height * 1.2f))
 		}
-		temp.notifyDataSetChanged()
-		temp.postInvalidate()
-		min_temp.text = if (tempAdditional[0] == "100") "-" else "${tempAdditional[0]}°${tempUnit.label}"
-		max_temp.text = if (tempAdditional[1] == "-100") "-" else "${tempAdditional[1]}°${tempUnit.label}"
-		ave_temp.text = "${tempAdditional[2]}°${tempUnit.label}"
+		binding.temp.notifyDataSetChanged()
+		binding.temp.postInvalidate()
+		binding.minTemp.text = if (tempAdditional[0] == "100") "-" else "${tempAdditional[0]}°${tempUnit.label}"
+		binding.maxTemp.text = if (tempAdditional[1] == "-100") "-" else "${tempAdditional[1]}°${tempUnit.label}"
+		binding.aveTemp.text = "${tempAdditional[2]}°${tempUnit.label}"
 
 		val humidityAdditional = arrayOfNulls<String>(3)
 		(garden.actions.lastOrNull { it is HumidityChange } as HumidityChange?)?.let {
-			val view = data_container.findViewById<View?>(R.id.stats_humidity) ?: data_container.inflate(R.layout.data_label_stub)
-			view.label.setText(R.string.current_humidity)
-			view.data.text = "${it.humidity?.formatWhole() ?: 0}%"
+			val view = binding.dataContainer.findViewById<View?>(R.id.stats_humidity) ?: binding.dataContainer.inflate(R.layout.data_label_stub)
+			view.findViewById<TextView>(R.id.label).setText(R.string.current_humidity)
+			view.findViewById<TextView>(R.id.data).text = "${it.humidity?.formatWhole() ?: 0}%"
 			view.id = R.id.stats_humidity
 
-			if (data_container.findViewById<View?>(R.id.stats_humidity) == null) data_container.addView(view)
+			if (binding.dataContainer.findViewById<View?>(R.id.stats_humidity) == null) binding.dataContainer.addView(view)
 		}
-		StatsHelper.setHumidityData(garden, activity!!, humidity, humidityAdditional)
-		humidity.marker = object : MarkerView(context, R.layout.chart_marker)
+		StatsHelper.setHumidityData(garden, requireActivity(), binding.humidity, humidityAdditional)
+		binding.humidity.marker = object : MarkerView(context, R.layout.chart_marker)
 		{
 			override fun refreshContent(e: Entry, highlight: Highlight)
 			{
@@ -357,32 +360,32 @@ class GardenTrackerFragment : Fragment()
 
 			override fun getOffset(): MPPointF = MPPointF.getInstance(-(width / 2f), -(height * 1.2f))
 		}
-		humidity.notifyDataSetChanged()
-		humidity.postInvalidate()
-		min_humidity.text = if (humidityAdditional[0] == "100") "-" else "${humidityAdditional[0]}%"
-		max_humidity.text = if (humidityAdditional[1] == "-100") "-" else "${humidityAdditional[1]}%"
-		ave_humidity.text = "${humidityAdditional[2]}%"
+		binding.humidity.notifyDataSetChanged()
+		binding.humidity.postInvalidate()
+		binding.minHumidity.text = if (humidityAdditional[0] == "100") "-" else "${humidityAdditional[0]}%"
+		binding.maxHumidity.text = if (humidityAdditional[1] == "-100") "-" else "${humidityAdditional[1]}%"
+		binding.aveHumidity.text = "${humidityAdditional[2]}%"
 
-		humidity.setOnChartValueSelectedListener(object : OnChartValueSelectedListener
+		binding.humidity.setOnChartValueSelectedListener(object : OnChartValueSelectedListener
 		{
 			override fun onNothingSelected()
 			{
-				edit_humidity.visibility = View.GONE
-				delete_humidity.visibility = View.GONE
+				binding.editHumidity.visibility = View.GONE
+				binding.deleteHumidity.visibility = View.GONE
 			}
 
 			override fun onValueSelected(e: Entry?, h: Highlight?)
 			{
-				edit_humidity.visibility = View.VISIBLE
-				delete_humidity.visibility = View.VISIBLE
+				binding.editHumidity.visibility = View.VISIBLE
+				binding.deleteHumidity.visibility = View.VISIBLE
 
-				edit_humidity.setOnClickListener {
+				binding.editHumidity.setOnClickListener {
 					(e?.data as HumidityChange?)?.let { current ->
 						editAction(current)
 					}
 				}
 
-				delete_humidity.setOnClickListener {
+				binding.deleteHumidity.setOnClickListener {
 					(e?.data as Action?)?.let {
 						deleteAction(it)
 					}
@@ -390,26 +393,26 @@ class GardenTrackerFragment : Fragment()
 			}
 		})
 
-		temp.setOnChartValueSelectedListener(object : OnChartValueSelectedListener
+		binding.temp.setOnChartValueSelectedListener(object : OnChartValueSelectedListener
 		{
 			override fun onNothingSelected()
 			{
-				edit_temp.visibility = View.GONE
-				delete_temp.visibility = View.GONE
+				binding.editTemp.visibility = View.GONE
+				binding.deleteTemp.visibility = View.GONE
 			}
 
 			override fun onValueSelected(e: Entry?, h: Highlight?)
 			{
-				edit_temp.visibility = View.VISIBLE
-				delete_temp.visibility = View.VISIBLE
+				binding.editTemp.visibility = View.VISIBLE
+				binding.deleteTemp.visibility = View.VISIBLE
 
-				edit_temp.setOnClickListener {
+				binding.editTemp.setOnClickListener {
 					(e?.data as TemperatureChange?)?.let { current ->
 						editAction(current)
 					}
 				}
 
-				delete_temp.setOnClickListener {
+				binding.deleteTemp.setOnClickListener {
 					(e?.data as Action?)?.let { current ->
 						deleteAction(current)
 					}
@@ -417,24 +420,24 @@ class GardenTrackerFragment : Fragment()
 			}
 		})
 
-		general_title.visibility = if (data_container.childCount > 0) View.VISIBLE else View.GONE
-		data_container.visibility = if (data_container.childCount > 0) View.VISIBLE else View.GONE
+		binding.generalTitle.visibility = if (binding.dataContainer.childCount > 0) View.VISIBLE else View.GONE
+		binding.dataContainer.visibility = if (binding.dataContainer.childCount > 0) View.VISIBLE else View.GONE
 	}
 
 	private fun updateDataReferences()
 	{
-		(actions_recycler.adapter as GardenActionAdapter?)?.let {
+		(binding.actionsRecycler.adapter as GardenActionAdapter?)?.let {
 			it.items = garden.actions
 
 			if (it.items.size > 0)
 			{
-				actions_recycler.visibility = View.VISIBLE
-				empty.visibility = View.GONE
+				binding.actionsRecycler.visibility = View.VISIBLE
+				binding.empty.visibility = View.GONE
 			}
 			else
 			{
-				actions_recycler.visibility = View.GONE
-				empty.visibility = View.VISIBLE
+				binding.actionsRecycler.visibility = View.GONE
+				binding.empty.visibility = View.VISIBLE
 			}
 		}
 
