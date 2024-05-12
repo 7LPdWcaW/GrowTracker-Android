@@ -134,9 +134,9 @@
 	<string name="ripening">Rijping</string>
 	<string name="drying">Drogende</string>
 	<string name="curing">Genezende</string>
-	<string name="harvested">Geplukt</string>
+	<string name="harvested">Geplukt/Geruimd</string>
 	<!-- example "harvested 2 days ago" -->
-	<string name="harvested_ago" formatted="true">%s geleden geplukt</string>
+	<string name="harvested_ago" formatted="true">%s geleden geplukt/geruimd</string>
 	<string name="menu_export_garden">Tuin exporteren</string>
 	<string name="menu_edit_garden">Tuin aanpassen</string>
 	<string name="menu_delete_garden">Tuin verwijderen</string>
@@ -408,6 +408,7 @@
 	<string name="cache_cleared">Afbeeldings- en geheugencache gewist</string>
 	<string name="import_progress_warning">Bezig met importeren; even geduld...</string>
 	<string name="data_task">Gegevenstaak</string>
+	<string name="task_complete">Taak volbracht</string>
 	<string name="import_task_complete">De afbeelding is geïmporteerd</string>
 	<string name="decrypt_task_complete">De afbeelding is ontsleuteld</string>
 	<string name="encrypt_task_complete">De afbeelding is versleuteld</string>
