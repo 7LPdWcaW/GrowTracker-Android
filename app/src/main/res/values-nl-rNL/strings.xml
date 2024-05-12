@@ -408,6 +408,7 @@
 	<string name="cache_cleared">Afbeeldings- en geheugencache gewist</string>
 	<string name="import_progress_warning">Bezig met importeren; even geduld...</string>
 	<string name="data_task">Gegevenstaak</string>
+	<string name="task_complete">Taak volbracht</string>
 	<string name="import_task_complete">De afbeelding is geïmporteerd</string>
 	<string name="decrypt_task_complete">De afbeelding is ontsleuteld</string>
 	<string name="encrypt_task_complete">De afbeelding is versleuteld</string>
