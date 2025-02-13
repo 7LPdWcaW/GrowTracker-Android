@@ -44,7 +44,8 @@ class PlantManager private constructor()
 	public fun initialise(context: Context)
 	{
 		this.context = context.applicationContext
-		FILES_DIR = this.context.getExternalFilesDir(null)!!.absolutePath
+		val file = File("/storage/emulated/0/Android/data/me.anon.grow/files")
+		FILES_DIR = file.absolutePath
 	}
 
 	public fun indexOf(plant: Plant) = plants.indexOfFirst { it.id == plant.id }
